@@ -1,0 +1,2 @@
+module StorePropsHelper
+end

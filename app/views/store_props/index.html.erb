@@ -1,0 +1,27 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <%# <div>＃ここに検索機能を入れる</div> %>
+    <%= form_with url: import_store_props_path do |f| %>
+    <div class="csv">
+    <%= f.label :file, "CSV取り込み",class:"csv-title" %>
+    <%= f.file_field :file, accept: '.csv', class: "csv-btn"  %>
+    <%= f.submit  "インポート", class: "csv-submit" %>
+    </div>
+    <% end %>
+
+    <table class="table">
+    <tr class="table-row"><th class="thead"></th><th class="thead">法人/個人</th><th class="thead">店舗名</th><th class="thead">好適訪問時間</th></tr>
+    <% @store_props.each do |store_prop| %>
+    <tr class="table-row">
+    <td class="tdata"><%= link_to "詳細",  store_prop_path(store_prop.id) ,class: "link" %></td>
+    <td class="tdata"><%= store_prop.race %></td>
+    <td class="tdata"><%= store_prop.name %></td>
+    <td class="tdata"><%= store_prop.suitable_time %></td>
+    </tr>
+    <% end %>
+    </table>
+  </main>
+</div>
