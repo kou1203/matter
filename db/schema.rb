@@ -10,7 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_29_045319) do
+ActiveRecord::Schema.define(version: 2021_04_29_052808) do
+
+  create_table "store_props", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "race"
+    t.string "name", null: false
+    t.string "suitable_time", null: false
+    t.text "description"
+    t.string "industry", null: false
+    t.string "phone_number_1", null: false
+    t.string "phone_number_2"
+    t.string "person", null: false
+    t.string "prefectures", null: false
+    t.string "city", null: false
+    t.string "municipalities", null: false
+    t.string "address", null: false
+    t.string "building_name"
+  end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "email", default: "", null: false

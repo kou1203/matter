@@ -28,7 +28,8 @@
 | suitable_time_id | active_hash | null: false |
 | description      | text        | None        |
 | industry         | string      | null: false |
-| phone_number     | string      | None        |
+| phone_number_1   | string      | None        |
+| phone_number_2   | string      | None        |
 | person           | string      | null: false |
 | prefectures      | string      | null: false |
 | city             | string      | null: false |
