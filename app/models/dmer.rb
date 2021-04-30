@@ -1,0 +1,2 @@
+class Dmer < ApplicationRecord
+end
