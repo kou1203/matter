@@ -1,0 +1,94 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1>新規情報入力（店舗）</h1>
+
+  <%= form_with model: @store_prop, class: "form-frame", local: true do |f| %>
+    <div class="form-interval">
+    <%= f.select :race , {"個人": "個人", "法人": "法人"},{include_blank: "区分を選択してください"}, {class: "form-input"} %><br>
+    <table class="table">
+    <tr class="table-row">
+    <%# f.label :name, "店舗名", class: "form-text" %>
+    <th class="thead"><%= f.text_field :name , class: "form-input" %><%= f.text_field :industry , class: "form-input" %></th>
+    </tr>
+    <tr class="table-row"><th class="thead"></th>
+    </div>
+    <br>
+
+    <div class="form-interval">
+    </div>
+    <br>
+
+    <div class="form-interval">
+    <%= f.label :suitable_time, "好適時間", class: "form-text" %>
+    </div>
+    <%= f.text_field :suitable_time , class: "form-input" %><br>
+
+    <div class="form-interval">
+    <%= f.label :industry, "業種", class: "form-text" %>
+    </div>
+  </table>
+
+  <table class="table">
+    <br>
+
+    <div class="form-interval">
+    <%= f.label :phone_number_1, "電話番号１", class: "form-text" %>
+    </div>
+    <%= f.text_field :phone_number_1 , class: "form-input" %><br>
+
+    <div class="form-interval">
+    <%= f.label :phone_number_2, "電話番号２", class: "form-text" %>
+    </div>
+    <%= f.text_field :phone_number_2 , class: "form-input" %><br>
+
+    <div class="form-interval">
+    <%= f.label :person_main, "担当１", class: "form-text" %>
+    </div>
+    <%= f.text_field :person_main , class: "form-input" %><br>
+
+    <div class="form-interval">
+    <%= f.label :person_sub, "担当２", class: "form-text" %>
+    </div>
+    <%= f.text_field :person_sub , class: "form-input" %><br>
+  </table>
+
+  <table class="table">
+    <div class="form-interval">
+    <%= f.label :prefectures, "都道府県", class: "form-text" %>
+    </div>
+    <%= f.text_field :prefectures , class: "form-input" %><br>
+
+    <div class="form-interval">
+    <%= f.label :city, "市区", class: "form-text" %>
+    </div>
+    <%= f.text_field :city , class: "form-input" %><br>
+
+    <div class="form-interval">
+    <%= f.label :municipalities, "町村", class: "form-text" %>
+    </div>
+    <%= f.text_field :municipalities , class: "form-input" %><br>
+
+    <div class="form-interval">
+    <%= f.label :address, "番地", class: "form-text" %>
+    </div>
+    <%= f.text_field :address , class: "form-input" %><br>
+
+    <div class="form-interval">
+    <%= f.label :building_name, "建物名", class: "form-text" %>
+    </div>
+    <%= f.text_field :building_name , class: "form-input" %><br>
+
+    <div class="form-interval">
+    <%= f.label :description, "備考", class: "form-text" %>
+    </div>
+    <%= f.text_field :description , class: "form-input" %><br>
+
+    <%= f.submit "登録", class: "form-btn" %>
+    
+  <% end %>
+  </table>
+  </main>
+</div>
