@@ -1,0 +1,13 @@
+<%= render "shared/header" %>
+<main class="main">
+  <%= render "shared/side_bar" %>
+  <div class="right-bar">
+    <%= form_with url: import_dmers_path do |f| %>
+    <div class="csv">
+      <%= f.label :file, "dメル情報：CSV取り込み",class:"csv-title" %>
+      <%= f.file_field :file, accept: ".csv", class: "csv-btn" %>
+      <%= f.submit  "インポート", class: "csv-submit" %>
+    </div>
+    <% end %>
+  </div>
+</main>

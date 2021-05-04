@@ -4,4 +4,7 @@ Rails.application.routes.draw do
   resources :store_props do 
     collection { post :import }
   end 
+  resources :dmers do 
+    collection { post :import }
+  end 
 end

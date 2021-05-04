@@ -8,7 +8,8 @@ class CreateStoreProps < ActiveRecord::Migration[6.0]
       t.string :industry,           null: false
       t.string :phone_number_1,       null: false 
       t.string :phone_number_2 
-      t.string :person,             null: false 
+      t.string :person_main,             null: false 
+      t.string :person_sub 
       t.string :prefectures,        null: false 
       t.string :city,               null: false 
       t.string :municipalities,     null: false 

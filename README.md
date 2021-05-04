@@ -25,7 +25,7 @@
 | ---------------- | ----------- | ----------- |
 | class            | string      | None        |
 | name             | string      | null:false  |
-| suitable_time_id | active_hash | null: false |
+| suitable_time    | string      | null: false |
 | description      | text        | None        |
 | industry         | string      | null: false |
 | phone_number_1   | string      | None        |
@@ -38,7 +38,7 @@
 | building_name    | string      | None        |
 
 ### Association
-- belongs_to dmer
+- has_one dmer
 - belongs_to au
 - belongs_to paypay
 - belongs_to rakuten
@@ -50,22 +50,19 @@
 
  | columns               | type       | option      |
  | --------------------- | ---------- | ----------- |
- | store_prop_id         | integer    | null: false |
- | in_charge_id          | integer    | null: false |
- | visit_status          | integer    | null: false |
- | user_id               | references | None        |
- | multi_store_id        | integer    | None        |
- | date                  | date       | null: false |
+ | store_prop_id         | references | null: false |
+ | user_id               | references | null: false |
+ | in_charge             | string     | null: false |
+ | visit_status          | string     | null: false |
+ | get_date              | integer    | null: false |
  | mail                  | string     | null: false |
  | description           | text       | None        |
- | payment               | date       | None        |
- | settlement_payment    | date       | None        |
- | picture_payment       | date       | None        |
+ | payment               | integer    | None        |
+ | settlement_payment    | integer    | None        |
+ | picture_payment       | integer    | None        |
 
  ### Association
-- has_many store_props
-- belongs_to in_charge
-- belongs_to visit_status
+- belongs_to store_prop
 - belongs_to user
 
 

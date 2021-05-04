@@ -1,3 +1,4 @@
+<h1>店舗情報編集</h1>
 <%= render "shared/header" %>
 <div class="main">
   <%= render "shared/side_bar" %>
@@ -40,37 +41,6 @@
     <tr class="table-row">
     <th class="thead">備考</th>
     <td class="tdata"><%= @store_prop.description %></td>
-    </tr>
-    </table>
-    <button class="edit-btn">
-    <%= link_to "編集", edit_store_prop_path, class: "link" %>
-    </button>
-
-    <h1 class="show-title">dメル</h1>
-    <table class="table">
-      <tr class="table-row">
-    <th class="thead">獲得者</th>
-    <td class="tdata"><%= @dmer.user.name %></td>
-    <th class="thead">審査ステータス</th>
-    <td class="tdata"><%= @dmer.status %></td>
-    </tr>
-    <tr class="table-row">
-    <th class="thead">メールアドレス</th>
-    <td class="tdata"><%= @dmer.mail %></td>
-    <th class="thead">獲得日</th>
-    <td class="tdata"><%= @dmer.get_date %></td>
-    </tr>
-    <tr class="table-row">
-    <th class="thead">新規入金日</th>
-    <td class="tdata"><%= @dmer.payment %></td>
-    <th class="thead">決済入金日</th>
-    <td class="tdata"><%= @dmer.settlement_payment %></td>
-    </tr>
-    <tr class="table-row">
-    <th class="thead">写真入金日</th>
-    <td class="tdata"><%= @dmer.picture_payment %></td>
-    <th class="thead">備考</th>
-    <td class="tdata-long"><%= @dmer.description %></td>
     </tr>
     </table>
   </div>

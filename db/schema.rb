@@ -10,7 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_04_29_052808) do
+ActiveRecord::Schema.define(version: 2021_04_30_070123) do
+
+  create_table "dmers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "store_prop_id"
+    t.bigint "user_id"
+    t.string "status", null: false
+    t.date "get_date", null: false
+    t.string "mail", null: false
+    t.text "description"
+    t.date "payment"
+    t.date "settlement_payment"
+    t.date "picture_payment"
+    t.index ["store_prop_id"], name: "index_dmers_on_store_prop_id"
+    t.index ["user_id"], name: "index_dmers_on_user_id"
+  end
 
   create_table "store_props", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "race"
@@ -20,7 +34,8 @@ ActiveRecord::Schema.define(version: 2021_04_29_052808) do
     t.string "industry", null: false
     t.string "phone_number_1", null: false
     t.string "phone_number_2"
-    t.string "person", null: false
+    t.string "person_main", null: false
+    t.string "person_sub"
     t.string "prefectures", null: false
     t.string "city", null: false
     t.string "municipalities", null: false
@@ -41,4 +56,6 @@ ActiveRecord::Schema.define(version: 2021_04_29_052808) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "dmers", "store_props"
+  add_foreign_key "dmers", "users"
 end
