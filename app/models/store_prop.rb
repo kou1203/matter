@@ -15,6 +15,7 @@ class StoreProp < ApplicationRecord
 
 
   has_one :dmer
+  has_one :praness
 
   def self.import(file)
     CSV.foreach(file.path, headers: true) do |row|

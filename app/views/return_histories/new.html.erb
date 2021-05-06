@@ -1,0 +1,15 @@
+<h1>在庫返却管理</h1>
+<%= @stock.stock_num %>
+<%= form_with model: @return_history, url: stock_return_histories_path(@stock.id) , class: "form-frame", local: true do |f| %>
+  <div>返却者<%= @stock.stock_history.user.name %></div>
+<div class="form-group">
+  <%= f.hidden_field :user_id, value: @stock.stock_history.user_id %>
+  <%# f.collection_select(:user_id, @users, :id, :name,
+    {}, {class: "form-input"} ) %><br>
+  <%= f.hidden_field :stock_id, value: @stock.id %>
+  <%# f.collection_select(:stock_id, @stocks, :id, :stock_num, {}, {class: "form-input"}) %><br>
+  <%= f.date_field :return %>
+</div>
+  <%= f.submit "返却する" %>
+<% end %>
+  <%# f.date_field :return %>

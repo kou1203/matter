@@ -21,18 +21,22 @@ class StorePropsController < ApplicationController
   def edit 
     @store_prop = StoreProp.find(params[:id])
   end 
-
+  
   def update 
+    @store_prop = StoreProp.find(params[:id])
+    @store_prop.update(store_prop_params)
+    redirect_to store_prop_path(@store_prop.id)
   end 
 
   def import 
-    StoreProp.import(params[:file])
-    redirect_to root_path
+    StoreProp.import(params[:file]) 
+    redirect_to stocks_path
   end 
 
   def show 
     @store_prop = StoreProp.find(params[:id])
     @dmer = @store_prop.dmer
+    @praness = @store_prop.praness
   end
 
   private 

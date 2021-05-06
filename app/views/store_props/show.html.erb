@@ -45,8 +45,10 @@
     <button class="edit-btn">
     <%= link_to "編集", edit_store_prop_path, class: "link" %>
     </button>
-
+  
     <h1 class="show-title">dメル</h1>
+    <% if @dmer.nil? %>
+    <% else %>
     <table class="table">
       <tr class="table-row">
     <th class="thead">獲得者</th>
@@ -73,5 +75,70 @@
     <td class="tdata-long"><%= @dmer.description %></td>
     </tr>
     </table>
+    <% end %>
+    <h1 class="show-title">ぷらねす</h1>
+    <% if @praness.nil? %>
+      <button class="edit-btn"><%= link_to "新規登録", store_prop_pranesses_new_path(@store_prop.id), class: "link" %></button>
+    <% else %>
+    <table class="table">
+    <tr class="table-row">
+    <th class="thead">設置日</th>
+      <th class="thead">獲得者</th>
+    </tr>
+    <td class="tdata"><%= @praness.get_date %></td>
+    <td class="tdata"><%= @praness.user.name %></td>
+    <table class="table">
+    </tr>
+    </table>
+
+    <table class="table">
+    <tr class="table-row">
+    <th class="thead">SSID変更日</th>
+    <th class="thead">SSID①</th>
+    <th class="thead">PASS①</th>
+    <th class="thead">SSID②</th>
+    <th class="thead">PASS②</th>
+    </tr>
+    <td class="tdata"><%= @praness.ssid_change %></td>
+    <td class="tdata"><%= @praness.ssid_1 %></td>
+    <td class="tdata"><%= @praness.pass_1 %></td>
+    <td class="tdata"><%= @praness.ssid_2 %></td>
+    <td class="tdata"><%= @praness.pass_2 %></td>
+    </tr>
+    </table>
+
+    <table class="table">
+    <tr class="table-row">
+    <th class="thead">請求額</th>
+    <th class="thead">請求開始月</th>
+    <th class="thead">請求開始締日</th>
+    <th class="thead">店舗引落日</th>
+    <th class="thead">入金日</th>
+    </tr>
+    <tr class="table-row">
+    <td class="tdata"><%= @praness.claim %></td>
+    <td class="tdata"><%= @praness.start %></td>
+    <td class="tdata"><%= @praness.deadline %></td>
+    <td class="tdata"><%= @praness.withdrawal %></td>
+    <td class="tdata"><%= @praness.payment %></td>
+    </tr>
+    </table>
+
+    <table class="table">
+    <tr class="table-row">
+    <th class="thead">解約日</th>
+    <th class="thead">返却在庫に対する備考</th>
+    <th class="thead">備考</th>
+    </tr>
+    <tr class="table-row">
+    <td class="tdata"><%= @praness.cancel %></td>
+    <td class="tdata"><%= @praness.return_remarks %></td>
+    <td class="tdata"><%= @praness.remarks %></td>
+    </tr>
+    </table>
+  
+    
+  <% end %>
+
   </div>
 </div>

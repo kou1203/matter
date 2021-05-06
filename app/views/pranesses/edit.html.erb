@@ -1,0 +1,103 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1 class="show-title"><%= @praness.store_prop.name %>編集（ぷらねす）</h1>
+      
+
+  <%= form_with model: @praness, class: "form-frame", local: true do |f| %>
+  <div class="form-group">
+      <div class="form-interval">
+        <%= f.label :user_id, "獲得者", class: "form-text" %><br>
+      <%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "form-input"})%>
+      </div>
+
+    <div class="form-interval">
+      <%= f.label :get_date, "獲得日", class: "form-text" %><br>
+      <%= f.date_field :get_date , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :ssid_change, "SSID変更日", class: "form-text" %><br>
+      <%= f.date_field :ssid_change , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+    </div>
+
+    <div class="form-interval">
+      <%= f.label :stock_id, "在庫番号", class: "form-text" %><br>
+    <%= f.collection_select(:stock_id, @stocks, :id, :stock_num,
+    {}, {class: "form-input"} ) %>
+    </div>
+  </div>
+
+  <div class="form-group">
+
+    <div class="form-interval">
+      <%= f.label :ssid_1, "SSID①", class: "form-text" %><br>
+      <%= f.text_field :ssid_1 , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :pass_1, "PASS①", class: "form-text" %><br>
+      <%= f.text_field :pass_1 , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :ssid_2, "SSID②", class: "form-text" %><br>
+      <%= f.text_field :ssid_2 , class: "form-input" %>
+    </div>
+
+
+    <div class="form-interval">
+      <%= f.label :pass_2, "PASS②", class: "form-text" %><br>
+      <%= f.text_field :pass_2 , class: "form-input" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+  </div>
+
+  
+  <div class="form-group">
+    <div class="form-interval">
+      <%= f.label :start, "請求開始月", class: "form-text" %><br>
+      <%= f.date_field :start , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :deadline, "請求開始締日", class: "form-text" %><br>
+      <%= f.date_field :deadline , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :withdrawal, "店舗引落日", class: "form-text" %><br>
+      <%= f.date_field :withdrawal , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :payment, "入金日", class: "form-text" %><br>
+      <%= f.date_field :payment , class: "form-input" %>
+    </div>
+  </div>
+
+
+  <div class="form-group">
+    <div class="form-interval">
+      <%= f.label :claim, "請求額", class: "form-text" %><br>
+      <%= f.number_field :claim , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :cancel, "解約日", class: "form-text" %><br>
+      <%= f.date_field :cancel , class: "form-input" %>
+    </div>
+
+    <div class="form-interval">
+      <%= f.label :return_remarks, "返却在庫に対する備考", class: "form-text" %><br>
+      <%= f.text_field :return_remarks , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :remarks, "備考", class: "form-text" %><br>
+      <%= f.text_field :remarks , class: "form-input" %>
+    </div>
+  </div>
+
+    <%= f.submit "登録", class: "form-btn" %>
+  <% end %>
+  </main>
+</div>

@@ -43,7 +43,8 @@
 - belongs_to paypay
 - belongs_to rakuten
 - belongs_to stock
-- has_one suitable_time
+- has_one praness
+
 
 
 ## dmerテーブル
@@ -120,25 +121,55 @@
 - has_many visit_status
 - belongs_to user
 
-## stock (佐藤さんに保存絶対するタイプかどうか確認する！あと備考の文字量なども！)
+## stock 
 
 | columns         | type        | option      |
 | --------------- | ----------- | ----------- |
+| stock_num       | string      | null: false |
+| mac_num         | string      | null: false |
+| status          | string      | None        |
 | mail            | string      | null: false |
+| put_date        | date        | null:false  |
+| remarks         | text        | None        |
+
+### Association
+belongs_to user
+has_one praness
+
+## stock_history
+| columns         | type        | option      |
+| --------------- | ----------- | ----------- |
+| user            | references  |             |
+| stock           | references  |             |
+| take_out        | date        |             |
+| return          | date        |             |
+
+## praness 
+
+| columns         | type        | option      |
+| --------------- | ----------- | ----------- |
 | user_id         | references  | null:false  |
-| installation    | date        | null:false  |
+| store_prop_id   | references  | null:false  |
+| stock_id        | references  | null:false  |
+| get_date        | date        | null: false |
 | ssid_change     | date        | None        |
 | ssid_1          | string      | null: false |
 | ssid_2          | string      | null: false |
 | pass_1          | string      | null: false |
 | pass_2          | string      | null: false |
 | cancel          | date        | None        |
+| return_remarks  | string      | None        |
 | remarks         | text        | None        |
-| return_remarks  | text        | None        |
+| claim           | number      | null: false |
+| start           | date        | null: false |
+| deadline        | date        | null: false |
+| withdrawal      | date        | null: false |
+| payment         | date        | null: false |
 
 ### Association
 belongs_to user
-
+belongs_to :store_prop
+belongs_to stock
 
 # Active Hash Model
 
