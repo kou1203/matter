@@ -4,6 +4,15 @@
   <%= render "shared/side_bar" %>
   <main class="right-bar">
   <%# <div>＃ここに検索機能を入れる</div> %>
+    <%= search_form_for @q do |f| %>
+      <%= f.label :name, "店舗名" %>
+      <%= f.search_field :name_cont %>
+      <%= f.label :prefectures, "都道府県" %>
+      <%= f.text_field :prefectures_cont %>
+      <%= f.label :prefectures, "市区" %>
+      <%= f.text_field :city_cont %>
+      <%= f.submit "検索" %>
+    <% end %>
  
 
     <%= form_with url: import_store_props_path do |f| %>

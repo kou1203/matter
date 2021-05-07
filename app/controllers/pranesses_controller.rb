@@ -1,7 +1,15 @@
 class PranessesController < ApplicationController
+  require 'csv'
 
   def index 
-    @pranesses = Praness.all
+    @q = Praness.ransack(params[:q])
+    @pranesses = @q.result(distinct: true)
+    respond_to do |format|
+      format.html
+      format.csv do |csv|
+        send_pranesses_csv(@pranesses)
+      end 
+    end
   end 
 
   def new 
@@ -44,6 +52,8 @@ class PranessesController < ApplicationController
     @praness = Praness.find(params[:id])
   end 
 
+ 
+
   private 
   def praness_params 
     params.require(:praness).permit(
@@ -51,6 +61,37 @@ class PranessesController < ApplicationController
       :ssid_2, :pass_1, :pass_2, :cancel, :return_remarks,
       :remarks, :claim, :start, :deadline, :withdrawal,:payment 
     )
+  end 
+
+  def send_pranesses_csv(pranesses)
+    csv_data = CSV.generate do |csv|
+      column_names = %w(user store_prop stock get_date ssid_change ssid_1 ssid_2 pass_1 pass_2 cancel return_remarks remarks claim start deadline withdrawal payment)
+      csv << column_names
+      pranesses.each do |praness|
+        column_values = [
+          praness.user.name,
+          praness.store_prop.name,
+          praness.stock.stock_num,
+          praness.get_date,
+          praness.ssid_change,
+          praness.ssid_1,
+          praness.pass_1,
+          praness.ssid_2,
+          praness.pass_2,
+          praness.cancel,
+          praness.return_remarks,
+          praness.remarks,
+          praness.claim,
+          praness.start,
+          praness.deadline,
+          praness.withdrawal,
+          praness.payment
+
+        ]
+        csv << column_values
+      end 
+    end 
+    send_data(csv_data, filename: "ぷらねす.csv")
   end 
 
 end

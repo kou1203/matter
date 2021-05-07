@@ -1,7 +1,8 @@
 class StorePropsController < ApplicationController
 
   def index 
-    @store_props = StoreProp.all
+    @q = StoreProp.ransack(params[:q])
+    @store_props = @q.result(distinct: true)
   end 
 
   def new 
@@ -11,7 +12,7 @@ class StorePropsController < ApplicationController
   def create 
     @store_prop = StoreProp.new(store_prop_params)
     if @store_prop.save
-      redirect_to root_path 
+      redirect_to store_prop_path(@store_prop.id)
     else 
       render :new
     end

@@ -4,6 +4,14 @@
   <%= render "shared/side_bar" %>
   <%# <div>＃ここに検索機能を入れる</div> %>
   <main class="right-bar">
+    <%= search_form_for @q do |f| %>
+      <%= f.label :get_date, "獲得日付" %><br>
+      <%= f.label :get_date, "以降" %>
+      <%= f.date_field :get_date_gteq %><br>
+      <%= f.label :get_date, "以前" %>
+      <%= f.date_field :get_date_lt %>
+      <%= f.submit "検索" %>
+    <% end %>
   <div>
       <%= form_with url: import_store_props_path do |f| %>
     <div class="csv">
@@ -11,6 +19,9 @@
     <%= f.file_field :file, accept: '.csv', class: "csv-btn"  %>
     <%= f.submit  "インポート", class: "csv-submit" %>
     <% end %>
+  </div>
+  <div>
+    <%= link_to "CSVを出力する", pranesses_path(format: :csv) %>
   </div>
   <button class="header-btn">
     <%= link_to "新規店舗登録", new_store_prop_path, class: "btn-text" %>

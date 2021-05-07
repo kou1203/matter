@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   resources :stock_histories, only: [:destroy]
   resources :return_histories, only: [:destroy]
   
+  get 'pranesses/search'
+
 end
 
 # get 'stock_histories/new'

@@ -58,3 +58,5 @@ gem 'devise'
 gem 'active_hash'
 
 gem 'roo'
+
+gem 'ransack'
