@@ -89,6 +89,7 @@ ActiveRecord::Schema.define(version: 2021_05_06_033508) do
     t.string "municipalities", null: false
     t.string "address", null: false
     t.string "building_name"
+    t.index ["name", "phone_number_1", "phone_number_2"], name: "index_store_props_on_name_and_phone_number_1_and_phone_number_2", unique: true
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
