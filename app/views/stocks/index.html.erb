@@ -3,15 +3,27 @@
 <div class="main">
   <%= render "shared/side_bar" %>
   <main class="right-bar">
+    <div>在庫数</div>
+    <div>設定済<%= Stock.where(status: "○").length %></div>
+    <div>未設定<%= Stock.where(status: "×").length %></div>
+
+      <%= search_form_for @q do |f| %>
+        <%= f.label :status, "設定ステータス" %>
+        <%= f.select :status_eq, options_for_select({"○": "○", "×": "×"}), include_blank: true %>
+        <%= f.submit "検索" %>
+      <% end %>
+      <button><%= link_to "新規在庫登録", new_stock_path, class: "link" %></button>
       <%= form_with url: import_stocks_path do |f| %>
     <div class="csv">
     <%= f.label :file, "在庫情報：CSV取り込み",class:"csv-title" %>
     <%= f.file_field :file, accept: '.csv', class: "csv-btn"  %>
-    <%= f.submit  "インポート", class: "csv-submit" %>
+    <%= f.submit  "インポート", class: "csv-submit", data: {confirm: "インポートしますか？"} %>
     <% end %>
     </div>
-      <table class="table">
+      <table class="main-table">
         <tr class="table-row">
+        <th class="thead">削除</th>
+        <th class="thead">編集</th>
         <th class="thead">在庫番号</th>
         <th class="thead">Mac番号</th>
         <th class="thead">バインド設定</th>
@@ -27,61 +39,66 @@
         <th class="thead">持ち出し者</th>
         <th class="thead">持ち出し日</th>
         <th class="thead">持出履歴</th>
-        <th class="thead">返却日</th>
         <th class="thead">前回持ち出し者</th>
-        <th class="thead">返却履歴</th>
+        <th class="thead">返却日</th>
         <th class="thead">返却履歴削除</th>
         </tr>
+        
     <% @stocks.each do |stock| %>
         <tbody>
-        <tr class="table-row">
-        <td class="tdata"><%= stock.stock_num %></td>
-        <td class="tdata"><%= stock.mac_num %></td>
-        <td class="tdata"><%= stock.status %></td>
-        <td class="tdata"><%= stock.mail %></td>
-        <% if stock.praness.nil? %>
-        <td class="tdata"></td>
-        <td class="tdata"></td>
-        <td class="tdata"></td>
-        <td class="tdata"></td>
-        <td class="tdata"></td>
-        <td class="tdata"></td>
-        <td class="tdata"></td>
-        <td class="tdata"></td>
-        <% else %>
-        <td class="tdata"><%= stock.praness.get_date %></td>
-        <td class="tdata"><%= stock.praness.store_prop.name %></td>
-        <td class="tdata"><%= stock.praness.user.name %></td>
-        <td class="tdata"><%= stock.praness.ssid_1 %></td>
-        <td class="tdata"><%= stock.praness.pass_1 %></td>
-        <td class="tdata"><%= stock.praness.ssid_2 %></td>
-        <td class="tdata"><%= stock.praness.pass_2 %></td>
-        <td class="tdata"><%= stock.remarks %></td>
-        <% end %>
-        <% if stock.stock_history.nil? %>
-          <td class="tdata"><%= link_to "持出", new_stock_stock_history_path(stock.id), class: "link" %></td>
-          <td class="tdata"></td>
-          <td class="tdata"></td>
-        <% else %>
-          <td class="tdata"><%= stock.stock_history.user.name %></td>
-          <td class="tdata"><%= stock.stock_history.take_out %></td>
-          <td class="tdata"><%= link_to "削除", stock_history_path(stock.stock_history.id),method: :delete, class: "link" %></td>
-          
-        <% end %>
-          <% if stock.return_history.nil? %>
-          <td class="tdata"></td>
-            <td class="tdata"><%= link_to "返却", new_stock_return_history_path(stock.id), class: "link" %></td>
-          <td class="tdata"></td>
-          <td class="tdata"></td>
+          <tr class="table-row">
+          <% if stock.stock_history.nil? %>
+            <td class="tdata"><%= link_to "削除", stock_path(stock.id), method: :delete ,class: "link" %></td>
           <% else %>
-          <td class="tdata"></td>
+            <td class="tdata"></td>
+          <% end %>
+            <td class="tdata"><%= link_to "編集",edit_stock_path(stock.id), class: "link" %></td>
+            <td class="tdata"><%= stock.stock_num %></td>
+            <td class="tdata"><%= stock.mac_num %></td>
+            <td class="tdata"><%= stock.status %></td>
+            <td class="tdata"><%= stock.mail %></td>
+            <% if stock.praness.nil? %>
+            <td class="tdata"></td>
+            <td class="tdata"></td>
+            <td class="tdata"></td>
+            <td class="tdata"></td>
+            <td class="tdata"></td>
+            <td class="tdata"></td>
+            <td class="tdata"></td>
+            <td class="tdata"></td>
+            <% else %>
+            <td class="tdata"><%= stock.praness.get_date %></td>
+            <td class="tdata"><%= stock.praness.store_prop.name %></td>
+            <td class="tdata"><%= stock.praness.user.name %></td>
+            <td class="tdata"><%= stock.praness.ssid_1 %></td>
+            <td class="tdata"><%= stock.praness.pass_1 %></td>
+            <td class="tdata"><%= stock.praness.ssid_2 %></td>
+            <td class="tdata"><%= stock.remarks %></td>
+            <td class="tdata"><%= stock.praness.pass_2 %></td>
+            <% end %>
+            <% if stock.stock_history.nil? %>
+            <td class="tdata"><%= link_to "持出", new_stock_stock_history_path(stock.id), class: "link" %></td>
+            <td class="tdata"></td>
+            <td class="tdata"></td>
+            <% else %>
+            <td class="tdata"><%= stock.stock_history.user.name %></td>
+            <td class="tdata"><%= stock.stock_history.take_out %></td>
+            <td class="tdata"><%= link_to "削除", stock_history_path(stock.stock_history.id),method: :delete, class: "link" %></td>
+            <% end %>
+            <% if stock.return_history.nil? %>
+            <td class="tdata"><%= link_to "返却", new_stock_return_history_path(stock.id), class: "link" %></td>
+            <td class="tdata"></td>
+            <td class="tdata"></td>
+            <td class="tdata"></td>
+        
+            <% else %>
             <td class="tdata"><%= stock.return_history.user.name %></td>
             <td class="tdata"><%= stock.return_history.return %></td>
-          <td class="tdata"><%= link_to "削除", return_history_path(stock.return_history.id),method: :delete, class: "link" %></td>
-          <% end %>
-        </tr>
-    <% end %>
+            <td class="tdata"><%= link_to "削除", return_history_path(stock.return_history.id),method: :delete, class: "link" %></td>
+            <% end %>
+          </tr>
         </tbody>
+    <% end %>
       </table>
 
   </main>

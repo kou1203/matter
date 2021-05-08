@@ -1,0 +1,51 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1 class="show-title"><%= @store_prop.name %>情報入力（PayPay）</h1>
+      
+
+  <%= form_with model: @paypay,url: store_prop_paypays_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
+    <%= render "shared/error_messages", model: f.object %>
+  <div class="form-group">
+      <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
+      <div class="form-interval">
+        <%= f.label :user_id, "獲得者", class: "form-text" %><br>
+      <%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "form-input"})%>
+      </div>
+
+    <div class="form-interval">
+      <%= f.label :get_date, "獲得日", class: "form-text" %><br>
+      <%= f.date_field :get_date , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :status, "審査ステータス", class: "form-text" %><br>
+      <%= f.select :status, {"未審査": "未審査", "上位店NG": "上位店NG", "審査完了": "審査完了","入金確認済": "入金確認済"} ,{}, {class: "form-input"} %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :client, "商流", class: "form-text" %><br>
+      <%= f.select :client, {"マックスサポート": "マックスサポート"} ,{}, {class: "form-input"} %>
+    </div>
+    
+
+   
+  </div>
+
+  <div class="form-group">
+    <div class="form-interval">
+      <%= f.label :payment, "入金日確認日", class: "form-text" %><br>
+      <%= f.date_field :payment , class: "form-input" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    
+    
+    <%= f.submit "登録", class: "form-btn" %>
+  </div>
+  
+  
+  <% end %>
+  </main>
+</div>

@@ -4,6 +4,13 @@ class Stock < ApplicationRecord
   has_one :stock_history
   has_one :return_history
 
+  with_options presence: true do 
+    validates :status
+    validates :stock_num 
+    validates :mac_num 
+    validates :mail
+  end 
+
   def self.import(file)
     CSV.foreach(file.path, headers: true) do |row|
       store = find_by(id: row["id"]) || new 

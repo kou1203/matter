@@ -1,0 +1,42 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <%# <div>＃ここに検索機能を入れる</div> %>
+  <main class="right-bar">
+  <div><%= Date.today.month %>月獲得数</div>
+  <div><%= Summit.all.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</div>
+    <%= search_form_for @q do |f| %>
+      <%= f.label :user_id, "獲得者" %>
+      <%= f.select :user_id_eq, options_from_collection_for_select(User.all, :id, :name) %><br>
+      <%= f.label :get_date, "獲得日付" %><br>
+      <%= f.label :get_date, "以降" %>
+      <%= f.date_field :get_date_gteq %><br>
+      <%= f.label :get_date, "以前" %>
+      <%= f.date_field :get_date_lt %>
+      <%= f.submit "検索" %>
+    <% end %>
+  <button class="header-btn">
+    <%= link_to "新規店舗登録", new_store_prop_path, class: "btn-text" %>
+  </button>
+  
+ 
+  
+    <table class="table">
+    <tr class="table-row">
+      <th class="thead"></th>
+      <th class="thead"><%= sort_link(@q, :get_date, "獲得日") %></th>
+      <th class="thead">法人/個人</th>
+      <th class="thead">店舗名</th>
+    </tr>
+    <% @summits.each do |summit| %>
+    <tr class="table-row">
+      <td class="tdata"><%= link_to "詳細",  summit_path(summit.id) ,class: "link" %></td>
+      <td class="tdata"><%= summit.get_date %></td>
+      <td class="tdata"><%= summit.store_prop.race %></td>
+      <td class="tdata"><%= summit.store_prop.name %></td>
+    </tr>
+    <% end %>
+    </table>
+</div>
+  </main>

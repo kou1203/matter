@@ -31,13 +31,14 @@ class StorePropsController < ApplicationController
 
   def import 
     StoreProp.import(params[:file]) 
-    redirect_to stocks_path
+    redirect_to root_path
   end 
 
   def show 
     @store_prop = StoreProp.find(params[:id])
     @dmer = @store_prop.dmer
     @praness = @store_prop.praness
+    @summit = @store_prop.summit
   end
 
   private 

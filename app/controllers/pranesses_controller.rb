@@ -59,7 +59,8 @@ class PranessesController < ApplicationController
     params.require(:praness).permit(
       :user_id, :store_prop_id,:stock_id, :get_date, :ssid_change, :ssid_1,
       :ssid_2, :pass_1, :pass_2, :cancel, :return_remarks,
-      :remarks, :claim, :start, :deadline, :withdrawal,:payment 
+      :remarks, :claim, :start, :deadline, :withdrawal,:payment,
+      :client 
     )
   end 
 

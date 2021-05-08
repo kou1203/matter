@@ -10,7 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_05_06_033508) do
+ActiveRecord::Schema.define(version: 2021_05_08_103151) do
+
+  create_table "aupays", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "store_prop_id"
+    t.bigint "user_id"
+    t.date "get_date", null: false
+    t.string "status", null: false
+    t.string "mail", null: false
+    t.string "client", null: false
+    t.date "payment"
+    t.date "settlement"
+    t.string "description"
+    t.index ["store_prop_id"], name: "index_aupays_on_store_prop_id"
+    t.index ["user_id"], name: "index_aupays_on_user_id"
+  end
 
   create_table "dmers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "store_prop_id"
@@ -22,8 +36,20 @@ ActiveRecord::Schema.define(version: 2021_05_06_033508) do
     t.date "payment"
     t.date "settlement_payment"
     t.date "picture_payment"
+    t.string "client"
     t.index ["store_prop_id"], name: "index_dmers_on_store_prop_id"
     t.index ["user_id"], name: "index_dmers_on_user_id"
+  end
+
+  create_table "paypays", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "store_prop_id"
+    t.bigint "user_id"
+    t.string "client", null: false
+    t.date "get_date", null: false
+    t.string "status", null: false
+    t.date "payment"
+    t.index ["store_prop_id"], name: "index_paypays_on_store_prop_id"
+    t.index ["user_id"], name: "index_paypays_on_user_id"
   end
 
   create_table "pranesses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -44,6 +70,7 @@ ActiveRecord::Schema.define(version: 2021_05_06_033508) do
     t.date "deadline", null: false
     t.date "withdrawal", null: false
     t.date "payment", null: false
+    t.string "client"
     t.index ["stock_id"], name: "index_pranesses_on_stock_id"
     t.index ["store_prop_id"], name: "index_pranesses_on_store_prop_id"
     t.index ["user_id"], name: "index_pranesses_on_user_id"
@@ -89,7 +116,27 @@ ActiveRecord::Schema.define(version: 2021_05_06_033508) do
     t.string "municipalities", null: false
     t.string "address", null: false
     t.string "building_name"
-    t.index ["name", "phone_number_1", "phone_number_2"], name: "index_store_props_on_name_and_phone_number_1_and_phone_number_2", unique: true
+  end
+
+  create_table "summits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "store_prop_id"
+    t.date "get_date", null: false
+    t.string "claim_house", null: false
+    t.string "claim_address", null: false
+    t.string "mail", null: false
+    t.string "before_electric"
+    t.integer "supply_num"
+    t.string "pay_as"
+    t.string "weight"
+    t.string "menu", null: false
+    t.date "start", null: false
+    t.integer "fee"
+    t.date "payment", null: false
+    t.string "remarks"
+    t.string "client"
+    t.index ["store_prop_id"], name: "index_summits_on_store_prop_id"
+    t.index ["user_id"], name: "index_summits_on_user_id"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -105,8 +152,12 @@ ActiveRecord::Schema.define(version: 2021_05_06_033508) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "aupays", "store_props"
+  add_foreign_key "aupays", "users"
   add_foreign_key "dmers", "store_props"
   add_foreign_key "dmers", "users"
+  add_foreign_key "paypays", "store_props"
+  add_foreign_key "paypays", "users"
   add_foreign_key "pranesses", "stocks"
   add_foreign_key "pranesses", "store_props"
   add_foreign_key "pranesses", "users"
@@ -114,4 +165,6 @@ ActiveRecord::Schema.define(version: 2021_05_06_033508) do
   add_foreign_key "return_histories", "users"
   add_foreign_key "stock_histories", "stocks"
   add_foreign_key "stock_histories", "users"
+  add_foreign_key "summits", "store_props"
+  add_foreign_key "summits", "users"
 end

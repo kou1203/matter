@@ -4,12 +4,21 @@ Rails.application.routes.draw do
   resources :store_props do 
     get 'pranesses/new'
     post 'pranesses/create'
+    get 'summits/new'
+    post 'summits/create'
+    get 'dmers/new'
+    post 'dmers/create'
+    get 'aupays/new'
+    post 'aupays/create'
+    get 'paypays/new'
+    post 'paypays/create'
     collection { post :import }
   end 
+  resources :summits, expect: [:new, :create] 
   resources :pranesses, expect: [:new, :create] do 
     collection { post :import }
   end 
-  resources :dmers do 
+  resources :dmers, expect: [:new, :create] do 
     collection { post :import }
   end 
   resources :stocks do 
@@ -17,11 +26,19 @@ Rails.application.routes.draw do
     resources :stock_histories
     resources :return_histories
   end 
+
+  resources :aupays, expect: [:new, :create] do 
+    collection { post :import }
+  end 
+
+  resources :paypays, expect: [:new, :create] do 
+    collection { post :import }
+  end 
   
   resources :stock_histories, only: [:destroy]
   resources :return_histories, only: [:destroy]
   
-  get 'pranesses/search'
+  
 
 end
 

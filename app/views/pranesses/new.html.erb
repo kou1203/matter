@@ -7,11 +7,16 @@
       
 
   <%= form_with model: @praness,url:  store_prop_pranesses_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
+  <%= render "shared/error_messages", model: f.object %>
   <div class="form-group">
       <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
       <div class="form-interval">
         <%= f.label :user_id, "獲得者", class: "form-text" %><br>
       <%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "form-input"})%>
+      </div>
+      <div class="form-interval">
+      <%= f.label :client, "商流", class: "form-text" %><br>
+      <%= f.select :client, {"自社": "自社"} ,{}, {class: "form-input"} %>
       </div>
 
     <div class="form-interval">

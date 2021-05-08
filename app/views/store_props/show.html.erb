@@ -3,53 +3,54 @@
   <%= render "shared/side_bar" %>
   <div>
     <h1 class="show-title">店舗情報</h1>
-    <table class="table">
+    <table class="side-table">
+      <tr class="table-row">
+        <th class="thead">店舗名</th>
+        <td class="tdata"><%= @store_prop.name %></td>
+      </tr>
+      <th class="thead">属性</th>
+        <td class="tdata"><%= @store_prop.race %></td>
+      <th class="thead">業種</th>
+        <td class="tdata"><%= @store_prop.industry %></td>
+      <tr class="table-row">
+      </tr>
+      <tr class="table-row">
+      <tr class="table-row">
     <tr class="table-row">
-    <th class="thead">店舗名</th>
-    <td class="tdata"><%= @store_prop.name %></td>
-    </tr>
-    <th class="thead">属性</th>
-    <td class="tdata"><%= @store_prop.race %></td>
-    <th class="thead">業種</th>
-    <td class="tdata"><%= @store_prop.industry %></td>
-    <tr class="table-row">
-    </tr>
-    <tr class="table-row">
-    <tr class="table-row">
-    <tr class="table-row">
-    <th class="thead">店舗代表</th>
-    <td class="tdata"><%= @store_prop.person_main %></td>
-    <th class="thead">店舗担当</th>
-    <td class="tdata"><%= @store_prop.person_sub %></td>
+      <th class="thead">店舗代表</th>
+        <td class="tdata"><%= @store_prop.person_main %></td>
+      <th class="thead">店舗担当</th>
+        <td class="tdata"><%= @store_prop.person_sub %></td>
     </tr>
     </table>
-    <table class="table">
+    <table class="side-table">
     <tr class="table-row">
     <th class="thead">店舗住所</th>
     <td class="tdata-long"><%= @store_prop.prefectures %><%= @store_prop.city %><%= @store_prop.municipalities %><%= @store_prop.address %><%= @store_prop.building_name %></td>
     </table>
     <h1 class="show-title">連絡先</h1>
-    <table class="table">
-    <th class="thead">電話番号1</th>
-    <td class="tdata"><%= @store_prop.phone_number_1 %></td>
-    <th class="thead">電話番号2</th>
-    <td class="tdata"><%= @store_prop.phone_number_2 %></td>
-    <th class="thead">好適時間</th>
-    <td class="tdata"><%= @store_prop.suitable_time %></td>
-    </tr>
-    <tr class="table-row">
-    <th class="thead">備考</th>
-    <td class="tdata"><%= @store_prop.description %></td>
-    </tr>
+    <table class="side-table">
+      <th class="thead">電話番号1</th>
+        <td class="tdata"><%= @store_prop.phone_number_1 %></td>
+      <th class="thead">電話番号2</th>
+        <td class="tdata"><%= @store_prop.phone_number_2 %></td>
+      <th class="thead">好適時間</th>
+        <td class="tdata"><%= @store_prop.suitable_time %></td>
+      </tr>
+      <tr class="table-row">
+      <th class="thead">備考</th>
+        <td class="tdata"><%= @store_prop.description %></td>
+      </tr>
     </table>
     <button class="edit-btn">
-    <%= link_to "編集", edit_store_prop_path, class: "link" %>
+      <%= link_to "編集", edit_store_prop_path, class: "link" %>
     </button>
   
     <h1 class="show-title">dメル</h1>
     <% if @dmer.nil? %>
+      <button class="edit-btn"><%= link_to "新規登録", store_prop_dmers_new_path(@store_prop.id), class: "link" %></button>
     <% else %>
-    <table class="table">
+    <table class="side-table">
       <tr class="table-row">
     <th class="thead">獲得者</th>
     <td class="tdata"><%= @dmer.user.name %></td>
@@ -76,11 +77,25 @@
     </tr>
     </table>
     <% end %>
+
+    <div>auペイ</div>
+    <% if @aupay.nil? %>
+    <button class="edit-btn"><%= link_to "新規登録",  store_prop_aupays_new_path(@store_prop.id), class: "link" %></button>
+    <% else %>
+    <% end %>
+
+    <div>PayPay</div>
+    <% if @paypay.nil? %>
+    <button class="edit-btn"><%= link_to "新規登録",  store_prop_paypays_new_path(@store_prop.id), class: "link" %></button>
+    <% else %>
+      <p>入力済</p>
+    <% end %>
+
     <h1 class="show-title">ぷらねす</h1>
     <% if @praness.nil? %>
       <button class="edit-btn"><%= link_to "新規登録", store_prop_pranesses_new_path(@store_prop.id), class: "link" %></button>
     <% else %>
-    <table class="table">
+    <table class="side-table">
     <tr class="table-row">
     <th class="thead">設置日</th>
       <th class="thead">獲得者</th>
@@ -91,7 +106,7 @@
     </tr>
     </table>
 
-    <table class="table">
+    <table class="side-table">
     <tr class="table-row">
     <th class="thead">SSID変更日</th>
     <th class="thead">SSID①</th>
@@ -107,7 +122,7 @@
     </tr>
     </table>
 
-    <table class="table">
+    <table class="side-table">
     <tr class="table-row">
     <th class="thead">請求額</th>
     <th class="thead">請求開始月</th>
@@ -124,7 +139,7 @@
     </tr>
     </table>
 
-    <table class="table">
+    <table class="side-table">
     <tr class="table-row">
     <th class="thead">解約日</th>
     <th class="thead">返却在庫に対する備考</th>
@@ -136,9 +151,74 @@
     <td class="tdata"><%= @praness.remarks %></td>
     </tr>
     </table>
+
   
     
   <% end %>
+    <div>サミットエナジー</div>
+    <% if @summit.nil? %>
+    <button class="edit-btn"><%= link_to "新規登録",  store_prop_summits_new_path(@store_prop.id), class: "link" %></button>
+    <% else %>
+     <h1 class="show-title">サミット</h1>
+      
+    <table class="table">
+    <tr class="table-row">
+    <th class="thead">獲得日</th>
+      <th class="thead">獲得者</th>
+    </tr>
+    <tr class="table-row">
+      <td class="tdata"><%= @summit.get_date %></td>
+      <td class="tdata"><%= @summit.user.name %></td>
+    </tr>
+    </table>
 
+    <table class="table">
+    <tr class="table-row">
+      <th class="thead">需要家名</th>
+      <th class="thead">請求宛名</th>
+      <th class="thead">メールアドレス</th>
+      <th class="thead">前電気会社</th>
+      <th class="thead">供給地点番号</th>
+    </tr>
+    <tr class="table-row">
+      <td class="tdata"><%= @summit.claim_address %></td>
+      <td class="tdata"><%= @summit.claim_house %></td>
+      <td class="tdata"><%= @summit.mail %></td>
+      <td class="tdata"><%= @summit.before_electric %></td>
+      <td class="tdata"><%= @summit.pay_as %></td>
+    </tr>
+    </table>
+
+    <table class="table">
+    <tr class="table-row">
+      <th class="thead">従量契約電気量</th>
+      <th class="thead">動力契約電気量</th>
+      <th class="thead">メニュー</th>
+    </tr>
+    <tr class="table-row">
+      <td class="tdata"><%= @summit.pay_as %></td>
+      <td class="tdata"><%= @summit.weight %></td>
+      <td class="tdata"><%= @summit.menu %></td>
+    </tr>
+    </table>
+
+    <table class="table">
+    <tr class="table-row">
+      <th class="thead">利用開始日</th>
+      <th class="thead">使用料予想</th>
+      <th class="thead">入金日</th>
+      <th class="thead">備考</th>
+    </tr>
+    <tr class="table-row">
+      <td class="tdata"><%= @summit.start %></td>
+      <td class="tdata"><%= @summit.fee %></td>
+      <td class="tdata"><%= @summit.payment %></td>
+      <td class="tdata"><%= @summit.remarks %></td>
+    </tr>
+    </table>
+  <button class="edit-btn">
+    <%= link_to "編集", edit_summit_path, class: "link" %>
+  </button>
+    <% end %>
   </div>
 </div>

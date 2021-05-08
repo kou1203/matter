@@ -10,6 +10,7 @@ class CreateDmers < ActiveRecord::Migration[6.0]
       t.date :payment
       t.date :settlement_payment
       t.date :picture_payment
+      t.string :client
     end
   end
 end

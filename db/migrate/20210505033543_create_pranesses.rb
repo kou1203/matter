@@ -18,6 +18,7 @@ class CreatePranesses < ActiveRecord::Migration[6.0]
       t.date :deadline, null: false 
       t.date :withdrawal, null: false 
       t.date :payment, null: false 
+      t.string :client
     end
   end
 end

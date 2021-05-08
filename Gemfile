@@ -60,3 +60,5 @@ gem 'active_hash'
 gem 'roo'
 
 gem 'ransack'
+
+gem 'rails-i18n'

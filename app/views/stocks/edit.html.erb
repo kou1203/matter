@@ -1,0 +1,42 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1 class="show-title">新規情報入力（ぷらねす在庫）</h1>
+
+  <%= form_with model: @stock, class: "form-frame", local: true do |f| %>
+  <div class="form-group">
+      <div class="form-interval">
+        <%= f.label :status, "ステータス", class: "form-text" %><br>
+      <%= f.select :status , {"○": "○", "×": "×"},{include_blank: "選択してください"}, {class: "form-input"} %>
+      </div>
+
+    <div class="form-interval">
+      <%= f.label :stock_num, "在庫番号", class: "form-text" %><br>
+    <%= f.text_field :stock_num , class: "form-input" %>
+    </div>
+
+    <div class="form-interval">
+      <%= f.label :mac_num, "MAC番号", class: "form-text" %><br>
+    <%= f.text_field :mac_num , class: "form-input" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="form-interval">
+      <%= f.label :mail, "メールアドレス", class: "form-text" %><br>
+      <%= f.text_field :mail , class: "form-input" %>
+    </div>
+
+    <div class="form-interval">
+      <%= f.label :remarks, "備考", class: "form-text" %><br>
+      <%= f.text_field :remarks , class: "form-input" %>
+    </div>
+  </div>
+
+  
+    <%= f.submit "登録", class: "form-btn" %>
+  <% end %>
+  </main>
+</div>

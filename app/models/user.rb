@@ -5,5 +5,8 @@ class User < ApplicationRecord
   has_many :pranesses
   has_one :stock_history
   has_one :return_history
+  has_one :summit
+  has_one :aupay
+  has_one :paypay 
         
 end

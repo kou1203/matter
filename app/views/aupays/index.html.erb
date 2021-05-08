@@ -1,0 +1,54 @@
+<%= render "shared/header" %>
+<main class="main">
+  <%= render "shared/side_bar" %>
+  <div class="right-bar">
+  <% if flash[:notice] %>
+  <div><%= flash[:notice] %></div>
+<% end %>
+  <div><%= Date.today.month %>月獲得数</div>
+  <div><%= Aupay.all.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</div>
+    <%= search_form_for @q do |f| %>
+      <%= f.label :user_id, "獲得者" %>
+      <%= f.select :user_id_eq, options_from_collection_for_select(User.all, :id, :name) %><br>
+      <%= f.label :get_date, "獲得日付" %><br>
+      <%= f.label :get_date, "以降" %>
+      <%= f.date_field :get_date_gteq %><br>
+      <%= f.label :get_date, "以前" %>
+      <%= f.date_field :get_date_lt %>
+      <%= f.label :status, "審査ステータス" %>
+      <%= f.select :status_eq, {"未審査": "未審査", "自社不備": "自社不備","上位店NG": "上位店NG","審査完了": "審査完了",
+      "決済完了": "決済完了", "入金確認済": "入金確認済"} %>
+            <%= f.label :client, "商流", class: "form-text" %><br>
+      <%= f.select :client_eq, {"マックスサポート": "マックスサポート", "USEN": "USEN","メルヴェイユ": "メルヴェイユ",
+      "ウィンクルム": "ウィンクルム"} %>
+      
+      <%= f.submit "検索" %>
+    <% end %>
+    <%= form_with url: import_aupays_path do |f| %>
+    <div class="csv">
+      <%= f.label :file, "auペイ：CSV取り込み",class:"csv-title" %>
+      <%= f.file_field :file, accept: ".csv", class: "csv-btn" %>
+      <%= f.submit  "インポート", class: "csv-submit" %>
+    </div>
+    <% end %>
+      <table class="table">
+
+    <tr class="table-row">
+      <th class="thead"></th>
+      <th class="thead"><%= sort_link(@q, :get_date, "獲得日") %></th>
+      <th class="thead">法人/個人</th>
+      <th class="thead">店舗名</th>
+      <th class="thead">審査ステータス</th>
+    </tr>
+    <% @aupays.each do |aupay| %>
+    <tr class="table-row">
+      <td class="tdata"><%= link_to "詳細",  aupay_path(aupay.id) ,class: "link" %></td>
+      <td class="tdata"><%= aupay.get_date %></td>
+      <td class="tdata"><%= aupay.store_prop.race %></td>
+      <td class="tdata"><%= aupay.store_prop.name %></td>
+      <td class="tdata"><%= aupay.status %></td>
+    </tr>
+    <% end %>
+    </table>
+  </div>
+</main>

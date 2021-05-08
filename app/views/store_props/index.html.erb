@@ -30,23 +30,15 @@
   
     <table class="table">
     <tr class="table-row"><th class="thead"></th>
-    <th class="thead">ID</th>
-    <th class="thead">法人/個人</th>
-    <th class="thead">店舗名</th>
-    <th class="thead">好適訪問時間</th>
-    <th class="thead">dメル</th>
+      <th class="thead"><%= sort_link(@q, :id, "ID") %></th>
+      <th class="thead"><%= sort_link(@q, :race, "法人/個人") %></th>
+      <th class="thead"><%= sort_link(@q, :name, "店舗名") %></th>
     <% @store_props.each do |store_prop| %>
     <tr class="table-row">
     <td class="tdata"><%= link_to "詳細",  store_prop_path(store_prop.id) ,class: "link" %></td>
     <td class="tdata"><%= store_prop.id %></td>
     <td class="tdata"><%= store_prop.race %></td>
     <td class="tdata"><%= store_prop.name %></td>
-    <td class="tdata"><%= store_prop.suitable_time %></td>
-    <% if store_prop.dmer.nil? %>
-      <td class="tdata">未獲得</td>
-    <% else %>
-      <td class="tdata"><%= store_prop.dmer.status %></td>
-    <% end %>
     </tr>
     <% end %>
     </table>

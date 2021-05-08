@@ -1,0 +1,93 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1 class="show-title"><%= @summit.store_prop.name %>情報入力（サミットエナジー）</h1>
+      
+
+  <%= form_with model: @summit, class: "form-frame", local: true do |f| %>
+  <%= render "shared/error_messages", model: f.object %>
+  <div class="form-group">
+        <%= f.hidden_field :store_prop_id, value: @summit.store_prop.id %>
+      <div class="form-interval">
+        <%= f.label :user_id, "獲得者", class: "form-text" %><br>
+        <%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "form-input"})%>
+      </div>
+
+    <div class="form-interval">
+      <%= f.label :get_date, "獲得日", class: "form-text" %><br>
+      <%= f.date_field :get_date , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :claim_house, "需要家名", class: "form-text" %><br>
+      <%= f.text_field :claim_house , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+    </div>
+
+    <div class="form-interval">
+      <%= f.label :claim_address, "請求宛名", class: "form-text" %><br>
+      <%= f.text_field :claim_address, class: "form-input" %>
+    </div>
+  </div>
+
+  <div class="form-group">
+
+    <div class="form-interval">
+      <%= f.label :mail, "メールアドレス", class: "form-text" %><br>
+      <%= f.text_field :mail , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :before_electric, "前電気会社", class: "form-text" %><br>
+      <%= f.text_field :before_electric , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :supply_num, "供給地点番号", class: "form-text" %><br>
+      <%= f.text_field :supply_num , class: "form-input" %>
+    </div>
+
+
+    <div class="form-interval">
+      <%= f.label :pay_as, "従量契約電気量", class: "form-text" %><br>
+      <%= f.text_field :pay_as , class: "form-input" %>
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <div class="form-interval">
+      <%= f.label :weight, "動力契約電気量", class: "form-text" %><br>
+      <%= f.date_field :weight , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :menu, "メニュー", class: "form-text" %><br>
+      <%= f.text_field :menu , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :start, "利用開始日", class: "form-text" %><br>
+      <%= f.date_field :start , class: "form-input" %>
+    </div>
+    
+  </div>
+
+
+  <div class="form-group">
+    <div class="form-interval">
+      <%= f.label :fee, "使用料予想", class: "form-text" %><br>
+      <%= f.number_field :fee , class: "form-input" %>
+    </div>
+    <div class="form-interval">
+      <%= f.label :payment, "入金日", class: "form-text" %><br>
+      <%= f.date_field :payment , class: "form-input" %>
+    </div>
+
+    <div class="form-interval">
+      <%= f.label :remarks, "備考", class: "form-text" %><br>
+      <%= f.text_field :remarks , class: "form-input" %>
+    </div>
+  </div>
+
+    <%= f.submit "登録", class: "form-btn" %>
+  <% end %>
+  </main>
+</div>

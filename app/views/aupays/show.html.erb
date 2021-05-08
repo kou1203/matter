@@ -1,0 +1,95 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1>auペイ詳細</h1>
+  <div class="main">
+  <div>
+    <h1 class="show-title">店舗情報</h1>
+    <table class="table">
+    <tr class="table-row">
+    <th class="thead">店舗名</th>
+    <td class="tdata"><%= @aupay.store_prop.name %></td>
+    </tr>
+    <th class="thead">属性</th>
+    <td class="tdata"><%= @aupay.store_prop.race %></td>
+    <th class="thead">業種</th>
+    <td class="tdata"><%= @aupay.store_prop.industry %></td>
+    <tr class="table-row">
+    </tr>
+    <tr class="table-row">
+    <tr class="table-row">
+    <tr class="table-row">
+    <th class="thead">店舗代表</th>
+    <td class="tdata"><%= @aupay.store_prop.person_main %></td>
+    <th class="thead">店舗担当</th>
+    <td class="tdata"><%= @aupay.store_prop.person_sub %></td>
+    </tr>
+    </table>
+    <table class="table">
+    <tr class="table-row">
+    <th class="thead">店舗住所</th>
+    <td class="tdata-long"><%= @aupay.store_prop.prefectures %><%= @aupay.store_prop.city %><%= @aupay.store_prop.municipalities %><%= @aupay.store_prop.address %><%= @aupay.store_prop.building_name %></td>
+    </table>
+    <h1 class="show-title">連絡先</h1>
+    <table class="table">
+    <th class="thead">電話番号1</th>
+    <td class="tdata"><%= @aupay.store_prop.phone_number_1 %></td>
+    <th class="thead">電話番号2</th>
+    <td class="tdata"><%= @aupay.store_prop.phone_number_2 %></td>
+    <th class="thead">好適時間</th>
+    <td class="tdata"><%= @aupay.store_prop.suitable_time %></td>
+    </tr>
+    <tr class="table-row">
+    <th class="thead">備考</th>
+    <td class="tdata"><%= @aupay.store_prop.description %></td>
+    </tr>
+    </table>
+    <button class="edit-btn"> 
+      <%= link_to "編集", edit_store_prop_path(@aupay.store_prop.id), class: "link" %>
+    </button>
+    <h1 class="show-title">auペイ</h1>
+      
+    <table class="table">
+    <tr class="table-row">
+    <th class="thead">獲得日</th>
+      <th class="thead">獲得者</th>
+    </tr>
+    <tr class="table-row">
+      <td class="tdata"><%= @aupay.get_date %></td>
+      <td class="tdata"><%= @aupay.user.name %></td>
+    </tr>
+    </table>
+
+    <table class="table">
+    <tr class="table-row">
+      <th class="thead">審査ステータス</th>
+      <th class="thead">メールアドレス</th>
+    </tr>
+    <tr class="table-row">
+      <td class="tdata"><%= @aupay.status %></td>
+      <td class="tdata"><%= @aupay.mail %></td>
+    </tr>
+    </table>
+
+    <table class="table">
+    <tr class="table-row">
+      <th class="thead">入金日</th>
+      <th class="thead">決済日</th>
+      <th class="thead">商流</th>
+      <th class="thead">備考</th>
+    </tr>
+    <tr class="table-row">
+      <td class="tdata"><%= @aupay.payment %></td>
+      <td class="tdata"><%= @aupay.settlement %></td>
+      <td class="tdata"><%= @aupay.client %></td>
+      <td class="tdata"><%= @aupay.description %></td>
+    </tr>
+    </table>
+  <button class="edit-btn">
+    <%= link_to "編集", edit_aupay_path, class: "link" %>
+  </button>
+  </main>
+</div>
+
