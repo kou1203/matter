@@ -3,7 +3,7 @@
 <div class="main">
   <%= render "shared/side_bar" %>
   <main class="right-bar">
-  <h1>プラネス一覧</h1>
+  <h1>ぷらねす詳細</h1>
   <div class="main">
   <div>
     <h1 class="show-title">店舗情報</h1>
@@ -30,7 +30,7 @@
     <table class="table">
     <tr class="table-row">
     <th class="thead">店舗住所</th>
-    <td class="tdata-long"><%= @praness.store_prop.prefectures %><%= @praness.store_prop.city %><%= @praness.store_prop.municipalities %><%= @praness.store_prop.address %><%= @praness.store_prop.building_name %></td>
+    <td class="tdata-long"><%= @praness.store_prop.prefecture %><%= @praness.store_prop.city %><%= @praness.store_prop.municipalities %><%= @praness.store_prop.address %><%= @praness.store_prop.building_name %></td>
     </table>
     <h1 class="show-title">連絡先</h1>
     <table class="table">
@@ -55,10 +55,12 @@
     <tr class="table-row">
     <th class="thead">設置日</th>
       <th class="thead">獲得者</th>
+      <th class="thead">顧客番号</th>
     </tr>
     <tr class="table-row">
       <td class="tdata"><%= @praness.get_date %></td>
       <td class="tdata"><%= @praness.user.name %></td>
+      <td class="tdata"><%= @praness.customer_num %></td>
     </tr>
     </table>
 

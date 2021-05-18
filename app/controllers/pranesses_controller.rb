@@ -14,31 +14,33 @@ class PranessesController < ApplicationController
 
   def new 
     @praness = Praness.new 
-    @users = User.all
+    @users = User.where(retiree: nil)
     @store_prop = StoreProp.find(params[:store_prop_id])
-    @stocks = Stock.all
+    stock_table = Stock.arel_table
+    @stocks = Stock.joins('LEFT JOIN stock_histories ON stocks.id = stock_histories.stock_id').where('stock_histories.id IS NOT NULL')
+    
   end 
   
   def create 
-    @stocks = Stock.all
-    @users = User.all
+    @stocks = Stock.joins('LEFT JOIN stock_histories ON stocks.id = stock_histories.stock_id').where('stock_histories.id IS NOT NULL')
+    @users = User.where(retiree: nil)
     @store_prop = StoreProp.find(params[:store_prop_id])
     @praness = Praness.new(praness_params)
     if @praness.save 
-      redirect_to  pranesses_path
+      redirect_to store_prop_path(@store_prop.id)
     else  
       render :new
     end 
   end 
-
+  
   def import 
     Praness.import(params[:file])
     redirect_to pranesses_path
   end 
-
+  
   def edit 
-    @users = User.all
-    @stocks = Stock.all
+    @users = User.where(retiree: nil)
+    @stocks = Stock.joins('LEFT JOIN stock_histories ON stocks.id = stock_histories.stock_id').where('stock_histories.id IS NOT NULL')
     @praness = Praness.find(params[:id])
   end 
   
@@ -57,10 +59,26 @@ class PranessesController < ApplicationController
   private 
   def praness_params 
     params.require(:praness).permit(
-      :user_id, :store_prop_id,:stock_id, :get_date, :ssid_change, :ssid_1,
-      :ssid_2, :pass_1, :pass_2, :cancel, :return_remarks,
-      :remarks, :claim, :start, :deadline, :withdrawal,:payment,
-      :client 
+      :customer_num,
+      :client,
+      :user_id,
+      :store_prop_id,
+      :get_date,
+      :payment,
+      :status,
+      :stock_id,
+      :ssid_change,
+      :ssid_1,
+      :pass_1,
+      :ssid_2,
+      :pass_2,
+      :cancel,
+      :return_remarks,
+      :remarks,
+      :claim,
+      :start,
+      :deadline,
+      :withdrawal,
     )
   end 
 

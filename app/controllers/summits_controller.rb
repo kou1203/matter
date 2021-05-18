@@ -8,16 +8,16 @@ class SummitsController < ApplicationController
   def new 
     @summit = Summit.new
     @store_prop = StoreProp.find(params[:store_prop_id])
-    @users = User.all
+    @users = User.where(retiree: nil)
   end 
   
   def create 
-    @users = User.all
+    @users = User.where(retiree: nil)
     @store_prop = StoreProp.find(params[:store_prop_id])
     @summit = Summit.new(summit_params)
     @summit.save 
     if @summit.save
-      redirect_to summits_path 
+      redirect_to store_props_path(@store_prop.id)
     else  
       render :new
     end 
@@ -29,7 +29,7 @@ class SummitsController < ApplicationController
 
   def edit 
     @summit = Summit.find(params[:id])
-    @users = User.all
+    @users = User.where(retiree: nil)
   end 
   
   def update 
@@ -44,11 +44,24 @@ class SummitsController < ApplicationController
 
   def summit_params 
     params.require(:summit).permit(
-      :user_id, :store_prop_id, :get_date,
-      :claim_house, :claim_address, :mail,
-      :before_electric, :supply_num, :pay_as,
-      :weight, :menu, :start, :fee,
-      :payment, :remarks , :client
+      :customer_num,
+      :client, 
+      :user_id, 
+      :store_prop_id, 
+      :get_date,
+      :status, 
+      :before_status,
+      :claim_house, 
+      :claim_address, 
+      :before_electric, 
+      :supply_num, 
+      :pay_as,
+      :weight, 
+      :menu, 
+      :start, 
+      :fee,
+      :payment, 
+      :remarks, 
     )
   end 
 

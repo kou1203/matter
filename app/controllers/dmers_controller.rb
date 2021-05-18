@@ -7,17 +7,17 @@ class DmersController < ApplicationController
 
   def new 
     @dmer = Dmer.new
-    @users = User.all 
+    @users = User.where(retiree: nil)
     @store_prop = StoreProp.find(params[:store_prop_id])
   end 
   
   def create 
     @dmer = Dmer.new(dmer_params)
-    @users = User.all 
+    @users = User.where(retiree: nil)
     @store_prop = StoreProp.find(params[:store_prop_id])
     @dmer.save 
     if @dmer.save 
-      redirect_to dmers_path 
+      redirect_to store_props_path(@store_prop.id)
     else  
       render :new 
     end 
@@ -30,7 +30,7 @@ class DmersController < ApplicationController
 
   def edit 
     @dmer = Dmer.find(params[:id])
-    @users = User.all 
+    @users = User.where(retiree: nil)
   end 
   
   def update 
@@ -47,10 +47,17 @@ class DmersController < ApplicationController
   private 
   def dmer_params
     params.require(:dmer).permit(
-      :store_prop_id, :user_id, :status,
-      :get_date, :mail, :description,
-      :payment, :settlement_payment, :picture_payment,
-      :client
+      :customer_num,
+      :client,
+      :user_id,
+      :store_prop_id,
+      :get_date,
+      :payment,
+      :status,
+      :before_status,
+      :description,
+      :settlement_payment,
+      :picture_payment
     )
   end 
 end

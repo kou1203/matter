@@ -3,22 +3,22 @@
 <div class="main">
   <%= render "shared/side_bar" %>
   <main class="right-bar">
-    <h1 class="sub-title">サミットエナジー一覧</h1>
+    <h1 class="sub-title">フードパンダ一覧</h1>
   <div class="search-body">
     <label class="search-label"><%= Date.today.month %>月獲得数</label>
-    <label class="search-label"><%= Summit.all.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</label>
+    <label class="search-label"><%= Panda.all.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</label>
     <%= search_form_for @q do |f| %>
       <div class="search-form">
       <%= f.label :user_id, "獲得者", class: "search-label" %>
-      <%= f.select :user_id_eq, options_from_collection_for_select(User.where(retiree: nil), :id, :name), {prompt: "なし"},{class: "search-input"} %>
+      <%= f.select :user_id_eq, options_from_collection_for_select(User.all, :id, :name), {prompt: "なし"},{class: "search-input"} %>
       <%= f.label :get_date, "獲得日付" %>
       <%= f.date_field :get_date_gteq, class: "search-date" %>
       <%= f.label :get_date, "〜", class: "search-label" %>
       <%= f.date_field :get_date_lt, class: "search-date" %>
       <%= f.label :status, "審査ステータス" %>
-      <%= f.select :status, options_from_collection_for_select(Summit.all, :status, :status), {include_blank: true} ,{class: "search-date"} %>
+      <%= f.select :status, options_from_collection_for_select(Panda.all, :status, :status), {include_blank: true} ,{class: "search-date"} %>
       <%= f.submit "検索" %>
-      <label><%= link_to "検索リセット", summits_path, class: "reset-link" %></label>
+      <label><%= link_to "検索リセット", pandas_path, class: "reset-link" %></label>
       </div>
     <% end %>
   </div>
@@ -37,12 +37,12 @@
       <th class="thead">法人/個人</th>
       <th class="thead">店舗名</th>
     </tr>
-    <% @summits.each do |summit| %>
+    <% @pandas.each do |panda| %>
     <tr class="table-row">
-      <td class="tdata"><%= link_to "詳細",  summit_path(summit.id) ,class: "link" %></td>
-      <td class="tdata"><%= summit.get_date %></td>
-      <td class="tdata"><%= summit.store_prop.race %></td>
-      <td class="tdata"><%= summit.store_prop.name %></td>
+      <td class="tdata"><%= link_to "詳細",  panda_path(panda.id) ,class: "link" %></td>
+      <td class="tdata"><%= panda.get_date %></td>
+      <td class="tdata"><%= panda.store_prop.race %></td>
+      <td class="tdata"><%= panda.store_prop.name %></td>
     </tr>
     <% end %>
     </table>

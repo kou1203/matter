@@ -13,7 +13,13 @@ class Praness < ApplicationRecord
     validates :deadline
     validates :withdrawal
     validates :payment
+    validates :customer_num, length: { in: 20..20 }
+    with_options uniqueness: true do 
+      validates :stock_id
+    end 
   end 
+
+
 
   belongs_to :user 
   belongs_to :store_prop
@@ -29,7 +35,27 @@ class Praness < ApplicationRecord
   end
 
   def self.updatable_attributes
-    ["user_id", "store_prop_id","stock_id","get_date", "ssid_change","ssid_1", "payment", "ssid_2","pass_1", "pass_2", "cancel", "return_remarks",
-    "remarks", "claim", "start", "deadline", "withdrawal"]
+    [
+      "customer_num",
+      "client",
+      "user_id",
+      "store_prop_id",
+      "get_date",
+      "payment",
+      "status",
+      "stock_id",
+      "ssid_change",
+      "ssid_1",
+      "ssid_2",
+      "pass_1",
+      "pass_2",
+      "cancel",
+      "return_remarks",
+      "remarks",
+      "claim",
+      "start",
+      "deadline",
+      "withdrawal"]
   end
+
 end

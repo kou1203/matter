@@ -171,24 +171,34 @@ belongs_to user
 belongs_to :store_prop
 belongs_to stock
 
-# Active Hash Model
+# Panda
 
-## visit_status
-- has_many dmers
-- has_many aus
-- has_many paypaies
-- has_many rakutens
-- has_many stockes
+| columns         | type        | option      |
+| --------------- | ----------- | ----------- |
+| customer_num    | string      | None        |
+| get_date        | date        | null: false |
+| user_id         | references  | null: false |
+| store_prop_id   | references  | null: false |
+| food_category   | string      | null: false |
+| mail            | string      | null: false |
+| grid_id         | string      | None        |
+| ghost_flag      | string      | None        |
+| status          | string      | null: false |
+| before_status   | string      | null: false |
+| image_status    | string      | null: false |
+| client          | string      | null: false |
+| menu_create     | string      | None        |
+| docu_sign_send  | date        | None        |
+| docu_sign_done  | date        | None        |
+| confirmer       | string      | None        |
+| solution_date   | date        | None        |
+| remarks         | text        | None        |
+| training_date   | date        | None        |
+| confirm_date    | date        | None        |
 
-## suitable_time
-- belongs_to store_prop
 
-## in_charge
-- has_many dmers
-- has_many aus
-- has_many paypaies
-- has_many rakutens
-- has_many stockes
+
+
 
 ### /案件管理
 

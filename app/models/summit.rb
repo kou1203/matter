@@ -6,11 +6,10 @@ class Summit < ApplicationRecord
     validates :user_id
     validates :store_prop_id
     validates :get_date
+    validates :status
     validates :claim_house 
     validates :claim_address 
-    validates :mail 
-    validates :menu 
-    validates :start 
+    validates :menu  
     validates :start 
     validates :payment 
   end 

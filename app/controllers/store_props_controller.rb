@@ -12,7 +12,7 @@ class StorePropsController < ApplicationController
   def create 
     @store_prop = StoreProp.new(store_prop_params)
     if @store_prop.save
-      redirect_to store_prop_path(@store_prop.id)
+      redirect_to store_props_path(@store_prop.id)
     else 
       render :new
     end
@@ -37,18 +37,38 @@ class StorePropsController < ApplicationController
   def show 
     @store_prop = StoreProp.find(params[:id])
     @dmer = @store_prop.dmer
+    @aupay = @store_prop.aupay
+    @paypay = @store_prop.paypay
     @praness = @store_prop.praness
     @summit = @store_prop.summit
+    @panda = @store_prop.panda 
   end
 
   private 
 
   def store_prop_params
     params.require(:store_prop).permit(
-      :race, :name, :suitable_time, :description, :industry,
-      :phone_number_1, :phone_number_2, :person_main,
-      :person_sub, :prefectures, :city, :municipalities,
-      :address, :building_name
+      :race,
+      :name,
+      :corporate_name,
+      :industry,
+      :description, 
+      :phone_number_1,
+      :phone_number_2, 
+      :person_main, 
+      :person_main_kana,
+      :birthday, 
+      :person_sub, 
+      :person_sub_kana, 
+      :mail_1,
+      :mail_2,
+      :prefecture, 
+      :city, 
+      :municipalities,
+      :address, 
+      :building_name, 
+      :suitable_time, 
+      :holiday 
     )
   end 
 

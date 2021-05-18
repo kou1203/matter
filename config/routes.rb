@@ -12,6 +12,8 @@ Rails.application.routes.draw do
     post 'aupays/create'
     get 'paypays/new'
     post 'paypays/create'
+    get 'pandas/new'
+    post 'pandas/create'
     collection { post :import }
   end 
   resources :summits, expect: [:new, :create] 
@@ -38,7 +40,9 @@ Rails.application.routes.draw do
   resources :stock_histories, only: [:destroy]
   resources :return_histories, only: [:destroy]
   
-  
+  resources :pandas, expect: [:new, :create] do 
+    collection { post :import }
+  end 
 
 end
 

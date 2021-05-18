@@ -3,11 +3,14 @@ class Dmer < ApplicationRecord
   belongs_to :store_prop
 
   with_options presence: true do 
+    validates :customer_num
     validates :store_prop_id 
     validates :user_id 
+    validates :get_date
     validates :status 
-    validates :get_date 
-    validates :mail 
+    with_options uniqueness: true do 
+      validates :customer_num
+    end 
   end 
 
   def self.import(file)
@@ -19,7 +22,19 @@ class Dmer < ApplicationRecord
   end
 
   def self.updatable_attributes
-    ["store_prop_id", "user_id","status","get_date", "mail","description", "payment", "settlement_payment","picture_payment", "client"]
+    [
+      "customer_num",
+      "client",
+      "user_id",
+      "store_prop_id",
+      "get_date",
+      "payment",
+      "status",
+      "before_status",
+      "description",
+      "settlement_payment",
+      "picture_payment"
+    ]
   end
 
 end

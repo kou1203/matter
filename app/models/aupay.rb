@@ -7,8 +7,11 @@ class Aupay < ApplicationRecord
     validates :store_prop_id
     validates :get_date 
     validates :status
-    validates :mail
     validates :client
+    validates :customer_num
+    with_options uniqueness: true do 
+      validates :customer_num
+    end 
   end 
 
   def self.import(file)

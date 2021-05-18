@@ -9,6 +9,10 @@ class Stock < ApplicationRecord
     validates :stock_num 
     validates :mac_num 
     validates :mail
+    with_options uniqueness: true do 
+      validates :stock_num 
+      validates :mac_num 
+    end 
   end 
 
   def self.import(file)

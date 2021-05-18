@@ -3,18 +3,25 @@
 <div class="main">
   <%= render "shared/side_bar" %>
   <main class="right-bar">
-    <div>在庫数</div>
-    <div>設定済<%= Stock.where(status: "○").length %></div>
-    <div>未設定<%= Stock.where(status: "×").length %></div>
-
+  <h1 class="sub-title">ぷらねす在庫</h1>
+  <div class="search-body">
+    <label class="search-label">設定済在庫数：<%= Stock.where(status: "○").length %></label>
+    <label class="search-label">未設定在庫数：<%= Stock.where(status: "×").length %></label>
+    <label class="search-label">設置済店舗数：<%= Praness.all.length %></label>
+    <label class="search-label"><%= Date.today.month %>月解約件数：<%= Praness.where(cancel: Time.now.beginning_of_month..Time.now.end_of_month).length %></label>
       <%= search_form_for @q do |f| %>
-        <%= f.label :status, "設定ステータス" %>
-        <%= f.select :status_eq, options_for_select({"○": "○", "×": "×"}), include_blank: true %>
+      <div class="search-form">
+        <%= f.label :status, "設定ステータス",class: "search-label" %>
+        <%= f.select :status_eq, options_for_select({"○": "○", "×": "×"}), {include_blank: true}, {class: "search-input"} %>
         <%= f.submit "検索" %>
+        <%= link_to "検索リセット", stocks_path, class: "reset-link"  %>
+      </div>
       <% end %>
-      <button><%= link_to "新規在庫登録", new_stock_path, class: "link" %></button>
-      <%= form_with url: import_stocks_path do |f| %>
+  </div>
+
     <div class="csv">
+      <%= form_with url: import_stocks_path do |f| %>
+      <button><%= link_to "新規在庫登録", new_stock_path, class: "btn-text" %></button>
     <%= f.label :file, "在庫情報：CSV取り込み",class:"csv-title" %>
     <%= f.file_field :file, accept: '.csv', class: "csv-btn"  %>
     <%= f.submit  "インポート", class: "csv-submit", data: {confirm: "インポートしますか？"} %>
@@ -29,13 +36,14 @@
         <th class="thead">バインド設定</th>
         <th class="thead">メールアドレス</th>
         <th class="thead">設置日</th>
+        <th class="thead">店舗詳細</th>
         <th class="thead">設置店舗</th>
         <th class="thead">設置者</th>
         <th class="thead">SSID①</th>
         <th class="thead">PASS①</th>
         <th class="thead">SSID②</th>
         <th class="thead">PASS②</th>
-        <th class="thead">備考</th>
+        <th class="thead">解約日付</th>
         <th class="thead">持ち出し者</th>
         <th class="thead">持ち出し日</th>
         <th class="thead">持出履歴</th>
@@ -66,15 +74,17 @@
             <td class="tdata"></td>
             <td class="tdata"></td>
             <td class="tdata"></td>
+            <td class="tdata"></td>
             <% else %>
             <td class="tdata"><%= stock.praness.get_date %></td>
+            <td class="tdata"><%= link_to "詳細", praness_path(stock.praness.id), class: "link" %></td>
             <td class="tdata"><%= stock.praness.store_prop.name %></td>
             <td class="tdata"><%= stock.praness.user.name %></td>
             <td class="tdata"><%= stock.praness.ssid_1 %></td>
             <td class="tdata"><%= stock.praness.pass_1 %></td>
             <td class="tdata"><%= stock.praness.ssid_2 %></td>
-            <td class="tdata"><%= stock.remarks %></td>
             <td class="tdata"><%= stock.praness.pass_2 %></td>
+            <td class="tdata"><%= stock.praness.cancel %></td>
             <% end %>
             <% if stock.stock_history.nil? %>
             <td class="tdata"><%= link_to "持出", new_stock_stock_history_path(stock.id), class: "link" %></td>

@@ -2,30 +2,29 @@
 <main class="main">
   <%= render "shared/side_bar" %>
   <div class="right-bar">
-  <% if flash[:notice] %>
-  <div><%= flash[:notice] %></div>
-<% end %>
-  <div><%= Date.today.month %>月獲得数</div>
-  <div><%= Paypay.all.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</div>
+  <h1 class="sub-title">PayPay一覧</h1>
+  <div class="search-body">
     <%= search_form_for @q do |f| %>
+    <label class="search-label"><%= Date.today.month %>月獲得数</label>
+    <label class="search-label"><%= Paypay.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</label>
       <%= f.label :user_id, "獲得者" %>
-      <%= f.select :user_id_eq, options_from_collection_for_select(User.all, :id, :name) %><br>
-      <%= f.label :get_date, "獲得日付" %><br>
-      <%= f.label :get_date, "以降" %>
-      <%= f.date_field :get_date_gteq %><br>
-      <%= f.label :get_date, "以前" %>
+      <%= f.select :user_id_eq, options_from_collection_for_select(User.all, :id, :name),{include_blank: true},{class: "search-input"} %>
+      <%= f.label :get_date, "獲得日付" %>
+      <%= f.date_field :get_date_gteq %>
+      <%= f.label :get_date, "〜" %>
       <%= f.date_field :get_date_lt %>
-      <%= f.label :status, "審査ステータス" %>
-      <%= f.select :status_eq, {"未審査": "未審査", "自社不備": "自社不備","上位店NG": "上位店NG","審査完了": "審査完了",
-      "決済完了": "決済完了", "入金確認済": "入金確認済"} %>
-            <%= f.label :client, "商流", class: "form-text" %><br>
-      <%= f.select :client_eq, {"マックスサポート": "マックスサポート", "USEN": "USEN","メルヴェイユ": "メルヴェイユ",
-      "ウィンクルム": "ウィンクルム"} %>
-      
+        <%= f.label :status, "審査ステータス", class: "search-label" %>
+        <%= f.select :status_eq, {"未審査": "未審査", "自社不備": "自社不備","上位店NG": "上位店NG","審査完了": "審査完了",
+      "決済完了": "決済完了", "入金確認済": "入金確認済"},{}, {class: "search-input"} %>
+            <%= f.label :client, "商流", class: "search-label" %>
+        <%= f.select :client_eq, {"マックスサポート": "マックスサポート", "USEN": "USEN","メルヴェイユ": "メルヴェイユ",
+      "ウィンクルム": "ウィンクルム"}, {}, {class: "search-input"} %>
       <%= f.submit "検索" %>
     <% end %>
-    <%= form_with url: import_paypays_path do |f| %>
+  </div>
     <div class="csv">
+    <%= form_with url: import_paypays_path do |f| %>
+    <button><%= link_to "新規店舗登録", new_store_prop_path, class: "btn-text" %></button>
       <%= f.label :file, "PayPay：CSV取り込み",class:"csv-title" %>
       <%= f.file_field :file, accept: ".csv", class: "csv-btn" %>
       <%= f.submit  "インポート", class: "csv-submit" %>

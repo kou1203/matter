@@ -4,50 +4,49 @@
   <%= render "shared/side_bar" %>
   <%# <div>＃ここに検索機能を入れる</div> %>
   <main class="right-bar">
-  <div><%= Date.today.month %>月獲得数</div>
-  <div><%= Praness.all.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</div>
+    <h1 class="sub-title">ぷらねす一覧</h1>
     <%= search_form_for @q do |f| %>
-      <%= f.label :user_id, "獲得者" %>
-      <%= f.select :user_id_eq, options_from_collection_for_select(User.all, :id, :name) %><br>
-      <%= f.label :get_date, "獲得日付" %><br>
-      <%= f.label :get_date, "以降" %>
-      <%= f.date_field :get_date_gteq %><br>
-      <%= f.label :get_date, "以前" %>
-      <%= f.date_field :get_date_lt %>
-      <%= f.submit "検索" %>
+      <div class="search-body">
+        <label class="search-label"><%= Date.today.month %>月獲得数</label>
+        <label class="search-label"><%= Praness.  where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</label>
+        <div class="search-form">
+          <%= f.select :user_id_eq, options_from_collection_for_select(User.where(retiree: nil), :id, :name),{include_blank: "獲得者選択"},{class: "search-input"} %>
+          <%= f.label :get_date, "獲得日付：",class: "search-label" %>
+          <%= f.date_field :get_date_gteq, class: "search-input-date" %>
+          <%= f.label :get_date, "〜", class: "search-label" %>
+          <%= f.date_field :get_date_lt, class: "search-input-date" %>
+          <%= f.submit "検索", class: "search-btn" %>
+          <%= link_to "検索リセット", pranesses_path, class: "reset-link" %>
+        </div>
+    
+      </div>
     <% end %>
-  <div>
-      <%= form_with url: import_store_props_path do |f| %>
     <div class="csv">
-    <%= f.label :file, "ぷらねす情報：CSV取り込み",class:"csv-title" %>
-    <%= f.file_field :file, accept: '.csv', class: "csv-btn"  %>
-    <%= f.submit  "インポート", data: {confirm: "インポートしますか？"},class: "csv-submit" %>
+      <%= form_with url: import_store_props_path do |f| %>
+      <button><%= link_to "新規店舗登録", new_store_prop_path, class: "btn-text" %></button>
+      <%= f.label :file, "ぷらねす情報：CSV取り込み",class:"csv-title" %>
+      <%= f.file_field :file, accept: '.csv', class: "csv-btn"  %>
+      <%= f.submit  "インポート", data: {confirm: "インポートしますか？"} %>
+      <%# link_to "CSVを出力する", pranesses_path(format: :csv), data: {confirm: "CSVを出力しますか？"} %>
     <% end %>
-  </div>
-  <div>
-    <%= link_to "CSVを出力する", pranesses_path(format: :csv), data: {confirm: "CSVを出力しますか？"} %>
-  </div>
-  <button class="header-btn">
-    <%= link_to "新規店舗登録", new_store_prop_path, class: "btn-text" %>
-  </button>
-  
- 
-  
+    </div>
     <table class="table">
-    <tr class="table-row">
+      <tr class="table-row">
       <th class="thead"></th>
       <th class="thead"><%= sort_link(@q, :get_date, "獲得日") %></th>
       <th class="thead">法人/個人</th>
       <th class="thead">店舗名</th>
     </tr>
-    <% @pranesses.each do |praness| %>
-    <tr class="table-row">
-      <td class="tdata"><%= link_to "詳細",  praness_path(praness.id) ,class: "link" %></td>
-      <td class="tdata"><%= praness.get_date %></td>
-      <td class="tdata"><%= praness.store_prop.race %></td>
-      <td class="tdata"><%= praness.store_prop.name %></td>
-    </tr>
-    <% end %>
-    </table>
-</div>
+      <% @pranesses.each do |praness| %>
+        <tr class="table-row">
+        <td class="tdata"><%= link_to "詳細",  praness_path(praness.id) ,class: "link" %></td>
+        <td class="tdata"><%= praness.get_date %></td>
+        <td class="tdata"><%= praness.store_prop.race %></td>
+        <td class="tdata"><%= praness.store_prop.name %></td>
+        </tr>
+      <% end %>
+      </table>
+    </div>
+  
   </main>
+</div>

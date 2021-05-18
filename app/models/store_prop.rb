@@ -5,20 +5,26 @@ class StoreProp < ApplicationRecord
     validates :suitable_time
     validates :industry
     validates :person_main
+    validates :person_main_kana
     validates :phone_number_1
-    validates :prefectures
+    validates :prefecture
     validates :city
     validates :municipalities
     validates :address
+    validates :mail_1
+    validates :holiday
 
+    with_options uniqueness: true do 
+      validates :name
+    end 
   end 
-
 
   has_one :dmer
   has_one :praness
   has_one :summit
   has_one :aupay
   has_one :paypay
+  has_one :panda 
 
   def self.import(file)
     CSV.foreach(file.path, headers: true) do |row|
@@ -30,6 +36,27 @@ class StoreProp < ApplicationRecord
   end
 
   def self.updatable_attributes
-    ["race", "name", "suitable_time","description","industry", "phone_number_1","phone_number_2", "person_main", "person_sub", "prefectures","city", "municipalities", "address", "building_name"]
+    ["race",
+      "name",
+      "corporate_name",
+      "industry",
+      "description",
+      "phone_number_1",
+      "phone_number_2",
+      "person_main",
+      "person_main_kana",
+      "birthday",
+      "person_sub",
+      "person_sub_kana",
+      "mail_1",
+      "mail_2",
+      "prefecture",
+      "city",
+      "municipalities",
+      "address",
+      "building_name",
+      "holiday",
+      "suitable_time"
+    ]
   end
 end

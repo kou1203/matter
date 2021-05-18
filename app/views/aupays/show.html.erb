@@ -3,9 +3,7 @@
 <div class="main">
   <%= render "shared/side_bar" %>
   <main class="right-bar">
-  <h1>auペイ詳細</h1>
-  <div class="main">
-  <div>
+  <h1 class="show-title">auペイ詳細</h1>
     <h1 class="show-title">店舗情報</h1>
     <table class="table">
     <tr class="table-row">
@@ -30,7 +28,7 @@
     <table class="table">
     <tr class="table-row">
     <th class="thead">店舗住所</th>
-    <td class="tdata-long"><%= @aupay.store_prop.prefectures %><%= @aupay.store_prop.city %><%= @aupay.store_prop.municipalities %><%= @aupay.store_prop.address %><%= @aupay.store_prop.building_name %></td>
+    <td class="tdata-long"><%= @aupay.store_prop.prefecture %><%= @aupay.store_prop.city %><%= @aupay.store_prop.municipalities %><%= @aupay.store_prop.address %><%= @aupay.store_prop.building_name %></td>
     </table>
     <h1 class="show-title">連絡先</h1>
     <table class="table">
@@ -38,10 +36,18 @@
     <td class="tdata"><%= @aupay.store_prop.phone_number_1 %></td>
     <th class="thead">電話番号2</th>
     <td class="tdata"><%= @aupay.store_prop.phone_number_2 %></td>
-    <th class="thead">好適時間</th>
-    <td class="tdata"><%= @aupay.store_prop.suitable_time %></td>
     </tr>
     <tr class="table-row">
+    <th class="thead">メールアドレス１</th>
+      <td class="tdata"><%= @aupay.store_prop.mail_1 %></td>
+    <th class="thead">メールアドレス２</th>
+      <td class="tdata"><%= @aupay.store_prop.mail_2 %></td>
+    </tr>
+    <tr class="table-row">
+    <th class="thead">好適時間</th>
+    <td class="tdata"><%= @aupay.store_prop.suitable_time %></td>
+    <th class="thead">定休日</th>
+    <td class="tdata"><%= @aupay.store_prop.holiday %></td>
     <th class="thead">備考</th>
     <td class="tdata"><%= @aupay.store_prop.description %></td>
     </tr>
@@ -64,32 +70,32 @@
 
     <table class="table">
     <tr class="table-row">
+      <th class="thead">管理番号</th>
+      <th class="thead">商流</th>
       <th class="thead">審査ステータス</th>
-      <th class="thead">メールアドレス</th>
     </tr>
     <tr class="table-row">
+      <td class="tdata"><%= @aupay.customer_num %></td>
+      <td class="tdata"><%= @aupay.client %></td>
       <td class="tdata"><%= @aupay.status %></td>
-      <td class="tdata"><%= @aupay.mail %></td>
     </tr>
     </table>
 
     <table class="table">
     <tr class="table-row">
-      <th class="thead">入金日</th>
       <th class="thead">決済日</th>
-      <th class="thead">商流</th>
+      <th class="thead">入金日</th>
       <th class="thead">備考</th>
     </tr>
     <tr class="table-row">
-      <td class="tdata"><%= @aupay.payment %></td>
       <td class="tdata"><%= @aupay.settlement %></td>
-      <td class="tdata"><%= @aupay.client %></td>
+      <td class="tdata"><%= @aupay.payment %></td>
       <td class="tdata"><%= @aupay.description %></td>
     </tr>
     </table>
-  <button class="edit-btn">
-    <%= link_to "編集", edit_aupay_path, class: "link" %>
-  </button>
+    <button class="edit-btn">
+      <%= link_to "編集", edit_aupay_path, class: "link" %>
+    </button>
   </main>
 </div>
 

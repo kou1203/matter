@@ -30,7 +30,7 @@
     <table class="table">
     <tr class="table-row">
     <th class="thead">店舗住所</th>
-    <td class="tdata-long"><%= @summit.store_prop.prefectures %><%= @summit.store_prop.city %><%= @summit.store_prop.municipalities %><%= @summit.store_prop.address %><%= @summit.store_prop.building_name %></td>
+    <td class="tdata-long"><%= @summit.store_prop.prefecture %><%= @summit.store_prop.city %><%= @summit.store_prop.municipalities %><%= @summit.store_prop.address %><%= @summit.store_prop.building_name %></td>
     </table>
     <h1 class="show-title">連絡先</h1>
     <table class="table">
@@ -53,12 +53,14 @@
       
     <table class="table">
     <tr class="table-row">
-    <th class="thead">獲得日</th>
+      <th class="thead">獲得日</th>
       <th class="thead">獲得者</th>
+      <th class="thead">管理番号</th>
     </tr>
     <tr class="table-row">
       <td class="tdata"><%= @summit.get_date %></td>
       <td class="tdata"><%= @summit.user.name %></td>
+      <td class="tdata"><%= @summit.customer_num %></td>
     </tr>
     </table>
 
@@ -66,14 +68,12 @@
     <tr class="table-row">
       <th class="thead">需要家名</th>
       <th class="thead">請求宛名</th>
-      <th class="thead">メールアドレス</th>
       <th class="thead">前電気会社</th>
       <th class="thead">供給地点番号</th>
     </tr>
     <tr class="table-row">
       <td class="tdata"><%= @summit.claim_address %></td>
       <td class="tdata"><%= @summit.claim_house %></td>
-      <td class="tdata"><%= @summit.mail %></td>
       <td class="tdata"><%= @summit.before_electric %></td>
       <td class="tdata"><%= @summit.pay_as %></td>
     </tr>
@@ -94,14 +94,14 @@
 
     <table class="table">
     <tr class="table-row">
-      <th class="thead">利用開始日</th>
       <th class="thead">使用料予想</th>
+      <th class="thead">利用開始日</th>
       <th class="thead">入金日</th>
       <th class="thead">備考</th>
     </tr>
     <tr class="table-row">
-      <td class="tdata"><%= @summit.start %></td>
       <td class="tdata"><%= @summit.fee %></td>
+      <td class="tdata"><%= @summit.start %></td>
       <td class="tdata"><%= @summit.payment %></td>
       <td class="tdata"><%= @summit.remarks %></td>
     </tr>

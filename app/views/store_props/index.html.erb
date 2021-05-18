@@ -3,29 +3,30 @@
 <div class="main">
   <%= render "shared/side_bar" %>
   <main class="right-bar">
+    <h1 class="sub-title">店舗一覧</h1>
+    <div class="search-body">
   <%# <div>＃ここに検索機能を入れる</div> %>
     <%= search_form_for @q do |f| %>
-      <%= f.label :name, "店舗名" %>
+      <%= f.label :name, "店舗名", class: "search-label" %>
       <%= f.search_field :name_cont %>
-      <%= f.label :prefectures, "都道府県" %>
-      <%= f.text_field :prefectures_cont %>
-      <%= f.label :prefectures, "市区" %>
+      <%= f.label :prefecture, "都道府県", class: "search-label" %>
+      <%= f.text_field :prefecture_cont %>
+      <%= f.label :city, "市区", class: "search-label" %>
       <%= f.text_field :city_cont %>
       <%= f.submit "検索" %>
     <% end %>
+    </div>
  
 
-    <%= form_with url: import_store_props_path do |f| %>
     <div class="csv">
-    <%= f.label :file, "店舗情報：CSV取り込み",class:"csv-title" %>
-    <%= f.file_field :file, accept: '.csv', class: "csv-btn"  %>
-    <%= f.submit  "インポート", class: "csv-submit" %>
+    <%= form_with url: import_store_props_path do |f| %>
+  <button class="header-btn"><%= link_to "新規店舗登録", new_store_prop_path, class: "btn-text" %></button>
+      <%= f.label :file, "店舗情報：CSV取り込み",class:"csv-title" %>
+      <%= f.file_field :file, accept: '.csv', class: "csv-btn"  %>
+      <%= f.submit  "インポート", class: "csv-submit", data: {confirm: "インポートしますか？"}  %>
     <% end %>
 
     </div>
-  <button class="header-btn">
-    <%= link_to "新規店舗登録", new_store_prop_path, class: "btn-text" %>
-  </button>
  
   
     <table class="table">

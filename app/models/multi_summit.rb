@@ -1,0 +1,2 @@
+class MultiSummit < ApplicationRecord
+end

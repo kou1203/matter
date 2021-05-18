@@ -7,18 +7,18 @@ class PaypaysController < ApplicationController
 
   def new 
     @paypay = Paypay.new
-    @users = User.all 
+    @users = User.where(retire: nil)
     @store_prop = StoreProp.find(params[:store_prop_id])
     
   end 
   
   def create 
     @paypay = Paypay.new(paypay_params)
-    @users = User.all 
+    @users = User.where(retire: nil)
     @store_prop = StoreProp.find(params[:store_prop_id])
     @paypay.save
     if @paypay.save 
-      redirect_to paypays_path 
+      redirect_to store_prop_path(@store_prop.id)
     else 
       render :new 
     end 
@@ -35,12 +35,11 @@ class PaypaysController < ApplicationController
 
   def edit 
     @paypay = Paypay.find(params[:id])
-    @users = User.all
+    @users = User.where(retiree: nil)
   end 
   
   def update 
     @paypay = Paypay.find(params[:id])
-    @users = User.all
     @paypay.update(paypay_params)
     redirect_to paypays_path
   end 
@@ -49,8 +48,13 @@ class PaypaysController < ApplicationController
 
   def paypay_params 
     params.require(:paypay).permit(
-      :store_prop_id, :user_id, :client,
-      :get_date, :status, :payment
+      :client,
+      :user_id,
+      :store_prop_id,
+      :get_date,
+      :payment,
+      :status,
+      :before_status
     )
   end
 end

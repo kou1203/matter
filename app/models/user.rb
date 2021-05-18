@@ -8,5 +8,6 @@ class User < ApplicationRecord
   has_one :summit
   has_one :aupay
   has_one :paypay 
+  has_one :panda 
         
 end

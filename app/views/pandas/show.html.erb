@@ -1,0 +1,131 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1>フードパンダ詳細</h1>
+  <div class="main">
+  <div>
+    <h1 class="show-title">店舗情報</h1>
+    <table class="table">
+    <tr class="table-row">
+    <th class="thead">店舗名</th>
+    <td class="tdata"><%= @panda.store_prop.name %></td>
+    </tr>
+    <th class="thead">属性</th>
+    <td class="tdata"><%= @panda.store_prop.race %></td>
+    <th class="thead">料理区分</th>
+    <td class="tdata"><%= @panda.food_category %></td>
+    <tr class="table-row">
+    </tr>
+    
+    <tr class="table-row">
+    <th class="thead">店舗代表</th>
+    <td class="tdata"><%= @panda.store_prop.person_main %></td>
+    <th class="thead">（フリガナ）</th>
+    <td class="tdata"><%= @panda.store_prop.person_main_kana %></td>
+    </tr>
+    <tr class="table-row">
+    <th class="thead">店舗担当</th>
+    <td class="tdata"><%= @panda.store_prop.person_sub %></td>
+    <th class="thead">（フリガナ）</th>
+    <td class="tdata"><%= @panda.store_prop.person_sub_kana %></td>
+    </tr>
+    </table>
+    <table class="table">
+    <tr class="table-row">
+    <th class="thead">店舗住所</th>
+    <td class="tdata-long"><%= @panda.store_prop.prefecture %><%= @panda.store_prop.city %><%= @panda.store_prop.municipalities %><%= @panda.store_prop.address %><%= @panda.store_prop.building_name %></td>
+    </table>
+    <h1 class="show-title">連絡先</h1>
+    <table class="table">
+    <th class="thead">電話番号1</th>
+    <td class="tdata"><%= @panda.store_prop.phone_number_1 %></td>
+    <th class="thead">電話番号2</th>
+    <td class="tdata"><%= @panda.store_prop.phone_number_2 %></td>
+    <th class="thead">メールアドレス1</th>
+        <td class="tdata"><%= @panda.store_prop.mail_1 %></td>
+      <th class="thead">メールアドレス2</th>
+        <td class="tdata"><%= @panda.store_prop.mail_2 %></td>
+    </tr>
+    <tr class="table-row">
+    <th class="thead">好適時間</th>
+    <td class="tdata"><%= @panda.store_prop.suitable_time %></td>
+    <th class="thead">定休日</th>
+    <td class="tdata"><%= @panda.store_prop.holiday %></td>
+    <th class="thead">備考</th>
+    <td class="tdata"><%= @panda.store_prop.description %></td>
+    </tr>
+    </table>
+    <button class="edit-btn"> 
+      <%= link_to "編集", edit_store_prop_path(@panda.store_prop.id), class: "link" %>
+    </button>
+    <h1 class="show-title">フードパンダ</h1>
+      
+    <table class="table">
+    <tr class="table-row">
+    <th class="thead">獲得日</th>
+      <th class="thead">獲得者</th>
+    </tr>
+    <tr class="table-row">
+      <td class="tdata"><%= @panda.get_date %></td>
+      <td class="tdata"><%= @panda.user.name %></td>
+    </tr>
+    </table>
+
+    <table class="table">
+    <tr class="table-row">
+      <th class="thead">区分</th>
+      <th class="thead">メールアドレス</th>
+      <th class="thead">ゴーストフラグ</th>
+      <th class="thead">審査ステータス</th>
+      <th class="thead">前回ステータス</th>
+    </tr>
+    <tr class="table-row">
+      <td class="tdata"><%= @panda.food_category %></td>
+      <td class="tdata"><%= @panda.store_prop.mail_1 %></td>
+      <td class="tdata"><%= @panda.ghost_flag %></td>
+      <td class="tdata"><%= @panda.status %></td>
+      <td class="tdata"><%= @panda.before_status %></td>
+    </tr>
+    </table>
+
+    <table class="table">
+    <tr class="table-row">
+      <th class="thead">画像掲載ステータス</th>
+      <th class="thead">商流</th>
+      <th class="thead">ドキュサイン送付</th>
+      <th class="thead">ドキュサイン完了</th>
+    </tr>
+    <tr class="table-row">
+      <td class="tdata"><%= @panda.image_status %></td>
+      <td class="tdata"><%= @panda.client %></td>
+      <td class="tdata"><%= @panda.docu_sign_send %></td>
+      <td class="tdata"><%= @panda.docu_sign_done %></td>
+    </tr>
+    </table>
+
+    <table class="table">
+    <tr class="table-row">
+      <th class="thead">不備備考</th>
+      <th class="thead">不備確認日</th>
+      <th class="thead">ボール</th>
+      <th class="thead">端末配送完了日</th>
+      <th class="thead">成果地点</th>
+      <th class="thead">Grid ID</th>
+    </tr>
+    <tr class="table-row">
+      <td class="tdata"><%= @panda.remarks %></td>
+      <td class="tdata"><%= @panda.confirm_date %></td>
+      <td class="tdata"><%= @panda.confirmer %></td>
+      <td class="tdata"><%= @panda.tarminal_send %></td>
+      <td class="tdata"><%= @panda.result_point %></td>
+      <td class="tdata"><%= @panda.grid_id %></td>
+    </tr>
+    </table>
+  <button class="edit-btn">
+    <%= link_to "編集", edit_panda_path, class: "link" %>
+  </button>
+  </main>
+</div>
+
