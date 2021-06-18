@@ -14,7 +14,7 @@ class PranessesController < ApplicationController
 
   def new 
     @praness = Praness.new 
-    @users = User.where(retiree: nil)
+    @users = User.all
     @store_prop = StoreProp.find(params[:store_prop_id])
     stock_table = Stock.arel_table
     @stocks = Stock.joins('LEFT JOIN stock_histories ON stocks.id = stock_histories.stock_id').where('stock_histories.id IS NOT NULL')
@@ -23,7 +23,7 @@ class PranessesController < ApplicationController
   
   def create 
     @stocks = Stock.joins('LEFT JOIN stock_histories ON stocks.id = stock_histories.stock_id').where('stock_histories.id IS NOT NULL')
-    @users = User.where(retiree: nil)
+    @users = User.all
     @store_prop = StoreProp.find(params[:store_prop_id])
     @praness = Praness.new(praness_params)
     if @praness.save 
@@ -39,7 +39,7 @@ class PranessesController < ApplicationController
   end 
   
   def edit 
-    @users = User.where(retiree: nil)
+    @users = User.all
     @stocks = Stock.joins('LEFT JOIN stock_histories ON stocks.id = stock_histories.stock_id').where('stock_histories.id IS NOT NULL')
     @praness = Praness.find(params[:id])
   end 
@@ -47,7 +47,7 @@ class PranessesController < ApplicationController
   def update 
     @praness = Praness.find(params[:id])
     @praness.update(praness_params)
-    redirect_to praness_path(@praness.id)
+      redirect_to praness_path(@praness.id)
   end 
 
   def show 
@@ -77,8 +77,7 @@ class PranessesController < ApplicationController
       :remarks,
       :claim,
       :start,
-      :deadline,
-      :withdrawal,
+      :deadline
     )
   end 
 
@@ -103,7 +102,6 @@ class PranessesController < ApplicationController
           praness.claim,
           praness.start,
           praness.deadline,
-          praness.withdrawal,
           praness.payment
 
         ]

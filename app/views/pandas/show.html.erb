@@ -3,129 +3,152 @@
 <div class="main">
   <%= render "shared/side_bar" %>
   <main class="right-bar">
-  <h1>フードパンダ詳細</h1>
+  <h1 class="sub-title">フードパンダ詳細</h1>
   <div class="main">
   <div>
     <h1 class="show-title">店舗情報</h1>
-    <table class="table">
-    <tr class="table-row">
-    <th class="thead">店舗名</th>
-    <td class="tdata"><%= @panda.store_prop.name %></td>
+    <table class="show-table">
+    <tr class="show-tr">
+    <th class="show-th">店舗名</th>
+    <td class="show-td"><%= @panda.store_prop.name %></td>
     </tr>
-    <th class="thead">属性</th>
-    <td class="tdata"><%= @panda.store_prop.race %></td>
-    <th class="thead">料理区分</th>
-    <td class="tdata"><%= @panda.food_category %></td>
+    <th class="show-th">属性</th>
+    <td class="show-td"><%= @panda.store_prop.race %></td>
+    <th class="show-th">料理区分</th>
+    <td class="show-td"><%= @panda.food_category %></td>
     <tr class="table-row">
     </tr>
     
     <tr class="table-row">
-    <th class="thead">店舗代表</th>
-    <td class="tdata"><%= @panda.store_prop.person_main %></td>
-    <th class="thead">（フリガナ）</th>
-    <td class="tdata"><%= @panda.store_prop.person_main_kana %></td>
+    <th class="show-th">店舗代表</th>
+    <td class="show-td"><%= @panda.store_prop.person_main %></td>
+    <th class="show-th">（フリガナ）</th>
+    <td class="show-td"><%= @panda.store_prop.person_main_kana %></td>
     </tr>
     <tr class="table-row">
-    <th class="thead">店舗担当</th>
-    <td class="tdata"><%= @panda.store_prop.person_sub %></td>
-    <th class="thead">（フリガナ）</th>
-    <td class="tdata"><%= @panda.store_prop.person_sub_kana %></td>
+    <th class="show-th">店舗担当</th>
+    <td class="show-td"><%= @panda.store_prop.person_sub %></td>
+    <th class="show-th">（フリガナ）</th>
+    <td class="show-td"><%= @panda.store_prop.person_sub_kana %></td>
     </tr>
     </table>
-    <table class="table">
+    <table class="show-table">
     <tr class="table-row">
-    <th class="thead">店舗住所</th>
-    <td class="tdata-long"><%= @panda.store_prop.prefecture %><%= @panda.store_prop.city %><%= @panda.store_prop.municipalities %><%= @panda.store_prop.address %><%= @panda.store_prop.building_name %></td>
+    <th class="show-th">店舗住所</th>
+    <td class="show-td-long"><%= @panda.store_prop.prefecture %><%= @panda.store_prop.city %><%= @panda.store_prop.municipalities %><%= @panda.store_prop.address %><%= @panda.store_prop.building_name %></td>
     </table>
     <h1 class="show-title">連絡先</h1>
-    <table class="table">
-    <th class="thead">電話番号1</th>
-    <td class="tdata"><%= @panda.store_prop.phone_number_1 %></td>
-    <th class="thead">電話番号2</th>
-    <td class="tdata"><%= @panda.store_prop.phone_number_2 %></td>
-    <th class="thead">メールアドレス1</th>
-        <td class="tdata"><%= @panda.store_prop.mail_1 %></td>
-      <th class="thead">メールアドレス2</th>
-        <td class="tdata"><%= @panda.store_prop.mail_2 %></td>
+    <table class="show-table">
+    <th class="show-th">電話番号1</th>
+    <td class="show-td"><%= @panda.store_prop.phone_number_1 %></td>
+    <th class="show-th">電話番号2</th>
+    <td class="show-td"><%= @panda.store_prop.phone_number_2 %></td>
+    <th class="show-th">メールアドレス1</th>
+        <td class="show-td"><%= @panda.store_prop.mail_1 %></td>
+      <th class="show-th">メールアドレス2</th>
+        <td class="show-td"><%= @panda.store_prop.mail_2 %></td>
     </tr>
     <tr class="table-row">
-    <th class="thead">好適時間</th>
-    <td class="tdata"><%= @panda.store_prop.suitable_time %></td>
-    <th class="thead">定休日</th>
-    <td class="tdata"><%= @panda.store_prop.holiday %></td>
-    <th class="thead">備考</th>
-    <td class="tdata"><%= @panda.store_prop.description %></td>
+    <th class="show-th">好適時間</th>
+    <td class="show-td"><%= @panda.store_prop.suitable_time %></td>
+    <th class="show-th">定休日</th>
+    <td class="show-td"><%= @panda.store_prop.holiday %></td>
+    <th class="show-th">備考</th>
+    <td class="show-td"><%= @panda.store_prop.description %></td>
+    <td class="show-td"><%= link_to "編集", edit_store_prop_path(@panda.store_prop.id), class: "show-link" %></td>
     </tr>
     </table>
-    <button class="edit-btn"> 
-      <%= link_to "編集", edit_store_prop_path(@panda.store_prop.id), class: "link" %>
-    </button>
+
     <h1 class="show-title">フードパンダ</h1>
       
-    <table class="table">
-    <tr class="table-row">
-    <th class="thead">獲得日</th>
-      <th class="thead">獲得者</th>
-    </tr>
-    <tr class="table-row">
-      <td class="tdata"><%= @panda.get_date %></td>
-      <td class="tdata"><%= @panda.user.name %></td>
-    </tr>
-    </table>
+    <%# 一列目 %>
+      <table class="show-table">
+      <tr class="table-row">
+        <th class="show-th">Grid ID</th>
+        <th class="show-th">商流</th>
+        <th class="show-th">料理区分</th>
+        <th class="show-th">ゴースト店名</th>
+      </tr>
+      <tr class="table-row">
+        <td class="show-td"><%= @panda.grid_id %></td>
+        <td class="show-td"><%= @panda.client %></td>
+        <td class="show-td"><%= @panda.food_category %></td>
+        <td class="show-td"><%= @panda.ghost_flag %></td>
 
-    <table class="table">
-    <tr class="table-row">
-      <th class="thead">区分</th>
-      <th class="thead">メールアドレス</th>
-      <th class="thead">ゴーストフラグ</th>
-      <th class="thead">審査ステータス</th>
-      <th class="thead">前回ステータス</th>
-    </tr>
-    <tr class="table-row">
-      <td class="tdata"><%= @panda.food_category %></td>
-      <td class="tdata"><%= @panda.store_prop.mail_1 %></td>
-      <td class="tdata"><%= @panda.ghost_flag %></td>
-      <td class="tdata"><%= @panda.status %></td>
-      <td class="tdata"><%= @panda.before_status %></td>
-    </tr>
-    </table>
+      </tr>
+      </table>
+    <%# 二列目 %>
+      <table class="show-table">
+        <tr class="table-row">
+          <th class="show-th">獲得日</th>
+          <th class="show-th">獲得者</th>
+          <th class="show-th">ステータス</th>
+        </tr>
+        <tr class="table-row">
+          <td class="show-td"><%= @panda.get_date %></td>
+          <td class="show-td"><%= @panda.user.name %></td>
+          <td class="show-td"><%= @panda.status %></td>
+        </tr>
+      </table>
+    <%# 三列目 %>
+      <table class="show-table">
+        <tr class="table-row">
+          <th class="show-th">ドキュサイン送付日</th>
+          <th class="show-th">ドキュサイン完了日</th>
+          <th class="show-th">品質チェック日</th>
+          <th class="show-th">配送手配完了日</th>
+          <th class="show-th">トレーニング完了日</th>
+        </tr>
+        <tr class="table-row">
+          <td class="show-td"><%= @panda.docu_sign_send %></td>
+          <td class="show-td"><%= @panda.docu_sign_done %></td>
+          <td class="show-td"><%= @panda.quality_check %></td>
+          <td class="show-td"><%= @panda.delivery_arrangements %></td>
+          <td class="show-td"><%= @panda.traning %></td>
+        </tr>
+      </table>
+    <%# 四列目 %>
+      <h2 class="show-title">不備</h2>
+      <table class="show-table">
+        <tr class="table-row">
+          <th class="show-th">不備対応ボール</th>
+          <th class="show-th">不備確認日</th>
+          <th class="show-th">不備確確認者</th>
+          <th class="show-th">不備詳細</th> 
+          <th class="show-th">不備対応内容</th> 
+        </tr>
+        <tr class="table-row">
+          <td class="show-td"><%= @panda.confirm_ball %></td>
+          <td class="show-td"><%= @panda.confirm_date %></td>
+          <td class="show-td"><%= @panda.confirmer %></td>
+          <td class="show-td"><%= @panda.deficiency %></td>
+          <td class="show-td"><%= @panda.deficiency_result %></td>
+        </tr>
+      </table>
+    <%# 五列目 %>
+      <table class="show-table">
+        <tr class="show-tr">
+          <th class="show-th">不備解消日</th>
+          <th class="show-th">成果地点</th>
+          <th class="show-th">入金日</th>
+          <th class="show-th">評価売上</th>
+          <th class="show-th">実売上</th>
+          <th class="show-th">入金日</th>
+          <th class="show-th">備考</th> 
+          <th class="show-th"></th> 
+        </tr>
+        <tr class="show-tr">
+          <td class="show-td"><%= @panda.solution_date %></td>
+          <td class="show-td"><%= @panda.result_point %></td>
+          <td class="show-td"><%= @panda.payment %></td>
+          <td class="show-td"><%= @panda.valuation_profit %></td>
+          <td class="show-td"><%= @panda.actual_profit %></td>
+          <td class="show-td"><%= @panda.payment %></td>
+          <td class="show-td"><%= @panda.remarks %></td>
+          <td class="show-td"><%= link_to "編集", edit_panda_path, class: "show-link" %></td>
+        </tr>
+      </table>
 
-    <table class="table">
-    <tr class="table-row">
-      <th class="thead">画像掲載ステータス</th>
-      <th class="thead">商流</th>
-      <th class="thead">ドキュサイン送付</th>
-      <th class="thead">ドキュサイン完了</th>
-    </tr>
-    <tr class="table-row">
-      <td class="tdata"><%= @panda.image_status %></td>
-      <td class="tdata"><%= @panda.client %></td>
-      <td class="tdata"><%= @panda.docu_sign_send %></td>
-      <td class="tdata"><%= @panda.docu_sign_done %></td>
-    </tr>
-    </table>
 
-    <table class="table">
-    <tr class="table-row">
-      <th class="thead">不備備考</th>
-      <th class="thead">不備確認日</th>
-      <th class="thead">ボール</th>
-      <th class="thead">端末配送完了日</th>
-      <th class="thead">成果地点</th>
-      <th class="thead">Grid ID</th>
-    </tr>
-    <tr class="table-row">
-      <td class="tdata"><%= @panda.remarks %></td>
-      <td class="tdata"><%= @panda.confirm_date %></td>
-      <td class="tdata"><%= @panda.confirmer %></td>
-      <td class="tdata"><%= @panda.tarminal_send %></td>
-      <td class="tdata"><%= @panda.result_point %></td>
-      <td class="tdata"><%= @panda.grid_id %></td>
-    </tr>
-    </table>
-  <button class="edit-btn">
-    <%= link_to "編集", edit_panda_path, class: "link" %>
-  </button>
   </main>
 </div>
-

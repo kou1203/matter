@@ -38,8 +38,8 @@
       <tr>
       <th>
         <div class="form-interval">
-        <%= f.label :status, "ステータス", class: "form-text" %><br>
-        <%= f.select :status, {"不備": "不備", "問題なし": "問題なし"} ,{}, {class: "form-input"} %>
+        <%= f.label :status, "端末状態", class: "form-text" %><br>
+        <%= f.select :status, {"クラウドデバイス完了": "クラウドデバイス完了", "未設定": "未設定"} ,{}, {class: "form-input"} %>
         </div>
       </th>
       <th>
@@ -57,7 +57,7 @@
       <th>
         <div class="form-interval">
         <%= f.label :customer_num, "顧客番号", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.number_field :customer_num, value: 367711,class: "form-input" %>
+        <%= f.number_field :customer_num ,class: "form-input" %>
         </div>
       </th>
       </tr>
@@ -106,25 +106,21 @@
       </th>
       <th>
         <div class="form-interval">
-        <%= f.label :withdrawal, "店舗引落日", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.date_field :withdrawal , class: "form-input" %>
-        </div>
-      </th>
-      <th>
-        <div class="form-interval">
-        <%= f.label :payment, "入金日", class: "form-text" %><span class="note">（※必須）</span><br>
+        <%= f.label :payment, "店舗引落日", class: "form-text" %><span class="note">（※必須）</span><br>
         <%= f.date_field :payment , class: "form-input" %>
         </div>
       </th>
       </tr>
       <%# 五列目 %>
       <tr>
+      
       <th>
         <div class="form-interval">
         <%= f.label :claim, "請求額", class: "form-text" %><span class="note">（※必須）</span><br>
         <%= f.number_field :claim , class: "form-input" %>
         </div>
       </th>
+
       <th>
         <div class="form-interval">
         <%= f.label :cancel, "解約日", class: "form-text" %><br>

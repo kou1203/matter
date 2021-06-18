@@ -8,6 +8,8 @@ class CreatePaypays < ActiveRecord::Migration[6.0]
       t.date :payment
       t.string :status                 , null: false 
       t.string :before_status
+      t.integer :valuation_profit     ,null: false
+      t.integer :actual_profit        ,null: false
     end
   end
 end

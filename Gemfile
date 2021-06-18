@@ -62,3 +62,7 @@ gem 'roo'
 gem 'ransack'
 
 gem 'rails-i18n'
+
+gem 'chartkick'
+
+gem 'lazy_high_charts'

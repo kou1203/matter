@@ -3,116 +3,115 @@
 <div class="main">
   <%= render "shared/side_bar" %>
   <main class="right-bar">
-  <h1>ぷらねす詳細</h1>
+  <h1 class="sub-title">ぷらねす詳細</h1>
   <div class="main">
   <div>
     <h1 class="show-title">店舗情報</h1>
-    <table class="table">
-    <tr class="table-row">
-    <th class="thead">店舗名</th>
-    <td class="tdata"><%= @praness.store_prop.name %></td>
+    <table class="show-table">
+    <tr class="show-tr">
+    <th class="show-th">店舗名</th>
+    <td class="show-td"><%= @praness.store_prop.name %></td>
     </tr>
-    <th class="thead">属性</th>
-    <td class="tdata"><%= @praness.store_prop.race %></td>
-    <th class="thead">業種</th>
-    <td class="tdata"><%= @praness.store_prop.industry %></td>
-    <tr class="table-row">
+    <th class="show-th">属性</th>
+    <td class="show-td"><%= @praness.store_prop.race %></td>
+    <th class="show-th">業種</th>
+    <td class="show-td"><%= @praness.store_prop.industry %></td>
+    <tr class="show-tr">
     </tr>
-    <tr class="table-row">
-    <tr class="table-row">
-    <tr class="table-row">
-    <th class="thead">店舗代表</th>
-    <td class="tdata"><%= @praness.store_prop.person_main %></td>
-    <th class="thead">店舗担当</th>
-    <td class="tdata"><%= @praness.store_prop.person_sub %></td>
+    <tr class="show-tr">
+    <tr class="show-tr">
+    <tr class="show-tr">
+    <th class="show-th">店舗代表</th>
+    <td class="show-td"><%= @praness.store_prop.person_main %></td>
+    <th class="show-th">店舗担当</th>
+    <td class="show-td"><%= @praness.store_prop.person_sub %></td>
     </tr>
     </table>
-    <table class="table">
-    <tr class="table-row">
-    <th class="thead">店舗住所</th>
-    <td class="tdata-long"><%= @praness.store_prop.prefecture %><%= @praness.store_prop.city %><%= @praness.store_prop.municipalities %><%= @praness.store_prop.address %><%= @praness.store_prop.building_name %></td>
+    <table class="show-table">
+    <tr class="show-tr">
+    <th class="show-th">店舗住所</th>
+    <td class="show-td-long"><%= @praness.store_prop.prefecture %><%= @praness.store_prop.city %><%= @praness.store_prop.municipalities %><%= @praness.store_prop.address %><%= @praness.store_prop.building_name %></td>
     </table>
     <h1 class="show-title">連絡先</h1>
-    <table class="table">
-    <th class="thead">電話番号1</th>
-    <td class="tdata"><%= @praness.store_prop.phone_number_1 %></td>
-    <th class="thead">電話番号2</th>
-    <td class="tdata"><%= @praness.store_prop.phone_number_2 %></td>
-    <th class="thead">好適時間</th>
-    <td class="tdata"><%= @praness.store_prop.suitable_time %></td>
+    <table class="show-table">
+    <th class="show-th">電話番号1</th>
+    <td class="show-td"><%= @praness.store_prop.phone_number_1 %></td>
+    <th class="show-th">電話番号2</th>
+    <td class="show-td"><%= @praness.store_prop.phone_number_2 %></td>
+    <th class="show-th">好適時間</th>
+    <td class="show-td"><%= @praness.store_prop.suitable_time %></td>
     </tr>
-    <tr class="table-row">
-    <th class="thead">備考</th>
-    <td class="tdata"><%= @praness.store_prop.description %></td>
+    <tr class="show-tr">
+    <th class="show-th">備考</th>
+    <td class="show-td"><%= @praness.store_prop.description %></td>
+    <td class="show-td"><%= link_to "編集", edit_store_prop_path(@praness.store_prop.id), class: "show-link" %></td>
     </tr>
     </table>
-    <button class="edit-btn"> 
-      <%= link_to "編集", edit_store_prop_path(@praness.store_prop.id), class: "link" %>
-    </button>
+
     <h1 class="show-title">ぷらねす</h1>
       
-    <table class="table">
-    <tr class="table-row">
-    <th class="thead">設置日</th>
-      <th class="thead">獲得者</th>
-      <th class="thead">顧客番号</th>
+    <table class="show-table">
+    <tr class="show-tr">
+    <th class="show-th">設置日</th>
+      <th class="show-th">獲得者</th>
+      <th class="show-th">顧客番号</th>
     </tr>
-    <tr class="table-row">
-      <td class="tdata"><%= @praness.get_date %></td>
-      <td class="tdata"><%= @praness.user.name %></td>
-      <td class="tdata"><%= @praness.customer_num %></td>
-    </tr>
-    </table>
-
-    <table class="table">
-    <tr class="table-row">
-      <th class="thead">SSID変更日</th>
-      <th class="thead">SSID①</th>
-      <th class="thead">PASS①</th>
-      <th class="thead">SSID②</th>
-      <th class="thead">PASS②</th>
-    </tr>
-    <tr class="table-row">
-      <td class="tdata"><%= @praness.ssid_change %></td>
-      <td class="tdata"><%= @praness.ssid_1 %></td>
-      <td class="tdata"><%= @praness.pass_1 %></td>
-      <td class="tdata"><%= @praness.ssid_2 %></td>
-      <td class="tdata"><%= @praness.pass_2 %></td>
+    <tr class="show-tr">
+      <td class="show-td"><%= @praness.get_date %></td>
+      <td class="show-td"><%= @praness.user.name %></td>
+      <td class="show-td"><%= @praness.customer_num %></td>
     </tr>
     </table>
 
-    <table class="table">
-    <tr class="table-row">
-      <th class="thead">請求額</th>
-      <th class="thead">請求開始月</th>
-      <th class="thead">請求開始締日</th>
-      <th class="thead">店舗引落日</th>
-      <th class="thead">入金日</th>
+    <table class="show-table">
+    <tr class="show-tr">
+      <th class="show-th">SSID変更日</th>
+      <th class="show-th">SSID①</th>
+      <th class="show-th">PASS①</th>
+      <th class="show-th">SSID②</th>
+      <th class="show-th">PASS②</th>
     </tr>
-    <tr class="table-row">
-      <td class="tdata"><%= @praness.claim %></td>
-      <td class="tdata"><%= @praness.start %></td>
-      <td class="tdata"><%= @praness.deadline %></td>
-      <td class="tdata"><%= @praness.withdrawal %></td>
-      <td class="tdata"><%= @praness.payment %></td>
+    <tr class="show-tr">
+      <td class="show-td"><%= @praness.ssid_change %></td>
+      <td class="show-td"><%= @praness.ssid_1 %></td>
+      <td class="show-td"><%= @praness.pass_1 %></td>
+      <td class="show-td"><%= @praness.ssid_2 %></td>
+      <td class="show-td"><%= @praness.pass_2 %></td>
     </tr>
     </table>
 
-    <table class="table">
-    <tr class="table-row">
-      <th class="thead">解約日</th>
-      <th class="thead">返却在庫に対する備考</th>
-      <th class="thead">備考</th>
+    <table class="show-table">
+    <tr class="show-tr">
+      <th class="show-th">請求額</th>
+      <th class="show-th">請求開始月</th>
+      <th class="show-th">請求開始締日</th>
+      <th class="show-th">店舗引落日</th>
+      <th class="show-th">入金日</th>
     </tr>
-    <tr class="table-row">
-      <td class="tdata"><%= @praness.cancel %></td>
-      <td class="tdata"><%= @praness.return_remarks %></td>
-      <td class="tdata"><%= @praness.remarks %></td>
+    <tr class="show-tr">
+      <td class="show-td"><%= @praness.claim %></td>
+      <td class="show-td"><%= @praness.start %></td>
+      <td class="show-td"><%= @praness.deadline %></td>
+      <td class="show-td"><%= @praness.payment %></td>
+      <td class="show-td"><%= @praness.payment %></td>
     </tr>
     </table>
-  <button class="edit-btn">
-    <%= link_to "編集", edit_praness_path, class: "link" %>
-  </button>
+
+    <table class="show-table">
+    <tr class="show-tr">
+      <th class="show-th">解約日</th>
+      <th class="show-th">返却在庫に対する備考</th>
+      <th class="show-th">備考</th>
+      <th class="show-th"></th>
+    </tr>
+    <tr class="show-tr">
+      <td class="show-td"><%= @praness.cancel %></td>
+      <td class="show-td"><%= @praness.return_remarks %></td>
+      <td class="show-td"><%= @praness.remarks %></td>
+      <td class="show-td"><%= link_to "編集", edit_praness_path, class: "show-link" %></td>
+    </tr>
+    </table>
+
   </main>
 </div>
 

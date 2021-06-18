@@ -21,7 +21,15 @@ class Paypay < ApplicationRecord
   end
 
   def self.updatable_attributes
-    ["store_prop_id", "user_id","status","get_date", "payment","client"]
+    ["store_prop_id",
+      "user_id",
+      "status",
+      "get_date",
+      "payment",
+      "client",
+      "valuation_profit",
+      "actual_profit"
+    ]
   end
 
 end

@@ -32,8 +32,9 @@ class Dmer < ApplicationRecord
       "status",
       "before_status",
       "description",
-      "settlement_payment",
-      "picture_payment"
+      "settlement",
+      "valuation_profit",
+      "actual_profit"
     ]
   end
 

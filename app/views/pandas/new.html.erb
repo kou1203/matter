@@ -6,113 +6,221 @@
   <h1 class="show-title"><%= @store_prop.name %>情報入力（フードパンダ）</h1>
       
 
-  <%= form_with model: @panda,url:  store_prop_pandas_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
-    <%= render "shared/error_messages", model: f.object %>
-    <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
-    <div class="form-group">
 
-      <div class="form-interval">
-      <%= f.label :customer_num, "管理番号", class: "form-text" %><span class="note">（※必須）</span><br>
-      <%= f.text_field :customer_num , class: "form-input" %>
-    </div>
-      <div class="form-interval">
-        <%= f.label :client, "商流", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.select :client, {"Delivery Hero Japan(株)": "Delivery Hero Japan(株)"} ,{}, {class: "form-input"} %>
-      </div>
-      <div class="form-interval">
-        <%= f.label :get_date, "獲得日", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.date_field :get_date , class: "form-input" %>
-      </div>
+          <%= form_with url: import_pandas_path do |f| %>
+      <table class="import-table">
+        <tr>
+          <td class="import-choose"><%= f.label :file, "獲得情報をCSVで取り込み",class:"import-label" %></td>
+          <td class="import-choose"><%= f.file_field :file, accept: ".csv", class: "import-file" %></td>
+          <td class="import-result"><%= f.submit  "インポート", class: "import-btn",data: { confirm: 'インポートしますか？' } %></td>
+        <td class="search-reset"><%= link_to "パンダ一覧に戻る", pandas_path ,class: "reset-link" %></td>
+        </tr>
+      </table>
+    <% end %>
+
+  <%= form_with model: @panda,url:  store_prop_pandas_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
+      <%= render "shared/error_messages", model: f.object %>
+      <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
+    <table>
+    <%# 一列目 %>
+      <tr>
+      <th>
+        <div class="form-interval">
+          <%= f.label :grid_id, "Grid ID", class: "form-text" %><br>
+          <%= f.text_field :grid_id , class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :client, "商流", class: "form-text" %><span class="note">（※必須）</span><br>
+          <%= f.select :client, {"Delivery Hero Japan(株)": "Delivery Hero Japan(株)"} ,{}, {class: "form-input"} %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :food_category, "料理区分", class: "form-text" %><span class="note">（※必須）</span><br>
+          <%= f.select :food_category, {"中華料理": "中華料理", "韓国料理": "韓国料理", "台湾料理": "台湾料理", "和食料理": "和食料理","インド料理": "インド料理", "タイ料理": "タイ料理", "西洋料理": "西洋料理", "アジア料理": "アジア料理", "アメリカ料理": "アメリカ料理","イタリア料理": "イタリア料理","フランス料理": "フランス料理","ベトナム料理": "ベトナム料理", "ハンバーガー": "ハンバーガー", "ピザ": "ピザ", "サンドイッチ": "サンドイッチ","チキン": "チキン","海鮮料理": "海鮮料理", "ベジタリアン": "ベジタリアン", "健康食品": "健康食品", "ケーキ・パン": "ケーキ・パン", "ドリンク": "ドリンク", "その他海外料理": "その他海外料理" } , {}, {class: "form-input"} %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :ghost_flag, "ゴースト店名", class: "form-text" %><br>
+          <%= f.text_field :ghost_flag,  class: "form-input" %>
+        </div>
+      </th>
+
+      </tr>
+    <%# 二列目 %>
+      <tr>
+      <th>
+        <div class="form-interval">
+          <%= f.label :get_date, "獲得日", class: "form-text" %><span class="note">（※必須）</span><br>
+          <%= f.date_field :get_date , class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
         <div class="form-interval">
           <%= f.label :user_id, "獲得者", class: "form-text" %><span class="note">（※必須）</span><br>
-          <%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "form-input"})%>
+          <%= f.collection_select(:user_id, User.all, :id, :name,{}, {class: "form-input"})%>
         </div>
+      </th>
 
+      <th>
+        <div class="form-interval">
+          <%= f.label :status, "ステータス", class: "form-text" %><span class="note">（※必須）</span><br>
+          <%= f.select :status, {"未申請": "未申請","情報不備": "情報不備", "リード作成待ち": "リード作成待ち",
+          "リード変更待ち": "リード変更待ち","取引先変更待ち": "取引先変更待ち","DocuSign送付待ち": "DocuSign送付待ち",
+          "DocuSign締結待ち　不備": "DocuSign締結待ち　不備", "DocuSign締結待ち": "DocuSign締結待ち",
+          "品質チェック待ち　不備": "品質チェック待ち　不備","品質チェック待ち": "品質チェック待ち",
+          "端末配送待ち　不備": "端末配送待ち　不備","端末配送待ち": "端末配送待ち", "トレーニング待ち　不備": "トレーニング待ち　不備",
+          "トレーニング待ち": "トレーニング待ち","掲載開始待ち": "掲載開始待ち",
+          "入金待ち": "入金待ち", "入金済": "入金済"} ,{}, {class: "form-input"} %>
+        </div>
+      </th>
+
+      <th>
+      
+      </th>
+
+      </tr>
+    <%# 三列目 %>
+      <tr>
+      <th>
+        <div class="form-interval">
+          <%= f.label :docu_sign_send, "ドキュサイン送付", class: "form-text" %><br>
+          <%= f.date_field :docu_sign_send ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :docu_sign_done, "ドキュサイン完了日", class: "form-text" %><br>
+          <%= f.date_field :docu_sign_done ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :quality_check, "品質チェック日", class: "form-text" %><br>
+          <%= f.date_field :quality_check, class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :delivery_arrangements, "配送手配完了日", class: "form-text" %><br>
+          <%= f.date_field :delivery_arrangements, class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :traning, "トレーニング完了日", class: "form-text" %><br>
+          <%= f.date_field :traning, class: "form-input" %>
+        </div>
+      </th>
+
+      </tr>
+    <%# 四列目 %>
+      <tr>
+      <th>
+        <div class="form-interval">
+          <%= f.label :confirm_ball, "不備対応ボール", class: "form-text" %><br>
+          <%= f.select :confirm_ball, {"営業": "営業", "管理": "管理", "クライアント": "クライアント"}, {include_blank: true}, {class: "form-input"} %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :confirm_date, "不備確認日", class: "form-text" %><br>
+          <%= f.date_field :confirm_date, class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :confirmer, "不備確認者", class: "form-text" %><br>
+          <%= f.text_field :confirmer, class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :deficiency, "不備詳細", class: "form-text" %>
+          <%= f.text_field :deficiency, class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :deficiency_result, "不備対応内容", class: "form-text" %>
+          <%= f.text_field :deficiency_result, class: "form-input" %>
+        </div>
+      </th>
+      </tr>
+    <%# 五列目 %>
+      <tr>
+        <th>
+          <div class="form-interval">
+            <%= f.label :solution_date, "不備解消日", class: "form-text" %><br>
+            <%= f.date_field :solution_date, class: "form-input" %>
+          </div>
+        </th>
+        <th>
+          <div class="form-interval">
+            <%= f.label :result_point, "成果地点", class: "form-text" %><br>
+            <%= f.date_field :result_point, class: "form-input" %>
+          </div>
+        </th>
+        <th>
+          <div class="form-interval">
+            <%= f.label :payment, "入金日", class: "form-text" %><br>
+            <%= f.date_field :payment, class: "form-input" %>
+          </div>
+        </th>
+        <th>
+          <div class="form-interval">
+            <%= f.label :remarks, "備考", class: "form-text" %><br>
+            <%= f.text_field :remarks ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+
+    <th>
       <div class="form-interval">
-        <%= f.label :food_category, "料理区分", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.select :food_category, {"中華料理": "中華料理", "韓国料理": "韓国料理", "台湾料理": "台湾料理", "和食料理": "和食料理","インド料理": "インド料理", "タイ料理": "タイ料理", "西洋料理": "西洋料理", "アジア料理": "アジア料理", "アメリカ料理": "アメリカ料理","イタリア料理": "イタリア料理","フランス料理": "フランス料理","ベトナム料理": "ベトナム料理", "ハンバーガー": "ハンバーガー", "ピザ": "ピザ", "サンドイッチ": "サンドイッチ","チキン": "チキン","海鮮料理": "海鮮料理", "ベジタリアン": "ベジタリアン", "健康食品": "健康食品", "ケーキ・パン": "ケーキ・パン", "ドリンク": "ドリンク", "その他海外料理": "その他海外料理" } , {}, {class: "form-input"} %>
+        <%= f.label :valuation_profit, "評価売上", class: "form-text" %><br>
+        <%= f.number_field :valuation_profit , class: "form-input" %>
       </div>
+    </th>
 
+    <th>
+      <div class="form-interval">
+        <%= f.label :actual_profit, "実売上", class: "form-text" %><br>
+        <%= f.number_field :actual_profit , class: "form-input" %>
+      </div>
+    </th>
 
-    </div>
-
-  <div class="form-group">
-
-    <div class="form-interval">
-      <%= f.label :grid_id, "Grid ID", class: "form-text" %><br>
-      <%= f.text_field :grid_id , class: "form-input" %>
-    </div>
-    <div class="form-interval">
-      <%= f.label :status, "審査ステータス", class: "form-text" %><span class="note">（※必須）</span><br>
-      <%= f.select :status, {"キャリア確認待ち": "キャリア確認待ち", "不備解消待ち": "不備解消待ち",
-      "リード作成待ち": "リード作成待ち", "リード変更待ち": "リード変更待ち", "DocuSign締結待ち": "DocuSign締結待ち", "DocuSign送付待ち": "DocuSign送付待ち", "入金待ち": "入金待ち", "NG": "NG"} ,{}, {class: "form-input"} %>
-    </div>
-
-    <div class="form-interval">
-      <%= f.label :before_status, "前回ステータス", class: "form-text" %><span class="note">（※必須）</span><br>
-      <%= f.select :before_status, {"キャリア確認待ち": "キャリア確認待ち", "不備解消待ち": "不備解消待ち",
-      "リード作成待ち": "リード作成待ち", "リード変更待ち": "リード変更待ち", "DocuSign締結待ち": "DocuSign締結待ち", "DocuSign送付待ち": "DocuSign送付待ち", "入金待ち": "入金待ち", "NG": "NG"} ,{}, {class: "form-input"} %>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="form-interval">
-      <%= f.label :image_status, "掲載画像ステータス", class: "form-text" %><span class="note">（※必須）</span><br>
-      <%= f.select :image_status, {"○": "○", "DocuSign締結待ち": "DocuSign締結待ち", "DocuSign送付待ち": "DocuSign送付待ち","リード作成待ち": "リード作成待ち", "リード変更待ち": "リード変更待ち","入金待ち": "入金待ち", "無": "無", "-(出前館)": "-(出前館)", "保留": "保留"} ,{}, {class: "form-input"} %>
-    </div>
-
-    <div class="form-interval">
-      <%= f.label :ghost_flag, "ゴーストフラグ", class: "form-text" %><span class="note">（※必須）</span><br>
-      <%= f.text_field :ghost_flag ,class: "form-input" %>
-    </div>
-    <div class="form-interval">
-      <%= f.label :payment, "入金日", class: "form-text" %><br>
-      <%= f.date_field :payment, class: "form-input" %>
-    </div>
-
-    <div class="form-interval">
-      <%= f.label :tarminal_send, "端末配送完了日", class: "form-text" %><br>
-      <%= f.date_field :tarminal_send, class: "form-input" %>
-    </div>
-
-    <div class="form-interval">
-      <%= f.label :result_point, "成果地点", class: "form-text" %><br>
-      <%= f.date_field :result_point, class: "form-input" %>
-    </div>
-    
-  </div>
-
-  <div class="form-group">
-    <div class="form-interval">
-      <%= f.label :comfirmer, "ボール", class: "form-text" %><br>
-      <%= f.select :comfirmer, {"管理": "管理", "営業": "営業", "クライアント": "クライアント"}, {} ,{class: "form-input"} %>
-    </div>
-
-    <div class="form-interval">
-      <%= f.label :remarks, "不備確認備考", class: "form-text" %><span class="note">（※必須）</span><br>
-      <%= f.text_field :remarks ,class: "form-input" %>
-    </div>
-
-    <div class="form-interval">
-      <%= f.label :confirm_date, "不備確認日", class: "form-text" %><span class="note">（※必須）</span><br>
-      <%= f.date_field :confirm_date ,class: "form-input" %>
-    </div>
-
-    <div class="form-interval">
-      <%= f.label :payment, "入金完了日", class: "form-text" %><span class="note">（※必須）</span><br>
-      <%= f.date_field :payment ,class: "form-input" %>
-    </div>
-    <div class="form-interval">
-      <%= f.label :docu_sign_send, "ドキュサイン送付", class: "form-text" %><br>
-      <%= f.date_field :docu_sign_send ,class: "form-input" %>
-    </div>
-    <div class="form-interval">
-      <%= f.label :docu_sign_done, "ドキュサイン完了日", class: "form-text" %><br>
-      <%= f.date_field :docu_sign_done ,class: "form-input" %>
-    </div>
-  </div>
+      </tr>
+      </table>
     <%= f.submit "登録", class: "form-btn" %>
   <% end %>
-
   </main>
 </div>
+
+
+
+
+
+
+
+
+    
+
+
+
+

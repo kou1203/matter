@@ -7,13 +7,11 @@ class PandasController < ApplicationController
 
   def new 
     @panda = Panda.new 
-    @users = User.where(retiree: nil)
     @store_prop = StoreProp.find(params[:store_prop_id])
   end 
   
   def create 
     @panda = Panda.new(panda_params)
-    @users = User.whre(retiree: nil)
     @store_prop = StoreProp.find(params[:store_prop_id])
     @panda.save 
     if @panda.save 
@@ -30,7 +28,7 @@ class PandasController < ApplicationController
 
   def edit 
     @panda = Panda.find(params[:id])
-    @users = User.where(retiree: nil)
+    @users = User.all
   end 
   
   def update 
@@ -47,32 +45,38 @@ class PandasController < ApplicationController
   end 
 
   def import 
+    Panda.import(params[:file])
+    redirect_to pandas_path
   end 
 
   private 
 
   def panda_params
     params.require(:panda).permit(
-      :customer_num, 
+      :grid_id,
+      :food_category,
       :client,
       :user_id,
       :store_prop_id,
       :get_date,
-      :payment,
-      :status,
-      :before_status,
-      :image_status, 
-      :grid_id,
-      :food_category,
       :ghost_flag,
       :docu_sign_send,
       :docu_sign_done,
-      :confirmer,
-      :solution_date,
+      :quality_check,
+      :delivery_arrangements,
+      :traning,
+      :result_point,
+      :payment,
       :remarks,
+      :status, 
+      :confirm_ball,
       :confirm_date,
-      :tarminal_send,
-      :result_point
+      :confirmer,
+      :deficiency,
+      :deficiency_result,
+      :solution_date,
+      :valuation_profit,
+      :actual_profit
     )
   end 
 

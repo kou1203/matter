@@ -4,47 +4,140 @@
   <%= render "shared/side_bar" %>
   <main class="right-bar">
     <h1 class="sub-title">サミットエナジー一覧</h1>
-  <div class="search-body">
-    <label class="search-label"><%= Date.today.month %>月獲得数</label>
-    <label class="search-label"><%= Summit.all.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</label>
+
+    <h2 class="show-title"><%= Date.today.month %>月獲得数 <%= Summit.all.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</h2>
+
     <%= search_form_for @q do |f| %>
-      <div class="search-form">
-      <%= f.label :user_id, "獲得者", class: "search-label" %>
-      <%= f.select :user_id_eq, options_from_collection_for_select(User.where(retiree: nil), :id, :name), {prompt: "なし"},{class: "search-input"} %>
-      <%= f.label :get_date, "獲得日付" %>
-      <%= f.date_field :get_date_gteq, class: "search-date" %>
-      <%= f.label :get_date, "〜", class: "search-label" %>
-      <%= f.date_field :get_date_lt, class: "search-date" %>
-      <%= f.label :status, "審査ステータス" %>
-      <%= f.select :status, options_from_collection_for_select(Summit.all, :status, :status), {include_blank: true} ,{class: "search-date"} %>
-      <%= f.submit "検索" %>
-      <label><%= link_to "検索リセット", summits_path, class: "reset-link" %></label>
-      </div>
+    <table class="search-frame">
+      <tr class="search-tr">
+        <th class="search-th"><%= f.label :power_company, "電力会社", class: "search-label" %></th>
+        <td class="search-td"><%= f.select :power_company_eq, options_from_collection_for_select(Summit.select(:power_company).distinct, :power_company, :power_company), {include_blank: true},{class: "search-input"} %></td>
+
+        <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
+        <td class="search-td"><%= f.select :user_id_eq, options_from_collection_for_select(User.joins(:summits).where.not(base: "退職").distinct, :id, :name), {prompt: "全体"},{class: "search-input"} %></td>
+
+        <th class="search-th"><%= f.label :get_date, "獲得日付", class: "search-label" %></th>
+
+        <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %>〜</td>
+
+        <td class="search-td"><%= f.date_field :get_date_lteq, class: "search-date" %></td>
+
+        <th class="search-th"><%= f.label :get_date, "獲得月", class: "search-label" %></th>
+      <td class="search-td"><%= f.date_select :get_date_during_month,discard_day: true ,class: "search-date" %></td>
+      </tr>
+      <tr class="search-tr">
+        <th class="search-th"><%= f.label :status, "審査ステータス", class: "search-label" %></th>
+
+        <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(Summit.select(:status).distinct, :status, :status), {include_blank: true} ,{class: "search-input"} %></td>
+
+        <th class="search-th"><%= f.label :start, "利用開始", class: "search-label" %></th>
+        <td class="search-td"><%= f.date_field :start_gteq, class: "search-date" %>〜</td>
+        <td class="search-td"><%= f.date_field :start_lteq, class: "search-date" %></td>
+
+        <th class="search-th"><%= f.label :contract_type, "契約種別", class: "search-label" %></th>
+
+        <td class="search-td"><%= f.select :contract_type_eq, options_from_collection_for_select(Summit.select(:contract_type).distinct, :contract_type, :contract_type), {include_blank: true} ,{class: "search-input"} %></td>
+
+        <td class="search-result"><%= f.submit "絞込み" , class: "search-btn" %></td>
+
+        <td class="search-reset"><%= link_to "絞込みリセット", summits_path, class: "reset-link" %></td>
+      </tr>
+    </table>
     <% end %>
-  </div>
-  <div class="csv">
-  <button class="header-btn">
-    <%= link_to "新規店舗登録", new_store_prop_path, class: "btn-text" %>
-  </button>
-  </div>
-  
- 
-  
-    <table class="table">
-    <tr class="table-row">
-      <th class="thead"></th>
-      <th class="thead"><%= sort_link(@q, :get_date, "獲得日") %></th>
-      <th class="thead">法人/個人</th>
-      <th class="thead">店舗名</th>
+    <hr>
+    <% low_voltage_sum = 0 %>
+    <% lamp_sum = 0 %>
+    <% amount_sum = 0 %>
+    <% low_voltage_count = 0 %>
+    <% lamp_count = 0 %>
+    <% amount_count = 0 %>
+    <% @summits.each do |summit| %>
+      <% if summit.contract_type == "低圧電力" && summit.contract_cap != nil %>
+        <% low_voltage_sum += summit.contract_cap %>
+        <% low_voltage_count += 1 %>
+      <% elsif summit.contract_type != "低圧電力" && summit.contract_cap != nil %>
+        <% lamp_sum += summit.contract_cap %>
+        <% lamp_count += 1 %>
+      <% end %>
+      <% if summit.amount_use != nil %>
+      <% amount_sum += summit.amount_use %>
+      <% amount_count += 1 %>
+      <% end %>
+    <% end %>
+    
+    <table class="search-table">
+      <div class="sub-title">※入金金額は後日実装予定</div>
+      <h2 class="sub-title">表示範囲：<%= @summits.minimum(:get_date) %>〜<%= @summits.maximum(:get_date) %></h2>
+      <tr class="search-tr">
+        <th class="search-th">契約数</th>
+        <th class="search-th">従量電灯合計</th>
+        <th class="search-th">低圧電力合計</th>
+        <th class="search-th">使用量合計</th>
+      </tr>
+      <tr>
+        <td class="search-td"><%= @summits.length  %>件</td>
+        <td class="search-td"><%= lamp_sum %>kWh</td>
+        <td class="search-td"><%= low_voltage_sum %>kW</td>
+        <td class="search-td"><%= amount_sum %>kWh</td>
+        
+      </tr>
+      <tr>
+        <th class="search-th"></th>
+        <th class="search-th">従量電灯平均</th>
+        <th class="search-th">低圧電力平均</th>
+        <th class="search-th">使用量平均</th>
+      </tr>
+      <tr>
+        <td class="search-td"></td>
+        <% if lamp_count == 0 %>
+        <td class="search-td">0kWh</td>
+        <% else %>
+        <td class="search-td"><%= lamp_sum / lamp_count %>kWh</td>
+        <% end %>
+        <% if low_voltage_count == 0 %>
+        <td class="search-td">0kW</td>
+        <% else %>
+        <td class="search-td"><%= low_voltage_sum / low_voltage_count %>kW</td>
+        <% end %>
+        <% if amount_count == 0 %>
+        <td class="search-td">0kWh</td>
+        <% else %>
+        <td class="search-td"><%= amount_sum / amount_count %>kWh</td>
+        <% end %>
+        <td class="search-reset"><%= link_to "月毎のデータ", summit_customer_props_path, class: "reset-link" %></td>
+      </tr>
+    </table>
+
+    <table class="index-table">
+    <tr class="index-tr">
+      <th class="index-th"></th>
+      <th class="index-th"></th>
+      <th class="index-th"><%= sort_link(@q, :get_date, "獲得日",{},{class: "index-sort"}) %></th>
+      <th class="index-th"><%= sort_link(@q, :start, "利用開始日",{},{class: "index-sort"}) %></th>
+      <th class="index-th">電力会社</th>
+      <th class="index-th">店舗名</th>
+      <th class="index-th">契約種別</th>
+      <th class="index-th">契約容量</th>
+      <th class="index-th">使用量</th>
+      <th class="index-th"><%= sort_link(@q, :user_id,"獲得者",{},{class: "index-sort"}) %></th>
+      <th class="index-th">審査ステータス</th>
     </tr>
     <% @summits.each do |summit| %>
-    <tr class="table-row">
-      <td class="tdata"><%= link_to "詳細",  summit_path(summit.id) ,class: "link" %></td>
-      <td class="tdata"><%= summit.get_date %></td>
-      <td class="tdata"><%= summit.store_prop.race %></td>
-      <td class="tdata"><%= summit.store_prop.name %></td>
+    <tr class="index-tr">
+      <td class="index-td"><%= link_to "削除",  summit_path(summit.id),method: :delete, data: {confirm: "削除しますか？"} ,class: "index-link" %></td>
+      <td class="index-td"><%= link_to "詳細",  summit_customer_prop_path(summit.summit_customer_prop.id) ,class: "index-link" %></td>
+      <td class="index-td"><%= summit.get_date %></td>
+      <td class="index-td"><%= summit.start %></td>
+      <td class="index-td"><%= summit.power_company %></td>
+      <td class="index-td"><%= summit.summit_customer_prop.store_prop.name %></td>
+      <td class="index-td"><%= summit.contract_type %></td>
+      <td class="index-td"><%= summit.contract_cap %><%= summit.contract_cap_unit %></td>
+      <td class="index-td"><%= summit.amount_use %>kWh</td>
+      <td class="index-td"><%= summit.user.name %></td>
+      <td class="index-td"><%= summit.status %></td>
     </tr>
     <% end %>
     </table>
+    
 </div>
   </main>

@@ -4,7 +4,16 @@
   <%= render "shared/side_bar" %>
   <main class="right-bar">
   <h1 class="show-title">新規情報入力（店舗）</h1>
-
+      <%= form_with url: import_store_props_path do |f| %>
+    <table class="import-table">
+      <tr class="import-tr">
+        <th class="import-choose"><%= f.label :file, "店舗情報：CSV取り込み" %></th>
+        <td class="import-choose"><%= f.file_field :file, accept: '.csv', class: "import-file"  %></td>
+        <td class="import-result"><%= f.submit "インポート", class: "import-btn", data: {confirm: "インポートしますか？"} %></td>
+        <td class="search-reset"><%= link_to "店舗一覧に戻る", root_path ,class: "reset-link" %></td>
+      </tr>
+    </table>
+      <% end %>
   <%= form_with model: @store_prop, class: "form-frame", local: true do |f| %>
   <%= render "shared/error_messages",model: f.object %>
     <table>

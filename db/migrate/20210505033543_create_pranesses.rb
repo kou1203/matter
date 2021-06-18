@@ -6,7 +6,7 @@ class CreatePranesses < ActiveRecord::Migration[6.0]
       t.references :user                , foreign_key: true 
       t.references :store_prop          , foreign_key: true 
       t.date :get_date                  , null: false 
-      t.date :payment                   , null: false 
+      t.date :payment                , null: false 
       t.string :status                  , null: false
       t.references :stock               , foreign_key: true 
       t.date :ssid_change
@@ -20,7 +20,6 @@ class CreatePranesses < ActiveRecord::Migration[6.0]
       t.integer :claim                  , null: false 
       t.date :start                     , null: false 
       t.date :deadline                  , null: false 
-      t.date :withdrawal                , null: false 
     end
   end
 end

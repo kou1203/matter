@@ -74,6 +74,7 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
+    chartkick (4.0.4)
     childprocess (3.0.0)
     concurrent-ruby (1.1.8)
     crass (1.0.6)
@@ -87,10 +88,13 @@ GEM
     ffi (1.15.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    hash-deep-merge (0.1.1)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
+    lazy_high_charts (1.6.1)
+      hash-deep-merge
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -229,8 +233,10 @@ DEPENDENCIES
   bootsnap (>= 1.4.2)
   byebug
   capybara (>= 2.15)
+  chartkick
   devise
   jbuilder (~> 2.7)
+  lazy_high_charts
   listen (>= 3.0.5, < 3.2)
   mysql2 (>= 0.4.4)
   puma (~> 3.11)

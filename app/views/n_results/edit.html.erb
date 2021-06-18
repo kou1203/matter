@@ -1,0 +1,1393 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1 class="show-title">N終着編集</h1>
+  <%= form_with model: @n_result,  class: "form-frame", local: true do |f| %>
+    <%= render "shared/error_messages", model: f.object %>
+            <div class="form-interval">
+        </div>
+    <h2 class="item-title">基本情報</h2>
+  <table>
+    <tr>
+      <th>
+        <div class="form-interval">
+        <%= f.label :date, "日付", class: "form-text" %><span class="note">（※必須）</span><br>
+        <%= f.date_field :date , class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :ojt, "帯同者", class: "form-text" %><br>
+        <%= f.text_field :ojt ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :area, "地域", class: "form-text" %><span class="note">（郵送,内勤の場合基準値未反映）</span><br>
+        <%= f.text_field :area , class: "form-input" %>
+        </div>
+      </th>
+
+
+
+      <th>
+        <%= f.label :profit, "売上", class: "form-text" %><span class="note">（※必須）</span><br>
+        <%= f.number_field :profit,class: "form-input"%>
+      </th>
+    </tr>
+    </table>
+  <%# 商材 %>
+  <h2 class="item-title">獲得内訳</h2>
+    <table>
+   <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :terrestrial_new, "地上新規", class: "form-text" %><br>
+        <%= f.number_field :terrestrial_new  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :satellite_new, "衛星新規", class: "form-text" %><br>
+        <%= f.number_field :satellite_new ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :account_new, "新規口座", class: "form-text" %><br>
+        <%= f.number_field :account_new ,class: "form-input" %>
+        </div>
+      </th>
+
+    
+      <th>
+        <div class="form-interval">
+        <%= f.label :credit_new, "新規クレジット", class: "form-text" %><br>
+        <%= f.number_field :credit_new ,class: "form-input" %>
+        </div>
+      </th>
+    <tr>
+
+    </tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :terrestrial_transfer, "地上転入", class: "form-text" %><br>
+        <%= f.number_field :terrestrial_transfer,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :satellite_transfer, "衛星転入", class: "form-text" %><br>
+        <%= f.number_field :satellite_transfer ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :free_transfer, "無料転入", class: "form-text" %><br>
+        <%= f.number_field :free_transfer ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :contract_change, "契約変更", class: "form-text" %><br>
+        <%= f.number_field :contract_change ,class: "form-input" %>
+        </div>
+      </th>
+
+
+
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :resum_payment, "支払い再開", class: "form-text" %><br>
+        <%= f.number_field :resum_payment ,class: "form-input" %>
+        </div>
+      </th>
+      <th>
+        <div class="form-interval">
+        <%= f.label :resum_payment_account, "再開口座", class: "form-text" %><br>
+        <%= f.number_field :resum_payment_account ,class: "form-input" %>
+        </div>
+      </th>
+      <th>
+        <div class="form-interval">
+        <%= f.label :resum_payment_credit, "再開レジット", class: "form-text" %><br>
+        <%= f.number_field :resum_payment_credit ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :resum_payment_num, "再開口数", class: "form-text" %><br>
+        <%= f.number_field :resum_payment_num ,class: "form-input" %>
+        </div>
+      </th>
+
+    </tr>
+    <tr>
+      <th>
+        <div class="form-interval">
+        <%= f.label :payment_change, "支払い変更", class: "form-text" %><br>
+        <%= f.number_field :payment_change ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :receipt_num, "収納口数", class: "form-text" %><br>
+        <%= f.number_field :receipt_num ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :receipt_account, "収納口座", class: "form-text" %><br>
+        <%= f.number_field :receipt_account ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :office, "事業所", class: "form-text" %><br>
+        <%= f.number_field :office ,class: "form-input" %>
+        </div>
+      </th>
+    </tr> 
+
+    </tr>
+  </table>
+  <h2 class="item-title">基準値</h2>
+  <table>
+  <%# 大枠基準値 %>
+    <tr>
+    
+      <th>
+        <div class="form-interval">
+        <%= f.label :first_visit, "前半訪問", class: "form-text" %><br>
+        <%= f.number_field :first_visit ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :first_reply, "前半対応", class: "form-text" %><br>
+        <%= f.number_field :first_reply ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :first_interview, "前半対面", class: "form-text" %><br>
+        <%= f.number_field :first_interview ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :first_full_talk, "前半フル", class: "form-text" %><br>
+        <%= f.number_field :first_full_talk ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :first_write, "前半帳票記入", class: "form-text" %><br>
+        <%= f.number_field :first_write ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :first_get, "前半獲得", class: "form-text" %><br>
+        <%= f.number_field :first_get ,class: "form-input" %>
+        </div>
+      </th>
+
+    </tr>
+  
+    <tr>
+    
+      <th>
+        <div class="form-interval">
+        <%= f.label :latter_visit, "後半訪問", class: "form-text" %><br>
+        <%= f.number_field :latter_visit , class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :latter_reply, "後半対応", class: "form-text" %><br>
+        <%= f.number_field :latter_reply , class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :latter_interview, "後半対面", class: "form-text" %><br>
+        <%= f.number_field :latter_interview ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :latter_full_talk, "後半フル", class: "form-text" %><br>
+        <%= f.number_field :latter_full_talk  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :latter_write, "後半帳票記入", class: "form-text" %><br>
+        <%= f.number_field :latter_write  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :latter_get, "後半獲得", class: "form-text" %><br>
+        <%= f.number_field :latter_get  ,class: "form-input" %>
+        </div>
+      </th>
+    </tr>
+    <tr>
+    
+      <th>
+        <div class="form-interval">
+        <%= f.label :night_visit, "夜間訪問", class: "form-text" %><br>
+        <%= f.number_field :night_visit , class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :night_reply, "夜間対応", class: "form-text" %><br>
+        <%= f.number_field :night_reply , class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :night_interview, "夜間対面", class: "form-text" %><br>
+        <%= f.number_field :night_interview ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :night_full_talk, "夜間フル", class: "form-text" %><br>
+        <%= f.number_field :night_full_talk  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :night_write, "夜間帳票記入", class: "form-text" %><br>
+        <%= f.number_field :night_write  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :night_get, "夜間獲得", class: "form-text" %><br>
+        <%= f.number_field :night_get  ,class: "form-input" %>
+        </div>
+      </th>
+    </tr>
+  </table>
+  <h2 class="item-title">既存基準値</h2>
+  <%# 既存基準値 %>
+  <table>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :existing_visit, "既存応答", class: "form-text" %><br>
+        <%= f.number_field :existing_visit ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :existing_interview, "既存対面", class: "form-text" %><br>
+        <%= f.number_field :existing_interview , class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :existing_full_talk, "既存フル", class: "form-text" %><br>
+        <%= f.number_field :existing_full_talk , class: "form-input", min: 0 %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :existing_get, "既存獲得", class: "form-text" %><br>
+        <%= f.number_field :existing_get , class: "form-input", min: 0 %>
+        </div>
+      </th>
+
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :contract_change_interview, "契変・支変（応答）", class: "form-text" %><br>
+        <%= f.number_field :contract_change_interview , class: "form-input", min: 0 %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :contract_change_full_talk, "契変・支変（フル）", class: "form-text" %><br>
+        <%= f.number_field :contract_change_full_talk , class: "form-input", min: 0 %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :contract_change_get, "契変・支変（獲得）", class: "form-text" %><br>
+        <%= f.number_field :contract_change_get , class: "form-input", min: 0 %>
+        </div>
+      </th>
+
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :resum_payment_interview, "再開（応答）", class: "form-text" %><br>
+        <%= f.number_field :resum_payment_interview , class: "form-input", min: 0 %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :resum_payment_full_talk, "再開（フル）", class: "form-text" %><br>
+        <%= f.number_field :resum_payment_full_talk , class: "form-input", min: 0 %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :resum_payment_get, "再開（獲得）", class: "form-text" %><br>
+        <%= f.number_field :resum_payment_get, class: "form-input", min: 0 %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :transfer_get, "住所変更（獲得）", class: "form-text" %><br>
+        <%= f.number_field :transfer_get, class: "form-input", min: 0 %>
+        </div>
+      </th>
+
+    </tr>
+  </table>
+  <%# 訪問内訳 %>
+  <h2 class="item-title">訪問内訳</h2>
+  <table>
+    <tr>
+      <th>
+        <div class="form-interval">
+        <%= f.label :detached_a, "戸建応答", class: "form-text" %><br>
+        <%= f.number_field :detached_a ,class: "form-input" %>
+        </div>
+      </th>
+      
+      <th>
+        <div class="form-interval">
+        <%= f.label :detached_get, "戸建獲得", class: "form-text" %><br>
+        <%= f.number_field :detached_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :apartment_a, "マンション応答", class: "form-text" %><br>
+        <%= f.number_field :apartment_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :apartment_get, "マンション獲得", class: "form-text" %><br>
+        <%= f.number_field :apartment_get  ,class: "form-input" %>
+        </div>
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <div class="form-interval">
+        <%= f.label :family_apartment_a, "ファミリーマンション応答", class: "form-text" %><br>
+        <%= f.number_field :family_apartment_a ,class: "form-input" %>
+        </div>
+      </th>
+      
+      <th>
+        <div class="form-interval">
+        <%= f.label :family_apartment_get, "ファミリーマンション獲得", class: "form-text" %><br>
+        <%= f.number_field :family_apartment_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :auto_single_a, "オートロック（単身）応答", class: "form-text" %><br>
+        <%= f.number_field :auto_single_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :auto_single_get, "オートロック（単身）獲得", class: "form-text" %><br>
+        <%= f.number_field :auto_single_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :auto_family_a, "オートロック（ファミリー）応答", class: "form-text" %><br>
+        <%= f.number_field :auto_family_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :auto_family_get, "オートロック（ファミリー）獲得", class: "form-text" %><br>
+        <%= f.number_field :auto_family_get  ,class: "form-input" %>
+        </div>
+      </th>
+    </tr>
+  
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :catch_call, "キャッチ声かけ", class: "form-text" %><br>
+        <%= f.number_field :catch_call ,class: "form-input", min: 0,value: 0 %>
+        </div>
+      </th>
+      
+      <th>
+        <div class="form-interval">
+        <%= f.label :catch_interview, "キャッチ契約対象", class: "form-text" %><br>
+        <%= f.number_field :catch_interview  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :catch_full_talk, "キャッチフル", class: "form-text" %><br>
+        <%= f.number_field :catch_full_talk  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :catch_get, "キャッチ獲得", class: "form-text" %><br>
+        <%= f.number_field :catch_get  ,class: "form-input" %>
+        </div>
+      </th>
+    </tr>
+  
+    <tr>
+      <th>
+        <div class="form-interval">
+        <%= f.label :office_visit, "事業所応答", class: "form-text" %><br>
+        <%= f.number_field :office_visit ,class: "form-input", min: 0,value: 0 %>
+        </div>
+      </th>
+      
+      <th>
+        <div class="form-interval">
+        <%= f.label :office_interview, "事業所対面", class: "form-text" %><br>
+        <%= f.number_field :office_interview  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :office_full_talk, "事業所フル", class: "form-text" %><br>
+        <%= f.number_field :office_full_talk  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :office_get, "事業所獲得", class: "form-text" %><br>
+        <%= f.number_field :office_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+    </tr>
+    <tr>
+      <th>
+        <div class="form-interval">
+        <%= f.label :close_soon, "ガチャ閉め", class: "form-text" %><br>
+        <%= f.number_field :close_soon  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :door_take, "ドア取り数", class: "form-text" %><br>
+        <%= f.number_field :door_take  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :auto_through_a, "オート突破（a）", class: "form-text" %><br>
+        <%= f.number_field :auto_through_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :auto_through_b, "オート突破（b）", class: "form-text" %><br>
+        <%= f.number_field :auto_through_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :easy, "ペロ数", class: "form-text" %><br>
+        <%= f.number_field :easy  ,class: "form-input" %>
+        </div>
+      </th>
+      
+    </tr>
+  
+ 
+  </table>
+  <h2 class="item-title">切り返し（基本切り返し）</h2>
+  <table>
+  <%# 切り返し（基本切り返し） %>
+ 
+  
+    <tr>
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_watch_a, "みない（A）", class: "form-text" %><br>
+        <%= f.number_field :no_watch_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_watch_b, "みない（B）", class: "form-text" %><br>
+        <%= f.number_field :no_watch_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_watch_c, "みない（C）", class: "form-text" %><br>
+        <%= f.number_field :no_watch_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_watch_get, "みない（獲得）", class: "form-text" %><br>
+        <%= f.number_field :no_watch_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+  
+    <tr>
+      <th>
+        <div class="form-interval">
+        <%= f.label :not_everyone_a, "みんなやってない、罰則ない（A）", class: "form-text" %><br>
+        <%= f.number_field :not_everyone_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :not_everyone_b, "みんなやってない、罰則ない（B）", class: "form-text" %><br>
+        <%= f.number_field :not_everyone_b  ,class: "form-input" %>
+        </div>
+      </th>
+      <th>
+        <div class="form-interval">
+        <%= f.label :not_everyone_c, "みんなやってない、罰則ない（C）", class: "form-text" %><br>
+        <%= f.number_field :not_everyone_c  ,class: "form-input" %>
+        </div>
+      </th>
+      <th>
+        <div class="form-interval">
+        <%= f.label :not_everyone_get, "みんなやってない、罰則ない（獲得）", class: "form-text" %><br>
+        <%= f.number_field :not_everyone_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+    </tr>
+  
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :throw_away_a, "すぐ引っ越す・TV捨てる（A）", class: "form-text" %><br>
+        <%= f.number_field :throw_away_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :throw_away_b, "すぐ引っ越す・TV捨てる（B）", class: "form-text" %><br>
+        <%= f.number_field :throw_away_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :throw_away_c, "すぐ引っ越す・TV捨てる（C）", class: "form-text" %><br>
+        <%= f.number_field :throw_away_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :throw_away_get, "すぐ引っ越す・TV捨てる（獲得）", class: "form-text" %><br>
+        <%= f.number_field :throw_away_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+  
+    <tr>
+      <th>
+        <div class="form-interval">
+        <%= f.label :suddenly_a, "急に来て書けない（A）", class: "form-text" %><br>
+        <%= f.number_field :suddenly_a  ,class: "form-input" %>
+        </div>
+      </th>
+      <th>
+        <div class="form-interval">
+        <%= f.label :suddenly_b, "急に来て書けない（B）", class: "form-text" %><br>
+        <%= f.number_field :suddenly_b  ,class: "form-input" %>
+        </div>
+      </th>
+      <th>
+        <div class="form-interval">
+        <%= f.label :suddenly_c, "急に来て書けない（C）", class: "form-text" %><br>
+        <%= f.number_field :suddenly_c  ,class: "form-input" %>
+        </div>
+      </th>
+      <th>
+        <div class="form-interval">
+        <%= f.label :suddenly_get, "急に来て書けない（獲得）", class: "form-text" %><br>
+        <%= f.number_field :suddenly_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+    </tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :another_contract_a, "他で契約・単身赴任（A）", class: "form-text" %><br>
+        <%= f.number_field :another_contract_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :another_contract_b, "他で契約・単身赴任（B）", class: "form-text" %><br>
+        <%= f.number_field :another_contract_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :another_contract_c, "他で契約・単身赴任（C）", class: "form-text" %><br>
+        <%= f.number_field :another_contract_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :another_contract_get, "他で契約・単身赴任（獲得）", class: "form-text" %><br>
+        <%= f.number_field :another_contract_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+
+    <tr>
+    
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_thank_you_a, "する気ない・結構です（A）", class: "form-text" %><br>
+        <%= f.number_field :no_thank_you_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_thank_you_b, "する気ない・結構です（B）", class: "form-text" %><br>
+        <%= f.number_field :no_thank_you_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_thank_you_c, "する気ない・結構です（C）", class: "form-text" %><br>
+        <%= f.number_field :no_thank_you_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_thank_you_get, "する気ない・結構です（獲得）", class: "form-text" %><br>
+        <%= f.number_field :no_thank_you_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :late_night_a, "夜遅い（A）", class: "form-text" %><br>
+        <%= f.number_field :late_night_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :late_night_b, "夜遅い（B）", class: "form-text" %><br>
+        <%= f.number_field :late_night_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :late_night_c, "夜遅い（C）", class: "form-text" %><br>
+        <%= f.number_field :late_night_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :late_night_get, "夜遅い（獲得）", class: "form-text" %><br>
+        <%= f.number_field :late_night_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+    </tr>
+
+  </table>
+  <h2 class="item-title">切り返し（先延ばし）</h2>
+  <table>
+    <tr>
+    
+      <th>
+        <div class="form-interval">
+        <%= f.label :busy_a, "忙しい・今度にして（A）", class: "form-text" %><br>
+        <%= f.number_field :busy_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :busy_b, "忙しい・今度にして（B）", class: "form-text" %><br>
+        <%= f.number_field :busy_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :busy_c, "忙しい・今度にして（C）", class: "form-text" %><br>
+        <%= f.number_field :busy_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :busy_get, "忙しい・今度にして（獲得）", class: "form-text" %><br>
+        <%= f.number_field :busy_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :do_it_get, "書いておく・郵送する（A）", class: "form-text" %><br>
+        <%= f.number_field :do_it_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :do_it_a, "書いておく・郵送する（B）", class: "form-text" %><br>
+        <%= f.number_field :do_it_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :do_it_b, "書いておく・郵送する（C）", class: "form-text" %><br>
+        <%= f.number_field :do_it_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :do_it_c, "書いておく・郵送する（獲得）", class: "form-text" %><br>
+        <%= f.number_field :do_it_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+  
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :think_a, "調べる・検討・考えておく（A）", class: "form-text" %><br>
+        <%= f.number_field :think_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :think_b, "調べる・検討・考えておく（B）", class: "form-text" %><br>
+        <%= f.number_field :think_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :think_c, "調べる・検討・考えておく（C）", class: "form-text" %><br>
+        <%= f.number_field :think_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :think_get, "調べる・検討・考えておく（獲得）", class: "form-text" %><br>
+        <%= f.number_field :think_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+
+  </table>
+
+  <h2 class="item-title">切り返し（三者系）</h2>
+  <table>
+
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :partner_a, "旦那に・嫁に（A）", class: "form-text" %><br>
+        <%= f.number_field :partner_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :partner_b, "旦那に・嫁に（B）", class: "form-text" %><br>
+        <%= f.number_field :partner_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :partner_c, "旦那に・嫁に（C）", class: "form-text" %><br>
+        <%= f.number_field :partner_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :partner_get, "旦那に・嫁に（獲得）", class: "form-text" %><br>
+        <%= f.number_field :partner_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :company_a, "会社に・会社寮（A）", class: "form-text" %><br>
+        <%= f.number_field :company_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :company_b, "会社に・会社寮（B）", class: "form-text" %><br>
+        <%= f.number_field :company_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :company_c, "会社に・会社寮（C）", class: "form-text" %><br>
+        <%= f.number_field :company_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :company_get, "会社に・会社寮（獲得）", class: "form-text" %><br>
+        <%= f.number_field :company_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :student_a, "学生・未成年親に（A）", class: "form-text" %><br>
+        <%= f.number_field :student_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :student_b, "学生・未成年親に（B）", class: "form-text" %><br>
+        <%= f.number_field :student_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :student_c, "学生・未成年親に（C）", class: "form-text" %><br>
+        <%= f.number_field :student_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :student_get, "学生・未成年親に（獲得）", class: "form-text" %><br>
+        <%= f.number_field :student_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+    </tr>
+
+  </table>
+  <h2 class="item-title">切り返し（スキル）</h2>
+  <table>
+
+    <tr>
+    
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_money_a, "生活苦・お金ない（A）", class: "form-text" %><br>
+        <%= f.number_field :no_money_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_money_b, "生活苦・お金ない（B）", class: "form-text" %><br>
+        <%= f.number_field :no_money_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_money_c, "生活苦・お金ない（C）", class: "form-text" %><br>
+        <%= f.number_field :no_money_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_money_get, "生活苦・お金ない（獲得）", class: "form-text" %><br>
+        <%= f.number_field :no_money_get  ,class: "form-input" %>
+        </div>
+      </th>
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :not_here_a, "ここの者じゃない・本人に（A）", class: "form-text" %><br>
+        <%= f.number_field :not_here_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :not_here_b, "ここの者じゃない・本人に（B）", class: "form-text" %><br>
+        <%= f.number_field :not_here_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :not_here_c, "ここの者じゃない・本人に（C）", class: "form-text" %><br>
+        <%= f.number_field :not_here_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :not_here_get, "ここの者じゃない・本人に（獲得）", class: "form-text" %><br>
+        <%= f.number_field :not_here_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_payment_a, "口座・クレ・現金無し（A）", class: "form-text" %><br>
+        <%= f.number_field :no_payment_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_payment_b, "口座・クレ・現金無し（B）", class: "form-text" %><br>
+        <%= f.number_field :no_payment_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_payment_c, "口座・クレ・現金無し（C）", class: "form-text" %><br>
+        <%= f.number_field :no_payment_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_payment_get, "口座・クレ・現金無し（獲得）", class: "form-text" %><br>
+        <%= f.number_field :no_payment_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :foreign_a, "外人（A）", class: "form-text" %><br>
+        <%= f.number_field :foreign_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :foreign_b, "外人（B）", class: "form-text" %><br>
+        <%= f.number_field :foreign_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :foreign_c, "外人（C）", class: "form-text" %><br>
+        <%= f.number_field :foreign_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :foreign_get, "外人（獲得）", class: "form-text" %><br>
+        <%= f.number_field :foreign_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+  </table>
+  <h2 class="item-title">切り返し（その他）</h2>
+  <table>
+
+    <tr>
+    
+      <th>
+        <div class="form-interval">
+        <%= f.label :difficult_deal_a, "無言・対応困難（A）", class: "form-text" %><br>
+        <%= f.number_field :difficult_deal_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :difficult_deal_b, "無言・対応困難（B）", class: "form-text" %><br>
+        <%= f.number_field :difficult_deal_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :difficult_deal_c, "無言・対応困難（C）", class: "form-text" %><br>
+        <%= f.number_field :difficult_deal_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :difficult_deal_get, "無言・対応困難（獲得）", class: "form-text" %><br>
+        <%= f.number_field :difficult_deal_get  ,class: "form-input" %>
+        </div>
+      </th>
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :past_trouble_a, "過去トラ（A）", class: "form-text" %><br>
+        <%= f.number_field :past_trouble_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :past_trouble_b, "過去トラ（B）", class: "form-text" %><br>
+        <%= f.number_field :past_trouble_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :past_trouble_c, "過去トラ（C）", class: "form-text" %><br>
+        <%= f.number_field :past_trouble_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :past_trouble_get, "過去トラ（獲得）", class: "form-text" %><br>
+        <%= f.number_field :past_trouble_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :trial_hope_a, "裁判希望（A）", class: "form-text" %><br>
+        <%= f.number_field :trial_hope_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :trial_hope_b, "裁判希望（B）", class: "form-text" %><br>
+        <%= f.number_field :trial_hope_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :trial_hope_c, "裁判希望（C）", class: "form-text" %><br>
+        <%= f.number_field :trial_hope_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :trial_hope_get, "裁判希望（獲得）", class: "form-text" %><br>
+        <%= f.number_field :trial_hope_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :other_a, "その他（A）", class: "form-text" %><br>
+        <%= f.number_field :other_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :other_b, "その他（B）", class: "form-text" %><br>
+        <%= f.number_field :other_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :other_c, "その他（C）", class: "form-text" %><br>
+        <%= f.number_field :other_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :other_get, "その他（獲得）", class: "form-text" %><br>
+        <%= f.number_field :other_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+  </table>
+    
+  <h2 class="item-title">切り返し（機器なし）</h2>
+  <table>
+
+    <tr>
+    
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_tv_a, "TVない（A）", class: "form-text" %><br>
+        <%= f.number_field :no_tv_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_tv_b, "TVない（B）", class: "form-text" %><br>
+        <%= f.number_field :no_tv_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_tv_c, "TVない（C）", class: "form-text" %><br>
+        <%= f.number_field :no_tv_c  ,class: "form-input" %>
+        </div>
+      </th>
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_tv_excavation, "TVない（発掘）", class: "form-text" %><br>
+        <%= f.number_field :no_tv_excavation  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_tv_excavation_ng, "TVない（発掘後NG）", class: "form-text" %><br>
+        <%= f.number_field :no_tv_excavation_ng  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :no_tv_get, "TVない（獲得）", class: "form-text" %><br>
+        <%= f.number_field :no_tv_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :breaking_tv_a, "TV故障している（A）", class: "form-text" %><br>
+        <%= f.number_field :breaking_tv_a  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :breaking_tv_b, "TV故障している（B）", class: "form-text" %><br>
+        <%= f.number_field :breaking_tv_b  ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :breaking_tv_c, "TV故障している（C）", class: "form-text" %><br>
+        <%= f.number_field :breaking_tv_c  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+
+    </tr>
+    <tr>
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :breaking_tv_excavation, "TV故障している（発掘）", class: "form-text" %><br>
+        <%= f.number_field :breaking_tv_excavation  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :breaking_tv_excavation_ng, "TV故障している（発掘後NG）", class: "form-text" %><br>
+        <%= f.number_field :breaking_tv_excavation_ng  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+        <%= f.label :breaking_tv_get, "TV故障している（獲得）", class: "form-text" %><br>
+        <%= f.number_field :breaking_tv_get  ,class: "form-input" %>
+        </div>
+      </th>
+
+
+    </tr>
+  </table>
+    
+    <%= f.submit "登録",data: { confirm: "登録してもよろしいですか？" }, class: "form-btn" %>
+  <% end %>
+  </main>
+</div>

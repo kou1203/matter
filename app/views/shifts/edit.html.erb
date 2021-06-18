@@ -1,0 +1,96 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <%= form_with model: @shift, class: "form-frame", local: true do |f| %>
+  <h1 class="form-text">シフト入力編集</h1>
+      <%= f.number_field :year, class: "form-year" %>
+      <%= f.label :year, "年", class: "form-text" %>
+      <%= f.number_field :month, class: "form-month" %>
+      <%= f.label :year, "月", class: "form-text" %>
+      <%= f.label :user_id, "　訪問員：", class: "form-text" %>
+      <%= f.collection_select(:user_id, User.all, :id,:name,{},{class: "form-user"}) %>
+    <table>
+  <%# 一列目 %>
+    <tr>
+    <th>
+      <div class="form-interval">
+      <%= f.label :house_work, "内勤日数", class: "form-text" %><br>
+      <%= f.number_field :house_work, class: "form-input" %>
+      </div>
+    </th>
+
+    <th>
+      <div class="form-interval">
+      <%= f.label :ojt, "OJT日数", class: "form-text" %><br>
+      <%= f.number_field :ojt,class: "form-input" %>
+      </div>
+    </th>
+
+    <th>
+      <div class="form-interval">
+      <%= f.label :cashless_new, "キャッシュレス新規日数", class: "form-text" %><br>
+      <%= f.number_field :cashless_new, class: "form-input" %>
+      </div>
+    </th>
+    <th>
+      <div class="form-interval">
+      <%= f.label :cashless_settlement, "キャッシュレス決済日数", class: "form-text" %><br>
+      <%= f.number_field :cashless_settlement, class: "form-input" %>
+      </div>
+    </th>
+    </tr>
+  <%# 二列目 %>
+    <tr>
+    <th>
+      <div class="form-interval">
+        <%= f.label :praness, "ぷらねす日数", class: "form-text" %><br>
+        <%= f.number_field :praness,class: "form-input"  %>
+      </div>
+    </th>
+
+    <th>
+      <div class="form-interval">
+        <%= f.label :summit, "サミットエナジー日数", class: "form-text" %><br>
+        <%= f.number_field :summit,class: "form-input"  %>
+      </div>
+    </th>
+
+    <th>
+      <div class="form-interval">
+        <%= f.label :panda, "フードパンダ日数", class: "form-text" %><br>
+        <%= f.number_field :panda,class: "form-input"  %>
+      </div>
+    </th>
+
+    <th>
+      <div class="form-interval">
+        <%= f.label :goal, "目標売上日数", class: "form-text" %><br>
+        <%= f.number_field :goal,class: "form-input"  %>
+      </div>
+    </th>
+
+
+    </tr>
+
+   <tr>
+
+    <th>
+      <div class="form-interval">
+        <%= f.label :n, "N対策日数", class: "form-text" %><br>
+        <%= f.number_field :n,value: 0,class: "form-input"  %>
+      </div>
+    </th>
+
+    <th>
+      <div class="form-interval">
+        <%= f.label :rakuten_casa, "楽天カーサ日数", class: "form-text" %><br>
+        <%= f.number_field :rakuten_casa,value: 0,class: "form-input"  %>
+      </div>
+    </th>
+    </table>
+    <%= f.submit "登録", class: "form-btn" %>
+  <% end %>
+  </main>
+</div>

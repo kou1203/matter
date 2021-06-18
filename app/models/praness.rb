@@ -11,7 +11,6 @@ class Praness < ApplicationRecord
     validates :claim
     validates :start
     validates :deadline
-    validates :withdrawal
     validates :payment
     validates :customer_num, length: { in: 20..20 }
     with_options uniqueness: true do 

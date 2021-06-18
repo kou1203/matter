@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class MultiSummitTest < ActiveSupport::TestCase
+class TroubleNTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

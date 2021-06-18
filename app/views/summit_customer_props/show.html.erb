@@ -1,0 +1,153 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1 class="sub-title">サミットエナジー詳細</h1>
+  <div class="main">
+  <div>
+    <h1 class="show-title">店舗情報</h1>
+    <table class="show-table">
+    <tr class="show-tr">
+    <th class="show-th">店舗名</th>
+    <td class="show-td"><%= @store_prop.name %></td>
+    </tr>
+    <th class="show-th">属性</th>
+    <td class="show-td"><%= @store_prop.race %></td>
+    <th class="show-th">業種</th>
+    <td class="show-td"><%= @store_prop.industry %></td>
+    <tr class="show-tr">
+    </tr>
+    <tr class="show-tr">
+    <tr class="show-tr">
+    <tr class="show-tr">
+    <th class="show-th">店舗代表</th>
+    <td class="show-td"><%= @store_prop.person_main %></td>
+    <th class="show-th">店舗担当</th>
+    <td class="show-td"><%= @store_prop.person_sub %></td>
+    </tr>
+    </table>
+    <table class="show-table">
+    <tr class="show-tr">
+    <th class="show-th">店舗住所</th>
+    <td class="show-td-long"><%= @store_prop.prefecture %><%= @store_prop.city %><%= @store_prop.municipalities %><%= @store_prop.address %><%= @store_prop.building_name %></td>
+    </table>
+    <h1 class="show-title">連絡先</h1>
+    <table class="show-table">
+    <th class="show-th">電話番号1</th>
+    <td class="show-td"><%= @store_prop.phone_number_1 %></td>
+    <th class="show-th">電話番号2</th>
+    <td class="show-td"><%= @store_prop.phone_number_2 %></td>
+    <th class="show-th">好適時間</th>
+    <td class="show-td"><%= @store_prop.suitable_time %></td>
+    </tr>
+    <tr class="show-tr">
+    <th class="show-th">備考</th>
+    <td class="show-td"><%= @store_prop.description %></td>
+    <td class="show-td"><%= link_to "編集", edit_store_prop_path(@store_prop.id), class: "show-link" %></td>
+    </tr>
+    </table>
+
+    <hr>
+    <h1 class="show-title">サミットエナジー</h1>
+    <table class="show-table">
+    <tr class="show-tr">
+      <th class="show-th">前電気会社</th>
+      <th class="show-th">需要家名</th>
+      <th class="show-th">請求宛名</th>
+      <th class="show-th">契約者名</th>
+      <th class="show-th">お客様番号</th>
+    </tr>
+
+
+    <tr class="show-tr">
+      <td class="show-td"><%= @summit_customer_prop.before_electric %></td>
+      <td class="show-td"><%= @summit_customer_prop.claim_address %></td>
+      <td class="show-td"><%= @summit_customer_prop.claim_house %></td>
+      <td class="show-td"><%= @summit_customer_prop.contract_name %></td>
+      <td class="show-td"><%= @summit_customer_prop.customer_num %></td>
+    </tr>
+      <td class="show-td"><%= link_to "編集", edit_summit_customer_prop_path(@summit_customer_prop.id), class: "show-link" %></td>
+            <td class="search-reset">
+      <%= link_to '契約内容を追加する', summit_customer_prop_summits_new_path(@summit_customer_prop.id), class: "reset-link" %>
+    </td>
+    </table>
+
+    <h1 class="show-title">契約情報</h1>
+    <table class="table">
+    <tr class="show-tr">
+
+    </tr>
+    <tr class="show-tr">
+
+    </tr>
+
+
+
+    <table class="table">
+    </tr>
+    </table>
+
+    <% m_count = 0 %>
+    <% @summits.each do |summit| %>
+    <table class="show-table">
+    <% m_count += 1 %>
+    <div class="show-title"><%= m_count %>件目</div>
+        <tr class="show-tr">
+      <th class="show-th">獲得者</th>
+      <th class="show-th">獲得日</th>
+      <th class="show-th">プラン名</th>
+      <th class="show-th">ステータス</th>
+      <th class="show-th">供給地点番号</th>
+    </tr>
+    <tr class="show-tr">
+      <td class="show-td"><%= summit.user.name %></td>
+      <td class="show-td"><%= summit.get_date %></td>
+      <td class="show-td"><%= summit.plan %></td>
+      <td class="show-td"><%= summit.status %></td>
+      <td class="show-td"><%= summit.supply_num %></td>
+    </tr>
+    <tr class="show-tr">
+      <th class="show-th">メニュー</th>
+      <th class="show-th">契約種別</th>
+      <th class="show-th">契約容量</th>
+      <th class="show-th">使用量</th>
+      <th class="show-th">契約番号</th>
+    </tr>
+    <tr class="show-tr">
+      <td class="show-td"><%= summit.menu %></td>
+      <td class="show-td"><%= summit.contract_type %></td>
+      <td class="show-td"><%= summit.contract_cap %><%= summit.contract_cap_unit %></td>
+      <td class="show-td"><%= summit.amount_use %>kWh</td>
+      <td class="show-td"><%= summit.contract_num %></td>
+    </tr>
+    <tr class="show-tr">
+      <th class="show-th">電力会社</th>
+      <th class="show-th">利用開始日</th>
+      <th class="show-th">入金月</th>
+      <th class="show-th">予想請求額</th>
+      <th class="show-th">請求額</th>
+    </tr>
+    <tr class="show-tr">
+      <td class="show-td"><%= summit.power_company %></td>
+      <td class="show-td"><%= summit.start %></td>
+      <td class="show-td"><%= summit.payment %></td>
+      <td class="show-td"><%= summit.claim_expected %></td>
+      <td class="show-td"><%= summit.claim %></td>
+
+    </tr>
+    </tr>
+    <tr class="show-tr">
+      <td class="show-td"><%= link_to "編集", edit_summit_path(summit.id) , class: "show-link" %></td>
+    </tr>
+
+    
+
+    
+    <% end %>
+    </table>
+  
+
+  </main>
+</div>
+

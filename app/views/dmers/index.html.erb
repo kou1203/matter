@@ -3,48 +3,72 @@
   <%= render "shared/side_bar" %>
   <div class="right-bar">
   <h1 class="sub-title">dメル一覧</h1>
-  <div class="search-body">
-    <%= search_form_for @q do |f| %>
-    <label class="search-label"><%= Date.today.month %>月獲得数</label>
-    <label class="search-label"><%= Dmer.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</label>
-      <%= f.label :user_id, "獲得者" %>
-      <%= f.select :user_id_eq, options_from_collection_for_select(User.all, :id, :name),{include_blank: true},{class: "search-input"} %>
-      <%= f.label :get_date, "獲得日付" %>
-      <%= f.date_field :get_date_gteq %>
-      <%= f.label :get_date, "〜" %>
-      <%= f.date_field :get_date_lt %>
-        <%= f.label :status, "審査ステータス", class: "search-label" %>
-        <%= f.select :status_eq, {"未審査": "未審査", "自社不備": "自社不備","上位店NG": "上位店NG","審査完了": "審査完了",
-      "決済完了": "決済完了", "入金確認済": "入金確認済"},{}, {class: "search-input"} %>
-            <%= f.label :client, "商流", class: "search-label" %>
-        <%= f.select :client_eq, {"マックスサポート": "マックスサポート", "USEN": "USEN","メルヴェイユ": "メルヴェイユ",
-      "ウィンクルム": "ウィンクルム"}, {}, {class: "search-input"} %>
-      <%= f.submit "検索" %>
-    <% end %>
-  </div>
-    <div class="csv">
-    <%= form_with url: import_dmers_path do |f| %>
-    <button><%= link_to "新規店舗登録", new_store_prop_path, class: "btn-text" %></button>
-      <%= f.label :file, "dメル情報：CSV取り込み",class:"csv-title" %>
-      <%= f.file_field :file, accept: ".csv", class: "csv-btn" %>
-      <%= f.submit  "インポート", class: "csv-submit" %>
-    </div>
-    <% end %>
+    <h2 class="show-title"><%= Date.today.month %>月獲得数 <%= Dmer.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</h2>
+    
+
+
+        <%= search_form_for @q do |f| %>
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
+          <td class="search-td"><%= f.select :user_id_eq, options_from_collection_for_select(User.where.not(base: "退職"), :id, :name),{include_blank: true},{class: "search-input"} %></td>
+          <th class="search-th"><%= f.label :get_date, "獲得日付", class: "search-label" %></th>
+          <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %>~</td>
+          <td class="search-td"><%= f.date_field :get_date_lteq, class: "search-date" %></td>
+        </tr>
+        <tr class="search-tr">
+          <th class="search-th"><%= f.label :status, "審査ステータス", class: "search-label" %></th>
+          <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(Dmer.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
+
+          <th class="search-th"><%= f.label :before_status, "前回ステータス", class: "search-label" %></th>
+          <td class="search-td"><%= f.select :before_status_eq, options_from_collection_for_select(Dmer.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
+          <th class="search-th"><%= f.label :client, "商流", class: "search-label" %></th>
+          <td class="search-td"><%= f.select :client_eq, {"マックスサポート": "マックスサポート", "USEN": "USEN","メルヴェイユ": "メルヴェイユ",
+      "ウィンクルム": "ウィンクルム"}, {include_blank: true}, {class: "search-input"} %></td>
+
+          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
+          <td class="search-reset"><%= link_to "絞込みリセット", dmers_path, class: "reset-link" %></td>
+        </tr>
+      </table>
+        <% end %>
+
+      <hr>
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-th">獲得件数</th>
+          <th class="search-th">未審査数</th>
+          <th class="search-th">審査完了</th>
+          <th class="search-th">決済完了</th>
+          <th class="search-th">自社不備</th>
+        </tr>
+        <tr class="search-tr">
+          <td class="search-td"><%= @dmers.length %></td>
+          <td class="search-td"><%= @dmers.where(status: '未審査').length %></td>
+          <td class="search-td"><%= @dmers.where(status: '審査完了' ).length %></td>
+          <td class="search-td"><%= @dmers.where(status: '決済完了' ).length %></td>
+          <td class="search-td"><%= @dmers.where(status: '自社不備' ).length %></td>
+        </tr>
+      </table>
+    
       <table class="table">
     <tr class="table-row">
-      <th class="thead"></th>
-      <th class="thead"><%= sort_link(@q, :get_date, "獲得日") %></th>
-      <th class="thead">法人/個人</th>
-      <th class="thead">店舗名</th>
-      <th class="thead">審査ステータス</th>
+      <th class="index-th"></th>
+      <th class="index-th"><%= sort_link(@q, :get_date, "獲得日",{}, {class: "index-sort"}) %></th>
+      <th class="index-th">法人/個人</th>
+      <th class="index-th">店舗名</th>
+      <th class="index-th">獲得者</th>
+      <th class="index-th">審査ステータス</th>
+      <th class="index-th">前回ステータス</th>
     </tr>
     <% @dmers.each do |dmer| %>
-    <tr class="table-row">
-      <td class="tdata"><%= link_to "詳細",  dmer_path(dmer.id) ,class: "link" %></td>
-      <td class="tdata"><%= dmer.get_date %></td>
-      <td class="tdata"><%= dmer.store_prop.race %></td>
-      <td class="tdata"><%= dmer.store_prop.name %></td>
-      <td class="tdata"><%= dmer.status %></td>
+    <tr class="index-tr">
+      <td class="index-td"><%= link_to "詳細",  dmer_path(dmer.id) ,class: "index-link" %></td>
+      <td class="index-td"><%= dmer.get_date %></td>
+      <td class="index-td"><%= dmer.store_prop.race %></td>
+      <td class="index-td"><%= dmer.store_prop.name %></td>
+      <td class="index-td"><%= dmer.user.name %></td>
+      <td class="index-td"><%= dmer.status %></td>
+      <td class="index-td"><%= dmer.before_status %></td>
     </tr>
     <% end %>
     </table>

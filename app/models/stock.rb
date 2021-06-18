@@ -5,13 +5,9 @@ class Stock < ApplicationRecord
   has_one :return_history
 
   with_options presence: true do 
-    validates :status
     validates :stock_num 
-    validates :mac_num 
-    validates :mail
     with_options uniqueness: true do 
       validates :stock_num 
-      validates :mac_num 
     end 
   end 
 

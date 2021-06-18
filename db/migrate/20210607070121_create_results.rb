@@ -1,0 +1,155 @@
+class CreateResults < ActiveRecord::Migration[6.0]
+  def change
+    create_table :results do |t|
+      t.references :user             , foreign_key: true
+      t.date :date                      , null: false
+      t.integer :profit
+      t.string :area                    , null: false 
+      t.string :shift                    , null: false 
+      t.string :ojt 
+      t.integer :dmer                    
+      t.integer :dmer_settlement         
+      t.integer :aupay
+      t.integer :aupay_settlement
+      t.integer :paypay
+      t.integer :panda
+      t.integer :praness
+      t.integer :summit
+      t.integer :first_visit              , null: false
+      t.integer :first_interview          , null: false
+      t.integer :first_full_talk          , null: false
+      t.integer :first_get                , null: false
+      t.integer :latter_visit             , null: false
+      t.integer :latter_interview         , null: false
+      t.integer :latter_full_talk         , null: false
+      t.integer :latter_get               , null: false
+      t.integer :cafe_visit          
+      t.integer :cafe_interview      
+      t.integer :cafe_full_talk      
+      t.integer :cafe_get            
+      t.integer :other_food_visit          
+      t.integer :other_food_interview      
+      t.integer :other_food_full_talk      
+      t.integer :other_food_get            
+      t.integer :car_visit          
+      t.integer :car_interview      
+      t.integer :car_full_talk      
+      t.integer :car_get            
+      t.integer :other_retail_visit          
+      t.integer :other_retail_interview      
+      t.integer :other_retail_full_talk      
+      t.integer :other_retail_get            
+      t.integer :hair_salon_visit          
+      t.integer :hair_salon_interview      
+      t.integer :hair_salon_full_talk      
+      t.integer :hair_salon_get            
+      t.integer :manipulative_visit          
+      t.integer :manipulative_interview      
+      t.integer :manipulative_full_talk      
+      t.integer :manipulative_get            
+      t.integer :other_service_visit          
+      t.integer :other_service_interview      
+      t.integer :other_service_full_talk      
+      t.integer :other_service_get    
+
+      t.integer :cashless_what_interview      
+      t.integer :cashless_what_full_talk      
+      t.integer :cashless_what_get            
+      t.integer :cashless_who_interview      
+      t.integer :cashless_who_full_talk      
+      t.integer :cashless_who_get            
+      t.integer :cashless_just_get_interview      
+      t.integer :cashless_just_get_full_talk      
+      t.integer :cashless_just_get_get            
+      t.integer :cashless_paypay_only_interview      
+      t.integer :cashless_paypay_only_full_talk      
+      t.integer :cashless_paypay_only_get            
+      t.integer :cashless_airpay_only_interview      
+      t.integer :cashless_airpay_only_full_talk      
+      t.integer :cashless_airpay_only_get            
+      t.integer :cashless_card_only_interview      
+      t.integer :cashless_card_only_full_talk      
+      t.integer :cashless_card_only_get            
+      t.integer :cashless_yet_interview      
+      t.integer :cashless_yet_full_talk      
+      t.integer :cashless_yet_get            
+      t.integer :cashless_cash_only_interview      
+      t.integer :cashless_cash_only_full_talk      
+      t.integer :cashless_cash_only_get            
+      t.integer :cashless_busy_interview      
+      t.integer :cashless_busy_full_talk      
+      t.integer :cashless_busy_get            
+      t.integer :cashless_dull_interview      
+      t.integer :cashless_dull_full_talk      
+      t.integer :cashless_dull_get            
+      t.integer :cashless_lack_info_interview      
+      t.integer :cashless_lack_info_full_talk      
+      t.integer :cashless_lack_info_get            
+      t.integer :cashless_easy_interview      
+      t.integer :cashless_easy_full_talk      
+      t.integer :cashless_easy_get   
+      t.integer :cashless_other_interview      
+      t.integer :cashless_other_full_talk      
+      t.integer :cashless_other_get    
+
+      t.integer :summit_ng_detail
+      t.integer :summit_ng_cash
+      t.integer :summit_ng_building
+      t.integer :summit_reject_cash_interview      
+      t.integer :summit_reject_cash_full_talk      
+      t.integer :summit_reject_cash_get  
+      t.integer :summit_busy_interview      
+      t.integer :summit_busy_full_talk      
+      t.integer :summit_busy_get  
+      t.integer :summit_doubt_interview      
+      t.integer :summit_doubt_full_talk      
+      t.integer :summit_doubt_get  
+      t.integer :summit_yet_interview      
+      t.integer :summit_yet_full_talk      
+      t.integer :summit_yet_get  
+      t.integer :summit_not_change_interview      
+      t.integer :summit_not_change_full_talk      
+      t.integer :summit_not_change_get  
+      t.integer :summit_other_interview      
+      t.integer :summit_other_full_talk      
+      t.integer :summit_other_get  
+      t.integer :summit_easy_interview      
+      t.integer :summit_easy_full_talk      
+      t.integer :summit_easy_get  
+
+      t.integer :panda_not_need_interview      
+      t.integer :panda_not_need_full_talk      
+      t.integer :panda_not_need_get 
+      t.integer :panda_busy_interview      
+      t.integer :panda_busy_full_talk      
+      t.integer :panda_busy_get 
+      t.integer :panda_yet_interview      
+      t.integer :panda_yet_full_talk      
+      t.integer :panda_yet_get 
+      t.integer :panda_not_delivery_interview      
+      t.integer :panda_not_delivery_full_talk      
+      t.integer :panda_not_delivery_get 
+      t.integer :panda_not_increment_interview      
+      t.integer :panda_not_increment_full_talk      
+      t.integer :panda_not_increment_get 
+      t.integer :panda_not_margin_interview      
+      t.integer :panda_not_margin_full_talk      
+      t.integer :panda_not_margin_get 
+      t.integer :panda_dull_interview      
+      t.integer :panda_dull_full_talk      
+      t.integer :panda_dull_get 
+      t.integer :panda_lack_info_interview      
+      t.integer :panda_lack_info_full_talk      
+      t.integer :panda_lack_info_get 
+      t.integer :panda_food_neko_interview      
+      t.integer :panda_food_neko_full_talk      
+      t.integer :panda_food_neko_get 
+      t.integer :panda_other_interview      
+      t.integer :panda_other_full_talk      
+      t.integer :panda_other_get 
+      t.integer :panda_easy_interview      
+      t.integer :panda_easy_full_talk      
+      t.integer :panda_easy_get 
+    end
+  end
+end

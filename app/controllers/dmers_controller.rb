@@ -7,13 +7,13 @@ class DmersController < ApplicationController
 
   def new 
     @dmer = Dmer.new
-    @users = User.where(retiree: nil)
+    @users = User.all
     @store_prop = StoreProp.find(params[:store_prop_id])
   end 
   
   def create 
     @dmer = Dmer.new(dmer_params)
-    @users = User.where(retiree: nil)
+    @users = User.all
     @store_prop = StoreProp.find(params[:store_prop_id])
     @dmer.save 
     if @dmer.save 
@@ -30,7 +30,7 @@ class DmersController < ApplicationController
 
   def edit 
     @dmer = Dmer.find(params[:id])
-    @users = User.where(retiree: nil)
+    @users = User.all
   end 
   
   def update 
@@ -56,8 +56,9 @@ class DmersController < ApplicationController
       :status,
       :before_status,
       :description,
-      :settlement_payment,
-      :picture_payment
+      :settlement,
+      :valuation_profit,
+      :actual_profit    
     )
   end 
 end

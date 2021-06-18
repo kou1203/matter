@@ -11,6 +11,8 @@ class CreateAupays < ActiveRecord::Migration[6.0]
       t.string :before_status
       t.date :settlement
       t.string :description
+      t.integer :valuation_profit     ,null: false
+      t.integer :actual_profit        ,null: false
     end
     add_index :aupays, [:customer_num], unique: true
   end

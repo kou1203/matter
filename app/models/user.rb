@@ -5,9 +5,12 @@ class User < ApplicationRecord
   has_many :pranesses
   has_one :stock_history
   has_one :return_history
-  has_one :summit
-  has_one :aupay
-  has_one :paypay 
-  has_one :panda 
-        
+  has_many :summits
+  has_many :aupays
+  has_many :paypays 
+  has_many :pandas 
+  has_many :shifts
+  has_many :results
+  has_many :n_results
+  has_many :trouble_ns
 end

@@ -7,7 +7,11 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0]
       t.string :email,              null: false, default: ""
       t.string :encrypted_password, null: false, default: ""
       t.string :name, null: false
-      t.string :retiree
+      t.string :base
+      t.string :base_sub
+      t.string :team
+      t.string :position
+      t.string :position_sub
       
       ## Recoverable
       t.string   :reset_password_token
@@ -35,7 +39,7 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0]
       # t.datetime :locked_at
 
 
-      t.timestamps null: false
+    
     end
 
     add_index :users, :email,                unique: true

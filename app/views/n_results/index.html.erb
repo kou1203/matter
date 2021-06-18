@@ -1,0 +1,2666 @@
+<%= render "shared/header" %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1 class="sub-title">N利益表</h1>
+    <%# 検索 %>
+        <%= search_form_for @q do |f| %>
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-th"><%= f.label :user_name, "訪問員", class: "search-label" %></th>
+          <td class="search-td"><%= f.text_field :user_name_cont, class: "search-input" %></td>
+
+        <th class="search-th"><%= f.label :date, "日付（月）", class: "search-label" %></th>
+        <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true} ,{class: "search-date-select"} %></td>
+
+          <th class="search-th"><%= f.label :date, "日付（範囲）", class: "search-label" %></th>
+          <td class="search-td"><%= f.date_field :date_gteq, class: "search-date" %>~</td>
+          <td class="search-td"><%= f.date_field :date_lteq, class: "search-date" %></td>
+
+        </tr>
+        <tr class="search-tr">
+
+        <th class="search-th"><%= f.label :base, "拠点", class: "form-text" %></th>
+         <td class="search-td"><%= f.select :base_eq, options_from_collection_for_select(NResult.select(:base).distinct, :base, :base),{},{class: "search-input"} %></td>
+
+          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
+          <td class="search-reset"><%= link_to "絞込みリセット", n_results_path, class: "reset-link" %></td>
+        </tr>
+      </table>
+        <% end %>
+
+      <hr>
+    <% if @n_results.empty? %>
+    <h2 class="sub-title"><%= Date.today.month %>月早見表</h2>
+
+          <table class="n-result-table">
+      <% if @n_result_month.empty? %>
+      <% else %>
+
+    <%# 現状 %>
+        <tr class="n-result-tr">
+          <th class="n-result-th"><%= Date.today.month %>月現状</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          
+          <th class="n-result-th"></th>
+        </tr>
+        <tr class="n-result-tr">
+          <th class="n-result-th"><%= @n_result_month.minimum(:date).day %>日（<%= days[@n_result_month.minimum(:date).wday] %>）〜<%= @n_result_month.maximum(:date).day %>日（<%= days[@n_result_month.maximum(:date).wday] %>）</th>
+          <th class="n-result-th">拠点</th>
+          <th class="n-result-th">人員数</th>
+          <th class="n-result-th">総シフト数</th>
+          <th class="n-result-th">消化シフト数</th>
+          <th class="n-result-th">必達売上</th>
+          <th class="n-result-th">現状売上</th>
+          <th class="n-result-th">前月Ave</th>
+          <th class="n-result-th">前月売上</th>
+          <th class="n-result-th">前週Ave</th>
+          <th class="n-result-th">現状Ave</th>
+          <th class="n-result-th">Ave前週比</th>
+          <th class="n-result-th">Ave前月比</th>
+          <th class="n-result-th">売上終着予想</th>
+          <th class="n-result-th">必達売上との差</th>
+        </tr>
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）大江大介</th>
+          <th class="n-result-th">岡崎</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "岡崎"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "岡崎").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "岡崎").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "岡崎").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "岡崎").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "岡崎").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").average(:profit).round(1) - @n_result_before_month.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">多治見</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "多治見"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "多治見").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "多治見").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "多治見").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "多治見").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "多治見").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").average(:profit).round(1) - @n_result_before_month.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">名古屋中央</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "名古屋中央"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "名古屋中央").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "名古屋中央").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "名古屋中央").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "名古屋中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">豊田</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "豊田"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "豊田").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "豊田").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "豊田").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "豊田").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "豊田").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").average(:profit).round(1) - @n_result_before_month.where(base: "豊田").average(:profit).round(1)  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）後藤建介</th>
+          <th class="n-result-th">広域</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "広域").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "広域"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "広域").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "広域").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "広域").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "広域").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "広域").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "広域").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "広域").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "広域").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "広域").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "広域").average(:profit).round(1) - @n_result_before_month.where(base: "広域").average(:profit).round(1)  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">三重</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "三重").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "三重"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "三重").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "三重").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "三重").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "三重").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "三重").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "三重").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "三重").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "三重").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "三重").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "三重").average(:profit).round(1) - @n_result_before_month.where(base: "三重").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">豊橋</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊橋").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "豊橋"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊橋").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊橋").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "豊橋").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "豊橋").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "豊橋").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "豊橋").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊橋").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊橋").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "豊橋").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊橋").average(:profit).round(1) - @n_result_before_month.where(base: "豊橋").average(:profit).round(1)  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">一宮</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "一宮").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "一宮"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "一宮").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "一宮").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "一宮").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "一宮").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "一宮").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "一宮").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "一宮").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "一宮").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "一宮").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "一宮").average(:profit).round(1) - @n_result_before_month.where(base: "一宮").average(:profit).round(1)  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）磯部友宏</th>
+          <th class="n-result-th">北大阪エリア</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪エリア").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "北大阪エリア"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪エリア").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪エリア").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "北大阪エリア").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "北大阪エリア").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "北大阪エリア").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "北大阪エリア").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <% end %> 
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">北大阪公募</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪公募").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "北大阪公募"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪公募").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪公募").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "北大阪公募").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "北大阪公募").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "北大阪公募").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪公募").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "北大阪公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "北大阪公募").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">守口公募</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "守口公募").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "守口公募"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "守口公募").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "守口公募").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "守口公募").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "守口公募").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "守口公募").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "守口公募").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "守口公募").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "守口公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "守口公募").average(:profit).round(1) - @n_result_before_month.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">阪神</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "阪神").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "阪神"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "阪神").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "阪神").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "阪神").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "阪神").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "阪神").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "阪神").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "阪神").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "阪神").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "阪神").average(:profit).round(1) - @n_result_before_month.where(base: "阪神").average(:profit).round(1)  %></td> 
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">大阪中央</th>
+          <td class="n-result-td"><%= @n_result_month.where(base: "大阪中央").group(:user_id).length %></td>
+          <td class="n-result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "大阪中央"}).sum(:n) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "大阪中央").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "大阪中央").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "大阪中央").empty? %>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "大阪中央").average(:profit).round(1) %></td>
+          <% end %>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "大阪中央").sum(:profit) %></td>
+          <td class="n-result-td"></td>
+          <% if @n_result_before_month.where(base: "大阪中央").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_month.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "大阪中央").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "大阪中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "大阪中央").average(:profit).round(1) - @n_result_before_month.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+      <% end %>
+
+      </table>
+    <%# 1週目 %>  
+      <% if @n_result_week1.empty? %>
+      <% else %>
+      <table class="n-result-table">
+      
+        <tr class="n-result-tr">
+          <th class="n-result-th">1週目</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+        </tr>
+        <tr class="n-result-tr">
+          <th class="n-result-th"><%= @n_result_week1.minimum(:date).day %>日（<%= days[@n_result_week1.minimum(:date).wday] %>）〜<%= @n_result_week1.maximum(:date).day %>日（<%= days[@n_result_week1.maximum(:date).wday] %>）</th>
+          <th class="n-result-th">拠点</th>
+          <th class="n-result-th">人員数</th>
+          
+          <th class="n-result-th">消化シフト数</th>
+          <th class="n-result-th">必達売上</th>
+          <th class="n-result-th">1週目売上</th>
+          <th class="n-result-th">前週Ave</th>
+          <th class="n-result-th">1週目Ave</th>
+          <th class="n-result-th">Ave前週比</th>
+          <th class="n-result-th">Ave前月比</th>
+          <th class="n-result-th">売上終着予想</th>
+          <th class="n-result-th">必達売上との差</th>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）大江大介</th>
+          <th class="n-result-th">岡崎</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "岡崎").group(:user_id).length %></td>  
+          <td class="n-result-td"><%= @n_result_week1.where(base: "岡崎").length %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "岡崎").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "岡崎").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "岡崎").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "岡崎").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "岡崎").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "岡崎").average(:profit).round(1) - @n_result_before_month.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">多治見</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "多治見").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "多治見").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "多治見").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "多治見").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "多治見").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "多治見").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "多治見").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "多治見").average(:profit).round(1) - @n_result_before_month.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">名古屋中央</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "名古屋中央").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "名古屋中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "名古屋中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">豊田</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊田").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊田").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊田").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "豊田").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "豊田").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊田").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊田").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "豊田").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊田").average(:profit).round(1) - @n_result_before_month.where(base: "豊田").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）後藤建介</th>
+          <th class="n-result-th">広域</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "広域").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "広域").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "広域").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "広域").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "広域").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "広域").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "広域").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "広域").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "広域").average(:profit).round(1) - @n_result_before_month.where(base: "広域").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">三重</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "三重").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "三重").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "三重").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "三重").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "三重").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "三重").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "三重").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "三重").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "三重").average(:profit).round(1) - @n_result_before_month.where(base: "三重").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">豊橋</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊橋").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊橋").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊橋").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "豊橋").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "豊橋").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊橋").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊橋").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "豊橋").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊橋").average(:profit).round(1) - @n_result_before_month.where(base: "豊橋").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">一宮</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "一宮").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "一宮").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "一宮").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "一宮").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "一宮").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "一宮").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "一宮").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "一宮").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "一宮").average(:profit).round(1) - @n_result_before_month.where(base: "一宮").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）磯部友宏</th>
+          <th class="n-result-th">北大阪エリア</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪エリア").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪エリア").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪エリア").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "北大阪エリア").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "北大阪エリア").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "北大阪エリア").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">北大阪公募</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪公募").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪公募").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪公募").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "北大阪公募").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "北大阪公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪公募").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "北大阪公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪公募").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">守口公募</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "守口公募").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "守口公募").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "守口公募").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "守口公募").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "守口公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "守口公募").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "守口公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "守口公募").average(:profit).round(1) - @n_result_before_month.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">阪神</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "阪神").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "阪神").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "阪神").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "阪神").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "阪神").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "阪神").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "阪神").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "阪神").average(:profit).round(1) - @n_result_before_month.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">大阪中央</th>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "大阪中央").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week1.where(base: "大阪中央").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "大阪中央").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "大阪中央").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "大阪中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "大阪中央").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "大阪中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "大阪中央").average(:profit).round(1) - @n_result_before_month.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+      </table>
+      <% end %>
+    <%# ２週目 %>
+      <% if @n_result_week2.empty? %>
+      <% else %>
+      <table class="n-result-table">
+      
+        <tr class="n-result-tr">
+          <th class="n-result-th">2週目</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          
+          <th class="n-result-th"></th>
+        </tr>
+        <tr class="n-result-tr">
+          <th class="n-result-th"><%= @n_result_week2.minimum(:date).day %>日（<%= days[@n_result_week2.minimum(:date).wday] %>）〜<%= @n_result_week2.maximum(:date).day %>日（<%= days[@n_result_week2.maximum(:date).wday] %>）</th>
+          <th class="n-result-th">拠点</th>
+          <th class="n-result-th">人員数</th>
+          
+          <th class="n-result-th">消化シフト数</th>
+          <th class="n-result-th">必達売上</th>
+          <th class="n-result-th">2週目売上</th>
+          <th class="n-result-th">前週Ave</th>
+          <th class="n-result-th">2週目Ave</th>
+          <th class="n-result-th">Ave前週比</th>
+          <th class="n-result-th">Ave前月比</th>
+          <th class="n-result-th">売上終着予想</th>
+          <th class="n-result-th">必達売上との差</th>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）大江大介</th>
+          <th class="n-result-th">岡崎</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "岡崎").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "岡崎").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "岡崎").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "岡崎").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "岡崎").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "岡崎").average(:profit).round(1) - @n_result_week1.where(base: "岡崎").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "岡崎").average(:profit).round(1) - @n_result_before_month.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">多治見</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "多治見").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "多治見").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "多治見").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "多治見").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "多治見").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "多治見").average(:profit).round(1) - @n_result_week1.where(base: "多治見").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "多治見").average(:profit).round(1) - @n_result_before_month.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">名古屋中央</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "名古屋中央").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">豊田</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊田").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊田").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊田").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "豊田").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊田").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊田").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊田").average(:profit).round(1) - @n_result_week1.where(base: "豊田").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊田").average(:profit).round(1) - @n_result_before_month.where(base: "豊田").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）後藤建介</th>
+          <th class="n-result-th">広域</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "広域").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "広域").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "広域").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "広域").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "広域").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "広域").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "広域").average(:profit).round(1) - @n_result_week1.where(base: "広域").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "広域").average(:profit).round(1) - @n_result_before_month.where(base: "広域").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">三重</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "三重").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "三重").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "三重").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "三重").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "三重").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "三重").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "三重").average(:profit).round(1) - @n_result_week1.where(base: "三重").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "三重").average(:profit).round(1) - @n_result_before_month.where(base: "三重").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">豊橋</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊橋").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊橋").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊橋").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "豊橋").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "豊橋").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊橋").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊橋").average(:profit).round(1) - @n_result_week1.where(base: "豊橋").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊橋").average(:profit).round(1) - @n_result_before_month.where(base: "豊橋").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">一宮</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "一宮").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "一宮").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "一宮").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "一宮").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "一宮").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "一宮").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "一宮").average(:profit).round(1) - @n_result_week1.where(base: "一宮").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "一宮").average(:profit).round(1) - @n_result_before_month.where(base: "一宮").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）磯部友宏</th>
+          <th class="n-result-th">北大阪エリア</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "北大阪エリア").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪エリア").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_week1.where(base: "北大阪エリア").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">北大阪公募</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "北大阪公募").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) - @n_result_week1.where(base: "北大阪公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">守口公募</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "守口公募").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "守口公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1) - @n_result_week1.where(base: "守口公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1) - @n_result_before_month.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">阪神</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "阪神").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "阪神").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1) - @n_result_week1.where(base: "阪神").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1) - @n_result_before_month.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">大阪中央</th>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "大阪中央").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "大阪中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1) - @n_result_week1.where(base: "大阪中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1) - @n_result_before_month.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+      </table>
+      <% end %>
+
+    <%# 3週目 %>
+      <% if @n_result_week3.empty? %>
+      <% else %>
+      <table class="n-result-table">
+      
+        <tr class="n-result-tr">
+          <th class="n-result-th">3週目</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          
+          <th class="n-result-th"></th>
+        </tr>
+        <tr class="n-result-tr">
+          <th class="n-result-th"><%= @n_result_week3.minimum(:date).day %>日（<%= days[@n_result_week3.minimum(:date).wday] %>）〜<%= @n_result_week3.maximum(:date).day %>日（<%= days[@n_result_week3.maximum(:date).wday] %>）</th>
+          <th class="n-result-th">拠点</th>
+          <th class="n-result-th">人員数</th>
+          
+          <th class="n-result-th">消化シフト数</th>
+          <th class="n-result-th">必達売上</th>
+          <th class="n-result-th">1週目売上</th>
+          <th class="n-result-th">前週Ave</th>
+          <th class="n-result-th">1週目Ave</th>
+          <th class="n-result-th">Ave前週比</th>
+          <th class="n-result-th">Ave前月比</th>
+          <th class="n-result-th">売上終着予想</th>
+          <th class="n-result-th">必達売上との差</th>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）大江大介</th>
+          <th class="n-result-th">岡崎</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "岡崎").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "岡崎").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "岡崎").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "岡崎").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "岡崎").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "岡崎").average(:profit).round(1) - @n_result_week2.where(base: "岡崎").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "岡崎").average(:profit).round(1) - @n_result_before_month.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">多治見</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "多治見").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "多治見").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "多治見").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "多治見").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "多治見").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "多治見").average(:profit).round(1) - @n_result_week2.where(base: "多治見").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "多治見").average(:profit).round(1) - @n_result_before_month.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">名古屋中央</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "名古屋中央").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">豊田</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊田").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊田").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊田").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "豊田").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊田").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊田").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊田").average(:profit).round(1) - @n_result_week2.where(base: "豊田").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊田").average(:profit).round(1) - @n_result_before_month.where(base: "豊田").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）後藤建介</th>
+          <th class="n-result-th">広域</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "広域").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "広域").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "広域").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "広域").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "広域").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "広域").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "広域").average(:profit).round(1) - @n_result_week2.where(base: "広域").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "広域").average(:profit).round(1) - @n_result_before_month.where(base: "広域").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">三重</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "三重").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "三重").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "三重").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "三重").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "三重").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "三重").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "三重").average(:profit).round(1) - @n_result_week2.where(base: "三重").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "三重").average(:profit).round(1) - @n_result_before_month.where(base: "三重").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">豊橋</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊橋").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊橋").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊橋").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "豊橋").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "豊橋").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊橋").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊橋").average(:profit).round(1) - @n_result_week2.where(base: "豊橋").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊橋").average(:profit).round(1) - @n_result_before_month.where(base: "豊橋").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">一宮</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "一宮").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "一宮").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1) - @n_result_week2.where(base: "一宮").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1) - @n_result_before_month.where(base: "一宮").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）磯部友宏</th>
+          <th class="n-result-th">北大阪エリア</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "北大阪エリア").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">北大阪公募</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "北大阪公募").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) - @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">守口公募</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "守口公募").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1) - @n_result_week2.where(base: "守口公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1) - @n_result_before_month.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">阪神</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "阪神").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1) - @n_result_week2.where(base: "阪神").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1) - @n_result_before_month.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">大阪中央</th>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").length %></td>
+
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "大阪中央").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1) - @n_result_week2.where(base: "大阪中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1) - @n_result_before_month.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+      </table>
+      <% end %>
+
+    <%# 4週目 %>
+      <% if @n_result_week4.empty? %>
+      <% else %>
+      <table class="n-result-table">
+      
+        <tr class="n-result-tr">
+          <th class="n-result-th">4週目</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          
+          <th class="n-result-th"></th>
+        </tr>
+        <tr class="n-result-tr">
+          <th class="n-result-th"><%= @n_result_week4.minimum(:date).day %>日（<%= days[@n_result_week4.minimum(:date).wday] %>）〜<%= @n_result_week4.maximum(:date).day %>日（<%= days[@n_result_week4.maximum(:date).wday] %>）</th>
+          <th class="n-result-th">拠点</th>
+          <th class="n-result-th">人員数</th>
+          
+          <th class="n-result-th">消化シフト数</th>
+          <th class="n-result-th">必達売上</th>
+          <th class="n-result-th">1週目売上</th>
+          <th class="n-result-th">前週Ave</th>
+          <th class="n-result-th">1週目Ave</th>
+          <th class="n-result-th">Ave前週比</th>
+          <th class="n-result-th">Ave前月比</th>
+          <th class="n-result-th">売上終着予想</th>
+          <th class="n-result-th">必達売上との差</th>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）大江大介</th>
+          <th class="n-result-th">岡崎</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "岡崎").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "岡崎").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").average(:profit).round(1) - @n_result_week3.where(base: "岡崎").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").average(:profit).round(1) - @n_result_before_month.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">多治見</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "多治見").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "多治見").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").average(:profit).round(1) - @n_result_week3.where(base: "多治見").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").average(:profit).round(1) - @n_result_before_month.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">名古屋中央</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "名古屋中央").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">豊田</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "豊田").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊田").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").average(:profit).round(1) - @n_result_week3.where(base: "豊田").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").average(:profit).round(1) - @n_result_before_month.where(base: "豊田").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）後藤建介</th>
+          <th class="n-result-th">広域</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "広域").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "広域").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").average(:profit).round(1) - @n_result_week3.where(base: "広域").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").average(:profit).round(1) - @n_result_before_month.where(base: "広域").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">三重</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "三重").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "三重").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").average(:profit).round(1) - @n_result_week3.where(base: "三重").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").average(:profit).round(1) - @n_result_before_month.where(base: "三重").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">豊橋</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "豊橋").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊橋").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").average(:profit).round(1) - @n_result_week3.where(base: "豊橋").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").average(:profit).round(1) - @n_result_before_month.where(base: "豊橋").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">一宮</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "一宮").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").average(:profit).round(1) - @n_result_week3.where(base: "一宮").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").average(:profit).round(1) - @n_result_before_month.where(base: "一宮").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th">（担当）磯部友宏</th>
+          <th class="n-result-th">北大阪エリア</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "北大阪エリア").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">北大阪公募</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "北大阪公募").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").average(:profit).round(1) - @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">守口公募</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "守口公募").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").average(:profit).round(1) - @n_result_week3.where(base: "守口公募").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").average(:profit).round(1) - @n_result_before_month.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">阪神</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "阪神").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").average(:profit).round(1) - @n_result_week3.where(base: "阪神").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").average(:profit).round(1) - @n_result_before_month.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th">大阪中央</th>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").group(:user_id).length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").length %></td>
+
+          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").sum(:profit) %></td>
+          <% if @n_result_before_month.where(base: "大阪中央").empty? %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").average(:profit).round(1) - @n_result_week3.where(base: "大阪中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").average(:profit).round(1) - @n_result_before_month.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%=  %></td>
+          <% end %>
+          <td class="n-result-td"><%=  %></td>
+        </tr>
+
+
+
+      </table>
+      <% end %>
+
+    <% else %>
+      <h2 class="sub-title">表示範囲：<%= @n_results.minimum(:date) %>〜<%= @n_results.maximum(:date) %></h2>
+    <%# 基準値まとめ %>
+
+      <table class="n-result-table">
+        <tr class="n-result-tr">
+          <th class="n-result-th">基準値早見</th>
+        </tr>
+        <tr class="n-result-tr">
+          <th class="n-result-th">予定シフト数</th>
+          
+          <th class="n-result-th">予想終着</th>
+          <th class="n-result-th"></th>
+          
+          <th class="n-result-th">面接率</th>
+          <th class="n-result-th">対面率</th>
+          <th class="n-result-th">フル率</th>
+          <th class="n-result-th">成約率</th>
+
+          <th class="n-result-th">既存平均</th>
+          <th class="n-result-th">応答</th>
+          <th class="n-result-th">対面</th>
+          <th class="n-result-th">フル</th>
+          <th class="n-result-th">獲得</th>
+        </tr>
+
+        <tr class="n-result-tr">
+          <% visit_ave = @n_results.average(:first_visit).round(1) + @n_results.average(:latter_visit).round(1) + @n_results.average(:night_visit).round(1) %>
+          <% reply_ave = @n_results.average(:first_reply).round(1) + @n_results.average(:latter_reply).round(1) + @n_results.average(:night_reply).round(1) %>
+          <% interview_ave = @n_results.average(:first_interview).round(1) + @n_results.average(:latter_interview).round(1) + @n_results.average(:night_interview).round(1) %>
+          <% full_talk_ave = @n_results.average(:first_full_talk).round(1) + @n_results.average(:latter_full_talk).round(1) + @n_results.average(:night_full_talk).round(1) %>
+          <% get_ave = @n_results.average(:first_get).round(1) + @n_results.average(:latter_get).round(1) + @n_results.average(:night_get).round(1)  %>
+
+          <%# 予定シフト %>
+            <% schedule = 0 %>
+            <% name = "" %>
+            <% base = "" %>
+            <% @n_results.group(:user_id).each do |n_result| %>
+              <% @shifts.group(:user_id).each do |shift| %>
+                <% if shift.year == n_result.date.year && shift.month == n_result.date.month && shift.user_id == n_result.user_id %>
+                <% name << shift.user.name %>
+                <% name << "　" %>
+                <% base = n_result.base %>
+                <% schedule += shift.n %>
+                <% end %>
+              <% end %>
+            <% end %>
+            
+          <% if base.empty? %>
+            <h2 class="sub-title">シフト提出を誰もされていません</h2>
+         <% else %>
+            <h2 class="sub-title"><%= base %>　<%= name %></h2>
+         <% end %>
+          <td class="n-result-td"><%= schedule %></td>
+          <td class="n-result-td"><%= (@n_results.sum(:profit).round(1) / @n_results.length * schedule).to_s(:delimited) %></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= number_to_percentage(reply_ave.to_f / visit_ave.to_f * 100,precision: 1 ) %></td>
+          <td class="n-result-td"><%= number_to_percentage(interview_ave.to_f / reply_ave.to_f * 100,precision: 1) %></td>
+          <td class="n-result-td"><%= number_to_percentage(full_talk_ave.to_f / interview_ave.to_f * 100,precision: 1) %></td>
+          <td class="n-result-td"><%= number_to_percentage(get_ave.to_f / full_talk_ave.to_f * 100, precision: 1) %></td>
+        <%# 既存 %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"><%= @n_results.average(:existing_visit).round(1) %></td>
+          <td class="n-result-td"><%= @n_results.average(:existing_interview).round(1) %></td>
+          <td class="n-result-td"><%= @n_results.average(:existing_full_talk).round(1) %></td>
+          <td class="n-result-td"><%= @n_results.average(:existing_get).round(1) %></td>
+          </tr>
+
+        <%# 新規 %>
+          <tr class="n-result-tr">
+            <th class="n-result-th">消化シフト数</th>
+            <th class="n-result-th">現状売上</th>
+            <th class="n-result-th">平均売上</th>
+            <th class="n-result-th">平均訪問数</th>
+            <th class="n-result-th">平均応答数</th>
+            <th class="n-result-th">平均対面数</th>
+            <th class="n-result-th">平均フル数</th>
+            <th class="n-result-th">平均獲得数</th>
+          </tr>
+          <tr class="n-result-tr">
+            <td class="n-result-td"><%= @n_results.length %></td>
+            <td class="n-result-td"><%= @n_results.sum(:profit).to_s(:delimited) %></td>
+            <td class="n-result-td"><%= @n_results.average(:profit).round(1) %></td>
+            <td class="n-result-td"><%= visit_ave %></td>
+            <td class="n-result-td"><%= reply_ave %></td>
+            <td class="n-result-td"><%= interview_ave %></td>
+            <td class="n-result-td"><%= full_talk_ave %></td>
+            <td class="n-result-td"><%= get_ave %></td>
+          <tr>
+        </table>
+
+    <%#帯同%>
+        <table class="n-result-table">
+        <% if @n_results.where.not(ojt: "").empty? %>
+        <% else %>
+          <% @n_results.where.not(ojt: "").each do |n| %>
+            <% ojt_prev = @n_results.where(date: n.date.prev_week..n.date.ago(1.days)).where.not(area: '郵送').where.not(area: '内勤') %>
+            <% ojt_next = @n_results.where(date: n.date..n.date.next_week).where.not(area: '郵送').where.not(area: '内勤') %>
+            <% ojt_date = n.date %>
+            <% week_prev = n.date.prev_week %>
+            <% week_next = n.date.next_week %>
+          <tr class="n-result-tr">
+            
+            <th class="n-result-th">帯同</th>
+            <th class="n-result-th"><%= ojt_date.month %>月<%= ojt_date.day %>日</th>
+            <th class="n-result-th">対策員：</th>
+            <th class="n-result-th"><%= n.user.name %></th>
+            <th class="n-result-th">帯同者：</th>
+            <th class="n-result-th"><%= n.ojt %></th>
+          </tr>
+          <tr class="n-result-tr">
+            <th class="n-result-th"></th>
+            <th class="n-result-th">平均売上</th>
+            <th class="n-result-th">訪問</th>
+            <th class="n-result-th">対応</th>
+            <th class="n-result-th">対面</th>
+            <th class="n-result-th">フル</th>
+            <th class="n-result-th">獲得</th>
+            <th class="n-result-th">確認期間</th>
+          </tr>
+          <tr class="n-result-tr">
+          <%# 帯同前 %>
+            <th class="n-result-th">帯同前</th>
+            <td class="n-result-td"><%= ojt_prev_profit = ojt_prev.average(:profit).round(1) %></td>
+            <td class="n-result-td"><%= ojt_prev_visit = ojt_prev.average(:first_visit).round(1) + ojt_prev.average(:latter_visit).round(1) + ojt_prev.average(:night_visit).round(1) %></td>
+            <td class="n-result-td"><%= ojt_prev_reply = ojt_prev.average(:first_reply).round(1) + ojt_prev.average(:latter_reply).round(1) + ojt_prev.average(:night_reply).round(1) %></td>
+            <td class="n-result-td"><%= ojt_prev_interview = ojt_prev.average(:first_interview).round(1) + ojt_prev.average(:latter_interview).round(1) + ojt_prev.average(:night_interview).round(1) %></td>
+            <td class="n-result-td"><%= ojt_prev_full_talk = ojt_prev.average(:first_full_talk).round(1) + ojt_prev.average(:latter_full_talk).round(1) + ojt_prev.average(:night_full_talk).round(1) %></td>
+            <td class="n-result-td"><%= ojt_prev_get = ojt_prev.average(:first_get).round(1) + ojt_prev.average(:latter_get).round(1) + ojt_prev.average(:night_get).round(1) %></td>
+            <td class="n-result-td"><%= week_prev.month %>月<%= week_prev.day%>日〜<%= ojt_date.month %>月<%= ojt_date.ago(1.days).day %>日</td>
+            </tr>
+          <%# 帯同後 %>
+            <tr class="n-result-tr">
+              <th class="n-result-th">帯同後</th>
+              <td class="n-result-td"><%= ojt_next_profit = ojt_next.average(:profit).round(1) %></td>
+              <td class="n-result-td"><%= ojt_next_visit = ojt_next.average(:first_visit).round(1) + ojt_next.average(:latter_visit).round(1) + ojt_next.average(:night_visit).round(1) %></td>
+              <td class="n-result-td"><%= ojt_next_reply = ojt_next.average(:first_reply).round(1) + ojt_next.average(:latter_reply).round(1) + ojt_next.average(:night_reply).round(1) %></td>
+              <td class="n-result-td"><%= ojt_next_interview = ojt_next.average(:first_interview).round(1) + ojt_next.average(:latter_interview).round(1) + ojt_next.average(:night_interview).round(1) %></td>
+              <td class="n-result-td"><%= ojt_next_full_talk = ojt_next.average(:first_full_talk).round(1) + ojt_next.average(:latter_full_talk).round(1) + ojt_next.average(:night_full_talk).round(1) %></td>
+              <td class="n-result-td"><%= ojt_next_get = ojt_next.average(:first_get).round(1) + ojt_next.average(:latter_get).round(1) + ojt_next.average(:night_get).round(1) %></td>
+              <td class="n-result-td"><%= ojt_date.month %>月<%= ojt_date.day %>日〜<%= week_next.month %>月<%= week_next.day %>日</td>
+          
+            </tr>
+          <%# 帯同結果 %>
+            <tr class="n-result-tr">
+              <th class="n-result-th">帯同結果</th>
+              <% if ojt_next_profit >= ojt_prev_profit %>
+              <td class="n-result-td"> ＋<%= ojt_next_profit - ojt_prev_profit %></td>
+              <% else %>
+              <td class="n-result-td-red"><%= ojt_next_profit - ojt_prev_profit %></td>
+              <% end %>
+              <% if ojt_next_visit >= ojt_prev_visit %>
+              <td class="n-result-td"> ＋<%= ojt_next_visit - ojt_prev_visit %></td>
+              <% else %>
+              <td class="n-result-td-red"><%= ojt_next_visit - ojt_prev_visit %></td>
+              <% end %>
+              <% if ojt_next_reply >= ojt_prev_reply %>
+              <td class="n-result-td"> ＋<%= ojt_next_reply - ojt_prev_reply %></td>
+              <% else %>
+              <td class="n-result-td-red"><%= ojt_next_reply - ojt_prev_reply %></td>
+              <% end %>
+              <% if ojt_next_interview >= ojt_prev_interview %>
+              <td class="n-result-td"> ＋<%= ojt_next_interview - ojt_prev_interview %></td>
+              <% else %>
+              <td class="n-result-td-red"><%= ojt_next_interview - ojt_prev_interview %></td>
+              <% end %>
+              <% if ojt_next_full_talk >= ojt_prev_full_talk %>
+              <td class="n-result-td"> ＋<%= ojt_next_full_talk - ojt_prev_full_talk %></td>
+              <% else %>
+              <td class="n-result-td-red"><%= ojt_next_full_talk - ojt_prev_full_talk %></td>
+              <% end %>
+              <% if ojt_next_get >= ojt_prev_get %>
+              <td class="n-result-td"> ＋<%= ojt_next_get - ojt_prev_get %></td>
+              <% else %>
+              <td class="n-result-td-red"><%= ojt_next_get - ojt_prev_get %></td>
+              <% end %>
+
+              
+            </tr>
+
+          <% end %>
+        </table>
+      <% end %>
+
+    <%# 個別基準値 %>
+
+      <table class="n-result-table">
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">新規合計</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">前半</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">後半</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">夜間</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">応答内訳</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">オート突破</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"><%# ペロ数 %></th>
+          <th class="n-result-th">既存基準値</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">契約変更</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">再開</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">住所変更</th>
+          <th class="n-result-th">声かけ</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">事業所</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">獲得内訳</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">基本的切り返し</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">先延ばし</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">三者系</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">スキル</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">その他</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th">機器なし</th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+          <th class="n-result-th"></th>
+
+        </tr>
+        <tr class="n-result-tr">
+          <th class="n-result-th"></th>
+          <th class="n-result-th"><%= sort_link(@q, :user_id, "ID",{},{class: "index-sort"}) %></th>
+          <th class="n-result-th">拠点</th>
+          <th class="n-result-th">対策員名</th>
+          <th class="n-result-th">日付</th>
+          <th class="n-result-th">エリア</th>
+          <th class="n-result-th">帯同</th>
+          <th class="n-result-th">売上</th>
+          <th class="n-result-th">訪問</th>
+          <th class="n-result-th">対応</th>
+          <th class="n-result-th">対面</th>
+          <th class="n-result-th">フル</th>
+          <th class="n-result-th">帳票記入</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">訪問</th>
+          <th class="n-result-th">対応</th>
+          <th class="n-result-th">対面</th>
+          <th class="n-result-th">フル</th>
+          <th class="n-result-th">帳票記入</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">訪問</th>
+          <th class="n-result-th">対応</th>
+          <th class="n-result-th">対面</th>
+          <th class="n-result-th">フル</th>
+          <th class="n-result-th">帳票記入</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">訪問</th>
+          <th class="n-result-th">対応</th>
+          <th class="n-result-th">対面</th>
+          <th class="n-result-th">フル</th>
+          <th class="n-result-th">帳票記入</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">戸建A</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">単身A</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">ファミA</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">オート単A</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">オートファミA</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">ドア取り数</th>
+          <th class="n-result-th">応答</th>
+          <th class="n-result-th">対面</th>
+          <th class="n-result-th">ペロ数</th>
+          <th class="n-result-th">応答</th>
+          <th class="n-result-th">対面</th>
+          <th class="n-result-th">フル</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">A</th>
+          <th class="n-result-th">C</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">A</th>
+          <th class="n-result-th">C</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">声かけ</th>
+          <th class="n-result-th">キャッチ</th>
+          <th class="n-result-th">フル</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">応答</th>
+          <th class="n-result-th">対面</th>
+          <th class="n-result-th">フル</th>
+          <th class="n-result-th">獲得</th>
+          <th class="n-result-th">地上新規</th>
+          <th class="n-result-th">衛星新規</th>
+          <th class="n-result-th">新規口座</th>
+          <th class="n-result-th">新規クレ</th>
+          <th class="n-result-th">地上転入</th>
+          <th class="n-result-th">衛星転入</th>
+          <th class="n-result-th">無料転入</th>
+          <th class="n-result-th">契約変更</th>
+          <th class="n-result-th">支払再開</th>
+          <th class="n-result-th">再開口座</th>
+          <th class="n-result-th">再開クレ</th>
+          <th class="n-result-th">再開口数</th>
+          <th class="n-result-th">支払変更</th>
+          <th class="n-result-th">収納口数</th>
+          <th class="n-result-th">収納口座</th>
+          <th class="n-result-th">事業所</th>
+          <%# NG数 %>
+          <%# 基本切り返し %>
+          <th class="n-result-th">みない（A）</th>
+          <th class="n-result-th">みない（B）</th>
+          <th class="n-result-th">みない（C）</th>
+          <th class="n-result-th">みない（獲得）</th>
+          <th class="n-result-th">皆やってない、罰則ない（A）</th>
+          <th class="n-result-th">皆やってない、罰則ない（B）</th>
+          <th class="n-result-th">皆やってない、罰則ない（C）</th>
+          <th class="n-result-th">皆やってない、罰則ない（獲得）</th>
+          <th class="n-result-th">すぐ引っ越す・TV捨てる（A）</th>
+          <th class="n-result-th">すぐ引っ越す・TV捨てる（B）</th>
+          <th class="n-result-th">すぐ引っ越す・TV捨てる（C）</th>
+          <th class="n-result-th">すぐ引っ越す・TV捨てる（獲得）</th>
+          <th class="n-result-th">急に来て書けない（A）</th>
+          <th class="n-result-th">急に来て書けない（B）</th>
+          <th class="n-result-th">急に来て書けない（C）</th>
+          <th class="n-result-th">急に来て書けない（獲得）</th>
+          <th class="n-result-th">他で契約・単身赴任（A）</th>
+          <th class="n-result-th">他で契約・単身赴任（B）</th>
+          <th class="n-result-th">他で契約・単身赴任（C）</th>
+          <th class="n-result-th">他で契約・単身赴任（獲得）</th>
+          <th class="n-result-th">する気ない・結構です（A）</th>
+          <th class="n-result-th">する気ない・結構です（B）</th>
+          <th class="n-result-th">する気ない・結構です（C）</th>
+          <th class="n-result-th">する気ない・結構です（獲得）</th>
+          <th class="n-result-th">夜遅い（A）</th>
+          <th class="n-result-th">夜遅い（B）</th>
+          <th class="n-result-th">夜遅い（C）</th>
+          <th class="n-result-th">夜遅い（獲得）</th>
+          <%# 先延ばし %>
+          <th class="n-result-th">忙しい・今度にして（A）</th>
+          <th class="n-result-th">忙しい・今度にして（B）</th>
+          <th class="n-result-th">忙しい・今度にして（C）</th>
+          <th class="n-result-th">忙しい・今度にして（獲得）</th>
+          <th class="n-result-th">書いとく　郵送しとく（A）</th>
+          <th class="n-result-th">書いとく　郵送しとく（B）</th>
+          <th class="n-result-th">書いとく　郵送しとく（C）</th>
+          <th class="n-result-th">書いとく　郵送しとく（獲得）</th>
+          <th class="n-result-th">調べる・検討、考える（A）</th>
+          <th class="n-result-th">調べる・検討、考える（B）</th>
+          <th class="n-result-th">調べる・検討、考える（C）</th>
+          <th class="n-result-th">調べる・検討、考える（獲得）</th>
+          <%# 三者系 %>
+          <th class="n-result-th">旦那に、嫁に（A）</th>
+          <th class="n-result-th">旦那に、嫁に（B）</th>
+          <th class="n-result-th">旦那に、嫁に（C）</th>
+          <th class="n-result-th">旦那に、嫁に（獲得）</th>
+          <th class="n-result-th">会社に、寮（A）</th>
+          <th class="n-result-th">会社に、寮（B）</th>
+          <th class="n-result-th">会社に、寮（C）</th>
+          <th class="n-result-th">会社に、寮（獲得）</th>
+          <th class="n-result-th">学生・未成年親に（A）</th>
+          <th class="n-result-th">学生・未成年親に（B）</th>
+          <th class="n-result-th">学生・未成年親に（C）</th>
+          <th class="n-result-th">学生・未成年親に（獲得）</th>
+          <%# スキル %>
+          <th class="n-result-th">生活苦・お金無い（A）</th>
+          <th class="n-result-th">生活苦・お金無い（B）</th>
+          <th class="n-result-th">生活苦・お金無い（C）</th>
+          <th class="n-result-th">生活苦・お金無い（獲得）</th>
+          <th class="n-result-th">ここの者じゃない・本人に（A）</th>
+          <th class="n-result-th">ここの者じゃない・本人に（B）</th>
+          <th class="n-result-th">ここの者じゃない・本人に（C）</th>
+          <th class="n-result-th">ここの者じゃない・本人に（獲得）</th>
+          <th class="n-result-th">口座・クレ・現金無し（A）</th>
+          <th class="n-result-th">口座・クレ・現金無し（B）</th>
+          <th class="n-result-th">口座・クレ・現金無し（C）</th>
+          <th class="n-result-th">口座・クレ・現金無し（獲得）</th>
+          <th class="n-result-th">外人（A）</th>
+          <th class="n-result-th">外人（B）</th>
+          <th class="n-result-th">外人（C）</th>
+          <th class="n-result-th">外人（獲得）</th>
+          <%# その他 %>
+          <th class="n-result-th">外無言・対応困難（A）</th>
+          <th class="n-result-th">外無言・対応困難（B）</th>
+          <th class="n-result-th">外無言・対応困難（C）</th>
+          <th class="n-result-th">外無言・対応困難（獲得）</th>
+          <th class="n-result-th">過去トラ（A）</th>
+          <th class="n-result-th">過去トラ（B）</th>
+          <th class="n-result-th">過去トラ（C）</th>
+          <th class="n-result-th">過去トラ（獲得）</th>
+          <th class="n-result-th">裁判希望（A）</th>
+          <th class="n-result-th">裁判希望（B）</th>
+          <th class="n-result-th">裁判希望（C）</th>
+          <th class="n-result-th">裁判希望（獲得）</th>
+          <th class="n-result-th">その他（A）</th>
+          <th class="n-result-th">その他（B）</th>
+          <th class="n-result-th">その他（C）</th>
+          <th class="n-result-th">その他（獲得）</th>
+          <%# 機器なし %>
+          <th class="n-result-th">TV無い（A）</th>
+          <th class="n-result-th">TV無い（B）</th>
+          <th class="n-result-th">TV無い（C）</th>
+          <th class="n-result-th">TV無い（発掘）</th>
+          <th class="n-result-th">TV無い（発掘NG）</th>
+          <th class="n-result-th">TV無い（獲得）</th>
+          <th class="n-result-th">TV故障してる（A）</th>
+          <th class="n-result-th">TV故障してる（B）</th>
+          <th class="n-result-th">TV故障してる（C）</th>
+          <th class="n-result-th">TV故障してる（発掘）</th>
+          <th class="n-result-th">TV故障してる（発掘NG）</th>
+          <th class="n-result-th">TV故障してる（獲得）</th>
+
+        </tr>
+        <% @n_results.find_each do |n| %>
+        <tr class="n-result-tr">
+          <td class="n-result-td"><%= link_to "編集", edit_n_result_path(n.id),class: "index-link" %></td>
+          <td class="n-result-td"><%= n.user_id %></td>
+          <td class="n-result-td"><%= n.base %></td>
+          <td class="n-result-td"><%= n.user.name %></td>
+          <td class="n-result-td"><%= n.date.month %>月<%= n.date.day %>日</td>
+          <td class="n-result-td"><%= n.area %></td>
+          <td class="n-result-td"><%= n.ojt %></td>
+          <td class="n-result-td"><%= n.profit %></td>
+          <% if n.area == "郵送" || n.area == "内勤" %>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <% else %>
+          <%# 合計新規基準値 %>
+          <td class="n-result-td"><%= n.first_visit + n.latter_visit + n.night_visit rescue 0 %></td>
+          <td class="n-result-td"><%= n.first_reply + n.latter_reply + n.night_reply rescue 0 %></td>
+          <td class="n-result-td"><%= n.first_interview + n.latter_interview + n.night_interview rescue 0 %></td>
+          <td class="n-result-td"><%= n.first_full_talk + n.latter_full_talk + n.night_full_talk rescue 0 %></td>
+          <td class="n-result-td"><%= n.first_write + n.latter_write + n.night_write rescue 0 %></td>
+          <td class="n-result-td"><%= n.first_get + n.latter_get + n.night_get rescue 0 %></td>
+          <%# 前半新規基準値 %>
+          <td class="n-result-td"><%= n.first_visit rescue 0 %></td>
+          <td class="n-result-td"><%= n.first_reply rescue 0 %></td>
+          <td class="n-result-td"><%= n.first_interview  rescue 0 %></td>
+          <td class="n-result-td"><%= n.first_full_talk  rescue 0 %></td>
+          <td class="n-result-td"><%= n.first_write  rescue 0 %></td>
+          <td class="n-result-td"><%= n.first_get rescue 0 %></td>
+          <%# 後半新規基準値 %>
+          <td class="n-result-td"><%= n.latter_visit  rescue 0 %></td>
+          <td class="n-result-td"><%= n.latter_reply rescue 0 %></td>
+          <td class="n-result-td"><%= n.latter_interview rescue 0 %></td>
+          <td class="n-result-td"><%= n.latter_full_talk rescue 0 %></td>
+          <td class="n-result-td"><%= n.latter_write rescue 0 %></td>
+          <td class="n-result-td"><%= n.latter_get rescue 0 %></td>
+          <%# 夜間新規基準値 %>
+          <td class="n-result-td"><%= n.night_visit rescue 0 %></td>
+          <td class="n-result-td"><%= n.night_reply rescue 0 %></td>
+          <td class="n-result-td"><%= n.night_interview rescue 0 %></td>
+          <td class="n-result-td"><%= n.night_full_talk rescue 0 %></td>
+          <td class="n-result-td"><%= n.night_write rescue 0 %></td>
+          <td class="n-result-td"><%= n.night_get rescue 0 %></td>
+          <%# 応答内訳 %>
+          <td class="n-result-td"><%= n.detached_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.detached_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.apartment_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.apartment_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.family_apartment_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.family_apartment_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.auto_single_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.auto_single_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.auto_family_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.auto_family_get rescue 0 %></td>
+          <%# 技術的内訳 %>
+          <td class="n-result-td"><%= n.door_take rescue 0 %></td>
+          <td class="n-result-td"><%= n.auto_through_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.auto_through_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.easy rescue 0 %></td>
+          <%# 既存基準値 %>
+          <td class="n-result-td"><%= n.existing_visit  %></td>
+          <td class="n-result-td"><%= n.existing_interview  rescue 0 %></td>
+          <td class="n-result-td"><%= n.existing_full_talk  rescue 0 %></td>
+          <td class="n-result-td"><%= n.existing_get rescue 0 %></td>
+          <%# 契約変更 %>
+          <td class="n-result-td"><%= n.contract_change_interview rescue 0 %></td>
+          <td class="n-result-td"><%= n.contract_change_full_talk rescue 0 %></td>
+          <td class="n-result-td"><%= n.contract_change_get rescue 0 %></td>
+          <%# 再開 %>
+          <td class="n-result-td"><%= n.resum_payment_interview rescue 0 %></td>
+          <td class="n-result-td"><%= n.resum_payment_full_talk rescue 0 %></td>
+          <td class="n-result-td"><%= n.resum_payment_get rescue 0 %></td>
+          <%# 住所変更 %>
+          <td class="n-result-td"><%= n.transfer_get rescue 0 %></td>
+          <%# 声かけ %>
+          <td class="n-result-td"><%= n.catch_call rescue 0 %></td>
+          <td class="n-result-td"><%= n.catch_interview rescue 0 %></td>
+          <td class="n-result-td"><%= n.catch_full_talk rescue 0 %></td>
+          <td class="n-result-td"><%= n.catch_get rescue 0 %></td>
+          <%# 事業所 %>
+          <td class="n-result-td"><%= n.office_visit rescue 0 %></td>
+          <td class="n-result-td"><%= n.office_interview rescue 0 %></td>
+          <td class="n-result-td"><%= n.office_full_talk rescue 0 %></td>
+          <td class="n-result-td"><%= n.office_get rescue 0 %></td>
+          <%# 獲得内訳 %>
+          <td class="n-result-td"><%= n.terrestrial_new rescue 0 %></td>
+          <td class="n-result-td"><%= n.satellite_new rescue 0 %></td>
+          <td class="n-result-td"><%= n.account_new rescue 0 %></td>
+          <td class="n-result-td"><%= n.credit_new rescue 0 %></td>
+          <td class="n-result-td"><%= n.terrestrial_transfer rescue 0 %></td>
+          <td class="n-result-td"><%= n.satellite_transfer rescue 0 %></td>
+          <td class="n-result-td"><%= n.free_transfer rescue 0 %></td>
+          <td class="n-result-td"><%= n.contract_change rescue 0 %></td>
+          <td class="n-result-td"><%= n.resum_payment rescue 0 %></td>
+          <td class="n-result-td"><%= n.resum_payment_account rescue 0 %></td>
+          <td class="n-result-td"><%= n.resum_payment_credit rescue 0 %></td>
+          <td class="n-result-td"><%= n.resum_payment_num rescue 0 %></td>
+          <td class="n-result-td"><%= n.payment_change rescue 0 %></td>
+          <td class="n-result-td"><%= n.receipt_num rescue 0 %></td>
+          <td class="n-result-td"><%= n.receipt_account rescue 0 %></td>
+          <td class="n-result-td"><%= n.office rescue 0 %></td>
+          <%# 基本的切り返し %>
+          <td class="n-result-td"><%= n.no_watch_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_watch_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_watch_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_watch_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.not_everyone_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.not_everyone_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.not_everyone_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.not_everyone_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.throw_away_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.throw_away_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.throw_away_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.throw_away_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.suddenly_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.suddenly_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.suddenly_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.suddenly_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.another_contract_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.another_contract_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.another_contract_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.another_contract_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_thank_you_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_thank_you_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_thank_you_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_thank_you_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.late_night_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.late_night_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.late_night_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.late_night_get rescue 0 %></td>
+          <%# 先延ばし %>
+          <td class="n-result-td"><%= n.busy_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.busy_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.busy_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.busy_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.do_it_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.do_it_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.do_it_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.do_it_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.think_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.think_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.think_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.think_get rescue 0 %></td>
+          <%# 第三者系 %>
+          <td class="n-result-td"><%= n.partner_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.partner_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.partner_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.partner_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.company_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.company_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.company_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.company_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.student_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.student_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.student_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.student_get rescue 0 %></td>
+          <%# スキル %>
+          <td class="n-result-td"><%= n.no_money_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_money_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_money_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_money_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.not_here_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.not_here_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.not_here_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.not_here_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_payment_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_payment_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_payment_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_payment_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.foreign_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.foreign_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.foreign_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.foreign_get rescue 0 %></td>
+          <%# その他 %>
+          <td class="n-result-td"><%= n.difficult_deal_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.difficult_deal_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.difficult_deal_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.difficult_deal_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.past_trouble_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.past_trouble_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.past_trouble_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.past_trouble_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.trial_hope_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.trial_hope_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.trial_hope_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.trial_hope_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.other_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.other_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.other_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.other_get rescue 0 %></td>
+          <%# 機器なし %>
+          <td class="n-result-td"><%= n.no_tv_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_tv_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_tv_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_tv_excavation rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_tv_excavation_ng rescue 0 %></td>
+          <td class="n-result-td"><%= n.no_tv_get rescue 0 %></td>
+          <td class="n-result-td"><%= n.breaking_tv_a rescue 0 %></td>
+          <td class="n-result-td"><%= n.breaking_tv_b rescue 0 %></td>
+          <td class="n-result-td"><%= n.breaking_tv_c rescue 0 %></td>
+          <td class="n-result-td"><%= n.breaking_tv_excavation rescue 0 %></td>
+          <td class="n-result-td"><%= n.breaking_tv_excavation_ng rescue 0 %></td>
+          <td class="n-result-td"><%= n.breaking_tv_get rescue 0 %></td>
+          <% end %>
+        </tr>
+        <% end %>
+      </table>
+
+    <% end %>
+
+
+  </main>
+</div>

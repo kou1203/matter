@@ -1,13 +1,14 @@
-<h1>在庫持ち出し管理</h1>
-<%= @stock.stock_num %>
+<h1 class="sub-title">在庫持ち出し管理</h1>
+<h2 class="show-title"><%= @stock.stock_num %></h2>
 <%= form_with model: @stock_history, url: stock_stock_histories_path(@stock.id) , class: "form-frame", local: true do |f| %>
-<div class="form-group">
-  <%= f.collection_select(:user_id, @users, :id, :name,
-    {}, {class: "form-input"} ) %><br>
   <%= f.hidden_field :stock_id, value: @stock.id %>
-  <%# f.collection_select(:stock_id, @stocks, :id, :stock_num, {}, {class: "form-input"}) %><br>
-  <%= f.date_field :take_out %>
-</div>
-  <%= f.submit "持ち出す" %>
+    <%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "select-form"} ) %>
+    <%= f.date_field :take_out, class: "date-form" %>
+    <%= f.submit "持ち出す", class: "form-btn" %>
 <% end %>
-  <%# f.date_field :return %>
+  
+  
+  
+  
+  
+  

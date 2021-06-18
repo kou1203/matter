@@ -23,7 +23,18 @@ class Aupay < ApplicationRecord
   end
 
   def self.updatable_attributes
-    ["store_prop_id", "user_id","status","get_date", "mail","description", "payment", "settlement", "client"]
+    ["store_prop_id",
+      "user_id",
+      "status",
+      "get_date",
+      "mail",
+      "description",
+      "payment",
+      "settlement",
+      "client",
+      "valuation_profit",
+      "actual_profit"
+    ]
   end
 
 

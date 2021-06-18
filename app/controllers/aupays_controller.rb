@@ -8,12 +8,12 @@ class AupaysController < ApplicationController
   def new 
     @aupay = Aupay.new
     @store_prop = StoreProp.find(params[:store_prop_id])
-    @users = User.where(retiree: nil)
+    @users = User.all
   end
   
   def create 
     @store_prop = StoreProp.find(params[:store_prop_id])
-    @users = User.where(retiree: nil)
+    @users = User.all
     @aupay = Aupay.new(aupay_params)
     @aupay.save 
     if @aupay.save 
@@ -35,7 +35,7 @@ class AupaysController < ApplicationController
   
   def edit 
     @aupay = Aupay.find(params[:id])
-    @users = User.where(retiree: nil)
+    @users = User.all
   end 
   
   def update 
@@ -56,7 +56,9 @@ class AupaysController < ApplicationController
       :status,
       :before_status,
       :settlement,
-      :description
+      :description,
+      :valuation_profit,
+      :actual_profit,
     )
 
   end 

@@ -7,14 +7,14 @@ class PaypaysController < ApplicationController
 
   def new 
     @paypay = Paypay.new
-    @users = User.where(retire: nil)
+    @users = User.where.not(base: "退職")
     @store_prop = StoreProp.find(params[:store_prop_id])
     
   end 
   
   def create 
     @paypay = Paypay.new(paypay_params)
-    @users = User.where(retire: nil)
+    @users = User.where(base: "退職")
     @store_prop = StoreProp.find(params[:store_prop_id])
     @paypay.save
     if @paypay.save 
@@ -35,7 +35,7 @@ class PaypaysController < ApplicationController
 
   def edit 
     @paypay = Paypay.find(params[:id])
-    @users = User.where(retiree: nil)
+    @users = User.all
   end 
   
   def update 
@@ -54,7 +54,9 @@ class PaypaysController < ApplicationController
       :get_date,
       :payment,
       :status,
-      :before_status
+      :before_status,
+      :valuation_profit,
+      :actual_profit
     )
   end
 end

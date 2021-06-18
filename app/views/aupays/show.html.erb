@@ -3,94 +3,94 @@
 <div class="main">
   <%= render "shared/side_bar" %>
   <main class="right-bar">
-  <h1 class="show-title">auペイ詳細</h1>
+  <h1 class="sub-title">auペイ詳細</h1>
     <h1 class="show-title">店舗情報</h1>
-    <table class="table">
-    <tr class="table-row">
-    <th class="thead">店舗名</th>
-    <td class="tdata"><%= @aupay.store_prop.name %></td>
+    <table class="show-table">
+    <tr class="show-tr">
+    <th class="show-th">店舗名</th>
+    <td class="show-td"><%= @aupay.store_prop.name %></td>
     </tr>
-    <th class="thead">属性</th>
-    <td class="tdata"><%= @aupay.store_prop.race %></td>
-    <th class="thead">業種</th>
-    <td class="tdata"><%= @aupay.store_prop.industry %></td>
-    <tr class="table-row">
+    <th class="show-th">属性</th>
+    <td class="show-td"><%= @aupay.store_prop.race %></td>
+    <th class="show-th">業種</th>
+    <td class="show-td"><%= @aupay.store_prop.industry %></td>
+    <tr class="show-tr">
     </tr>
-    <tr class="table-row">
-    <tr class="table-row">
-    <tr class="table-row">
-    <th class="thead">店舗代表</th>
-    <td class="tdata"><%= @aupay.store_prop.person_main %></td>
-    <th class="thead">店舗担当</th>
-    <td class="tdata"><%= @aupay.store_prop.person_sub %></td>
+    <tr class="show-tr">
+    <tr class="show-tr">
+    <tr class="show-tr">
+    <th class="show-th">店舗代表</th>
+    <td class="show-td"><%= @aupay.store_prop.person_main %></td>
+    <th class="show-th">店舗担当</th>
+    <td class="show-td"><%= @aupay.store_prop.person_sub %></td>
     </tr>
     </table>
     <table class="table">
-    <tr class="table-row">
-    <th class="thead">店舗住所</th>
-    <td class="tdata-long"><%= @aupay.store_prop.prefecture %><%= @aupay.store_prop.city %><%= @aupay.store_prop.municipalities %><%= @aupay.store_prop.address %><%= @aupay.store_prop.building_name %></td>
+    <tr class="show-tr">
+    <th class="show-th">店舗住所</th>
+    <td class="show-td-long"><%= @aupay.store_prop.prefecture %><%= @aupay.store_prop.city %><%= @aupay.store_prop.municipalities %><%= @aupay.store_prop.address %><%= @aupay.store_prop.building_name %></td>
     </table>
     <h1 class="show-title">連絡先</h1>
     <table class="table">
-    <th class="thead">電話番号1</th>
-    <td class="tdata"><%= @aupay.store_prop.phone_number_1 %></td>
-    <th class="thead">電話番号2</th>
-    <td class="tdata"><%= @aupay.store_prop.phone_number_2 %></td>
+    <th class="show-th">電話番号1</th>
+    <td class="show-td"><%= @aupay.store_prop.phone_number_1 %></td>
+    <th class="show-th">電話番号2</th>
+    <td class="show-td"><%= @aupay.store_prop.phone_number_2 %></td>
     </tr>
-    <tr class="table-row">
-    <th class="thead">メールアドレス１</th>
-      <td class="tdata"><%= @aupay.store_prop.mail_1 %></td>
-    <th class="thead">メールアドレス２</th>
-      <td class="tdata"><%= @aupay.store_prop.mail_2 %></td>
+    <tr class="show-tr">
+    <th class="show-th">メールアドレス１</th>
+      <td class="show-td"><%= @aupay.store_prop.mail_1 %></td>
+    <th class="show-th">メールアドレス２</th>
+      <td class="show-td"><%= @aupay.store_prop.mail_2 %></td>
     </tr>
-    <tr class="table-row">
-    <th class="thead">好適時間</th>
-    <td class="tdata"><%= @aupay.store_prop.suitable_time %></td>
-    <th class="thead">定休日</th>
-    <td class="tdata"><%= @aupay.store_prop.holiday %></td>
-    <th class="thead">備考</th>
-    <td class="tdata"><%= @aupay.store_prop.description %></td>
+    <tr class="show-tr">
+    <th class="show-th">好適時間</th>
+    <td class="show-td"><%= @aupay.store_prop.suitable_time %></td>
+    <th class="show-th">定休日</th>
+    <td class="show-td"><%= @aupay.store_prop.holiday %></td>
+    <th class="show-th">備考</th>
+    <td class="show-td"><%= @aupay.store_prop.description %></td>
     </tr>
     </table>
     <button class="edit-btn"> 
-      <%= link_to "編集", edit_store_prop_path(@aupay.store_prop.id), class: "link" %>
+      <%= link_to "編集", edit_store_prop_path(@aupay.store_prop.id), class: "index-link" %>
     </button>
     <h1 class="show-title">auペイ</h1>
       
     <table class="table">
-    <tr class="table-row">
-    <th class="thead">獲得日</th>
-      <th class="thead">獲得者</th>
+    <tr class="show-tr">
+    <th class="show-th">獲得日</th>
+      <th class="show-th">獲得者</th>
     </tr>
-    <tr class="table-row">
-      <td class="tdata"><%= @aupay.get_date %></td>
-      <td class="tdata"><%= @aupay.user.name %></td>
-    </tr>
-    </table>
-
-    <table class="table">
-    <tr class="table-row">
-      <th class="thead">管理番号</th>
-      <th class="thead">商流</th>
-      <th class="thead">審査ステータス</th>
-    </tr>
-    <tr class="table-row">
-      <td class="tdata"><%= @aupay.customer_num %></td>
-      <td class="tdata"><%= @aupay.client %></td>
-      <td class="tdata"><%= @aupay.status %></td>
+    <tr class="show-tr">
+      <td class="show-td"><%= @aupay.get_date %></td>
+      <td class="show-td"><%= @aupay.user.name %></td>
     </tr>
     </table>
 
-    <table class="table">
-    <tr class="table-row">
-      <th class="thead">決済日</th>
-      <th class="thead">入金日</th>
-      <th class="thead">備考</th>
+    <table class="show-table">
+    <tr class="show-tr">
+      <th class="show-th">管理番号</th>
+      <th class="show-th">商流</th>
+      <th class="show-th">審査ステータス</th>
     </tr>
-    <tr class="table-row">
-      <td class="tdata"><%= @aupay.settlement %></td>
-      <td class="tdata"><%= @aupay.payment %></td>
-      <td class="tdata"><%= @aupay.description %></td>
+    <tr class="show-tr">
+      <td class="show-td"><%= @aupay.customer_num %></td>
+      <td class="show-td"><%= @aupay.client %></td>
+      <td class="show-td"><%= @aupay.status %></td>
+    </tr>
+    </table>
+
+    <table class="show-table">
+    <tr class="show-tr">
+      <th class="show-th">決済日</th>
+      <th class="show-th">入金日</th>
+      <th class="show-th">備考</th>
+    </tr>
+    <tr class="show-tr">
+      <td class="show-td"><%= @aupay.settlement %></td>
+      <td class="show-td"><%= @aupay.payment %></td>
+      <td class="show-td"><%= @aupay.description %></td>
     </tr>
     </table>
     <button class="edit-btn">

@@ -3,6 +3,7 @@ class StorePropsController < ApplicationController
   def index 
     @q = StoreProp.ransack(params[:q])
     @store_props = @q.result(distinct: true)
+    
   end 
 
   def new 
@@ -12,7 +13,7 @@ class StorePropsController < ApplicationController
   def create 
     @store_prop = StoreProp.new(store_prop_params)
     if @store_prop.save
-      redirect_to store_props_path(@store_prop.id)
+      redirect_to store_prop_path(@store_prop.id)
     else 
       render :new
     end
@@ -31,7 +32,7 @@ class StorePropsController < ApplicationController
 
   def import 
     StoreProp.import(params[:file]) 
-    redirect_to root_path
+    redirect_to store_props_path
   end 
 
   def show 
@@ -40,8 +41,14 @@ class StorePropsController < ApplicationController
     @aupay = @store_prop.aupay
     @paypay = @store_prop.paypay
     @praness = @store_prop.praness
-    @summit = @store_prop.summit
-    @panda = @store_prop.panda 
+    @summit_customer_prop = @store_prop.summit_customer_prop
+    if @summit_customer_prop.nil?
+      @summits = 0
+    else  
+      @summits = @summit_customer_prop.summits
+    end
+
+    @panda = @store_prop.pandas 
   end
 
   private 

@@ -14,9 +14,22 @@ Rails.application.routes.draw do
     post 'paypays/create'
     get 'pandas/new'
     post 'pandas/create'
+    get 'summit_customer_props/new'
+    post 'summit_customer_props/create'
     collection { post :import }
   end 
-  resources :summits, expect: [:new, :create] 
+
+  resources :summit_customer_props, expect: [:new, :create] do
+    get 'summits/new'
+    post 'summits/create'
+    collection { post :import }
+  end
+
+  resources :summits, expect: [:new, :create] do 
+    collection { post :import }
+  end
+
+
   resources :pranesses, expect: [:new, :create] do 
     collection { post :import }
   end 
@@ -44,9 +57,24 @@ Rails.application.routes.draw do
     collection { post :import }
   end 
 
-end
+  resources :users
 
-# get 'stock_histories/new'
-# post 'stock_histories/create'
-# get 'return_histories/new'
-# post 'return_histories/create'
+  resources :shifts
+
+  resources :panda_profits, only: :index
+
+  resources :results do 
+    collection { post :import }
+  end  
+  
+  resources :n_results do 
+    collection { post :import }
+  end  
+
+  resources :products
+  
+  resources :trouble_ns do 
+    collection { post :import }
+  end
+
+end

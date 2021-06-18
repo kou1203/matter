@@ -1,0 +1,295 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1 class="sub-title">シフト一覧</h1>
+    <table class="search-table">
+          <th class="shift-link"><%= link_to "シフト申請", new_shift_path, class: "new-link" %></td>
+    </table>
+        <%= search_form_for @q do |f| %>
+          <table class="table">
+          <tr class="search-tr">
+          <th class="search-th"><%= f.label :year, "日付", class: "search-label" %></th>
+          <td class="search-td"><%= f.select :year_eq, options_from_collection_for_select(Shift.select(:year).distinct, :year, :year), {} ,{class: "search-input"} %></td>
+          <th class="search-th"><%= f.label :year, "年", class: "search-label" %></th>
+          <td class="search-td"><%= f.select :month_eq, options_from_collection_for_select(Shift.select(:month).distinct, :month, :month),{}, {class: "search-input"} %></td>
+          <th class="search-th"><%= f.label :month, "月", class: "search-label" %></th>
+          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
+          <td class="search-reset"><%= link_to "絞込みリセット", shifts_path ,class: "reset-link" %></td>
+          </tr>
+          </table>
+        <% end %>
+    <hr>  
+  <% if @shifts.empty? %>
+  <% else %>
+    <h2 class="sub-title">表示範囲：<%= @shifts.minimum(:year) %>年<%= @shifts.minimum(:month) %>月</h2>
+    <h2 class="show-title">中部</h2>
+    <% @shifts.includes(:user).where(users: {base: '中部SS'}).each do |c| %>
+    <h2 class="shift-title">
+      <%= link_to c.user.name, shift_path(c.id), class: "sh-link" %>
+      <%= link_to "シフト削除", shift_path(c.id), method: :delete, data: {confirm: "削除しますか？"} ,class: "sh-link" %>
+      <%= link_to "シフト変更", edit_shift_path(c.id), class: "sh-link" %>
+    </h2>
+    <table class="shift-table">
+    <%# 一列目 %>
+      <tr class="shift-tr">
+        <th class="shift-cashless-th">キャッシュレス</th>
+        <th class="shift-praness-th">ぷらねす</th>
+        <th class="shift-summit-th">サミットエナジー</th>
+        <th class="shift-panda-th">フードパンダ</th>
+        <th class="shift-other-th">その他</th>
+        <th class="shift-sum-th">合計</th>
+      </tr>
+    <%# 二列目 %>
+      <tr class="shift-tr">
+          <td class="shift-td">新規シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.cashless_new %>
+          <% end %>
+          </td>
+          <td class="shift-td">シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.praness %>
+          <% end %>
+          </td>
+          <td class="shift-td">シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.summit %>
+          <% end %>
+          </td>
+          <td class="shift-td">シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.panda %>
+          <% end %>
+          </td>
+          <td class="shift-td">帯同：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.ojt %>
+          <% end %>
+          </td>
+          <td class="shift-td">シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.cashless_new + c.cashless_settlement + (c.praness + c.summit) / 2 + c.panda + c.house_work + c.ojt %>
+          <% end %>
+          </td>
+      </tr>
+    <%# 三列目 %>
+      <tr class="shift-tr">
+          <td class="shift-td">決済シフト：
+            <% if c.nil? %>
+              0
+            <% else %>
+              <%= c.cashless_settlement %>
+            <% end %>
+          <%# ぷらねす %>
+            <% pranesses_length = c.user.pranesses.group("YEAR(get_date)").group("MONTH(get_date)").count %>
+            <% praness_ave = 0 %>
+          <td class="shift-td">獲得：
+            <% pranesses_length.each do |praness_length| %>
+              <% if praness_length[0][0] == c.year && praness_length[0][1] == c.month %>
+              <%= praness_length[1] %>
+              <% praness_ave = (praness_length[1].to_f / c.praness).round(1) %>
+              </td>
+            <% end %>
+          <% end %>
+          </td>
+          <%# サミット %>
+          <% summit_ave = 0 %>
+          <% summits_length = c.user.summits.group("YEAR(get_date)").group("MONTH(get_date)").count %>
+          <td class="shift-td">獲得：
+            <% summits_length.each do |summit_length| %>
+              <% if summit_length[0][0] == c.year && summit_length[0][1] == c.month %>
+                <%= summit_length[1] %>
+              <% summit_ave = (summit_length[1].to_f / c.summit).round(1) %>
+              <% end %>
+            <% end %>
+          </td>
+          <%# パンダ %>
+          <% panda_ave = 0 %>
+          <% pandas_length = c.user.pandas.group("YEAR(get_date)").group("MONTH(get_date)").count %>
+          <td class="shift-td">獲得：
+            <% pandas_length.each do |panda_length| %>
+            <% if panda_length[0][0] == c.year && panda_length[0][1] == c.month %>
+              <%= panda_length[1] %>
+              <% panda_ave = (panda_length[1].to_f / c.panda).round(1) %>
+            <% end %>
+          <% end %>
+          </td>
+          <td class="shift-td">内勤：
+            <% if c.nil? %>
+              0
+            <% else %>
+              <%= c.house_work %>
+            <% end %>
+          </td>
+        <td class="shift-td"></td>
+      </tr>
+    <%# 四列目 %>
+      <tr class="shift-tr">
+        <td class="shift-td"></td>
+        <td class="shift-td">Ave：
+          <%= praness_ave %></td>
+        <td class="shift-td">Ave：<%= summit_ave %></td>
+        <td class="shift-td">Ave：<%= panda_ave %></td>
+        <td class="shift-td"></td>
+        <td class="shift-td"></td>
+      </tr>
+    </table>
+  <% end %>
+    <h2 class="show-title">関西</h2>
+    <% @shifts.includes(:user).where(users: {base: '関西'}).each do |c| %>
+    <h2 class="shift-title">
+      <%= link_to c.user.name, shift_path(c.id), class: "sh-link" %>
+      <%= link_to "シフト削除", shift_path(c.id), method: :delete,class: "sh-link" %>
+      <%= link_to "シフト変更", edit_shift_path(c.id), class: "sh-link" %>
+    </h2>
+    <table class="shift-table">
+    <%# 一列目 %>
+      <tr class="shift-tr">
+        <th class="shift-cashless-th">N</th>
+        <th class="shift-cashless-th">キャッシュレス</th>
+        <th class="shift-cashless-th">楽天カーサ</th>
+        <th class="shift-praness-th">ぷらねす</th>
+        <th class="shift-summit-th">サミットエナジー</th>
+        <th class="shift-panda-th">フードパンダ</th>
+        <th class="shift-other-th">その他</th>
+        <th class="shift-sum-th">合計</th>
+      </tr>
+    <%# 二列目 %>
+      <tr class="shift-tr">
+          <td class="shift-td">シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.n %>
+          <% end %>
+          </td>
+          <td class="shift-td">新規シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.cashless_new %>
+          <% end %>
+          </td>
+          <td class="shift-td">シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.rakuten_casa %>
+          <% end %>
+          </td>
+          <td class="shift-td">シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.praness %>
+          <% end %>
+          </td>
+          <td class="shift-td">シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.summit %>
+          <% end %>
+          </td>
+          <td class="shift-td">シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.panda %>
+          <% end %>
+          </td>
+          <td class="shift-td">帯同：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.ojt %>
+          <% end %>
+          </td>
+          <td class="shift-td">シフト：
+          <% if c.nil? %>
+            0
+          <% else %>
+            <%= c.cashless_new + c.cashless_settlement + (c.praness + c.summit) / 2 + c.panda + c.house_work + c.ojt %>
+          <% end %>
+          </td>
+      </tr>
+    <%# 三列目 %>
+      <tr class="shift-tr">
+          <td class="shift-td">決済シフト：
+            <% if c.nil? %>
+              0
+            <% else %>
+              <%= c.cashless_settlement %>
+            <% end %>
+          <%# ぷらねす %>
+            <% pranesses_length = c.user.pranesses.group("YEAR(get_date)").group("MONTH(get_date)").count %>
+            <% praness_ave = 0 %>
+          <td class="shift-td">獲得：
+            <% pranesses_length.each do |praness_length| %>
+              <% if praness_length[0][0] == c.year && praness_length[0][1] == c.month %>
+              <%= praness_length[1] %>
+              <% praness_ave = (praness_length[1].to_f / c.praness).round(1) %>
+              </td>
+            <% end %>
+          <% end %>
+          </td>
+          <%# サミット %>
+          <% summit_ave = 0 %>
+          <% summits_length = c.user.summits.group("YEAR(get_date)").group("MONTH(get_date)").count %>
+          <td class="shift-td">獲得：
+            <% summits_length.each do |summit_length| %>
+              <% if summit_length[0][0] == c.year && summit_length[0][1] == c.month %>
+                <%= summit_length[1] %>
+              <% summit_ave = (summit_length[1].to_f / c.summit).round(1) %>
+              <% end %>
+            <% end %>
+          </td>
+          <%# パンダ %>
+          <% panda_ave = 0 %>
+          <% pandas_length = c.user.pandas.group("YEAR(get_date)").group("MONTH(get_date)").count %>
+          <td class="shift-td">獲得：
+            <% pandas_length.each do |panda_length| %>
+            <% if panda_length[0][0] == c.year && panda_length[0][1] == c.month %>
+              <%= panda_length[1] %>
+              <% panda_ave = (panda_length[1].to_f / c.panda).round(1) %>
+            <% end %>
+          <% end %>
+          </td>
+          <td class="shift-td">内勤：
+            <% if c.nil? %>
+              0
+            <% else %>
+              <%= c.house_work %>
+            <% end %>
+          </td>
+        <td class="shift-td"></td>
+      </tr>
+    <%# 四列目 %>
+      <tr class="shift-tr">
+        <td class="shift-td"></td>
+        <td class="shift-td">Ave：
+          <%= praness_ave %></td>
+        <td class="shift-td">Ave：<%= summit_ave %></td>
+        <td class="shift-td">Ave：<%= panda_ave %></td>
+        <td class="shift-td"></td>
+        <td class="shift-td"></td>
+      </tr>
+    </table>
+  <% end %>
+  <% end %>
+  </main>
+</div>

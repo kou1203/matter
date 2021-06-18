@@ -21,10 +21,10 @@ class StoreProp < ApplicationRecord
 
   has_one :dmer
   has_one :praness
-  has_one :summit
+  has_one :summit_customer_prop
   has_one :aupay
   has_one :paypay
-  has_one :panda 
+  has_many :pandas 
 
   def self.import(file)
     CSV.foreach(file.path, headers: true) do |row|
@@ -55,8 +55,8 @@ class StoreProp < ApplicationRecord
       "municipalities",
       "address",
       "building_name",
-      "holiday",
-      "suitable_time"
+      "suitable_time",
+      "holiday"
     ]
   end
 end
