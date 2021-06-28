@@ -22,6 +22,13 @@
       <%= f.select :industry, { "飲食": "飲食","小売": "小売", "サービス": "サービス"} ,{include_blank:"選択してください"}, {class: "form-input"} %>
     </div>
     </th>
+
+    <th>
+    <div class="form-interval">
+      <%= f.label :head_store, "本店名", class: "form-text" %><span class="note">（複数店のみ入力）</span><br>
+      <%= f.text_field :head_store, class: "form-input" %>
+    </div>
+    </th>
     </tr>
     <tr>
     <th>

@@ -78,11 +78,20 @@
     
     <th>
       <div class="form-interval">
+        <%= f.label :settlement_deadline, "決済期限", class: "form-text" %><br>
+        <%= f.date_field :settlement_deadline , class: "form-input" %>
+      </div>
+    </th>
+    
+    <th>
+      <div class="form-interval">
         <%= f.label :payment, "入金日", class: "form-text" %><br>
         <%= f.date_field :payment , class: "form-input" %>
       </div>
     </th>
     
+    </tr>
+    <tr>
     <th>
       <div class="form-interval">
         <%= f.label :description, "備考", class: "form-text" %><br>

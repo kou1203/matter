@@ -4,13 +4,11 @@
   <%= render "shared/side_bar" %>
   <main class="right-bar">
   <%= form_with model: @shift, class: "form-frame", local: true do |f| %>
-  <h1 class="form-text">シフト入力編集</h1>
+  <h1 class="form-text">シフト入力編集：<%= @shift.user.name %></h1>
       <%= f.number_field :year, class: "form-year" %>
       <%= f.label :year, "年", class: "form-text" %>
       <%= f.number_field :month, class: "form-month" %>
       <%= f.label :year, "月", class: "form-text" %>
-      <%= f.label :user_id, "　訪問員：", class: "form-text" %>
-      <%= f.collection_select(:user_id, User.all, :id,:name,{},{class: "form-user"}) %>
     <table>
   <%# 一列目 %>
     <tr>

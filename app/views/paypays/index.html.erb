@@ -3,53 +3,51 @@
   <%= render "shared/side_bar" %>
   <div class="right-bar">
   <h1 class="sub-title">PayPay一覧</h1>
-  <div class="search-body">
     <%= search_form_for @q do |f| %>
-          <table class="search-table">
-        <tr class="search-tr">
+        <table class="search-table">
+          <tr class="search-tr">
           <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
           <td class="search-td"><%= f.select :user_id_eq, options_from_collection_for_select(User.all, :id, :name),{include_blank: true},{class: "search-input"} %></td>
           <th class="search-th"><%= f.label :get_date, "獲得日付", class: "search-label" %></th>
-          <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %></td>
-          <td class="search-td"><%= f.label :get_date, "〜" %></td>
+          <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %>〜</td>
           <td class="search-td"><%= f.date_field :get_date_lt, class: "search-date" %></td>
-        </tr>
+          </tr>
+        </table>
+        <table class="search-table">
         <tr class="search-tr">
           <th class="search-th"><%= f.label :status, "審査ステータス", class: "search-label" %></th>
-          <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(Paypay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
-
-          <th class="search-th"><%= f.label :before_status, "前回ステータス", class: "search-label" %></th>
-          <td class="search-td"><%= f.select :before_status_eq, options_from_collection_for_select(Paypay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
-
           <th class="search-th"><%= f.label :client, "商流", class: "search-label" %></th>
-          <td class="search-td"><%= f.select :client_eq, {"マックスサポート": "マックスサポート", "USEN": "USEN","メルヴェイユ": "メルヴェイユ",
-      "ウィンクルム": "ウィンクルム"}, {include_blank: true}, {class: "search-input"} %></td>
-
           <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
-          <td class="search-reset"><%= link_to "絞込みリセット", dmers_path, class: "reset-link" %></td>
+        </tr>
+        <tr class="search-tr">
+          <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(Paypay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
+          <td class="search-td"><%= f.select :client_eq, {"マックスサポート": "マックスサポート", "USEN": "USEN","メルヴェイユ": "メルヴェイユ","ウィンクルム": "ウィンクルム"}, {include_blank: true}, {class: "search-input"} %></td>
+          <td class="search-reset"><%= link_to "絞込みリセット", paypays_path, class: "reset-link" %></td>
+
         </tr>
       </table>
     
     <% end %>
-
-      <table class="index-table">
-
-    <tr class="index-tr">
-      <th class="index-th"></th>
-      <th class="index-th"><%= sort_link(@q, :get_date, "獲得日",{}, {class: "index-sort"}) %></th>
-      <th class="index-th">法人/個人</th>
-      <th class="index-th">店舗名</th>
-      <th class="index-th">審査ステータス</th>
-    </tr>
-    <% @paypays.each do |paypay| %>
-    <tr class="index-tr">
-      <td class="index-td"><%= link_to "詳細",  paypay_path(paypay.id) ,class: "link" %></td>
-      <td class="index-td"><%= paypay.get_date %></td>
-      <td class="index-td"><%= paypay.store_prop.race %></td>
-      <td class="index-td"><%= paypay.store_prop.name %></td>
-      <td class="index-td"><%= paypay.status %></td>
-    </tr>
-    <% end %>
+  <% if @paypays.empty? %>
+  <% else %>
+    <table class="index-table">
+      <tr class="index-tr">
+        <th class="index-th"></th>
+        <th class="index-th"><%= sort_link(@q, :get_date, "獲得日",{}, {class: "index-sort"}) %></th>
+        <th class="index-th">法人/個人</th>
+        <th class="index-th">店舗名</th>
+        <th class="index-th">審査ステータス</th>
+      </tr>
+      <% @paypays.each do |paypay| %>
+      <tr class="index-tr">
+        <td class="index-td"><%= link_to "詳細",  paypay_path(paypay.id) ,class: "link" %></td>
+        <td class="index-td"><%= paypay.get_date %></td>
+        <td class="index-td"><%= paypay.store_prop.race %></td>
+        <td class="index-td"><%= paypay.store_prop.name %></td>
+        <td class="index-td"><%= paypay.status %></td>
+      </tr>
+      <% end %>
     </table>
+  <% end %>
   </div>
 </main>

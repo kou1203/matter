@@ -1,0 +1,121 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1 class="show-title">クレーム報告（SS）</h1>
+
+  <%= form_with url: import_trouble_sses_path do |f| %>
+    <table class="table">
+      <tr>
+      <td class="import-choose"><%= f.label :file, "CSV取り込み",class:"import-label" %></td>
+      <td class="import-choose"><%= f.file_field :file, accept: '.csv', class: "import-file" %></td>
+      <td class="import-result"><%= f.submit  "インポート",class: "import-btn" , data: {confirm: "インポートしますか？"} %></td>
+      <td class="search-reset"><%= link_to "一覧に戻る", trouble_sses_path ,class: "reset-link" %></td>
+    </table>
+  <% end %>
+      
+
+      
+
+  <%= form_with model: @trouble_ss, url:  store_prop_trouble_sses_create_path(@store_prop.id) ,class: "form-frame", local: true do |f| %>
+    <h2 class="form-text"><%= @store_prop.name %></h2>
+    <%= render "shared/error_messages",model: f.object %>
+    <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
+    <table class="table">
+    <tr>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :date, "入電日", class: "form-text" %><span class="note">（※必須）</span><br>
+          <%= f.date_field :date , class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :customer_name, "お客様氏名", class: "form-text" %><span class="note">（※必須）</span><br>
+          <%= f.text_field :customer_name, class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :category, "直入電orメール", class: "form-text" %><span class="note">（※必須）</span><br>
+          <%= f.select :category , {"直入電": "直入電", "メール": "メール"},{},{class: "form-input"} %>
+        </div>
+      </th>
+    
+    <th>
+      <div class="form-interval">
+        <%= f.label :get_status, "獲得or未獲得", class: "form-text" %><span class="note">（※必須）</span><br>
+        <%= f.select :get_status, { "獲得": "獲得", "未獲得": "未獲得" } ,{}, {class: "form-input"} %>
+      </div>
+    </th>
+
+    <th>
+      <div class="form-interval">
+        <%= f.label :product, "商材", class: "form-text" %><br>
+        <%= f.text_field :product  ,class: "form-input" %>
+      </div>
+    </th>
+    </tr>
+    <tr>
+
+
+    <th>
+      <div class="form-interval">
+        <%= f.label :user_id, "営業担当者", class: "form-text" %><span class="note">（※必須）</span><br>
+        <%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "form-input"}) %>
+      </div>
+    </th>
+
+    <th>
+      <div class="form-interval">
+        <%= f.label :confirmer, "入電対応者", class: "form-text" %><br>
+        <%= f.text_field :confirmer , class: "form-input" %>
+      </div>
+    </th>
+    
+    <th>
+      <div class="form-interval">
+        <%= f.label :content_type, "クレームor問い合わせ", class: "form-text" %><br>
+        <%= f.select :content_type, { "クレーム": "クレーム", "問い合わせ": "問い合わせ" } ,{} ,{class: "form-input"} %>
+      </div>
+    </th>
+    <th>
+      <div class="form-interval">
+        <%= f.label :contact_date, "対応日", class: "form-text" %><br>
+        <%= f.date_field :contact_date , class: "form-input" %>
+      </div>
+    </th>
+    
+    <th>
+      <div class="form-interval">
+        <%= f.label :customer_opinion, "対応内容", class: "form-text" %><br>
+        <%= f.text_field :customer_opinion, class: "form-input" %>
+      </div>
+    </th>
+    </tr>
+  </table>
+    
+  <table>
+  </table>
+  <table>
+  </table>
+  <table>
+      <div class="form-interval">
+        <%= f.label :result, "対応結果", class: "form-text" %><br>
+        <%= f.text_field :result , class: "form-input" %>
+      </div>
+      <div class="form-interval">
+        <%= f.label :remarks, "備考", class: "form-text" %><br>
+        <%= f.text_field :remarks , class: "form-input" %>
+      </div>
+  </table>
+    <%= f.submit "登録", class: "form-btn" %>
+  
+  
+  <% end %>
+  </main>
+</div>

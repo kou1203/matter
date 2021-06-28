@@ -2,7 +2,12 @@ class DmersController < ApplicationController
 
   def index 
     @q = Dmer.ransack(params[:q])
-    @dmers = @q.result(distinct: true)
+    @dmers = 
+      if params[:q].nil?
+        Dmer.none 
+      else
+        @q.result(distinct: true)
+      end
   end 
 
   def new 
@@ -57,6 +62,7 @@ class DmersController < ApplicationController
       :before_status,
       :description,
       :settlement,
+      :settlement_deadline,
       :valuation_profit,
       :actual_profit    
     )

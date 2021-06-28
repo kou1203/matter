@@ -13,32 +13,29 @@
         <%= search_form_for @q do |f| %>
       <table class="search-table">
         <tr class="search-tr">
-          <th class="search-th"><%= f.label :user_name, "訪問員", class: "search-label" %></th>
-          <td class="search-td"><%= f.text_field :user_name_cont, class: "search-input" %></td>
-
-        <th class="search-th"><%= f.label :date, "日付（月）", class: "search-label" %></th>
+        <th class="search-th"><%= f.label :date, "獲得月", class: "search-label" %></th>
         <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true} ,{class: "search-date-select"} %></td>
-
-          <th class="search-th"><%= f.label :date, "日付（範囲）", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :date, "獲得期間", class: "search-label" %></th>
           <td class="search-td"><%= f.date_field :date_gteq, class: "search-date" %>~</td>
           <td class="search-td"><%= f.date_field :date_lteq, class: "search-date" %></td>
+        </tr>
+      </table>
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-th"><%= f.label :user_name, "訪問員", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :category, "直入電orHOKS", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :content_type, "問い合わせ", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :content_type, "クレーム", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :base, "拠点", class: "form-text" %></th>
+          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
 
         </tr>
         <tr class="search-tr">
-          <th class="search-th"><%= f.label :category, "直入電orHOKS", class: "search-label" %></th>
+          <td class="search-td"><%= f.text_field :user_name_cont, class: "search-input" %></td>
           <td class="search-td"><%= f.select :category_eq, {"直入電": "直入電", "HOKS": "HOKS"},{include_blank: true}, {class: "search-input"} %></td>
-
-          <th class="search-th"><%= f.label :content_type, "問い合わせ", class: "search-label" %></th>
          <td class="search-td"><%= f.select :content_type_eq, {"問い合わせ": "問い合わせ"},{include_blank: true},{class: "search-input"} %></td>
-
-          <th class="search-th"><%= f.label :content_type, "クレーム", class: "search-label" %></th>
          <td class="search-td"><%= f.select :content_type_not_eq, {"クレーム": "問い合わせ"},{include_blank: true},{class: "search-input"} %></td>
-
-
-        <th class="search-th"><%= f.label :base, "拠点", class: "form-text" %></th>
          <td class="search-td"><%= f.select :base_eq, options_from_collection_for_select(TroubleN.select(:base).distinct, :base, :base),{include_blank: true},{class: "search-input"} %></td>
-
-          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
           <td class="search-reset"><%= link_to "絞込みリセット", trouble_ns_path, class: "reset-link" %></td>
         </tr>
       </table>

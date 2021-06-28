@@ -1,7 +1,7 @@
 class CreateAupays < ActiveRecord::Migration[6.0]
   def change
     create_table :aupays do |t|
-      t.string :customer_num             ,null: false 
+      t.string :customer_num           
       t.string :client                   , null: false 
       t.references :user                 , foreign_key: true 
       t.references :store_prop           , foreign_key: true
@@ -10,6 +10,7 @@ class CreateAupays < ActiveRecord::Migration[6.0]
       t.string :status                   , null: false 
       t.string :before_status
       t.date :settlement
+      t.date :settlement_deadline
       t.string :description
       t.integer :valuation_profit     ,null: false
       t.integer :actual_profit        ,null: false

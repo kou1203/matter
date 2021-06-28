@@ -15,24 +15,24 @@
     <table class="search-frame">
       
       <tr class="search-tr">
-        <th class="search-title"><%= f.label :industry, "業種", class: "search-label" %></td>
-        <th class="search-title"><%= f.label :name, "店舗名", class: "search-label" %></td>
-        <th class="search-title"><%= f.label :prefecture, "都道府県", class: "search-label" %></td>
-        <th class="search-title"><%= f.label :city, "市区", class: "search-label" %></td>
+        <th class="search-th"><%= f.label :industry, "業種", class: "search-label" %></th>
+        <th class="search-th"><%= f.label :name, "店舗名", class: "search-label" %></th>
+        <th class="search-th"><%= f.label :prefecture, "都道府県", class: "search-label" %></th>
+        <th class="search-th"><%= f.label :city, "市区", class: "search-label" %></th>
+        <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
       </tr>
       <tr class="search-tr">
         <td class="search-form"><%= f.select :industry_eq, {"飲食": "飲食", "小売": "小売", "サービス": "サービス"} , {include_blank: true},{class: "search-input"} %></td>
-        <td class="search-form"><%= f.search_field :name_cont, class: "search-input" %></td>
-        <td class="search-form"><%= f.text_field :prefecture_cont, class: "search-input" %></td>
-        <td class="search-form"><%= f.text_field :city_cont, class: "search-input" %></td>
-        <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
+        <td class="search-td"><%= f.search_field :name_cont, class: "search-input" %></td>
+        <td class="search-td"><%= f.text_field :prefecture_cont, class: "search-input" %></td>
+        <td class="search-td"><%= f.text_field :city_cont, class: "search-input" %></td>
         <td  class="search-reset"><%= link_to "絞込みリセット", root_path ,class: "reset-link" %></td>
       </tr>
       <% end %>
     </table>
-  
-
     <hr>
+    <% if @store_props.empty? %>
+    <% else %>
  
     <table class="search-table">
       <tr>
@@ -63,5 +63,6 @@
     </tr>
     <% end %>
     </table>
+  <% end %>
   </main>
 </div>

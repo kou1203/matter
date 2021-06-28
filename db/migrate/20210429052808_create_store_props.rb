@@ -22,6 +22,7 @@ class CreateStoreProps < ActiveRecord::Migration[6.0]
       t.string :building_name
       t.string :suitable_time          , null: false
       t.string :holiday                , null: false 
+      t.string :head_store
   
     end
     add_index :store_props , [:name], unique: true

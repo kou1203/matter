@@ -3,65 +3,101 @@
   <%= render "shared/side_bar" %>
   <div class="right-bar">
   <h1 class="sub-title">auペイ一覧</h1>
-    <div class="show-title"><%= Date.today.month %>月獲得数<%= Aupay.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</div>
     <%= search_form_for @q do |f| %>
-      <table class="table">
+      <table class="search-table">
         <tr class="search-tr">
-          <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
-          <td class="search-td"><%= f.select :user_id_eq, options_from_collection_for_select(User.where.not(base: "退職"), :id, :name),{include_blank: true},{class: "search-input"} %></td>
           <th class="search-th"><%= f.label :get_date, "獲得日付", class: "search-label" %></th>
           <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %>〜</td>
           <td class="search-td"><%= f.date_field :get_date_lteq, class: "search-date" %></td>
+          <th class="search-th"><%= f.label :get_date, "決済期限", class: "search-label" %></th>
+          <td class="search-td"><%= f.date_field :settlement_gteq, class: "search-date" %>〜</td>
+          <td class="search-td"><%= f.date_field :settlement_lteq, class: "search-date" %></td>
+        </tr>
+      </table>
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-checkbox-th"><%= f.label :settlement, "未決済", class: "search-label" %></th>
+          <th class="search-checkbox-th"><%= f.label :payment, "未入金", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :status, "審査ステータス", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :status, "商流", class: "search-label" %></th>
+          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
         </tr>
         <tr class="search-tr">
-          <th class="search-th"><%= f.label :status, "審査ステータス", class: "search-label" %></th>
+          <th class="search-checkbox-td"><%= f.check_box :settlement_null, checked: true, class: "search-checkbox" %></td>
+          <th class="search-checkbox-td"><%= f.check_box :payment_null, checked: true, class: "search-checkbox" %></td>
+          <td class="search-td"><%= f.text_field :user_name_cont, class: "search-input" %></td>
           <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(Aupay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
-          <th class="search-th"><%= f.label :before_status, "前回ステータス", class: "search-label" %></th>
-          <td class="search-td"><%= f.select :before_status_eq, options_from_collection_for_select(Aupay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
           <td class="search-td"><%= f.select :client_eq, {"マックスサポート": "マックスサポート", "USEN": "USEN","メルヴェイユ": "メルヴェイユ",
       "ウィンクルム": "ウィンクルム"}, {include_blank: true}, {class: "search-input"} %></td>
-          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
           <td class="search-reset"><%= link_to "絞込みリセット", aupays_path, class: "reset-link" %></td>
         </tr>
+      </table>
     <% end %>
-
 
     <hr>
 
-      <table class="index-table">
-        <tr>
-          <th class="index-th">獲得件数</th>
-          <th class="index-th">未審査数</th>
-          <th class="index-th">審査完了</th>
-          <th class="index-th">決済完了</th>
-          <th class="index-th">自社不備</th>
+    <% if @aupays.empty? %>
+    <% else %>
+      <h2 class="sub-title">表示範囲：<%= @aupays.minimum(:get_date) %>〜<%= @aupays.maximum(:get_date) %></h2>
+
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-th">獲得件数</th>
+          <th class="search-th">決済待ち</th>
+          <th class="search-th">決済完了</th>
+          <th class="search-th">決済期限切れ(仮)</th>
+          <th class="search-th">入金完了</th>
+          <th class="search-th">未審査数</th>
+        </tr>
+        <tr class="search-tr">
+          <td class="search-td"><%= @aupays.length %></td>
+          <td class="search-td"><%= @aupays.where(status: "入金待ち").where(settlement: nil).length %></td>
+          <td class="search-td"><%= @aupays.where.not(settlement: nil).length %></td>
+          <td class="search-td"><%= @aupays.where(status: "入金待ち").where(settlement: nil).where(settlement_deadline: Time.now.years_ago(5)..Time.now).length %></td>
+          <td class="search-td"><%= @aupays.where.not(payment: nil).length %></td>
+          <td class="search-td"><%= @aupays.where(status: '未審査').length %></td>
         </tr>
         <tr>
-          <td class="index-td"><%= @aupays.length %></td>
-          <td class="index-td"><%= @aupays.where(status: '未審査').length %></td>
-          <td class="index-td"><%= @aupays.where(status: '審査完了' ).length %></td>
-          <td class="index-td"><%= @aupays.where(status: '決済完了' ).length %></td>
-          <td class="index-td"><%= @aupays.where(status: '自社不備' ).length %></td>
+          <th class="search-th">上位店不備</th>
+          <th class="search-th">自社不備</th>
+          <th class="search-th">上位店NG</th>
+          <th class="search-th">自社NG</th>
+        </tr>
+        <tr>
+          <td class="search-td"><%= @aupays.where(status: '上位店不備' ).length %></td>
+          <td class="search-td"><%= @aupays.where(status: '自社不備' ).length %></td>
+          <td class="search-td"><%= @aupays.where(status: '上位店NG' ).length %></td>
+          <td class="search-td"><%= @aupays.where(status: '自社NG' ).length %></td>
         </tr>
       </table>
       <table class="index-table">
 
-    <tr class="table-row">
+    <tr class="index-tr">
       <th class="index-th"></th>
       <th class="index-th"><%= sort_link(@q, :get_date, "獲得日",{},{class: "index-sort"}) %></th>
+      <th class="index-th">獲得者</th>
       <th class="index-th">法人/個人</th>
       <th class="index-th">店舗名</th>
       <th class="index-th">審査ステータス</th>
+      <th class="index-th">初回決済日</th>
+      <th class="index-th">決済期限</th>
+      <th class="index-th">入金日</th>
     </tr>
-    <% @aupays.each do |aupay| %>
-    <tr class="table-row">
+    <% @aupays.find_each do |aupay| %>
+    <tr class="index-tr">
       <td class="index-td"><%= link_to "詳細",  aupay_path(aupay.id) ,class: "index-link" %></td>
-      <td class="index-td"><%= aupay.get_date %></td>
+      <td class="index-td"><%= aupay.get_date.month %>月<%= aupay.get_date.day %>日</td>
+      <td class="index-td"><%= aupay.user.name %></td>
       <td class="index-td"><%= aupay.store_prop.race %></td>
       <td class="index-td"><%= aupay.store_prop.name %></td>
       <td class="index-td"><%= aupay.status %></td>
+      <td class="index-td"><%= aupay.settlement %></td>
+      <td class="index-td"><%= aupay.settlement_deadline %></td>
+      <td class="index-td"><%= aupay.payment %></td>
     </tr>
-    </table>
     <% end %>
+    </table>
+  <% end %>
   </div>
 </main>

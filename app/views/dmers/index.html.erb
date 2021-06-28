@@ -3,50 +3,65 @@
   <%= render "shared/side_bar" %>
   <div class="right-bar">
   <h1 class="sub-title">dメル一覧</h1>
-    <h2 class="show-title"><%= Date.today.month %>月獲得数 <%= Dmer.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</h2>
-    
-
 
         <%= search_form_for @q do |f| %>
       <table class="search-table">
         <tr class="search-tr">
-          <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
-          <td class="search-td"><%= f.select :user_id_eq, options_from_collection_for_select(User.where.not(base: "退職"), :id, :name),{include_blank: true},{class: "search-input"} %></td>
           <th class="search-th"><%= f.label :get_date, "獲得日付", class: "search-label" %></th>
           <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %>~</td>
           <td class="search-td"><%= f.date_field :get_date_lteq, class: "search-date" %></td>
+          <th class="search-th"><%= f.label :settlement_deadline, "決済期限", class: "search-label" %></th>
+          <td class="search-td"><%= f.date_field :settlement_deadline_gteq, class: "search-date" %>~</td>
+          <td class="search-td"><%= f.date_field :settlement_deadline_lteq, class: "search-date" %></td>
+        </tr>
+      </table>
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-checkbox-th"><%= f.label :settlement, "未決済", class: "search-label" %></th>
+          <th class="search-checkbox-th"><%= f.label :payment, "未入金", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :status, "審査ステータス", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :client, "商流", class: "search-label" %></th>
+          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
         </tr>
         <tr class="search-tr">
-          <th class="search-th"><%= f.label :status, "審査ステータス", class: "search-label" %></th>
+          <td class="search-checkbox-td"><%= f.check_box :settlement_null, checked: true, class: "search-checkbox" %></td>
+          <td class="search-checkbox-td"><%= f.check_box :payment_null, checked: true, class: "search-checkbox" %></td>
+          <td class="search-td"><%= f.text_field :user_name_cont, class: "search-input" %></td>
           <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(Dmer.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
-
-          <th class="search-th"><%= f.label :before_status, "前回ステータス", class: "search-label" %></th>
-          <td class="search-td"><%= f.select :before_status_eq, options_from_collection_for_select(Dmer.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
-          <th class="search-th"><%= f.label :client, "商流", class: "search-label" %></th>
           <td class="search-td"><%= f.select :client_eq, {"マックスサポート": "マックスサポート", "USEN": "USEN","メルヴェイユ": "メルヴェイユ",
       "ウィンクルム": "ウィンクルム"}, {include_blank: true}, {class: "search-input"} %></td>
-
-          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
           <td class="search-reset"><%= link_to "絞込みリセット", dmers_path, class: "reset-link" %></td>
         </tr>
       </table>
+      <hr>
         <% end %>
+      <% if @dmers.empty? %>
+      <% else %>
 
       <hr>
       <table class="search-table">
         <tr class="search-tr">
           <th class="search-th">獲得件数</th>
+          <th class="search-th">決済完了件数</th>
+          <th class="search-th">決済期限切れ件数</th>
+          <th class="search-th">入金完了数</th>
           <th class="search-th">未審査数</th>
+          <th class="search-th">審査NG</th>
           <th class="search-th">審査完了</th>
-          <th class="search-th">決済完了</th>
           <th class="search-th">自社不備</th>
+          <th class="search-th">申込取消</th>
         </tr>
         <tr class="search-tr">
           <td class="search-td"><%= @dmers.length %></td>
+          <td class="search-td"><%= @dmers.where.not(settlement: nil).length %></td>
+          <td class="search-td"><%= @dmers.where(status: "審査完了").where(settlement: nil).where(settlement_deadline: Time.now.years_ago(5)..Time.now).length %></td>
+          <td class="search-td"><%= @dmers.where.not(payment: nil).length %></td>
           <td class="search-td"><%= @dmers.where(status: '未審査').length %></td>
+          <td class="search-td"><%= @dmers.where(status: '審査NG' ).length %></td>
           <td class="search-td"><%= @dmers.where(status: '審査完了' ).length %></td>
-          <td class="search-td"><%= @dmers.where(status: '決済完了' ).length %></td>
           <td class="search-td"><%= @dmers.where(status: '自社不備' ).length %></td>
+          <td class="search-td"><%= @dmers.where(status: '申込取消' ).length %></td>
         </tr>
       </table>
     
@@ -55,22 +70,40 @@
       <th class="index-th"></th>
       <th class="index-th"><%= sort_link(@q, :get_date, "獲得日",{}, {class: "index-sort"}) %></th>
       <th class="index-th">法人/個人</th>
+      <th class="index-th">複数店</th>
       <th class="index-th">店舗名</th>
       <th class="index-th">獲得者</th>
       <th class="index-th">審査ステータス</th>
-      <th class="index-th">前回ステータス</th>
+      <th class="index-th">初回決済日</th>
+      <th class="index-th">決済期限</th>
+      <th class="index-th">入金日</th>
     </tr>
-    <% @dmers.each do |dmer| %>
+    <% @dmers.find_each do |dmer| %>
     <tr class="index-tr">
       <td class="index-td"><%= link_to "詳細",  dmer_path(dmer.id) ,class: "index-link" %></td>
-      <td class="index-td"><%= dmer.get_date %></td>
+      <td class="index-td"><%= dmer.get_date.month %>月<%= dmer.get_date.day %>日</td>
       <td class="index-td"><%= dmer.store_prop.race %></td>
+      <% if dmer.store_prop.head_store.nil? %>
+        <td class="index-td"></td>
+      <% elsif dmer.store_prop.head_store == dmer.store_prop.name %>
+        <td class="index-td">複数店本店</td>
+      <% else %>
+        <td class="index-td">複数店(<%= dmer.store_prop.head_store %>)</td>
+      <% end %>
       <td class="index-td"><%= dmer.store_prop.name %></td>
       <td class="index-td"><%= dmer.user.name %></td>
       <td class="index-td"><%= dmer.status %></td>
-      <td class="index-td"><%= dmer.before_status %></td>
+      <% if dmer.settlement.nil? %>
+      <td class="index-td"></td>
+      <% else %>
+      <td class="index-td"><%= dmer.settlement %></td>
+      <% end %>
+      <td class="index-td"><%= dmer.settlement_deadline %></td>
+      <td class="index-td"><%= dmer.payment %></td>
+
     </tr>
     <% end %>
     </table>
+  <% end %>
   </div>
 </main>

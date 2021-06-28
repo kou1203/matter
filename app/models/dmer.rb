@@ -33,6 +33,7 @@ class Dmer < ApplicationRecord
       "before_status",
       "description",
       "settlement",
+      "settlement_deadline",
       "valuation_profit",
       "actual_profit"
     ]

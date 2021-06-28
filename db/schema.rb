@@ -10,10 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_10_073025) do
+ActiveRecord::Schema.define(version: 2021_06_28_075854) do
 
   create_table "aupays", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "customer_num", null: false
+    t.string "customer_num"
     t.string "client", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 2021_06_10_073025) do
     t.string "status", null: false
     t.string "before_status"
     t.date "settlement"
+    t.date "settlement_deadline"
     t.string "description"
     t.integer "valuation_profit", null: false
     t.integer "actual_profit", null: false
@@ -31,7 +32,7 @@ ActiveRecord::Schema.define(version: 2021_06_10_073025) do
   end
 
   create_table "dmers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "customer_num", null: false
+    t.string "customer_num"
     t.string "client"
     t.bigint "user_id"
     t.bigint "store_prop_id"
@@ -39,6 +40,7 @@ ActiveRecord::Schema.define(version: 2021_06_10_073025) do
     t.string "status", null: false
     t.string "before_status"
     t.date "settlement"
+    t.date "settlement_deadline"
     t.date "payment"
     t.text "description"
     t.integer "valuation_profit", null: false
@@ -291,6 +293,31 @@ ActiveRecord::Schema.define(version: 2021_06_10_073025) do
     t.index ["user_id"], name: "index_pranesses_on_user_id"
   end
 
+  create_table "rakuten_casas", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "client"
+    t.bigint "store_prop_id"
+    t.bigint "user_id"
+    t.date "date", null: false
+    t.string "contract_type", null: false
+    t.string "contracter", null: false
+    t.string "line_type", null: false
+    t.string "confirm_method", null: false
+    t.string "hikari_collabo"
+    t.string "line_service", null: false
+    t.string "customer_num"
+    t.string "femto_id"
+    t.string "status"
+    t.string "error_status"
+    t.string "error_confirmer"
+    t.text "remarks"
+    t.date "payment"
+    t.integer "valuation_profit", null: false
+    t.integer "actual_profit", null: false
+    t.index ["customer_num"], name: "index_rakuten_casas_on_customer_num", unique: true
+    t.index ["store_prop_id"], name: "index_rakuten_casas_on_store_prop_id"
+    t.index ["user_id"], name: "index_rakuten_casas_on_user_id"
+  end
+
   create_table "results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.date "date", null: false
@@ -505,6 +532,7 @@ ActiveRecord::Schema.define(version: 2021_06_10_073025) do
     t.string "building_name"
     t.string "suitable_time", null: false
     t.string "holiday", null: false
+    t.string "head_store"
     t.index ["name"], name: "index_store_props_on_name", unique: true
   end
 
@@ -561,6 +589,24 @@ ActiveRecord::Schema.define(version: 2021_06_10_073025) do
     t.index ["user_id"], name: "index_trouble_ns_on_user_id"
   end
 
+  create_table "trouble_sses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.date "date", null: false
+    t.bigint "store_prop_id"
+    t.string "category", null: false
+    t.string "customer_name", null: false
+    t.string "get_status", null: false
+    t.string "product", null: false
+    t.bigint "user_id"
+    t.string "confirmer", null: false
+    t.string "content_type", null: false
+    t.text "customer_opinion", null: false
+    t.date "contact_date"
+    t.text "result"
+    t.text "remarks"
+    t.index ["store_prop_id"], name: "index_trouble_sses_on_store_prop_id"
+    t.index ["user_id"], name: "index_trouble_sses_on_user_id"
+  end
+
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -589,6 +635,8 @@ ActiveRecord::Schema.define(version: 2021_06_10_073025) do
   add_foreign_key "pranesses", "stocks"
   add_foreign_key "pranesses", "store_props"
   add_foreign_key "pranesses", "users"
+  add_foreign_key "rakuten_casas", "store_props"
+  add_foreign_key "rakuten_casas", "users"
   add_foreign_key "results", "users"
   add_foreign_key "return_histories", "stocks"
   add_foreign_key "return_histories", "users"
@@ -599,4 +647,6 @@ ActiveRecord::Schema.define(version: 2021_06_10_073025) do
   add_foreign_key "summits", "summit_customer_props"
   add_foreign_key "summits", "users"
   add_foreign_key "trouble_ns", "users"
+  add_foreign_key "trouble_sses", "store_props"
+  add_foreign_key "trouble_sses", "users"
 end

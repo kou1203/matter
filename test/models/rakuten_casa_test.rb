@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class PandaProfitsControllerTest < ActionDispatch::IntegrationTest
+class RakutenCasaTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

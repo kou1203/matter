@@ -3,12 +3,16 @@
   <%= render "shared/side_bar" %>
   <div>
   <h1 class="sub-title">店舗詳細</h1>
+  <table class="search-table">
+    <th class="store-link"><%= link_to "客対応報告", store_prop_trouble_sses_new_path(@store_prop.id), class: "new-link" %></th>
+  </table>
     <table class="show-table">
       <tr class="table-row">
         <th class="dmer-th">dメル</th>
         <th class="aupay-th">auペイ</th>
         <th class="paypay-th">PayPay</th>
         <th class="praness-th">ぷらねす</th>
+        <th class="rakuten-casa-th">楽天カーサ</th>
         <th class="summit-th">サミットエナジー</th>
         <th class="panda-th">フードパンダ</th>
       </tr>
@@ -33,6 +37,11 @@
         <% else %>
           <td class="show-td-done"><%= link_to "登録済み/詳細", praness_path(@store_prop.praness.id),class: "show-link" %></td>
         <% end %>
+        <% if @rakuten_casa.nil? %>
+          <td class="show-td"><%= link_to "新規登録", store_prop_rakuten_casas_new_path(@store_prop.id), class: "show-link" %></td>
+        <% else %>
+          <td class="show-td-done"><%= link_to "登録済み/詳細", rakuten_casa_path(@store_prop.rakuten_casa.id),class: "show-link" %></td>
+        <% end %>
         <% if @summit_customer_prop.nil? %>
           <td class="show-td"><%= link_to "情報入力",  store_prop_summit_customer_props_new_path(@store_prop.id), class: "show-link" %></td>
         <% elsif @summits.nil? %>
@@ -56,6 +65,14 @@
         <td class="show-td"><%= @store_prop.race %></td>
         <th class="show-th">業種</th>
         <td class="show-td"><%= @store_prop.industry %></td>
+        <th class="show-th">本店名</th>
+        <% if @store_prop.name == @store_prop.head_store %>
+        <td class="show-td">本店</td>
+        <% elsif @store_prop.head_store.nil? %>
+        <td class="show-td">複数店なし</td>
+        <% else %>
+        <td class="show-td"><%= @store_prop.head_store %></td>
+        <% end %>
       </tr>
 
       <tr class="table-row">
@@ -104,41 +121,50 @@
         <td class="show-td"><%= link_to "編集", edit_store_prop_path, class: "show-link" %></td>
       </tr>
     </table>
-  
-    <% if @dmer.nil? %>
-    <% else %>
-    <h2 class="show-title">dメル</h2>
+  <h1 class="show-title">お客様対応<%= @store_prop.trouble_sses.length %>件</h1>
+  <% trouble = 0 %>
+    <% @store_prop.trouble_sses.find_each do |t| %>
+    <h3 class="sub-title"><%= trouble += 1 %>件目</h3>
     <table class="show-table">
-      <tr class="table-row">
-        <th class="show-th">獲得者</th>
-        <td class="show-td"><%= @dmer.user.name %></td>
-        <th class="show-th">審査ステータス</th>
-        <td class="show-td"><%= @dmer.status %></td>
-        <th class="show-th">獲得日</th>
-        <td class="show-td"><%= @dmer.get_date %></td>
+      <tr class="show-tr">
+        <th class="show-th">入電日</th>
+        <td class="show-td"><%= t.date %></td>
+        <th class="show-th">連絡者</th>
+        <td class="show-td"><%= t.customer_name %></td>
+        <th class="show-th">直入電orメール</th>
+        <td class="show-td"><%= t.category %></td>
+        <th class="show-th">商材</th>
+        <td class="show-td"><%= t.product %></td>
+      </tr>
+      <tr class="show-tr">
+        <th class="show-th">営業担当者</th>
+        <td class="show-td"><%= t.user.name %></td>
+        <th class="show-th">入電対応者</th>
+        <td class="show-td"><%= t.confirmer %></td>
+        <th class="show-th">対応種別</th>
+        <td class="show-td"><%= t.content_type %></td>
+        <th class="show-th">対応日</th>
+        <td class="show-td"><%= t.contact_date %></td>
+      </tr>
+    <table class="show-table">
+      <tr class="show-tr">
+        <th class="show-th">対応内容</th>
+        <td class="show-td"><%= t.customer_opinion %></td>
       </tr>
     </table>
-    <% end %>
-
-    <% if @aupay.nil? %>
-    <% else %>
-      <h2 class="show-title">auペイ</h2>
-      <table class="side-table">
-        <tr class="table-row">
-          <th class="show-th">獲得者</th>
-          <td class="show-td"><%= @aupay.user.name %></td>
-          <th class="show-th">審査ステータス</th>
-          <td class="show-td"><%= @aupay.status %></td>
-          <th class="show-th">獲得日</th>
-          <td class="show-td"><%= @aupay.get_date %></td>
+    <table class="show-table">
+      <tr class="show-tr">
+        <th class="show-th">対応結果</th>
+        <td class="show-td"><%= t.result %></td>
       </tr>
     </table>
-    <% end %>
-
-    <% if @paypay.nil? %>
-    <% else %>
-      <h2 class="show-title">PayPay</h2>
-      <p>入力済</p>
-    <% end %>
+    <table class="show-table">
+      <tr class="show-tr">
+        <th class="show-th">備考</th>
+        <td class="show-td"><%= t.remarks %></td>
+        <td class="show-td"><%= link_to "編集",  edit_trouble_ss_path(t.id), class: "show-link" %></td>
+      </tr>
+    </table>
+  <% end %>
   </div>
 </div>

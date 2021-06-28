@@ -2,7 +2,12 @@ class PandasController < ApplicationController
 
   def index 
     @q = Panda.ransack(params[:q])
-    @pandas = @q.result(distinct: true)
+    @pandas = 
+      if params[:q].nil?
+        Panda.none 
+      else
+        @q.result(distinct: true)
+      end
   end 
 
   def new 

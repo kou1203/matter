@@ -1,0 +1,186 @@
+<%= render "shared/header" %>
+
+<div class="main">
+  <%= render "shared/side_bar" %>
+  <main class="right-bar">
+  <h1 class="show-title"><%= @store_prop.name %>情報入力（楽天カーサ）</h1>
+      
+
+
+          <%= form_with url: import_rakuten_casas_path do |f| %>
+      <table class="import-table">
+        <tr>
+          <td class="import-choose"><%= f.label :file, "獲得情報をCSVで取り込み",class:"import-label" %></td>
+          <td class="import-choose"><%= f.file_field :file, accept: ".csv", class: "import-file" %></td>
+          <td class="import-result"><%= f.submit  "インポート", class: "import-btn",data: { confirm: 'インポートしますか？' } %></td>
+        <td class="search-reset"><%= link_to "楽天カーサ一覧に戻る", rakuten_casas_path ,class: "reset-link" %></td>
+        </tr>
+      </table>
+    <% end %>
+
+  <%= form_with model: @rakuten_casa,url:  store_prop_rakuten_casas_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
+      <%= render "shared/error_messages", model: f.object %>
+      <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
+      <h2 class="form-text">獲得者：<%= current_user.name %></h2>
+      <%= f.hidden_field :user_id, value: current_user.id %>
+    <table>
+    <%# 一列目 %>
+      <tr>
+      <th>
+        <div class="form-interval">
+          <%= f.label :femto_id, "femto ID", class: "form-text" %><br>
+          <%= f.text_field :femto_id , class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :client, "商流", class: "form-text" %><br>
+          <%= f.select :client, {"USEN": "USEN"} ,{}, {class: "form-input"} %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :date, "獲得日", class: "form-text" %><span class="note">（※必須）</span><br>
+          <%= f.date_field :date , class: "form-input" %>
+        </div>
+      </th>
+
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :contract_type, "契約名義", class: "form-text" %><br>
+          <%= f.select :contract_type, {"個人": "個人", "法人": "法人"} , {},{class: "form-input"} %>
+        </div>
+      </th>
+
+      </tr>
+    <%# 二列目 %>
+      <tr>
+      <th>
+        <div class="form-interval">
+          <%= f.label :confirm_method, "回線確認方法", class: "form-text" %><br>
+          <%= f.select :confirm_method, {"なし": "なし","マイページ": "マイページ", "電話": "電話", "請求書": "請求書", "開通案内": "開通案内"} ,{}, {class: "form-input"} %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :line_type, "回線事業者", class: "form-text" %><span class="note">（※必須）</span><br>
+          <%= f.text_field :line_type ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :hikari_collabo, "光コラボ", class: "form-text" %><br>
+          <%= f.text_field :hikari_collabo ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :line_service, "回線サービス名", class: "form-text" %><span class="note">（※必須）</span><br>
+          <%= f.text_field :line_service ,class: "form-input" %>
+        </div>
+      </th>
+
+      </tr>
+    <%# 三列目 %>
+      <tr>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :customer_num, "お客様番号", class: "form-text" %><br>
+          <%= f.text_field :customer_num ,class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :contracter, "契約者確認", class: "form-text" %><br>
+          <%= f.select :contracter, {"法人名": "法人名", "代表者名": "代表者名", "担当者名": "担当者名","その他": "その他"},{},{class: "form-input"} %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :femto_id, "Femto ID", class: "form-text" %><br>
+          <%= f.text_field :femto_id, class: "form-input" %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :status, "ステータス", class: "form-text" %><br>
+          <%= f.text_field :status, class: "form-input" %>
+        </div>
+      </th>
+
+      </tr>
+    <%# 四列目 %>
+      <tr>
+      <th>
+        <div class="form-interval">
+          <%= f.label :error_status, "不備ステータス", class: "form-text" %><br>
+          <%= f.select :error_status, { "010:回線ID相違": "010:回線ID相違", "020:名義相違": "020:名義相違", "030:設置場所相違": "030:設置場所相違", "040:名義・設置場所相違": "040:名義・設置場所相違", "150:その他相違": "150:その他相違", "050:特定不可": "050:特定不可", "060:照合NG": "060:照合NG","070:照合NG(開通前)": "070:照合NG(開通前)","080:照合NG（タイプ対象外）": "080:照合NG（タイプ対象外）"}, {include_blank: true}, {class: "form-input"} %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :error_confirmer, "不備対応者", class: "form-text" %><br>
+          <%= f.select :error_confirmer, {"営業": "営業", "管理": "管理", "クライアント": "クライアント"}, {include_blank: true} ,{class: "form-input"} %>
+        </div>
+      </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :payment, "入金日", class: "form-text" %><br>
+          <%= f.date_field :payment, class: "form-input" %>
+        </div>
+      </th>
+      </tr>
+      <tr>
+
+    <th>
+      <div class="form-interval">
+        <%= f.label :valuation_profit, "評価売上", class: "form-text" %><br>
+        <%= f.number_field :valuation_profit , class: "form-input" %>
+      </div>
+    </th>
+
+    <th>
+      <div class="form-interval">
+        <%= f.label :actual_profit, "実売上", class: "form-text" %><br>
+        <%= f.number_field :actual_profit , class: "form-input" %>
+      </div>
+    </th>
+
+      <th>
+        <div class="form-interval">
+          <%= f.label :remarks, "備考", class: "form-text" %><br>
+          <%= f.text_field :remarks, class: "form-input" %>
+        </div>
+      </th>
+      </tr>
+
+      </table>
+    <%= f.submit "登録", class: "form-btn" %>
+  <% end %>
+  </main>
+</div>
+
+
+
+
+
+
+
+
+    
+
+
+
+

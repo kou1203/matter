@@ -87,18 +87,20 @@
     <tr class="show-tr">
       <th class="show-th">入金日</th>
       <th class="show-th">決済日</th>
+      <th class="show-th">決済期限</th>
       <th class="show-th">評価売上</th>
       <th class="show-th">実売上</th>
-      <th class="show-th">備考</th>
     </tr>
     <tr class="show-tr">
       <td class="show-td"><%= @dmer.payment %></td>
       <td class="show-td"><%= @dmer.settlement %></td>
+      <td class="show-td"><%= @dmer.settlement_deadline %></td>
       <td class="show-td"><%= @dmer.valuation_profit %></td>
       <td class="show-td"><%= @dmer.actual_profit %></td>
-      <td class="show-td"><%= @dmer.description %></td>
     </tr>
     <tr class="show-tr">
+      <th class="show-th">備考</th>
+      <td class="show-td"><%= @dmer.description %></td>
     <td class="show-td">
       <%= link_to "編集", edit_dmer_path, class: "show-link" %>
     </td>

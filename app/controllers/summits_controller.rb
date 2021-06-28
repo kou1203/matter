@@ -2,7 +2,31 @@ class SummitsController < ApplicationController
 
   def index 
     @q = Summit.ransack(params[:q])
-    @summits = @q.result(distinct: true)
+    @summits = 
+      if params[:q].nil?
+        Summit.none
+      else
+        @q.result(distinct: true)
+      end
+
+      @users = User.joins(:summit).where.not(summit: nil).distinct
+      # 提出済み
+      @amount_month = Summit.where(status: "提出済み").group("YEAR(get_date)").group("MONTH(get_date)").average(:amount_use)
+      
+      @low_voltage_month = Summit.where(status: "提出済み").where(contract_type: '低圧電力').group("YEAR(get_date)").group("MONTH(get_date)").average(:contract_cap) 
+      @metered_month = Summit.where(status: "提出済み").where("contract_type = '従量電灯A' OR contract_type = '従量電灯B'").group("YEAR(get_date)").group("MONTH(get_date)").average(:contract_cap)
+  
+      @low_voltage_claim_expected = Summit.where(status: "提出済み").where(contract_type: '低圧電力').group("YEAR(start)").group("MONTH(start)").sum(:claim_expected)
+      
+      @metered_claim_expected = Summit.where(status: "提出済み").where("contract_type = '従量電灯A' OR contract_type = '従量電灯B'").group("YEAR(start)").group("MONTH(start)").sum(:claim_expected)
+  
+  
+      @chart = [
+        {name: "従量電灯", data: @metered_month},
+        {name: "低圧電力", data: @low_voltage_month}
+      ]
+      @amount_chart = [{name: "使用量", data: @amount_month}]
+  
   end 
 
   def new 

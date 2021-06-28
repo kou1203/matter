@@ -8,6 +8,10 @@ class ShiftsController < ApplicationController
       else  
         @q.result(distinct: true)
       end
+      
+    @users = User.all
+    @results = Result.all 
+    @n_results = NResult.all
   end 
 
   def new 

@@ -32,6 +32,13 @@
       <%= f.select :industry, { "飲食": "飲食","小売": "小売", "サービス": "サービス"} ,{include_blank:"選択してください"}, {class: "form-input"} %>
     </div>
     </th>
+
+    <th>
+    <div class="form-interval">
+      <%= f.label :head_store, "本店名", class: "form-text" %><span class="note">（複数店のみ入力）</span><br>
+      <%= f.text_field :head_store, class: "form-input" %>
+    </div>
+    </th>
     </tr>
     <tr>
     <th>
@@ -106,7 +113,7 @@
     </th>
     <th>
       <%= f.label :birthday, "生年月日", class: "form-text" %><br>
-      <%= f.date_select :birthday,{start_year: 1970, prompt:"--"}, {class: "birthday-input"} %>
+      <%= f.date_select :birthday,{start_year: 1950, prompt:"--"}, {class: "birthday-input"} %>
     </th>
 
   </div>
@@ -164,14 +171,14 @@
 
     <th>
     <div class="form-interval">
-      <%= f.label :suitable_time, "好適時間", class: "form-text" %><span class="note">（※必須）</span><br>
+      <%= f.label :suitable_time, "好適時間", class: "form-text" %><br>
       <%= f.text_field :suitable_time , class: "form-input" %>
     </div>
     </th>
 
     <th>
     <div class="form-interval">
-      <%= f.label :holiday, "定休日", class: "form-text" %><span class="note">（※必須）</span><br>
+      <%= f.label :holiday, "定休日", class: "form-text" %><br>
       <%= f.text_field :holiday ,class: "form-input" %>
     </div>
     </th>

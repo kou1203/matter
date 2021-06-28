@@ -8,38 +8,35 @@
 
 
     <%= search_form_for @q do |f| %>
-    <table class="search-frame">
-      <tr>
-        <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
-        <td class="search-td"><%= f.select :user_id_eq, options_from_collection_for_select(User.joins(:pandas).where.not(base: "退職").distinct, :id, :name), {prompt: "全体"},{class: "search-input"} %></td>
-
+    <table class="search-table">
+      <tr class="search-tr">
         <th class="search-th"><%= f.label :get_date, "獲得日付", class: "search-label" %></th>
-
         <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %>〜</td>
-
         <td class="search-td"><%= f.date_field :get_date_lteq, class: "search-date" %></td>
-
       </tr>
-        <th class="search-th"><%= f.label :status, "不備絞込み", class: "search-label" %></th>
-        <td class="search-td"><%= f.select :status_cont ,{"○": "不備"}, {include_blank: true} ,{class: "search-input"} %></td>
-
+    </table>
+    <table class="search-table">
+      <tr class="search-tr">
+        <th class="search-checkbox-th"><%= f.label :status, "不備絞込み", class: "search-label" %></th>
+        <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
         <th class="search-th"><%= f.label :status, "ステータス", class: "search-label" %></th>
-
-        <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(Panda.select(:status).distinct, :status, :status), {include_blank: true} ,{class: "search-input"} %></td>
         <th class="search-th"><%= f.label :confirm_ball, "ボール", class: "search-label" %></th>
-
-        <td class="search-td"><%= f.select :confirm_ball_eq, options_from_collection_for_select(Panda.select(:confirm_ball).distinct, :confirm_ball, :confirm_ball), {include_blank: true} ,{class: "search-input"} %></td>
         <td class="search-result"><%= f.submit "絞込み" , class: "search-btn" %></td>
-
+      </tr>
+      <tr class="search-tr">
+        <td class="search-checkbox-td"><%= f.select :status_cont ,{"○": "不備"}, {include_blank: true} ,{class: "search-input"} %></td>
+        <td class="search-td"><%= f.select :user_id_eq, options_from_collection_for_select(User.joins(:pandas).where.not(base: "退職").distinct, :id, :name), {prompt: "全体"},{class: "search-input"} %></td>
+        <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(Panda.select(:status).distinct, :status, :status), {include_blank: true} ,{class: "search-input"} %></td>
+        <td class="search-td"><%= f.select :confirm_ball_eq, options_from_collection_for_select(Panda.select(:confirm_ball).distinct, :confirm_ball, :confirm_ball), {include_blank: true} ,{class: "search-input"} %></td>
         <td class="search-reset"><%= link_to "絞込みリセット", pandas_path, class: "reset-link" %></td>
-      <tr>
 
       </tr>
     </table>
     <% end %>
 
   <hr>
-
+  <% if @pandas.empty? %>
+  <% else %>
     <table class="search-table">
       <div class="sub-title">※入金金額は後日実装予定</div>
       <h2 class="sub-title">表示範囲：<%= @pandas.minimum(:get_date) %>〜<%= @pandas.maximum(:get_date) %></h2>
@@ -104,5 +101,6 @@
     </tr>
     <% end %>
     </table>
+  <% end %>
 </div>
   </main>

@@ -2,7 +2,12 @@ class AupaysController < ApplicationController
 
   def index 
     @q = Aupay.ransack(params[:q])
-    @aupays = @q.result(distinct: true)
+    @aupays = 
+      if params[:q].nil?
+        Aupay.none 
+      else 
+        @q.result(distinct: true)
+      end
   end
 
   def new 
@@ -56,6 +61,7 @@ class AupaysController < ApplicationController
       :status,
       :before_status,
       :settlement,
+      :settlement_deadline,
       :description,
       :valuation_profit,
       :actual_profit,

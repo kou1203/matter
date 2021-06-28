@@ -10,6 +10,23 @@ class ResultsController < ApplicationController
       end
     @shifts = Shift.all
     @summits = Summit.all
+    @dmers = Dmer.all
+    @result_month = Result.where(date: Time.now.beginning_of_month..Time.now.end_of_month)
+    @result_week1 = Result.where(date: Time.now.beginning_of_month..Time.now.beginning_of_month.next_week(:monday))
+    @result_week2 = Result.where(date: Time.now.beginning_of_month.next_week(:tuesday)..Time.now.beginning_of_month.next_week(:monday).since(7.days))
+    @result_week3 = Result.where(date: Time.now.beginning_of_month.next_week(:tuesday).since(7.days)..Time.now.beginning_of_month.next_week(:monday).since(14.days))
+    @result_week4 = Result.where(date: Time.now.beginning_of_month.next_week(:tuesday).since(14.days)..Time.now.end_of_month)
+    @result_before_month = Result.where(date: Time.now.months_ago(1).beginning_of_month..Time.now.months_ago(1).end_of_month)
+
+    @chubu_group = Result.includes(:user).where(users: {base: "中部SS"}).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
+    @chubu_cash = @chubu_group.where(shift: "キャッシュレス新規")
+    
+    @kansai_group = Result.includes(:user).where(users: {base: "関西SS"}).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
+    @kansai_cash = @kansai_group.where(shift: "キャッシュレス新規")
+    
+    @tokyo_group = Result.includes(:user).where(users: {base: "東京SS"}).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
+    @tokyo_cash = @tokyo_group.where(shift: "キャッシュレス新規").or(@tokyo_group.where(shift: "パンダ"))
+
   end 
 
   def new 
@@ -43,6 +60,16 @@ class ResultsController < ApplicationController
     end
 
   end 
+
+  def edit 
+    @result = Result.find(params[:id])
+  end 
+  
+  def update 
+    @result = Result.find(params[:id])
+    @result.update(result_params)
+    redirect_to results_path
+  end
 
 
 

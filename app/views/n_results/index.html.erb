@@ -9,23 +9,22 @@
         <%= search_form_for @q do |f| %>
       <table class="search-table">
         <tr class="search-tr">
-          <th class="search-th"><%= f.label :user_name, "訪問員", class: "search-label" %></th>
-          <td class="search-td"><%= f.text_field :user_name_cont, class: "search-input" %></td>
-
-        <th class="search-th"><%= f.label :date, "日付（月）", class: "search-label" %></th>
-        <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true} ,{class: "search-date-select"} %></td>
-
-          <th class="search-th"><%= f.label :date, "日付（範囲）", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :date, "獲得月", class: "search-label" %></th>
+          <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true,include_blank: true} ,{class: "search-date-select"} %></td>
+          <th class="search-th"><%= f.label :date, "獲得期間", class: "search-label" %></th>
           <td class="search-td"><%= f.date_field :date_gteq, class: "search-date" %>~</td>
           <td class="search-td"><%= f.date_field :date_lteq, class: "search-date" %></td>
-
+        </tr>
+      </table>
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-th"><%= f.label :user_name, "訪問員", class: "search-label" %></th>
+          <th class="search-th"><%= f.label :base, "拠点", class: "form-text" %></th>
+          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
         </tr>
         <tr class="search-tr">
-
-        <th class="search-th"><%= f.label :base, "拠点", class: "form-text" %></th>
-         <td class="search-td"><%= f.select :base_eq, options_from_collection_for_select(NResult.select(:base).distinct, :base, :base),{},{class: "search-input"} %></td>
-
-          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
+          <td class="search-td"><%= f.text_field :user_name_cont, class: "search-input" %></td>
+          <td class="search-td"><%= f.select :base_eq, options_from_collection_for_select(NResult.select(:base).distinct, :base, :base),{},{class: "search-input"} %></td>
           <td class="search-reset"><%= link_to "絞込みリセット", n_results_path, class: "reset-link" %></td>
         </tr>
       </table>
@@ -55,8 +54,6 @@
           <th class="n-result-th"></th>
           <th class="n-result-th"></th>
           <th class="n-result-th"></th>
-          
-          <th class="n-result-th"></th>
         </tr>
         <tr class="n-result-tr">
           <th class="n-result-th"><%= @n_result_month.minimum(:date).day %>日（<%= days[@n_result_month.minimum(:date).wday] %>）〜<%= @n_result_month.maximum(:date).day %>日（<%= days[@n_result_month.maximum(:date).wday] %>）</th>
@@ -68,7 +65,6 @@
           <th class="n-result-th">現状売上</th>
           <th class="n-result-th">前月Ave</th>
           <th class="n-result-th">前月売上</th>
-          <th class="n-result-th">前週Ave</th>
           <th class="n-result-th">現状Ave</th>
           <th class="n-result-th">Ave前週比</th>
           <th class="n-result-th">Ave前月比</th>
@@ -89,7 +85,7 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "岡崎").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "岡崎").sum(:profit) %></td>
-          <td class="n-result-td"></td>
+          
           <% if @n_result_before_month.where(base: "岡崎").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -99,7 +95,7 @@
           <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "岡崎").average(:profit).round(1) %></td>
           <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").average(:profit).round(1) - @n_result_before_month.where(base: "岡崎").average(:profit).round(1)  %></td>
           <% end %>
-          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%= (@n_result_month.where(base: "岡崎").average(:profit) * Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "岡崎"}).sum(:n)).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
         </tr>
 
@@ -117,7 +113,6 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "多治見").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "多治見").sum(:profit) %></td>
-          <td class="n-result-td"></td>
           <% if @n_result_before_month.where(base: "多治見").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -128,7 +123,7 @@
           <td class="n-result-td"><%= @n_result_month.where(base: "多治見").average(:profit).round(1) - @n_result_before_month.where(base: "多治見").average(:profit).round(1)  %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
-          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%= (@n_result_month.where(base: "多治見").average(:profit) * Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "多治見"}).sum(:n)).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
         </tr>
 
@@ -146,7 +141,7 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "名古屋中央").sum(:profit) %></td>
-          <td class="n-result-td"></td>
+          
           <% if @n_result_before_month.where(base: "名古屋中央").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -156,7 +151,7 @@
           <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "名古屋中央").average(:profit).round(1) %></td>
           <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
           <% end %>
-          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%= (@n_result_month.where(base: "名古屋中央").average(:profit) * Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "名古屋中央"}).sum(:n)).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
         </tr>
 
@@ -174,7 +169,6 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "豊田").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "豊田").sum(:profit) %></td>
-          <td class="n-result-td"></td>
           <% if @n_result_before_month.where(base: "豊田").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -184,7 +178,7 @@
           <td class="n-result-td"><%= @n_result_month.where(base: "豊田").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "豊田").average(:profit).round(1) %></td>
           <td class="n-result-td"><%= @n_result_month.where(base: "豊田").average(:profit).round(1) - @n_result_before_month.where(base: "豊田").average(:profit).round(1)  %></td>
           <% end %>
-          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%= (@n_result_month.where(base: "豊田").average(:profit) * Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "豊田"}).sum(:n)).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
         </tr>
 
@@ -202,7 +196,6 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "広域").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "広域").sum(:profit) %></td>
-          <td class="n-result-td"></td>
           <% if @n_result_before_month.where(base: "広域").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -212,7 +205,7 @@
           <td class="n-result-td"><%= @n_result_month.where(base: "広域").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "広域").average(:profit).round(1) %></td>
           <td class="n-result-td"><%= @n_result_month.where(base: "広域").average(:profit).round(1) - @n_result_before_month.where(base: "広域").average(:profit).round(1)  %></td>
           <% end %>
-          <td class="n-result-td"><%=  %></td>
+          <td class="n-result-td"><%= (@n_result_month.where(base: "広域").average(:profit) * Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "広域"}).sum(:n)).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
         </tr>
 
@@ -230,7 +223,6 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "三重").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "三重").sum(:profit) %></td>
-          <td class="n-result-td"></td>
           <% if @n_result_before_month.where(base: "三重").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -260,7 +252,6 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "豊橋").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "豊橋").sum(:profit) %></td>
-          <td class="n-result-td"></td>
           <% if @n_result_before_month.where(base: "豊橋").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -289,7 +280,6 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "一宮").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "一宮").sum(:profit) %></td>
-          <td class="n-result-td"></td>
           <% if @n_result_before_month.where(base: "一宮").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -318,7 +308,6 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "北大阪エリア").sum(:profit) %></td>
-          <td class="n-result-td"></td>
           <% if @n_result_before_month.where(base: "北大阪エリア").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -347,7 +336,6 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "北大阪公募").sum(:profit) %></td>
-          <td class="n-result-td"></td>
           <% if @n_result_before_month.where(base: "北大阪公募").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -375,7 +363,6 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "守口公募").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "守口公募").sum(:profit) %></td>
-          <td class="n-result-td"></td>
           <% if @n_result_before_month.where(base: "守口公募").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -403,7 +390,6 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "阪神").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "阪神").sum(:profit) %></td>
-          <td class="n-result-td"></td>
           <% if @n_result_before_month.where(base: "阪神").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -432,7 +418,6 @@
           <td class="n-result-td"><%= @n_result_before_month.where(base: "大阪中央").average(:profit).round(1) %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "大阪中央").sum(:profit) %></td>
-          <td class="n-result-td"></td>
           <% if @n_result_before_month.where(base: "大阪中央").empty? %>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -1203,9 +1188,9 @@
           
           <th class="n-result-th">消化シフト数</th>
           <th class="n-result-th">必達売上</th>
-          <th class="n-result-th">1週目売上</th>
+          <th class="n-result-th">3週目売上</th>
           <th class="n-result-th">前週Ave</th>
-          <th class="n-result-th">1週目Ave</th>
+          <th class="n-result-th">3週目Ave</th>
           <th class="n-result-th">Ave前週比</th>
           <th class="n-result-th">Ave前月比</th>
           <th class="n-result-th">売上終着予想</th>
@@ -2076,7 +2061,7 @@
               
             </tr>
 
-          <% end %>
+            <% end %>
         </table>
       <% end %>
 

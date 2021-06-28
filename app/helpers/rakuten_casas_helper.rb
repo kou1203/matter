@@ -1,0 +1,2 @@
+module RakutenCasasHelper
+end

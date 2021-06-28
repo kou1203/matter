@@ -2,7 +2,12 @@ class PaypaysController < ApplicationController
 
   def index 
     @q = Paypay.ransack(params[:q])
-    @paypays = @q.result(distinct: true)
+    @paypays = 
+      if @paypays.nil?
+        Paypay.none 
+      else
+        @q.result(distinct: true)
+      end
   end 
 
   def new 

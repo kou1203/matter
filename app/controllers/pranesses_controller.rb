@@ -3,7 +3,12 @@ class PranessesController < ApplicationController
 
   def index 
     @q = Praness.ransack(params[:q])
-    @pranesses = @q.result(distinct: true)
+    @pranesses = 
+      if params[:q].nil?
+        Praness.none 
+      else  
+        @q.result(distinct: true)
+      end
     respond_to do |format|
       format.html
       format.csv do |csv|

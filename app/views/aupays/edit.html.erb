@@ -39,8 +39,8 @@
     <th>
       <div class="form-interval">
         <%= f.label :status, "審査ステータス", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.select :status, {"未審査": "未審査", "自社不備": "自社不備","上位店NG": "上位店NG", "審査完了": "審査完了",
-        "決済完了": "決済完了", "入金確認済": "入金確認済"} ,{}, {class: "form-input"} %>
+        <%= f.select :status, {"未審査": "未審査", "自社不備": "自社不備","上位店NG": "上位店NG", "入金待ち": "入金待ち",
+        "決済完了": "決済完了", "入金済み": "入金済み"} ,{include_blank: true}, {class: "form-input"} %>
       </div>
     </th>
     </tr>
@@ -67,6 +67,15 @@
         <%= f.date_field :settlement , class: "form-input" %>
       </div>
     </th>
+
+    
+    <th>
+      <div class="form-interval">
+        <%= f.label :settlement_deadline, "決済期限", class: "form-text" %><br>
+        <%= f.date_field :settlement_deadline , class: "form-input" %>
+      </div>
+    </th>
+    
     
     <th>
       <div class="form-interval">
@@ -75,6 +84,8 @@
       </div>
     </th>
     
+    </tr>
+    <tr>
     
     <th>
       <div class="form-interval">

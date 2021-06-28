@@ -2,7 +2,12 @@ class StorePropsController < ApplicationController
 
   def index 
     @q = StoreProp.ransack(params[:q])
-    @store_props = @q.result(distinct: true)
+    @store_props = 
+      if params[:q].nil?
+        StoreProp.none 
+      else
+        @q.result(distinct: true)
+      end
     
   end 
 
@@ -41,6 +46,7 @@ class StorePropsController < ApplicationController
     @aupay = @store_prop.aupay
     @paypay = @store_prop.paypay
     @praness = @store_prop.praness
+    @rakuten_casa = @store_prop.rakuten_casa
     @summit_customer_prop = @store_prop.summit_customer_prop
     if @summit_customer_prop.nil?
       @summits = 0
@@ -75,7 +81,8 @@ class StorePropsController < ApplicationController
       :address, 
       :building_name, 
       :suitable_time, 
-      :holiday 
+      :holiday,
+      :head_store 
     )
   end 
 

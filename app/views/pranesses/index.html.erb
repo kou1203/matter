@@ -10,22 +10,31 @@
 
         <%= search_form_for @q do |f| %>
         <table class="search-table">
+          <tr class="search-tr">
+            <th class="search-th"><%= f.label :get_date, "獲得日付",class: "search-label" %></td>
+            <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %>〜</td>
+            <td class="search-td"><%= f.date_field :get_date_lt, class: "search-date" %></td>
+          </tr>
+        </table>
+        <table class="search-table">
+          <tr class="search-tr">
           <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></td>
-          <td class="search-td"><%= f.select :user_id_eq, options_from_collection_for_select(User.joins(:pranesses).distinct, :id, :name),{include_blank: "全体"},{class: "search-input"} %></td>
-          <th class="search-th"><%= f.label :get_date, "獲得日付",class: "search-label" %></td>
-          <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %>〜</td>
-          <td class="search-td"><%= f.date_field :get_date_lt, class: "search-date" %></td>
           <th class="search-th"><%= f.label :status, "端末状態", class: "search-label" %></th>
-          <td class="search-td"><%= f.select :status_eq, { "クラウドデバイス完了": "クラウドデバイス完了", "未設定": "未設定" },{include_blank: true} , {class: "search-date"} %></td>
           <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
+          </tr>
+          <tr class="search-tr">
+          <td class="search-td"><%= f.text_field :user_id_cont, class: "search-input" %></td>
+          <td class="search-td"><%= f.select :status_eq, { "クラウドデバイス完了": "クラウドデバイス完了", "未設定": "未設定" },{include_blank: true} , {class: "search-date"} %></td>
           <td class="search-reset"><%= link_to "検索リセット", pranesses_path, class: "reset-link" %></td>
-        <% end %>
-        
-        </tr>
+
+          </tr>
+        </table>
       </table>
+        <% end %>
 
     <hr>
-
+    <% if @pranesses.empty? %>
+    <% else %>
     <table class="index-table">
       <h2 class="sub-title">今月入金予定<%= Praness.where("payment <= ?",Date.parse(Date.today.end_of_month.to_s)).length %>件</h2>
       <h2 class="sub-title">表示範囲：<%= @pranesses.minimum(:get_date) %>〜<%= @pranesses.maximum(:get_date) %></h2>
@@ -62,6 +71,7 @@
       <% end %>
       </table>
     </div>
+    <% end %>
   
   </main>
 </div>

@@ -1,0 +1,72 @@
+<%= render "shared/header" %>
+<main class="main">
+  <%= render "shared/side_bar" %>
+  <div class="right-bar">
+  <h1 class="sub-title">楽天カーサ一覧</h1>
+
+        <%= search_form_for @q do |f| %>
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-th"><%= f.label :date, "獲得日付", class: "search-label" %></th>
+          <td class="search-td"><%= f.date_field :date_gteq, class: "search-date" %>~</td>
+          <td class="search-td"><%= f.date_field :date_lteq, class: "search-date" %></td>
+        </tr>
+      </table>
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
+          <td class="search-td"><%= f.text_field :user_name_cont, class: "search-input" %></td>
+          <th class="search-th"><%= f.label :status, "審査ステータス", class: "search-label" %></th>
+          <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(RakutenCasa.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
+
+          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
+          <td class="search-reset"><%= link_to "絞込みリセット", dmers_path, class: "reset-link" %></td>
+        </tr>
+      </table>
+      <hr>
+        <% end %>
+      <% if @rakuten_casas.empty? %>
+      <% else %>
+
+      <hr>
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-th">獲得件数</th>
+          <th class="search-th">入金済</th>
+
+        </tr>
+        <tr class="search-tr">
+          <td class="search-td"><%= @rakuten_casas.length %></td>
+          <td class="search-td"><%= @rakuten_casas.where.not(payment: nil).length %></td>
+
+        </tr>
+      </table>
+
+    <table class="index-table">
+    <tr class="index-tr">
+      <th class="index-th"></th>
+      <th class="index-th">お客様番号</th>
+      <th class="index-th">商流</th>
+      <th class="index-th">獲得者</th>
+      <th class="index-th">獲得日</th>
+      <th class="index-th">店舗名</th> 
+      <th class="index-th">審査ステータス</th>
+      <th class="index-th">不備ステータス</th>
+      <th class="index-th">不備対応ボール</th>
+      <th class="index-th">入金日</th>
+      <% @rakuten_casas.each do |casa| %>
+      <tr class="index-tr">
+      <td class="index-td"><%= link_to "詳細",  rakuten_casa_path(casa.id) ,class: "index-link" %></td>
+      <td class="index-td"><%= casa.customer_num %></td>
+      <td class="index-td"><%= casa.client %></td>
+      <td class="index-td"><%= casa.user.name %></td>
+      <td class="index-td"><%= casa.date.month %>月<%= casa.date.day %>日</td>
+      <td class="index-td"><%= casa.store_prop.name %></td>
+      <td class="index-td"><%= casa.status %></td>
+      <td class="index-td"><%= casa.error_status %></td>
+      <td class="index-td"><%= casa.error_confirmer %></td>
+      <td class="index-td"><%= casa.payment %></td>
+      <% end %>
+    <% end %>
+  </div>
+</main>

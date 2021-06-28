@@ -16,6 +16,10 @@ Rails.application.routes.draw do
     post 'pandas/create'
     get 'summit_customer_props/new'
     post 'summit_customer_props/create'
+    get 'rakuten_casas/new'
+    post 'rakuten_casas/create'
+    get 'trouble_sses/new'
+    post 'trouble_sses/create'
     collection { post :import }
   end 
 
@@ -76,5 +80,13 @@ Rails.application.routes.draw do
   resources :trouble_ns do 
     collection { post :import }
   end
+
+  resources :rakuten_casas ,expect: [:new, :create] do 
+    collection { post :import }
+  end 
+
+  resources :trouble_sses ,expect: [:new, :create] do 
+    collection { post :import }
+  end 
 
 end

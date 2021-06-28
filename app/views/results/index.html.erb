@@ -1,27 +1,32 @@
 <%= render "shared/header" %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 
 <div class="main">
   <%= render "shared/side_bar" %>
   <main class="right-bar">
-    <h1 class="sub-title">利益表</h1>
+    <h1 class="sub-title">利益表SS</h1>
+
     <%# 検索フォーム %>
       <h2 class="show-title">検索</h2>
       <%= search_form_for @q do |f| %>
-      <table class="search-frame">
+      <table class="search-table">
+        <tr class="search-tr">
+          <th class="search-th"><%= f.label :date, "獲得月", class: "search-label" %></th>
+          <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true} ,{class: "search-date-select"} %></td>
+          <th class="search-th"><%= f.label :date, "獲得期間", class: "search-label" %></th>
+          <td class="search-td"><%= f.date_field :date_gteq, class: "search-date" %>〜</td>
+          <td class="search-td"><%= f.date_field :date_lteq, class: "search-date" %></td>
+        </tr>
+      </table>
+      <table class="search-table">
       <tr>
-
-        <th class="search-th"><%= f.label :shift, "シフト", class: "search-label" %></th>
-        <td class="search-td"><%= f.select :shift_eq, options_from_collection_for_select(Result.select(:shift).distinct, :shift, :shift), {prompt: "全シフト"},{class: "search-input"} %></td>
         <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
-        <td class="search-td"><%= f.select :user_id_eq, options_from_collection_for_select(User.joins(:results).where.not(base: "退職").distinct, :id, :name), {},{class: "search-input"} %></td>
+        <th class="search-th"><%= f.label :shift, "商材", class: "search-label" %></th>
+        <td class="search-result"><%= f.submit "絞込み" , class: "search-btn" %></td>
       </tr>
       <tr>
-        <th class="search-th"><%= f.label :date, "獲得期間", class: "search-label" %></th>
-        <td class="search-td"><%= f.date_field :date_gteq, class: "search-date" %>〜</td>
-        <td class="search-td"><%= f.date_field :date_lteq, class: "search-date" %></td>
-        <th class="search-th"><%= f.label :date, "獲得月", class: "search-label" %></th>
-        <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true} ,{class: "search-date-select"} %></td>
-        <td class="search-result"><%= f.submit "絞込み" , class: "search-btn" %></td>
+        <td class="search-td"><%= f.text_field :user_name_cont, class: "search-input" %></td>
+        <td class="search-td"><%= f.select :shift_eq, options_from_collection_for_select(Result.select(:shift).distinct, :shift, :shift), {prompt: "全商材"},{class: "search-input"} %></td>
 
         <td class="search-reset"><%= link_to "絞込みリセット", results_path, class: "reset-link" %></td>
 
@@ -32,7 +37,962 @@
 
     <hr>
     <% if @results.empty? %>
-    <%# ここに全体の利益表を記述 %>
+    <% if @result_month.empty? %>
+    <% else %>
+    <div class="result-separate">
+      <div>
+      <% if @dmers.empty? %>
+      <% else %>
+
+      <% end %>
+    <%# 現状 %>
+      <table class="result-table">
+        <tr>
+          <th class="result-th"><%= Date.today.month %>月現状</th>
+        </tr>
+      <%# 内容 %>
+        <tr>
+          <th class="n-result-th"><%= @result_month.minimum(:date).day %>日（<%= days[@result_month.minimum(:date).wday] %>）〜<%= @result_month.maximum(:date).day %>日（<%= days[@result_month.maximum(:date).wday] %>）</th>
+          <th class="result-th">商材</th>
+          <th class="result-th">担当</th>
+          <th class="result-th">人員</th>
+          <th class="result-th">総シフト数</th>
+          <th class="result-th">消化シフト数</th>
+          <th class="n-result-th">必達売上</th>
+          <th class="n-result-th">現状売上</th>
+          <th class="n-result-th">前月Ave</th>
+          <th class="n-result-th">前月売上</th>
+          <th class="n-result-th">現状Ave</th>
+          <th class="n-result-th">Ave前週比</th>
+          <th class="n-result-th">Ave前月比</th>
+          <th class="n-result-th">売上終着予想</th>
+          <th class="n-result-th">必達売上との差</th>
+        </tr>
+      <%# 中部キャッシュ %>
+        <% chubu_cash_month = @result_month.includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+        <% chubu_cash_before_month = @result_before_month.includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+        <% chubu_cash_shift = Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}) %>
+        <tr>
+          <th class="result-th">中部</th>
+          <th class="result-th">キャッシュ</th>
+          <th class="result-th">伊藤誠一</th>
+
+          <th class="result-td"><%= chubu_cash_month.group(:user_id).length %></td>
+
+          <td class="result-td"><%= Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).sum(:cashless_new) %></td>
+
+          <td class="result-td"><%= chubu_cash_month.length %></td>
+          <td class="result-td"></td>
+          <td class="result-td"><%= chubu_cash_month.sum(:profit) %></td>
+
+          <% if @result_before_month.includes(:user).where(users: {base: "中部SS"}).empty? %>
+          <td class="result-td"></td>
+          <td class="result-td"></td>
+          <% else %>
+          <td class="result-td"><%= chubu_cash_before_month.average(:profit).round(1) %></td>
+
+          <td class="result-td"><%= chubu_cash_before_month.sum(:profit) %></td>
+          <% end %>
+          <td class="result-td"><%= chubu_cash_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= chubu_cash_month.average(:profit).round(1) - @result_month.where(date: Time.now.ago(7.days)..Time.now).includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規").average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= chubu_cash_month.average(:profit).round(1) - chubu_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= (chubu_cash_month.average(:profit) * chubu_cash_shift.sum(:cashless_new)).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"></td>
+        </tr>
+      <%# 中部フェムト %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">フェムト</th>
+          <th class="result-th">加藤上太郎</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# 東京パンダ %>
+        <% tokyo_cash_month = @result_month.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "キャッシュレス新規").or(@result_month.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "パンダ")) %>
+
+        <% tokyo_cash_before_month = @result_before_month.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "キャッシュレス新規").or(@result_before_month.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "パンダ")) %>
+        
+        <% tokyo_cash_shift = Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}) %>
+        <tr>
+          <th class="result-th">東京</th>
+          <th class="result-th">キャッシュ・パンダ</th>
+          <th class="result-th">太田将輔</th>
+
+          <th class="result-td"><%= tokyo_cash_month.group(:user_id).length %></td>
+
+          <td class="result-td"><%= tokyo_cash_shift.sum("cashless_new + panda ") %></td>
+
+          <td class="result-td"><%= tokyo_cash_month.length %></td>
+          <td class="result-td"></td>
+          <td class="result-td"><%= tokyo_cash_month.sum(:profit) %></td>
+          <% if tokyo_cash_before_month.empty? %>
+          <td class="result-td"></td>
+          <td class="result-td"></td>
+          <% else %>
+
+          <td class="result-td"><%= tokyo_cash_before_month.average(:profit).round(1) %></td>
+          <td class="result-td"><%= tokyo_cash_before_month.sum(:profit) %></td>
+
+
+          <% end %>
+          <td class="result-td"><%= tokyo_cash_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= tokyo_cash_month.average(:profit).round(1) - tokyo_cash_month.where(date: Time.now.ago(7.days)..Time.now).average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= tokyo_cash_month.average(:profit).round(1) - tokyo_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= (tokyo_cash_month.average(:profit) * tokyo_cash_shift.sum("cashless_new + panda ")).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# 東京フェムト %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">フェムト</th>
+          <th class="result-th">矢野貴二郎</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# 東京サミット %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">サミット</th>
+          <th class="result-th">横田有輝</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# 関西キャッシュ %>
+        <% kansai_cash_month = @result_month.includes(:user).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+        <% kansai_cash_before_month = @result_before_month.includes(:user).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+        <% kansai_cash_shift = Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}) %>
+        <tr>
+          <th class="result-th">関西</th>
+          <th class="result-th">キャッシュ</th>
+          <th class="result-th">渋谷直輝</th>
+          <th class="result-td"><%= kansai_cash_month.group(:user_id).length %></td>
+
+          <td class="result-td"><%= kansai_cash_shift.sum(:cashless_new) %></td>
+
+          <td class="result-td"><%= kansai_cash_month.length %></td>
+          <td class="result-td"></td>
+
+          <td class="result-td"><%= kansai_cash_month .sum(:profit) %></td>
+
+          <% if @result_before_month.includes(:user).where(users: {base: "関西SS"}).empty? %>
+          <td class="result-td"></td>
+          <td class="result-td"></td>
+          <% else %>
+
+          <td class="result-td"><%= kansai_cash_before_month.average(:profit).round(1) %></td>
+
+          <td class="result-td"><%= kansai_cash_before_month.sum(:profit) %></td>
+
+          <% end %>
+          <td class="result-td"><%= kansai_cash_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= kansai_cash_month.average(:profit).round(1) - @result_month.where(date: Time.now.ago(7.days)..Time.now).includes(:user).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規").average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= kansai_cash_month.average(:profit).round(1) - kansai_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= kansai_cash_month.average(:profit) * kansai_cash_shift.sum(:cashless_new) rescue "計測できません" %></td>
+        </tr>
+      <%# 関西フェムト %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">フェムト</th>
+          <th class="result-th">渋谷直輝</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# 関西サミット %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">サミット</th>
+          <th class="result-th">星合祐甫</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      </table>
+      <% end %>
+    <%# 一週目 %>
+      <% if @result_week1.empty? %>
+      <% else %>
+      <table class="result-table">
+
+      <%# 内容 %>
+        <tr>
+          <th class="result-th">1週目</th>
+        </tr>
+        <tr>
+          <th class="n-result-th"><%= @result_week1.minimum(:date).day %>日（<%= days[@result_week1.minimum(:date).wday] %>）〜<%= @result_week1.maximum(:date).day %>日（<%= days[@result_week1.maximum(:date).wday] %>）</th>
+          <th class="result-th">商材</th>
+          <th class="result-th">担当</th>
+          <th class="result-th">人員</th>
+          
+          <th class="result-th">消化シフト数</th>
+          <th class="n-result-th">必達売上</th>
+          <th class="n-result-th">1週目売上</th>
+          <th class="n-result-th">前月Ave</th>
+          <th class="n-result-th">前月売上</th>
+          <th class="n-result-th">一週目Ave</th>
+          <th class="n-result-th">前週Ave</th>
+          <th class="n-result-th">Ave前週比</th>
+          <th class="n-result-th">Ave前月比</th>
+
+        </tr>
+        <tr>
+      <%# 中部キャッシュレス %>
+        <% chubu_cash_week1 = @result_week1.includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+          <th class="result-th">中部</th>
+          <th class="result-th">キャッシュ</th>
+          <th class="result-th">伊藤誠一</th>
+          <td class="result-td"><%= chubu_cash_shift.length %></td>
+          
+          <td class="result-td"><%= chubu_cash_week1.length %></td>
+
+          <td class="result-td"></td>
+
+          <td class="result-td"><%= @result_week1.includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).sum(:profit) %></td>
+
+          <% if @result_before_month.includes(:user).where(users: {base: "中部SS"}).empty? %>
+          <td class="result-td"></td>
+          <td class="result-td"></td>
+          <% else %>
+
+          <td class="result-td"><%= chubu_cash_before_month.average(:profit).round(1) %></td>
+
+          <td class="result-td"><%= chubu_cash_before_month.sum(:profit) %></td>
+          <% end %>
+          <td class="result-td"><%= chubu_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= Result.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規").average(:profit).round(1) rescue "計測できません" %></td>
+          
+          <td class="n-result-td"><%= chubu_cash_week1.average(:profit).round(1) - Result.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規").average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= chubu_cash_week1.average(:profit).round(1) - chubu_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+
+        </tr>
+      <%# 中部フェムト %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">フェムト</th>
+          <th class="result-th">加藤上太郎</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# パンダ %>
+        <% tokyo_cash_week1 = @result_week1.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "キャッシュレス新規").or(@result_week1.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "パンダ")) %>
+        <tr>
+          <th class="result-th">東京</th>
+          <th class="result-th">キャッシュ・パンダ</th>
+          <th class="result-th">太田将輔</th>
+          <th class="result-td"><%= tokyo_cash_shift.length %></td>
+
+          <td class="result-td"><%= tokyo_cash_week1.length %></td>
+          <td class="result-td"></td>
+          <td class="result-td"><%= tokyo_cash_week1.sum(:profit) %></td>
+          <% if tokyo_cash_before_month.empty? %>
+          <td class="result-td"></td>
+          <td class="result-td"></td>
+          <% else %>
+          <td class="result-td"><%= tokyo_cash_before_month.average(:profit).round(1) %></td>
+          <td class="result-td"><%= tokyo_cash_before_month.sum(:profit) %></td>
+          <% end %>
+          <td class="result-td"><%= tokyo_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= tokyo_cash_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= tokyo_cash_week1.average(:profit).round(1) - tokyo_cash_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= tokyo_cash_week1.average(:profit).round(1) - tokyo_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+        </tr>
+      <%# 東京フェムト %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">フェムト</th>
+          <th class="result-th">矢野貴二郎</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# 東京サミット %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">サミット</th>
+          <th class="result-th">横田有輝</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# 関西キャッシュ %>
+        <% kansai_cash_week1 = @result_week1.includes(:user).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+        <tr>
+          <th class="result-th">関西</th>
+          <th class="result-th">キャッシュ</th>
+          <th class="result-th">渋谷直輝</th>
+          <th class="result-td"><%= kansai_cash_shift.length %></td>
+
+          <td class="result-td"><%= kansai_cash_week1.length %></td>
+          <td class="result-td"></td>
+          <td class="result-td"><%= kansai_cash_week1.sum(:profit) %></td>
+          <% if @result_before_month.includes(:user).where(users: {base: "関西SS"}).empty? %>
+          <td class="result-td"></td>
+          <td class="result-td"></td>
+          <% else %>
+          <td class="result-td"><%= kansai_cash_before_month.average(:profit).round(1) %></td>
+
+          <td class="result-td"><%= kansai_cash_before_month.sum(:profit) %></td>
+
+          <% end %>
+          <td class="result-td"><%= kansai_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="result-td"><%= Result.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).includes(:user).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}).average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="result-td"><%= kansai_cash_week1.average(:profit).round(1) - Result.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).includes(:user).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}).average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="result-td"><%= kansai_cash_week1.average(:profit).round(1) - kansai_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+        </tr>
+      <%# 関西フェムト %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">フェムト</th>
+          <th class="result-th">渋谷直輝</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# 関西サミット %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">サミット</th>
+          <th class="result-th">星合祐甫</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      </table>
+      <% end %>
+    <%# 二週目 %>
+      <% if @result_week2.empty? %>
+      <% else %>
+      <table class="result-table">
+        <tr>
+          <th class="result-th">2週目</th>
+        </tr>
+      <%# 内容 %>
+        <tr>
+          <th class="n-result-th"><%= @result_week2.minimum(:date).day %>日（<%= days[@result_week2.minimum(:date).wday] %>）〜<%= @result_week2.maximum(:date).day %>日（<%= days[@result_week2.maximum(:date).wday] %>）</th>
+          <th class="result-th">商材</th>
+          <th class="result-th">担当</th>
+          <th class="result-th">人員</th>
+          
+          <th class="result-th">消化シフト数</th>
+          <th class="n-result-th">必達売上</th>
+          <th class="n-result-th">2週目売上</th>
+          <th class="n-result-th">前月Ave</th>
+          <th class="n-result-th">前月売上</th>
+          <th class="n-result-th">2週目Ave</th>
+          <th class="n-result-th">前週Ave</th>
+          <th class="n-result-th">Ave前週比</th>
+          <th class="n-result-th">Ave前月比</th>
+
+        </tr>
+      <%# 中部キャッシュ %>
+        <% chubu_cash_week2 = @result_week2.includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+        <tr>
+          <th class="result-th">中部</th>
+          <th class="result-th">キャッシュ</th>
+          <th class="result-th">伊藤誠一</th>
+          <td class="result-td"><%= chubu_cash_shift.length %></td>
+
+          <td class="result-td"><%= chubu_cash_week2.length %></td>
+          <td class="result-td"></td>
+          <td class="result-td"><%= chubu_cash_week2.sum(:profit) %></td>
+          <% if @result_before_month.includes(:user).where(users: {base: "中部SS"}).empty? %>
+          <td class="result-td"></td>
+          <td class="result-td"></td>
+          <% else %>
+          <td class="result-td"><%= chubu_cash_before_month.average(:profit).round(1) %></td>
+          
+          <td class="result-td"><%= chubu_cash_before_month.sum(:profit) %></td>
+          <% end %>
+          <td class="result-td"><%= chubu_cash_week2.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="result-td"><%= chubu_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= chubu_cash_week2.average(:profit).round(1) - chubu_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= chubu_cash_week2.average(:profit).round(1) - chubu_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+
+        </tr>
+      <%# 中部フェムト %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">フェムト</th>
+          <th class="result-th">加藤上太郎</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# パンダ %>
+        <% tokyo_cash_week2 = @result_week2.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "キャッシュレス新規").or(@result_week2.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "パンダ")) %>
+        <tr>
+          <th class="result-th">東京</th>
+          <th class="result-th">キャッシュ・パンダ</th>
+          <th class="result-th">太田将輔</th>
+          <td class="result-td"><%= tokyo_cash_shift.length %></td>
+
+          <td class="result-td"><%= tokyo_cash_week2.length %></td>
+          <td class="result-td"></td>
+          <td class="result-td"><%= tokyo_cash_week2.sum(:profit) %></td>
+          <% if tokyo_cash_before_month.empty? %>
+          <td class="result-td"></td>
+          <td class="result-td"></td>
+          <% else %>
+          <td class="result-td"><%= tokyo_cash_before_month.average(:profit).round(1) %></td>
+          <td class="result-td"><%= tokyo_cash_before_month.sum(:profit) %></td>
+          <% end %>
+          <td class="result-td"><%= tokyo_cash_week2.average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="result-td"><%= tokyo_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= tokyo_cash_week2.average(:profit).round(1) - tokyo_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= tokyo_cash_week2.average(:profit).round(1) - tokyo_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+
+        </tr>
+      <%# 東京フェムト %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">フェムト</th>
+          <th class="result-th">矢野貴二郎</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# 東京サミット %>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">サミット</th>
+          <th class="result-th">横田有輝</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      <%# 関西キャッシュ %>
+        <% kansai_cash_week2 = @result_week2.includes(:user).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+        <tr>
+          <th class="result-th">関西</th>
+          <th class="result-th">キャッシュ</th>
+          <th class="result-th">渋谷直輝</th>
+
+          <th class="result-td"><%= kansai_cash_shift.length %></td>
+
+          <td class="result-td"><%= kansai_cash_week2.length %></td>
+          <td class="result-td"></td>
+          <td class="result-td"><%= kansai_cash_week2.sum(:profit) %></td>
+          <% if @result_before_month.includes(:user).where(users: {base: "関西SS"}).empty? %>
+          <td class="result-td"></td>
+          <td class="result-td"></td>
+          <% else %>
+          <td class="result-td"><%= kansai_cash_before_month.average(:profit).round(1) %></td>
+
+          <td class="result-td"><%= kansai_cash_before_month.sum(:profit) %></td>
+          <% end %>
+          <td class="result-td"><%= kansai_cash_week2.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="result-td"><%= kansai_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td class="n-result-td"><%= kansai_cash_week2.average(:profit).round(1) - kansai_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+          
+          <td class="n-result-td"><%= kansai_cash_week2.average(:profit).round(1) - kansai_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+
+        </tr>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">フェムト</th>
+          <th class="result-th">渋谷直輝</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">サミット</th>
+          <th class="result-th">星合祐甫</th>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
+        </tr>
+      </table>
+      </div>
+    <%# 基準値一覧（営業マン別） %>
+      <div>
+      <h2 class="sub-title">基準値一覧</h2>
+        <%# キャッシュレス中部 %>
+          <table class="result-table">
+            <tr class="result-tr">
+              <th class="result-th"><%= Date.today.month %>月早見表</th>
+              <th class="result-th">中部キャッシュレス</th>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">担当</th>
+            <% @chubu_cash.group(:user_id).each do |c| %>
+              <th class="result-th"><%= c.user.team %></th>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">名前</th>
+            <% @chubu_cash.group(:user_id).each do |c| %>
+              <th class="result-th"><%= c.user.name %></th>
+            <% end %>
+            </tr>
+
+            <tr class="result-tr">
+              <th class="result-th">現状売上</th>
+            <% @chubu_cash.group(:user_id).sum(:profit).each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+
+            <tr class="result-tr">
+              <th class="result-th">平均売上</th>
+            <% @chubu_cash.group(:user_id).average(:profit).each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均訪問数</th>
+            <% @chubu_cash.group(:user_id).average("first_visit + latter_visit").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均対面数</th>
+            <% @chubu_cash.group(:user_id).average("first_interview + latter_interview").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均フル数</th>
+            <% @chubu_cash.group(:user_id).average("first_full_talk + latter_full_talk").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均獲得数</th>
+            <% @chubu_cash.group(:user_id).average("first_get + latter_get").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+
+            <tr class="result-tr">
+              <th class="result-th">dメル獲得合計</th>
+            <% @chubu_cash.group(:user_id).sum(:dmer).each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">dメル獲得平均</th>
+            <% @chubu_cash.group(:user_id).average(:dmer).each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">aupay獲得合計</th>
+            <% @chubu_cash.group(:user_id).sum(:aupay).each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">aupay獲得平均</th>
+            <% @chubu_cash.group(:user_id).average(:aupay).each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">予定シフト数</th>
+            <% @chubu_cash.group(:user_id).each do |c| %>
+              <% @shifts.each do |s| %>
+              <% if c.user_id == s.user_id && s.year == Date.today.year && s.month == Date.today.month %>
+              <td class="result-ptd"><%= s.cashless_new %></td>
+              <% end %>
+              
+              <% end %>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">消化シフト数</th>
+            <% @chubu_cash.group(:user_id).count.each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+          </table>
+        <%# 中部フェムト %>
+        <%# キャッシュレス関西 %>
+          <table class="result-table">
+            <tr class="result-tr">
+              <th class="result-th"><%= Date.today.month %>月早見表</th>
+              <th class="result-th">関西キャッシュレス</th>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">担当</th>
+            <% @kansai_cash.group(:user_id).each do |c| %>
+              <th class="result-th"><%= c.user.team %></th>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">名前</th>
+            <% @kansai_cash.group(:user_id).each do |c| %>
+              <th class="result-th"><%= c.user.name %></th>
+            <% end %>
+            </tr>
+
+            <tr class="result-tr">
+              <th class="result-th">現状売上</th>
+            <% @kansai_cash.group(:user_id).sum(:profit).each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均売上</th>
+            <% @kansai_cash.group(:user_id).average(:profit).each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均訪問数</th>
+            <% @kansai_cash.group(:user_id).average("first_visit + latter_visit").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均対面数</th>
+            <% @kansai_cash.group(:user_id).average("first_interview + latter_interview").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均フル数</th>
+            <% @kansai_cash.group(:user_id).average("first_full_talk + latter_full_talk").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均獲得数</th>
+            <% @kansai_cash.group(:user_id).average("first_get + latter_get").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+
+            <tr class="result-tr">
+              <th class="result-th">dメル獲得合計</th>
+            <% @kansai_cash.group(:user_id).sum(:dmer).each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">dメル獲得平均</th>
+            <% @kansai_cash.group(:user_id).average(:dmer).each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">aupay獲得合計</th>
+            <% @kansai_cash.group(:user_id).sum(:aupay).each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">aupay獲得平均</th>
+            <% @kansai_cash.group(:user_id).average(:aupay).each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">予定シフト数</th>
+            <% @kansai_cash.group(:user_id).each do |c| %>
+              <% @shifts.each do |s| %>
+              <% if c.user_id == s.user_id && s.year == Date.today.year && s.month == Date.today.month %>
+              <td class="result-ptd"><%= s.cashless_new %></td>
+              <% end %>
+              
+              <% end %>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">消化シフト数</th>
+            <% @kansai_cash.group(:user_id).count.each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+          </table>
+        <%# 関西サミット %>
+        <%# 関西フェムト %>
+        <%# 東京キャッシュレス・パンダ %>
+          <table class="result-table">
+            <tr class="result-tr">
+              <th class="result-th"><%= Date.today.month %>月早見表</th>
+              <th class="result-th">東京キャッシュ・パンダ</th>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">担当</th>
+            <% @tokyo_cash.group(:user_id).each do |c| %>
+              <th class="result-th"><%= c.user.team %></th>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">名前</th>
+            <% @tokyo_cash.group(:user_id).each do |c| %>
+              <th class="result-th"><%= c.user.name %></th>
+            <% end %>
+            </tr>
+
+            <tr class="result-tr">
+              <th class="result-th">現状売上</th>
+            <% @tokyo_cash.group(:user_id).sum(:profit).each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均売上</th>
+            <% @tokyo_cash.group(:user_id).average(:profit).each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均訪問数</th>
+            <% @tokyo_cash.group(:user_id).average("first_visit + latter_visit").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均対面数</th>
+            <% @tokyo_cash.group(:user_id).average("first_interview + latter_interview").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr>
+              <th class="result-th">平均フル数</th>
+            <% @tokyo_cash.group(:user_id).average("first_full_talk + latter_full_talk").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">平均獲得数</th>
+            <% @tokyo_cash.group(:user_id).average("first_get + latter_get").each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+
+            <tr class="result-tr">
+              <th class="result-th">dメル獲得合計</th>
+            <% @tokyo_cash.group(:user_id).sum(:dmer).each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">dメル獲得平均</th>
+            <% @tokyo_cash.group(:user_id).average(:dmer).each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">aupay獲得合計</th>
+            <% @tokyo_cash.group(:user_id).sum(:aupay).each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">aupay獲得平均</th>
+            <% @tokyo_cash.group(:user_id).average(:aupay).each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">パンダ獲得合計</th>
+            <% @tokyo_cash.group(:user_id).sum(:panda).each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">パンダ獲得平均</th>
+            <% @tokyo_cash.group(:user_id).average(:panda).each do |c| %>
+              <td class="result-ptd"><%= c[1].round(1) %></td>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">予定シフト数</th>
+            <% @tokyo_cash.group(:user_id).each do |c| %>
+              <% @shifts.each do |s| %>
+              <% if c.user_id == s.user_id && s.year == Date.today.year && s.month == Date.today.month %>
+              <td class="result-ptd"><%= s.cashless_new + s.panda %></td>
+              <% end %>
+              
+              <% end %>
+            <% end %>
+            </tr>
+            <tr class="result-tr">
+              <th class="result-th">消化シフト数</th>
+            <% @tokyo_cash.group(:user_id).count.each do |c| %>
+              <td class="result-ptd"><%= c[1] %></td>
+            <% end %>
+            </tr>
+          </table>
+        <%# 東京サミット %>
+        <%# 東京フェムト %>
+      </div>
+    </div>
+      <% end %>
+    <% else %>
+    <% if @results.group(:user_id).length != 1 %>
     <% else %>
     <%# 個別利益表 %>
       <h2 class="sub-title">表示範囲：<%= @results.minimum(:date) %>〜<%= @results.maximum(:date) %></h2>
@@ -43,11 +1003,11 @@
           <%= result.user.base_sub %>
           <%= result.user.name %>
       </h2>
-      <div class="result-separate">
+  <div class="result-separate">
     <%# シフト %>
       <table class="result-table">
         <tr class="result-tr">
-          <th class="result-th">シフト</th>
+          <th class="result-th">シフト（メイン商材）</th>
           <th class="result-th">予定</th>
           <th class="result-th">消化</th>
           <th class="result-th">残シフト</th>
@@ -121,60 +1081,74 @@
               <td class="result-td"><%= shift_sum - digestion_sum %></td>
         </tr>
       </table>
+      
     <%# 基準値 %>
-      <table class="result-table">
-      <tr>
-        <th class="result-th">基準値</th>
-        <th class="result-th">訪問数</th>
-        <th class="result-th">面接率</th>
-        <th class="result-th">対面数</th>
-        <th class="result-th">フル率</th>
-        <th class="result-th">フル数</th>
-        <th class="result-th">成約率</th>
-        <th class="result-th">成約数</th>
-
-      </tr>
-      <tr>
-      <% visit = @results.sum(:first_visit).to_f + @results.sum(:latter_visit).to_f %>
-      <% interview = @results.sum(:first_interview).to_f + @results.sum(:latter_interview).to_f %>
-      <% full_talk = @results.sum(:first_full_talk).to_f + @results.sum(:latter_full_talk).to_f %>
-      <% get = @results.sum(:first_get).to_f + @results.sum(:latter_get).to_f %>
-      <td class="result-td"></td>
-      <td class="result-td"><%= ( visit / @results.length).round(1) %></td>
-      <td class="result-td"><%= number_to_percentage(interview / visit * 100, precision: 1) rescue 0 %></td>
-      <td class="result-td"><%=  (interview / @results.length).round(1) %></td>
-      <td class="result-td"><%= number_to_percentage(full_talk / interview * 100 , precision: 1) rescue 0 %></td>
-      <td class="result-td"><%= ( full_talk / @results.length).round(1) %></td>
-      <td class="result-td"><%= number_to_percentage(get / full_talk * 100, precision: 1) rescue 0 %></td>
-      <td class="result-td"><%= ( get / @results.length).round(1) rescue 0 %></td>
-      </tr>
-      </table>
-    </div>
+      <%# 目次 %>
+        <table class="result-table">
+        <tr>
+          <th class="result-th">基準値</th>
+        </tr>
+        <tr>
+          <th class="result-th">合計売上</th>
+          <th class="result-th">平均売上</th>
+          <th class="result-th">訪問数</th>
+          <th class="result-th">対面率</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル率</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約率</th>
+          <th class="result-th">成約数</th>
+        </tr>
+        <% basic_results = @results.where.not(shift: "キャッシュレス決済") %>
+          <% visit = basic_results.sum(:first_visit).to_f + basic_results.sum(:latter_visit).to_f %>
+          <% interview = basic_results.sum(:first_interview).to_f + basic_results.sum(:latter_interview).to_f %>
+          <% full_talk = basic_results.sum(:first_full_talk).to_f + basic_results.sum(:latter_full_talk).to_f %>
+          <% get = basic_results.sum(:first_get).to_f + basic_results.sum(:latter_get).to_f %>
+      <%# 値 %>
+      
+        <tr>
+          <td class="result-td"><%= @results.sum(:profit) %></td>
+          <td class="result-td"><%= @results.average(:profit).round(1) rescue 0 %></td>
+          <td class="result-td"><%= ( visit / basic_results.length).round(1) %></td>
+          <td class="result-td"><%= number_to_percentage(interview / visit * 100, precision: 1) rescue 0 %></td>
+          <td class="result-td"><%=  (interview / @results.length).round(1) %></td>
+          <td class="result-td"><%= number_to_percentage(full_talk / interview * 100 , precision: 1) rescue 0 %></td>
+          <td class="result-td"><%= ( full_talk / basic_results.length).round(1) %></td>
+          <td class="result-td"><%= number_to_percentage(get / full_talk * 100, precision: 1) rescue 0 %></td>
+          <td class="result-td"><%= ( get / basic_results.length).round(1) rescue 0 %></td>
+        </tr>
       <%# キャッシュレス基準値早見表 %>
         <% if @results.where(shift: "キャッシュレス新規").empty? %>
         <% else %>
-        <table class="result-table">
+
+        
         <tr class="result-tr">
           <th class="result-th">キャッシュレス</th>
-
         </tr>
         <tr class="result-tr">
           <th class="result-th"></th>
-          <th class="result-th">平均売上</th>
           <th class="result-th">現状売上</th>
+          <th class="result-th">平均売上</th>
           <th class="result-th">予想終着</th>
+          <th class="result-th">dメル獲得数</th>
+          <th class="result-th">aupay獲得数</th>
+          <th class="result-th">paypay獲得数</th>
 
         </tr>
 
         <tr class="result-tr">
           <td class="result-td"></td>
+          <td class="result-td"><%= @results.where(shift: "キャッシュレス新規").sum(:profit).to_s(:delimited) %></td>
           <td class="result-td"><%= cash_ave = @results.where(shift: "キャッシュレス新規").average(:profit).round(1) %></td>
-          <td class="result-td"><%= @results.sum(:profit).to_s(:delimited) %></td>
           <% if new_shift == 0 %>
           <td class="result-td">シフトを入力してください</td>
           <% else %>            
           <td class="result-td"><%= cash_ave * new_shift  %></td>
+          <td class="result-td"><%= @results.where(shift: "キャッシュレス新規").sum(:dmer) %></td>
+          <td class="result-td"><%= @results.where(shift: "キャッシュレス新規").sum(:aupay) %></td>
+          <td class="result-td"><%= @results.where(shift: "キャッシュレス新規").sum(:paypay) %></td>
           <% end %>
+        </tr>
       <%# キャッシュレス成約率 %>
         <tr class="result-tr">
           <th class="result-th">どういうこと？</th>
@@ -211,18 +1185,82 @@
           <td class="result-td"><%= number_to_percentage(@results.sum(:cashless_lack_info_get).to_f / @results.sum(:cashless_lack_info_full_talk) *100,precision: 1) rescue 0 %></td>
           <td class="result-td"><%= number_to_percentage(@results.sum(:cashless_easy_get).to_f / @results.sum(:cashless_easy_full_talk) *100,precision: 1) rescue 0 %></td>
           <td class="result-td"><%= number_to_percentage(@results.sum(:cashless_other_get).to_f / @results.sum(:cashless_other_full_talk) *100,precision: 1) rescue 0 %></td>
-        </tr>
+          </tr>
+        </table>
           <% end %>
-      <%# サミット使用量、従量など %>
-        <% if @results.where(shift: "通信").empty? %>
+      <%# パンダ成約率 %>
+        <% if @results.where(shift: "パンダ").empty? %>
         <% else %>
+        <table class="result-table">
+        <tr>
+          <th class="result-th">パンダ</th>
+        </tr>
+        <tr>
+          <th class="result-th"></th>
+          <th class="result-th">現状売上</th>
+          <th class="result-th">平均売上</th>
+          <th class="result-th">予想終着</th>
+          <th class="result-th">パンダ獲得数</th>
+        <tr>
+          <td class="result-td"></td>
+          <td class="result-td"><%= @results.where(shift: "パンダ").sum(:profit) %></td>
+          <td class="result-td"><%= panda_ave = @results.where(shift: "パンダ").average(:profit).round(1) %></td>
+          <% if panda_shift == 0 %>
+          <td class="result-td">パンダシフトがありません</td>
+          <% else %>
+          <td class="result-td"><%=  panda_ave * panda_shift %></td>
+          <% end %>
+          <td class="result-td"><%= @results.where(shift: "パンダ").sum(:profit) %></td>
+        </tr>
+        <tr>
+          <th class="result-th">パンダ切り返し成約率</th>
+          <th class="result-th">結構です</th>
+          <th class="result-th">忙しい</th>
+          <th class="result-th">検討する</th>
+          <th class="result-th">デリバリーはいい</th>
+          <th class="result-th">増やしたくない</th>
+        </tr>
+        <tr>
+          <td class="result-td"></td>
+          <td class="result-td"><%= number_to_percentage(@results.sum(:panda_not_need_get).to_f / @results.sum(:panda_not_need_full_talk) * 100,precision: 1) rescue 0 %></td>
+          <td class="result-td"><%= number_to_percentage(@results.sum(:panda_busy_get).to_f / @results.sum(:panda_busy_full_talk) * 100,precision: 1) rescue 0 %></td>
+          <td class="result-td"><%= number_to_percentage(@results.sum(:panda_yet_get).to_f / @results.sum(:panda_yet_full_talk) * 100,precision: 1) rescue 0 %></td>
+          <td class="result-td"><%= number_to_percentage(@results.sum(:panda_not_delivery_get).to_f / @results.sum(:panda_not_delivery_full_talk) * 100,precision: 1) rescue 0 %></td>
+          <td class="result-td"><%= number_to_percentage(@results.sum(:panda_not_increment_get).to_f / @results.sum(:panda_not_increment_full_talk) * 100,precision: 1) rescue 0 %></td>
+        </tr>
+        
+        <tr>
+          <th class="result-th">やる余裕がない</th>
+          <th class="result-th">面倒くさい</th>
+          <th class="result-th">情報不足</th>
+          <th class="result-th">フードネコ</th>
+          <th class="result-th">ペロ</th>
+          <th class="result-th">その他</th>
+        </tr>
+
+        <tr>
+          <td class="result-td"><%= number_to_percentage(@results.sum(:panda_not_margin_get).to_f / @results.sum(:panda_not_margin_full_talk) * 100,precision: 1) rescue 0 %></td>
+          <td class="result-td"><%= number_to_percentage(@results.sum(:panda_dull_get).to_f / @results.sum(:panda_dull_full_talk) * 100,precision: 1) rescue 0 %></td>
+          <td class="result-td"><%= number_to_percentage(@results.sum(:panda_lack_info_get).to_f / @results.sum(:panda_lack_info_full_talk) * 100,precision: 1) rescue 0 %></td>
+          <td class="result-td"><%= number_to_percentage(@results.sum(:panda_food_neko_get).to_f / @results.sum(:panda_food_neko_full_talk) * 100,precision: 1) rescue 0 %></td>
+          <td class="result-td"><%= number_to_percentage(@results.sum(:panda_easy_get).to_f / @results.sum(:panda_easy_full_talk) * 100,precision: 1) rescue 0 %></td>
+
+          <td class="result-td"><%= number_to_percentage(@results.sum(:panda_other_get).to_f / @results.sum(:panda_other_full_talk) * 100,precision: 1) rescue 0 %></td>
+        </tr>
+        </table>
+        <% end %>
+      
+    <%# サミット使用量、従量など %>
+        <% if @results.where(shift: "サミット").empty? %>
+        <% else %>
+        <table class="result-table">
           <tr class="result-tr">
               <% amount_sum = 0 %>
               <% metered_lamp_sum = 0 %>
               <% low_voltage_sum = 0 %>
               <% summit_shift = 0 %>
           <% @summits.where(contract_type: "低圧電力").each do |summit| %>
-            <% if summit.get_date.year == result.date.year && summit.get_date.month == result.date.month && summit.user.name == result.user.name %>
+            <% if summit.get_date.year == result.date.year && summit.get_date.month == result.date.month && summit.get_date.day == result.date.day && summit.user.name == result.user.name %>
               <% low_voltage_sum += summit.contract_cap %>
               <% amount_sum += summit.amount_use %>
               <% summit_shift += 1 %>
@@ -237,14 +1275,17 @@
           <% end %>
 
           <tr class="">
-            <th class="summit-th">サミット<%= result.date.month %>月</th>
-            <th class="summit-th">従量電灯</th>
-            <th class="summit-th">低圧電力</th>
-            <th class="summit-th">使用量</th>
-            <th class="summit-th">獲得件数</th>
+            <th class="result-th">サミット月間獲得</th>
           </tr>
           <tr class="">
-            <th class="summit-th">合計</th>
+            <th class="result-th">内訳</th>
+            <th class="result-th">従量電灯</th>
+            <th class="result-th">低圧電力</th>
+            <th class="result-th">使用量</th>
+            <th class="result-th">獲得件数</th>
+          </tr>
+          <tr class="">
+            <th class="result-th">合計</th>
             <td class="result-td"><%= metered_lamp_sum %>kWh</td>
             <td class="result-td"><%= low_voltage_sum %>kW</td>
             <td class="result-td"><%= amount_sum %>kWh</td>
@@ -252,23 +1293,23 @@
           </tr>
 
           <tr class="">
-            <th class="summit-th">平均</th>
+            <th class="result-th">平均</th>
             <td class="result-td"><%= metered_lamp_sum / summit_shift rescue 0 %>kWh</td>
             <td class="result-td"><%= low_voltage_sum / summit_shift rescue 0 %>kW</td>
             <td class="result-td"><%= amount_sum / summit_shift rescue 0 %>kWh</td>
             <td class="result-td"></td>
 
           </tr>
-      <%# サミット成約率 %>
+    <%# サミット成約率 %>
         <tr>
-          <th class="summit-th">サミット成約率</th>
-          <th class="summit-th">引き落とし拒否</th>
-          <th class="summit-th">忙しい</th>
-          <th class="summit-th">怪しい</th>
-          <th class="summit-th">検討したい</th>
-          <th class="summit-th">変えたくない</th>
-          <th class="summit-th">その他</th>
-          <th class="summit-th">ペロ</th>
+          <th class="result-th">サミット成約率</th>
+          <th class="result-th">引き落とし拒否</th>
+          <th class="result-th">忙しい</th>
+          <th class="result-th">怪しい</th>
+          <th class="result-th">検討したい</th>
+          <th class="result-th">変えたくない</th>
+          <th class="result-th">その他</th>
+          <th class="result-th">ペロ</th>
         </tr>
         <tr>
           <td class="result-td"></td>
@@ -282,63 +1323,22 @@
         </tr>
         </table>
         <% end %>
-        </tr>  
-        </table>
       
 
         <% break %>
         <% end %>
-
-    <%# パンダ・キャッシュレス成約率 %>
-      <% if @results.where(shift: "パンダ").empty? %>
-      <% else %>
-      <tr>
-        <th class="panda-th">パンダ切り返し成約率</th>
-        <th class="panda-th">結構です</th>
-        <th class="panda-th">忙しい</th>
-        <th class="panda-th">検討する</th>
-        <th class="panda-th">デリバリーはいい</th>
-        <th class="panda-th">増やしたくない</th>
-
-        <th class="panda-th">やる余裕がない</th>
-        <th class="panda-th">面倒くさい</th>
-        <th class="panda-th">情報不足</th>
-        <th class="panda-th">フードネコ</th>
-        <th class="panda-th">ペロ</th>
-
-        <th class="panda-th">その他</th>
-      </tr>
-
-      <tr>
-        <td class="result-td"></td>
-        <td class="result-td"><%= number_to_percentage(@results.sum(:panda_not_need_get).to_f / @results.sum(:panda_not_need_full_talk) * 100,precision: 1) rescue 0 %></td>
-        <td class="result-td"><%= number_to_percentage(@results.sum(:panda_busy_get).to_f / @results.sum(:panda_busy_full_talk) * 100,precision: 1) rescue 0 %></td>
-        <td class="result-td"><%= number_to_percentage(@results.sum(:panda_yet_get).to_f / @results.sum(:panda_yet_full_talk) * 100,precision: 1) rescue 0 %></td>
-        <td class="result-td"><%= number_to_percentage(@results.sum(:panda_not_delivery_get).to_f / @results.sum(:panda_not_delivery_full_talk) * 100,precision: 1) rescue 0 %></td>
-        <td class="result-td"><%= number_to_percentage(@results.sum(:panda_not_increment_get).to_f / @results.sum(:panda_not_increment_full_talk) * 100,precision: 1) rescue 0 %></td>
-
-        <td class="result-td"><%= number_to_percentage(@results.sum(:panda_not_margin_get).to_f / @results.sum(:panda_not_margin_full_talk) * 100,precision: 1) rescue 0 %></td>
-        <td class="result-td"><%= number_to_percentage(@results.sum(:panda_dull_get).to_f / @results.sum(:panda_dull_full_talk) * 100,precision: 1) rescue 0 %></td>
-        <td class="result-td"><%= number_to_percentage(@results.sum(:panda_lack_info_get).to_f / @results.sum(:panda_lack_info_full_talk) * 100,precision: 1) rescue 0 %></td>
-        <td class="result-td"><%= number_to_percentage(@results.sum(:panda_food_neko_get).to_f / @results.sum(:panda_food_neko_full_talk) * 100,precision: 1) rescue 0 %></td>
-        <td class="result-td"><%= number_to_percentage(@results.sum(:panda_easy_get).to_f / @results.sum(:panda_easy_full_talk) * 100,precision: 1) rescue 0 %></td>
-
-        <td class="result-td"><%= number_to_percentage(@results.sum(:panda_other_get).to_f / @results.sum(:panda_other_full_talk) * 100,precision: 1) rescue 0 %></td>
-      </tr>
-      </table>
-      <% end %>
-      <%#帯同%>
+  </div>
+    <%#帯同%>
         <table class="n-result-table">
         <% if @results.where.not(ojt: "").empty? %>
         <% else %>
           <% @results.where.not(ojt: "").each do |result| %>
             <% ojt_prev = @results.where(date: result.date.prev_week..result.date.ago(1.days)).where.not(shift: 'キャッシュレス決済') %>
-            <% ojt_next = @results.where(date: result.date..result.date.next_week).where.not(shift: 'キャッシュレス決済') %>
+            <% ojt_next = @results.where(date: result.date.tomorrow..result.date.next_week).where.not(shift: 'キャッシュレス決済') %>
             <% ojt_date = result.date %>
             <% week_prev = result.date.prev_week %>
             <% week_next = result.date.next_week %>
           <tr class="n-result-tr">
-            
             <th class="n-result-th">帯同</th>
             <th class="n-result-th"><%= ojt_date.month %>月<%= ojt_date.day %>日</th>
             <th class="n-result-th">対策員：</th>
@@ -354,36 +1354,52 @@
             <th class="n-result-th">フル</th>
             <th class="n-result-th">獲得</th>
             <th class="n-result-th">確認期間</th>
-          </tr>
+          <%# 帯同日 %>
           <tr class="n-result-tr">
+              <th class="n-result-th">帯同日</th>
+              <td class="n-result-td"><%= result.profit %></td>
+              <td class="n-result-td"><%= result.first_visit + result.latter_visit %></td>
+              <td class="n-result-td"><%= result.first_interview + result.latter_interview %></td>
+              <td class="n-result-td"><%= result.first_full_talk + result.latter_full_talk %></td>
+              <td class="n-result-td"><%= result.first_get + result.latter_get %></td>
+              <td class="n-result-td"><%= result.date.month %>月<%= result.date.day %>日</td>
+          </tr>
           <%# 帯同前 %>
-            <th class="n-result-th">帯同前</th>
-            <% if ojt_prev.empty? %>
+            <tr class="n-result-tr">
+              <th class="n-result-th">帯同前</th>
+              <% if ojt_prev.empty? %>
               <td class="n-result-td"><%= ojt_prev_profit = "確認対象なし" %></td>
               <td class="n-result-td"></td>
               <td class="n-result-td"></td>
               <td class="n-result-td"></td>
               <td class="n-result-td"></td>
-            <% else %>
+              <% else %>
               <td class="n-result-td"><%= ojt_prev_profit = ojt_prev.average(:profit).round(1) %></td>
               <td class="n-result-td"><%= ojt_prev_visit = ojt_prev.average(:first_visit).round(1) + ojt_prev.average(:latter_visit).round(1) %></td>
               <td class="n-result-td"><%= ojt_prev_interview = ojt_prev.average(:first_interview).round(1) + ojt_prev.average(:latter_interview).round(1) %></td>
               <td class="n-result-td"><%= ojt_prev_full_talk = ojt_prev.average(:first_full_talk).round(1) + ojt_prev.average(:latter_full_talk).round(1) %></td>
               <td class="n-result-td"><%= ojt_prev_get = ojt_prev.average(:first_get).round(1) + ojt_prev.average(:latter_get).round(1) %></td>
-            <% end %>
+              <% end %>
               <td class="n-result-td"><%= week_prev.month %>月<%= week_prev.day%>日〜<%= ojt_date.month %>月<%= ojt_date.ago(1.days).day %>日</td>
             </tr>
           <%# 帯同後 %>
             <tr class="n-result-tr">
               <th class="n-result-th">帯同後</th>
+              <% if ojt_next.empty? %>
+              <td class="n-result-td"><%= ojt_prev_profit = "確認対象なし" %></td>
+              <td class="n-result-td"></td>
+              <td class="n-result-td"></td>
+              <td class="n-result-td"></td>
+              <td class="n-result-td"></td>
+              <% else %>
               <td class="n-result-td"><%= ojt_next_profit = ojt_next.average(:profit).round(1) %></td>
               <td class="n-result-td"><%= ojt_next_visit = ojt_next.average(:first_visit).round(1) + ojt_next.average(:latter_visit).round(1) %></td>
               <td class="n-result-td"><%= ojt_next_interview = ojt_next.average(:first_interview).round(1) + ojt_next.average(:latter_interview).round(1) %></td>
               <td class="n-result-td"><%= ojt_next_full_talk = ojt_next.average(:first_full_talk).round(1) + ojt_next.average(:latter_full_talk).round(1) %></td>
               <td class="n-result-td"><%= ojt_next_get = ojt_next.average(:first_get).round(1) + ojt_next.average(:latter_get).round(1) %></td>
-              <td class="n-result-td"><%= ojt_date.month %>月<%= ojt_date.day %>日〜<%= week_next.month %>月<%= week_next.day %>日</td>
-          
+              <td class="n-result-td"><%= ojt_date.tomorrow.month %>月<%= ojt_date.tomorrow.day %>日〜<%= week_next.month %>月<%= week_next.day %>日</td>
             </tr>
+            <% end %>
           <%# 帯同結果 %>
             <tr class="n-result-tr">
             <% if ojt_prev.empty? %>
@@ -418,13 +1434,15 @@
             <% end %>
             </tr>
           <% end %>
-
-        </table>
-        <% end %>
-    <%# 日々終着一覧 %>
+          <% end %>
+          </table>
+  
+    <%# 日々終着一覧（見出し） %>
       <table class="result-table">
       <%# 総合 %>
         <tr class="result-tr">
+        <th class="result-th"></th>
+        <th class="result-th"></th>
         <th class="result-th"></th>
         <th class="result-th"></th>
         <th class="result-th"></th>
@@ -471,58 +1489,6 @@
         <th class="result-th"></th>
       <%# キャッシュレス切り返し %>
         <% if @results.where(shift: "キャッシュレス新規").empty? %>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
-          <th class="result-th"></th>
         <% else %>
           <th class="result-th">キャッシュレス切り返し</th>
           <th class="result-th"></th>
@@ -578,28 +1544,112 @@
           <th class="result-th"></th>
         <% end %>
       <%# サミット切り返し %>
+        <% if @results.where(shift: "サミット").empty? %>
+        <% else %>
+          <th class="result-th">サミットNG</th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th">サミット切り返し</th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+        <% end %>
+        
+      <%# パンダ切り返し %>
+        <% if @results.where(shift: "パンダ").empty? %>
+        <% else %>
+          <th class="result-th">パンダ切り返し</th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+          <th class="result-th"></th>
+        <% end %>
         </tr>
-
-      <tr class="result-tr">
-      <%# 大枠基準値 %>
-        <th class="result-th">シフト</th>
-        <th class="result-th">日付</th>
-        <th class="result-th">帯同</th>
-        <th class="result-th">売上</th>
-        <th class="result-th">訪問数</th>
-        <th class="result-th">対面数</th>
-        <th class="result-th">フル数</th>
-        <th class="result-th">成約数</th>
-        <th class="result-th">訪問数</th>
-        <th class="result-th">対面数</th>
-        <th class="result-th">フル数</th>
-        <th class="result-th">成約数</th>
-        <th class="result-th">訪問数</th>
-        <th class="result-th">対面数</th>
-        <th class="result-th">フル数</th>
-        <th class="result-th">成約数</th>
-      <%# 店舗別基準値 %>
-        <th class="result-th"></th>
+      <%# 大枠基準値（見出し） %>
+        <tr class="result-tr">
+          <th class="result-th"></th>
+          <th class="result-th">シフト</th>
+          <th class="result-th">日付</th>
+          <th class="result-th">帯同</th>
+          <th class="result-th">エリア</th>
+          <th class="result-th">売上</th>
+          <th class="result-th">訪問数</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+          <th class="result-th">訪問数</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+          <th class="result-th">訪問数</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+      <%# 店舗別基準値（見出し） %>
+          <th class="result-th"></th>
         <%# 喫茶・カフェ %>
           <th class="result-th">訪問数</th>
           <th class="result-th">対面数</th>
@@ -635,7 +1685,7 @@
           <th class="result-th">対面数</th>
           <th class="result-th">フル数</th>
           <th class="result-th">成約数</th>
-      <%# キャッシュレス切り返し %>
+      <%# キャッシュレス切り返し（見出し） %>
         <% if @results.where(shift: "キャッシュレス新規").empty? %>
         <% else %>
           <th class="result-th">どういうこと？</th>
@@ -691,101 +1741,100 @@
             <th class="result-th">フル数</th>
             <th class="result-th">成約数</th>
         <% end %>
-      <%# サミット切り返し %>
+      <%# サミット切り返し（見出し） %>
         <% if @results.where(shift: "サミット").empty? %>
         <% else %>
-        <th class="summit-pick-th">サミット</th>
-        <th class="summit-th">明細なし</th>
-        <th class="summit-th">口座なし</th>
-        <th class="summit-th">建物一括</th>
-        <th class="summit-pick-th">引き落とし拒否</th>
-          <th class="summit-th">対面数</th>
-          <th class="summit-th">フル数</th>
-          <th class="summit-th">成約数</th>
-        <th class="summit-pick-th">忙しい</th>
-          <th class="summit-th">対面数</th>
-          <th class="summit-th">フル数</th>
-          <th class="summit-th">成約数</th>
-        <th class="summit-pick-th">怪しい</th>
-          <th class="summit-th">対面数</th>
-          <th class="summit-th">フル数</th>
-          <th class="summit-th">成約数</th>
-        <th class="summit-pick-th">検討したい</th>
-          <th class="summit-th">対面数</th>
-          <th class="summit-th">フル数</th>
-          <th class="summit-th">成約数</th>
-        <th class="summit-pick-th">変えたくない</th>
-          <th class="summit-th">対面数</th>
-          <th class="summit-th">フル数</th>
-          <th class="summit-th">成約数</th>
-        <th class="summit-pick-th">その他</th>
-          <th class="summit-th">対面数</th>
-          <th class="summit-th">フル数</th>
-          <th class="summit-th">成約数</th>
-        <th class="summit-pick-th">ペロ</th>
-          <th class="summit-th">対面数</th>
-          <th class="summit-th">フル数</th>
-          <th class="summit-th">成約数</th>
+        <th class="result-th">明細なし</th>
+        <th class="result-th">口座なし</th>
+        <th class="result-th">建物一括</th>
+        <th class="result-th">引き落とし拒否</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">忙しい</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">怪しい</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">検討したい</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">変えたくない</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">その他</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">ペロ</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
         <% end %>
-      <%# パンダ切り返し %>
+      <%# パンダ切り返し（見出し） %>
         <% if @results.where(shift: "パンダ").empty? %>
         <% else %>
-        <th class="panda-pick-th">パンダ切り返し</th>
-        <th class="panda-pick-th">結構です</th>
-          <th class="panda-th">対面数</th>
-          <th class="panda-th">フル数</th>
-          <th class="panda-th">成約数</th>
-        <th class="panda-pick-th">忙しい</th>
-          <th class="panda-th">対面数</th>
-          <th class="panda-th">フル数</th>
-          <th class="panda-th">成約数</th>
-        <th class="panda-pick-th">検討する</th>
-          <th class="panda-th">対面数</th>
-          <th class="panda-th">フル数</th>
-          <th class="panda-th">成約数</th>
-        <th class="panda-pick-th">デリバリーはいい</th>
-          <th class="panda-th">対面数</th>
-          <th class="panda-th">フル数</th>
-          <th class="panda-th">成約数</th>
-        <th class="panda-pick-th">増やしたくない</th>
-          <th class="panda-th">対面数</th>
-          <th class="panda-th">フル数</th>
-          <th class="panda-th">成約数</th>
-        <th class="panda-pick-th">やる余裕がない</th>
-          <th class="panda-th">対面数</th>
-          <th class="panda-th">フル数</th>
-          <th class="panda-th">成約数</th>
-        <th class="panda-pick-th">面倒くさい</th>
-          <th class="panda-th">対面数</th>
-          <th class="panda-th">フル数</th>
-          <th class="panda-th">成約数</th>
-        <th class="panda-pick-th">情報不足</th>
-          <th class="panda-th">対面数</th>
-          <th class="panda-th">フル数</th>
-          <th class="panda-th">成約数</th>
-        <th class="panda-pick-th">フードネコ</th>
-          <th class="panda-th">対面数</th>
-          <th class="panda-th">フル数</th>
-          <th class="panda-th">成約数</th>
-        <th class="panda-pick-th">ペロ</th>
-          <th class="panda-th">対面数</th>
-          <th class="panda-th">フル数</th>
-          <th class="panda-th">成約数</th>
-        <th class="panda-pick-th">その他</th>
-          <th class="panda-th">対面数</th>
-          <th class="panda-th">フル数</th>
-          <th class="panda-th">成約数</th>
+        <th class="result-th">結構です</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">忙しい</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">検討する</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">デリバリーはいい</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">増やしたくない</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">やる余裕がない</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">面倒くさい</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">情報不足</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">フードネコ</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">ペロ</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
+        <th class="result-th">その他</th>
+          <th class="result-th">対面数</th>
+          <th class="result-th">フル数</th>
+          <th class="result-th">成約数</th>
         </tr>
         <% end %>
       
         <% @results.each do |result| %>
-
       
-      <%# 大枠基準値 %>
-        <tr class="result-tr">
+      <%# 大枠基準値（値） %>
+        <tr>
+        <td class="n-result-td"><%= link_to "編集", edit_result_path(result.id),class: "index-link" %></td>
         <td class="result-td"><%= result.shift %></td>
         <td class="result-td"><%= result.date.month %>月<%= result.date.day %>日</td>
         <td class="result-td"><%= result.ojt %></td>
+        <td class="result-td"><%= result.area %></td>
         <td class="result-td"><%= number_with_delimiter(result.profit) %></td>
         <td class="result-td"><%= result.first_visit + result.latter_visit %></td>
         <td class="result-td"><%= result.first_interview + result.latter_interview %></td>
@@ -803,7 +1852,7 @@
         <td class="result-td"><%= result.latter_full_talk %></td>
         <td class="result-td"><%= result.latter_get %></td>
         
-      <%# 店舗別基準値 %>
+      <%# 店舗別基準値(値) %>
         <td class="result-td"></td>
         <%# 喫茶・カフェ %>
           <td class="result-td"><%= result.cafe_visit %></td>
@@ -896,11 +1945,10 @@
         <td class="result-td"><%= result.cashless_other_full_talk %></td>
         <td class="result-td"><%= result.cashless_other_get %></td>
         <% end %>
-      <%# サミット＆ぷらねす切り返し %>
+      <%# サミット切り返し %>
         <%# NG %>
         <% if @results.where(shift: "サミット").empty? %>
         <% else %>
-        <td class="result-td"></td>
         <td class="result-td"><%= result.summit_ng_detail %></td>
         <td class="result-td"><%= result.summit_ng_cash %></td>
         <td class="result-td"><%= result.summit_ng_building %></td>
@@ -933,61 +1981,60 @@
         <td class="result-td"><%= result.summit_easy_full_talk %></td>
         <td class="result-td"><%= result.summit_easy_get %></td>
         <% end %>
-    <%# パンダ切り返し %>
-      <% if @results.where(shift: "パンダ").empty? %>
-      <% else %>
-      <td class="result-td"><%# パンダ切り返し %></td>
-      <td class="result-td"><%# 結構です %></td>
-        <td class="result-td"><%= result.panda_not_need_interview %></td>
-        <td class="result-td"><%= result.panda_not_need_full_talk %></td>
-        <td class="result-td"><%= result.panda_not_need_get %></td>
-      <td class="result-td"><%# 忙しい %></td>
-        <td class="result-td"><%= result.panda_busy_interview %></td>
-        <td class="result-td"><%= result.panda_busy_full_talk %></td>
-        <td class="result-td"><%= result.panda_busy_get %></td>
-      <td class="result-td"><%# 検討する %></td>
-        <td class="result-td"><%= result.panda_yet_interview %></td>
-        <td class="result-td"><%= result.panda_yet_full_talk %></td>
-        <td class="result-td"><%= result.panda_yet_get %></td>
-      <td class="result-td"><%# デリバリーはいい %></td>
-        <td class="result-td"><%= result.panda_not_delivery_interview %></td>
-        <td class="result-td"><%= result.panda_not_delivery_full_talk %></td>
-        <td class="result-td"><%= result.panda_not_delivery_get %></td>
-      <td class="result-td"><%# 増やしたくない %></td>
-        <td class="result-td"><%= result.panda_not_increment_interview %></td>
-        <td class="result-td"><%= result.panda_not_increment_full_talk %></td>
-        <td class="result-td"><%= result.panda_not_increment_get %></td>
-      <td class="result-td"><%# やる余裕がない %></td>
-        <td class="result-td"><%= result.panda_not_margin_interview %></td>
-        <td class="result-td"><%= result.panda_not_margin_full_talk %></td>
-        <td class="result-td"><%= result.panda_not_margin_get %></td>
-      <td class="result-td"><%# 面倒くさい%></td>
-        <td class="result-td"><%= result.panda_dull_interview %></td>
-        <td class="result-td"><%= result.panda_dull_full_talk %></td>
-        <td class="result-td"><%= result.panda_dull_get %></td>
-      <td class="result-td"><%# 情報不足 %></td>
-        <td class="result-td"><%= result.panda_lack_info_interview %></td>
-        <td class="result-td"><%= result.panda_lack_info_full_talk %></td>
-        <td class="result-td"><%= result.panda_lack_info_get %></td>
-      <td class="result-td"><%# フードネコ %></td>
-        <td class="result-td"><%= result.panda_food_neko_interview %></td>
-        <td class="result-td"><%= result.panda_food_neko_full_talk %></td>
-        <td class="result-td"><%= result.panda_food_neko_get %></td>
-      <td class="result-td"><%# ペロ %></td>
-        <td class="result-td"><%= result.panda_easy_interview %></td>
-        <td class="result-td"><%= result.panda_easy_full_talk %></td>
-        <td class="result-td"><%= result.panda_easy_get %></td>
-      <td class="result-td"><%# その他 %></td>
-        <td class="result-td"><%= result.panda_other_interview %></td>
-        <td class="result-td"><%= result.panda_other_full_talk %></td>
-        <td class="result-td"><%= result.panda_other_get %></td>
-      </tr>
-      </table>
-      <% end %>
-
+      <%# パンダ切り返し %>
+        <% if @results.where(shift: "パンダ").empty? %>
+        <% else %>
+        <td class="result-td"><%# 結構です %></td>
+          <td class="result-td"><%= result.panda_not_need_interview %></td>
+          <td class="result-td"><%= result.panda_not_need_full_talk %></td>
+          <td class="result-td"><%= result.panda_not_need_get %></td>
+        <td class="result-td"><%# 忙しい %></td>
+          <td class="result-td"><%= result.panda_busy_interview %></td>
+          <td class="result-td"><%= result.panda_busy_full_talk %></td>
+          <td class="result-td"><%= result.panda_busy_get %></td>
+        <td class="result-td"><%# 検討する %></td>
+          <td class="result-td"><%= result.panda_yet_interview %></td>
+          <td class="result-td"><%= result.panda_yet_full_talk %></td>
+          <td class="result-td"><%= result.panda_yet_get %></td>
+        <td class="result-td"><%# デリバリーはいい %></td>
+          <td class="result-td"><%= result.panda_not_delivery_interview %></td>
+          <td class="result-td"><%= result.panda_not_delivery_full_talk %></td>
+          <td class="result-td"><%= result.panda_not_delivery_get %></td>
+        <td class="result-td"><%# 増やしたくない %></td>
+          <td class="result-td"><%= result.panda_not_increment_interview %></td>
+          <td class="result-td"><%= result.panda_not_increment_full_talk %></td>
+          <td class="result-td"><%= result.panda_not_increment_get %></td>
+        <td class="result-td"><%# やる余裕がない %></td>
+          <td class="result-td"><%= result.panda_not_margin_interview %></td>
+          <td class="result-td"><%= result.panda_not_margin_full_talk %></td>
+          <td class="result-td"><%= result.panda_not_margin_get %></td>
+        <td class="result-td"><%# 面倒くさい%></td>
+          <td class="result-td"><%= result.panda_dull_interview %></td>
+          <td class="result-td"><%= result.panda_dull_full_talk %></td>
+          <td class="result-td"><%= result.panda_dull_get %></td>
+        <td class="result-td"><%# 情報不足 %></td>
+          <td class="result-td"><%= result.panda_lack_info_interview %></td>
+          <td class="result-td"><%= result.panda_lack_info_full_talk %></td>
+          <td class="result-td"><%= result.panda_lack_info_get %></td>
+        <td class="result-td"><%# フードネコ %></td>
+          <td class="result-td"><%= result.panda_food_neko_interview %></td>
+          <td class="result-td"><%= result.panda_food_neko_full_talk %></td>
+          <td class="result-td"><%= result.panda_food_neko_get %></td>
+        <td class="result-td"><%# ペロ %></td>
+          <td class="result-td"><%= result.panda_easy_interview %></td>
+          <td class="result-td"><%= result.panda_easy_full_talk %></td>
+          <td class="result-td"><%= result.panda_easy_get %></td>
+        <td class="result-td"><%# その他 %></td>
+          <td class="result-td"><%= result.panda_other_interview %></td>
+          <td class="result-td"><%= result.panda_other_full_talk %></td>
+          <td class="result-td"><%= result.panda_other_get %></td>
+        </tr>
         <% end %>
+
     <% end %>
+  </table>
+    <% end %>
+<% end %>
 
-
-</div>
   </main>
+</div>

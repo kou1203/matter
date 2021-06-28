@@ -17,21 +17,19 @@
     <tr class="show-tr">
     </tr>
     <tr class="show-tr">
-    <tr class="show-tr">
-    <tr class="show-tr">
     <th class="show-th">店舗代表</th>
     <td class="show-td"><%= @aupay.store_prop.person_main %></td>
     <th class="show-th">店舗担当</th>
     <td class="show-td"><%= @aupay.store_prop.person_sub %></td>
     </tr>
     </table>
-    <table class="table">
+    <table class="show-table">
     <tr class="show-tr">
-    <th class="show-th">店舗住所</th>
+      <th class="show-th">店舗住所</th>
     <td class="show-td-long"><%= @aupay.store_prop.prefecture %><%= @aupay.store_prop.city %><%= @aupay.store_prop.municipalities %><%= @aupay.store_prop.address %><%= @aupay.store_prop.building_name %></td>
     </table>
     <h1 class="show-title">連絡先</h1>
-    <table class="table">
+    <table class="show-table">
     <th class="show-th">電話番号1</th>
     <td class="show-td"><%= @aupay.store_prop.phone_number_1 %></td>
     <th class="show-th">電話番号2</th>
@@ -48,54 +46,60 @@
     <td class="show-td"><%= @aupay.store_prop.suitable_time %></td>
     <th class="show-th">定休日</th>
     <td class="show-td"><%= @aupay.store_prop.holiday %></td>
+    </tr>
+    <tr>
     <th class="show-th">備考</th>
     <td class="show-td"><%= @aupay.store_prop.description %></td>
+    <td class="show-td"><%= link_to "店舗情報編集", edit_store_prop_path(@aupay.store_prop.id), class: "index-link" %></td>
     </tr>
     </table>
-    <button class="edit-btn"> 
-      <%= link_to "編集", edit_store_prop_path(@aupay.store_prop.id), class: "index-link" %>
-    </button>
     <h1 class="show-title">auペイ</h1>
       
-    <table class="table">
+    <table class="show-table">
+    <tr class="show-tr">
+    </tr>
+    </table>
+
+    <table class="show-table">
     <tr class="show-tr">
     <th class="show-th">獲得日</th>
-      <th class="show-th">獲得者</th>
-    </tr>
-    <tr class="show-tr">
       <td class="show-td"><%= @aupay.get_date %></td>
+      <th class="show-th">獲得者</th>
       <td class="show-td"><%= @aupay.user.name %></td>
-    </tr>
-    </table>
-
-    <table class="show-table">
-    <tr class="show-tr">
       <th class="show-th">管理番号</th>
-      <th class="show-th">商流</th>
-      <th class="show-th">審査ステータス</th>
+      <td class="show-td"><%= @aupay.customer_num %></td>
     </tr>
     <tr class="show-tr">
-      <td class="show-td"><%= @aupay.customer_num %></td>
+      <th class="show-th">商流</th>
       <td class="show-td"><%= @aupay.client %></td>
+      <th class="show-th">審査ステータス</th>
       <td class="show-td"><%= @aupay.status %></td>
+      <th class="show-th">入金日</th>
+      <td class="show-td"><%= @aupay.payment %></td>
     </tr>
-    </table>
-
-    <table class="show-table">
+    <tr class="show-tr">
+    </tr>
     <tr class="show-tr">
       <th class="show-th">決済日</th>
-      <th class="show-th">入金日</th>
-      <th class="show-th">備考</th>
-    </tr>
-    <tr class="show-tr">
       <td class="show-td"><%= @aupay.settlement %></td>
-      <td class="show-td"><%= @aupay.payment %></td>
+      <th class="show-th">決済期限</th>
+      <td class="show-td"><%= @aupay.settlement_deadline %></td>
+      <th class="show-th">備考</th>
       <td class="show-td"><%= @aupay.description %></td>
     </tr>
+    <tr>
+      <th class="show-th">評価売上</th>
+      <td class="show-td"><%= @aupay.valuation_profit %></td>
+      <th class="show-th">実売上</th>
+      <td class="show-td"><%= @aupay.actual_profit %></td>
+      <td class="show-td"><%= link_to "aupay情報編集", edit_aupay_path, class: "index-link" %></td>
+    </tr>
     </table>
-    <button class="edit-btn">
-      <%= link_to "編集", edit_aupay_path, class: "link" %>
-    </button>
+
+    <table class="show-table">
+    <tr class="show-tr">
+    </tr>
+    </table>
   </main>
 </div>
 
