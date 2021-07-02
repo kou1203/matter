@@ -1,20 +1,16 @@
-<%= render "shared/header" %>
-
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
-  <h1 class="show-title"><%= @store_prop.name %>情報入力（サミットエナジー）</h1>
-
-          <%= form_with url: import_summit_customer_props_path do |f| %>
-    <table class="table">
+<div data-scope-path="summit_customer_props/new">
+  <h1><%= @store_prop.name %>情報入力（サミットエナジー）</h1>
+  <%= render "shared/header" %>
+  <%= form_with url: import_summit_customer_props_path do |f| %>
+    <table>
       <tr>
-        <td class="import-choose"><%= f.label :file, "サミット情報：CSV取り込み",class:"import-label" %></td>
-        <td class="import-choose"><%= f.file_field :file, accept: '.csv', class: "import-file"  %></td>
-        <td class="import-result"><%= f.submit "インポート", class: "import-btn", data: {confirm: "インポートしますか？"} %></td>
-        <td class="search-reset"><%= link_to "店舗一覧に戻る", root_path ,class: "reset-link" %></td>
+        <th class="csv"><%= f.label :file, "CSV取り込み",class:"reset-link" %></th>
+        <td class="csv-td"><%= f.file_field :file, accept: '.csv', class: "csv-text" %></td>
+        <th class="result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？"} %></th>
+        <th class="reset"><%= link_to "店舗一覧に戻る", root_path ,class: "reset-link" %></th>
       </tr>
     </table>
-    <% end %>
+  <% end %>
 
 
   <%= form_with model: @summit_customer_prop,url: store_prop_summit_customer_props_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
@@ -22,46 +18,30 @@
         <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
         <%= f.hidden_field :client, value: "サミットエナジー" %>
   <table>
+  <%# 1列目th %>
     <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :customer_num, "お客様番号", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.text_field :customer_num , class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :before_electric, "前電気会社", class: "form-text" %><br>
-        <%= f.text_field :before_electric , class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :claim_house, "需要家名", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.text_field :claim_house , class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :claim_address, "請求宛名", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.text_field :claim_address, class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :contract_name, "契約者名", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.text_field :contract_name, class: "form-input" %>
-        </div>
-      </th>
-
+      <th><label class="form-text">お客様番号</label></th>
+      <th><label class="form-text">前電気会社</label></th>
+      <th><label class="form-text">需要家名</label></th>
+    </tr>
+  <%# 1列目td %>
+    <tr>
+        <td><%= f.text_field :customer_num , class: "form-input" %></td>
+        <td><%= f.text_field :before_electric , class: "form-input" %></td>
+        <td><%= f.text_field :claim_house , class: "form-input" %></td>
+    </tr>
+  <%# 2列目th %>
+    <tr>
+      <th><label class="form-text">お客様番号</label></th>
+      <th><label class="form-text">前電気会社</label></th>
+    </tr>
+  <%# 2列目td %>
+    <tr>
+      <td><%= f.text_field :claim_address, class: "form-input" %></td>
+      <td><%= f.text_field :contract_name, class: "form-input" %></td>
+    </tr>
   </table>
-    
-    <%= f.submit "登録", class: "form-btn" %>
+  
+    <%= f.submit "登録", class: "submit-btn" %>
   <% end %>
-  </main>
 </div>

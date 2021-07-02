@@ -6,7 +6,7 @@ class DmersController < ApplicationController
       if params[:q].nil?
         Dmer.none 
       else
-        @q.result(distinct: true)
+        @q.result(distinct: false)
       end
   end 
 
@@ -41,7 +41,7 @@ class DmersController < ApplicationController
   def update 
     @dmer = Dmer.find(params[:id])
     @dmer.update(dmer_params)
-    redirect_to dmers_path
+    redirect_to store_prop_path(@dmer.store_prop_id)
   end 
 
   def import 

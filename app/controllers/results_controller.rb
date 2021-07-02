@@ -10,7 +10,7 @@ class ResultsController < ApplicationController
       end
     @shifts = Shift.all
     @summits = Summit.all
-    @dmers = Dmer.all
+
     @result_month = Result.where(date: Time.now.beginning_of_month..Time.now.end_of_month)
     @result_week1 = Result.where(date: Time.now.beginning_of_month..Time.now.beginning_of_month.next_week(:monday))
     @result_week2 = Result.where(date: Time.now.beginning_of_month.next_week(:tuesday)..Time.now.beginning_of_month.next_week(:monday).since(7.days))

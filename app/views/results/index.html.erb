@@ -41,10 +41,6 @@
     <% else %>
     <div class="result-separate">
       <div>
-      <% if @dmers.empty? %>
-      <% else %>
-
-      <% end %>
     <%# 現状 %>
       <table class="result-table">
         <tr>
@@ -60,6 +56,7 @@
           <th class="result-th">消化シフト数</th>
           <th class="n-result-th">必達売上</th>
           <th class="n-result-th">現状売上</th>
+          <th class="n-result-th">実売上</th>
           <th class="n-result-th">前月Ave</th>
           <th class="n-result-th">前月売上</th>
           <th class="n-result-th">現状Ave</th>
@@ -84,6 +81,7 @@
           <td class="result-td"><%= chubu_cash_month.length %></td>
           <td class="result-td"></td>
           <td class="result-td"><%= chubu_cash_month.sum(:profit) %></td>
+          <td class="result-td"><%=  %></td>
 
           <% if @result_before_month.includes(:user).where(users: {base: "中部SS"}).empty? %>
           <td class="result-td"></td>
@@ -120,6 +118,7 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
         </tr>
       <%# 東京パンダ %>
         <% tokyo_cash_month = @result_month.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "キャッシュレス新規").or(@result_month.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "パンダ")) %>
@@ -139,6 +138,7 @@
           <td class="result-td"><%= tokyo_cash_month.length %></td>
           <td class="result-td"></td>
           <td class="result-td"><%= tokyo_cash_month.sum(:profit) %></td>
+          <td class="result-td"><%=  %></td>
           <% if tokyo_cash_before_month.empty? %>
           <td class="result-td"></td>
           <td class="result-td"></td>
@@ -163,6 +163,7 @@
           <th class="result-th"></th>
           <th class="result-th">フェムト</th>
           <th class="result-th">矢野貴二郎</th>
+          <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -208,9 +209,8 @@
 
           <td class="result-td"><%= kansai_cash_month.length %></td>
           <td class="result-td"></td>
-
           <td class="result-td"><%= kansai_cash_month .sum(:profit) %></td>
-
+          <td class="result-td"><%=  %></td>
           <% if @result_before_month.includes(:user).where(users: {base: "関西SS"}).empty? %>
           <td class="result-td"></td>
           <td class="result-td"></td>
@@ -246,12 +246,14 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
+          <td class="n-result-td"></td>
         </tr>
       <%# 関西サミット %>
         <tr>
           <th class="result-th"></th>
           <th class="result-th">サミット</th>
           <th class="result-th">星合祐甫</th>
+          <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
@@ -995,7 +997,7 @@
     <% if @results.group(:user_id).length != 1 %>
     <% else %>
     <%# 個別利益表 %>
-      <h2 class="sub-title">表示範囲：<%= @results.minimum(:date) %>〜<%= @results.maximum(:date) %></h2>
+      <h2 class="sub-title">表示範囲：<%= @results.minimum(:date) %>（<%= days[@results.minimum(:date).wday] %>）〜<%= @results.maximum(:date) %>（<%= days[@results.maximum(:date).wday] %>）</h2>
       <h2 class="sub-title">
         <% @results.each do |result| %>
           拠点：
@@ -1120,7 +1122,6 @@
       <%# キャッシュレス基準値早見表 %>
         <% if @results.where(shift: "キャッシュレス新規").empty? %>
         <% else %>
-
         
         <tr class="result-tr">
           <th class="result-th">キャッシュレス</th>
@@ -1149,7 +1150,11 @@
           <td class="result-td"><%= @results.where(shift: "キャッシュレス新規").sum(:paypay) %></td>
           <% end %>
         </tr>
+        
       <%# キャッシュレス成約率 %>
+        <tr class="result-tr">
+          <th class="result-th">切り返し</th>
+        </tr>
         <tr class="result-tr">
           <th class="result-th">どういうこと？</th>
           <th class="result-th">君は誰？教会？</th>

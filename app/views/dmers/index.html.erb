@@ -1,86 +1,95 @@
-<%= render "shared/header" %>
-<main class="main">
-  <%= render "shared/side_bar" %>
-  <div class="right-bar">
-  <h1 class="sub-title">dメル一覧</h1>
+<div data-scope-path="dmers/index">
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+  <h1>dメル一覧</h1>
+  <%= render "shared/header" %>
 
         <%= search_form_for @q do |f| %>
-      <table class="search-table">
-        <tr class="search-tr">
-          <th class="search-th"><%= f.label :get_date, "獲得日付", class: "search-label" %></th>
-          <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %>~</td>
-          <td class="search-td"><%= f.date_field :get_date_lteq, class: "search-date" %></td>
-          <th class="search-th"><%= f.label :settlement_deadline, "決済期限", class: "search-label" %></th>
-          <td class="search-td"><%= f.date_field :settlement_deadline_gteq, class: "search-date" %>~</td>
-          <td class="search-td"><%= f.date_field :settlement_deadline_lteq, class: "search-date" %></td>
+    <table class="table-note">
+      <tr>
+        <th class="">※何も入力しないで絞り込むと全店舗データが表示されます</th>
+      </tr>
+    </table>
+      <table>
+        <tr >
+          <th class="search1">獲得日付</th>
+          <td ><%= f.date_field :get_date_gteq, class: "input" %>~</td>
+          <td ><%= f.date_field :get_date_lteq, class: "input" %></td>
+          <th class="search1">決済期限</th>
+          <td ><%= f.date_field :settlement_deadline_gteq, class: "input" %>~</td>
+          <td ><%= f.date_field :settlement_deadline_lteq, class: "input" %></td>
         </tr>
       </table>
-      <table class="search-table">
-        <tr class="search-tr">
-          <th class="search-checkbox-th"><%= f.label :settlement, "未決済", class: "search-label" %></th>
-          <th class="search-checkbox-th"><%= f.label :payment, "未入金", class: "search-label" %></th>
-          <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
-          <th class="search-th"><%= f.label :status, "審査ステータス", class: "search-label" %></th>
-          <th class="search-th"><%= f.label :client, "商流", class: "search-label" %></th>
-          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
+      <table >
+        <tr >
+          <th class="search1">獲得者</th>
+          <th class="search1">審査ステータス</th>
+          <th class="search1">商流</th>
+          <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
         </tr>
-        <tr class="search-tr">
-          <td class="search-checkbox-td"><%= f.check_box :settlement_null, checked: true, class: "search-checkbox" %></td>
-          <td class="search-checkbox-td"><%= f.check_box :payment_null, checked: true, class: "search-checkbox" %></td>
-          <td class="search-td"><%= f.text_field :user_name_cont, class: "search-input" %></td>
-          <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(Dmer.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
-          <td class="search-td"><%= f.select :client_eq, {"マックスサポート": "マックスサポート", "USEN": "USEN","メルヴェイユ": "メルヴェイユ",
-      "ウィンクルム": "ウィンクルム"}, {include_blank: true}, {class: "search-input"} %></td>
-          <td class="search-reset"><%= link_to "絞込みリセット", dmers_path, class: "reset-link" %></td>
+        <tr >
+          <td><%= f.text_field :user_name_cont, class: "input" %></td>
+          <td><%= f.select :status_eq, options_from_collection_for_select(Dmer.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
+          <td ><%= f.select :client_eq, {"マックスサポート": "マックスサポート", "USEN": "USEN","メルヴェイユ": "メルヴェイユ",
+      "ウィンクルム": "ウィンクルム"}, {include_blank: true}, {class: "input"} %></td>
+          <td class="reset"><%= link_to "絞込みリセット", dmers_path, class: "reset-link" %></td>
         </tr>
       </table>
-      <hr>
         <% end %>
+      <hr>
       <% if @dmers.empty? %>
       <% else %>
-
-      <hr>
-      <table class="search-table">
-        <tr class="search-tr">
-          <th class="search-th">獲得件数</th>
-          <th class="search-th">決済完了件数</th>
-          <th class="search-th">決済期限切れ件数</th>
-          <th class="search-th">入金完了数</th>
-          <th class="search-th">未審査数</th>
-          <th class="search-th">審査NG</th>
-          <th class="search-th">審査完了</th>
-          <th class="search-th">自社不備</th>
-          <th class="search-th">申込取消</th>
+      <h1>表示範囲：<%= @dmers.minimum(:get_date) %>（<%= days[@dmers.minimum(:get_date).wday] %>）〜<%= @dmers.maximum(:get_date) %>（<%= days[@dmers.maximum(:get_date).wday] %>）</h1>
+      <table >
+        <tr >
+          <th class="search2">実売上合計</th>
+          <th class="search2">実売上平均</th>
+          <th class="search2">営業日数</th>
         </tr>
-        <tr class="search-tr">
-          <td class="search-td"><%= @dmers.length %></td>
-          <td class="search-td"><%= @dmers.where.not(settlement: nil).length %></td>
-          <td class="search-td"><%= @dmers.where(status: "審査完了").where(settlement: nil).where(settlement_deadline: Time.now.years_ago(5)..Time.now).length %></td>
-          <td class="search-td"><%= @dmers.where.not(payment: nil).length %></td>
-          <td class="search-td"><%= @dmers.where(status: '未審査').length %></td>
-          <td class="search-td"><%= @dmers.where(status: '審査NG' ).length %></td>
-          <td class="search-td"><%= @dmers.where(status: '審査完了' ).length %></td>
-          <td class="search-td"><%= @dmers.where(status: '自社不備' ).length %></td>
-          <td class="search-td"><%= @dmers.where(status: '申込取消' ).length %></td>
+        <tr >
+          <td class="index-td"><%= dmer_sum = @dmers.where.not(status: "申込取消").where.not(status: "審査NG").where.not(status: "自社不備").sum(:actual_profit) %></td>
+          <td class="index-td"><%= dmer_sum / @dmers.group(:get_date).length %></td>
+          <td class="index-td"><%= @dmers.group(:get_date).length %>日</td>
+        </tr>
+        <tr >
+          <th >獲得件数</th>
+          <th >決済完了件数</th>
+          <th >決済期限切れ件数</th>
+          <th >入金完了数</th>
+          <th >未審査数</th>
+          <th >審査NG</th>
+          <th >審査完了</th>
+          <th >自社不備</th>
+          <th >申込取消</th>
+        </tr>
+        <tr >
+          <td ><%= @dmers.length %></td>
+          <td ><%= @dmers.where.not(settlement: nil).length %></td>
+          <td ><%= @dmers.where(status: "審査完了").where(settlement: nil).where(settlement_deadline: Time.now.years_ago(5)..Time.now).length %></td>
+          <td ><%= @dmers.where.not(payment: nil).length %></td>
+          <td ><%= @dmers.where(status: '未審査').length %></td>
+          <td ><%= @dmers.where(status: '審査NG' ).length %></td>
+          <td ><%= @dmers.where(status: '審査完了' ).length %></td>
+          <td ><%= @dmers.where(status: '自社不備' ).length %></td>
+          <td ><%= @dmers.where(status: '申込取消' ).length %></td>
         </tr>
       </table>
     
       <table class="table">
     <tr class="table-row">
-      <th class="index-th"></th>
-      <th class="index-th"><%= sort_link(@q, :get_date, "獲得日",{}, {class: "index-sort"}) %></th>
-      <th class="index-th">法人/個人</th>
-      <th class="index-th">複数店</th>
-      <th class="index-th">店舗名</th>
-      <th class="index-th">獲得者</th>
-      <th class="index-th">審査ステータス</th>
-      <th class="index-th">初回決済日</th>
-      <th class="index-th">決済期限</th>
-      <th class="index-th">入金日</th>
+      <th class="search1"></th>
+      <th class="search1"><%= sort_link(@q, :get_date, "獲得日",{}, {class: "reset-link"}) %></th>
+      <th class="search1">法人/個人</th>
+      <th class="search1">複数店</th>
+      <th class="search1">店舗名</th>
+      <th class="search1">獲得者</th>
+      <th class="search1">審査ステータス</th>
+      <th class="search1">初回決済日</th>
+      <th class="search1">決済期限</th>
+      <th class="search1">入金日</th>
     </tr>
     <% @dmers.find_each do |dmer| %>
     <tr class="index-tr">
-      <td class="index-td"><%= link_to "詳細",  dmer_path(dmer.id) ,class: "index-link" %></td>
+      <td class="index-td"><%= link_to "詳細",  dmer_path(dmer.id) ,class: "link" %></td>
       <td class="index-td"><%= dmer.get_date.month %>月<%= dmer.get_date.day %>日</td>
       <td class="index-td"><%= dmer.store_prop.race %></td>
       <% if dmer.store_prop.head_store.nil? %>
@@ -105,5 +114,4 @@
     <% end %>
     </table>
   <% end %>
-  </div>
-</main>
+</div>

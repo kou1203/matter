@@ -1,31 +1,26 @@
       <%# link_to "CSVを出力する", pranesses_path(format: :csv), data: {confirm: "CSVを出力しますか？"} %>
-<%= render "shared/header" %>
-
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
-    <h1 class="sub-title">ぷらねす一覧</h1>
-
-    <h2 class="show-title"><%= Date.today.month %>月獲得数<%= Praness.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件 解約数<%= Praness.where(cancel: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</h2>
+<div data-scope-path="pranesses/index">
+    <h1>ぷらねす一覧</h1>
+  <%= render "shared/header" %>
 
         <%= search_form_for @q do |f| %>
-        <table class="search-table">
-          <tr class="search-tr">
-            <th class="search-th"><%= f.label :get_date, "獲得日付",class: "search-label" %></td>
-            <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %>〜</td>
-            <td class="search-td"><%= f.date_field :get_date_lt, class: "search-date" %></td>
+        <table>
+          <tr >
+            <th class="search">獲得日付</td>
+            <td><%= f.date_field :get_date_gteq, class: "input" %>~</td>
+            <td><%= f.date_field :get_date_lt, class: "input" %></td>
           </tr>
         </table>
         <table class="search-table">
-          <tr class="search-tr">
-          <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></td>
-          <th class="search-th"><%= f.label :status, "端末状態", class: "search-label" %></th>
-          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
+          <tr >
+          <th class="search1">獲得者</td>
+          <th class="search1">端末状態</th>
+          <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
           </tr>
-          <tr class="search-tr">
-          <td class="search-td"><%= f.text_field :user_id_cont, class: "search-input" %></td>
-          <td class="search-td"><%= f.select :status_eq, { "クラウドデバイス完了": "クラウドデバイス完了", "未設定": "未設定" },{include_blank: true} , {class: "search-date"} %></td>
-          <td class="search-reset"><%= link_to "検索リセット", pranesses_path, class: "reset-link" %></td>
+          <tr >
+          <td ><%= f.text_field :user_id_cont, class: "input" %></td>
+          <td ><%= f.select :status_eq, { "クラウドデバイス完了": "クラウドデバイス完了", "未設定": "未設定" },{include_blank: true} , {class: "input"} %></td>
+          <td class="reset"><%= link_to "検索リセット", pranesses_path, class: "reset-link" %></td>
 
           </tr>
         </table>
@@ -35,38 +30,37 @@
     <hr>
     <% if @pranesses.empty? %>
     <% else %>
-    <table class="index-table">
-      <h2 class="sub-title">今月入金予定<%= Praness.where("payment <= ?",Date.parse(Date.today.end_of_month.to_s)).length %>件</h2>
-      <h2 class="sub-title">表示範囲：<%= @pranesses.minimum(:get_date) %>〜<%= @pranesses.maximum(:get_date) %></h2>
+      <h1>表示範囲：<%= @pranesses.minimum(:get_date) %>〜<%= @pranesses.maximum(:get_date) %></h1>
+    <table>
       <tr>
-        <th class="search-th">契約数</th>
-        <th class="search-th">売上合計</th>
-        <th class="search-th">端末未設定</th>
-        <th class="search-th">解約件数</th>
+        <th class="search2">契約数</th>
+        <th class="search2">売上合計</th>
+        <th class="search2">端末未設定</th>
+        <th class="search2">解約件数</th>
       </tr>
       <tr>
-        <td class="search-td"><%= @pranesses.length %></td>
-        <td class="search-td">¥ <%= @pranesses.length * 1738 %></td>
-        <td class="search-td"><%= Praness.where(status: "未設定").length %></td>
-        <td class="search-td"><%= Praness.where("cancel != null").length %></td>
+        <td ><%= @pranesses.length %></td>
+        <td >¥ <%= @pranesses.sum(:claim).to_s(:delimited) %></td>
+        <td ><%= Praness.where(status: "未設定").length %></td>
+        <td ><%= Praness.where("cancel != null").length %></td>
       </tr>
     </table>
 
-    <table class="index-table">
-      <tr class="index-tr">
-      <th class="index-th"></th>
-      <th class="index-th"><%= sort_link(@q, :get_date, "獲得日",{},{class: "index-sort"}) %></th>
-      <th class="index-th">法人/個人</th>
-      <th class="index-th">店舗名</th>
-      <th class="index-th">獲得者</th>
+    <table>
+      <tr>
+      <th ></th>
+      <th ><%= sort_link(@q, :get_date, "獲得日",{},{class: "reset-link"}) %></th>
+      <th >法人/個人</th>
+      <th >店舗名</th>
+      <th >獲得者</th>
     </tr>
       <% @pranesses.each do |praness| %>
-        <tr class="index-tr">
-        <td class="index-td"><%= link_to "詳細",  praness_path(praness.id) ,class: "index-link" %></td>
-        <td class="index-td"><%= praness.get_date %></td>
-        <td class="index-td"><%= praness.store_prop.race %></td>
-        <td class="index-td"><%= praness.store_prop.name %></td>
-        <td class="index-td"><%= praness.user.name %></td>
+        <tr>
+        <td><%= link_to "詳細",  praness_path(praness.id) ,class: "link" %></td>
+        <td><%= praness.get_date %></td>
+        <td><%= praness.store_prop.race %></td>
+        <td><%= praness.store_prop.name %></td>
+        <td><%= praness.user.name %></td>
         </tr>
       <% end %>
       </table>

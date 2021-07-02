@@ -3,10 +3,10 @@ class PaypaysController < ApplicationController
   def index 
     @q = Paypay.ransack(params[:q])
     @paypays = 
-      if @paypays.nil?
+      if params[:q].nil?
         Paypay.none 
       else
-        @q.result(distinct: true)
+        @q.result(distinct: false)
       end
   end 
 
@@ -19,7 +19,7 @@ class PaypaysController < ApplicationController
   
   def create 
     @paypay = Paypay.new(paypay_params)
-    @users = User.where(base: "退職")
+    @users = User.where.not(base: "退職")
     @store_prop = StoreProp.find(params[:store_prop_id])
     @paypay.save
     if @paypay.save 
@@ -46,7 +46,7 @@ class PaypaysController < ApplicationController
   def update 
     @paypay = Paypay.find(params[:id])
     @paypay.update(paypay_params)
-    redirect_to paypays_path
+    redirect_to paypay_path(@paypay.store_prop_id)
   end 
 
   private 

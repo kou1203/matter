@@ -1,153 +1,86 @@
-<%= render "shared/header" %>
+<div data-scope-path="summits/edit">
+  <h1><%= @summit.summit_customer_prop.store_prop.name %>情報入力（サミットエナジー）</h1>
+  <%= render "shared/header" %>
 
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
-  <h1 class="show-title"><%= @summit.summit_customer_prop.store_prop.name %>情報入力（サミットエナジー）</h1>
-      
-
-  <%= form_with model: @summit, class: "form-frame", local: true do |f| %>
+  <%= form_with model: @summit,  class: "form-frame", local: true do |f| %>
   <%= render "shared/error_messages", model: f.object %>
-      <%= f.hidden_field :store_prop_id, value: @summit.summit_customer_prop.store_prop.id %>
-      <%= f.hidden_field :client, value: "サミットエナジー" %>
   <table>
-  <%# 一列目 %>
+  <%# 一行目ラベル %>
     <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :get_date, "獲得日", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.date_field :get_date , class: "form-input" %>
-        </div>
-      </th>
-      <th>
-        <div class="form-interval">
-        <%= f.label :user_id, "獲得者", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.collection_select(:user_id, @users, :id, :name ,{}, {class: "form-input"})%>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :supply_num, "供給地点番号", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.text_field :supply_num , class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :contract_num, "契約番号", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.text_field :contract_num , class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :power_company, "電力会社", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.select :power_company, { "関西": "関西", "東京": "東京" } , {} ,{class: "form-input"} %>
-        </div>
+      <th><label class="form-text">獲得日</label></th>
+      <th><label class="form-text">獲得者</label></th>
+      <th><label class="form-text">供給地点番号</label></th>
+      <th><label class="form-text">契約番号</label></th>
+    </tr>
+  <%# 一行目値 %>    
+    <tr>
+      <td><%= f.date_field :get_date , class: "form-input" %></td>
+      <td><%= f.collection_select(:user_id, @users.where(base_sub: "電気"), :id, :name,{}, {class: "form-input"})%></td>
+      <td><%= f.text_field :supply_num , class: "form-input" %></td>
+      <td><%= f.text_field :contract_num , class: "form-input" %></td>
+        
+    </tr>
+        
+        
+        
+        
       </th>
 
     </tr>
-  <%# 二列目 %>
+  <%# 二行目ラベル %>
     <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :menu, "メニュー", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.select :menu , {"メニューA": "メニューA", "メニューB": "メニューB"}, {},{class: "form-input"} %>
-        </div>
-      </th>
+      <th><%= f.label :power_company, "電力会社", class: "form-text" %></th>
+      <th><%= f.label :menu, "メニュー", class: "form-text" %></th>
+      <th><%= f.label :contract_type, "契約種別", class: "form-text" %></th>
+      <th><%= f.label :plan, "プラン名", class: "form-text" %></th>
 
       <th>
-        <div class="form-interval">
-        <%= f.label :contract_type, "契約種別", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.select :contract_type, { "低圧電力": "低圧電力","従量電灯A": "従量電灯A","従量電灯B": "従量電灯B", "従量電灯C": "従量電灯C"} ,{}, {class: "form-input"} %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :plan, "プラン名", class: "form-text" %><br>
-        <%= f.text_field :plan , class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :status, "ステータス", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.select :status, { "未申請": "未申請","提出済み": "提出済み","不備": "不備"} ,{}, {class: "form-input"} %>
-        </div>
-      </th>
-
     </tr>
-  <%# 三列目 %>
+  <%# 2行目値 %>
     <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :contract_cap, "契約容量", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.number_field :contract_cap , class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :contract_cap_unit, "契約容量（単位）", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.select :contract_cap_unit, { "kVA": "kVA","kW": "kW","A": "A" } ,{}, {class: "form-input"} %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :amount_use, "使用量", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.number_field :amount_use , class: "form-input" %>
-        </div>
-      </th>
-
-
+    <td><%= f.select :power_company, { "関西": "関西", "東京": "東京" } , {} ,{class: "form-input"} %></td>
+    <td><%= f.select :menu , {"メニューA": "メニューA", "メニューB": "メニューB"}, {},{class: "form-input"} %></td>
+    <td><%= f.select :contract_type, { "低圧電力": "低圧電力","従量電灯A": "従量電灯A","従量電灯B": "従量電灯B", "従量電灯C": "従量電灯C"} ,{}, {class: "form-input"} %></td>
+    <td><%= f.text_field :plan , class: "form-input" %></td>
     </tr>
-     <%# 四列目 %>
+  <%# 3行目ラベル %>
     <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :start, "利用開始日", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.date_field :start , class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :payment, "入金月", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.number_field :payment , class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :claim_expected, "予想請求額", class: "form-text" %><br>
-        <%= f.number_field :claim_expected , class: "form-input", min: 0, value: 0 %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :claim, "請求額", class: "form-text" %><br>
-        <%= f.number_field :claim, class: "form-input", min: 0,value: 0 %>
-        </div>
-      </th>
-      
-
-
     </tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :remarks, "備考", class: "form-text" %><br>
-        <%= f.text_field :remarks , class: "form-input" %>
-        </div>
-      </th>
+      <th><%= f.label :status, "ステータス", class: "form-text" %></th>
+      <th><%= f.label :contract_cap, "契約容量", class: "form-text" %></th>
+      <th><%= f.label :contract_cap_unit, "契約容量（単位）", class: "form-text" %></th>
+      <th><%= f.label :amount_use, "使用量", class: "form-text" %></th>
+    </tr>
+  <%# 3行目値 %>
+    <tr>
+      <td><%= f.select :status, { "未申請": "未申請","提出済み": "提出済み","不備": "不備"} ,{}, {class: "form-input"} %></td>
+      <td><%= f.number_field :contract_cap , class: "form-input" %></td>
+      <td><%= f.select :contract_cap_unit, { "kVA": "kVA","kW": "kW","A": "A" } ,{include_blank: true}, {class: "form-input"} %></td>
+      <td><%= f.number_field :amount_use , class: "form-input" %></td>
+    </tr>
+  <%# 4行目ラベル %>
+    <tr>
+      <th><%= f.label :start, "利用開始日", class: "form-text" %></th>
+      <th><%= f.label :payment, "入金日", class: "form-text" %></th>
+      <th><%= f.label :claim, "請求額", class: "form-text" %></th>
+      <th><%= f.label :claim_expected, "予想請求額", class: "form-text" %></th>
+    </tr>
+  <%# 4行目値 %>
+    <tr>
+      <td><%= f.date_field :start , class: "form-input" %></td>
+      <td><%= f.date_field :payment , class: "form-input" %></td>
+      <td><%= f.number_field :claim, class: "form-input", min: 0,value: 0 %></td>
+      <td><%= f.number_field :claim_expected , class: "form-input", min: 0, value: 0 %></td>
+    </tr>
+  <%# 5行目ラベル %>
+    <tr>
+      <th><%= f.label :remarks, "備考", class: "form-text" %></th>
+    </tr>
+  <%# 5行目値 %>
+    <tr>
+      <td><%= f.text_field :remarks , class: "form-input" %></td>
+    </tr>
   </table>
-    
-
-    <%= f.submit "登録", class: "form-btn" %>
+    <%= f.submit "登録", class: "submit-btn" %>
   <% end %>
-  </main>
 </div>

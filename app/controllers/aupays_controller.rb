@@ -6,7 +6,7 @@ class AupaysController < ApplicationController
       if params[:q].nil?
         Aupay.none 
       else 
-        @q.result(distinct: true)
+        @q.result(distinct: false)
       end
   end
 
@@ -46,7 +46,7 @@ class AupaysController < ApplicationController
   def update 
     @aupay = Aupay.find(params[:id])
     @aupay.update(aupay_params)
-    redirect_to aupays_path 
+    redirect_to aupay_path(@aupay.id) 
   end 
 
   private 

@@ -1,68 +1,70 @@
-
-<%= render "shared/header" %>
-
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
-    <h1 class="sub-title">店舗一覧</h1>
-      <table class="search-table">
-        <th class="store-link"><%= link_to "店舗登録", new_store_prop_path, class: "new-link" %></th>
-        <th class="cashless-result"><%= link_to "SS終着", new_result_path, class: "new-link" %></th>
-        <th class="cashless-result"><%= link_to "N終着", new_n_result_path, class: "new-link" %></th>
+<div data-scope-path="store_props/index">
+  <h1>店舗一覧</h1>
+  <%= render "shared/header" %>
+      <table>
+        <th class="reg"><%= link_to "店舗登録", new_store_prop_path, class: "reg-link" %></th>
       </table>
 
       <%= search_form_for @q do |f| %>
-    <table class="search-frame">
-      
-      <tr class="search-tr">
-        <th class="search-th"><%= f.label :industry, "業種", class: "search-label" %></th>
-        <th class="search-th"><%= f.label :name, "店舗名", class: "search-label" %></th>
-        <th class="search-th"><%= f.label :prefecture, "都道府県", class: "search-label" %></th>
-        <th class="search-th"><%= f.label :city, "市区", class: "search-label" %></th>
-        <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
+    <table class="table-note">
+      <tr>
+        <th class="">※何も入力しないで絞り込むと全店舗データが表示されます</th>
       </tr>
-      <tr class="search-tr">
-        <td class="search-form"><%= f.select :industry_eq, {"飲食": "飲食", "小売": "小売", "サービス": "サービス"} , {include_blank: true},{class: "search-input"} %></td>
-        <td class="search-td"><%= f.search_field :name_cont, class: "search-input" %></td>
-        <td class="search-td"><%= f.text_field :prefecture_cont, class: "search-input" %></td>
-        <td class="search-td"><%= f.text_field :city_cont, class: "search-input" %></td>
-        <td  class="search-reset"><%= link_to "絞込みリセット", root_path ,class: "reset-link" %></td>
-      </tr>
-      <% end %>
     </table>
+    <table>
+      <tr>
+        <th>検索</th>
+        <th class="search1">業種</th>
+        <th class="search1">店舗名</th>
+        <th class="search1">担当者名(カナ)</th>
+        <th class="search1">連絡先</th>
+        <th class="search1">都道府県</th>
+        <th class="search1">市区</th>
+        <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
+      </tr>
+      <tr>
+        <th>ここに値入力⇨</th>
+        <td><%= f.select :industry_eq, {"飲食": "飲食", "小売": "小売", "サービス": "サービス"} , {include_blank: true},{class: "input"} %></td>
+        <td ><%= f.search_field :name_cont, class: "input" %></td>
+        <td><%= f.search_field :person_main_kana_or_person_sub_kana_cont, class: "input" %></td>
+        <td ><%= f.search_field :phone_number_1_or_phone_number_2_cont, class: "input" %></td>
+        <td ><%= f.text_field :prefecture_cont, class: "input" %></td>
+        <td ><%= f.text_field :city_cont, class: "input" %></td>
+        <td  class="reset"><%= link_to "絞込みリセット", root_path ,class: "reset-link" %></td>
+      </tr>
+    </table>
+      <% end %>
     <hr>
     <% if @store_props.empty? %>
     <% else %>
- 
-    <table class="search-table">
+    <table>
       <tr>
-        <th class="search-th">店舗数</th>
-        <th class="search-th">法人</th>
-        <th class="search-th">個人</th>
+        <th class="search2">店舗数</th>
+        <th class="search2">法人</th>
+        <th class="search2">個人</th>
         </tr>
 
       <tr class="search-tr">
-        <td class="search-td"><%= @store_props.length %></td>
-        <td class="search-td"><%= @store_props.where(race: '法人').length %></td>
-        <td class="search-td"><%= @store_props.where(race: '個人').length %></td>
+        <td ><%= @store_props.length %></td>
+        <td ><%= @store_props.where(race: '法人').length %></td>
+        <td ><%= @store_props.where(race: '個人').length %></td>
       </tr>
     </table>
   
-    <table class="index-table">
-    <tr class="index-tr">
-      <th class="index-th"></th>
-      <th class="index-th"><%= sort_link(@q, :id, "ID",{},{class: "index-sort"}) %></th>
-      <th class="index-th"><%= sort_link(@q, :race, "法人/個人",{},{class: "index-sort"}) %></th>
-      <th class="index-th"><%= sort_link(@q, :name, "店舗名",{},{class: "index-sort"}) %></th>
+    <table>
+    <tr>
+      <th></th>
+      <th><%= sort_link(@q, :id, "ID",{},{class: "reset-link"}) %></th>
+      <th><%= sort_link(@q, :race, "法人/個人",{},{class: "reset-link"}) %></th>
+      <th><%= sort_link(@q, :name, "店舗名",{},{class: "reset-link"}) %></th>
     <% @store_props.each do |store_prop| %>
-    <tr class="index-tr">
-    <td class="index-td"><%= link_to "詳細",  store_prop_path(store_prop.id) ,class: "index-link" %></td>
-    <td class="index-td"><%= store_prop.id %></td>
-    <td class="index-td"><%= store_prop.race %></td>
-    <td class="index-td"><%= store_prop.name %></td>
+    <tr>
+    <td ><%= link_to "詳細", store_prop_path(store_prop.id), class: "link" %></td>
+    <td ><%= store_prop.id %></td>
+    <td ><%= store_prop.race %></td>
+    <td ><%= store_prop.name %></td>
     </tr>
     <% end %>
     </table>
   <% end %>
-  </main>
 </div>

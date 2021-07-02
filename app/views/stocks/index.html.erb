@@ -1,123 +1,123 @@
-<%= render "shared/header" %>
-
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
+<div data-scope-path="stocks/index">
   <h1 class="sub-title">ぷらねす在庫</h1>
-    <h2 class="show-title"><span class="note"><%= Date.today.month %>月解約件数：<%= Praness.where(cancel: Time.now.beginning_of_month..Time.now.end_of_month).length %>件 </span>設置済店舗数：<%= Praness.all.length %>設定済在庫数：<%= Stock.where(status: "〇").length %> 未設定在庫数：<%= Stock.where(status: nil).length %></h2>
+    <h1><span class="note">設置済店舗数：<%= Praness.all.length %>設定済在庫数：<%= Stock.where(status: "〇").length %> 未設定在庫数：<%= Stock.where(status: nil).length %></h1>
+  <%= render "shared/header" %>
       <%= form_with url: import_stocks_path do |f| %>
-      <table class="search-frame">
-        <th class="search-link"><%= link_to "在庫登録", new_stock_path, class: "new-link" %></th>
+      <table>
+        <th class="reg"><%= link_to "在庫登録", new_stock_path, class: "reg-link" %></th>
       </table>
       <table class="import-table">
       <tr>
-        <td class="import-choose"><%= f.label :file, "在庫情報：CSV取り込み",class:"import-label" %></td>
-        <td class="import-choose"><%= f.file_field :file, accept: '.csv', class: "csv-btn"  %></td>
-        <td class="import-result"><%= f.submit  "インポート", class: "import-btn", data: {confirm: "インポートしますか？"} %></td>
+        <th class="csv">在庫情報：CSV取り込み</th>
+        <td class="import-choose"><%= f.file_field :file, accept: '.csv', class: "input"  %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn", data: {confirm: "インポートしますか？"} %></td>
       <% end %>
       <%= search_form_for @q do |f| %>
-        <td class="search-form"><%= f.label :status, "バインド設定",class: "search-label" %></td>
+        <th class="search-th">バインド設定</th>
         
-        <td class="search-form"><%= f.select :status_eq, options_for_select({"〇": "〇"}), {include_blank: true}, {class: "search-input"} %></td>
-        <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
-        <td class="search-reset"><%= link_to "絞込みリセット", stocks_path, class: "reset-link"  %></td>
+        <td class="search-td"><%= f.select :status_eq, options_for_select({"〇": "〇","": "" }), {}, {class: "input"} %></td>
+        <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
+        <td class="reset"><%= link_to "絞込みリセット", stocks_path, class: "reset-link"  %></td>
       </tr>
       <% end %>
       </table>
-
       <hr>
-      
-      <table class="index-table">
-        <tr class="index-tr">
-        <th class="index-th">削除</th>
-        <th class="index-th">編集</th>
-        <th class="index-th">在庫番号</th>
-        <th class="index-th">Mac番号</th>
-        <th class="index-th">バインド設定</th>
-        <th class="index-th">メールアドレス</th>
-        <th class="index-th">設置日</th>
-        <th class="index-th">店舗詳細</th>
-        <th class="index-th">設置店舗</th>
-        <th class="index-th">設置者</th>
-        <th class="index-th">SSID①</th>
-        <th class="index-th">PASS①</th>
-        <th class="index-th">SSID②</th>
-        <th class="index-th">PASS②</th>
-        <th class="index-th">解約日付</th>
-        <th class="index-th">持ち出し者</th>
-        <th class="index-th">持ち出し日</th>
-        <th class="index-th">持出履歴</th>
-        <th class="index-th">前回持ち出し者</th>
-        <th class="index-th">返却日</th>
-        <th class="index-th">返却履歴削除</th>
-        </tr>
-        
-    <% @stocks.each do |stock| %>
-        <tbody>
-        <% if stock.praness.nil? %>
-          <tr class="table-row">
+  <% if @stocks.empty? %>
+  <% else %>
+    <table>
+      <tr>
+      <th ></th>
+      <th ></th>
+      <th >在庫番号</th>
+      <th >Mac番号</th>
+      <th >バインド設定</th>
+      <th >メールアドレス</th>
+      <th >設置日</th>
+      <th >店舗詳細</th>
+      <th >設置店舗</th>
+      <th >設置者</th>
+      <th >SSID①</th>
+      <th >PASS①</th>
+      <th >SSID②</th>
+      <th >PASS②</th>
+      <th >解約日付</th>
+      <th >持ち出し者</th>
+      <th >持ち出し日</th>
+      <th >持出履歴</th>
+      <th >前回持ち出し者</th>
+      <th >返却日</th>
+      <th >返却履歴削除</th>
+      </tr>
+    <% @stocks.find_each do |stock| %>
+      <% if stock.praness.nil? %>
+        <tr>
+      <% else %>
+        <% if stock.praness.cancel.nil? %>
+        <tr class="get-tr">
         <% else %>
-          <% if stock.praness.cancel.nil? %>
-          <tr class="table-row-get">
-          <% else %>
-          <tr class="table-row-cancel">
-          <% end %>
+        <tr class="cancel-tr">
         <% end %>
-          <% if stock.stock_history.nil? %>
-            <td class="index-td"><%= link_to "削除", stock_path(stock.id), method: :delete,data: {confirm: "削除しますか？"} ,class: "index-link" %></td>
-          <% else %>
-            <td class="index-td"></td>
-          <% end %>
-            <td class="index-td"><%= link_to "編集",edit_stock_path(stock.id), class: "index-link" %></td>
-            <td class="index-td"><%= stock.stock_num %></td>
-            <td class="index-td"><%= stock.mac_num %></td>
-            <td class="index-td"><%= stock.status %></td>
-            <td class="index-td"><%= stock.mail %></td>
+      <% end %>
+      <% if stock.stock_history.nil? %>
+        <td ><%= link_to "削除", stock_path(stock.id), method: :delete,data: {confirm: "削除しますか？"} ,class: "link" %></td>
+      <% else %>
+        <td ></td>
+      <% end %>
+            <td ><%= link_to "編集",edit_stock_path(stock.id), class: "link" %></td>
+            <td ><%= stock.stock_num %></td>
+            <td ><%= stock.mac_num %></td>
+            <td ><%= stock.status %></td>
+            <td ><%= stock.mail %></td>
             <% if stock.praness.nil? %>
-            <td class="index-td"></td>
-            <td class="index-td"></td>
-            <td class="index-td"></td>
-            <td class="index-td"></td>
-            <td class="index-td"></td>
-            <td class="index-td"></td>
-            <td class="index-td"></td>
-            <td class="index-td"></td>
-            <td class="index-td"></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
+            <td ></td>
             <% else %>
-            <td class="index-td"><%= stock.praness.get_date %></td>
-            <td class="index-td"><%= link_to "詳細", praness_path(stock.praness.id), class: "index-link" %></td>
-            <td class="index-td"><%= stock.praness.store_prop.name %></td>
-            <td class="index-td"><%= stock.praness.user.name %></td>
-            <td class="index-td"><%= stock.praness.ssid_1 %></td>
-            <td class="index-td"><%= stock.praness.pass_1 %></td>
-            <td class="index-td"><%= stock.praness.ssid_2 %></td>
-            <td class="index-td"><%= stock.praness.pass_2 %></td>
-            <td class="index-td"><%= stock.praness.cancel %></td>
+            <td ><%= stock.praness.get_date %></td>
+            <td ><%= link_to "詳細", praness_path(stock.praness.id), class: "link" %></td>
+            <td ><%= stock.praness.store_prop.name %></td>
+            <td ><%= stock.praness.user.name %></td>
+            <td ><%= stock.praness.ssid_1 %></td>
+            <td ><%= stock.praness.pass_1 %></td>
+            <td ><%= stock.praness.ssid_2 %></td>
+            <td ><%= stock.praness.pass_2 %></td>
+            <td ><%= stock.praness.cancel %></td>
             <% end %>
             <% if stock.stock_history.nil? %>
-            <td class="index-td"><%= link_to "持出", new_stock_stock_history_path(stock.id), class: "index-link" %></td>
-            <td class="index-td"></td>
-            <td class="index-td"></td>
+            <td ><%= link_to "持出", new_stock_stock_history_path(stock.id), class: "link" %></td>
+            <td ></td>
+            <td ></td>
             <% else %>
-            <td class="index-td"><%= stock.stock_history.user.name %></td>
-            <td class="index-td"><%= stock.stock_history.take_out %></td>
-            <td class="index-td"><%= link_to "削除", stock_history_path(stock.stock_history.id),method: :delete,data: {confirm: "削除しますか？"}, class: "index-link" %></td>
+            <td ><%= stock.stock_history.user.name %></td>
+            <td ><%= stock.stock_history.take_out %></td>
+            <td ><%= link_to "削除", stock_history_path(stock.stock_history.id),method: :delete,data: {confirm: "削除しますか？"}, class: "link" %></td>
             <% end %>
             <% if stock.return_history.nil? %>
-            <td class="index-td"><%= link_to "返却", new_stock_return_history_path(stock.id), class: "index-link" %></td>
-            <td class="index-td"></td>
-            <td class="index-td"></td>
-            <td class="index-td"></td>
+              <% if stock.stock_history.nil? %>
+                <td ></td>
+                <td ></td>
+                <td ></td>
+                <td ></td>
+              <% else %>
+                <td ><%= link_to "返却", new_stock_return_history_path(stock.id), class: "link" %></td>
+                <td ></td>
+                <td ></td>
+                <td ></td>
+              <% end %>
         
             <% else %>
-            <td class="index-td"><%= stock.return_history.user.name %></td>
-            <td class="index-td"><%= stock.return_history.return %></td>
-            <td class="index-td"><%= link_to "削除", return_history_path(stock.return_history.id),method: :delete, data: {confirm: "削除しますか？"}, class: "index-link" %></td>
+            <td ><%= stock.return_history.user.name %></td>
+            <td ><%= stock.return_history.return %></td>
+            <td ><%= link_to "削除", return_history_path(stock.return_history.id),method: :delete, data: {confirm: "削除しますか？"}, class: "link" %></td>
             <% end %>
           </tr>
-        </tbody>
     <% end %>
       </table>
-
-  </main>
+  <% end %>
 </div>

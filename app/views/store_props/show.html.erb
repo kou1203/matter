@@ -1,13 +1,12 @@
-<%= render "shared/header" %>
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <div>
+<div data-scope-path="store_props/show">
   <h1 class="sub-title">店舗詳細</h1>
-  <table class="search-table">
-    <th class="store-link"><%= link_to "客対応報告", store_prop_trouble_sses_new_path(@store_prop.id), class: "new-link" %></th>
+  <%= render "shared/header" %>
+  <table>
+
+    <th class="reg"><%= link_to "客対応報告", store_prop_trouble_sses_new_path(@store_prop.id), class: "reg-link" %></th>
   </table>
-    <table class="show-table">
-      <tr class="table-row">
+    <table >
+      <tr >
         <th class="dmer-th">dメル</th>
         <th class="aupay-th">auペイ</th>
         <th class="paypay-th">PayPay</th>
@@ -16,155 +15,166 @@
         <th class="summit-th">サミットエナジー</th>
         <th class="panda-th">フードパンダ</th>
       </tr>
-      <tr class="show-tr">
+      <tr >
         <% if @dmer.nil? %>
-          <td class="show-td"><%= link_to "新規登録", store_prop_dmers_new_path(@store_prop.id), class: "show-link" %></td>
+          <td><%= link_to "新規登録", store_prop_dmers_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="show-td-done"><%= link_to "登録済み/詳細", dmer_path(@store_prop.dmer.id),class: "show-link" %></td>
+          <td class="reg-td"><%= link_to "登録済み/詳細", dmer_path(@store_prop.dmer.id),class: "link" %></td>
         <% end %>
         <% if @aupay.nil? %>
-          <td class="show-td"><%= link_to "新規登録",  store_prop_aupays_new_path(@store_prop.id), class: "show-link" %></td>
+          <td><%= link_to "新規登録",  store_prop_aupays_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="show-td-done"><%= link_to "登録済み/詳細", aupay_path(@store_prop.aupay.id),class: "show-link" %></td>
+          <td class="reg-td"><%= link_to "登録済み/詳細", aupay_path(@store_prop.aupay.id),class: "link" %></td>
         <% end %>
         <% if @paypay.nil? %>
-          <td class="show-td"><%= link_to "新規登録",  store_prop_paypays_new_path(@store_prop.id), class: "show-link" %></td>
+          <td><%= link_to "新規登録",  store_prop_paypays_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="show-td-done"><%= link_to "登録済み/詳細", paypay_path(@store_prop.paypay.id),class: "show-link" %></td>
+          <td class="reg-td"><%= link_to "登録済み/詳細", paypay_path(@store_prop.paypay.id),class: "link" %></td>
         <% end %>
         <% if @praness.nil? %>
-          <td class="show-td"><%= link_to "新規登録", store_prop_pranesses_new_path(@store_prop.id), class: "show-link" %></td>
+          <td><%= link_to "新規登録", store_prop_pranesses_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="show-td-done"><%= link_to "登録済み/詳細", praness_path(@store_prop.praness.id),class: "show-link" %></td>
+          <td class="reg-td"><%= link_to "登録済み/詳細", praness_path(@store_prop.praness.id),class: "link" %></td>
         <% end %>
         <% if @rakuten_casa.nil? %>
-          <td class="show-td"><%= link_to "新規登録", store_prop_rakuten_casas_new_path(@store_prop.id), class: "show-link" %></td>
+          <td><%= link_to "新規登録", store_prop_rakuten_casas_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="show-td-done"><%= link_to "登録済み/詳細", rakuten_casa_path(@store_prop.rakuten_casa.id),class: "show-link" %></td>
+          <td class="reg-td"><%= link_to "登録済み/詳細", rakuten_casa_path(@store_prop.rakuten_casa.id),class: "link" %></td>
         <% end %>
         <% if @summit_customer_prop.nil? %>
-          <td class="show-td"><%= link_to "情報入力",  store_prop_summit_customer_props_new_path(@store_prop.id), class: "show-link" %></td>
+          <td><%= link_to "情報入力",  store_prop_summit_customer_props_new_path(@store_prop.id), class: "link" %></td>
         <% elsif @summits.nil? %>
-          <td class="show-td-summit"><%= link_to "契約追加(現状0件)",  summit_customer_prop_summits_new_path(@store_prop.summit_customer_prop.id), class: "show-link" %></td>
+          <td class="summit-td"><%= link_to "契約追加(現状0件)",  summit_customer_prop_summits_new_path(@store_prop.summit_customer_prop.id), class: "reset-link" %></td>
         <% else %>
-          <td class="show-td-summit"><%= link_to "契約追加(現状#{ @summits.length }件)",  summit_customer_prop_summits_new_path(@store_prop.summit_customer_prop.id), class: "show-link" %></td>
+          <td class="summit-td"><%= link_to "契約追加(現状#{ @summits.length }件)",  summit_customer_prop_summits_new_path(@store_prop.summit_customer_prop.id), class: "reset-link" %></td>
         <% end %>
         <% if @pandas.nil? %>
-          <td class="show-td"><%= link_to "新規登録",  store_prop_pandas_new_path(@store_prop.id), class: "show-link" %></td>
+          <td><%= link_to "新規登録",  store_prop_pandas_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="show-td-done">登録済み</td>
+          <td class="reg-td">登録済み</td>
         <% end %>
       </tr>
     </table>
     <hr>
-    <h1 class="show-title">店舗情報</h1>
-    <table class="show-table">
+    <table >
+      <tr>
+        <th colspan="4">店舗詳細</th>
+      </tr>
+      <tr >
+        <th>属性</th>
+        <td><%= @store_prop.race %></td>
+        <th>業種</th>
+        <td><%= @store_prop.industry %></td>
+      </tr>
 
-      <tr class="show-tr">
-        <th class="show-th">属性</th>
-        <td class="show-td"><%= @store_prop.race %></td>
-        <th class="show-th">業種</th>
-        <td class="show-td"><%= @store_prop.industry %></td>
-        <th class="show-th">本店名</th>
+      <tr >
+        <th>店舗名</th>
+        <td><%= @store_prop.name %></td>
+        <th>法人名</th>
+        <td><%= @store_prop.corporate_name %></td>
+
+      </tr>
+      <tr >
+      </tr>
+    <tr>
+      <th>店舗担当１</th>
+        <td><%= @store_prop.person_main %></td>
+      <th>フリガナ</th>
+        <td><%= @store_prop.person_main_kana %></td>
+    </tr>
+    <tr>
+      <th>店舗担当２</th>
+        <td><%= @store_prop.person_sub %></td>
+      <th>フリガナ</th>
+        <td><%= @store_prop.person_sub_kana %></td>
+    </tr>
+    <tr>
+    <th>店舗住所</th>
+      <td colspan="3"><%= @store_prop.prefecture %><%= @store_prop.city %><%= @store_prop.municipalities %><%= @store_prop.address %><%= @store_prop.building_name %></td>
+    </tr>
+    <tr>
+        <th>本店名</th>
         <% if @store_prop.name == @store_prop.head_store %>
-        <td class="show-td">本店</td>
+        <td>本店</td>
         <% elsif @store_prop.head_store.nil? %>
-        <td class="show-td">複数店なし</td>
+        <td>複数店なし</td>
         <% else %>
-        <td class="show-td"><%= @store_prop.head_store %></td>
+        <td><%= @store_prop.head_store %></td>
         <% end %>
-      </tr>
-
-      <tr class="table-row">
-        <th class="show-th">店舗名</th>
-        <td class="show-td"><%= @store_prop.name %></td>
-        <th class="show-th">法人名</th>
-        <td class="show-td"><%= @store_prop.corporate_name %></td>
-
-      </tr>
-      <tr class="table-row">
-      </tr>
-    <tr class="table-row">
-      <th class="show-th">店舗担当１</th>
-        <td class="show-td"><%= @store_prop.person_main %></td>
-      <th class="show-th">フリガナ</th>
-        <td class="show-td"><%= @store_prop.person_main_kana %></td>
-      <th class="show-th">店舗担当２</th>
-        <td class="show-td"><%= @store_prop.person_sub %></td>
-      <th class="show-th">フリガナ</th>
-        <td class="show-td"><%= @store_prop.person_sub_kana %></td>
     </tr>
     </table>
-    <table class="show-table">
-    <tr class="show-tr">
-    <th class="show-th">店舗住所</th>
-      <td class="show-td-long"><%= @store_prop.prefecture %><%= @store_prop.city %><%= @store_prop.municipalities %><%= @store_prop.address %><%= @store_prop.building_name %></td>
+    <table >
     </table>
-    <h1 class="show-title">連絡先</h1>
-    <table class="show-table">
-      <th class="show-th">電話番号1</th>
-        <td class="show-td"><%= @store_prop.phone_number_1 %></td>
-      <th class="show-th">電話番号2</th>
-        <td class="show-td"><%= @store_prop.phone_number_2 %></td>
-      <th class="show-th">メールアドレス1</th>
-        <td class="show-td"><%= @store_prop.mail_1 %></td>
-      <th class="show-th">メールアドレス2</th>
-        <td class="show-td"><%= @store_prop.mail_2 %></td>
+        <h1>連絡先</h1>
+    <table >
+      <tr>
+      <th>電話番号1</th>
+        <td><%= @store_prop.phone_number_1 %></td>
+      <th>電話番号2</th>
+        <td><%= @store_prop.phone_number_2 %></td>
       </tr>
-      <tr class="show-tr">
-      <th class="show-th">好適時間</th>
-        <td class="show-td"><%= @store_prop.suitable_time %></td>
-      <th class="show-th">定休日</th>
-        <td class="show-td"><%= @store_prop.holiday %></td>
-      <th class="show-th">備考</th>
-        <td class="show-td"><%= @store_prop.description %></td>
-        <td class="show-td"><%= link_to "編集", edit_store_prop_path, class: "show-link" %></td>
+      <tr>
+      <th>メールアドレス1</th>
+        <td><%= @store_prop.mail_1 %></td>
+      <th>メールアドレス2</th>
+        <td><%= @store_prop.mail_2 %></td>
+      </tr>
+      <tr >
+      <th>好適時間</th>
+        <td><%= @store_prop.suitable_time %></td>
+      <th>定休日</th>
+        <td><%= @store_prop.holiday %></td>
+      </tr>
+      <tr>
+        <th>備考</th>
+        <td colspan="2"><%= @store_prop.description %></td>
+        <td><%= link_to "編集", edit_store_prop_path, class: "link" %></td>
       </tr>
     </table>
-  <h1 class="show-title">お客様対応<%= @store_prop.trouble_sses.length %>件</h1>
+
+  <h1>お客様対応<%= @store_prop.trouble_sses.length %>件</h1>
   <% trouble = 0 %>
     <% @store_prop.trouble_sses.find_each do |t| %>
-    <h3 class="sub-title"><%= trouble += 1 %>件目</h3>
-    <table class="show-table">
-      <tr class="show-tr">
-        <th class="show-th">入電日</th>
-        <td class="show-td"><%= t.date %></td>
-        <th class="show-th">連絡者</th>
-        <td class="show-td"><%= t.customer_name %></td>
-        <th class="show-th">直入電orメール</th>
-        <td class="show-td"><%= t.category %></td>
-        <th class="show-th">商材</th>
-        <td class="show-td"><%= t.product %></td>
+        <h1><%= trouble += 1 %>件目</h1>
+    <table >
+      <tr>
+        <th>入電日</th>
+        <td><%= t.date %></td>
+        <th>連絡者</th>
+        <td><%= t.customer_name %></td>
       </tr>
-      <tr class="show-tr">
-        <th class="show-th">営業担当者</th>
-        <td class="show-td"><%= t.user.name %></td>
-        <th class="show-th">入電対応者</th>
-        <td class="show-td"><%= t.confirmer %></td>
-        <th class="show-th">対応種別</th>
-        <td class="show-td"><%= t.content_type %></td>
-        <th class="show-th">対応日</th>
-        <td class="show-td"><%= t.contact_date %></td>
+      <tr >
+        <th>直入電orメール</th>
+        <td><%= t.category %></td>
+        <th>商材</th>
+        <td><%= t.product %></td>
       </tr>
-    <table class="show-table">
-      <tr class="show-tr">
-        <th class="show-th">対応内容</th>
-        <td class="show-td"><%= t.customer_opinion %></td>
+      <tr >
+        <th>営業担当者</th>
+        <td><%= t.user.name %></td>
+        <th>入電対応者</th>
+        <td><%= t.confirmer %></td>
       </tr>
-    </table>
-    <table class="show-table">
-      <tr class="show-tr">
-        <th class="show-th">対応結果</th>
-        <td class="show-td"><%= t.result %></td>
+      <tr>
+        <th>対応種別</th>
+        <td><%= t.content_type %></td>
+        <th>対応日</th>
+        <td><%= t.contact_date %></td>
       </tr>
-    </table>
-    <table class="show-table">
-      <tr class="show-tr">
-        <th class="show-th">備考</th>
-        <td class="show-td"><%= t.remarks %></td>
-        <td class="show-td"><%= link_to "編集",  edit_trouble_ss_path(t.id), class: "show-link" %></td>
+      <tr>
+        <th >対応内容</th>
+        <td colspan="3"><%= t.customer_opinion %></td>
       </tr>
-    </table>
+      <tr>
+        <th>対応結果</th>
+        <td colspan="3"><%= t.result %></td>
+      </tr>
+      <tr>
+        <th>備考</th>
+        <td colspan="2"><%= t.remarks %></td>
+        <td><%= link_to "編集",  edit_trouble_ss_path(t.id), class: "link" %></td>
+      </tr>
+    <table >
   <% end %>
-  </div>
+
 </div>

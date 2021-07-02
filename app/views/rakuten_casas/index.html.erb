@@ -20,7 +20,7 @@
           <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(RakutenCasa.select(:status).distinct,:status, :status),{include_blank: true}, {class: "search-input"} %></td>
 
           <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
-          <td class="search-reset"><%= link_to "絞込みリセット", dmers_path, class: "reset-link" %></td>
+          <td class="search-reset"><%= link_to "絞込みリセット", rakuten_casas_path, class: "reset-link" %></td>
         </tr>
       </table>
       <hr>

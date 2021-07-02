@@ -40,6 +40,7 @@ class TroubleSsesController < ApplicationController
     @trouble_ss = TroubleSs.find(params[:id])
     @trouble_ss.update(trouble_ss_params)
     redirect_to store_prop_path(@trouble_ss.store_prop.id)
+    
   end 
 
   private

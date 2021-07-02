@@ -1,42 +1,32 @@
-<%= render "shared/header" %>
-
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
+<div data-scope-path="stocks/edit">
   <h1 class="show-title">情報編集（ぷらねす在庫）</h1>
+  <%= render "shared/header" %>
 
   <%= form_with model: @stock, class: "form-frame", local: true do |f| %>
-  <div class="form-group">
-      <div class="form-interval">
-        <%= f.label :status, "ステータス", class: "form-text" %><br>
-      <%= f.select :status , {"○": "○", "×": "×"},{include_blank: "選択してください"}, {class: "form-input"} %>
-      </div>
+    <%= render "shared/error_messages",model: f.object %>
+  <div class="nav">
+  <%# 1列目 %>
+    <div>
+      <%= f.label :status, "ステータス", class: "form-text" %>
+      <%= f.select :status , {"○": "○", "×": "×"},{include_blank: "選択してください"}, {class: "form-input2"} %>
 
-    <div class="form-interval">
-      <%= f.label :stock_num, "在庫番号", class: "form-text" %><br>
-    <%= f.text_field :stock_num , class: "form-input" %>
-    </div>
-
-    <div class="form-interval">
-      <%= f.label :mac_num, "MAC番号", class: "form-text" %><br>
-    <%= f.text_field :mac_num , class: "form-input" %>
-    </div>
-  </div>
-
-  <div class="form-group">
-    <div class="form-interval">
-      <%= f.label :mail, "メールアドレス", class: "form-text" %><br>
+      <%= f.label :mail, "メールアドレス", class: "form-text" %>
       <%= f.text_field :mail , class: "form-input" %>
     </div>
+  <%# 2列目 %>
+    <div>
+      <%= f.label :stock_num, "在庫番号", class: "form-text" %>
+      <%= f.text_field :stock_num , class: "form-input" %>
 
-    <div class="form-interval">
-      <%= f.label :remarks, "備考", class: "form-text" %><br>
+      <%= f.label :remarks, "備考", class: "form-text" %>
       <%= f.text_field :remarks , class: "form-input" %>
     </div>
+  <%# 3列目 %>
+    <div>
+      <%= f.label :mac_num, "MAC番号", class: "form-text" %>
+      <%= f.text_field :mac_num , class: "form-input" %>
+    </div>
   </div>
-
-  
-    <%= f.submit "登録", class: "form-btn" %>
+    <%= f.submit "登録", class: "submit-btn" %>
   <% end %>
-  </main>
 </div>

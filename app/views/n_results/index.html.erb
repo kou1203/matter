@@ -37,7 +37,6 @@
           <table class="n-result-table">
       <% if @n_result_month.empty? %>
       <% else %>
-
     <%# 現状 %>
         <tr class="n-result-tr">
           <th class="n-result-th"><%= Date.today.month %>月現状</th>
@@ -82,7 +81,7 @@
           <% if @n_result_before_month.where(base: "岡崎").empty? %>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_before_month.where(base: "岡崎").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "岡崎").average(:profit).round(1) rescue "計測できません" %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "岡崎").sum(:profit) %></td>
           
@@ -91,9 +90,9 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "岡崎").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").average(:profit).round(1) - @n_result_before_month.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "岡崎").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "岡崎").average(:profit).round(1) - @n_result_before_month.where(base: "岡崎").average(:profit).round(1) rescue "計測できません" %></td>
           <% end %>
           <td class="n-result-td"><%= (@n_result_month.where(base: "岡崎").average(:profit) * Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "岡崎"}).sum(:n)).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
@@ -110,7 +109,7 @@
           <% if @n_result_before_month.where(base: "多治見").empty? %>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_before_month.where(base: "多治見").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "多治見").average(:profit).round(1) rescue "計測できません" %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "多治見").sum(:profit) %></td>
           <% if @n_result_before_month.where(base: "多治見").empty? %>
@@ -118,9 +117,9 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "多治見").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").average(:profit).round(1) - @n_result_before_month.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "多治見").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "多治見").average(:profit).round(1) - @n_result_before_month.where(base: "多治見").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%= (@n_result_month.where(base: "多治見").average(:profit) * Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "多治見"}).sum(:n)).round(1) rescue "計測できません" %></td>
@@ -138,7 +137,7 @@
           <% if @n_result_before_month.where(base: "名古屋中央").empty? %>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "名古屋中央").sum(:profit) %></td>
           
@@ -147,9 +146,9 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "名古屋中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません"  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
           <% end %>
           <td class="n-result-td"><%= (@n_result_month.where(base: "名古屋中央").average(:profit) * Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "名古屋中央"}).sum(:n)).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
@@ -166,7 +165,7 @@
           <% if @n_result_before_month.where(base: "豊田").empty? %>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_before_month.where(base: "豊田").average(:profit).round(1) %></td>
+          <td class="n-result-td"><%= @n_result_before_month.where(base: "豊田").average(:profit).round(1) rescue "計測できません" %></td>
           <% end %>
           <td class="n-result-td"><%= @n_result_before_month.where(base: "豊田").sum(:profit) %></td>
           <% if @n_result_before_month.where(base: "豊田").empty? %>
@@ -174,9 +173,9 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "豊田").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").average(:profit).round(1) - @n_result_before_month.where(base: "豊田").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").average(:profit).round(1) - @n_result_month.where(date: Time.now.ago(7.days)..Time.now).where(base: "豊田").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_month.where(base: "豊田").average(:profit).round(1) - @n_result_before_month.where(base: "豊田").average(:profit).round(1) rescue "計測できません" %></td>
           <% end %>
           <td class="n-result-td"><%= (@n_result_month.where(base: "豊田").average(:profit) * Shift.includes(:user).where(year: Time.now.year ).where(month: Time.now.month).where(users: {base_sub: "豊田"}).sum(:n)).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
@@ -533,10 +532,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "名古屋中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "名古屋中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -898,10 +897,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week1.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1049,10 +1048,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪エリア").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_week1.where(base: "北大阪エリア").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_week1.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1074,10 +1073,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) - @n_result_week1.where(base: "北大阪公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) - @n_result_week1.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1099,10 +1098,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week1.where(base: "守口公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1) - @n_result_week1.where(base: "守口公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1) - @n_result_before_month.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1) - @n_result_week1.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1) - @n_result_before_month.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1123,10 +1122,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week1.where(base: "阪神").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1) - @n_result_week1.where(base: "阪神").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1) - @n_result_before_month.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1) - @n_result_week1.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1) - @n_result_before_month.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1147,10 +1146,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week1.where(base: "大阪中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1) - @n_result_week1.where(base: "大阪中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1) - @n_result_before_month.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week1.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1) - @n_result_week1.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1) - @n_result_before_month.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1264,10 +1263,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week2.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1390,10 +1389,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "一宮").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1) - @n_result_week2.where(base: "一宮").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1) - @n_result_before_month.where(base: "一宮").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "一宮").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1) - @n_result_week2.where(base: "一宮").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1) - @n_result_before_month.where(base: "一宮").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1415,10 +1414,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_week2.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1440,10 +1439,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) - @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) - @n_result_week2.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1465,10 +1464,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1) - @n_result_week2.where(base: "守口公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1) - @n_result_before_month.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1) - @n_result_week2.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1) - @n_result_before_month.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1489,10 +1488,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1) - @n_result_week2.where(base: "阪神").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1) - @n_result_before_month.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1) - @n_result_week2.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1) - @n_result_before_month.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1513,10 +1512,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1) - @n_result_week2.where(base: "大阪中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1) - @n_result_before_month.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week2.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1) - @n_result_week2.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1) - @n_result_before_month.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1579,10 +1578,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "岡崎").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").average(:profit).round(1) - @n_result_week3.where(base: "岡崎").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").average(:profit).round(1) - @n_result_before_month.where(base: "岡崎").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "岡崎").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").average(:profit).round(1) - @n_result_week3.where(base: "岡崎").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "岡崎").average(:profit).round(1) - @n_result_before_month.where(base: "岡崎").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1603,10 +1602,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "多治見").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").average(:profit).round(1) - @n_result_week3.where(base: "多治見").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").average(:profit).round(1) - @n_result_before_month.where(base: "多治見").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "多治見").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").average(:profit).round(1) - @n_result_week3.where(base: "多治見").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "多治見").average(:profit).round(1) - @n_result_before_month.where(base: "多治見").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1628,10 +1627,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").average(:profit).round(1) - @n_result_week3.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "名古屋中央").average(:profit).round(1) - @n_result_before_month.where(base: "名古屋中央").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1651,10 +1650,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "豊田").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").average(:profit).round(1) - @n_result_week3.where(base: "豊田").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").average(:profit).round(1) - @n_result_before_month.where(base: "豊田").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊田").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").average(:profit).round(1) - @n_result_week3.where(base: "豊田").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊田").average(:profit).round(1) - @n_result_before_month.where(base: "豊田").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1674,10 +1673,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "広域").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").average(:profit).round(1) - @n_result_week3.where(base: "広域").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").average(:profit).round(1) - @n_result_before_month.where(base: "広域").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "広域").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").average(:profit).round(1) - @n_result_week3.where(base: "広域").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "広域").average(:profit).round(1) - @n_result_before_month.where(base: "広域").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1699,10 +1698,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "三重").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").average(:profit).round(1) - @n_result_week3.where(base: "三重").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").average(:profit).round(1) - @n_result_before_month.where(base: "三重").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "三重").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").average(:profit).round(1) - @n_result_week3.where(base: "三重").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "三重").average(:profit).round(1) - @n_result_before_month.where(base: "三重").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1724,10 +1723,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "豊橋").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").average(:profit).round(1) - @n_result_week3.where(base: "豊橋").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").average(:profit).round(1) - @n_result_before_month.where(base: "豊橋").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "豊橋").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").average(:profit).round(1) - @n_result_week3.where(base: "豊橋").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "豊橋").average(:profit).round(1) - @n_result_before_month.where(base: "豊橋").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1749,10 +1748,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").average(:profit).round(1) - @n_result_week3.where(base: "一宮").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").average(:profit).round(1) - @n_result_before_month.where(base: "一宮").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "一宮").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").average(:profit).round(1) - @n_result_week3.where(base: "一宮").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "一宮").average(:profit).round(1) - @n_result_before_month.where(base: "一宮").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1773,10 +1772,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_week3.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪エリア").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪エリア").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1797,10 +1796,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").average(:profit).round(1) - @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").average(:profit).round(1) - @n_result_week3.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "北大阪公募").average(:profit).round(1) - @n_result_before_month.where(base: "北大阪公募").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1821,10 +1820,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").average(:profit).round(1) - @n_result_week3.where(base: "守口公募").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").average(:profit).round(1) - @n_result_before_month.where(base: "守口公募").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").average(:profit).round(1) - @n_result_week3.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "守口公募").average(:profit).round(1) - @n_result_before_month.where(base: "守口公募").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1844,10 +1843,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").average(:profit).round(1) - @n_result_week3.where(base: "阪神").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").average(:profit).round(1) - @n_result_before_month.where(base: "阪神").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").average(:profit).round(1) - @n_result_week3.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "阪神").average(:profit).round(1) - @n_result_before_month.where(base: "阪神").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>
@@ -1867,10 +1866,10 @@
           <td class="n-result-td"></td>
           <td class="n-result-td"></td>
           <% else %>
-          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").average(:profit).round(1)  %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").average(:profit).round(1) - @n_result_week3.where(base: "大阪中央").average(:profit).round(1) %></td>
-          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").average(:profit).round(1) - @n_result_before_month.where(base: "大阪中央").average(:profit).round(1)  %></td>
+          <td class="n-result-td"><%= @n_result_week3.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").average(:profit).round(1) - @n_result_week3.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
+          <td class="n-result-td"><%= @n_result_week4.where(base: "大阪中央").average(:profit).round(1) - @n_result_before_month.where(base: "大阪中央").average(:profit).round(1) rescue "計測できません" %></td>
           <td class="n-result-td"><%=  %></td>
           <% end %>
           <td class="n-result-td"><%=  %></td>

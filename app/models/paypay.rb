@@ -6,7 +6,8 @@ class Paypay < ApplicationRecord
     validates :get_date
     validates :status
     validates :client
-
+    validates :valuation_profit
+    validates :actual_profit
   end 
 
   belongs_to :store_prop

@@ -1,108 +1,101 @@
+<div data-scope-path="dmers/show">
+    <h1 >dメル詳細</h1>
 <%= render "shared/header" %>
 
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
-    <h1 class="sub-title">dメル詳細</h1>
-    <h1 class="show-title">店舗情報</h1>
-    <table class="show-table">
-    <tr class="show-tr">
-    <th class="show-th">店舗名</th>
-    <td class="show-td"><%= @dmer.store_prop.name %></td>
+
+    <table >
+    <tr>
+      <th colspan="4">店舗情報</th>
     </tr>
-    <th class="show-th">属性</th>
-    <td class="show-td"><%= @dmer.store_prop.race %></td>
-    <th class="show-th">業種</th>
-    <td class="show-td"><%= @dmer.store_prop.industry %></td>
-    <tr class="show-tr">
+    <tr>
+    <th >店舗名</th>
+    <td ><%= @dmer.store_prop.name %></td>
+    <th >属性</th>
+    <td ><%= @dmer.store_prop.race %></td>
     </tr>
-    <tr class="show-tr">
-    <tr class="show-tr">
-    <tr class="show-tr">
-    <th class="show-th">店舗代表</th>
-    <td class="show-td"><%= @dmer.store_prop.person_main %></td>
-    <th class="show-th">店舗担当</th>
-    <td class="show-td"><%= @dmer.store_prop.person_sub %></td>
+    <th >業種</th>
+    <td ><%= @dmer.store_prop.industry %></td>
+    <tr >
+    </tr>
+    <tr >
+    <th >店舗代表</th>
+    <td ><%= @dmer.store_prop.person_main %></td>
+    <th >店舗担当</th>
+    <td ><%= @dmer.store_prop.person_sub %></td>
+    </tr>
+    <tr >
+    <th >店舗住所</th>
+    <td colspan="3"><%= @dmer.store_prop.prefecture %><%= @dmer.store_prop.city %><%= @dmer.store_prop.municipalities %><%= @dmer.store_prop.address %><%= @dmer.store_prop.building_name %></td>
+    </table>
+    <h1 >連絡先</h1>
+    <table >
+    <tr>
+    <th >電話番号1</th>
+    <td ><%= @dmer.store_prop.phone_number_1 %></td>
+    <th >電話番号2</th>
+    <td ><%= @dmer.store_prop.phone_number_2 %></td>
+    </tr>
+    <tr >
+    <th >メールアドレス１</th>
+      <td ><%= @dmer.store_prop.mail_1 %></td>
+    <th >メールアドレス２</th>
+      <td ><%= @dmer.store_prop.mail_2 %></td>
+    </tr>
+    <tr >
+    <th >好適時間</th>
+    <td ><%= @dmer.store_prop.suitable_time %></td>
+    <th >定休日</th>
+    <td ><%= @dmer.store_prop.holiday %></td>
+    </tr>
+    <tr >
+    <th >備考</th>
+    <td colspan="2"><%= @dmer.store_prop.description %></td>
+    <td ><%= link_to "編集", edit_store_prop_path(@dmer.store_prop.id), class: "link" %></td>
     </tr>
     </table>
-    <table class="show-table">
-    <tr class="show-tr">
-    <th class="show-th">店舗住所</th>
-    <td class="show-td-long"><%= @dmer.store_prop.prefecture %><%= @dmer.store_prop.city %><%= @dmer.store_prop.municipalities %><%= @dmer.store_prop.address %><%= @dmer.store_prop.building_name %></td>
-    </table>
-    <h1 class="show-title">連絡先</h1>
-    <table class="show-table">
-    <th class="show-th">電話番号1</th>
-    <td class="show-td"><%= @dmer.store_prop.phone_number_1 %></td>
-    <th class="show-th">電話番号2</th>
-    <td class="show-td"><%= @dmer.store_prop.phone_number_2 %></td>
-    </tr>
-    <tr class="show-tr">
-    <th class="show-th">メールアドレス１</th>
-      <td class="show-td"><%= @dmer.store_prop.mail_1 %></td>
-    <th class="show-th">メールアドレス２</th>
-      <td class="show-td"><%= @dmer.store_prop.mail_2 %></td>
-    </tr>
-    <tr class="show-tr">
-    <th class="show-th">好適時間</th>
-    <td class="show-td"><%= @dmer.store_prop.suitable_time %></td>
-    <th class="show-th">定休日</th>
-    <td class="show-td"><%= @dmer.store_prop.holiday %></td>
-    <th class="show-th">備考</th>
-    <td class="show-td"><%= @dmer.store_prop.description %></td>
-    </tr>
-    <tr class="show-tr">
-    <td class="show-td"> 
-      <%= link_to "編集", edit_store_prop_path(@dmer.store_prop.id), class: "show-link" %>
-    </td>
-    </tr>
-    </table>
-    <h1 class="show-title">dメル</h1>
+    <h1 >dメル詳細情報</h1>
       
-    <table class="show-table">
-    <tr class="show-tr">
-    <th class="show-th">獲得日</th>
-      <th class="show-th">獲得者</th>
+    <table >
+    <tr >
+    <th >獲得日</th>
+      <td ><%= @dmer.get_date %></td>
+      <th >獲得者</th>
+      <td ><%= @dmer.user.name %></td>
     </tr>
-    <tr class="show-tr">
-      <td class="show-td"><%= @dmer.get_date %></td>
-      <td class="show-td"><%= @dmer.user.name %></td>
-    </tr>
-    </table>
 
-    <table class="show-table">
-    <tr class="show-tr">
-      <th class="show-th">管理番号</th>
-      <th class="show-th">商流</th>
-      <th class="show-th">審査ステータス</th>
+    <tr >
+      <th >管理番号</th>
+      <td ><%= @dmer.customer_num %></td>
+      <th >商流</th>
+      <td ><%= @dmer.client %></td>
     </tr>
-    <tr class="show-tr">
-      <td class="show-td"><%= @dmer.customer_num %></td>
-      <td class="show-td"><%= @dmer.client %></td>
-      <td class="show-td"><%= @dmer.status %></td>
-    </tr>
-    </table>
 
-    <table class="show-table">
-    <tr class="show-tr">
-      <th class="show-th">入金日</th>
-      <th class="show-th">決済日</th>
-      <th class="show-th">決済期限</th>
-      <th class="show-th">評価売上</th>
-      <th class="show-th">実売上</th>
+    <tr >
+      <th >審査ステータス</th>
+      <td ><%= @dmer.status %></td>
+      <th >入金日</th>
+      <td ><%= @dmer.payment %></td>
     </tr>
-    <tr class="show-tr">
-      <td class="show-td"><%= @dmer.payment %></td>
-      <td class="show-td"><%= @dmer.settlement %></td>
-      <td class="show-td"><%= @dmer.settlement_deadline %></td>
-      <td class="show-td"><%= @dmer.valuation_profit %></td>
-      <td class="show-td"><%= @dmer.actual_profit %></td>
+
+    <tr >
+      <th >決済日</th>
+      <td ><%= @dmer.settlement %></td>
+      <th >決済期限</th>
+      <td ><%= @dmer.settlement_deadline %></td>
     </tr>
-    <tr class="show-tr">
-      <th class="show-th">備考</th>
-      <td class="show-td"><%= @dmer.description %></td>
-    <td class="show-td">
-      <%= link_to "編集", edit_dmer_path, class: "show-link" %>
+
+    <tr >
+      <th >評価売上</th>
+      <td ><%= @dmer.valuation_profit %></td>
+      <th >実売上</th>
+      <td ><%= @dmer.actual_profit %></td>
+    </tr>
+
+    <tr >
+      <th >備考</th>
+      <td colspan="2"><%= @dmer.description %></td>
+    <td >
+      <%= link_to "編集", edit_dmer_path, class: "link" %>
     </td>
     </tr>
     </table>

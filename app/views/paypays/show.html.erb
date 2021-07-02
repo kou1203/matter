@@ -1,84 +1,74 @@
-<%= render "shared/header" %>
-
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
-  <h1 class="sub-title">PayPay詳細</h1>
-  <div class="main">
-  <div>
-    <h1 class="show-title">店舗情報</h1>
-    <table class="show-table">
-    <tr class="show-tr">
-    <th class="show-th">店舗名</th>
-    <td class="show-td"><%= @paypay.store_prop.name %></td>
+<div data-scope-path="paypays/show">
+  <h1>PayPay詳細</h1>
+  <%= render "shared/header" %>
+  
+  
+    <table>
+    <tr>
+    <th colspan="4">店舗情報</th>
     </tr>
-    <th class="show-th">属性</th>
-    <td class="show-td"><%= @paypay.store_prop.race %></td>
-    <th class="show-th">業種</th>
-    <td class="show-td"><%= @paypay.store_prop.industry %></td>
-    <tr class="show-tr">
+    <tr>
+    <th>店舗名</th>
+    <td><%= @paypay.store_prop.name %></td>
     </tr>
-    <tr class="show-tr">
-    <tr class="show-tr">
-    <tr class="show-tr">
-    <th class="show-th">店舗代表</th>
-    <td class="show-td"><%= @paypay.store_prop.person_main %></td>
-    <th class="show-th">店舗担当</th>
-    <td class="show-td"><%= @paypay.store_prop.person_sub %></td>
+    <th>属性</th>
+    <td><%= @paypay.store_prop.race %></td>
+    <th>業種</th>
+    <td><%= @paypay.store_prop.industry %></td>
     </tr>
-    </table>
-    <table class="table">
-    <tr class="show-tr">
-    <th class="show-th">店舗住所</th>
-    <td class="show-td-long"><%= @paypay.store_prop.prefecture %><%= @paypay.store_prop.city %><%= @paypay.store_prop.municipalities %><%= @paypay.store_prop.address %><%= @paypay.store_prop.building_name %></td>
-    </table>
-    <h1 class="show-title">連絡先</h1>
-    <table class="show-table">
-    <th class="show-th">電話番号1</th>
-    <td class="show-td"><%= @paypay.store_prop.phone_number_1 %></td>
-    <th class="show-th">電話番号2</th>
-    <td class="show-td"><%= @paypay.store_prop.phone_number_2 %></td>
-    <th class="show-th">好適時間</th>
-    <td class="show-td"><%= @paypay.store_prop.suitable_time %></td>
+    <tr>
+    <th>店舗代表</th>
+    <td><%= @paypay.store_prop.person_main %></td>
+    <th>店舗担当</th>
+    <td><%= @paypay.store_prop.person_sub %></td>
     </tr>
-    <tr class="show-tr">
-    <th class="show-th">備考</th>
-    <td class="show-td"><%= @paypay.store_prop.description %></td>
-    <td class="show-td"> <%= link_to "編集", edit_store_prop_path(@paypay.store_prop.id), class: "show-link" %></td>
+    <tr>
+    <th>店舗住所</th>
+    <td colspan="3"><%= @paypay.store_prop.prefecture %><%= @paypay.store_prop.city %><%= @paypay.store_prop.municipalities %><%= @paypay.store_prop.address %><%= @paypay.store_prop.building_name %></td>
     </tr>
     </table>
-    <h1 class="show-title">PayPay</h1>
+    <h1>連絡先</h1>
+    <table>
+      <tr>
+        <th>電話番号1</th>
+        <td><%= @paypay.store_prop.phone_number_1 %></td>
+        <th>電話番号2</th>
+        <td><%= @paypay.store_prop.phone_number_2 %></td>
+        </tr>
+        <th>好適時間</th>
+        <td><%= @paypay.store_prop.suitable_time %></td>
+        <tr>
+        <th>備考</th>
+        <td><%= @paypay.store_prop.description %></td>
+        <td> <%= link_to "編集", edit_store_prop_path(@paypay.store_prop.id), class: "link" %></td>
+      </tr>
+    </table>
+    <h1>PayPay</h1>
       
-    <table class="show-table">
-    <tr class="show-tr">
-    <th class="show-th">獲得日</th>
-      <th class="show-th">獲得者</th>
-      <th class="show-th">商流</th>
-      <th class="show-th">審査ステータス</th>
+    <table>
+    <tr>
+    <th>獲得日</th>
+      <td><%= @paypay.get_date %></td>
+      <th>獲得者</th>
+      <td><%= @paypay.user.name %></td>
     </tr>
-    <tr class="show-tr">
-      <td class="show-td"><%= @paypay.get_date %></td>
-      <td class="show-td"><%= @paypay.user.name %></td>
-      <td class="show-td"><%= @paypay.client %></td>
-      <td class="show-td"><%= @paypay.status %></td>
+    <tr>
+      <th>商流</th>
+      <td><%= @paypay.client %></td>
+      <th>審査ステータス</th>
+      <td><%= @paypay.status %></td>
     </tr>
-    </table>
-
-
-    <table class="show-table">
-    <tr class="show-tr">
-      <th class="show-th">評価売上</th>
-      <th class="show-th">実売上</th>
-      <th class="show-th">入金日</th>
-      <th class="show-th"></th>
+    <tr>
+      <th>評価売上</th>
+      <td><%= @paypay.valuation_profit %></td>
+      <th>実売上</th>
+      <td><%= @paypay.actual_profit %></td>
     </tr>
-    <tr class="show-tr">
-      <td class="show-td"><%= @paypay.valuation_profit %></td>
-      <td class="show-td"><%= @paypay.actual_profit %></td>
-      <td class="show-td"><%= @paypay.payment %></td>
-      <td class="show-td"><%= link_to "編集", edit_paypay_path, class: "show-link" %></td>
+    <tr>
+      <th>入金日</th>
+      <td><%= @paypay.payment %></td>
+      <td><%= link_to "編集", edit_paypay_path, class: "link" %></td>
     </tr>
     </table>
-  </main>
 </div>
 
