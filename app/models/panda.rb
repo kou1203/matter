@@ -4,6 +4,8 @@ class Panda < ApplicationRecord
     validates :user_id
     validates :store_prop_id
     validates :get_date 
+    validates :valuation_profit
+    validates :actual_profit
   end 
   with_options uniqueness: true do 
     validates :grid_id

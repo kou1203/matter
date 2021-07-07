@@ -15,6 +15,8 @@ class CreateResults < ActiveRecord::Migration[6.0]
       t.integer :panda
       t.integer :praness
       t.integer :summit
+      t.integer :rakuten_casa
+      t.integer :rakuten_casa_put
       t.integer :first_visit              , null: false
       t.integer :first_interview          , null: false
       t.integer :first_full_talk          , null: false
@@ -51,7 +53,7 @@ class CreateResults < ActiveRecord::Migration[6.0]
       t.integer :other_service_interview      
       t.integer :other_service_full_talk      
       t.integer :other_service_get    
-
+# キャッシュレス
       t.integer :cashless_what_interview      
       t.integer :cashless_what_full_talk      
       t.integer :cashless_what_get            
@@ -91,7 +93,7 @@ class CreateResults < ActiveRecord::Migration[6.0]
       t.integer :cashless_other_interview      
       t.integer :cashless_other_full_talk      
       t.integer :cashless_other_get    
-
+# サミット
       t.integer :summit_ng_detail
       t.integer :summit_ng_cash
       t.integer :summit_ng_building
@@ -116,7 +118,7 @@ class CreateResults < ActiveRecord::Migration[6.0]
       t.integer :summit_easy_interview      
       t.integer :summit_easy_full_talk      
       t.integer :summit_easy_get  
-
+# パンダ
       t.integer :panda_not_need_interview      
       t.integer :panda_not_need_full_talk      
       t.integer :panda_not_need_get 
@@ -150,6 +152,35 @@ class CreateResults < ActiveRecord::Migration[6.0]
       t.integer :panda_easy_interview      
       t.integer :panda_easy_full_talk      
       t.integer :panda_easy_get 
+# 楽天カーサ
+      t.integer :casa_ng_lack_info
+      t.integer :casa_busy_interview
+      t.integer :casa_busy_full_talk
+      t.integer :casa_busy_get
+      t.integer :casa_dull_interview
+      t.integer :casa_dull_full_talk
+      t.integer :casa_dull_get
+      t.integer :casa_not_put_space_interview
+      t.integer :casa_not_put_space_full_talk
+      t.integer :casa_not_put_space_get
+      t.integer :casa_no_merit_interview
+      t.integer :casa_no_merit_full_talk
+      t.integer :casa_no_merit_get
+      t.integer :casa_distrust_interview
+      t.integer :casa_distrust_full_talk
+      t.integer :casa_distrust_get
+      t.integer :casa_not_use_net_interview
+      t.integer :casa_not_use_net_full_talk
+      t.integer :casa_not_use_net_get
+      t.integer :casa_not_need_interview
+      t.integer :casa_not_need_full_talk
+      t.integer :casa_not_need_get
+      t.integer :casa_easy_interview
+      t.integer :casa_easy_full_talk
+      t.integer :casa_easy_get
+      t.integer :casa_other_interview
+      t.integer :casa_other_full_talk
+      t.integer :casa_other_get
     end
   end
 end

@@ -33,20 +33,26 @@ class Result < ApplicationRecord
      "ojt", 
      "dmer",                    
      "dmer_settlement",         
+    # 商材
      "aupay",
      "paypay",
      "aupay_settlement",
      "panda",
      "praness",
      "summit",
+     "rakuten_casa",
+     "rakuten_casa_put",
+     # 前半基準値
      "first_visit",
      "first_interview",
      "first_full_talk", 
-     "first_get",        
+     "first_get",     
+    # 後半基準値   
      "latter_visit",     
      "latter_interview", 
      "latter_full_talk", 
-     "latter_get",       
+     "latter_get",    
+    # 店舗別基準値   
      "cafe_visit",          
      "cafe_interview",      
      "cafe_full_talk",     
@@ -75,6 +81,7 @@ class Result < ApplicationRecord
      "other_service_interview"      ,
      "other_service_full_talk"      ,
      "other_service_get"    ,
+    # キャッシュレス切り返し
      "cashless_what_interview"      ,
      "cashless_what_full_talk"      ,
      "cashless_what_get"            ,
@@ -114,6 +121,7 @@ class Result < ApplicationRecord
      "cashless_other_interview"      ,
      "cashless_other_full_talk"      ,
      "cashless_other_get",
+    # サミット切り返し
      "summit_ng_detail",
      "summit_ng_cash",
      "summit_ng_building",
@@ -138,6 +146,7 @@ class Result < ApplicationRecord
      "summit_easy_interview"  ,    
      "summit_easy_full_talk"   ,   
      "summit_easy_get"  , 
+    # パンダ切り返し
      "panda_not_need_interview",      
      "panda_not_need_full_talk",      
      "panda_not_need_get", 
@@ -170,7 +179,37 @@ class Result < ApplicationRecord
      "panda_other_get", 
      "panda_easy_interview",      
      "panda_easy_full_talk",      
-     "panda_easy_get" 
+     "panda_easy_get",
+    # 楽天カーサ切り返し
+    "casa_ng_lack_info",
+    "casa_busy_interview",
+    "casa_busy_full_talk",
+    "casa_busy_get",
+    "casa_dull_interview",
+    "casa_dull_full_talk",
+    "casa_dull_get",
+    "casa_not_put_space_interview",
+    "casa_not_put_space_full_talk",
+    "casa_not_put_space_get",
+    "casa_no_merit_interview",
+    "casa_no_merit_full_talk",
+    "casa_no_merit_get",
+    "casa_distrust_interview",
+    "casa_distrust_full_talk",
+    "casa_distrust_get",
+    "casa_not_use_net_interview",
+    "casa_not_use_net_full_talk",
+    "casa_not_use_net_get",
+    "casa_not_need_interview",
+    "casa_not_need_full_talk",
+    "casa_not_need_get",
+    "casa_easy_interview",
+    "casa_easy_full_talk",
+    "casa_easy_get",
+    "casa_other_interview",
+    "casa_other_full_talk",
+    "casa_other_get"
+
     ]
   end
 end

@@ -1,114 +1,115 @@
-<%= render "shared/header" %>
-
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
-    <h1 class="sub-title">楽天カーサ詳細</h1>
-    <h1 class="show-title">店舗情報</h1>
-    <table class="show-table">
-    <tr class="show-tr">
-    <th class="show-th">店舗名</th>
-    <td class="show-td"><%= @rakuten_casa.store_prop.name %></td>
-    <th class="show-th">属性</th>
-    <td class="show-td"><%= @rakuten_casa.store_prop.race %></td>
-    <th class="show-th">業種</th>
-    <td class="show-td"><%= @rakuten_casa.store_prop.industry %></td>
-    <th class="show-th">お客様番号</th>
-    <td class="show-td"><%= @rakuten_casa.customer_num %></td>
-    </tr>
-    <tr class="show-tr">
-    </tr>
-    <tr class="show-tr">
-    <tr class="show-tr">
-    <tr class="show-tr">
-    <th class="show-th">店舗代表</th>
-    <td class="show-td"><%= @rakuten_casa.store_prop.person_main %></td>
-    <th class="show-th">店舗担当</th>
-    <td class="show-td"><%= @rakuten_casa.store_prop.person_sub %></td>
-    </tr>
-    </table>
-    <table class="show-table">
-    <tr class="show-tr">
-    <th class="show-th">店舗住所</th>
-    <td class="show-td-long"><%= @rakuten_casa.store_prop.prefecture %><%= @rakuten_casa.store_prop.city %><%= @rakuten_casa.store_prop.municipalities %><%= @rakuten_casa.store_prop.address %><%= @rakuten_casa.store_prop.building_name %></td>
-    </table>
-    <h1 class="show-title">連絡先</h1>
-    <table class="show-table">
-    <th class="show-th">電話番号1</th>
-    <td class="show-td"><%= @rakuten_casa.store_prop.phone_number_1 %></td>
-    <th class="show-th">電話番号2</th>
-    <td class="show-td"><%= @rakuten_casa.store_prop.phone_number_2 %></td>
-    </tr>
-    <tr class="show-tr">
-    <th class="show-th">メールアドレス１</th>
-      <td class="show-td"><%= @rakuten_casa.store_prop.mail_1 %></td>
-    <th class="show-th">メールアドレス２</th>
-      <td class="show-td"><%= @rakuten_casa.store_prop.mail_2 %></td>
-    </tr>
-    <tr class="show-tr">
-    <th class="show-th">好適時間</th>
-    <td class="show-td"><%= @rakuten_casa.store_prop.suitable_time %></td>
-    <th class="show-th">定休日</th>
-    <td class="show-td"><%= @rakuten_casa.store_prop.holiday %></td>
-    <th class="show-th">備考</th>
-    <td class="show-td"><%= @rakuten_casa.store_prop.description %></td>
-    </tr>
-    <tr class="show-tr">
-    <td class="show-td"> 
-      <%= link_to "編集", edit_store_prop_path(@rakuten_casa.store_prop.id), class: "show-link" %>
-    </td>
-    </tr>
-    </table>
-    <h1 class="show-title">楽天カーサ</h1>
-      
-    <table class="show-table">
-    <tr class="show-tr">
-    </tr>
-    <tr class="show-tr">
-      <th class="show-th">獲得日</th>
-      <td class="show-td"><%= @rakuten_casa.date %></td>
-      <th class="show-th">獲得者</th>
-      <td class="show-td"><%= @rakuten_casa.user.name %></td>
-      <th class="show-th">契約名義</th>
-      <td class="show-td"><%= @rakuten_casa.contract_type %></td>
-      <th class="show-th">商流</th>
-      <td class="show-td"><%= @rakuten_casa.client %></td>
-    </tr>
-    <tr class="show-tr">
-      
-      <th class="show-th">契約者確認</th>
-      <td class="show-td"><%= @rakuten_casa.contracter %></td>
-      <th class="show-th">審査ステータス</th>
-      <td class="show-td"><%= @rakuten_casa.status %></td>
-      <th class="show-th">回線確認方法</th>
-      <td class="show-td"><%= @rakuten_casa.confirm_method %></td>
-      <th class="show-th">回線事業者</th>
-      <td class="show-td"><%= @rakuten_casa.line_type %></td>
-    </tr>
-    <tr class="show-tr">
-      <th class="show-th">光コラボ</th>
-      <td class="show-td"><%= @rakuten_casa.hikari_collabo %></td>
-      <th class="show-th">回線サービス名</th>
-      <td class="show-td"><%= @rakuten_casa.line_service %></td>
-      
-      <th class="show-th">不備ステータス</th>
-      <td class="show-td"><%= @rakuten_casa.error_status %></td>
-      <th class="show-th">対応ボール</th>
-      <td class="show-td"><%= @rakuten_casa.error_confirmer %></td>
-    </tr>
-
-    <tr class="show-tr">
-      <th class="show-th">評価売上</th>
-      <td class="show-td"><%= @rakuten_casa.valuation_profit %></td>
-      <th class="show-th">実売上</th>
-      <td class="show-td"><%= @rakuten_casa.actual_profit %></td>
-      <th class="show-th">入金日</th>
-      <td class="show-td"><%= @rakuten_casa.payment %></td>
-      <th class="show-th">備考</th>
-      <td class="show-td"><%= @rakuten_casa.remarks %></td>
+<div data-scope-path="rakuten_casas/show">
+  <h1>楽天フェムト詳細</h1>
+  <%= render "shared/header" %>
+    <table>
+    <tr>
+      <th colspan="4">店舗情報</th>
     </tr>
     <tr>
-    <td class="show-td"><%= link_to "編集", edit_rakuten_casa_path, class: "show-link" %></td>
+      <th>店舗名</th>
+      <td><%= @rakuten_casa.store_prop.name %></td>
+      <th>属性</th>
+      <td><%= @rakuten_casa.store_prop.race %></td>
+    </tr>
+    <tr>
+      <th>業種</th>
+      <td><%= @rakuten_casa.store_prop.industry %></td>
+      <th>お客様番号</th>
+      <td><%= @rakuten_casa.customer_num %></td>
+    </tr>
+    <tr>
+      <th>店舗代表</th>
+      <td><%= @rakuten_casa.store_prop.person_main %></td>
+      <th>店舗担当</th>
+      <td><%= @rakuten_casa.store_prop.person_sub %></td>
+    </tr>
+    <tr>
+      <th>店舗住所</th>
+      <td colspan="3"><%= @rakuten_casa.store_prop.prefecture %><%= @rakuten_casa.store_prop.city %><%= @rakuten_casa.store_prop.municipalities %><%= @rakuten_casa.store_prop.address %><%= @rakuten_casa.store_prop.building_name %></td>
+    </tr>
+    </table>
+    <table>
+    <tr>
+    </table>
+    <h1>連絡先</h1>
+    <table>
+    <th>電話番号1</th>
+    <td><%= @rakuten_casa.store_prop.phone_number_1 %></td>
+    <th>電話番号2</th>
+    <td><%= @rakuten_casa.store_prop.phone_number_2 %></td>
+    </tr>
+    <tr>
+    <th>メールアドレス１</th>
+      <td><%= @rakuten_casa.store_prop.mail_1 %></td>
+    <th>メールアドレス２</th>
+      <td><%= @rakuten_casa.store_prop.mail_2 %></td>
+    </tr>
+    <tr>
+    <th>好適時間</th>
+    <td><%= @rakuten_casa.store_prop.suitable_time %></td>
+    <th>定休日</th>
+    <td><%= @rakuten_casa.store_prop.holiday %></td>
+    </tr>
+    <tr>
+    <th>備考</th>
+    <td colspan="2"><%= @rakuten_casa.store_prop.description %></td>
+      <td><%= link_to "編集", edit_store_prop_path(@rakuten_casa.store_prop.id), class: "link" %></td>
+    </tr>
+    </table>
+    <h1>楽天カーサ</h1>
+    <table>
+    <tr>
+    </tr>
+    <tr>
+      <th>獲得日</th>
+      <td><%= @rakuten_casa.date %></td>
+      <th>獲得者</th>
+      <td><%= @rakuten_casa.user.name %></td>
+    <tr>
+    </tr>
+      <th>契約名義</th>
+      <td><%= @rakuten_casa.contract_type %></td>
+      <th>商流</th>
+      <td><%= @rakuten_casa.client %></td>
+    </tr>
+    <tr>
+      <th>契約者確認</th>
+      <td><%= @rakuten_casa.contracter %></td>
+      <th>審査ステータス</th>
+      <td><%= @rakuten_casa.status %></td>
+    </tr>
+    <tr>
+      <th>回線確認方法</th>
+      <td><%= @rakuten_casa.confirm_method %></td>
+      <th>回線事業者</th>
+      <td><%= @rakuten_casa.line_type %></td>
+    </tr>
+    <tr>
+      <th>光コラボ</th>
+      <td><%= @rakuten_casa.hikari_collabo %></td>
+      <th>回線サービス名</th>
+      <td><%= @rakuten_casa.line_service %></td>
+    </tr>
+    <tr>
+      <th>不備ステータス</th>
+      <td><%= @rakuten_casa.error_status %></td>
+      <th>対応ボール</th>
+      <td><%= @rakuten_casa.error_confirmer %></td>
+    </tr>
+    <tr>
+      <th>評価売上</th>
+      <td><%= @rakuten_casa.valuation_profit %></td>
+      <th>実売上</th>
+      <td><%= @rakuten_casa.actual_profit %></td>
+    </tr>
+    <tr>
+      <th>入金日</th>
+      <td><%= @rakuten_casa.payment %></td>
+    </tr>
+    <tr>
+      <th>備考</th>
+      <td colspan="2"><%= @rakuten_casa.remarks %></td>
+    <td><%= link_to "編集", edit_rakuten_casa_path, class: "link" %></td>
     </tr>
     </table>
   </main>

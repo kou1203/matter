@@ -81,7 +81,7 @@
 
     <tr >
       <th ></th>
-      <th ><%= sort_link(@q, :get_date, "獲得日",{},{class: "index-sort"}) %></th>
+      <th ><%= sort_link(@q, :get_date, "獲得日",{},{class: "reset-link"}) %></th>
       <th >獲得者</th>
       <th >法人/個人</th>
       <th >店舗名</th>
@@ -92,7 +92,7 @@
     </tr>
     <% @aupays.find_each do |aupay| %>
     <tr >
-      <td ><%= link_to "詳細",  aupay_path(aupay.id) ,class: "index-link" %></td>
+      <td ><%= link_to "詳細",  aupay_path(aupay.id) ,class: "link" %></td>
       <td ><%= aupay.get_date.month %>月<%= aupay.get_date.day %>日</td>
       <td ><%= aupay.user.name %></td>
       <td ><%= aupay.store_prop.race %></td>

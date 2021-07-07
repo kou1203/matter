@@ -1,37 +1,37 @@
 <header class="">
   <ul class="nav">
     <div>
-      <label for="menu1">店舗情報/商材</label>
-      <input type="checkbox" id="menu1">
-        <ul class="dropdown">
-          <li ><%= link_to "店舗一覧", root_path , class: "side-link" %></li>
-          <li ><%= link_to "dメル一覧", dmers_path, class: "side-link" %></li>
-          <li ><%= link_to "aupay一覧", aupays_path, class: "side-link" %></li>
-          <li ><%= link_to "paypay一覧", paypays_path, class: "side-link" %></li>
-          <li ><%= link_to "ぷらねす一覧", pranesses_path, class: "side-link" %></li>
-          <li ><%= link_to "ぷらねす在庫", stocks_path, class: "side-link" %></li>
-          <li ><%= link_to "楽天カーサ一覧", rakuten_casas_path, class: "side-link" %></li>
-          <li ><%= link_to "サミットエナジー一覧", summits_path, class: "side-link" %></li>
-          <li ><%= link_to "フードパンダ一覧", pandas_path, class: "side-link" %></li>
+      <label id="lists1">店舗情報/商材</label>
+        <ul class="dropdown" id="pull-down1" >
+          <li id="lists1"><%= link_to "店舗一覧", root_path , class: "side-link" %></li>
+          <li id="lists1"><%= link_to "dメル一覧", dmers_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "aupay一覧", aupays_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "paypay一覧", paypays_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "ぷらねす一覧", pranesses_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "ぷらねす在庫", stocks_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "楽天カーサ一覧", rakuten_casas_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "サミットエナジー一覧", summits_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "フードパンダ一覧", pandas_path, class: "side-link" %></li>
         </ul>
     </div>
     <div>
-      <label for="menu2">利益表/客対応</label>
-      <input type="checkbox" id="menu2">
-        <ul class="dropdown">
-          <li ><%= link_to "SS利益表", results_path, class: "side-link" %></li>
-          <li ><%= link_to "N利益表", n_results_path, class: "side-link" %></li>
-          <li ><%= link_to "SS客対応", trouble_sses_path, class: "side-link" %></li>
-          <li ><%= link_to "N客対応", trouble_ns_path, class: "side-link" %></li>
+      <label id="lists2">利益表/客対応</label>
+      <%# <input type="checkbox" id="menu2"> %>
+        <ul class="dropdown" id="pull-down2">
+          <li id="lists2"><%= link_to "SS利益表", results_path, class: "side-link" %></li>
+          <li id="lists2"><%= link_to "N利益表", n_results_path, class: "side-link" %></li>
+          <li id="lists2"><%= link_to "SS客対応", trouble_sses_path, class: "side-link" %></li>
+          <li id="lists2"><%= link_to "N客対応", trouble_ns_path, class: "side-link" %></li>
+          <li id="lists2"><%= link_to "販管費一覧", costs_path, class: "side-link" %></li>
         </ul>
     </div>
     <div>
-      <label for="menu3">終着報告/シフト</label>
-      <input type="checkbox" id="menu3">
-      <ul class="dropdown">
-        <li ><%= link_to "SS終着", new_result_path, class: "side-link" %></li>
-        <li ><%= link_to "N終着", new_n_result_path, class: "side-link" %></li>
-        <li><%= link_to "シフト申請/確認", shifts_path, class: "side-link" %></li>
+      <label id="lists3">終着報告/シフト</label>
+      <ul class="dropdown" id="pull-down3">
+        <li id="lists3"><%= link_to "SS終着報告", new_result_path, class: "side-link" %></li>
+        <li id="lists3"><%= link_to "N終着報告", new_n_result_path, class: "side-link" %></li>
+        <li id="lists3"><%= link_to "シフト申請/確認", shifts_path, class: "side-link" %></li>
+        <li id="lists3"><%= link_to "販管費入力", new_cost_path, class: "side-link" %></li>
       </ul>
     </div>
   </ul>

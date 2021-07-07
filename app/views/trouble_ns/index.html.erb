@@ -1,159 +1,155 @@
-<%= render "shared/header" %>
-<main class="main">
-  <%= render "shared/side_bar" %>
-  <div class="right-bar">
-  <h1 class="sub-title">クレーム一覧（N）</h1>
-
-  <table class="search-table">
-    <th class="store-link"><%= link_to "客対応報告", new_trouble_n_path, class: "new-link" %></th>
+<div data-scope-path="trouble_ns/index">
+  <h1 >クレーム一覧（N）</h1>
+  <%= render "shared/header" %>
+  <table>
+    <th class="reg"><%= link_to "客対応報告", new_trouble_n_path, class: "reg-link" %></th>
   </table>
-    
-
-
-        <%= search_form_for @q do |f| %>
-      <table class="search-table">
-        <tr class="search-tr">
-        <th class="search-th"><%= f.label :date, "獲得月", class: "search-label" %></th>
-        <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true} ,{class: "search-date-select"} %></td>
-          <th class="search-th"><%= f.label :date, "獲得期間", class: "search-label" %></th>
-          <td class="search-td"><%= f.date_field :date_gteq, class: "search-date" %>~</td>
-          <td class="search-td"><%= f.date_field :date_lteq, class: "search-date" %></td>
-        </tr>
-      </table>
-      <table class="search-table">
-        <tr class="search-tr">
-          <th class="search-th"><%= f.label :user_name, "訪問員", class: "search-label" %></th>
-          <th class="search-th"><%= f.label :category, "直入電orHOKS", class: "search-label" %></th>
-          <th class="search-th"><%= f.label :content_type, "問い合わせ", class: "search-label" %></th>
-          <th class="search-th"><%= f.label :content_type, "クレーム", class: "search-label" %></th>
-          <th class="search-th"><%= f.label :base, "拠点", class: "form-text" %></th>
-          <td class="search-result"><%= f.submit "絞込み", class: "search-btn" %></td>
-
-        </tr>
-        <tr class="search-tr">
-          <td class="search-td"><%= f.text_field :user_name_cont, class: "search-input" %></td>
-          <td class="search-td"><%= f.select :category_eq, {"直入電": "直入電", "HOKS": "HOKS"},{include_blank: true}, {class: "search-input"} %></td>
-         <td class="search-td"><%= f.select :content_type_eq, {"問い合わせ": "問い合わせ"},{include_blank: true},{class: "search-input"} %></td>
-         <td class="search-td"><%= f.select :content_type_not_eq, {"クレーム": "問い合わせ"},{include_blank: true},{class: "search-input"} %></td>
-         <td class="search-td"><%= f.select :base_eq, options_from_collection_for_select(TroubleN.select(:base).distinct, :base, :base),{include_blank: true},{class: "search-input"} %></td>
-          <td class="search-reset"><%= link_to "絞込みリセット", trouble_ns_path, class: "reset-link" %></td>
-        </tr>
-      </table>
-        <% end %>
-
+  <%= search_form_for @q do |f| %>
+    <table >
+      <tr >
+        <th class="search-th">獲得月</th>
+        <td ><%= f.date_select :date_during_month, {discard_day: true} ,{class: "date-input"} %></td>
+      </tr>
+      <tr>
+        <th class="search-th">獲得期間</th>
+        <td class="search-td"><%= f.date_field :date_gteq, class: "input" %>~</td>
+        <td class="search-td"><%= f.date_field :date_lteq, class: "input" %></td>
+      </tr>
+    </table>
+    <table >
+      <tr>
+        <th class="search-th">訪問員</th>
+        <th class="search-th">直入電orHOKS</th>
+        <th class="search-th">問い合わせ</th>
+        <th class="search-th">クレーム</th>
+        <th class="search-th">拠点</th>
+        <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
+      </tr>
+      <tr >
+        <td class="search-td"><%= f.text_field :user_name_cont, class: "input" %></td>
+        <td class="search-td"><%= f.select :category_eq, {"直入電": "直入電", "HOKS": "HOKS"},{include_blank: true}, {class: "input"} %></td>
+        <td class="search-td"><%= f.select :content_type_eq, {"問い合わせ": "問い合わせ"},{include_blank: true},{class: "input"} %></td>
+        <td class="search-td"><%= f.select :content_type_not_eq, {"クレーム": "問い合わせ"},{include_blank: true},{class: "input"} %></td>
+        <td class="search-td"><%= f.select :base_eq, options_from_collection_for_select(TroubleN.select(:base).distinct, :base, :base),{include_blank: true},{class: "input"} %></td>
+        <td class="reset"><%= link_to "絞込みリセット", trouble_ns_path, class: "reset-link" %></td>
+      </tr>
+    </table>
+  <% end %>
       <hr>
       <% if @trouble_ns.empty? %>
       
 <%# 拠点全体売上 %>
-
-
-    <h2 class="sub-title"><%= Date.today.month %>月客対応数 <%= TroubleN.where(date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</h2>
+    <h1><%= Date.today.month %>月客対応数 <%= TroubleN.where(date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</h1>
         
-        <h3 class="sub-title">対策員総数<%= User.where.not(base_sub: nil).length %>名 対象対策員<%= @trouble_ns_month.group(:user_id).length %>名</h3>
+        <h1>対策員総数<%= User.where.not(base_sub: nil).length %>名 対象対策員<%= @trouble_ns_month.group(:user_id).length %>名</h1>
   
-    <table class="trouble-table">
-    <tr class="trouble-tr">
-      <th class="trouble-th">全社</th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+    <table >
+    <tr>
+      <th colspan="2">全社</th>
     </tr>
-    <tr class="trouble-tr">
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= total_direct_question = @trouble_ns_month.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= total_direct_question - @month_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (total_direct_question.to_f / @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
-      <td class="trouble-td"><%= @week_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= total_direct_trouble =  @trouble_ns_month.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= total_direct_trouble - @month_ago.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (total_direct_trouble.to_f / @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
-      <td class="trouble-td"><%= @week_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
+    <tr >
+      <th></th>
+      <th>問い合わせ総数</th>
+      <th>前月比</th>
+      <th>平均</th>
+      <th>前回比</th>
+      <th>クレーム総数</th>
+      <th>前月比</th>
+      <th>平均</th>
+      <th>前回比</th>
     </tr>
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= total_hoks_question = @trouble_ns_month.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= total_hoks_question - @month_ago.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (total_hoks_question.to_f /  @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
-      <td class="trouble-td"><%= @week_ago.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= total_hoks_trouble = @trouble_ns_month.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= total_hoks_trouble - @month_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (total_hoks_trouble.to_f /  @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
-      <td class="trouble-td"><%= @week_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
+    <tr >
+      <th>直入電</th>
+      <td><%= total_direct_question = @trouble_ns_month.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
+      <td><%= total_direct_question - @month_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
+      <td><%= (total_direct_question.to_f / @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
+      <td><%= @week_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
+      <td><%= total_direct_trouble =  @trouble_ns_month.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= total_direct_trouble - @month_ago.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= (total_direct_trouble.to_f / @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
+      <td><%= @week_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= total_question = @trouble_ns_month.where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= total_question - @month_ago.where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (total_question.to_f /  @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
-      <td class="trouble-td"><%= @week_ago.where(content_type: "問い合わせ").length %></td>
+    <tr >
+      <th>HOKS</th>
+      <td><%= total_hoks_question = @trouble_ns_month.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
+      <td><%= total_hoks_question - @month_ago.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
+      <td><%= (total_hoks_question.to_f /  @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
+      <td><%= @week_ago.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
+      <td><%= total_hoks_trouble = @trouble_ns_month.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= total_hoks_trouble - @month_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= (total_hoks_trouble.to_f /  @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
+      <td><%= @week_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
+    </tr>
 
-      <td class="trouble-td"><%= total_trouble = @trouble_ns_month.where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= total_trouble - @month_ago.where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (total_trouble.to_f /  @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
-      <td class="trouble-td"><%= total_trouble - @week_ago.where.not(content_type: "問い合わせ").length %></td>
+    <tr >
+      <th>合計</th>
+      <td><%= total_question = @trouble_ns_month.where(content_type: "問い合わせ").length %></td>
+      <td><%= total_question - @month_ago.where(content_type: "問い合わせ").length %></td>
+      <td><%= (total_question.to_f /  @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
+      <td><%= @week_ago.where(content_type: "問い合わせ").length %></td>
+
+      <td><%= total_trouble = @trouble_ns_month.where.not(content_type: "問い合わせ").length %></td>
+      <td><%= total_trouble - @month_ago.where.not(content_type: "問い合わせ").length %></td>
+      <td><%= (total_trouble.to_f /  @users.where(base: "中部N").or(@users.where(base: "関西N")).length).round(2) %></td>
+      <td><%= total_trouble - @week_ago.where.not(content_type: "問い合わせ").length %></td>
     </tr>
   </table>
-
-  <div class="trouble-separate">
+<div class="separate">
 <%# 中部 %>
-    
   <% chubu = @trouble_ns_month.includes(:user).where(users: {base: "中部N"}) %>
   <% chubu_month_ago = @month_ago.includes(:user).where(users: {base: "中部N"}) %>
   <% chubu_week_ago = @week_ago.includes(:user).where(users: {base: "中部N"}) %>
-  <table class="trouble-table">
-    <tr class="trouble-tr">
-      <th class="trouble-th">中部</th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+  <table >
+    <tr>
+      <th colspan="2">中部</th>
     </tr>
-    <tr class="trouble-tr">
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= chubu_direct_question = chubu.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= chubu_direct_question - chubu_month_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (chubu_direct_question.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
-      <td class="trouble-td"><%= chubu_week_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= chubu_direct_trouble =  chubu.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= chubu_direct_trouble - chubu_month_ago.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (total_direct_trouble.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
-      <td class="trouble-td"><%= chubu_week_ago.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
+    <tr>
+      <th ></th>
+      <th >問い合わせ総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+      <th >クレーム総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+    </tr>
+    <tr>
+      <th >直入電</th>
+      <td><%= chubu_direct_question = chubu.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
+      <td><%= chubu_direct_question - chubu_month_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
+      <td><%= (chubu_direct_question.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
+      <td><%= chubu_week_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
+      <td><%= chubu_direct_trouble =  chubu.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= chubu_direct_trouble - chubu_month_ago.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= (total_direct_trouble.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
+      <td><%= chubu_week_ago.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= chubu_hoks_question = chubu.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= chubu_hoks_question - chubu_month_ago.where(category: "HOKS").includes(:user).where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (chubu_hoks_question.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
-      <td class="trouble-td"><%= chubu_week_ago.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= chubu_hoks_trouble = chubu.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= chubu_hoks_trouble - chubu_month_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (chubu_hoks_trouble.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
-      <td class="trouble-td"><%= chubu_week_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
+    <tr>
+      <th >HOKS</th>
+      <td><%= chubu_hoks_question = chubu.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
+      <td><%= chubu_hoks_question - chubu_month_ago.where(category: "HOKS").includes(:user).where(content_type: "問い合わせ").length %></td>
+      <td><%= (chubu_hoks_question.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
+      <td><%= chubu_week_ago.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
+      <td><%= chubu_hoks_trouble = chubu.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= chubu_hoks_trouble - chubu_month_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= (chubu_hoks_trouble.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
+      <td><%= chubu_week_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
     </tr>
     
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= chubu_question = chubu.where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= chubu_question - chubu_month_ago.where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (chubu_question.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
-      <td class="trouble-td"><%= chubu_week_ago.where(content_type: "問い合わせ").length %></td>
+    <tr>
+      <th >合計</th>
+      <td><%= chubu_question = chubu.where(content_type: "問い合わせ").length %></td>
+      <td><%= chubu_question - chubu_month_ago.where(content_type: "問い合わせ").length %></td>
+      <td><%= (chubu_question.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
+      <td><%= chubu_week_ago.where(content_type: "問い合わせ").length %></td>
 
-      <td class="trouble-td"><%= chubu_trouble = chubu.where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= chubu_trouble - chubu_month_ago.where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (chubu_trouble.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
-      <td class="trouble-td"><%= chubu_week_ago.where.not(content_type: "問い合わせ").length %></td>
+      <td><%= chubu_trouble = chubu.where.not(content_type: "問い合わせ").length %></td>
+      <td><%= chubu_trouble - chubu_month_ago.where.not(content_type: "問い合わせ").length %></td>
+      <td><%= (chubu_trouble.to_f / @users.where(base: "中部N").where.not(base_sub: nil).length).round(2) %></td>
+      <td><%= chubu_week_ago.where.not(content_type: "問い合わせ").length %></td>
     </tr>
   </table>
   
@@ -161,53 +157,56 @@
   <% kansai = @trouble_ns_month.includes(:user).where(users: {base: "関西N"}) %>
   <% kansai_month_ago = @month_ago.includes(:user).where(users: {base: "関西N"}) %>
   <% kansai_week_ago = @week_ago.includes(:user).where(users: {base: "関西N"}) %>
-  <table class="trouble-table">
-    <tr class="trouble-tr">
-      <th class="trouble-th">関西</th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+  <table >
+    <tr>
+      <th colspan="2">関西</th>
     </tr>
-    <tr class="trouble-tr">
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= kansai_direct_question = kansai.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= kansai_direct_question - kansai_month_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (kansai_direct_question.to_f / kansai.group(:user_id).length).round(2) %></td>
-      <td class="trouble-td"><%= kansai_week_ago.where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= kansai_direct_trouble =  kansai.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= kansai_direct_trouble - kansai_month_ago.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (kansai_direct_trouble.to_f / kansai.group(:user_id).length).round(2) %></td>
-      <td class="trouble-td"><%= kansai_week_ago.where.not(content_type: "問い合わせ").length %></td>
+    <tr>
+      <th ></th>
+      <th >問い合わせ総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+      <th >クレーム総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+    </tr>
+    <tr>
+      <th >直入電</th>
+      <td><%= kansai_direct_question = kansai.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
+      <td><%= kansai_direct_question - kansai_month_ago.where(category: "直入電").where(content_type: "問い合わせ").length %></td>
+      <td><%= (kansai_direct_question.to_f / kansai.group(:user_id).length).round(2) %></td>
+      <td><%= kansai_week_ago.where(content_type: "問い合わせ").length %></td>
+      <td><%= kansai_direct_trouble =  kansai.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= kansai_direct_trouble - kansai_month_ago.where(category: "直入電").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= (kansai_direct_trouble.to_f / kansai.group(:user_id).length).round(2) %></td>
+      <td><%= kansai_week_ago.where.not(content_type: "問い合わせ").length %></td>
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= kansai_hoks_question = kansai.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= kansai_hoks_question - kansai_month_ago.where(category: "HOKS").includes(:user).where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (kansai_hoks_question.to_f / kansai.group(:user_id).length).round(2) %></td>
-      <td class="trouble-td"><%= kansai_week_ago.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= kansai_hoks_trouble = kansai.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= kansai_hoks_trouble - kansai_month_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (kansai_hoks_trouble.to_f / @trouble_ns_month.group(:user_id).length).round(2) %></td>
-      <td class="trouble-td"><%= kansai_week_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
+    <tr>
+      <th >HOKS</th>
+      <td><%= kansai_hoks_question = kansai.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
+      <td><%= kansai_hoks_question - kansai_month_ago.where(category: "HOKS").includes(:user).where(content_type: "問い合わせ").length %></td>
+      <td><%= (kansai_hoks_question.to_f / kansai.group(:user_id).length).round(2) %></td>
+      <td><%= kansai_week_ago.where(category: "HOKS").where(content_type: "問い合わせ").length %></td>
+      <td><%= kansai_hoks_trouble = kansai.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= kansai_hoks_trouble - kansai_month_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
+      <td><%= (kansai_hoks_trouble.to_f / @trouble_ns_month.group(:user_id).length).round(2) %></td>
+      <td><%= kansai_week_ago.where(category: "HOKS").where.not(content_type: "問い合わせ").length %></td>
     </tr>
     
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= kansai_question = kansai.where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= kansai_question - kansai_month_ago.where(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (kansai_question.to_f / kansai.group(:user_id).length).round(2) %></td>
-      <td class="trouble-td"><%= kansai_week_ago.where(content_type: "問い合わせ").length %></td>
+    <tr>
+      <th >合計</th>
+      <td><%= kansai_question = kansai.where(content_type: "問い合わせ").length %></td>
+      <td><%= kansai_question - kansai_month_ago.where(content_type: "問い合わせ").length %></td>
+      <td><%= (kansai_question.to_f / kansai.group(:user_id).length).round(2) %></td>
+      <td><%= kansai_week_ago.where(content_type: "問い合わせ").length %></td>
 
-      <td class="trouble-td"><%= kansai_trouble = kansai.where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= kansai_trouble - kansai_month_ago.where.not(content_type: "問い合わせ").length %></td>
-      <td class="trouble-td"><%= (kansai_trouble.to_f / kansai.group(:user_id).length).round(2) %></td>
-      <td class="trouble-td"><%= kansai_week_ago.where.not(content_type: "問い合わせ").length %></td>
+      <td><%= kansai_trouble = kansai.where.not(content_type: "問い合わせ").length %></td>
+      <td><%= kansai_trouble - kansai_month_ago.where.not(content_type: "問い合わせ").length %></td>
+      <td><%= (kansai_trouble.to_f / kansai.group(:user_id).length).round(2) %></td>
+      <td><%= kansai_week_ago.where.not(content_type: "問い合わせ").length %></td>
     </tr>
   </table>
   </div>
@@ -233,355 +232,355 @@
       <% sum_week_question = @week_ago.where(content_type: "問い合わせ") %>
       <% sum_week_trouble = @week_ago.where.not(content_type: "問い合わせ") %>
   
-  <h2 class="show-title">各拠点詳細（中部）</h2>
-  <div class="trouble-separate">
-  <table class="trouble-table">
-    <tr class="trouble-tr">
+  <h1>各拠点詳細（中部）</h1>
+  <div class="separate">
+  <table >
+    <tr>
 
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">豊橋</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
+      <th >拠点名</th>
+      <th >豊橋</th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
     
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+      <th ></th>
+      <th >問い合わせ総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+      <th >クレーム総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
 
 
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "豊橋" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "豊橋" ).length - direct_ago_question.where(base: "豊橋").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "豊橋" ).length - direct_week_question.where(base: "豊橋").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "豊橋" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "豊橋" ).length - direct_ago_trouble.where(base: "豊橋").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2)  %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "豊橋" ).length - direct_week_trouble.where(base: "豊橋").length %></td>
-    </tr>
-
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "豊橋" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "豊橋" ).length - hoks_ago_question.where(base: "豊橋").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "豊橋" ).length - hoks_week_question.where(base: "豊橋").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "豊橋" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "豊橋" ).length - hoks_ago_trouble.where(base: "豊橋").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "豊橋" ).length - hoks_week_trouble.where(base: "豊橋").length %></td>
-
-
+      <th >直入電</th>
+      <td><%= direct_month_question.where(base: "豊橋" ).length %></td>
+      <td><%= direct_month_question.where(base: "豊橋" ).length - direct_ago_question.where(base: "豊橋").length %></td>
+      <td><%= (direct_month_question.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "豊橋" ).length - direct_week_question.where(base: "豊橋").length %></td>
+      <td><%= direct_month_trouble.where(base: "豊橋" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "豊橋" ).length - direct_ago_trouble.where(base: "豊橋").length %></td>
+      <td><%= (direct_month_trouble.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2)  %></td>
+      <td><%= direct_month_trouble.where(base: "豊橋" ).length - direct_week_trouble.where(base: "豊橋").length %></td>
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "豊橋" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "豊橋" ).length - sum_ago_question.where(base: "豊橋").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "豊橋" ).length - sum_week_question.where(base: "豊橋").length %></td>
+
+    <tr>
+      <th >HOKS</th>
+      <td><%= hoks_month_question.where(base: "豊橋" ).length %></td>
+      <td><%= hoks_month_question.where(base: "豊橋" ).length - hoks_ago_question.where(base: "豊橋").length %></td>
+      <td><%= (hoks_month_question.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "豊橋" ).length - hoks_week_question.where(base: "豊橋").length %></td>
+      <td><%= hoks_month_trouble.where(base: "豊橋" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "豊橋" ).length - hoks_ago_trouble.where(base: "豊橋").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "豊橋" ).length - hoks_week_trouble.where(base: "豊橋").length %></td>
+
+
+    </tr>
+
+    <tr>
+      <th >合計</th>
+      <td><%= sum_month_question.where(base: "豊橋" ).length %></td>
+      <td><%= sum_month_question.where(base: "豊橋" ).length - sum_ago_question.where(base: "豊橋").length %></td>
+      <td><%= (sum_month_question.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "豊橋" ).length - sum_week_question.where(base: "豊橋").length %></td>
       
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "豊橋" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "豊橋" ).length - sum_ago_trouble.where(base: "豊橋").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "豊橋" ).length - sum_week_trouble.where(base: "豊橋").length %></td>
+      <td><%= sum_month_trouble.where(base: "豊橋" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "豊橋" ).length - sum_ago_trouble.where(base: "豊橋").length %></td>
+      <td><%= (sum_month_trouble.where(base: "豊橋" ).length.to_f / @users.where(base_sub: "豊橋").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "豊橋" ).length - sum_week_trouble.where(base: "豊橋").length %></td>
  
     </tr>
     
   </table>
   
-  <table class="trouble-table">
-    <tr class="trouble-tr">
+  <table >
+    <tr>
 
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">名古屋中央</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
+      <th >拠点名</th>
+      <th >名古屋中央</th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
     
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+      <th ></th>
+      <th >問い合わせ総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+      <th >クレーム総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
 
 
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "名古屋中央" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "名古屋中央" ).length - direct_ago_question.where(base: "名古屋中央").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "名古屋中央" ).length - direct_week_question.where(base: "名古屋中央").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "名古屋中央" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "名古屋中央" ).length - direct_ago_trouble.where(base: "名古屋中央").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2)  %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "名古屋中央" ).length - direct_week_trouble.where(base: "名古屋中央").length %></td>
-    </tr>
-
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "名古屋中央" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "名古屋中央" ).length - hoks_ago_question.where(base: "名古屋中央").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "名古屋中央" ).length - hoks_week_question.where(base: "名古屋中央").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "名古屋中央" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "名古屋中央" ).length - hoks_ago_trouble.where(base: "名古屋中央").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "名古屋中央" ).length - hoks_week_trouble.where(base: "名古屋中央").length %></td>
-
-
+      <th >直入電</th>
+      <td><%= direct_month_question.where(base: "名古屋中央" ).length %></td>
+      <td><%= direct_month_question.where(base: "名古屋中央" ).length - direct_ago_question.where(base: "名古屋中央").length %></td>
+      <td><%= (direct_month_question.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "名古屋中央" ).length - direct_week_question.where(base: "名古屋中央").length %></td>
+      <td><%= direct_month_trouble.where(base: "名古屋中央" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "名古屋中央" ).length - direct_ago_trouble.where(base: "名古屋中央").length %></td>
+      <td><%= (direct_month_trouble.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2)  %></td>
+      <td><%= direct_month_trouble.where(base: "名古屋中央" ).length - direct_week_trouble.where(base: "名古屋中央").length %></td>
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "名古屋中央" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "名古屋中央" ).length - sum_ago_question.where(base: "名古屋中央").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "名古屋中央" ).length - sum_week_question.where(base: "名古屋中央").length %></td>
+
+    <tr>
+      <th >HOKS</th>
+      <td><%= hoks_month_question.where(base: "名古屋中央" ).length %></td>
+      <td><%= hoks_month_question.where(base: "名古屋中央" ).length - hoks_ago_question.where(base: "名古屋中央").length %></td>
+      <td><%= (hoks_month_question.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "名古屋中央" ).length - hoks_week_question.where(base: "名古屋中央").length %></td>
+      <td><%= hoks_month_trouble.where(base: "名古屋中央" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "名古屋中央" ).length - hoks_ago_trouble.where(base: "名古屋中央").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "名古屋中央" ).length - hoks_week_trouble.where(base: "名古屋中央").length %></td>
+
+
+    </tr>
+
+    <tr>
+      <th >合計</th>
+      <td><%= sum_month_question.where(base: "名古屋中央" ).length %></td>
+      <td><%= sum_month_question.where(base: "名古屋中央" ).length - sum_ago_question.where(base: "名古屋中央").length %></td>
+      <td><%= (sum_month_question.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "名古屋中央" ).length - sum_week_question.where(base: "名古屋中央").length %></td>
       
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "名古屋中央" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "名古屋中央" ).length - sum_ago_trouble.where(base: "名古屋中央").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "名古屋中央" ).length - sum_week_trouble.where(base: "名古屋中央").length %></td>
+      <td><%= sum_month_trouble.where(base: "名古屋中央" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "名古屋中央" ).length - sum_ago_trouble.where(base: "名古屋中央").length %></td>
+      <td><%= (sum_month_trouble.where(base: "名古屋中央" ).length.to_f / @users.where(base_sub: "名古屋中央").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "名古屋中央" ).length - sum_week_trouble.where(base: "名古屋中央").length %></td>
  
     </tr>
     
   </table>
   </div>
-  <div class="trouble-separate">
-  <table class="trouble-table">
-    <tr class="trouble-tr">
+  <div class="separate">
+  <table >
+    <tr>
 
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">中部広域</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
+      <th >拠点名</th>
+      <th >中部広域</th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
     
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+      <th ></th>
+      <th >問い合わせ総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+      <th >クレーム総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
 
 
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "中部広域" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "中部広域" ).length - direct_ago_question.where(base: "中部広域").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "中部広域" ).length - direct_week_question.where(base: "中部広域").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "中部広域" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "中部広域" ).length - direct_ago_trouble.where(base: "中部広域").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2)  %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "中部広域" ).length - direct_week_trouble.where(base: "中部広域").length %></td>
-    </tr>
-
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "中部広域" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "中部広域" ).length - hoks_ago_question.where(base: "中部広域").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "中部広域" ).length - hoks_week_question.where(base: "中部広域").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "中部広域" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "中部広域" ).length - hoks_ago_trouble.where(base: "中部広域").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "中部広域" ).length - hoks_week_trouble.where(base: "中部広域").length %></td>
-
-
+      <th >直入電</th>
+      <td><%= direct_month_question.where(base: "中部広域" ).length %></td>
+      <td><%= direct_month_question.where(base: "中部広域" ).length - direct_ago_question.where(base: "中部広域").length %></td>
+      <td><%= (direct_month_question.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "中部広域" ).length - direct_week_question.where(base: "中部広域").length %></td>
+      <td><%= direct_month_trouble.where(base: "中部広域" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "中部広域" ).length - direct_ago_trouble.where(base: "中部広域").length %></td>
+      <td><%= (direct_month_trouble.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2)  %></td>
+      <td><%= direct_month_trouble.where(base: "中部広域" ).length - direct_week_trouble.where(base: "中部広域").length %></td>
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "中部広域" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "中部広域" ).length - sum_ago_question.where(base: "中部広域").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "中部広域" ).length - sum_week_question.where(base: "中部広域").length %></td>
+
+    <tr>
+      <th >HOKS</th>
+      <td><%= hoks_month_question.where(base: "中部広域" ).length %></td>
+      <td><%= hoks_month_question.where(base: "中部広域" ).length - hoks_ago_question.where(base: "中部広域").length %></td>
+      <td><%= (hoks_month_question.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "中部広域" ).length - hoks_week_question.where(base: "中部広域").length %></td>
+      <td><%= hoks_month_trouble.where(base: "中部広域" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "中部広域" ).length - hoks_ago_trouble.where(base: "中部広域").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "中部広域" ).length - hoks_week_trouble.where(base: "中部広域").length %></td>
+
+
+    </tr>
+
+    <tr>
+      <th >合計</th>
+      <td><%= sum_month_question.where(base: "中部広域" ).length %></td>
+      <td><%= sum_month_question.where(base: "中部広域" ).length - sum_ago_question.where(base: "中部広域").length %></td>
+      <td><%= (sum_month_question.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "中部広域" ).length - sum_week_question.where(base: "中部広域").length %></td>
       
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "中部広域" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "中部広域" ).length - sum_ago_trouble.where(base: "中部広域").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "中部広域" ).length - sum_week_trouble.where(base: "中部広域").length %></td>
+      <td><%= sum_month_trouble.where(base: "中部広域" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "中部広域" ).length - sum_ago_trouble.where(base: "中部広域").length %></td>
+      <td><%= (sum_month_trouble.where(base: "中部広域" ).length.to_f / @users.where(base_sub: "中部広域").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "中部広域" ).length - sum_week_trouble.where(base: "中部広域").length %></td>
  
     </tr>
     
   </table>
   
-  <table class="trouble-table">
-    <tr class="trouble-tr">
+  <table >
+    <tr>
 
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">岡崎</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
+      <th >拠点名</th>
+      <th >岡崎</th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
     
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+      <th ></th>
+      <th >問い合わせ総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+      <th >クレーム総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
 
 
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "岡崎" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "岡崎" ).length - direct_ago_question.where(base: "岡崎").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "岡崎" ).length - direct_week_question.where(base: "岡崎").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "岡崎" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "岡崎" ).length - direct_ago_trouble.where(base: "岡崎").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2)  %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "岡崎" ).length - direct_week_trouble.where(base: "岡崎").length %></td>
-    </tr>
-
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "岡崎" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "岡崎" ).length - hoks_ago_question.where(base: "岡崎").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "岡崎" ).length - hoks_week_question.where(base: "岡崎").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "岡崎" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "岡崎" ).length - hoks_ago_trouble.where(base: "岡崎").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "岡崎" ).length - hoks_week_trouble.where(base: "岡崎").length %></td>
-
-
+      <th >直入電</th>
+      <td><%= direct_month_question.where(base: "岡崎" ).length %></td>
+      <td><%= direct_month_question.where(base: "岡崎" ).length - direct_ago_question.where(base: "岡崎").length %></td>
+      <td><%= (direct_month_question.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "岡崎" ).length - direct_week_question.where(base: "岡崎").length %></td>
+      <td><%= direct_month_trouble.where(base: "岡崎" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "岡崎" ).length - direct_ago_trouble.where(base: "岡崎").length %></td>
+      <td><%= (direct_month_trouble.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2)  %></td>
+      <td><%= direct_month_trouble.where(base: "岡崎" ).length - direct_week_trouble.where(base: "岡崎").length %></td>
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "岡崎" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "岡崎" ).length - sum_ago_question.where(base: "岡崎").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "岡崎" ).length - sum_week_question.where(base: "岡崎").length %></td>
+
+    <tr>
+      <th >HOKS</th>
+      <td><%= hoks_month_question.where(base: "岡崎" ).length %></td>
+      <td><%= hoks_month_question.where(base: "岡崎" ).length - hoks_ago_question.where(base: "岡崎").length %></td>
+      <td><%= (hoks_month_question.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "岡崎" ).length - hoks_week_question.where(base: "岡崎").length %></td>
+      <td><%= hoks_month_trouble.where(base: "岡崎" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "岡崎" ).length - hoks_ago_trouble.where(base: "岡崎").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "岡崎" ).length - hoks_week_trouble.where(base: "岡崎").length %></td>
+
+
+    </tr>
+
+    <tr>
+      <th >合計</th>
+      <td><%= sum_month_question.where(base: "岡崎" ).length %></td>
+      <td><%= sum_month_question.where(base: "岡崎" ).length - sum_ago_question.where(base: "岡崎").length %></td>
+      <td><%= (sum_month_question.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "岡崎" ).length - sum_week_question.where(base: "岡崎").length %></td>
       
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "岡崎" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "岡崎" ).length - sum_ago_trouble.where(base: "岡崎").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "岡崎" ).length - sum_week_trouble.where(base: "岡崎").length %></td>
+      <td><%= sum_month_trouble.where(base: "岡崎" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "岡崎" ).length - sum_ago_trouble.where(base: "岡崎").length %></td>
+      <td><%= (sum_month_trouble.where(base: "岡崎" ).length.to_f / @users.where(base_sub: "岡崎").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "岡崎" ).length - sum_week_trouble.where(base: "岡崎").length %></td>
  
     </tr>
     
   </table>
   </div>
-  <div class="trouble-separate">
-  <table class="trouble-table">
-    <tr class="trouble-tr">
+  <div class="separate">
+  <table >
+    <tr>
 
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">多治見</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
+      <th >拠点名</th>
+      <th >多治見</th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
     
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+      <th ></th>
+      <th >問い合わせ総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+      <th >クレーム総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
 
 
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "多治見" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "多治見" ).length - direct_ago_question.where(base: "多治見").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "多治見" ).length - direct_week_question.where(base: "多治見").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "多治見" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "多治見" ).length - direct_ago_trouble.where(base: "多治見").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2)  %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "多治見" ).length - direct_week_trouble.where(base: "多治見").length %></td>
-    </tr>
-
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "多治見" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "多治見" ).length - hoks_ago_question.where(base: "多治見").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "多治見" ).length - hoks_week_question.where(base: "多治見").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "多治見" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "多治見" ).length - hoks_ago_trouble.where(base: "多治見").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "多治見" ).length - hoks_week_trouble.where(base: "多治見").length %></td>
-
-
+      <th >直入電</th>
+      <td><%= direct_month_question.where(base: "多治見" ).length %></td>
+      <td><%= direct_month_question.where(base: "多治見" ).length - direct_ago_question.where(base: "多治見").length %></td>
+      <td><%= (direct_month_question.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "多治見" ).length - direct_week_question.where(base: "多治見").length %></td>
+      <td><%= direct_month_trouble.where(base: "多治見" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "多治見" ).length - direct_ago_trouble.where(base: "多治見").length %></td>
+      <td><%= (direct_month_trouble.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2)  %></td>
+      <td><%= direct_month_trouble.where(base: "多治見" ).length - direct_week_trouble.where(base: "多治見").length %></td>
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "多治見" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "多治見" ).length - sum_ago_question.where(base: "多治見").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "多治見" ).length - sum_week_question.where(base: "多治見").length %></td>
+
+    <tr>
+      <th >HOKS</th>
+      <td><%= hoks_month_question.where(base: "多治見" ).length %></td>
+      <td><%= hoks_month_question.where(base: "多治見" ).length - hoks_ago_question.where(base: "多治見").length %></td>
+      <td><%= (hoks_month_question.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "多治見" ).length - hoks_week_question.where(base: "多治見").length %></td>
+      <td><%= hoks_month_trouble.where(base: "多治見" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "多治見" ).length - hoks_ago_trouble.where(base: "多治見").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "多治見" ).length - hoks_week_trouble.where(base: "多治見").length %></td>
+
+
+    </tr>
+
+    <tr>
+      <th >合計</th>
+      <td><%= sum_month_question.where(base: "多治見" ).length %></td>
+      <td><%= sum_month_question.where(base: "多治見" ).length - sum_ago_question.where(base: "多治見").length %></td>
+      <td><%= (sum_month_question.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "多治見" ).length - sum_week_question.where(base: "多治見").length %></td>
       
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "多治見" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "多治見" ).length - sum_ago_trouble.where(base: "多治見").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "多治見" ).length - sum_week_trouble.where(base: "多治見").length %></td>
+      <td><%= sum_month_trouble.where(base: "多治見" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "多治見" ).length - sum_ago_trouble.where(base: "多治見").length %></td>
+      <td><%= (sum_month_trouble.where(base: "多治見" ).length.to_f / @users.where(base_sub: "多治見").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "多治見" ).length - sum_week_trouble.where(base: "多治見").length %></td>
  
     </tr>
     
@@ -589,591 +588,589 @@
   
 
   
-  <table class="trouble-table">
-    <tr class="trouble-tr">
+  <table >
+    <tr>
 
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">三重</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
+      <th >拠点名</th>
+      <th >三重</th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
     
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+      <th ></th>
+      <th >問い合わせ総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+      <th >クレーム総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
 
 
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "三重" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "三重" ).length - direct_ago_question.where(base: "三重").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "三重" ).length - direct_week_question.where(base: "三重").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "三重" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "三重" ).length - direct_ago_trouble.where(base: "三重").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2)  %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "三重" ).length - direct_week_trouble.where(base: "三重").length %></td>
-    </tr>
-
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "三重" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "三重" ).length - hoks_ago_question.where(base: "三重").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "三重" ).length - hoks_week_question.where(base: "三重").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "三重" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "三重" ).length - hoks_ago_trouble.where(base: "三重").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "三重" ).length - hoks_week_trouble.where(base: "三重").length %></td>
-
-
+      <th >直入電</th>
+      <td><%= direct_month_question.where(base: "三重" ).length %></td>
+      <td><%= direct_month_question.where(base: "三重" ).length - direct_ago_question.where(base: "三重").length %></td>
+      <td><%= (direct_month_question.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "三重" ).length - direct_week_question.where(base: "三重").length %></td>
+      <td><%= direct_month_trouble.where(base: "三重" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "三重" ).length - direct_ago_trouble.where(base: "三重").length %></td>
+      <td><%= (direct_month_trouble.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2)  %></td>
+      <td><%= direct_month_trouble.where(base: "三重" ).length - direct_week_trouble.where(base: "三重").length %></td>
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "三重" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "三重" ).length - sum_ago_question.where(base: "三重").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "三重" ).length - sum_week_question.where(base: "三重").length %></td>
+
+    <tr>
+      <th >HOKS</th>
+      <td><%= hoks_month_question.where(base: "三重" ).length %></td>
+      <td><%= hoks_month_question.where(base: "三重" ).length - hoks_ago_question.where(base: "三重").length %></td>
+      <td><%= (hoks_month_question.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "三重" ).length - hoks_week_question.where(base: "三重").length %></td>
+      <td><%= hoks_month_trouble.where(base: "三重" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "三重" ).length - hoks_ago_trouble.where(base: "三重").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "三重" ).length - hoks_week_trouble.where(base: "三重").length %></td>
+
+
+    </tr>
+
+    <tr>
+      <th >合計</th>
+      <td><%= sum_month_question.where(base: "三重" ).length %></td>
+      <td><%= sum_month_question.where(base: "三重" ).length - sum_ago_question.where(base: "三重").length %></td>
+      <td><%= (sum_month_question.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "三重" ).length - sum_week_question.where(base: "三重").length %></td>
       
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "三重" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "三重" ).length - sum_ago_trouble.where(base: "三重").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "三重" ).length - sum_week_trouble.where(base: "三重").length %></td>
+      <td><%= sum_month_trouble.where(base: "三重" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "三重" ).length - sum_ago_trouble.where(base: "三重").length %></td>
+      <td><%= (sum_month_trouble.where(base: "三重" ).length.to_f / @users.where(base_sub: "三重").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "三重" ).length - sum_week_trouble.where(base: "三重").length %></td>
  
     </tr>
     
   </table>
   </div>
-  <div class="trouble-separate">
-  <table class="trouble-table">
-    <tr class="trouble-tr">
+  <div class="separate">
+  <table >
+    <tr>
 
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">一宮</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
+      <th >拠点名</th>
+      <th >一宮</th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
     
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+      <th ></th>
+      <th >問い合わせ総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+      <th >クレーム総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
 
 
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "一宮" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "一宮" ).length - direct_ago_question.where(base: "一宮").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "一宮" ).length - direct_week_question.where(base: "一宮").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "一宮" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "一宮" ).length - direct_ago_trouble.where(base: "一宮").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2)  %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "一宮" ).length - direct_week_trouble.where(base: "一宮").length %></td>
-    </tr>
-
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "一宮" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "一宮" ).length - hoks_ago_question.where(base: "一宮").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "一宮" ).length - hoks_week_question.where(base: "一宮").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "一宮" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "一宮" ).length - hoks_ago_trouble.where(base: "一宮").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "一宮" ).length - hoks_week_trouble.where(base: "一宮").length %></td>
-
-
+      <th >直入電</th>
+      <td><%= direct_month_question.where(base: "一宮" ).length %></td>
+      <td><%= direct_month_question.where(base: "一宮" ).length - direct_ago_question.where(base: "一宮").length %></td>
+      <td><%= (direct_month_question.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "一宮" ).length - direct_week_question.where(base: "一宮").length %></td>
+      <td><%= direct_month_trouble.where(base: "一宮" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "一宮" ).length - direct_ago_trouble.where(base: "一宮").length %></td>
+      <td><%= (direct_month_trouble.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2)  %></td>
+      <td><%= direct_month_trouble.where(base: "一宮" ).length - direct_week_trouble.where(base: "一宮").length %></td>
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "一宮" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "一宮" ).length - sum_ago_question.where(base: "一宮").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "一宮" ).length - sum_week_question.where(base: "一宮").length %></td>
+
+    <tr>
+      <th >HOKS</th>
+      <td><%= hoks_month_question.where(base: "一宮" ).length %></td>
+      <td><%= hoks_month_question.where(base: "一宮" ).length - hoks_ago_question.where(base: "一宮").length %></td>
+      <td><%= (hoks_month_question.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "一宮" ).length - hoks_week_question.where(base: "一宮").length %></td>
+      <td><%= hoks_month_trouble.where(base: "一宮" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "一宮" ).length - hoks_ago_trouble.where(base: "一宮").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "一宮" ).length - hoks_week_trouble.where(base: "一宮").length %></td>
+
+
+    </tr>
+
+    <tr>
+      <th >合計</th>
+      <td><%= sum_month_question.where(base: "一宮" ).length %></td>
+      <td><%= sum_month_question.where(base: "一宮" ).length - sum_ago_question.where(base: "一宮").length %></td>
+      <td><%= (sum_month_question.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "一宮" ).length - sum_week_question.where(base: "一宮").length %></td>
       
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "一宮" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "一宮" ).length - sum_ago_trouble.where(base: "一宮").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "一宮" ).length - sum_week_trouble.where(base: "一宮").length %></td>
+      <td><%= sum_month_trouble.where(base: "一宮" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "一宮" ).length - sum_ago_trouble.where(base: "一宮").length %></td>
+      <td><%= (sum_month_trouble.where(base: "一宮" ).length.to_f / @users.where(base_sub: "一宮").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "一宮" ).length - sum_week_trouble.where(base: "一宮").length %></td>
  
     </tr>
     
   </table>
 
-  <table class="trouble-table">
-    <tr class="trouble-tr">
+  <table >
+    <tr>
 
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">豊田</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
+      <th >拠点名</th>
+      <th >豊田</th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
     
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+      <th ></th>
+      <th >問い合わせ総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+      <th >クレーム総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
 
 
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "豊田" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "豊田" ).length - direct_ago_question.where(base: "豊田").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "豊田" ).length - direct_week_question.where(base: "豊田").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "豊田" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "豊田" ).length - direct_ago_trouble.where(base: "豊田").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2)  %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "豊田" ).length - direct_week_trouble.where(base: "豊田").length %></td>
-    </tr>
-
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "豊田" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "豊田" ).length - hoks_ago_question.where(base: "豊田").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "豊田" ).length - hoks_week_question.where(base: "豊田").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "豊田" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "豊田" ).length - hoks_ago_trouble.where(base: "豊田").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "豊田" ).length - hoks_week_trouble.where(base: "豊田").length %></td>
-
-
+      <th >直入電</th>
+      <td><%= direct_month_question.where(base: "豊田" ).length %></td>
+      <td><%= direct_month_question.where(base: "豊田" ).length - direct_ago_question.where(base: "豊田").length %></td>
+      <td><%= (direct_month_question.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "豊田" ).length - direct_week_question.where(base: "豊田").length %></td>
+      <td><%= direct_month_trouble.where(base: "豊田" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "豊田" ).length - direct_ago_trouble.where(base: "豊田").length %></td>
+      <td><%= (direct_month_trouble.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2)  %></td>
+      <td><%= direct_month_trouble.where(base: "豊田" ).length - direct_week_trouble.where(base: "豊田").length %></td>
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "豊田" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "豊田" ).length - sum_ago_question.where(base: "豊田").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "豊田" ).length - sum_week_question.where(base: "豊田").length %></td>
+
+    <tr>
+      <th >HOKS</th>
+      <td><%= hoks_month_question.where(base: "豊田" ).length %></td>
+      <td><%= hoks_month_question.where(base: "豊田" ).length - hoks_ago_question.where(base: "豊田").length %></td>
+      <td><%= (hoks_month_question.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "豊田" ).length - hoks_week_question.where(base: "豊田").length %></td>
+      <td><%= hoks_month_trouble.where(base: "豊田" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "豊田" ).length - hoks_ago_trouble.where(base: "豊田").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "豊田" ).length - hoks_week_trouble.where(base: "豊田").length %></td>
+
+
+    </tr>
+
+    <tr>
+      <th >合計</th>
+      <td><%= sum_month_question.where(base: "豊田" ).length %></td>
+      <td><%= sum_month_question.where(base: "豊田" ).length - sum_ago_question.where(base: "豊田").length %></td>
+      <td><%= (sum_month_question.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "豊田" ).length - sum_week_question.where(base: "豊田").length %></td>
       
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "豊田" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "豊田" ).length - sum_ago_trouble.where(base: "豊田").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "豊田" ).length - sum_week_trouble.where(base: "豊田").length %></td>
- 
-    </tr>
-    
-  </table>
-  </div>
-
-  <h2 class="show-title">各拠点詳細（関西）</h2>
-
-  <div class="trouble-separate">
-  <table class="trouble-table">
-    <tr class="trouble-tr">
-
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">北大阪エリア</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-    </tr>
-    <tr class="trouble-tr">
-    
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-    </tr>
-    <tr class="trouble-tr">
-
-
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "北大阪エリア" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "北大阪エリア" ).length - direct_ago_question.where(base: "北大阪エリア").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "北大阪エリア" ).length - direct_week_question.where(base: "北大阪エリア").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "北大阪エリア" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "北大阪エリア" ).length - direct_ago_trouble.where(base: "北大阪エリア").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "北大阪エリア" ).length - direct_week_trouble.where(base: "北大阪エリア").length %></td>
-      
-    </tr>
-
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "北大阪エリア" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "北大阪エリア" ).length - hoks_ago_question.where(base: "北大阪エリア").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "北大阪エリア" ).length - hoks_week_question.where(base: "北大阪エリア").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "北大阪エリア" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "北大阪エリア" ).length - hoks_ago_trouble.where(base: "北大阪エリア").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "北大阪エリア" ).length - hoks_week_trouble.where(base: "北大阪エリア").length %></td>
-
-
-    </tr>
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "北大阪エリア" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "北大阪エリア" ).length - sum_ago_question.where(base: "北大阪エリア").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "北大阪エリア" ).length - sum_week_question.where(base: "北大阪エリア").length %></td>
-      
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "北大阪エリア" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "北大阪エリア" ).length - sum_ago_trouble.where(base: "北大阪エリア").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "北大阪エリア" ).length - sum_week_trouble.where(base: "北大阪エリア").length %></td>
- 
-    </tr>
-    
-  </table>
-
-  
-  <table class="trouble-table">
-    <tr class="trouble-tr">
-
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">北大阪公募</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-    </tr>
-    <tr class="trouble-tr">
-    
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-    </tr>
-    <tr class="trouble-tr">
-
-
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "北大阪公募" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "北大阪公募" ).length - direct_ago_question.where(base: "北大阪公募").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "北大阪公募" ).length - direct_week_question.where(base: "北大阪公募").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "北大阪公募" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "北大阪公募" ).length - direct_ago_trouble.where(base: "北大阪公募").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "北大阪公募" ).length - direct_week_trouble.where(base: "北大阪公募").length %></td>
-      
-    </tr>
-
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "北大阪公募" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "北大阪公募" ).length - hoks_ago_question.where(base: "北大阪公募").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "北大阪公募" ).length - hoks_week_question.where(base: "北大阪公募").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "北大阪公募" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "北大阪公募" ).length - hoks_ago_trouble.where(base: "北大阪公募").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "北大阪公募" ).length - hoks_week_trouble.where(base: "北大阪公募").length %></td>
-
-
-    </tr>
-
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "北大阪公募" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "北大阪公募" ).length - sum_ago_question.where(base: "北大阪公募").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "北大阪公募" ).length - sum_week_question.where(base: "北大阪公募").length %></td>
-      
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "北大阪公募" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "北大阪公募" ).length - sum_ago_trouble.where(base: "北大阪公募").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "北大阪公募" ).length - sum_week_trouble.where(base: "北大阪公募").length %></td>
+      <td><%= sum_month_trouble.where(base: "豊田" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "豊田" ).length - sum_ago_trouble.where(base: "豊田").length %></td>
+      <td><%= (sum_month_trouble.where(base: "豊田" ).length.to_f / @users.where(base_sub: "豊田").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "豊田" ).length - sum_week_trouble.where(base: "豊田").length %></td>
  
     </tr>
     
   </table>
   </div>
 
+  <h1>各拠点詳細（関西）</h1>
 
-  <div class="trouble-separate">
-  
-  <table class="trouble-table">
-    <tr class="trouble-tr">
+  <div class="separate">
+  <table >
+    <tr>
 
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">大阪中央</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
+      <th >拠点名</th>
+      <th >北大阪エリア</th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
+      <th ></th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
     
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+      <th ></th>
+      <th >問い合わせ総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
+      <th >クレーム総数</th>
+      <th >前月比</th>
+      <th >平均</th>
+      <th >前回比</th>
     </tr>
-    <tr class="trouble-tr">
+    <tr>
 
 
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "大阪中央" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "大阪中央" ).length - direct_ago_question.where(base: "大阪中央").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "大阪中央" ).length - direct_week_question.where(base: "大阪中央").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "大阪中央" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "大阪中央" ).length - direct_ago_trouble.where(base: "大阪中央").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "大阪中央" ).length - direct_week_trouble.where(base: "大阪中央").length %></td>
+      <th >直入電</th>
+      <td><%= direct_month_question.where(base: "北大阪エリア" ).length %></td>
+      <td><%= direct_month_question.where(base: "北大阪エリア" ).length - direct_ago_question.where(base: "北大阪エリア").length %></td>
+      <td><%= (direct_month_question.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "北大阪エリア" ).length - direct_week_question.where(base: "北大阪エリア").length %></td>
+      <td><%= direct_month_trouble.where(base: "北大阪エリア" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "北大阪エリア" ).length - direct_ago_trouble.where(base: "北大阪エリア").length %></td>
+      <td><%= (direct_month_trouble.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2) %></td>
+      <td><%= direct_month_trouble.where(base: "北大阪エリア" ).length - direct_week_trouble.where(base: "北大阪エリア").length %></td>
       
     </tr>
 
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "大阪中央" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "大阪中央" ).length - hoks_ago_question.where(base: "大阪中央").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "大阪中央" ).length - hoks_week_question.where(base: "大阪中央").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "大阪中央" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "大阪中央" ).length - hoks_ago_trouble.where(base: "大阪中央").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "大阪中央" ).length - hoks_week_trouble.where(base: "大阪中央").length %></td>
+    <tr>
+      <th >HOKS</th>
+      <td><%= hoks_month_question.where(base: "北大阪エリア" ).length %></td>
+      <td><%= hoks_month_question.where(base: "北大阪エリア" ).length - hoks_ago_question.where(base: "北大阪エリア").length %></td>
+      <td><%= (hoks_month_question.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "北大阪エリア" ).length - hoks_week_question.where(base: "北大阪エリア").length %></td>
+      <td><%= hoks_month_trouble.where(base: "北大阪エリア" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "北大阪エリア" ).length - hoks_ago_trouble.where(base: "北大阪エリア").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "北大阪エリア" ).length - hoks_week_trouble.where(base: "北大阪エリア").length %></td>
 
 
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "大阪中央" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "大阪中央" ).length - sum_ago_question.where(base: "大阪中央").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "大阪中央" ).length - sum_week_question.where(base: "大阪中央").length %></td>
+    <tr>
+      <th >合計</th>
+      <td><%= sum_month_question.where(base: "北大阪エリア" ).length %></td>
+      <td><%= sum_month_question.where(base: "北大阪エリア" ).length - sum_ago_question.where(base: "北大阪エリア").length %></td>
+      <td><%= (sum_month_question.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "北大阪エリア" ).length - sum_week_question.where(base: "北大阪エリア").length %></td>
       
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "大阪中央" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "大阪中央" ).length - sum_ago_trouble.where(base: "大阪中央").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "大阪中央" ).length - sum_week_trouble.where(base: "大阪中央").length %></td>
+      <td><%= sum_month_trouble.where(base: "北大阪エリア" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "北大阪エリア" ).length - sum_ago_trouble.where(base: "北大阪エリア").length %></td>
+      <td><%= (sum_month_trouble.where(base: "北大阪エリア" ).length.to_f / @users.where(base_sub: "北大阪エリア").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "北大阪エリア" ).length - sum_week_trouble.where(base: "北大阪エリア").length %></td>
  
     </tr>
     
   </table>
 
-   <table class="trouble-table">
-    <tr class="trouble-tr">
+  
+  <table >
+    <tr>
 
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">阪神</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
+      <th >拠点名</th>
+      <th>北大阪公募</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
     </tr>
-    <tr class="trouble-tr">
+    <tr >
     
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+      <th></th>
+      <th>問い合わせ総数</th>
+      <th>前月比</th>
+      <th>平均</th>
+      <th>前回比</th>
+      <th>クレーム総数</th>
+      <th>前月比</th>
+      <th>平均</th>
+      <th>前回比</th>
     </tr>
-    <tr class="trouble-tr">
+    <tr >
 
 
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "阪神" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "阪神" ).length - direct_ago_question.where(base: "阪神").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "阪神" ).length - direct_week_question.where(base: "阪神").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "阪神" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "阪神" ).length - direct_ago_trouble.where(base: "阪神").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "阪神" ).length - direct_week_trouble.where(base: "阪神").length %></td>
+      <th>直入電</th>
+      <td><%= direct_month_question.where(base: "北大阪公募" ).length %></td>
+      <td><%= direct_month_question.where(base: "北大阪公募" ).length - direct_ago_question.where(base: "北大阪公募").length %></td>
+      <td><%= (direct_month_question.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "北大阪公募" ).length - direct_week_question.where(base: "北大阪公募").length %></td>
+      <td><%= direct_month_trouble.where(base: "北大阪公募" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "北大阪公募" ).length - direct_ago_trouble.where(base: "北大阪公募").length %></td>
+      <td><%= (direct_month_trouble.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2) %></td>
+      <td><%= direct_month_trouble.where(base: "北大阪公募" ).length - direct_week_trouble.where(base: "北大阪公募").length %></td>
       
     </tr>
 
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "阪神" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "阪神" ).length - hoks_ago_question.where(base: "阪神").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "阪神" ).length - hoks_week_question.where(base: "阪神").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "阪神" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "阪神" ).length - hoks_ago_trouble.where(base: "阪神").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "阪神" ).length - hoks_week_trouble.where(base: "阪神").length %></td>
+    <tr >
+      <th>HOKS</th>
+      <td><%= hoks_month_question.where(base: "北大阪公募" ).length %></td>
+      <td><%= hoks_month_question.where(base: "北大阪公募" ).length - hoks_ago_question.where(base: "北大阪公募").length %></td>
+      <td><%= (hoks_month_question.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "北大阪公募" ).length - hoks_week_question.where(base: "北大阪公募").length %></td>
+      <td><%= hoks_month_trouble.where(base: "北大阪公募" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "北大阪公募" ).length - hoks_ago_trouble.where(base: "北大阪公募").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "北大阪公募" ).length - hoks_week_trouble.where(base: "北大阪公募").length %></td>
 
 
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "阪神" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "阪神" ).length - sum_ago_question.where(base: "阪神").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "阪神" ).length - sum_week_question.where(base: "阪神").length %></td>
+    <tr >
+      <th>合計</th>
+      <td><%= sum_month_question.where(base: "北大阪公募" ).length %></td>
+      <td><%= sum_month_question.where(base: "北大阪公募" ).length - sum_ago_question.where(base: "北大阪公募").length %></td>
+      <td><%= (sum_month_question.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "北大阪公募" ).length - sum_week_question.where(base: "北大阪公募").length %></td>
       
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "阪神" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "阪神" ).length - sum_ago_trouble.where(base: "阪神").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "阪神" ).length - sum_week_trouble.where(base: "阪神").length %></td>
+      <td><%= sum_month_trouble.where(base: "北大阪公募" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "北大阪公募" ).length - sum_ago_trouble.where(base: "北大阪公募").length %></td>
+      <td><%= (sum_month_trouble.where(base: "北大阪公募" ).length.to_f / @users.where(base_sub: "北大阪公募").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "北大阪公募" ).length - sum_week_trouble.where(base: "北大阪公募").length %></td>
+ 
+    </tr>
+    
+  </table>
+  </div>
+
+
+  <div class="separate">
+  
+  <table >
+    <tr >
+
+      <th>拠点名</th>
+      <th>大阪中央</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+    <tr >
+    
+      <th></th>
+      <th>問い合わせ総数</th>
+      <th>前月比</th>
+      <th>平均</th>
+      <th>前回比</th>
+      <th>クレーム総数</th>
+      <th>前月比</th>
+      <th>平均</th>
+      <th>前回比</th>
+    </tr>
+    <tr >
+
+
+      <th>直入電</th>
+      <td><%= direct_month_question.where(base: "大阪中央" ).length %></td>
+      <td><%= direct_month_question.where(base: "大阪中央" ).length - direct_ago_question.where(base: "大阪中央").length %></td>
+      <td><%= (direct_month_question.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "大阪中央" ).length - direct_week_question.where(base: "大阪中央").length %></td>
+      <td><%= direct_month_trouble.where(base: "大阪中央" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "大阪中央" ).length - direct_ago_trouble.where(base: "大阪中央").length %></td>
+      <td><%= (direct_month_trouble.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2) %></td>
+      <td><%= direct_month_trouble.where(base: "大阪中央" ).length - direct_week_trouble.where(base: "大阪中央").length %></td>
+      
+    </tr>
+
+
+    <tr >
+      <th>HOKS</th>
+      <td><%= hoks_month_question.where(base: "大阪中央" ).length %></td>
+      <td><%= hoks_month_question.where(base: "大阪中央" ).length - hoks_ago_question.where(base: "大阪中央").length %></td>
+      <td><%= (hoks_month_question.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "大阪中央" ).length - hoks_week_question.where(base: "大阪中央").length %></td>
+      <td><%= hoks_month_trouble.where(base: "大阪中央" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "大阪中央" ).length - hoks_ago_trouble.where(base: "大阪中央").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "大阪中央" ).length - hoks_week_trouble.where(base: "大阪中央").length %></td>
+
+
+    </tr>
+
+    <tr >
+      <th>合計</th>
+      <td><%= sum_month_question.where(base: "大阪中央" ).length %></td>
+      <td><%= sum_month_question.where(base: "大阪中央" ).length - sum_ago_question.where(base: "大阪中央").length %></td>
+      <td><%= (sum_month_question.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "大阪中央" ).length - sum_week_question.where(base: "大阪中央").length %></td>
+      
+      <td><%= sum_month_trouble.where(base: "大阪中央" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "大阪中央" ).length - sum_ago_trouble.where(base: "大阪中央").length %></td>
+      <td><%= (sum_month_trouble.where(base: "大阪中央" ).length.to_f / @users.where(base_sub: "大阪中央").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "大阪中央" ).length - sum_week_trouble.where(base: "大阪中央").length %></td>
+ 
+    </tr>
+    
+  </table>
+
+   <table >
+    <tr >
+
+      <th>拠点名</th>
+      <th>阪神</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+    <tr >
+    
+      <th></th>
+      <th>問い合わせ総数</th>
+      <th>前月比</th>
+      <th>平均</th>
+      <th>前回比</th>
+      <th>クレーム総数</th>
+      <th>前月比</th>
+      <th>平均</th>
+      <th>前回比</th>
+    </tr>
+    <tr >
+
+
+      <th>直入電</th>
+      <td><%= direct_month_question.where(base: "阪神" ).length %></td>
+      <td><%= direct_month_question.where(base: "阪神" ).length - direct_ago_question.where(base: "阪神").length %></td>
+      <td><%= (direct_month_question.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "阪神" ).length - direct_week_question.where(base: "阪神").length %></td>
+      <td><%= direct_month_trouble.where(base: "阪神" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "阪神" ).length - direct_ago_trouble.where(base: "阪神").length %></td>
+      <td><%= (direct_month_trouble.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2) %></td>
+      <td><%= direct_month_trouble.where(base: "阪神" ).length - direct_week_trouble.where(base: "阪神").length %></td>
+      
+    </tr>
+
+
+    <tr >
+      <th>HOKS</th>
+      <td><%= hoks_month_question.where(base: "阪神" ).length %></td>
+      <td><%= hoks_month_question.where(base: "阪神" ).length - hoks_ago_question.where(base: "阪神").length %></td>
+      <td><%= (hoks_month_question.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "阪神" ).length - hoks_week_question.where(base: "阪神").length %></td>
+      <td><%= hoks_month_trouble.where(base: "阪神" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "阪神" ).length - hoks_ago_trouble.where(base: "阪神").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "阪神" ).length - hoks_week_trouble.where(base: "阪神").length %></td>
+
+
+    </tr>
+
+    <tr >
+      <th>合計</th>
+      <td><%= sum_month_question.where(base: "阪神" ).length %></td>
+      <td><%= sum_month_question.where(base: "阪神" ).length - sum_ago_question.where(base: "阪神").length %></td>
+      <td><%= (sum_month_question.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "阪神" ).length - sum_week_question.where(base: "阪神").length %></td>
+      
+      <td><%= sum_month_trouble.where(base: "阪神" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "阪神" ).length - sum_ago_trouble.where(base: "阪神").length %></td>
+      <td><%= (sum_month_trouble.where(base: "阪神" ).length.to_f / @users.where(base_sub: "阪神").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "阪神" ).length - sum_week_trouble.where(base: "阪神").length %></td>
  
     </tr>
     
   </table>
   </div>
   
-  <table class="trouble-table">
-    <tr class="trouble-tr">
+  <table >
+    <tr >
 
-      <th class="trouble-th">拠点名</th>
-      <th class="trouble-th">守口公募</th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
-      <th class="trouble-th"></th>
+      <th>拠点名</th>
+      <th>守口公募</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
     </tr>
-    <tr class="trouble-tr">
+    <tr >
     
-      <th class="trouble-th"></th>
-      <th class="trouble-th">問い合わせ総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
-      <th class="trouble-th">クレーム総数</th>
-      <th class="trouble-th">前月比</th>
-      <th class="trouble-th">平均</th>
-      <th class="trouble-th">前回比</th>
+      <th></th>
+      <th>問い合わせ総数</th>
+      <th>前月比</th>
+      <th>平均</th>
+      <th>前回比</th>
+      <th>クレーム総数</th>
+      <th>前月比</th>
+      <th>平均</th>
+      <th>前回比</th>
     </tr>
-    <tr class="trouble-tr">
+    <tr >
 
 
-      <th class="trouble-th">直入電</th>
-      <td class="trouble-td"><%= direct_month_question.where(base: "守口公募" ).length %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "守口公募" ).length - direct_ago_question.where(base: "守口公募").length %></td>
-      <td class="trouble-td"><%= (direct_month_question.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_question.where(base: "守口公募" ).length - direct_week_question.where(base: "守口公募").length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "守口公募" ).length %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "守口公募" ).length - direct_ago_trouble.where(base: "守口公募").length %></td>
-      <td class="trouble-td"><%= (direct_month_trouble.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2) %></td>
-      <td class="trouble-td"><%= direct_month_trouble.where(base: "守口公募" ).length - direct_week_trouble.where(base: "守口公募").length %></td>
+      <th>直入電</th>
+      <td><%= direct_month_question.where(base: "守口公募" ).length %></td>
+      <td><%= direct_month_question.where(base: "守口公募" ).length - direct_ago_question.where(base: "守口公募").length %></td>
+      <td><%= (direct_month_question.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2) %></td>
+      <td><%= direct_month_question.where(base: "守口公募" ).length - direct_week_question.where(base: "守口公募").length %></td>
+      <td><%= direct_month_trouble.where(base: "守口公募" ).length %></td>
+      <td><%= direct_month_trouble.where(base: "守口公募" ).length - direct_ago_trouble.where(base: "守口公募").length %></td>
+      <td><%= (direct_month_trouble.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2) %></td>
+      <td><%= direct_month_trouble.where(base: "守口公募" ).length - direct_week_trouble.where(base: "守口公募").length %></td>
       
     </tr>
 
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">HOKS</th>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "守口公募" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "守口公募" ).length - hoks_ago_question.where(base: "守口公募").length %></td>
-      <td class="trouble-td"><%= (hoks_month_question.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_question.where(base: "守口公募" ).length - hoks_week_question.where(base: "守口公募").length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "守口公募" ).length %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "守口公募" ).length - hoks_ago_trouble.where(base: "守口公募").length %></td>
-      <td class="trouble-td"><%= (hoks_month_trouble.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2)  %></td>
-      <td class="trouble-td"><%= hoks_month_trouble.where(base: "守口公募" ).length - hoks_week_trouble.where(base: "守口公募").length %></td>
+    <tr >
+      <th>HOKS</th>
+      <td><%= hoks_month_question.where(base: "守口公募" ).length %></td>
+      <td><%= hoks_month_question.where(base: "守口公募" ).length - hoks_ago_question.where(base: "守口公募").length %></td>
+      <td><%= (hoks_month_question.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2)  %></td>
+      <td><%= hoks_month_question.where(base: "守口公募" ).length - hoks_week_question.where(base: "守口公募").length %></td>
+      <td><%= hoks_month_trouble.where(base: "守口公募" ).length %></td>
+      <td><%= hoks_month_trouble.where(base: "守口公募" ).length - hoks_ago_trouble.where(base: "守口公募").length %></td>
+      <td><%= (hoks_month_trouble.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2)  %></td>
+      <td><%= hoks_month_trouble.where(base: "守口公募" ).length - hoks_week_trouble.where(base: "守口公募").length %></td>
 
 
     </tr>
 
-    <tr class="trouble-tr">
-      <th class="trouble-th">合計</th>
-      <td class="trouble-td"><%= sum_month_question.where(base: "守口公募" ).length %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "守口公募" ).length - sum_ago_question.where(base: "守口公募").length %></td>
-      <td class="trouble-td"><%= (sum_month_question.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_question.where(base: "守口公募" ).length - sum_week_question.where(base: "守口公募").length %></td>
-      
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "守口公募" ).length %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "守口公募" ).length - sum_ago_trouble.where(base: "守口公募").length %></td>
-      <td class="trouble-td"><%= (sum_month_trouble.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2)  %></td>
-      <td class="trouble-td"><%= sum_month_trouble.where(base: "守口公募" ).length - sum_week_trouble.where(base: "守口公募").length %></td>
- 
+    <tr >
+      <th>合計</th>
+      <td><%= sum_month_question.where(base: "守口公募" ).length %></td>
+      <td><%= sum_month_question.where(base: "守口公募" ).length - sum_ago_question.where(base: "守口公募").length %></td>
+      <td><%= (sum_month_question.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2)  %></td>
+      <td><%= sum_month_question.where(base: "守口公募" ).length - sum_week_question.where(base: "守口公募").length %></td>
+      <td><%= sum_month_trouble.where(base: "守口公募" ).length %></td>
+      <td><%= sum_month_trouble.where(base: "守口公募" ).length - sum_ago_trouble.where(base: "守口公募").length %></td>
+      <td><%= (sum_month_trouble.where(base: "守口公募" ).length.to_f / @users.where(base_sub: "守口公募").length).round(2)  %></td>
+      <td><%= sum_month_trouble.where(base: "守口公募" ).length - sum_week_trouble.where(base: "守口公募").length %></td>
     </tr>
     
   </table>
       <% else %>
-      <table class="search-table">
-        <tr class="search-tr">
+      <table >
+        <tr >
           <th class="search-th">客対応数</th>
           <th class="search-th">直入電数</th>
           <th class="search-th">HOKS数</th>
           <th class="search-th">問い合わせ数</th>
           <th class="search-th">クレーム数</th>
         </tr>
-        <tr class="search-tr">
+        <tr >
           <td class="search-td"><%= @trouble_ns.length %></td>
           <td class="search-td"><%= @trouble_ns.where(category: '直入電').length %></td>
           <td class="search-td"><%= @trouble_ns.where(category: 'HOKS' ).length %></td>
@@ -1181,46 +1178,44 @@
           <td class="search-td"><%= @trouble_ns.where.not(content_type: '問い合わせ' ).length %></td>
         </tr>
       </table>
-    
-    <div class="table-scroll">
-      <table class="trouble-index-table">
-        <tr class="index-tr">
-        <th class="index-th">編集</th>
-        <th class="index-th">拠点</th>
-        <th class="index-th"><%= sort_link(@q, :date, "対応日",{}, {class: "index-sort"}) %></th>
-        <th class="index-th">直入電orHOKS</th>
-        <th class="index-th">お客様氏名</th>
-        <th class="index-th">取次or未取次</th>
-        <th class="index-th">契約内容</th>
-        <th class="index-th"><%= sort_link(@q, :user_id, "訪問員", {},{class: "index-sort"}) %></th>
-        <th class="index-th">管理担当者</th>
-        <th class="index-th">本人or第三者</th>
-        <th class="index-th">対応内容</th>
-        <th class="index-th-long">お客様の声</th>
-        <th class="index-th-long">対策員ヒアリング</th>
-        <th class="index-th-long">対応結果</th>
+      <table class="search-table">
+        <tr >
+          <th class="search-th"></th>
+          <th class="search-th"></th>
+          <th class="search-th">拠点</th>
+          <th class="search-th"><%= sort_link(@q, :date, "対応日",{}, {class: "reset-link"}) %></th>
+          <th class="search-th">直入電orHOKS</th>
+          <th class="search-th">お客様氏名</th>
+          <th class="search-th">取次or未取次</th>
+          <th class="search-th">契約内容</th>
+          <th class="search-th"><%= sort_link(@q, :user_id, "訪問員", {},{class: "reset-link"}) %></th>
+          <th class="search-th">管理担当者</th>
+          <th class="search-th">本人or第三者</th>
+          <th class="search-th">対応内容</th>
+          <th class="search-th">お客様の声</th>
+          <th class="search-th">対策員ヒアリング</th>
+          <th class="search-th">対応結果</th>
         </tr>
 
         <% @trouble_ns.each do |t| %>
-        <tr class="index-tr">
-        <td class="index-td"><%= link_to "編集", edit_trouble_n_path(t.id), class: "index-link" %></td>
-        <td class="index-td"><%= t.base %></td>
-        <td class="index-td"><%= t.date %></td>
-        <td class="index-td"><%= t.category %></td>
-        <td class="index-td"><%= t.customer_name %></td>
-        <td class="index-td"><%= t.get_status %></td>
-        <td class="index-td"><%= t.contract_type %></td>
-        <td class="index-td"><%= t.user.name %></td>
-        <td class="index-td"><%= t.confirmer %></td>
-        <td class="index-td"><%= t.content_type %></td>
-        <td class="index-td"><%= t.customer_caller %></td>
-        <td class="index-td"><%= t.customer_opinion %></td>
-        <td class="index-td"><%= t.user_opinion %></td>
-        <td class="index-td"><%= t.result %></td>
+        <tr >
+          <td class="search-td"><%# link_to "詳細", trouble_n_path(t.id), class: "link" %></td>
+          <td class="search-td"><%= link_to "編集", edit_trouble_n_path(t.id), class: "link" %></td>
+          <td class="search-td"><%= t.base %></td>
+          <td class="search-td"><%= t.date %></td>
+          <td class="search-td"><%= t.category %></td>
+          <td class="search-td"><%= t.customer_name %></td>
+          <td class="search-td"><%= t.get_status %></td>
+          <td class="search-td"><%= t.contract_type %></td>
+          <td class="search-td"><%= t.user.name %></td>
+          <td class="search-td"><%= t.confirmer %></td>
+          <td class="search-td"><%= t.content_type %></td>
+          <td class="search-td"><%= t.customer_caller %></td>
+          <td class="search-td"><%= t.customer_opinion %></td>
+          <td class="search-td"><%= t.user_opinion %></td>
+          <td class="search-td"><%= t.result %></td>
         </tr>
         <% end %>
       </table>
-    </div>
     <% end %>
   </div>
-</main>

@@ -20,7 +20,7 @@ class PandasController < ApplicationController
     @store_prop = StoreProp.find(params[:store_prop_id])
     @panda.save 
     if @panda.save 
-      redirect_to store_props_path(@store_prop.id)
+      redirect_to panda_path(@panda.id)
     else  
       render :new 
     end 
@@ -40,7 +40,7 @@ class PandasController < ApplicationController
     @panda = Panda.find(params[:id])
     @panda.update(panda_params)
     if @panda.update(panda_params)
-      redirect_to pandas_path 
+      redirect_to panda_path(@panda.id)
     else  
       render :edit
     end 

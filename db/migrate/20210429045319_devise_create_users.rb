@@ -9,9 +9,10 @@ class DeviseCreateUsers < ActiveRecord::Migration[6.0]
       t.string :name, null: false
       t.string :base
       t.string :base_sub
-      t.string :team
       t.string :position
       t.string :position_sub
+      t.string :group
+      t.string :team
       
       ## Recoverable
       t.string   :reset_password_token

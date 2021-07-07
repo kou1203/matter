@@ -1,7 +1,7 @@
 class DmersController < ApplicationController
 
   def index 
-    @q = Dmer.ransack(params[:q])
+    @q = Dmer.includes(:store_prop, :user).ransack(params[:q])
     @dmers = 
       if params[:q].nil?
         Dmer.none 

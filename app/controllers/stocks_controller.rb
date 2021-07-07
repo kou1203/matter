@@ -1,7 +1,7 @@
 class StocksController < ApplicationController
 
   def index 
-    @q = Stock.ransack(params[:q])
+    @q = Stock.includes(:praness, :stock_history, :return_history).ransack(params[:q])
     @stocks = @q.result(distinct: true)
   end 
 

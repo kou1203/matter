@@ -6,7 +6,7 @@ class ResultsController < ApplicationController
       if params[:q].nil? 
         Result.none 
       else    
-        @q.result(distinct: false)
+        @q.result(distinct: false).order(date: :asc)
       end
     @shifts = Shift.all
     @summits = Summit.all
@@ -38,7 +38,7 @@ class ResultsController < ApplicationController
     @users = User.where.not(base: "退職")
     @result = Result.new(result_params)
     if @result.save 
-      redirect_to store_props_path 
+      redirect_to results_path 
     else  
       render :new 
     end
@@ -90,6 +90,8 @@ class ResultsController < ApplicationController
       :panda,
       :praness,
       :summit,
+      :rakuten_casa,
+      :rakuten_casa_put,
       :first_visit,
       :first_interview,
       :first_full_talk, 
@@ -126,6 +128,7 @@ class ResultsController < ApplicationController
       :other_service_interview      ,
       :other_service_full_talk      ,
       :other_service_get    ,
+      # キャッシュレス
       :cashless_what_interview      ,
       :cashless_what_full_talk      ,
       :cashless_what_get            ,
@@ -165,6 +168,7 @@ class ResultsController < ApplicationController
       :cashless_other_interview      ,
       :cashless_other_full_talk      ,
       :cashless_other_get,
+      # サミット
       :summit_ng_detail,
       :summit_ng_cash,
       :summit_ng_building,
@@ -189,6 +193,7 @@ class ResultsController < ApplicationController
       :summit_easy_interview  ,    
       :summit_easy_full_talk   ,   
       :summit_easy_get  , 
+      # パンダ
       :panda_not_need_interview,      
       :panda_not_need_full_talk,      
       :panda_not_need_get, 
@@ -221,7 +226,36 @@ class ResultsController < ApplicationController
       :panda_other_get, 
       :panda_easy_interview,      
       :panda_easy_full_talk,      
-      :panda_easy_get 
+      :panda_easy_get,
+      # 楽天カーサ
+      :casa_ng_lack_info,
+      :casa_busy_interview,
+      :casa_busy_full_talk,
+      :casa_busy_get,
+      :casa_dull_interview,
+      :casa_dull_full_talk,
+      :casa_dull_get,
+      :casa_not_put_space_interview,
+      :casa_not_put_space_full_talk,
+      :casa_not_put_space_get,
+      :casa_no_merit_interview,
+      :casa_no_merit_full_talk,
+      :casa_no_merit_get,
+      :casa_distrust_interview,
+      :casa_distrust_full_talk,
+      :casa_distrust_get,
+      :casa_not_use_net_interview,
+      :casa_not_use_net_full_talk,
+      :casa_not_use_net_get,
+      :casa_not_need_interview,
+      :casa_not_need_full_talk,
+      :casa_not_need_get,
+      :casa_easy_interview,
+      :casa_easy_full_talk,
+      :casa_easy_get,
+      :casa_other_interview,
+      :casa_other_full_talk,
+      :casa_other_get
     )
   end 
 end

@@ -58,6 +58,7 @@ class ShiftsController < ApplicationController
       :ojt,
       :n,
       :rakuten_casa,
+      :rakuten_casa_put,
       :cashless_new,
       :cashless_settlement,
       :praness,

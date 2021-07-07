@@ -1,7 +1,7 @@
 class AupaysController < ApplicationController
 
   def index 
-    @q = Aupay.ransack(params[:q])
+    @q = Aupay.includes(:user, :store_prop).ransack(params[:q])
     @aupays = 
       if params[:q].nil?
         Aupay.none 

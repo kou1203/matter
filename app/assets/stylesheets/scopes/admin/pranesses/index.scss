@@ -35,21 +35,25 @@ header {
 .dropdown {
   display: none;
   margin: 0;
+  position: fixed;
 }
 label {
   color: #fff;
   border-right: solid 3px ;
   width: 200px;
 }
+
 label:hover {
   background: #3399FF;
 }
+
 li {
   background: #a9a7a7;
   color: white;
   opacity: 0.9;
   width: 200px;
 }
+
 label,
 li {
   display: block;
@@ -57,37 +61,6 @@ li {
   text-align: center;
   letter-spacing: 0.5em;
   font-weight: bold;
-}
-
-li::before,
-label::before {
-  content: "";
-  display: block;
-  position: absolute;
-  transform: rotate(135deg);
-}
-
-input[type=checkbox] {
-  display: none;
-}
-
-label[for="menu"] {
-  display: block;
-}
-label[for="menu"]::before {
-  transform: rotate(225deg);
-}
-#menu1:checked + .dropdown {
-  display: block;
-  position: fixed;
-}
-#menu2:checked + .dropdown {
-  display: block;
-  position: fixed;
-}
-#menu3:checked + .dropdown {
-  display: block;
-  position: fixed;
 }
 
 li:hover {

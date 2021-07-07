@@ -1,96 +1,66 @@
-<%= render "shared/header" %>
-
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
+<div data-scope-path="shifts/new">
+  <h1>シフト入力：<%= current_user.name %></h1>
+  <%= render "shared/header" %>
   <%= form_with model: @shift, class: "form-frame", local: true do |f| %>
-  <h1 class="form-text">シフト入力：<%= current_user.name %></h1>
-      <%= f.hidden_field :user_id, value: current_user.id %>
-      <%= f.number_field :year, value: Date.today.year, class: "form-year" %>
-      <%= f.label :year, "年", class: "form-text" %>
-      <%= f.number_field :month, value: Date.today.month, class: "form-month" %>
-      <%= f.label :year, "月", class: "form-text" %>
-    <table>
+  <%= f.hidden_field :user_id, value: current_user.id %>
+  <table>
   <%# 一列目 %>
     <tr>
-    <th>
-      <div class="form-interval">
-      <%= f.label :house_work, "内勤日数", class: "form-text" %><br>
-      <%= f.number_field :house_work,value: 0, class: "form-input" %>
-      </div>
-    </th>
-
-    <th>
-      <div class="form-interval">
-      <%= f.label :ojt, "OJT日数", class: "form-text" %><br>
-      <%= f.number_field :ojt,value: 0, class: "form-input" %>
-      </div>
-    </th>
-
-    <th>
-      <div class="form-interval">
-      <%= f.label :cashless_new, "キャッシュレス新規日数", class: "form-text" %><br>
-      <%= f.number_field :cashless_new,value: 0, class: "form-input" %>
-      </div>
-    </th>
-    <th>
-      <div class="form-interval">
-      <%= f.label :cashless_settlement, "キャッシュレス決済日数", class: "form-text" %><br>
-      <%= f.number_field :cashless_settlement,value: 0, class: "form-input" %>
-      </div>
-    </th>
+      <th class="date-th">日</th>
+      <th class="date-th">付</th>
+      <td class="date-td"><%= f.number_field :year, value: Date.today.year, class: "input" %></td>
+      <th class="date-th">年</th>
+      <td class="date-td"><%= f.number_field :month, value: Date.today.month, class: "input" %></td>
+      <th class="date-th">月</th>
     </tr>
-  <%# 二列目 %>
+  </table>
+  <table>
+  <%# 2列目ラベル %>
     <tr>
-    <th>
-      <div class="form-interval">
-        <%= f.label :praness, "ぷらねす日数", class: "form-text" %><br>
-        <%= f.number_field :praness,value: 0,class: "form-input"  %>
-      </div>
-    </th>
-
-    <th>
-      <div class="form-interval">
-        <%= f.label :summit, "サミットエナジー日数", class: "form-text" %><br>
-        <%= f.number_field :summit,value: 0,class: "form-input"  %>
-      </div>
-    </th>
-
-    <th>
-      <div class="form-interval">
-        <%= f.label :panda, "フードパンダ日数", class: "form-text" %><br>
-        <%= f.number_field :panda,value: 0,class: "form-input"  %>
-      </div>
-    </th>
-
-    <th>
-      <div class="form-interval">
-        <%= f.label :goal, "目標売上日数", class: "form-text" %><br>
-        <%= f.number_field :goal,value: 0,class: "form-input"  %>
-      </div>
-    </th>
-
-
+      <th><%= f.label :house_work, "内勤日数", class: "form-text" %></th>
+      <th><%= f.label :ojt, "OJT日数", class: "form-text" %></th>
+      <th><%= f.label :cashless_new, "キャッシュレス新規日数", class: "form-text" %></th>
+      <th><%= f.label :cashless_settlement, "キャッシュレス決済日数", class: "form-text" %></th>
     </tr>
+  <%# 2列目値 %>
     <tr>
-
-    <th>
-      <div class="form-interval">
-        <%= f.label :n, "N対策日数", class: "form-text" %><br>
-        <%= f.number_field :n,value: 0,class: "form-input"  %>
-      </div>
-    </th>
-
-    <th>
-      <div class="form-interval">
-        <%= f.label :rakuten_casa, "楽天カーサ日数", class: "form-text" %><br>
-        <%= f.number_field :rakuten_casa,value: 0,class: "form-input"  %>
-      </div>
-    </th>
-
+      <td><%= f.number_field :house_work,value: 0, class: "form-input" %></td>
+      <td><%= f.number_field :ojt,value: 0, class: "form-input" %></td>
+      <td><%= f.number_field :cashless_new,value: 0, class: "form-input" %></td>
+      <td><%= f.number_field :cashless_settlement,value: 0, class: "form-input" %></td>
     </tr>
-    </table>
-    <%= f.submit "登録", class: "form-btn" %>
+  <%# 3列目ラベル %>
+    <tr>
+      <th><%= f.label :praness, "ぷらねす日数", class: "form-text" %></th>
+      <th><%= f.label :summit, "サミットエナジー日数", class: "form-text" %></th>
+      <th><%= f.label :panda, "フードパンダ日数", class: "form-text" %></th>
+      <th><%= f.label :goal, "目標売上日数", class: "form-text" %></th>
+    </tr>
+  <%# 3列目値 %>
+    <tr>
+      <td><%= f.number_field :praness,value: 0,class: "form-input"  %></td>
+      <td><%= f.number_field :summit,value: 0,class: "form-input"  %></td>
+      <td><%= f.number_field :panda,value: 0,class: "form-input"  %></td>
+      <td><%= f.number_field :goal,value: 0,class: "form-input"  %></td>
+    </tr>
+  <%# 4列目ラベル %>
+    <tr>
+      <th><%= f.label :n, "N対策日数", class: "form-text" %></th>
+      <th><%= f.label :rakuten_casa, "楽天カーサ日数", class: "form-text" %></th>
+      <th><%= f.label :rakuten_casa_put, "楽天カーサ（設置）日数", class: "form-text" %></th>
+      <th></th>
+      <th></th>
+    </tr>
+  <%# 4列目値 %>
+    <tr>
+      <td><%= f.number_field :n,value: 0,class: "form-input"  %></td>
+      <td><%= f.number_field :rakuten_casa,value: 0,class: "form-input"  %></td>
+      <td><%= f.number_field :rakuten_casa_put,value: 0,class: "form-input"  %></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </table>
+    <%= f.submit "登録", class: "submit-btn" %>
   <% end %>
   </main>
 </div>

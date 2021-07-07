@@ -1,0 +1,63 @@
+<div data-scope-path="costs/index">
+  <h1>販管費確認</h1>
+  <%= render "shared/header" %>
+
+        <%= search_form_for @q do |f| %>
+          <table>
+            <tr>
+              <th class="">日付</th>
+              <td><%= f.select :year_eq, options_from_collection_for_select(Cost.select(:year).distinct, :year, :year), {} ,{class: "input"} %></td>
+              <td><%= f.select :month_eq, options_from_collection_for_select(Cost.select(:month).distinct, :month, :month),{}, {class: "input"} %></td>
+              <th class="">拠点</th>
+              <td><%= f.select :base, options_from_collection_for_select(Cost.select(:base).distinct, :base, :base), {include_blank: true} ,{class: "input"} %></td>
+              <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
+              <td class="reset"><%= link_to "絞込みリセット", costs_path ,class: "reset-link" %></td>
+            </tr>
+          </table>
+        <% end %>
+    <hr>
+    <% if @costs.empty? %>
+    <% else %>
+  
+    <table>
+    <tr>
+      <th></th>
+      <th>拠点</th>
+      <th>日付</th>
+      <th>営業人件費</th>
+      <th>管理人件費</th>
+      <th>社会保険料</th>
+      <th>運営人件費</th>
+      <th>営業側　交通費・経費</th>
+      <th>管理側　交通費・経費</th>
+      <th>オフィス</th>
+      <th>水道光熱費・通信費</th>
+      <th>寮</th>
+      <th>賞与貯蓄</th>
+      <th>旅行貯蓄</th>
+      <th>臨時費用</th>
+      <th>更新日</th>
+    </tr>
+    <% @costs.each do |cost| %>
+    <tr>
+      <td ><%= link_to "編集", edit_cost_path(cost.id), class: "link" %></td>
+      <td ><%= cost.base %></td>
+      <td ><%= cost.year %>年<%= cost.month %>月</td>
+      <td ><%= cost.sales_man.to_s(:delimited) %></td>
+      <td ><%= cost.office_worker.to_s(:delimited) %></td>
+      <td ><%= cost.social_insurance.to_s(:delimited) %></td>
+      <td ><%= cost.administrator.to_s(:delimited) %></td>
+      <td ><%= cost.sales_man_cost.to_s(:delimited) %></td>
+      <td ><%= cost.office_worker_cost.to_s(:delimited) %></td>
+      <td ><%= cost.office.to_s(:delimited) %></td>
+      <td ><%= cost.utility_net_cost.to_s(:delimited) %></td>
+      <td ><%= cost.dorm.to_s(:delimited) %></td>
+      <td ><%= cost.bonus_stock.to_s(:delimited) %></td>
+      <td ><%= cost.travel_stock.to_s(:delimited) %></td>
+      <td ><%= cost.other.to_s(:delimited) %></td>
+      <td ><%= cost.update_date %></td>
+    </tr>
+    <% end %>
+  </table>
+  <% end %>
+</div>

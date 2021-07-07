@@ -1,106 +1,102 @@
-<%= render "shared/header" %>
-
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
-    <h1 class="sub-title">フードパンダ一覧</h1>
-        <h2 class="show-title"><%= Date.today.month %>月獲得数<%= Panda.where(get_date: Time.now.beginning_of_month..Time.now.end_of_month).length %>件</h2>
-
-
-    <%= search_form_for @q do |f| %>
-    <table class="search-table">
-      <tr class="search-tr">
-        <th class="search-th"><%= f.label :get_date, "獲得日付", class: "search-label" %></th>
-        <td class="search-td"><%= f.date_field :get_date_gteq, class: "search-date" %>〜</td>
-        <td class="search-td"><%= f.date_field :get_date_lteq, class: "search-date" %></td>
+<div data-scope-path="pandas/index">
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+  <h1>フードパンダ一覧</h1>
+  <%= render "shared/header" %>
+  <%= search_form_for @q do |f| %>
+    <table>
+      <tr>
+        <th class="search1">獲得日付</th>
+        <td ><%= f.date_field :get_date_gteq, class: "input" %>~</td>
+        <td ><%= f.date_field :get_date_lteq, class: "input" %></td>
       </tr>
     </table>
-    <table class="search-table">
-      <tr class="search-tr">
-        <th class="search-checkbox-th"><%= f.label :status, "不備絞込み", class: "search-label" %></th>
-        <th class="search-th"><%= f.label :user_id, "獲得者", class: "search-label" %></th>
-        <th class="search-th"><%= f.label :status, "ステータス", class: "search-label" %></th>
-        <th class="search-th"><%= f.label :confirm_ball, "ボール", class: "search-label" %></th>
-        <td class="search-result"><%= f.submit "絞込み" , class: "search-btn" %></td>
+    <table>
+      <tr>
+        <th class="search1">不備絞込み</th>
+        <th class="search1">獲得者</th>
+        <th class="search1">ステータス</th>
+        <th class="search1">ボール</th>
+        <td class="result"><%= f.submit "絞込み" , class: "result-btn" %></td>
       </tr>
-      <tr class="search-tr">
-        <td class="search-checkbox-td"><%= f.select :status_cont ,{"○": "不備"}, {include_blank: true} ,{class: "search-input"} %></td>
-        <td class="search-td"><%= f.select :user_id_eq, options_from_collection_for_select(User.joins(:pandas).where.not(base: "退職").distinct, :id, :name), {prompt: "全体"},{class: "search-input"} %></td>
-        <td class="search-td"><%= f.select :status_eq, options_from_collection_for_select(Panda.select(:status).distinct, :status, :status), {include_blank: true} ,{class: "search-input"} %></td>
-        <td class="search-td"><%= f.select :confirm_ball_eq, options_from_collection_for_select(Panda.select(:confirm_ball).distinct, :confirm_ball, :confirm_ball), {include_blank: true} ,{class: "search-input"} %></td>
-        <td class="search-reset"><%= link_to "絞込みリセット", pandas_path, class: "reset-link" %></td>
+        <tr>
+          <td><%= f.select :status_cont ,{"○": "不備"}, {include_blank: true} ,{class: "input"} %></td>
+          <td ><%= f.select :user_id_eq, options_from_collection_for_select(User.joins(:pandas).where.not(base: "退職").distinct, :id, :name), {prompt: "全体"},{class: "input"} %></td>
+          <td ><%= f.select :status_eq, options_from_collection_for_select(Panda.select(:status).distinct, :status, :status), {include_blank: true} ,{class: "input"} %></td>
+          <td ><%= f.select :confirm_ball_eq, options_from_collection_for_select(Panda.select(:confirm_ball).distinct, :confirm_ball, :confirm_ball), {include_blank: true} ,{class: "input"} %></td>
+          <td class="reset"><%= link_to "絞込みリセット", pandas_path, class: "reset-link" %></td>
 
-      </tr>
-    </table>
-    <% end %>
-
-  <hr>
+        </tr>
+      </table>
+  <% end %>
   <% if @pandas.empty? %>
   <% else %>
-    <table class="search-table">
-      <div class="sub-title">※入金金額は後日実装予定</div>
-      <h2 class="sub-title">表示範囲：<%= @pandas.minimum(:get_date) %>〜<%= @pandas.maximum(:get_date) %></h2>
+    <table>
+      <h1>表示範囲：<%= @pandas.minimum(:get_date) %>（<%= days[@pandas.minimum(:get_date).wday] %>）〜<%= @pandas.maximum(:get_date) %>（<%= days[@pandas.maximum(:get_date).wday] %>）</h1>
       <tr>
-        <th class="search-th">契約数</th>
-        <th class="search-th">情報待ち</th>
-        <th class="search-th">DocuSign締結待ち</th>
-        <th class="search-th">品質チェック待ち</th>
-        <th class="search-th">トレーニング待ち</th>
-        <th class="search-th">入金待ち数</th>
+        <th class="search1">契約数</th>
+        <th class="search1">情報待ち</th>
       </tr>
-      <tr class="search-tr">
-        <td class="search-td"><%= @pandas.length  %>件</td>
-        <td class="search-td"><%= @pandas.where(status: 'リード作成待ち').length +  @pandas.where(status: 'リード作成待ち　不備').length %>件</td>
-        <td class="search-td"><%= @pandas.where(status: 'DocuSign締結待ち').length %>件</td>
-        <td class="search-td"><%= @pandas.where(status: '品質チェック待ち').length %>件</td>
-        <td class="search-td"><%= @pandas.where(status: 'トレーニング待ち').length %>件</td>
-        <td class="search-td"><%= @pandas.where.not(result_point: nil).length %>件</td>    
+      <tr>
+        <td ><%= @pandas.length  %>件</td>
+        <td ><%= @pandas.where(status: 'リード作成待ち').length +  @pandas.where(status: 'リード作成待ち　不備').length %>件</td>
       </tr>
-      <tr class="search-tr">
-        <th class="search-th"></th>
-        <th class="search-th"></th>
-        <th class="search-th">DocuSign締結待ち　不備</th>
-        <th class="search-th">品質チェック待ち　不備</th>
-        <th class="search-th">トレーニング待ち　不備</th>
-        <th class="search-th">NG数</th>
+      <tr>
+        <th class="search1", rowspan="2">情報待ち</th>
+        <th class="search1">DocuSign締結待ち</th>
+        <th class="search1">品質チェック待ち</th>
+        <th class="search1">トレーニング待ち</th>
+        <th class="search1">入金待ち数</th>
       </tr>
-      <tr class="search-tr">
-        <td class="search-td"></td>
-        <td class="search-td"></td>
-        <td class="search-td"><%= @pandas.where(status: 'DocuSign締結待ち　不備').length %>件</td>
-        <td class="search-td"><%= @pandas.where(status: '品質チェック待ち　不備').length %>件</td>
-        <td class="search-td"><%= @pandas.where(status: 'トレーニング待ち　不備').length %>件</td>
-        <td class="search-td"><%= @pandas.where(status: 'NG').length %>件</td>
-        <td class="search-reset"><%= link_to "月毎のデータ", panda_profits_path, class: "reset-link" %></td>
+      <tr>
+        <td ><%= @pandas.where(status: 'DocuSign締結待ち').length %>件</td>
+        <td ><%= @pandas.where(status: '品質チェック待ち').length %>件</td>
+        <td ><%= @pandas.where(status: 'トレーニング待ち').length %>件</td>
+        <td ><%= @pandas.where.not(result_point: nil).length %>件</td>    
+      </tr>
+      <tr>
+        <th class="search1", rowspan="2">不備内容</th>
+        <th class="search1">DocuSign締結待ち</th>
+        <th class="search1">品質チェック待ち</th>
+        <th class="search1">トレーニング待ち</th>
+        <th class="search1">NG数</th>
+      </tr>
+      <tr>
+        <td ><%= @pandas.where(status: 'DocuSign締結待ち　不備').length %>件</td>
+        <td ><%= @pandas.where(status: '品質チェック待ち　不備').length %>件</td>
+        <td ><%= @pandas.where(status: 'トレーニング待ち　不備').length %>件</td>
+        <td ><%= @pandas.where(status: 'NG').length %>件</td>
+        <td class="reset"><%= link_to "月毎のデータ", panda_profits_path, class: "reset-link" %></td>
       </tr>
     </table>
-  
-    <table class="index-table">
-    <tr class="index-tr">
-      <th class="index-th"></th>
-      <th class="index-th"><%= sort_link(@q, :id, "ID",{}, {class: "index-sort"}) %></th>
-      <th class="index-th"><%= sort_link(@q, :get_date, "獲得日",{}, {class: "index-sort"}) %></th>
-      <th class="index-th">法人/個人</th>
-      <th class="index-th">店舗名</th>
-      <th class="index-th">獲得者</th>
-      <th class="index-th">ステータス</th>
-      <th class="index-th">ボール</th>
-      <th class="index-th">不備内容</th>
+    <table>
+    <tr>
+      <th></th>
+      <th><%= sort_link(@q, :id, "ID",{}, {class: "reset-link"}) %></th>
+      <th><%= sort_link(@q, :get_date, "獲得日",{}, {class: "reset-link"}) %></th>
+      <th>ゴースト店舗</th>
+      <th>店舗名</th>
+      <th>獲得者</th>
+      <th>ステータス</th>
+      <th>ボール</th>
+      <th>不備内容</th>
     </tr>
     <% @pandas.each do |panda| %>
-    <tr class="index-tr">
-      <td class="index-td"><%= link_to "詳細",  panda_path(panda.id) ,class: "index-link" %></td>
-      <td class="index-td"><%= panda.id %></td>
-      <td class="index-td"><%= panda.get_date %></td>
-      <td class="index-td"><%= panda.store_prop.race %></td>
-      <td class="index-td"><%= panda.store_prop.name %></td>
-      <td class="index-td"><%= panda.user.name %></td>
-      <td class="index-td"><%= panda.status %></td>
-      <td class="index-td"><%= panda.confirm_ball %></td>
-      <td class="index-td"><%= panda.deficiency %></td>
+    <tr>
+      <td><%= link_to "詳細",  panda_path(panda.id) ,class: "link" %></td>
+      <td><%= panda.id %></td>
+      <td><%= panda.get_date %></td>
+      <% if panda.ghost_flag.empty? %>
+      <td>実店舗</td>
+      <% else %>
+      <td><%= panda.ghost_flag %></td>
+      <% end %>
+      <td><%= panda.store_prop.name %></td>
+      <td><%= panda.user.name %></td>
+      <td><%= panda.status %></td>
+      <td><%= panda.confirm_ball %></td>
+      <td><%= panda.deficiency %></td>
     </tr>
     <% end %>
     </table>
   <% end %>
 </div>
-  </main>

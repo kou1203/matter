@@ -1,1230 +1,1384 @@
-<%= render "shared/header" %>
-
-<div class="main">
-  <%= render "shared/side_bar" %>
-  <main class="right-bar">
-  <h1 class="show-title">SS終着報告</h1>
-
+<div data-scope-path="results/new">
+  <h1>SS終着報告</h1>
+  <%= render "shared/header" %>
+  <%# CSV %>
     <%= form_with url: import_results_path do |f| %>
       <table class="table">
         <tr>
-          <td class="import-choose"><%= f.label :file, "獲得情報をCSVで取り込み",class:"import-label" %></td>
-          <td class="import-choose"><%= f.file_field :file, accept: ".csv", class: "import-file" %></td>
-          <td class="import-result"><%= f.submit  "インポート", class: "import-btn",data: { confirm: 'インポートしますか？' } %></td>
-        <td class="search-reset"><%= link_to "SS利益表へ移動する", results_path ,class: "reset-link" %></td>
+          <th class="csv"><%= f.label :file, "CSV取り込み",class:"" %></td>
+          <td class="csv-td"><%= f.file_field :file, accept: ".csv", class: "csv-text" %></td>
+          <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
+        <td class="reset"><%= link_to "SS利益表へ移動する", results_path ,class: "reset-link" %></td>
         </tr>
       </table>
     <% end %>
 
   <%= form_with model: @result,  class: "form-frame", local: true do |f| %>
     <%= render "shared/error_messages", model: f.object %>
-      <th>
-        <div class="form-interval">
-        <%= f.label :base, "拠点：#{current_user.base + current_user.base_sub}", class: "form-text" %>
-        <%= f.label :user_id, "：#{current_user.name}" , class: "form-text" %>
-        <%= f.hidden_field value: current_user.id %>
-        </div>
-      </th>
-    <h2 class="item-title">基本情報</h2>
-  <table>
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :date, "日付", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.date_field :date , class: "form-input" %>
-        </div>
-      </th>
+    <%= f.hidden_field :user_id, value: current_user.id %>
+  <%# 基本情報 %>
+    <h1>基本情報　拠点：<%= current_user.base + current_user.base_sub%>　<%= current_user.name %></h1>
+    <table>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :date, "日付", class: "form-text" %>
+          <%= f.date_field :date , class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :ojt, "帯同者", class: "form-text" %><br>
-        <%= f.text_field :ojt,class: "form-input" %>
-        </div>
-      </th>
-    </tr>
-    <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :ojt, "帯同者", class: "form-text" %>
+          <%= f.text_field :ojt,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :area, "地域", class: "form-text" %>
+          <%= f.text_field :area , class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :area, "地域", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.text_field :area , class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :shift, "シフト", class: "form-text" %>
+          <%= f.select :shift, {"キャッシュレス新規": "キャッシュレス新規", "キャッシュレス決済": "キャッシュレス決済","フェムト": "フェムト", "フェムト（設置）": "フェムト（設置）", "パンダ": "パンダ", "帯同": "帯同","内勤": "内勤", "休み": "休み","欠勤": "欠勤"},{}, {class: "form-input"} %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :shift, "シフト", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.select :shift, {"キャッシュレス新規": "キャッシュレス新規", "キャッシュレス決済": "キャッシュレス決済","フェムト": "フェムト", "パンダ": "パンダ", "帯同": "帯同","内勤": "内勤", "休み": "休み"},{}, {class: "form-input"} %>
-        </div>
-      </th>
-
-      <th>
-        <%= f.label :profit, "売上", class: "form-text" %><span class="note">（※必須）</span><br>
-        <%= f.number_field :profit, value: 0,class: "form-input"%>
-      </th>
+        <th>
+          <%= f.label :profit, "売上", class: "form-text" %>
+          <%= f.number_field :profit, value: 0,class: "form-input"%>
+        </th>
+      </tr>
+    </table>
   <%# 商材 %>
-   <tr>
+    <h1>獲得商材</h1>
+    <table>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :dmer, "dメル", class: "form-text" %>
+          <%= f.number_field :dmer , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :dmer, "dメル", class: "form-text" %><br>
-        <%= f.number_field :dmer , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :aupay, "auペイ", class: "form-text" %>
+          <%= f.number_field :aupay, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
+        <th>
+          <div class="form-interval">
+          <%= f.label :paypay, "PayPay", class: "form-text" %>
+          <%= f.number_field :paypay, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :praness, "ぷらねす", class: "form-text" %>
+          <%= f.number_field :praness, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :aupay, "auペイ", class: "form-text" %><br>
-        <%= f.number_field :aupay, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit, "サミット", class: "form-text" %>
+          <%= f.number_field :summit, value: 0,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :paypay, "PayPay", class: "form-text" %><br>
-        <%= f.number_field :paypay, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-    </tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda, "パンダ", class: "form-text" %>
+          <%= f.number_field :panda, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :rakuten_casa, "楽天フェムト", class: "form-text" %>
+          <%= f.number_field :rakuten_casa, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :praness, "ぷらねす", class: "form-text" %><br>
-        <%= f.number_field :praness, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :rakuten_casa_put, "楽天フェムト（設置）", class: "form-text" %>
+          <%= f.number_field :rakuten_casa_put, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit, "サミット", class: "form-text" %><br>
-        <%= f.number_field :summit, value: 0,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :dmer_settlement, "dメル決済", class: "form-text" %>
+          <%= f.number_field :dmer_settlement, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda, "パンダ", class: "form-text" %><br>
-        <%= f.number_field :panda, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-    </tr>
-
-    <tr>
-
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :dmer_settlement, "dメル決済", class: "form-text" %><br>
-        <%= f.number_field :dmer_settlement, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :aupay_settlement, "auペイ決済", class: "form-text" %><br>
-        <%= f.number_field :aupay_settlement, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-    </tr> 
-
-    </tr>
-  </table>
-  <h2 class="item-title">基準値</h2>
-  <table>
+        <th>
+          <div class="form-interval">
+          <%= f.label :aupay_settlement, "auペイ決済", class: "form-text" %>
+          <%= f.number_field :aupay_settlement, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+    </table>
   <%# 大枠基準値 %>
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :first_visit, "前半訪問", class: "form-text" %><br>
-        <%= f.number_field :first_visit, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+    <h1 >基準値</h1>
+    <table>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :first_visit, "前半訪問", class: "form-text" %>
+          <%= f.number_field :first_visit, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :first_interview, "前半対面", class: "form-text" %><br>
-        <%= f.number_field :first_interview, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :first_interview, "前半対面", class: "form-text" %>
+          <%= f.number_field :first_interview, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :first_full_talk, "前半フル", class: "form-text" %><br>
-        <%= f.number_field :first_full_talk, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :first_full_talk, "前半フル", class: "form-text" %>
+          <%= f.number_field :first_full_talk, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :first_get, "前半獲得", class: "form-text" %><br>
-        <%= f.number_field :first_get, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :first_get, "前半獲得", class: "form-text" %>
+          <%= f.number_field :first_get, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :latter_visit, "後半訪問", class: "form-text" %>
+          <%= f.number_field :latter_visit, value: 0 , class: "form-input" %>
+          </div>
+        </th>
 
-    </tr>
-  
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :latter_visit, "後半訪問", class: "form-text" %><br>
-        <%= f.number_field :latter_visit, value: 0 , class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :latter_interview, "後半対面", class: "form-text" %>
+          <%= f.number_field :latter_interview, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :latter_interview, "後半対面", class: "form-text" %><br>
-        <%= f.number_field :latter_interview, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :latter_full_talk, "後半フル", class: "form-text" %>
+          <%= f.number_field :latter_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :latter_full_talk, "後半フル", class: "form-text" %><br>
-        <%= f.number_field :latter_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :latter_get, "後半獲得", class: "form-text" %><br>
-        <%= f.number_field :latter_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-    </tr>
-  </table>
-  <h2 class="item-title">店舗別基準値</h2>
+        <th>
+          <div class="form-interval">
+          <%= f.label :latter_get, "後半獲得", class: "form-text" %>
+          <%= f.number_field :latter_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+    </table>
   <%# 店舗別基準値 %>
-  <table>
-    <tr>
+    <h1 >店舗別基準値</h1>
+    <table>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cafe_visit, "喫茶・カフェ 訪問", class: "form-text" %>
+          <%= f.number_field :cafe_visit, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cafe_visit, "喫茶・カフェ 訪問", class: "form-text" %><br>
-        <%= f.number_field :cafe_visit, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cafe_interview, "喫茶・カフェ 対面", class: "form-text" %>
+          <%= f.number_field :cafe_interview, value: 0 , class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cafe_interview, "喫茶・カフェ 対面", class: "form-text" %><br>
-        <%= f.number_field :cafe_interview, value: 0 , class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cafe_full_talk, "喫茶・カフェ フル", class: "form-text" %>
+          <%= f.number_field :cafe_full_talk , class: "form-input", min: 0, value: 0 %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cafe_full_talk, "喫茶・カフェ フル", class: "form-text" %><br>
-        <%= f.number_field :cafe_full_talk , class: "form-input", min: 0, value: 0 %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cafe_get, "喫茶・カフェ 獲得", class: "form-text" %>
+          <%= f.number_field :cafe_get , class: "form-input", min: 0, value: 0 %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cafe_get, "喫茶・カフェ 獲得", class: "form-text" %><br>
-        <%= f.number_field :cafe_get , class: "form-input", min: 0, value: 0 %>
-        </div>
-      </th>
+      </tr>
 
-    </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_food_visit, "その他・飲食 訪問", class: "form-text" %>
+          <%= f.number_field :other_food_visit, value: 0 ,class: "form-input", min: 0,value: 0 %>
+          </div>
+        </th>
+        
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_food_interview, "その他・飲食 対面", class: "form-text" %>
+          <%= f.number_field :other_food_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_food_visit, "その他・飲食 訪問", class: "form-text" %><br>
-        <%= f.number_field :other_food_visit, value: 0 ,class: "form-input", min: 0,value: 0 %>
-        </div>
-      </th>
-      
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_food_interview, "その他・飲食 対面", class: "form-text" %><br>
-        <%= f.number_field :other_food_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_food_full_talk, "その他・飲食 フル", class: "form-text" %>
+          <%= f.number_field :other_food_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_food_full_talk, "その他・飲食 フル", class: "form-text" %><br>
-        <%= f.number_field :other_food_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_food_get, "その他・飲食 獲得", class: "form-text" %>
+          <%= f.number_field :other_food_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :car_visit, "車屋 訪問", class: "form-text" %>
+          <%= f.number_field :car_visit, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+        
+        <th>
+          <div class="form-interval">
+          <%= f.label :car_interview, "車屋 対面", class: "form-text" %>
+          <%= f.number_field :car_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_food_get, "その他・飲食 獲得", class: "form-text" %><br>
-        <%= f.number_field :other_food_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-    </tr>
-  
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :car_visit, "車屋 訪問", class: "form-text" %><br>
-        <%= f.number_field :car_visit, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-      
-      <th>
-        <div class="form-interval">
-        <%= f.label :car_interview, "車屋 対面", class: "form-text" %><br>
-        <%= f.number_field :car_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :car_full_talk, "車屋 フル", class: "form-text" %>
+          <%= f.number_field :car_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :car_full_talk, "車屋 フル", class: "form-text" %><br>
-        <%= f.number_field :car_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :car_get, "車屋 獲得", class: "form-text" %>
+          <%= f.number_field :car_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+    
+      <tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :car_get, "車屋 獲得", class: "form-text" %><br>
-        <%= f.number_field :car_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-    </tr>
-  
-    <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_retail_visit, "その他・小売 訪問", class: "form-text" %>
+          <%= f.number_field :other_retail_visit, value: 0 ,class: "form-input", min: 0,value: 0 %>
+          </div>
+        </th>
+        
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_retail_interview, "その他・小売 対面", class: "form-text" %>
+          <%= f.number_field :other_retail_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_retail_visit, "その他・小売 訪問", class: "form-text" %><br>
-        <%= f.number_field :other_retail_visit, value: 0 ,class: "form-input", min: 0,value: 0 %>
-        </div>
-      </th>
-      
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_retail_interview, "その他・小売 対面", class: "form-text" %><br>
-        <%= f.number_field :other_retail_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_retail_full_talk, "その他・小売 フル", class: "form-text" %>
+          <%= f.number_field :other_retail_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_retail_full_talk, "その他・小売 フル", class: "form-text" %><br>
-        <%= f.number_field :other_retail_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_retail_get, "その他・小売 獲得", class: "form-text" %>
+          <%= f.number_field :other_retail_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :hair_salon_visit, "理容・美容 訪問", class: "form-text" %>
+          <%= f.number_field :hair_salon_visit, value: 0 ,class: "form-input", min: 0,value: 0 %>
+          </div>
+        </th>
+        
+        <th>
+          <div class="form-interval">
+          <%= f.label :hair_salon_interview, "理容・美容 対面", class: "form-text" %>
+          <%= f.number_field :hair_salon_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_retail_get, "その他・小売 獲得", class: "form-text" %><br>
-        <%= f.number_field :other_retail_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-    </tr>
-  
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :hair_salon_visit, "理容・美容 訪問", class: "form-text" %><br>
-        <%= f.number_field :hair_salon_visit, value: 0 ,class: "form-input", min: 0,value: 0 %>
-        </div>
-      </th>
-      
-      <th>
-        <div class="form-interval">
-        <%= f.label :hair_salon_interview, "理容・美容 対面", class: "form-text" %><br>
-        <%= f.number_field :hair_salon_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :hair_salon_full_talk, "理容・美容 フル", class: "form-text" %>
+          <%= f.number_field :hair_salon_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :hair_salon_full_talk, "理容・美容 フル", class: "form-text" %><br>
-        <%= f.number_field :hair_salon_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :hair_salon_get, "理容・美容 獲得", class: "form-text" %>
+          <%= f.number_field :hair_salon_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :hair_salon_get, "理容・美容 獲得", class: "form-text" %><br>
-        <%= f.number_field :hair_salon_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :manipulative_visit, "整体・鍼灸 訪問", class: "form-text" %>
+          <%= f.number_field :manipulative_visit, value: 0 ,class: "form-input", min: 0,value: 0 %>
+          </div>
+        </th>
+        
+        <th>
+          <div class="form-interval">
+          <%= f.label :manipulative_interview, "整体・鍼灸 対面", class: "form-text" %>
+          <%= f.number_field :manipulative_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    </tr>
-  
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :manipulative_visit, "整体・鍼灸 訪問", class: "form-text" %><br>
-        <%= f.number_field :manipulative_visit, value: 0 ,class: "form-input", min: 0,value: 0 %>
-        </div>
-      </th>
-      
-      <th>
-        <div class="form-interval">
-        <%= f.label :manipulative_interview, "整体・鍼灸 対面", class: "form-text" %><br>
-        <%= f.number_field :manipulative_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :manipulative_full_talk, "整体・鍼灸 フル", class: "form-text" %>
+          <%= f.number_field :manipulative_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :manipulative_full_talk, "整体・鍼灸 フル", class: "form-text" %><br>
-        <%= f.number_field :manipulative_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :manipulative_get, "整体・鍼灸 獲得", class: "form-text" %>
+          <%= f.number_field :manipulative_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_service_visit, "その他・サービス 訪問", class: "form-text" %>
+          <%= f.number_field :other_service_visit, value: 0 ,class: "form-input", min: 0,value: 0 %>
+          </div>
+        </th>
+        
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_service_interview, "その他・サービス 対面", class: "form-text" %>
+          <%= f.number_field :other_service_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :manipulative_get, "整体・鍼灸 獲得", class: "form-text" %><br>
-        <%= f.number_field :manipulative_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_service_full_talk, "その他・サービス フル", class: "form-text" %>
+          <%= f.number_field :other_service_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    </tr>
-  
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_service_visit, "その他・サービス 訪問", class: "form-text" %><br>
-        <%= f.number_field :other_service_visit, value: 0 ,class: "form-input", min: 0,value: 0 %>
-        </div>
-      </th>
-      
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_service_interview, "その他・サービス 対面", class: "form-text" %><br>
-        <%= f.number_field :other_service_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_service_full_talk, "その他・サービス フル", class: "form-text" %><br>
-        <%= f.number_field :other_service_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :other_service_get, "その他・サービス 獲得", class: "form-text" %><br>
-        <%= f.number_field :other_service_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-  </table>
-  <% if current_user.base_sub == "キャッシュレス" || current_user.base_sub == "キャッシュ・パンダ" %>
-  <h2 class="item-title">切り返し（キャッシュレス）</h2>
-  <table>
+        <th>
+          <div class="form-interval">
+          <%= f.label :other_service_get, "その他・サービス 獲得", class: "form-text" %>
+          <%= f.number_field :other_service_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+    </table>
   <%# 切り返し（キャッシュレス） %>
-  
-    <tr>
+    <% if current_user.base_sub == "キャッシュレス"%>
+    <h1 >切り返し（キャッシュレス）</h1>
+    <table>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_what_interview, "どういうこと？ 対面", class: "form-text" %>
+          <%= f.number_field :cashless_what_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    </tr>
-  
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_what_interview, "どういうこと？ 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_what_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_what_full_talk, "どういうこと？ フル", class: "form-text" %>
+          <%= f.number_field :cashless_what_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_what_full_talk, "どういうこと？ フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_what_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_what_get, "どういうこと？ 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_what_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+    
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_who_interview, "君は誰？ 対面", class: "form-text" %>
+          <%= f.number_field :cashless_who_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_what_get, "どういうこと？ 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_what_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_who_full_talk, "君は誰？ フル", class: "form-text" %>
+          <%= f.number_field :cashless_who_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_who_get, "君は誰？ 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_who_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_just_get_interview, "もらうだけでいいの？ 対面", class: "form-text" %>
+          <%= f.number_field :cashless_just_get_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_just_get_full_talk, "もらうだけでいいの？ フル", class: "form-text" %>
+          <%= f.number_field :cashless_just_get_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_just_get_get, "もらうだけでいいの？ 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_just_get_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_paypay_only_interview, "PayPayのみ 対面", class: "form-text" %>
+          <%= f.number_field :cashless_paypay_only_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_paypay_only_full_talk, "PayPayのみ フル", class: "form-text" %>
+          <%= f.number_field :cashless_paypay_only_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_paypay_only_get, "PayPayのみ 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_paypay_only_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_airpay_only_interview, "AirPayのみ 対面", class: "form-text" %>
+          <%= f.number_field :cashless_airpay_only_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_airpay_only_full_talk, "AirPayのみ フル", class: "form-text" %>
+          <%= f.number_field :cashless_airpay_only_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_airpay_only_get, "AirPayのみ 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_airpay_only_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_card_only_interview, "カードのみ 対面", class: "form-text" %>
+          <%= f.number_field :cashless_card_only_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_card_only_full_talk, "カードのみ フル", class: "form-text" %>
+          <%= f.number_field :cashless_card_only_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_card_only_get, "カードのみ 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_card_only_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_yet_interview, "先延ばし 対面", class: "form-text" %>
+          <%= f.number_field :cashless_yet_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_yet_full_talk, "先延ばし フル", class: "form-text" %>
+          <%= f.number_field :cashless_yet_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_yet_get, "先延ばし 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_yet_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_cash_only_interview, "現金のみ 対面", class: "form-text" %>
+          <%= f.number_field :cashless_cash_only_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_cash_only_full_talk, "現金のみ フル", class: "form-text" %>
+          <%= f.number_field :cashless_cash_only_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_cash_only_get, "現金のみ 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_cash_only_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_busy_interview, "忙しい 対面", class: "form-text" %>
+          <%= f.number_field :cashless_busy_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_busy_full_talk, "忙しい フル", class: "form-text" %>
+          <%= f.number_field :cashless_busy_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_busy_get, "忙しい 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_busy_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_dull_interview, "めんどくさい 対面", class: "form-text" %>
+          <%= f.number_field :cashless_dull_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_dull_full_talk, "めんどくさい フル", class: "form-text" %>
+          <%= f.number_field :cashless_dull_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_dull_get, "めんどくさい 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_dull_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_lack_info_interview, "情報不足 対面", class: "form-text" %>
+          <%= f.number_field :cashless_lack_info_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_lack_info_full_talk, "情報不足 フル", class: "form-text" %>
+          <%= f.number_field :cashless_lack_info_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_lack_info_get, "情報不足 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_lack_info_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_easy_interview, "ペロ 対面", class: "form-text" %>
+          <%= f.number_field :cashless_easy_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_easy_full_talk, "ペロ フル", class: "form-text" %>
+          <%= f.number_field :cashless_easy_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_easy_get, "ペロ 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_easy_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_other_interview, "その他 対面", class: "form-text" %>
+          <%= f.number_field :cashless_other_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_other_full_talk, "その他 フル", class: "form-text" %>
+          <%= f.number_field :cashless_other_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :cashless_other_get, "その他 獲得", class: "form-text" %>
+          <%= f.number_field :cashless_other_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+    </table>
+    <% end %>
+  <%# サミット切り返し %>
+    <% if current_user.base_sub == "サミット" %>
+    <h1 >切り返し（サミット）</h1>
+    <table>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_ng_detail, "明細NG", class: "form-text" %>
+          <%= f.number_field :summit_ng_detail , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_ng_cash, "口座NG", class: "form-text" %>
+          <%= f.number_field :summit_ng_cash, value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_ng_building, "建物一括", class: "form-text" %>
+          <%= f.number_field :summit_ng_building , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_reject_cash_interview, "引き落とし拒否 対面", class: "form-text" %>
+          <%= f.number_field :summit_reject_cash_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_reject_cash_full_talk, "引き落とし拒否 フル", class: "form-text" %>
+          <%= f.number_field :summit_reject_cash_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_reject_cash_get, "引き落とし拒否 獲得", class: "form-text" %>
+          <%= f.number_field :summit_reject_cash_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_busy_interview, "忙しい 対面", class: "form-text" %>
+          <%= f.number_field :summit_busy_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_busy_full_talk, "忙しい フル", class: "form-text" %>
+          <%= f.number_field :summit_busy_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_busy_get, "忙しい 獲得", class: "form-text" %>
+          <%= f.number_field :summit_busy_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_doubt_interview, "怪しい 対面", class: "form-text" %>
+          <%= f.number_field :summit_doubt_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_doubt_full_talk, "怪しい フル", class: "form-text" %>
+          <%= f.number_field :summit_doubt_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_doubt_get, "怪しい 獲得", class: "form-text" %>
+          <%= f.number_field :summit_doubt_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_yet_interview, "検討 対面", class: "form-text" %>
+          <%= f.number_field :summit_yet_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_yet_full_talk, "検討 フル", class: "form-text" %>
+          <%= f.number_field :summit_yet_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_yet_get, "検討 獲得", class: "form-text" %>
+          <%= f.number_field :summit_yet_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_not_change_interview, "変えたくない 対面", class: "form-text" %>
+          <%= f.number_field :summit_not_change_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_not_change_full_talk, "変えたくない フル", class: "form-text" %>
+          <%= f.number_field :summit_not_change_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_not_change_get, "変えたくない 獲得", class: "form-text" %>
+          <%= f.number_field :summit_not_change_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_other_interview, "その他 対面", class: "form-text" %>
+          <%= f.number_field :summit_other_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_other_full_talk, "その他 フル", class: "form-text" %>
+          <%= f.number_field :summit_other_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_other_get, "その他 獲得", class: "form-text" %>
+          <%= f.number_field :summit_other_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_easy_interview, "ペロ 対面", class: "form-text" %>
+          <%= f.number_field :summit_easy_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_easy_full_talk, "ペロ フル", class: "form-text" %>
+          <%= f.number_field :summit_easy_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :summit_easy_get, "ペロ 獲得", class: "form-text" %>
+          <%= f.number_field :summit_easy_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+      </tr>
+    </table>
+    <% end %>
+  <%# パンダ切り返し %>
+    <% if current_user.base == "東京SS" %>
+    <h1 >切り返し（フードパンダ）</h1>
+    <table>
+      <tr>
+
+      </tr>
+    
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_need_interview, "結構です 対面", class: "form-text" %>
+          <%= f.number_field :panda_not_need_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_need_full_talk, "結構です フル", class: "form-text" %>
+          <%= f.number_field :panda_not_need_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_need_get, "結構です 獲得", class: "form-text" %>
+          <%= f.number_field :panda_not_need_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
 
-    </tr>
-  
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_who_interview, "君は誰？ 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_who_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      </tr>
+      <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_busy_interview, "今忙しい 対面", class: "form-text" %>
+          <%= f.number_field :panda_busy_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_who_full_talk, "君は誰？ フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_who_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_busy_full_talk, "今忙しい フル", class: "form-text" %>
+          <%= f.number_field :panda_busy_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_who_get, "君は誰？ 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_who_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_busy_get, "忙しい 獲得", class: "form-text" %>
+          <%= f.number_field :panda_busy_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
 
-    </tr>
-  
-    <tr>
+      </tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_just_get_interview, "もらうだけでいいの？ 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_just_get_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      <tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_just_get_full_talk, "もらうだけでいいの？ フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_just_get_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_yet_interview, "検討 対面", class: "form-text" %>
+          <%= f.number_field :panda_yet_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_just_get_get, "もらうだけでいいの？ 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_just_get_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_yet_full_talk, "検討 フル", class: "form-text" %>
+          <%= f.number_field :panda_yet_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    </tr>
-  
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_paypay_only_interview, "PayPayのみ 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_paypay_only_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_yet_get, "検討 獲得", class: "form-text" %>
+          <%= f.number_field :panda_yet_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_paypay_only_full_talk, "PayPayのみ フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_paypay_only_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      </tr>
+      <tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_paypay_only_get, "PayPayのみ 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_paypay_only_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_delivery_interview, "デリバリーはいい 対面", class: "form-text" %>
+          <%= f.number_field :panda_not_delivery_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    </tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_airpay_only_interview, "AirPayのみ 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_airpay_only_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_delivery_full_talk, "デリバリーはいい フル", class: "form-text" %>
+          <%= f.number_field :panda_not_delivery_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_airpay_only_full_talk, "AirPayのみ フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_airpay_only_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_delivery_get, "デリバリーはいい 獲得", class: "form-text" %>
+          <%= f.number_field :panda_not_delivery_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_airpay_only_get, "AirPayのみ 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_airpay_only_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      </tr>
 
-    </tr>
+      <tr>
 
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_card_only_interview, "カードのみ 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_card_only_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_increment_interview, "増やしたくない 対面", class: "form-text" %>
+          <%= f.number_field :panda_not_increment_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_card_only_full_talk, "カードのみ フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_card_only_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_increment_full_talk, "増やしたくない フル", class: "form-text" %>
+          <%= f.number_field :panda_not_increment_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_card_only_get, "カードのみ 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_card_only_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-    </tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_increment_get, "増やしたくない 獲得", class: "form-text" %>
+          <%= f.number_field :panda_not_increment_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    <tr>
+      </tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_yet_interview, "先延ばし 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_yet_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      <tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_yet_full_talk, "先延ばし フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_yet_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_margin_interview, "やる余裕ない 対面", class: "form-text" %>
+          <%= f.number_field :panda_not_margin_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_yet_get, "先延ばし 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_yet_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_margin_full_talk, "やる余裕ない フル", class: "form-text" %>
+          <%= f.number_field :panda_not_margin_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    </tr>
-  
-    <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_not_margin_get, "やる余裕ない 獲得", class: "form-text" %>
+          <%= f.number_field :panda_not_margin_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_cash_only_interview, "現金のみ 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_cash_only_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      </tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_cash_only_full_talk, "現金のみ フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_cash_only_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      <tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_cash_only_get, "現金のみ 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_cash_only_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_dull_interview, "めんどくさい 対面", class: "form-text" %>
+          <%= f.number_field :panda_dull_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    </tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_dull_full_talk, "めんどくさい フル", class: "form-text" %>
+          <%= f.number_field :panda_dull_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_busy_interview, "忙しい 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_busy_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_dull_get, "めんどくさい 獲得", class: "form-text" %>
+          <%= f.number_field :panda_dull_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_busy_full_talk, "忙しい フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_busy_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      </tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_busy_get, "忙しい 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_busy_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      <tr>
 
-    </tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_lack_info_interview, "情報不足 対面", class: "form-text" %>
+          <%= f.number_field :panda_lack_info_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_dull_interview, "めんどくさい 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_dull_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_lack_info_full_talk, "情報不足 フル", class: "form-text" %>
+          <%= f.number_field :panda_lack_info_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_dull_full_talk, "めんどくさい フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_dull_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_lack_info_get, "情報不足 獲得", class: "form-text" %>
+          <%= f.number_field :panda_lack_info_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_dull_get, "めんどくさい 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_dull_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-    </tr>
+      </tr>
+    
 
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_lack_info_interview, "情報不足 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_lack_info_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      <tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_lack_info_full_talk, "情報不足 フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_lack_info_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_food_neko_interview, "フードネコ 対面", class: "form-text" %>
+          <%= f.number_field :panda_food_neko_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_lack_info_get, "情報不足 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_lack_info_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-    </tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_food_neko_full_talk, "フードネコ フル", class: "form-text" %>
+          <%= f.number_field :panda_food_neko_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_food_neko_get, "フードネコ 獲得", class: "form-text" %>
+          <%= f.number_field :panda_food_neko_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_easy_interview, "ペロ 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_easy_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      </tr>
+    
+      <tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_easy_full_talk, "ペロ フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_easy_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_other_interview, "その他 対面", class: "form-text" %>
+          <%= f.number_field :panda_other_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_easy_get, "ペロ 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_easy_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_other_full_talk, "その他 フル", class: "form-text" %>
+          <%= f.number_field :panda_other_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    </tr>
-  
-    <tr>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_other_get, "その他 獲得", class: "form-text" %>
+          <%= f.number_field :panda_other_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_other_interview, "その他 対面", class: "form-text" %><br>
-        <%= f.number_field :cashless_other_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+      </tr>
+    
+      <tr>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_other_full_talk, "その他 フル", class: "form-text" %><br>
-        <%= f.number_field :cashless_other_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_easy_interview, "ペロ 対面", class: "form-text" %>
+          <%= f.number_field :panda_easy_interview , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-      <th>
-        <div class="form-interval">
-        <%= f.label :cashless_other_get, "その他 獲得", class: "form-text" %><br>
-        <%= f.number_field :cashless_other_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_easy_full_talk, "ペロ フル", class: "form-text" %>
+          <%= f.number_field :panda_easy_full_talk , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
 
-    </tr>
-  </table>
+        <th>
+          <div class="form-interval">
+          <%= f.label :panda_easy_get, "ペロ 獲得", class: "form-text" %>
+          <%= f.number_field :panda_easy_get , value: 0 ,class: "form-input" %>
+          </div>
+        </th>
+
+      </tr>
+    </table>
+    <% end %>
+  <%# 楽天カーサ切り返し %>
+    <% if current_user.base_sub == "フェムト" %>
+      <h1>フェムト切り返し</h1>
+      <table>
+        <tr>
+          <th>
+            <div class="form-interval">
+            <%= f.label :casa_ng_lack_info, "情報不足", class: "form-text" %>
+            <%= f.number_field :casa_ng_lack_info , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_busy_interview, "忙しい 対面", class: "form-text" %>
+              <%= f.number_field :casa_busy_interview , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_busy_full_talk, "忙しい フル", class: "form-text" %>
+              <%= f.number_field :casa_busy_full_talk , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_busy_get, "忙しい 獲得", class: "form-text" %>
+              <%= f.number_field :casa_busy_get , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_dull_interview, "面倒 対面", class: "form-text" %>
+              <%= f.number_field :casa_dull_interview , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_dull_full_talk, "面倒 フル", class: "form-text" %>
+              <%= f.number_field :casa_dull_full_talk , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_dull_get, "面倒 獲得", class: "form-text" %>
+              <%= f.number_field :casa_dull_get , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_not_put_space_interview, "置く場所がない 対面", class: "form-text" %>
+              <%= f.number_field :casa_not_put_space_interview , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_not_put_space_full_talk, "置く場所がない フル", class: "form-text" %>
+              <%= f.number_field :casa_not_put_space_full_talk , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_not_put_space_get, "置く場所がない 獲得", class: "form-text" %>
+              <%= f.number_field :casa_not_put_space_get , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_no_merit_interview, "メリットがない 対面", class: "form-text" %>
+              <%= f.number_field :casa_no_merit_interview , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_no_merit_full_talk, "メリットがない フル", class: "form-text" %>
+              <%= f.number_field :casa_no_merit_full_talk , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_no_merit_get, "メリットがない 獲得", class: "form-text" %>
+              <%= f.number_field :casa_no_merit_get , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_distrust_interview, "不審 対面", class: "form-text" %>
+              <%= f.number_field :casa_distrust_interview , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_distrust_full_talk, "不審 フル", class: "form-text" %>
+              <%= f.number_field :casa_distrust_full_talk , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_distrust_get, "不審 獲得", class: "form-text" %>
+              <%= f.number_field :casa_distrust_get , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_not_use_net_interview, "回線を使われたくない 対面", class: "form-text" %>
+              <%= f.number_field :casa_not_use_net_interview , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_not_use_net_full_talk, "回線を使われたくない フル", class: "form-text" %>
+              <%= f.number_field :casa_not_use_net_full_talk , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_not_use_net_get, "回線を使われたくない 獲得", class: "form-text" %>
+              <%= f.number_field :casa_not_use_net_get , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_not_need_interview, "結構です 対面", class: "form-text" %>
+              <%= f.number_field :casa_not_need_interview , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_not_need_full_talk, "結構です フル", class: "form-text" %>
+              <%= f.number_field :casa_not_need_full_talk , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_not_need_get, "結構です 獲得", class: "form-text" %>
+              <%= f.number_field :casa_not_need_get , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_easy_interview, "ペロ 対面", class: "form-text" %>
+              <%= f.number_field :casa_easy_interview , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_easy_full_talk, "ペロ フル", class: "form-text" %>
+              <%= f.number_field :casa_easy_full_talk , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_easy_get, "ペロ 獲得", class: "form-text" %>
+              <%= f.number_field :casa_easy_get , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_other_interview, "その他 対面", class: "form-text" %>
+              <%= f.number_field :casa_other_interview , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_other_full_talk, "その他 フル", class: "form-text" %>
+              <%= f.number_field :casa_other_full_talk , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+
+          <th>
+            <div class="form-interval">
+              <%= f.label :casa_other_get, "その他 獲得", class: "form-text" %>
+              <%= f.number_field :casa_other_get , value: 0 ,class: "form-input" %>
+            </div>
+          </th>
+        </tr>
+      </table>
+    <% end %>
+    <%= f.submit "登録",data: { confirm: "登録してもよろしいですか？" }, class: "submit-btn" %>
   <% end %>
-  <% if current_user.base_sub == "サミット" %>
-  <h2 class="item-title">切り返し（サミット）</h2>
-  <table>
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_ng_detail, "明細NG", class: "form-text" %><br>
-        <%= f.number_field :summit_ng_detail , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_ng_cash, "口座NG", class: "form-text" %><br>
-        <%= f.number_field :summit_ng_cash, value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_ng_building, "建物一括", class: "form-text" %><br>
-        <%= f.number_field :summit_ng_building , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-    </tr>
-  
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_reject_cash_interview, "引き落とし拒否 対面", class: "form-text" %><br>
-        <%= f.number_field :summit_reject_cash_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_reject_cash_full_talk, "引き落とし拒否 フル", class: "form-text" %><br>
-        <%= f.number_field :summit_reject_cash_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_reject_cash_get, "引き落とし拒否 獲得", class: "form-text" %><br>
-        <%= f.number_field :summit_reject_cash_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-
-    </tr>
-  
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_busy_interview, "忙しい 対面", class: "form-text" %><br>
-        <%= f.number_field :summit_busy_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_busy_full_talk, "忙しい フル", class: "form-text" %><br>
-        <%= f.number_field :summit_busy_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_busy_get, "忙しい 獲得", class: "form-text" %><br>
-        <%= f.number_field :summit_busy_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-
-    </tr>
-  
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_doubt_interview, "怪しい 対面", class: "form-text" %><br>
-        <%= f.number_field :summit_doubt_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_doubt_full_talk, "怪しい フル", class: "form-text" %><br>
-        <%= f.number_field :summit_doubt_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_doubt_get, "怪しい 獲得", class: "form-text" %><br>
-        <%= f.number_field :summit_doubt_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-  
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_yet_interview, "検討 対面", class: "form-text" %><br>
-        <%= f.number_field :summit_yet_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_yet_full_talk, "検討 フル", class: "form-text" %><br>
-        <%= f.number_field :summit_yet_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_yet_get, "検討 獲得", class: "form-text" %><br>
-        <%= f.number_field :summit_yet_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-  
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_not_change_interview, "変えたくない 対面", class: "form-text" %><br>
-        <%= f.number_field :summit_not_change_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_not_change_full_talk, "変えたくない フル", class: "form-text" %><br>
-        <%= f.number_field :summit_not_change_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_not_change_get, "変えたくない 獲得", class: "form-text" %><br>
-        <%= f.number_field :summit_not_change_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_other_interview, "その他 対面", class: "form-text" %><br>
-        <%= f.number_field :summit_other_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_other_full_talk, "その他 フル", class: "form-text" %><br>
-        <%= f.number_field :summit_other_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_other_get, "その他 獲得", class: "form-text" %><br>
-        <%= f.number_field :summit_other_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_easy_interview, "ペロ 対面", class: "form-text" %><br>
-        <%= f.number_field :summit_easy_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_easy_full_talk, "ペロ フル", class: "form-text" %><br>
-        <%= f.number_field :summit_easy_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :summit_easy_get, "ペロ 獲得", class: "form-text" %><br>
-        <%= f.number_field :summit_easy_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-
-  </table>
-  <% end %>
-  <% if current_user.base_sub == "キャッシュ・パンダ" %>
-  <h2 class="item-title">切り返し（フードパンダ）</h2>
-  <table>
-    <tr>
-
-    </tr>
-  
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_need_interview, "結構です 対面", class: "form-text" %><br>
-        <%= f.number_field :panda_not_need_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_need_full_talk, "結構です フル", class: "form-text" %><br>
-        <%= f.number_field :panda_not_need_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_need_get, "結構です 獲得", class: "form-text" %><br>
-        <%= f.number_field :panda_not_need_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-
-    </tr>
-    <tr>
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_busy_interview, "今忙しい 対面", class: "form-text" %><br>
-        <%= f.number_field :panda_busy_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_busy_full_talk, "今忙しい フル", class: "form-text" %><br>
-        <%= f.number_field :panda_busy_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_busy_get, "忙しい 獲得", class: "form-text" %><br>
-        <%= f.number_field :panda_busy_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-
-    </tr>
-
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_yet_interview, "検討 対面", class: "form-text" %><br>
-        <%= f.number_field :panda_yet_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_yet_full_talk, "検討 フル", class: "form-text" %><br>
-        <%= f.number_field :panda_yet_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_yet_get, "検討 獲得", class: "form-text" %><br>
-        <%= f.number_field :panda_yet_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_delivery_interview, "デリバリーはいい 対面", class: "form-text" %><br>
-        <%= f.number_field :panda_not_delivery_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_delivery_full_talk, "デリバリーはいい フル", class: "form-text" %><br>
-        <%= f.number_field :panda_not_delivery_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_delivery_get, "デリバリーはいい 獲得", class: "form-text" %><br>
-        <%= f.number_field :panda_not_delivery_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_increment_interview, "増やしたくない 対面", class: "form-text" %><br>
-        <%= f.number_field :panda_not_increment_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_increment_full_talk, "増やしたくない フル", class: "form-text" %><br>
-        <%= f.number_field :panda_not_increment_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_increment_get, "増やしたくない 獲得", class: "form-text" %><br>
-        <%= f.number_field :panda_not_increment_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_margin_interview, "やる余裕ない 対面", class: "form-text" %><br>
-        <%= f.number_field :panda_not_margin_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_margin_full_talk, "やる余裕ない フル", class: "form-text" %><br>
-        <%= f.number_field :panda_not_margin_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_not_margin_get, "やる余裕ない 獲得", class: "form-text" %><br>
-        <%= f.number_field :panda_not_margin_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_dull_interview, "めんどくさい 対面", class: "form-text" %><br>
-        <%= f.number_field :panda_dull_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_dull_full_talk, "めんどくさい フル", class: "form-text" %><br>
-        <%= f.number_field :panda_dull_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_dull_get, "めんどくさい 獲得", class: "form-text" %><br>
-        <%= f.number_field :panda_dull_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_lack_info_interview, "情報不足 対面", class: "form-text" %><br>
-        <%= f.number_field :panda_lack_info_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_lack_info_full_talk, "情報不足 フル", class: "form-text" %><br>
-        <%= f.number_field :panda_lack_info_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_lack_info_get, "情報不足 獲得", class: "form-text" %><br>
-        <%= f.number_field :panda_lack_info_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-  
-
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_food_neko_interview, "フードネコ 対面", class: "form-text" %><br>
-        <%= f.number_field :panda_food_neko_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_food_neko_full_talk, "フードネコ フル", class: "form-text" %><br>
-        <%= f.number_field :panda_food_neko_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_food_neko_get, "フードネコ 獲得", class: "form-text" %><br>
-        <%= f.number_field :panda_food_neko_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-  
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_other_interview, "その他 対面", class: "form-text" %><br>
-        <%= f.number_field :panda_other_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_other_full_talk, "その他 フル", class: "form-text" %><br>
-        <%= f.number_field :panda_other_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_other_get, "その他 獲得", class: "form-text" %><br>
-        <%= f.number_field :panda_other_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-  
-    <tr>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_easy_interview, "ペロ 対面", class: "form-text" %><br>
-        <%= f.number_field :panda_easy_interview , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_easy_full_talk, "ペロ フル", class: "form-text" %><br>
-        <%= f.number_field :panda_easy_full_talk , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-      <th>
-        <div class="form-interval">
-        <%= f.label :panda_easy_get, "ペロ 獲得", class: "form-text" %><br>
-        <%= f.number_field :panda_easy_get , value: 0 ,class: "form-input" %>
-        </div>
-      </th>
-
-    </tr>
-
-  </table>
-  <% end %>
-    <%= f.submit "登録",data: { confirm: "登録してもよろしいですか？" }, class: "form-btn" %>
-  <% end %>
-  </main>
 </div>

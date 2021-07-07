@@ -9,9 +9,9 @@ class TroubleNsController < ApplicationController
       else
         @q.result(distinct: false)
       end
-      @trouble_ns_month = TroubleN.where(date: Time.now.beginning_of_month..Time.now.end_of_month)
-      @month_ago = TroubleN.where(date: Time.now.months_ago(1).beginning_of_month..Time.now.months_ago(1).end_of_month)
-      @week_ago = TroubleN.where(date: Time.now.weeks_ago(1)..Time.now)
+      @trouble_ns_month = TroubleN.includes(:user).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
+      @month_ago = TroubleN.includes(:user).where(date: Time.now.months_ago(1).beginning_of_month..Time.now.months_ago(1).end_of_month)
+      @week_ago = TroubleN.includes(:user).where(date: Time.now.weeks_ago(1)..Time.now)
       @users = User.all
   end 
 

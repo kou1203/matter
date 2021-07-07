@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_06_28_075854) do
+ActiveRecord::Schema.define(version: 2021_07_06_093513) do
 
   create_table "aupays", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "customer_num"
@@ -29,6 +29,25 @@ ActiveRecord::Schema.define(version: 2021_06_28_075854) do
     t.index ["customer_num"], name: "index_aupays_on_customer_num", unique: true
     t.index ["store_prop_id"], name: "index_aupays_on_store_prop_id"
     t.index ["user_id"], name: "index_aupays_on_user_id"
+  end
+
+  create_table "costs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "year", null: false
+    t.integer "month", null: false
+    t.string "base", null: false
+    t.integer "sales_man", null: false
+    t.integer "office_worker", null: false
+    t.integer "social_insurance", null: false
+    t.integer "administrator", null: false
+    t.integer "sales_man_cost", null: false
+    t.integer "office_worker_cost", null: false
+    t.integer "office", null: false
+    t.integer "utility_net_cost", null: false
+    t.integer "dorm", null: false
+    t.integer "bonus_stock", null: false
+    t.integer "travel_stock", null: false
+    t.integer "other", null: false
+    t.date "update_date"
   end
 
   create_table "dmers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -333,6 +352,8 @@ ActiveRecord::Schema.define(version: 2021_06_28_075854) do
     t.integer "panda"
     t.integer "praness"
     t.integer "summit"
+    t.integer "rakuten_casa"
+    t.integer "rakuten_casa_put"
     t.integer "first_visit", null: false
     t.integer "first_interview", null: false
     t.integer "first_full_talk", null: false
@@ -465,6 +486,34 @@ ActiveRecord::Schema.define(version: 2021_06_28_075854) do
     t.integer "panda_easy_interview"
     t.integer "panda_easy_full_talk"
     t.integer "panda_easy_get"
+    t.integer "casa_ng_lack_info"
+    t.integer "casa_busy_interview"
+    t.integer "casa_busy_full_talk"
+    t.integer "casa_busy_get"
+    t.integer "casa_dull_interview"
+    t.integer "casa_dull_full_talk"
+    t.integer "casa_dull_get"
+    t.integer "casa_not_put_space_interview"
+    t.integer "casa_not_put_space_full_talk"
+    t.integer "casa_not_put_space_get"
+    t.integer "casa_no_merit_interview"
+    t.integer "casa_no_merit_full_talk"
+    t.integer "casa_no_merit_get"
+    t.integer "casa_distrust_interview"
+    t.integer "casa_distrust_full_talk"
+    t.integer "casa_distrust_get"
+    t.integer "casa_not_use_net_interview"
+    t.integer "casa_not_use_net_full_talk"
+    t.integer "casa_not_use_net_get"
+    t.integer "casa_not_need_interview"
+    t.integer "casa_not_need_full_talk"
+    t.integer "casa_not_need_get"
+    t.integer "casa_easy_interview"
+    t.integer "casa_easy_full_talk"
+    t.integer "casa_easy_get"
+    t.integer "casa_other_interview"
+    t.integer "casa_other_full_talk"
+    t.integer "casa_other_get"
     t.index ["user_id"], name: "index_results_on_user_id"
   end
 
@@ -489,6 +538,7 @@ ActiveRecord::Schema.define(version: 2021_06_28_075854) do
     t.integer "summit", null: false
     t.integer "panda", null: false
     t.integer "rakuten_casa", null: false
+    t.integer "rakuten_casa_put", null: false
     t.integer "goal", null: false
     t.index ["user_id"], name: "index_shifts_on_user_id"
   end
@@ -613,9 +663,10 @@ ActiveRecord::Schema.define(version: 2021_06_28_075854) do
     t.string "name", null: false
     t.string "base"
     t.string "base_sub"
-    t.string "team"
     t.string "position"
     t.string "position_sub"
+    t.string "group"
+    t.string "team"
     t.string "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
