@@ -8,18 +8,20 @@
     <tr>
     <th >店舗名</th>
     <td ><%= @aupay.store_prop.name %></td>
-    </tr>
     <th >属性</th>
     <td ><%= @aupay.store_prop.race %></td>
+    </tr>
     <th >業種</th>
     <td ><%= @aupay.store_prop.industry %></td>
+    <th >本店名</th>
+    <td ><%= @aupay.store_prop.head_store %></td>
     <tr>
     </tr>
     <tr>
     <th >店舗代表</th>
-    <td ><%= @aupay.store_prop.person_main %></td>
+    <td ><%= @aupay.store_prop.person_main_name %></td>
     <th >店舗担当</th>
-    <td ><%= @aupay.store_prop.person_sub %></td>
+    <td ><%= @aupay.store_prop.person_sub_name %></td>
     </tr>
     <tr>
       <th >店舗住所</th>
@@ -54,45 +56,72 @@
     </tr>
     </table>
     <h1 >auペイ</h1>
-      
-    <table >
-    <tr>
-    </tr>
-    </table>
 
     <table >
     <tr>
     <th >獲得日</th>
-      <td ><%= @aupay.get_date %></td>
+      <td ><%= @aupay.date %></td>
       <th >獲得者</th>
       <td ><%= @aupay.user.name %></td>
+    </tr>
+    <tr>
       <th >管理番号</th>
       <td ><%= @aupay.customer_num %></td>
-    </tr>
-    <tr>
       <th >商流</th>
       <td ><%= @aupay.client %></td>
-      <th >審査ステータス</th>
-      <td ><%= @aupay.status %></td>
-      <th >入金日</th>
-      <td ><%= @aupay.payment %></td>
     </tr>
     <tr>
+      <th >新規ステータス</th>
+      <td ><%= @aupay.status %></td>
+      <th >新規ステータス更新日</th>
+      <td ><%= @aupay.status_update %></td>
     </tr>
+  </table>
+  <h1>決済情報</h1>
+  <table>
     <tr>
       <th >決済日</th>
       <td ><%= @aupay.settlement %></td>
-      <th >決済期限</th>
-      <td ><%= @aupay.settlement_deadline %></td>
-      <th >備考</th>
-      <td ><%= @aupay.description %></td>
+      <th >決済者</th>
+      <td ><%= @aupay.settlementer.name rescue "" %></td>
+
     </tr>
     <tr>
-      <th >評価売上</th>
-      <td ><%= @aupay.valuation_profit %></td>
-      <th >実売上</th>
-      <td ><%= @aupay.actual_profit %></td>
+      <th >決済期限</th>
+      <td ><%= @aupay.settlement_deadline %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+      <th >決済ステータス</th>
+      <td ><%= @aupay.status_settlement %></td>
+      <th >決済ステータス更新日</th>
+      <td ><%= @aupay.status_update_settlement %></td>
+    </tr>
+    <tr>
+      <th >備考</th>
+      <td colspan="2"><%= @aupay.description %></td>
       <td ><%= link_to "aupay情報編集", edit_aupay_path, class: "link" %></td>
+    </tr>
+  </table>
+  <h1>入金日/利益</h1>
+  <table>
+    <tr>
+      <th >入金日（新規）</th>
+      <td ><%= @aupay.payment %></td>
+      <th >入金日（決済）</th>
+      <td ><%= @aupay.payment_settlement %></td>
+    </tr>
+    <tr>
+      <th >評価売上（新規）</th>
+      <td ><%= @aupay.valuation_new %></td>
+      <th >評価売上（決済）</th>
+      <td ><%= @aupay.valuation_settlement %></td>
+    </tr>
+    <tr>
+      <th >実売上（新規）</th>
+      <td ><%= @aupay.profit_new %></td>
+      <th >実売上（決済）</th>
+      <td ><%= @aupay.profit_settlement %></td>
     </tr>
     </table>
 </div>

@@ -56,15 +56,21 @@ class AupaysController < ApplicationController
       :client,
       :user_id,
       :store_prop_id,
-      :get_date,
-      :payment,
+      :date,
       :status,
-      :before_status,
+      :status_update,
+      :settlementer_id,
       :settlement,
       :settlement_deadline,
-      :description,
-      :valuation_profit,
-      :actual_profit,
+      :status_settlement,
+      :status_update_settlement,
+      :payment,
+      :payment_settlement,
+      :profit_new,
+      :profit_settlement,
+      :valuation_new,    
+      :valuation_settlement,    
+      :description
     )
 
   end 

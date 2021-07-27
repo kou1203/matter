@@ -2,16 +2,23 @@
 h1 {
   padding: 1.0em;
   font-size: 20px;
-  background: linear-gradient(40deg, #d9534f 0%,  #ffad60 90%);
+  background: linear-gradient(40deg, #c4c2c2 40%,  #96ceb4 90%);
   color: white;
+}
+h2 {
+  margin-top: 20px;
+  padding: 0.5em;
+  font-size: 15px;
+  border-bottom:2px solid #c4c2c2;
+  color: rgb(70, 40, 40);
+  width: 120px;
 }
 // ヘッダー
 header {
   display: flex;
   justify-content: space-between;
   width: 100vw;
-  // border-bottom: #d9534f solid 5px;
-  background: linear-gradient(40deg, #d9534f 0%,  #ffad60 90%);
+  background: linear-gradient(40deg, #c4c2c2 40%,  #96ceb4 90%);
 }
 
 .sign-text {
@@ -28,94 +35,58 @@ header {
 // ヘッダー
 // ハンバーガーデザイン
 .nav {
-  display: flex;
-  
+display: flex;
+
 }
 
 .dropdown {
-  display: none;
-  margin: 0;
+display: none;
+margin: 0;
+position: fixed;
 }
+
 label {
-  color: #fff;
-  border-right: solid 3px ;
-  width: 200px;
+color: #fff;
+border-right: solid 3px ;
+width: 200px;
 }
+
 label:hover {
-  background: #ffa148;
+background: #C25B56;
+color: white;
 }
+
 li {
-  background: #a9a7a7;
-  color: white;
-  opacity: 0.9;
-  width: 200px;
+background: #a9a7a7;
+color: white;
+opacity: 0.9;
+width: 200px;
 }
+
 label,
 li {
-  display: block;
-  padding: 7px;
-  text-align: center;
-  letter-spacing: 0.5em;
-  font-weight: bold;
-}
-
-li::before,
-label::before {
-  content: "";
-  display: block;
-  position: absolute;
-  transform: rotate(135deg);
-}
-
-input[type=checkbox] {
-  display: none;
-}
-
-label[for="menu"] {
-  display: block;
-}
-label[for="menu"]::before {
-  transform: rotate(225deg);
-}
-#menu1:checked + .dropdown {
-  display: block;
-  position: fixed;
-}
-#menu2:checked + .dropdown {
-  display: block;
-  position: fixed;
-}
-#menu3:checked + .dropdown {
-  display: block;
-  position: fixed;
+display: block;
+padding: 7px;
+text-align: center;
+letter-spacing: 0.5em;
+font-weight: bold;
 }
 
 li:hover {
-  opacity: 1;
-  background: #ffad60;
+opacity: 1;
+background: #C25B56;
+color: white;
 }
 
 
 .side-link {
-  text-decoration: none;
-  color: white;
-  font-weight: bold;
-  display: block;
+text-decoration: none;
+color: white;
+font-weight: bold;
+display: block;
 } 
 
 // ハンバーガーデザイン
-
-.reg {
-  text-align: center;
-  color: white;
-  font-weight: bold;
-  background:  #ffad60;
-  box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-  padding: 15px 0;
-  margin: 15px;
-  width: 7vw;
-  border-radius: 18px 0;
-}
 
 .reg-link {
   text-decoration: none;
@@ -132,60 +103,68 @@ main {
   padding: 5px;
 }
 
-table{
-  border-collapse: collapse;
-  margin: 20px ;
-  table-layout: fixed;
-  min-width: 100%;
-  display: block;
-  overflow-x: scroll;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
-  max-width: 600px;
-}
-
-tr:nth-child(odd) {
-  background: #ede5e5;
-}
 // csv
+
+
 .csv {
-background: #e76863;
+  background: #c4c2c2;
 border-radius: 15px 0 0 15px;
-box-shadow: 1px 2px 1px 0 gray inset;
+box-shadow: 0px -3px 5px 1px #eee inset;
+color: white;
+padding: 5px;
 }
 
 .csv-text {
-text-align: center;
-color: white;
+  background: #c4c2c2;
+  border: none;
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+  color: rgb(243, 240, 240);
+  font-weight: bold;
 }
+
+.csv-td {
+  background: #c4c2c2;
+  color: white;
+    border-bottom: 1px solid rgb(205, 203, 203);
+    text-align: center;
+    box-shadow: 0px -3px 5px 1px #eee inset;
+    padding: 10px 0;
+    border: none;
+  }
 // csv
 
 // 登録フォーム
 .form-frame {
-background: linear-gradient(40deg, #d9534f 0%,  #ffad60 90%);
+margin-top: 20px;
+padding: 10px;
 }
 
 .form-text {
 color: white;
 border: none;
-width: 300px;
+width: 200px;
+color: rgb(103, 101, 101);
+font-size: 12px;
 }
 
 .form-input {
-  width: 300px;
-  height: 20%;
-  margin: 0;
+width: 200px;
+height: 30px;
+margin-right: 25px;
+border: none;
+border-radius: 10px;
+color: rgb(103, 101, 101);
+background: #e9e8e8;
 }
-
-.form-input2 {
-  width: 300px;
-  height: 18%;
-}
-
 
 .birthday-input {
-width: 100px;
-height: 45px;
+  width: 70px;
+  height: 30px;
+  background: #e9e8e8;
+  border: none;
+  border-radius: 10px;
 }
 
 .submit-btn {
@@ -195,46 +174,51 @@ border: none;
 border-radius: 5px;
 width: 100px;
 height: 40px;
-background: #96ceb4;
+background: #C25B56;
 box-shadow:1px 1px 3px 2px #a9a7a7 inset;
 margin: 30px 0 10px 10px;
 }
 // 登録フォーム
 // 検索フォーム
+
+table {
+  // width: 90%;
+  padding: 10px;
+  margin: 10px;
+}
 .table-note {
   border-radius: 50px;
 }
 
 .reset {
   background: #c4bfbb;
-  padding: 5px;
+  padding: 10px;
+  box-shadow: 0px -3px 5px 1px #eee inset;
+  border-radius: 0 10px 10px 0;
 }
 
 .reset-link {
   text-decoration: none;
+  color: white;
+  font-weight: bold;
 }
 // 検索フォーム
-th {
-  text-align: center;
-  color: white;
-  background: linear-gradient(40deg, #d9534f 0%,  #ffad60 90%);
-  padding: 10px;
-  width: 15vw;
-  border-bottom: none;
-}
-  
-.search1:nth-child(even) {
-  background:  #e65d58;
-}
+
 
 .result {
-  background: #96ceb4;
+  background: #C25B56;
+  border-bottom: 1px solid rgb(205, 203, 203);
+  text-align: center;
+  box-shadow: 0px -3px 5px 1px #eee inset;
+  padding: 10px 0;
+  border: none;
 }
 
 .result-btn {
   border: none;
   background: none;
   color: white;
+  font-weight: bold;
   font-size: 15px;
 
 }
@@ -247,18 +231,6 @@ th {
   font-size: 18px;
   color: rgb(103, 101, 101);
 }
-
-.search2:nth-child(even) {
-  background:  #ffa148;
-}
-
-td {
-  border-bottom: 1px solid rgb(205, 203, 203);
-  text-align: center;
-  box-shadow: 0px -3px 5px 1px #eee inset;
-  padding: 10px 0;
-}
-
 
 
 }

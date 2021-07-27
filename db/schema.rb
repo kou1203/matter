@@ -12,21 +12,37 @@
 
 ActiveRecord::Schema.define(version: 2021_07_06_093513) do
 
+  create_table "actual_profits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "item", null: false
+    t.integer "profit", null: false
+    t.date "start_date", null: false
+    t.date "end_date", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
   create_table "aupays", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "customer_num"
     t.string "client", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
-    t.date "get_date", null: false
-    t.date "payment"
+    t.date "date", null: false
     t.string "status", null: false
-    t.string "before_status"
+    t.date "status_update"
+    t.bigint "settlementer_id"
     t.date "settlement"
     t.date "settlement_deadline"
+    t.string "status_settlement", null: false
+    t.date "status_update_settlement"
+    t.date "payment"
+    t.date "payment_settlement"
+    t.integer "profit_new", null: false
+    t.integer "profit_settlement", null: false
+    t.integer "valuation_new", null: false
+    t.integer "valuation_settlement", null: false
     t.string "description"
-    t.integer "valuation_profit", null: false
-    t.integer "actual_profit", null: false
     t.index ["customer_num"], name: "index_aupays_on_customer_num", unique: true
+    t.index ["settlementer_id"], name: "index_aupays_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_aupays_on_store_prop_id"
     t.index ["user_id"], name: "index_aupays_on_user_id"
   end
@@ -51,20 +67,27 @@ ActiveRecord::Schema.define(version: 2021_07_06_093513) do
   end
 
   create_table "dmers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "customer_num"
-    t.string "client"
+    t.string "customer_num", null: false
+    t.string "client", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
-    t.date "get_date", null: false
+    t.date "date", null: false
     t.string "status", null: false
-    t.string "before_status"
+    t.date "status_update"
+    t.bigint "settlementer_id"
     t.date "settlement"
     t.date "settlement_deadline"
+    t.string "status_settlement", null: false
+    t.date "status_update_settlement"
     t.date "payment"
+    t.date "payment_settlement"
+    t.integer "profit_new", null: false
+    t.integer "profit_settlement", null: false
+    t.integer "valuation_new", null: false
+    t.integer "valuation_settlement", null: false
     t.text "description"
-    t.integer "valuation_profit", null: false
-    t.integer "actual_profit", null: false
     t.index ["customer_num"], name: "index_dmers_on_customer_num", unique: true
+    t.index ["settlementer_id"], name: "index_dmers_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_dmers_on_store_prop_id"
     t.index ["user_id"], name: "index_dmers_on_user_id"
   end
@@ -260,6 +283,7 @@ ActiveRecord::Schema.define(version: 2021_07_06_093513) do
     t.date "payment"
     t.text "remarks"
     t.string "status"
+    t.date "status_update"
     t.string "confirm_ball"
     t.date "confirm_date"
     t.string "confirmer"
@@ -277,12 +301,12 @@ ActiveRecord::Schema.define(version: 2021_07_06_093513) do
     t.string "client", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
-    t.date "get_date", null: false
-    t.date "payment"
+    t.date "date", null: false
     t.string "status", null: false
-    t.string "before_status"
-    t.integer "valuation_profit", null: false
-    t.integer "actual_profit", null: false
+    t.date "status_update"
+    t.date "payment"
+    t.integer "profit", null: false
+    t.integer "valuation", null: false
     t.index ["store_prop_id"], name: "index_paypays_on_store_prop_id"
     t.index ["user_id"], name: "index_paypays_on_user_id"
   end
@@ -313,26 +337,30 @@ ActiveRecord::Schema.define(version: 2021_07_06_093513) do
   end
 
   create_table "rakuten_casas", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "client"
-    t.bigint "store_prop_id"
-    t.bigint "user_id"
-    t.date "date", null: false
-    t.string "contract_type", null: false
-    t.string "contracter", null: false
-    t.string "line_type", null: false
-    t.string "confirm_method", null: false
-    t.string "hikari_collabo"
-    t.string "line_service", null: false
-    t.string "customer_num"
     t.string "femto_id"
-    t.string "status"
-    t.string "error_status"
-    t.string "error_confirmer"
-    t.text "remarks"
+    t.string "client"
+    t.bigint "user_id"
+    t.bigint "store_prop_id"
+    t.date "date", null: false
+    t.string "status", null: false
+    t.date "status_update"
+    t.string "confirm_method", null: false
+    t.string "net_name", null: false
+    t.string "hikari_collabo", null: false
+    t.string "net_plan", null: false
+    t.string "customer_num", null: false
+    t.string "net_contracter", null: false
+    t.string "error_status", null: false
+    t.date "error_solution"
     t.date "payment"
-    t.integer "valuation_profit", null: false
-    t.integer "actual_profit", null: false
-    t.index ["customer_num"], name: "index_rakuten_casas_on_customer_num", unique: true
+    t.date "payment_put"
+    t.integer "profit_new", null: false
+    t.integer "profit_put", null: false
+    t.integer "valuation_new", null: false
+    t.integer "valuation_put", null: false
+    t.text "description_error"
+    t.text "description"
+    t.index ["femto_id"], name: "index_rakuten_casas_on_femto_id", unique: true
     t.index ["store_prop_id"], name: "index_rakuten_casas_on_store_prop_id"
     t.index ["user_id"], name: "index_rakuten_casas_on_user_id"
   end
@@ -561,18 +589,23 @@ ActiveRecord::Schema.define(version: 2021_07_06_093513) do
   end
 
   create_table "store_props", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "race"
+    t.string "race", null: false
     t.string "name", null: false
-    t.string "corporate_name"
     t.string "industry", null: false
-    t.string "description"
+    t.string "head_store"
+    t.string "corporate_name"
+    t.string "corporate_address"
+    t.integer "corporate_num"
+    t.string "person_main_name", null: false
+    t.string "person_main_kana", null: false
+    t.string "person_main_class", null: false
+    t.date "person_main_birthday"
+    t.string "person_sub_name"
+    t.string "person_sub_kana"
+    t.string "person_sub_class"
+    t.date "person_sub_birthday"
     t.string "phone_number_1", null: false
     t.string "phone_number_2"
-    t.string "person_main", null: false
-    t.string "person_main_kana", null: false
-    t.date "birthday"
-    t.string "person_sub"
-    t.string "person_sub_kana"
     t.string "mail_1", null: false
     t.string "mail_2"
     t.string "prefecture", null: false
@@ -580,9 +613,9 @@ ActiveRecord::Schema.define(version: 2021_07_06_093513) do
     t.string "municipalities", null: false
     t.string "address", null: false
     t.string "building_name"
-    t.string "suitable_time", null: false
-    t.string "holiday", null: false
-    t.string "head_store"
+    t.string "suitable_time"
+    t.string "holiday"
+    t.string "description"
     t.index ["name"], name: "index_store_props_on_name", unique: true
   end
 
@@ -604,7 +637,7 @@ ActiveRecord::Schema.define(version: 2021_07_06_093513) do
     t.date "get_date", null: false
     t.integer "payment"
     t.string "status", null: false
-    t.string "before_status"
+    t.date "status_update"
     t.string "supply_num", null: false
     t.string "contract_num"
     t.string "menu", null: false
@@ -614,8 +647,8 @@ ActiveRecord::Schema.define(version: 2021_07_06_093513) do
     t.string "contract_cap_unit"
     t.integer "amount_use"
     t.date "start"
-    t.integer "claim"
-    t.integer "claim_expected"
+    t.integer "profit"
+    t.integer "profit_expected"
     t.string "remarks"
     t.string "power_company"
     t.index ["summit_customer_prop_id"], name: "index_summits_on_summit_customer_prop_id"
@@ -676,8 +709,10 @@ ActiveRecord::Schema.define(version: 2021_07_06_093513) do
 
   add_foreign_key "aupays", "store_props"
   add_foreign_key "aupays", "users"
+  add_foreign_key "aupays", "users", column: "settlementer_id"
   add_foreign_key "dmers", "store_props"
   add_foreign_key "dmers", "users"
+  add_foreign_key "dmers", "users", column: "settlementer_id"
   add_foreign_key "n_results", "users"
   add_foreign_key "pandas", "store_props"
   add_foreign_key "pandas", "users"

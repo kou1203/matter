@@ -64,15 +64,19 @@ class StorePropsController < ApplicationController
       :race,
       :name,
       :corporate_name,
+      :corporate_address,
+      :corporate_num,
       :industry,
-      :description, 
+      :person_main_name, 
+      :person_main_kana,
+      :person_main_class,
+      :person_main_birthday, 
+      :person_sub_name, 
+      :person_sub_kana, 
+      :person_sub_class, 
+      :person_sub_birthday, 
       :phone_number_1,
       :phone_number_2, 
-      :person_main, 
-      :person_main_kana,
-      :birthday, 
-      :person_sub, 
-      :person_sub_kana, 
       :mail_1,
       :mail_2,
       :prefecture, 
@@ -82,8 +86,10 @@ class StorePropsController < ApplicationController
       :building_name, 
       :suitable_time, 
       :holiday,
-      :head_store 
-    )
-  end 
-
-end
+      :head_store, 
+      :description,
+      )
+    end 
+    
+  end
+  

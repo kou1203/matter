@@ -56,12 +56,12 @@ class PaypaysController < ApplicationController
       :client,
       :user_id,
       :store_prop_id,
-      :get_date,
-      :payment,
+      :date,
       :status,
-      :before_status,
-      :valuation_profit,
-      :actual_profit
+      :status_update,
+      :payment,
+      :profit,
+      :valuation
     )
   end
 end

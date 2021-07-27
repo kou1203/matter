@@ -5,16 +5,23 @@ class CreateAupays < ActiveRecord::Migration[6.0]
       t.string :client                   , null: false 
       t.references :user                 , foreign_key: true 
       t.references :store_prop           , foreign_key: true
-      t.date :get_date                   , null: false 
-      t.date :payment
+      t.date :date                   , null: false 
       t.string :status                   , null: false 
-      t.string :before_status
+      t.date :status_update
+      t.references :settlementer
       t.date :settlement
       t.date :settlement_deadline
+      t.string :status_settlement        ,null: false 
+      t.date :status_update_settlement
+      t.date :payment
+      t.date :payment_settlement
+      t.integer :profit_new             ,null: false
+      t.integer :profit_settlement       ,null: false
+      t.integer :valuation_new           ,null: false 
+      t.integer :valuation_settlement    , null: false
       t.string :description
-      t.integer :valuation_profit     ,null: false
-      t.integer :actual_profit        ,null: false
     end
+    add_foreign_key :aupays, :users, column: :settlementer_id
     add_index :aupays, [:customer_num], unique: true
   end
 end

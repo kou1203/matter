@@ -1,0 +1,407 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+    <%# 一週目 %>
+      <% if @result_week1.empty? %>
+      <% else %>
+      <table >
+
+      <%# 内容 %>
+        <tr>
+          <th >1週目</th>
+        </tr>
+        <tr>
+          <th ><%= @result_week1.minimum(:date).day %>日（<%= days[@result_week1.minimum(:date).wday] %>）〜<%= @result_week1.maximum(:date).day %>日（<%= days[@result_week1.maximum(:date).wday] %>）</th>
+          <th >商材</th>
+          <th >担当</th>
+          <th >人員</th>
+          
+          <th >消化シフト数</th>
+          <th >必達売上</th>
+          <th >1週目売上</th>
+          <th >前月Ave</th>
+          <th >前月売上</th>
+          <th >一週目Ave</th>
+          <th >前週Ave</th>
+          <th >Ave前週比</th>
+          <th >Ave前月比</th>
+
+        </tr>
+        <tr>
+      <%# 中部キャッシュレス %>
+        <% chubu_cash_week1 = @result_week1.includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+          <th >中部</th>
+          <th >キャッシュ</th>
+          <th >伊藤誠一</th>
+          <td ><%= chubu_cash_shift.length %></td>
+          
+          <td ><%= chubu_cash_week1.length %></td>
+
+          <td ></td>
+
+          <td ><%= @result_week1.includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).sum(:profit) %></td>
+
+          <% if @result_before_month.includes(:user).where(users: {base: "中部SS"}).empty? %>
+          <td ></td>
+          <td ></td>
+          <% else %>
+
+          <td ><%= chubu_cash_before_month.average(:profit).round(1) %></td>
+
+          <td ><%= chubu_cash_before_month.sum(:profit) %></td>
+          <% end %>
+
+          <td ><%= chubu_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= Result.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規").average(:profit).round(1) rescue "計測できません" %></td>
+          
+          <td ><%= chubu_cash_week1.average(:profit).round(1) - Result.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規").average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= chubu_cash_week1.average(:profit).round(1) - chubu_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+
+        </tr>
+      <%# 中部フェムト %>
+        <tr>
+          <th ></th>
+          <th >フェムト</th>
+          <th >加藤上太郎</th>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+        </tr>
+      <%# パンダ %>
+        <% tokyo_cash_week1 = @result_week1.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "キャッシュレス新規").or(@result_week1.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "パンダ")) %>
+        <tr>
+          <th >東京</th>
+          <th >キャッシュ・パンダ</th>
+          <th >太田将輔</th>
+          <th ><%= tokyo_cash_shift.length %></td>
+
+          <td ><%= tokyo_cash_week1.length %></td>
+          <td ></td>
+          <td ><%= tokyo_cash_week1.sum(:profit) %></td>
+          <% if tokyo_cash_before_month.empty? %>
+          <td ></td>
+          <td ></td>
+          <% else %>
+          <td ><%= tokyo_cash_before_month.average(:profit).round(1) %></td>
+          <td ><%= tokyo_cash_before_month.sum(:profit) %></td>
+          <% end %>
+          <td ><%= tokyo_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= tokyo_cash_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= tokyo_cash_week1.average(:profit).round(1) - tokyo_cash_week1.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= tokyo_cash_week1.average(:profit).round(1) - tokyo_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+        </tr>
+      <%# 東京フェムト %>
+        <tr>
+          <th ></th>
+          <th >フェムト</th>
+          <th >矢野貴二郎</th>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+        </tr>
+      <%# 東京サミット %>
+        <tr>
+          <th ></th>
+          <th >サミット</th>
+          <th >横田有輝</th>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+        </tr>
+      <%# 関西キャッシュ %>
+        <% kansai_cash_week1 = @result_week1.includes(:user).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+        <tr>
+          <th >関西</th>
+          <th >キャッシュ</th>
+          <th >渋谷直輝</th>
+          <th ><%= kansai_cash_shift.length %></td>
+
+          <td ><%= kansai_cash_week1.length %></td>
+          <td ></td>
+          <td ><%= kansai_cash_week1.sum(:profit) %></td>
+          <% if @result_before_month.includes(:user).where(users: {base: "関西SS"}).empty? %>
+          <td ></td>
+          <td ></td>
+          <% else %>
+          <td ><%= kansai_cash_before_month.average(:profit).round(1) %></td>
+
+          <td ><%= kansai_cash_before_month.sum(:profit) %></td>
+
+          <% end %>
+          <td ><%= kansai_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= Result.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).includes(:user).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}).average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= kansai_cash_week1.average(:profit).round(1) - Result.where(date: Time.now.beginning_of_month.prev_week..Time.now.beginning_of_month).includes(:user).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}).average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= kansai_cash_week1.average(:profit).round(1) - kansai_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+        </tr>
+      <%# 関西フェムト %>
+        <tr>
+          <th ></th>
+          <th >フェムト</th>
+          <th >渋谷直輝</th>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+        </tr>
+      <%# 関西サミット %>
+        <tr>
+          <th ></th>
+          <th >サミット</th>
+          <th >星合祐甫</th>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+        </tr>
+      </table>
+      <% end %>
+    <%# 二週目 %>
+      <% if @result_week2.empty? %>
+      <% else %>
+      <table >
+        <tr>
+          <th >2週目</th>
+        </tr>
+      <%# 内容 %>
+        <tr>
+          <th ><%= @result_week2.minimum(:date).day %>日（<%= days[@result_week2.minimum(:date).wday] %>）〜<%= @result_week2.maximum(:date).day %>日（<%= days[@result_week2.maximum(:date).wday] %>）</th>
+          <th >商材</th>
+          <th >担当</th>
+          <th >人員</th>
+          
+          <th >消化シフト数</th>
+          <th >必達売上</th>
+          <th >2週目売上</th>
+          <th >前月Ave</th>
+          <th >前月売上</th>
+          <th >2週目Ave</th>
+          <th >前週Ave</th>
+          <th >Ave前週比</th>
+          <th >Ave前月比</th>
+
+        </tr>
+      <%# 中部キャッシュ %>
+        <% chubu_cash_week2 = @result_week2.includes(:user).where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+        <tr>
+          <th >中部</th>
+          <th >キャッシュ</th>
+          <th >伊藤誠一</th>
+          <td ><%= chubu_cash_shift.length %></td>
+
+          <td ><%= chubu_cash_week2.length %></td>
+          <td ></td>
+          <td ><%= chubu_cash_week2.sum(:profit) %></td>
+          <% if @result_before_month.includes(:user).where(users: {base: "中部SS"}).empty? %>
+          <td ></td>
+          <td ></td>
+          <% else %>
+          <td ><%= chubu_cash_before_month.average(:profit).round(1) %></td>
+          
+          <td ><%= chubu_cash_before_month.sum(:profit) %></td>
+          <% end %>
+          <td ><%= chubu_cash_week2.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= chubu_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= chubu_cash_week2.average(:profit).round(1) - chubu_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= chubu_cash_week2.average(:profit).round(1) - chubu_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+
+        </tr>
+      <%# 中部フェムト %>
+        <tr>
+          <th ></th>
+          <th >フェムト</th>
+          <th >加藤上太郎</th>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+        </tr>
+      <%# パンダ %>
+        <% tokyo_cash_week2 = @result_week2.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "キャッシュレス新規").or(@result_week2.includes(:user).where(users: {base: "東京SS"}).where(users: {base_sub: "キャッシュ・パンダ"}).where(shift: "パンダ")) %>
+        <tr>
+          <th >東京</th>
+          <th >キャッシュ・パンダ</th>
+          <th >太田将輔</th>
+          <td ><%= tokyo_cash_shift.length %></td>
+
+          <td ><%= tokyo_cash_week2.length %></td>
+          <td ></td>
+          <td ><%= tokyo_cash_week2.sum(:profit) %></td>
+          <% if tokyo_cash_before_month.empty? %>
+          <td ></td>
+          <td ></td>
+          <% else %>
+          <td ><%= tokyo_cash_before_month.average(:profit).round(1) %></td>
+          <td ><%= tokyo_cash_before_month.sum(:profit) %></td>
+          <% end %>
+          <td ><%= tokyo_cash_week2.average(:profit).round(1) rescue "計測できません" %></td>
+          <td ><%= tokyo_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+          <td ><%= tokyo_cash_week2.average(:profit).round(1) - tokyo_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+          <td ><%= tokyo_cash_week2.average(:profit).round(1) - tokyo_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+
+        </tr>
+      <%# 東京フェムト %>
+        <tr>
+          <th ></th>
+          <th >フェムト</th>
+          <th >矢野貴二郎</th>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+        </tr>
+      <%# 東京サミット %>
+        <tr>
+          <th ></th>
+          <th >サミット</th>
+          <th >横田有輝</th>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+        </tr>
+      <%# 関西キャッシュ %>
+        <% kansai_cash_week2 = @result_week2.includes(:user).where(users: {base: "関西SS"}).where(users: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規") %>
+        <tr>
+          <th >関西</th>
+          <th >キャッシュ</th>
+          <th >渋谷直輝</th>
+
+          <th ><%= kansai_cash_shift.length %></td>
+
+          <td ><%= kansai_cash_week2.length %></td>
+          <td ></td>
+          <td ><%= kansai_cash_week2.sum(:profit) %></td>
+          <% if @result_before_month.includes(:user).where(users: {base: "関西SS"}).empty? %>
+          <td ></td>
+          <td ></td>
+          <% else %>
+          <td ><%= kansai_cash_before_month.average(:profit).round(1) %></td>
+
+          <td ><%= kansai_cash_before_month.sum(:profit) %></td>
+          <% end %>
+          <td ><%= kansai_cash_week2.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= kansai_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+
+          <td ><%= kansai_cash_week2.average(:profit).round(1) - kansai_cash_week1.average(:profit).round(1) rescue "計測できません" %></td>
+          
+          <td ><%= kansai_cash_week2.average(:profit).round(1) - kansai_cash_before_month.average(:profit).round(1) rescue "計測できません" %></td>
+
+
+        </tr>
+        <tr>
+          <th ></th>
+          <th >フェムト</th>
+          <th >渋谷直輝</th>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+        </tr>
+        <tr>
+          <th ></th>
+          <th >サミット</th>
+          <th >星合祐甫</th>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+          <td ></td>
+        </tr>
+      </table>

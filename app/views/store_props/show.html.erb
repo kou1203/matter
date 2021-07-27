@@ -56,9 +56,11 @@
       </tr>
     </table>
     <hr>
+    <h1>店舗情報</h1>
     <table >
       <tr>
-        <th colspan="4">店舗詳細</th>
+      </tr>
+      <tr>
       </tr>
       <tr >
         <th>属性</th>
@@ -74,23 +76,43 @@
         <td><%= @store_prop.corporate_name %></td>
 
       </tr>
+      <tr>
+      <th>店舗住所</th>
+        <td colspan="3"><%= @store_prop.prefecture %><%= @store_prop.city %><%= @store_prop.municipalities %><%= @store_prop.address %><%= @store_prop.building_name %></td>
+      </tr>
+    </table>
+    <h1>担当者情報</h1>
+    <table>
       <tr >
+        <th colspan="4">店舗担当者①</th>
       </tr>
     <tr>
-      <th>店舗担当１</th>
-        <td><%= @store_prop.person_main %></td>
+      <th>名前</th>
+        <td><%= @store_prop.person_main_name %></td>
       <th>フリガナ</th>
         <td><%= @store_prop.person_main_kana %></td>
     </tr>
     <tr>
-      <th>店舗担当２</th>
-        <td><%= @store_prop.person_sub %></td>
+      <th>生年月日</th>
+        <td><%= @store_prop.person_main_birthday %></td>
+      <th>役職</th>
+        <td><%= @store_prop.person_main_class %></td>
+      
+    </tr>
+    <tr>
+      <th colspan="4">店舗担当者②</th>
+    </tr>
+    <tr>
+      <th>名前</th>
+        <td><%= @store_prop.person_sub_name %></td>
       <th>フリガナ</th>
         <td><%= @store_prop.person_sub_kana %></td>
     </tr>
     <tr>
-    <th>店舗住所</th>
-      <td colspan="3"><%= @store_prop.prefecture %><%= @store_prop.city %><%= @store_prop.municipalities %><%= @store_prop.address %><%= @store_prop.building_name %></td>
+      <th>生年月日</th>
+        <td><%= @store_prop.person_sub_birthday %></td>
+      <th>役職</th>
+        <td><%= @store_prop.person_sub_class %></td>
     </tr>
     <tr>
         <th>本店名</th>

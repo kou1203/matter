@@ -64,8 +64,8 @@ class RakutenCasasController < ApplicationController
       :error_confirmer     ,                
       :remarks             ,
       :payment             ,
-      :valuation_profit    ,
-      :actual_profit       
+      :get_profit    ,
+      :put_profit       
     )
   end 
 

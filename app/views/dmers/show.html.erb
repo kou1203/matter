@@ -15,13 +15,15 @@
     </tr>
     <th >業種</th>
     <td ><%= @dmer.store_prop.industry %></td>
+    <th>本店名</th>
+    <td ><%= @dmer.store_prop.head_store %></td>
     <tr >
     </tr>
     <tr >
     <th >店舗代表</th>
-    <td ><%= @dmer.store_prop.person_main %></td>
+    <td ><%= @dmer.store_prop.person_main_name %></td>
     <th >店舗担当</th>
-    <td ><%= @dmer.store_prop.person_sub %></td>
+    <td ><%= @dmer.store_prop.person_sub_name %></td>
     </tr>
     <tr >
     <th >店舗住所</th>
@@ -58,7 +60,7 @@
     <table >
     <tr >
     <th >獲得日</th>
-      <td ><%= @dmer.get_date %></td>
+      <td ><%= @dmer.date %></td>
       <th >獲得者</th>
       <td ><%= @dmer.user.name %></td>
     </tr>
@@ -73,30 +75,59 @@
     <tr >
       <th >審査ステータス</th>
       <td ><%= @dmer.status %></td>
-      <th >入金日</th>
-      <td ><%= @dmer.payment %></td>
+      <th >審査ステータス更新日</th>
+      <td ><%= @dmer.status_update %></td>
+    </tr>
+  </table>
+  <h1>決済情報</h1>
+  <table>
+    <tr>
+      <th >初回決済日</th>
+      <td ><%= @dmer.settlement %></td>
+      <th >決済者</th>
+      <td ><%= @dmer.settlementer.name rescue "" %></td>
     </tr>
 
     <tr >
-      <th >決済日</th>
-      <td ><%= @dmer.settlement %></td>
       <th >決済期限</th>
       <td ><%= @dmer.settlement_deadline %></td>
+      <th colspan="2"></th>
     </tr>
-
-    <tr >
-      <th >評価売上</th>
-      <td ><%= @dmer.valuation_profit %></td>
-      <th >実売上</th>
-      <td ><%= @dmer.actual_profit %></td>
+    <tr>
+      <th>決済審査ステータス</th>
+      <td ><%= @dmer.status_settlement %></td>
+      <th>決済審査ステータス更新日</th>
+      <td ><%= @dmer.status_update_settlement %></td>
     </tr>
 
     <tr >
       <th >備考</th>
       <td colspan="2"><%= @dmer.description %></td>
     <td >
-      <%= link_to "編集", edit_dmer_path, class: "link" %>
+      <%= link_to "dメル情報編集", edit_dmer_path, class: "link" %>
     </td>
+    </tr>
+  </table>
+  <h1>利益/入金日</h1>
+  <table>
+    <tr>
+      <th >獲得入金日</th>
+      <td ><%= @dmer.payment %></td>
+      <th >決済入金日</th>
+      <td ><%= @dmer.payment_settlement %></td>
+    </tr>
+    <tr >
+      <th >評価売上（新規）</th>
+      <td ><%= @dmer.valuation_new %></td>
+      <th >評価売上（決済）</th>
+      <td ><%= @dmer.valuation_settlement %></td>
+    </tr>
+
+    <tr >
+      <th >実売上（新規）</th>
+      <td ><%= @dmer.profit_new %></td>
+      <th >実売上（決済）</th>
+      <td ><%= @dmer.profit_settlement %></td>
     </tr>
     </table>
   </main>

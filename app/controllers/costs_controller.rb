@@ -17,7 +17,7 @@ class CostsController < ApplicationController
   def create 
     @cost = Cost.new(cost_params)
     if @cost.save
-      redirect_to root_path
+      redirect_to costs_path
     else  
       render :new 
     end 

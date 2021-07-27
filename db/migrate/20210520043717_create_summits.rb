@@ -6,7 +6,7 @@ class CreateSummits < ActiveRecord::Migration[6.0]
       t.date :get_date                  , null:false 
       t.integer :payment               
       t.string :status                  , null: false 
-      t.string :before_status
+      t.date :status_update
       t.string :supply_num             , null: false 
       t.string :contract_num
       t.string :menu                   , null: false 
@@ -16,8 +16,8 @@ class CreateSummits < ActiveRecord::Migration[6.0]
       t.string :contract_cap_unit      
       t.integer :amount_use            
       t.date :start                    
-      t.integer :claim                 
-      t.integer :claim_expected        
+      t.integer :profit                 
+      t.integer :profit_expected        
       t.string :remarks
       t.string :power_company
     end

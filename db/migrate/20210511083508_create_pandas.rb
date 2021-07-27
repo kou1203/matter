@@ -17,6 +17,7 @@ class CreatePandas < ActiveRecord::Migration[6.0]
       t.date :payment 
       t.text :remarks 
       t.string :status               
+      t.date :status_update
       t.string :confirm_ball
       t.date :confirm_date
       t.string :confirmer

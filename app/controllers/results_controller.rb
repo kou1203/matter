@@ -8,10 +8,13 @@ class ResultsController < ApplicationController
       else    
         @q.result(distinct: false).order(date: :asc)
       end
-    @shifts = Shift.all
-    @summits = Summit.all
+      @shifts = Shift.all
+      @summits = Summit.all
+      @costs = Cost.all 
+      
+      @result_month = Result.includes(:user).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
+      @shift_month = Shift.includes(:user).where(year: Date.today.year).where(month: Date.today.month)
 
-    @result_month = Result.where(date: Time.now.beginning_of_month..Time.now.end_of_month)
     @result_week1 = Result.where(date: Time.now.beginning_of_month..Time.now.beginning_of_month.next_week(:monday))
     @result_week2 = Result.where(date: Time.now.beginning_of_month.next_week(:tuesday)..Time.now.beginning_of_month.next_week(:monday).since(7.days))
     @result_week3 = Result.where(date: Time.now.beginning_of_month.next_week(:tuesday).since(7.days)..Time.now.beginning_of_month.next_week(:monday).since(14.days))
@@ -24,9 +27,10 @@ class ResultsController < ApplicationController
     @kansai_group = Result.includes(:user).where(users: {base: "関西SS"}).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
     @kansai_cash = @kansai_group.where(shift: "キャッシュレス新規")
     
-    @tokyo_group = Result.includes(:user).where(users: {base: "東京SS"}).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
+    @tokyo_group = Result.includes(:user).where(users: {base: "関東SS"}).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
     @tokyo_cash = @tokyo_group.where(shift: "キャッシュレス新規").or(@tokyo_group.where(shift: "パンダ"))
 
+    @users = User.where.not(base: "中部N").where.not(base: "関西N").where.not(base: "退職").where.not(base: "")
   end 
 
   def new 

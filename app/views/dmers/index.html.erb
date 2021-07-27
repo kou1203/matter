@@ -12,8 +12,8 @@
       <table>
         <tr >
           <th class="search1">獲得日付</th>
-          <td ><%= f.date_field :get_date_gteq, class: "input" %>~</td>
-          <td ><%= f.date_field :get_date_lteq, class: "input" %></td>
+          <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
+          <td ><%= f.date_field :date_lteq, class: "input" %></td>
           <th class="search1">決済期限</th>
           <td ><%= f.date_field :settlement_deadline_gteq, class: "input" %>~</td>
           <td ><%= f.date_field :settlement_deadline_lteq, class: "input" %></td>
@@ -38,7 +38,7 @@
       <hr>
       <% if @dmers.empty? %>
       <% else %>
-      <h1>表示範囲：<%= @dmers.minimum(:get_date) %>（<%= days[@dmers.minimum(:get_date).wday] %>）〜<%= @dmers.maximum(:get_date) %>（<%= days[@dmers.maximum(:get_date).wday] %>）</h1>
+      <h1>表示範囲：<%= @dmers.minimum(:date) %>（<%= days[@dmers.minimum(:date).wday] %>）〜<%= @dmers.maximum(:date) %>（<%= days[@dmers.maximum(:date).wday] %>）</h1>
       <table >
         <tr >
           <th class="search2">実売上合計</th>
@@ -46,9 +46,9 @@
           <th class="search2">営業日数</th>
         </tr>
         <tr >
-          <td class="index-td"><%= dmer_sum = @dmers.where.not(status: "申込取消").where.not(status: "審査NG").where.not(status: "自社不備").sum(:actual_profit) %></td>
-          <td class="index-td"><%= dmer_sum / @dmers.group(:get_date).length %></td>
-          <td class="index-td"><%= @dmers.group(:get_date).length %>日</td>
+          <td class="index-td"><%= dmer_sum = @dmers.where.not(status: "申込取消").where.not(status: "審査NG").where.not(status: "自社不備").sum(:profit_new) %></td>
+          <td class="index-td"><%= dmer_sum / @dmers.group(:date).length %></td>
+          <td class="index-td"><%= @dmers.group(:date).length %>日</td>
         </tr>
         <tr >
           <th >獲得件数</th>
@@ -77,7 +77,7 @@
       <table class="table">
     <tr class="table-row">
       <th class="search1"></th>
-      <th class="search1"><%= sort_link(@q, :get_date, "獲得日",{}, {class: "reset-link"}) %></th>
+      <th class="search1"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
       <th class="search1">法人/個人</th>
       <th class="search1">複数店</th>
       <th class="search1">店舗名</th>
@@ -90,14 +90,14 @@
     <% @dmers.find_each do |dmer| %>
     <tr class="index-tr">
       <td class="index-td"><%= link_to "詳細",  dmer_path(dmer.id) ,class: "link" %></td>
-      <td class="index-td"><%= dmer.get_date.month %>月<%= dmer.get_date.day %>日</td>
+      <td class="index-td"><%= dmer.date.month %>月<%= dmer.date.day %>日</td>
       <td class="index-td"><%= dmer.store_prop.race %></td>
-      <% if dmer.store_prop.head_store.nil? %>
+      <% if dmer.store_prop.head_store.blank? %>
         <td class="index-td"></td>
       <% elsif dmer.store_prop.head_store == dmer.store_prop.name %>
         <td class="index-td">複数店本店</td>
       <% else %>
-        <td class="index-td">複数店(<%= dmer.store_prop.head_store %>)</td>
+        <td class="index-td">本店名(<%= dmer.store_prop.head_store %>)</td>
       <% end %>
       <td class="index-td"><%= dmer.store_prop.name %></td>
       <td class="index-td"><%= dmer.user.name %></td>

@@ -5,7 +5,7 @@
     <table>
       <tr>
         <th class="csv" >CSV取り込み</th>
-        <td ><%= f.file_field :file, accept: ".csv", class: "import-file" %></td>
+        <td class="csv-td"><%= f.file_field :file, accept: ".csv", class: "import-file" %></td>
         <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
         <td class="search-reset"><%= link_to "店舗一覧に戻る", root_path ,class: "reset-link" %></td>
         </tr>
@@ -13,45 +13,41 @@
     <% end %>
 
   <%= form_with model: @paypay,url: store_prop_paypays_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
-      <%= render "shared/error_messages", model: f.object %>
-        <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
-    <div class="nav">
-      <%# 1列目 %>
-        <div>
-          <%= f.label :user_id, "獲得者", class: "form-text" %>
-          <%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "form-input2"}) %>
-
-          <%= f.label :client, "商流", class: "form-text" %>
-          <%= f.select :client, {"マックスサポート": "マックスサポート"} ,{}, {class: "form-input2"} %>
-
-          <%= f.label :payment, "入金日", class: "form-text" %>
-          <%= f.date_field :payment , class: "form-input2" %>
-        </div>
-      <%# 2列目 %>
-        <div>
-          <%= f.label :status, "審査ステータス", class: "form-text" %>
-          <%= f.select :status, {"未審査": "未審査", "自社不備": "自社不備","上位店NG": "上位店NG", "審査完了": "審査完了", "入金確認済": "入金確認済"} ,{}, {class: "form-input2"} %>
-
-          <%= f.label :description, "備考", class: "form-text" %>
-          <%= f.text_field :description , class: "form-input2" %>
-        </div>
-      <%# 3列目 %>
-        <div>
-          <%= f.label :get_date, "獲得日", class: "form-text" %>
-          <%= f.date_field :get_date , class: "form-input2" %>
-
-          <%= f.label :valuation_profit, "評価売上", class: "form-text" %>
-          <%= f.number_field :valuation_profit , class: "form-input2" %>
-        </div>
-      <%# 4列目 %>
-        <div>
-          <%= f.label :customer_num, "お客様番号", class: "form-text" %>
-          <%= f.text_field :customer_num , class: "form-input2" %>
-
-          <%= f.label :actual_profit, "実売上", class: "form-text" %>
-          <%= f.number_field :actual_profit , class: "form-input2" %>
-        </div>
-    </div><br>
+    <%= render "shared/error_messages", model: f.object %>
+    <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
+    <table>
+      <tr>
+        
+        <th><%= f.label :user_id, "獲得者", class: "form-text" %></th>
+        <th><%= f.label :date, "獲得日", class: "form-text" %></th>
+        <th><%= f.label :status, "審査ステータス", class: "form-text" %></th>
+        <th><%= f.label :status_update, "ステータス更新日",class: "form-text" %></th>
+        <th></th>
+      </tr>
+        
+        <td><%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "form-input"}) %></td>
+        <td><%= f.date_field :date , class: "form-input" %></td>
+        <td><%= f.select :status, {"未審査": "未審査","審査中": "審査中", "審査完了": "審査完了", "自社不備": "自社不備","上位店NG": "上位店NG", "入金確認済": "入金確認済"} ,{}, {class: "form-input"} %></td>
+        <td><%= f.date_field :status_update, value: Date.today, class: "form-input" %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th><%= f.label :client, "商流", class: "form-text" %></th>
+        <th><%= f.label :payment, "入金日", class: "form-text" %></th>
+        <th><%= f.label :valuation, "評価売上", class: "form-text" %></th>
+        <th><%= f.label :profit, "実売上", class: "form-text" %></th>
+        <th></th>
+          
+      </tr>
+        <td><%= f.select :client, {"マックスサポート": "マックスサポート"} ,{}, {class: "form-input"} %></td>
+        <td><%= f.date_field :payment , class: "form-input" %></td>
+        <td><%= f.number_field :valuation, class: "form-input" %></td>
+        <td><%= f.number_field :profit , class: "form-input" %></td>
+        
+        <td></td>
+      <tr>
+      </tr>
+    </table>
 
     <%= f.submit "登録", class: "submit-btn" %>
   

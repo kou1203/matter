@@ -11,8 +11,8 @@ class RakutenCasa < ApplicationRecord
     validates :line_type
     validates :confirm_method
     validates :line_service
-    validates :valuation_profit
-    validates :actual_profit  
+    validates :get_profit
+    validates :put_profit  
   end
 
   def self.import(file)
@@ -41,8 +41,8 @@ class RakutenCasa < ApplicationRecord
       "error_confirmer",
       "remarks",
       "payment",
-      "valuation_profit",
-      "actual_profit"
+      "get_profit",
+      "put_profit"
     ]
   end
 end

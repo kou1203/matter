@@ -4,12 +4,12 @@ class CreatePaypays < ActiveRecord::Migration[6.0]
       t.string :client                 , null: false 
       t.references :user               , foreign_key: true 
       t.references :store_prop         , foreign_key: true 
-      t.date :get_date                 , null: false 
-      t.date :payment
+      t.date :date                     , null: false 
       t.string :status                 , null: false 
-      t.string :before_status
-      t.integer :valuation_profit     ,null: false
-      t.integer :actual_profit        ,null: false
+      t.date :status_update
+      t.date :payment
+      t.integer :profit             ,null: false
+      t.integer :valuation          ,null: false
     end
   end
 end

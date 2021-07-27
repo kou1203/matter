@@ -5,8 +5,8 @@
       <table>
         <tr >
         <th class="search1">獲得日付</th>
-        <td ><%= f.date_field :get_date_gteq, class: "input" %>~</td>
-        <td ><%= f.date_field :get_date_lt, class: "input" %></td>
+        <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
+        <td ><%= f.date_field :date_lt, class: "input" %></td>
         </tr>
       </table>
       <table >
@@ -29,7 +29,7 @@
     <table>
       <tr >
         <th></th>
-        <th ><%= sort_link(@q, :get_date, "獲得日",{}, {class: "reset-link"}) %></th>
+        <th ><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
         <th >法人/個人</th>
         <th >店舗名</th>
         <th >審査ステータス</th>
@@ -37,7 +37,7 @@
       <% @paypays.each do |paypay| %>
       <tr >
         <td ><%= link_to "詳細",  paypay_path(paypay.id) ,class: "link" %></td>
-        <td ><%= paypay.get_date %></td>
+        <td ><%= paypay.date %></td>
         <td ><%= paypay.store_prop.race %></td>
         <td ><%= paypay.store_prop.name %></td>
         <td ><%= paypay.status %></td>

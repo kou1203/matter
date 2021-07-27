@@ -1,14 +1,20 @@
 class Aupay < ApplicationRecord
   belongs_to :user 
+  belongs_to :settlementer ,class_name: "User", optional: true
   belongs_to :store_prop 
 
   with_options presence: true do 
+    validates :customer_num
+    validates :client
     validates :user_id
     validates :store_prop_id
-    validates :get_date 
+    validates :date 
     validates :status
-    validates :client
-    validates :customer_num
+    validates :status_settlement
+    validates :profit_new
+    validates :profit_settlement
+    validates :valuation_new
+    validates :valuation_settlement
     with_options uniqueness: true do 
       validates :customer_num
     end 
@@ -35,8 +41,8 @@ class Aupay < ApplicationRecord
       "settlement",
       "settlement_deadline",
       "description",
-      "valuation_profit",
-      "actual_profit"
+      "get_profit",
+      "settlement_profit"
     ]
   end
 

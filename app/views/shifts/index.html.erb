@@ -37,9 +37,6 @@
       <% if chubu_ss.empty? %>
       <% else %>
       <h1>中部SSシフト申請<%= chubu_ss.group(:user_id).length %>/<%= @users.where(base: "中部SS").length %>人</h2>
-      
-      
-      
       <table>
         <tr>
           <th colspan="2"></th>
@@ -56,8 +53,8 @@
           <th>帯同</th>
           <th>合計</th>
         </tr>
-        <tr>
         <% chubu_ss.find_each do |s| %>
+        <tr>
           <th rowspan="2"><%= s.user.name %></th>
           <th>申請シフト</th>
           <td><%= link_to "シフト削除", shift_path(s.id), method: :delete, data: {confirm: "削除しますか？"} ,class: "link" %>  </td>
@@ -72,7 +69,6 @@
           <td><%= s.house_work %></td>
           <td><%= s.ojt %></td>
           <td><%= s.n + s.cashless_new + s.cashless_settlement + s.summit + s.panda + s.praness + s.rakuten_casa + s.rakuten_casa_put + s.house_work + s.ojt %></td>
-        </tr>
           <% new_shift = 0 %>
           <% settlement_shift = 0 %>
           <% summit_shift = 0 %>
@@ -121,9 +117,9 @@
           <td><%= ojt_shift %></td>
           <td><%= sum_shift %></td>
 
+        <% end %>
         </tr>
       </table>
-        <% end %>
       <% end %>
     <%# 関西SS %>
       <% kansai_ss = @shifts.includes(:user).where(users: {base: "関西SS"}) %>

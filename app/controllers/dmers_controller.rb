@@ -41,7 +41,7 @@ class DmersController < ApplicationController
   def update 
     @dmer = Dmer.find(params[:id])
     @dmer.update(dmer_params)
-    redirect_to store_prop_path(@dmer.store_prop_id)
+    redirect_to dmer_path(@dmer.id)
   end 
 
   def import 
@@ -56,15 +56,21 @@ class DmersController < ApplicationController
       :client,
       :user_id,
       :store_prop_id,
-      :get_date,
+      :date,
       :payment,
+      :payment_settlement,
       :status,
+      :status_settlement,
+      :status_update,
       :before_status,
-      :description,
+      :settlementer_id,
       :settlement,
       :settlement_deadline,
-      :valuation_profit,
-      :actual_profit    
+      :profit_new,
+      :profit_settlement,
+      :valuation_new,
+      :valuation_settlement,    
+      :description
     )
   end 
 end

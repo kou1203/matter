@@ -1,7 +1,7 @@
 <div data-scope-path="store_props/new">
   <h1>新規情報入力（店舗）</h1>
   <%= render "shared/header" %> 
-      <%= form_with url: import_store_props_path do |f| %>
+  <%= form_with url: import_store_props_path do |f| %>
     <table>
         <th class="csv">店舗情報：CSV取り込み</th>
         <td><%= f.file_field :file, accept: '.csv', class: "input"  %></td>
@@ -11,96 +11,119 @@
       <% end %>
   <%= form_with model: @store_prop, class: "form-frame", local: true do |f| %>
   <%= render "shared/error_messages",model: f.object %>
-  <div class="nav">
-  <%# 1列目 %>
-    <div>
-      <%= f.label :race, "区分", class: "form-text" %>
-      <%= f.select :race , {"個人": "個人", "法人": "法人"},{include_blank: "選択してください"}, {class: "form-input"} %>
-    
-      <%= f.label :prefecture, "都道府県", class: "form-text" %>
-      <%= f.text_field :prefecture , class: "form-input" %>
-
-      <%= f.label :person_main, "担当１", class: "form-text" %>
-      <%= f.text_field :person_main , class: "form-input" %>
-
-      <%= f.label :mail_1, "メールアドレス１", class: "form-text" %>
-      <%= f.text_field :mail_1, class: "form-input" %>
-    
-      <%= f.label :holiday, "定休日", class: "form-text" %>
-      <%= f.text_field :holiday ,class: "form-input" %>
-    </div>
-  <%# 2列目 %>
-    <div>
-      <%= f.label :name, "店舗名", class: "form-text" %>
-      <%= f.text_field :name , class: "form-input" %>
-
-      <%= f.label :city, "市区", class: "form-text" %>
-      <%= f.text_field :city , class: "form-input" %>
-
-      <%= f.label :person_main_kana, "担当１(カナ)", class: "form-text" %>
-      <%= f.text_field :person_main_kana , class: "form-input" %>
-    
-      <%= f.label :mail_2, "メールアドレス2", class: "form-text" %>
-      <%= f.text_field :mail_2 , class: "form-input" %>
-    
-      <%= f.label :description, "備考", class: "form-text" %>
-      <%= f.text_field :description , class: "form-input" %>
-    </div>
-  <%# 3列目 %>
-    <div>
-      <%= f.label :head_store, "本店名", class: "form-text" %>
-      <%= f.text_field :head_store, class: "form-input" %>
-
-      <%= f.label :municipalities, "町村", class: "form-text" %>
-      <%= f.text_field :municipalities , class: "form-input" %>
-    
-    
-      <%= f.label :birthday, "生年月日", class: "form-text" %>
-      <%= f.date_select :birthday,{start_year: 1950, prompt:"--"}, {class: "birthday-input"} %>
-    
-
-      <%= f.label :phone_number_1, "電話番号１", class: "form-text" %>
-      <%= f.text_field :phone_number_1 , class: "form-input" %>
-
-    </div>
-  <%# 4列目 %>
-    <div>
-      <%= f.label :industry, "業種", class: "form-text" %>
-      <%= f.select :industry, { "飲食": "飲食","小売": "小売", "サービス": "サービス"} ,{include_blank:"選択してください"}, {class: "form-input"} %>
-
-      <%= f.label :address, "番地", class: "form-text" %>
-      <%= f.text_field :address , class: "form-input" %>
-
-      <%= f.label :person_sub, "担当２", class: "form-text" %>
-      <%= f.text_field :person_sub , class: "form-input" %>
-
-
-
- 
-    
-
-    
-      <%= f.label :phone_number_2, "電話番号２", class: "form-text" %>
-      <%= f.text_field :phone_number_2 , class: "form-input" %>
-
-    </div>
-  <%# 5列目 %>
-    <div>
-      <%= f.label :corporate_name, "法人名", class: "form-text" %>
-      <%= f.text_field :corporate_name , class: "form-input" %>
-
-      <%= f.label :building_name, "建物名", class: "form-text" %>
-      <%= f.text_field :building_name , class: "form-input" %>
-
-      <%= f.label :person_sub_kana, "担当２(カナ)", class: "form-text" %>
-      <%= f.text_field :person_sub_kana , class: "form-input" %>
-
-      <%= f.label :suitable_time, "好適時間", class: "form-text" %>
-      <%= f.text_field :suitable_time , class: "form-input" %>
-    </div>
-  </div>
-  
+  <h1>店舗情報</h1>
+  <table>
+  <%# 一列目 %>
+    <tr>
+      <th><%= f.label :head_store, "本店名（複数点のみ）", class: "form-text" %></th>
+      <th><%= f.label :name, "店舗名", class: "form-text" %></th>
+      <th><%= f.label :race, "区分", class: "form-text" %></th>
+      <th><%= f.label :industry, "業種", class: "form-text" %></th>
+      <th></th>
+    </tr>
+          
+    <tr>
+      <td><%= f.text_field :head_store, class: "form-input" %></td>
+      <td><%= f.text_field :name , class: "form-input" %></td>
+      <td><%= f.select :race , {"個人": "個人", "法人": "法人"},{include_blank: "選択してください"}, {class: "form-input"} %></td>
+      <td><%= f.select :industry, { "飲食": "飲食","小売": "小売", "サービス": "サービス"} ,{include_blank:"選択してください"}, {class: "form-input"} %></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th><%= f.label :corporate_name, "法人名", class: "form-text" %></th>
+      <th><%= f.label :corporate_address, "法人名", class: "form-text" %></th>
+      <th><%= f.label :corporate_num, "法人名", class: "form-text" %></th>
+    </tr>
+    <tr>
+      <td><%= f.text_field :corporate_name , class: "form-input" %></td>
+      <td><%= f.text_field :corporate_address , class: "form-input" %></td>
+      <td><%= f.number_field :corporate_address , class: "form-input" %></td>
+    </tr>
+  </table>
+  <h1>店舗担当者情報</h1>
+  <h2>店舗担当者情報①</h2>   
+  <table>
+    <tr>
+      <th><%= f.label :person_main_name, "名前", class: "form-text" %></th>
+      <th><%= f.label :person_main_kana, "フリガナ", class: "form-text" %></th>
+      <th><%= f.label :person_main_class, "役職", class: "form-text" %></th>
+      <th><%= f.label :birthday, "生年月日", class: "form-text" %></th>
+      <th></th>
+    </tr>
+    <tr>
+      <td><%= f.text_field :person_main_name , class: "form-input" %></td>
+      <td><%= f.text_field :person_main_kana , class: "form-input" %></td>
+      <td><%= f.text_field :person_main_class , class: "form-input" %></td>
+      <td><%= f.date_select :person_main_birthday,{start_year: 1950, prompt:"--"}, {class: "birthday-input"} %></td>
+      <td></td>
+    </tr>
+  </table>
+  <h2>店舗担当者情報②</h2>
+  <table>
+    <tr>
+      <th><%= f.label :person_sub_name, "名前", class: "form-text" %></th>
+      <th><%= f.label :person_sub_kana, "フリガナ", class: "form-text" %></th>
+      <th><%= f.label :person_sub_class, "役職", class: "form-text" %></th>
+      <th><%= f.label :birthday, "生年月日", class: "form-text" %></th>
+      <th></th>
+    </tr>
+    <tr>
+      <td><%= f.text_field :person_sub , class: "form-input" %></td>
+      <td><%= f.text_field :person_sub_kana , class: "form-input" %></td>
+      <td><%= f.text_field :person_sub_class , class: "form-input" %></td>
+      <td><%= f.date_select :person_sub_birthday,{start_year: 1950, prompt:"--"}, {class: "birthday-input"} %></td>
+      <td></td>
+    </tr>
+  </table>
+  <h2>連絡先</h2>
+  <table>
+    <tr>
+      <th><%= f.label :phone_number_1, "電話番号１", class: "form-text" %></th>
+      <th><%= f.label :phone_number_2, "電話番号２", class: "form-text" %></th>
+      <th><%= f.label :mail_1, "メールアドレス１", class: "form-text" %></th>
+      <th><%= f.label :mail_2, "メールアドレス2", class: "form-text" %></th>
+      <th></th>
+    </tr>
+    <tr>
+      <td><%= f.text_field :phone_number_1 , class: "form-input" %></td>
+      <td><%= f.text_field :phone_number_2 , class: "form-input" %></td>
+      <td><%= f.text_field :mail_1, class: "form-input" %></td>
+      <td><%= f.text_field :mail_2, class: "form-input" %></td>
+      <td></td>
+    </tr>
+  </table>
+  <h1>店舗住所/その他情報</h1>
+  <table>
+  <%# 一列目 %>
+    <tr>
+      <th><%= f.label :prefecture, "都道府県", class: "form-text" %></th>
+      <th><%= f.label :city, "市区", class: "form-text" %></th>
+      <th><%= f.label :municipalities, "町村", class: "form-text" %></th>
+      <th><%= f.label :address, "番地", class: "form-text" %></th>
+      <th><%= f.label :building_name, "建物名", class: "form-text" %></th>
+    </tr>
+    <tr>
+      <td><%= f.text_field :prefecture , class: "form-input" %></td>
+      <td><%= f.text_field :city , class: "form-input" %></td>
+      <td><%= f.text_field :municipalities , class: "form-input" %></td>
+      <td><%= f.text_field :address , class: "form-input" %></td>
+      <td><%= f.text_field :building_name , class: "form-input" %></td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <th><%= f.label :holiday, "定休日", class: "form-text" %></th>
+      <th><%= f.label :suitable_time, "好適時間", class: "form-text" %></th>
+      <th><%= f.label :description, "備考", class: "form-text" %></th>
+      <th></th>
+    </tr>
+    <tr>
+      <td><%= f.text_field :holiday ,class: "form-input" %></td>
+      <td><%= f.text_field :suitable_time , class: "form-input" %></td>
+      <td><%= f.text_field :description , class: "form-input" %></td>
+      <td></td>
+    </tr>
+  </table>
       <%= f.submit "登録", class: "submit-btn" %>
   <% end %>
-  </main>
 </div>

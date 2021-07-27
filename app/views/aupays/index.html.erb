@@ -6,8 +6,8 @@
       <table>
         <tr >
           <th class="search1">獲得日付</th>
-          <td ><%= f.date_field :get_date_gteq, class: "input" %>~</td>
-          <td ><%= f.date_field :get_date_lteq, class: "input" %></td>
+          <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
+          <td ><%= f.date_field :date_lteq, class: "input" %></td>
           <th class="search1">決済期限</th>
           <td ><%= f.date_field :settlement_gteq, class: "input" %>~</td>
           <td ><%= f.date_field :settlement_lteq, class: "input" %></td>
@@ -34,7 +34,7 @@
 
     <% if @aupays.empty? %>
     <% else %>
-      <h1>表示範囲：<%= @aupays.minimum(:get_date) %>（<%= days[@aupays.minimum(:get_date).wday] %>〜<%= @aupays.maximum(:get_date) %>（<%= days[@aupays.maximum(:get_date).wday] %>）</h1>
+      <h1>表示範囲：<%= @aupays.minimum(:date) %>（<%= days[@aupays.minimum(:date).wday] %>〜<%= @aupays.maximum(:date) %>（<%= days[@aupays.maximum(:date).wday] %>）</h1>
       <table >
         <tr >
           <th class="search3">実売上合計</th>
@@ -42,9 +42,9 @@
           <th class="search3">営業日数</th>
         </tr>
         <tr >
-          <td ><%= aupay_sum = @aupays.where.not(status: "上位店不備").where.not(status: "自社不備").where.not(status: "上位店NG").where.not(status: "自社NG").sum(:actual_profit) %></td>
-          <td ><%= aupay_sum / @aupays.group(:get_date).length %></td>
-          <td ><%= @aupays.group(:get_date).length %>日</td>
+          <td ><%= aupay_sum = @aupays.where.not(status: "上位店不備").where.not(status: "自社不備").where.not(status: "上位店NG").where.not(status: "自社NG").sum(:profit_new) %></td>
+          <td ><%= aupay_sum / @aupays.group(:date).length %></td>
+          <td ><%= @aupays.group(:date).length %>日</td>
         </tr>
         <tr >
           <th class="search2">獲得件数</th>
@@ -81,7 +81,7 @@
 
     <tr >
       <th ></th>
-      <th ><%= sort_link(@q, :get_date, "獲得日",{},{class: "reset-link"}) %></th>
+      <th ><%= sort_link(@q, :date, "獲得日",{},{class: "reset-link"}) %></th>
       <th >獲得者</th>
       <th >法人/個人</th>
       <th >店舗名</th>
@@ -93,7 +93,7 @@
     <% @aupays.find_each do |aupay| %>
     <tr >
       <td ><%= link_to "詳細",  aupay_path(aupay.id) ,class: "link" %></td>
-      <td ><%= aupay.get_date.month %>月<%= aupay.get_date.day %>日</td>
+      <td ><%= aupay.date.month %>月<%= aupay.date.day %>日</td>
       <td ><%= aupay.user.name %></td>
       <td ><%= aupay.store_prop.race %></td>
       <td ><%= aupay.store_prop.name %></td>

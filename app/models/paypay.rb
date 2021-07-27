@@ -3,11 +3,11 @@ class Paypay < ApplicationRecord
   with_options presence: true do 
     validates :user_id 
     validates :store_prop_id
-    validates :get_date
+    validates :date
     validates :status
     validates :client
-    validates :valuation_profit
-    validates :actual_profit
+    validates :profit
+    validates :valuation
   end 
 
   belongs_to :store_prop
@@ -28,8 +28,8 @@ class Paypay < ApplicationRecord
       "get_date",
       "payment",
       "client",
-      "valuation_profit",
-      "actual_profit"
+      "get_profit",
+      "settlement_profit"
     ]
   end
 

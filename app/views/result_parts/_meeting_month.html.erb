@@ -1,0 +1,129 @@
+<%# 会議資料 %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<%# 現状 %>
+      <h1>キャッシュレス・フェムト　会議資料</h1>
+      <h1><%= Date.today.year %>年<%= Date.today.month %>月<%= @result_month.minimum(:date).day %>日（<%= days[@result_month.minimum(:date).wday] %>）〜<%= @result_month.maximum(:date).day %>日（<%= days[@result_month.maximum(:date).wday] %>）</h1>
+  <table >
+    <%# 拠点別（キャッシュ・カーサ） %>
+    <%# 販管費変数 %>
+      <% cost_month = @costs.where(year: Date.today.year).where(month: Date.today.month) %>
+    <%# 1行目（大区分） %>
+      <tr>
+        <th class="th-head" rowspan="2">拠点</th>
+        <th class="th-head" rowspan="2">担当運営</th>
+        <th class="th-head" rowspan="2">商材</th>
+        <th class="th-head" rowspan="2">対策員人数</th>
+        <th class="th-head" rowspan=2>予定シフト</th>
+        <th class="th-head" rowspan="2">消化シフト</th>
+        <th class="th-head" colspan="5">評価売上</th>
+        <th class="th-head" colspan="9">実売上</th>
+      </tr>
+    <%# 2行目（小区分） %>
+      <tr>
+        <%# 評価売上 %>
+        <th class="th-head-sub">現状売上</th>
+        <th class="th-head-sub">現状Ave</th>
+        <th class="th-head-sub">前週Ave</th>
+        <th class="th-head-sub">前週比</th>
+        <th class="th-head-sub">終着見込み売上</th>
+        <%# 実売上 %>
+        <th class="th-head-sub">現状売上</th>
+        <th class="th-head-sub">現状Ave</th>
+        <th class="th-head-sub">前週Ave</th>
+        <th class="th-head-sub">前週比</th>
+        <th class="th-head-sub">終着見込み売上</th>
+        <th class="th-head-sub">人件費合計</th>
+        <th class="th-head-sub">粗利益</th>
+        <th class="th-head-sub">販管費合計</th>
+        <th class="th-head-sub">営業利益合計</th>
+      </tr>
+    <%# キャッシュレス新規、決済の変数一覧 %>
+      <% chubu_cash_month = @result_month.where(users: {base: "中部SS"}).where(users: {base_sub: "キャッシュレス"}) %>
+      <% chubu_cash_month_ave = chubu_cash_month.average(:profit).round() %>
+      <% chubu_cash_prev = chubu_cash_month.where(date: 2.week.ago..1.week.ago).average(:profit) %>
+      <%# 新規 %>
+      <% chubu_cash_new_month = chubu_cash_month.where(shift: "キャッシュレス新規") %>
+      <% chubu_cash_new_month_ave = chubu_cash_new_month.average(:profit) %>
+      <% chubu_cash_new_prev_ave = chubu_cash_new_month.where(date: 2.week.ago..1.week.ago).average(:profit) %>
+      <% chubu_cash_new_month_expected = (chubu_cash_new_month_ave * @shift_month.sum(:cashless_new)) %>
+      <%# 決済 %>
+      <% chubu_cash_settlement_month = chubu_cash_month.where(shift: "キャッシュレス決済") %>
+      <% chubu_cash_settlement_prev = chubu_cash_settlement_month.where(date: 2.week.ago..1.week.ago).average(:profit) %>
+      <% chubu_cash_settlement_month_ave = chubu_cash_settlement_month.average(:profit) %>
+      <% chubu_cash_settlement_month_expected = chubu_cash_settlement_month_ave * @shift_month.sum(:cashless_settlement) %>
+    <%# 中部キャッシュレス  %>
+      <tr>
+          <th rowspan="2" class="th-base">中部</th>
+        <th class="th-administ" ><%= @users.where(base: "中部SS").where(base_sub: "キャッシュレス").maximum(:group) %></th>
+        <th class="th-sum">キャッシュレス</th>
+        <%# 評価売上 %>
+          <td><%= chubu_cash_month.group(:user_id).length %></td>
+          <td><%= @shift_month.sum('cashless_new + cashless_settlement') %></td>
+          <td><%= chubu_cash_month.length %></td>
+          <td><%= chubu_cash_month.sum(:profit).to_s(:delimited) %></td>
+          <td><%= chubu_cash_new_month_ave.round().to_s(:delimited) %></td>          
+          <td><%= chubu_cash_new_prev_ave.round().to_s(:delimited) %></td>
+          <td><%= (chubu_cash_new_month_ave - chubu_cash_new_prev_ave).round().to_s(:delimited) %></td>
+          <td><%= (chubu_cash_new_month_expected + chubu_cash_settlement_month_expected).round().to_s(:delimited) %></td>
+        <%# 販管費変数 %>
+          <% chubu_cash_costs = cost_month.where(base: "中部キャッシュレス") %>
+          <% chubu_cash_labor_costs = chubu_cash_costs.sum('sales_man + office_worker + social_insurance + administrator  ')  %>
+          <% chubu_cash_cost_sum = chubu_cash_labor_costs + chubu_cash_costs.sum('sales_man_cost + office_worker_cost + office + utility_net_cost + dorm + bonus_stock + travel_stock + other') %>
+        <%# 実売上 %>
+          <td><%=  %></td>
+          <td><%=  %></td>
+          <td><%=  %></td>
+          <td><%=  %></td>
+          <td><%=  %></td>
+          <td><%= (chubu_cash_labor_costs).to_s(:delimited) %></td>
+          <td><%=  %></td>
+          <td><%= chubu_cash_cost_sum.to_s(:delimited) %></td>
+          <td><%=  %></td>
+          <td><%=  %></td>
+      </tr>
+    <%# フェムトの変数一覧 %>
+      <% chubu_casa_month = @result_month.where(users: {base: "中部SS"}).where(users: {base_sub: "フェムト"}) %>
+      <%# フェムト新規 %>
+      <% chubu_casa_new_month = chubu_casa_month.where(shift: "フェムト") %>
+      <% chubu_casa_new_month_ave = chubu_casa_new_month.average(:profit)  %>
+      <% chubu_casa_new_prev_ave = chubu_casa_new_month.where(date: 2.week.ago..1.week.ago).average(:profit) rescue 0 %>
+      <% chubu_casa_new_month_expected = chubu_casa_new_month_ave * @shift_month.sum(:rakuten_casa) rescue 0 %>
+      <%# フェムト設置 %>
+      <% chubu_casa_put_month = chubu_casa_month.where(shift: "フェムト（設置）") %>
+      <% chubu_casa_put_month_ave = chubu_casa_put_month.average(:profit)  %>
+      <% chubu_casa_put_month_prev_ave = chubu_casa_put_month.where(date: 2.week.ago..1.week.ago).average(:profit) rescue 0 %>
+      <% chubu_casa_put_month_expected = chubu_casa_new_month_ave * @shift_month.sum(:rakuten_casa_put) rescue 0 %>
+    <%# （中部フェムト） %>
+      <tr>
+      <%# 評価売上 %>
+        <th class="th-administ" rowspan="3"><%= @users.where(base: "中部SS").where(base_sub: "フェムト").maximum(:group) %></th>
+      <%# 評価売上 %>
+      <th class="th-sum">フェムト</th>
+      <td><%= chubu_casa_month.group(:user_id).length %></td>
+      <td><%= @shift_month.sum('rakuten_casa + rakuten_casa_put') %></td>
+      <td><%= chubu_casa_new_month.length + chubu_casa_put_month.length %></td>
+      <td><%= chubu_casa_month.sum(:profit).to_s(:delimited) %></td>
+      <td><%= chubu_casa_new_month_ave.round().to_s(:delimited) %></td>
+      <td><%= chubu_casa_new_prev_ave.round().to_s(:delimited) %></td>
+      <td><%= (chubu_casa_new_month_ave - chubu_casa_new_prev_ave).round().to_s(:delimited) %></td>
+      <td><%= (chubu_casa_new_month_expected + chubu_casa_put_month_expected).round().to_s(:delimited) rescue "※エラー" %></td>
+        <%# 販管費変数 %>
+          <% chubu_casa_costs = cost_month.where(base: "中部フェムト") %>
+          <% chubu_casa_labor_costs = chubu_casa_costs.sum('sales_man + office_worker + social_insurance + administrator  ')  %>
+          <% chubu_casa_cost_sum = chubu_casa_labor_costs + chubu_casa_costs.sum('sales_man_cost + office_worker_cost + office + utility_net_cost + dorm + bonus_stock + travel_stock + other') %>
+        <%# 実売上 %>
+          <td><%=  %></td>
+          <td><%=  %></td>
+          <td><%=  %></td>
+          <td><%=  %></td>
+          <td><%=  %></td>
+          <td><%= (chubu_casa_labor_costs).to_s(:delimited) %></td>
+          <td><%=  %></td>
+          <td><%= chubu_casa_cost_sum.to_s(:delimited) %></td>
+          <td><%=  %></td>
+          <td><%=  %></td>
+      </tr>
+    <%# 9行目キャッシュ・カーサ合計 %>
+    <%# 内容 %>
+      <tr>
+  </table>
