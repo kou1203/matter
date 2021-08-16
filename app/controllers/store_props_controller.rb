@@ -36,8 +36,16 @@ class StorePropsController < ApplicationController
   end 
 
   def import 
-    StoreProp.import(params[:file]) 
-    redirect_to store_props_path
+    if params[:file].present?
+      if StoreProp.csv_check(params[:file]).present?
+        redirect_to store_props_path , alert: "エラーが発生したため中断しました#{StoreProp.csv_check(params[:file])}"
+      else
+        message = StoreProp.import(params[:file]) 
+        redirect_to store_props_path, alert: "インポート処理を完了しました#{message}"
+      end
+    else
+      redirect_to store_props_path, alert: "インポートに失敗しました。ファイルを選択してください"
+    end
   end 
 
   def show 
@@ -67,10 +75,12 @@ class StorePropsController < ApplicationController
       :corporate_address,
       :corporate_num,
       :industry,
+      :gender_main, 
       :person_main_name, 
       :person_main_kana,
       :person_main_class,
       :person_main_birthday, 
+      :gender_sub, 
       :person_sub_name, 
       :person_sub_kana, 
       :person_sub_class, 

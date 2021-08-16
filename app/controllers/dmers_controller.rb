@@ -11,6 +11,7 @@ class DmersController < ApplicationController
   end 
 
   def new 
+
     @dmer = Dmer.new
     @users = User.all
     @store_prop = StoreProp.find(params[:store_prop_id])
@@ -22,7 +23,7 @@ class DmersController < ApplicationController
     @store_prop = StoreProp.find(params[:store_prop_id])
     @dmer.save 
     if @dmer.save 
-      redirect_to store_props_path(@store_prop.id)
+      redirect_to store_props_path(@store_prop.id) 
     else  
       render :new 
     end 
@@ -45,8 +46,16 @@ class DmersController < ApplicationController
   end 
 
   def import 
-    Dmer.import(params[:file])
-    redirect_to dmers_path
+    if params[:file].present?
+      if Dmer.csv_check(params[:file]).present?
+        redirect_to root_path , alert: "エラーが発生したため中断しました#{Dmer.csv_check(params[:file])}"
+      else
+        message = Dmer.import(params[:file]) 
+        redirect_to root_path, alert: "インポート処理を完了しました#{message}"
+      end
+    else
+      redirect_to root_path, alert: "インポートに失敗しました。ファイルを選択してください"
+    end
   end 
 
   private 

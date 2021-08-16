@@ -22,6 +22,5 @@ class CreateDmers < ActiveRecord::Migration[6.0]
       t.text :description
     end
     add_foreign_key :dmers,:users, column: :settlementer_id
-    add_index :dmers, [:customer_num], unique: true 
   end
 end

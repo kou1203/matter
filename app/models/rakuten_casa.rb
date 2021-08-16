@@ -1,18 +1,28 @@
 class RakutenCasa < ApplicationRecord
   belongs_to :user
+  belongs_to :putter, class_name: "User", optional: true
   belongs_to :store_prop
 
   with_options presence: true do 
-    validates :user 
+    validates :client 
+    validates :user_id 
     validates :store_prop_id 
     validates :date
-    validates :contract_type
-    validates :contracter
-    validates :line_type
-    validates :confirm_method
-    validates :line_service
-    validates :get_profit
-    validates :put_profit  
+    validates :status
+    validates :net_confirm_method
+    validates :net_name
+    validates :hikari_collabo
+    validates :net_plan
+    validates :customer_num
+    validates :net_contracter
+    validates :net_contracter_kana
+    validates :net_phone_number
+    validates :error_status
+    validates :status_put
+    validates :profit_new
+    validates :profit_put  
+    validates :valuation_new  
+    validates :valuation_put  
   end
 
   def self.import(file)

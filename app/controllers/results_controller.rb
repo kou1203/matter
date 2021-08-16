@@ -50,7 +50,7 @@ class ResultsController < ApplicationController
 
   def import 
     Result.import(params[:file])
-    redirect_to summits_path
+    redirect_to results_path
   end 
 
   def show 

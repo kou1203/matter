@@ -1,18 +1,15 @@
 <div data-scope-path="dmers/new">
   <h1 ><%= @store_prop.name %>情報入力（dメル）</h1>
   <%= render "shared/header" %>
-
   <%= form_with url: import_dmers_path do |f| %>
     <table>
       <tr>
-        <th class="csv">CSV取り込み</th>
+        <th style="width: 10px;">CSV</th>
         <td class="cav-td"><%= f.file_field :file, accept: ".csv", class: "csv-td" %></td>
         <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
-        <td class="reset"><%= link_to "店舗一覧に戻る", root_path ,class: "reset-link" %></td>
       </tr>
     </table>
   <% end %>
-
   <%= form_with model: @dmer,url: store_prop_dmers_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
     <%= render "shared/error_messages", model: f.object %>
     <%= f.hidden_field :store_prop_id, value: @store_prop.id %>

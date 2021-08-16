@@ -1,4 +1,4 @@
-window.addEventListener('load', function(){
+window.addEventListener('turbolinks:load', function(){
   const pullDownButton1 = document.getElementById("lists1")
   const pullDownParents1 = document.getElementById("pull-down1")
   const pullDownButton2 = document.getElementById("lists2")

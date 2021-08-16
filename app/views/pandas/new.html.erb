@@ -89,19 +89,23 @@
         <th><%= f.label :solution_date, "不備解消日", class: "form-text" %></th>
         <th><%= f.label :result_point, "成果地点", class: "form-text" %></th>
         <th><%= f.label :payment, "入金日", class: "form-text" %></th>
-        <th><%= f.label :remarks, "備考", class: "form-text" %></th>
-        <th><%= f.label :valuation_profit, "評価売上", class: "form-text" %></th>
-        <th><%= f.label :actual_profit, "実売上", class: "form-text" %></th>
       </tr>
     <%# 五行目値 %>
       <tr>
         <td><%= f.date_field :solution_date, class: "form-input" %></td>
         <td><%= f.date_field :result_point, class: "form-input" %></td>
         <td><%= f.date_field :payment, class: "form-input" %></td>
-        <td><%= f.text_field :remarks ,class: "form-input" %></td>
+      </tr>       
+      <tr>
+        <th><%= f.label :valuation_profit, "評価売上", class: "form-text" %></th>
+        <th><%= f.label :actual_profit, "実売上", class: "form-text" %></th>
+        <th><%= f.label :remarks, "備考", class: "form-text" %></th>
+      </tr> 
+      <tr>
         <td><%= f.number_field :valuation_profit , class: "form-input" %></td>
         <td><%= f.number_field :actual_profit , class: "form-input" %></td>
-      </tr>        
+        <td><%= f.text_field :remarks ,class: "form-input" %></td>
+      </tr> 
       </table>
     <%= f.submit "登録", class: "submit-btn" %>
   <% end %>

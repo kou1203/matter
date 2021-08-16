@@ -37,9 +37,11 @@ Rails.application.routes.draw do
   resources :pranesses, expect: [:new, :create] do 
     collection { post :import }
   end 
+
   resources :dmers, expect: [:new, :create] do 
     collection { post :import }
   end 
+  
   resources :stocks do 
     collection { post :import }
     resources :stock_histories

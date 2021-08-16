@@ -22,6 +22,5 @@ class CreateAupays < ActiveRecord::Migration[6.0]
       t.string :description
     end
     add_foreign_key :aupays, :users, column: :settlementer_id
-    add_index :aupays, [:customer_num], unique: true
   end
 end

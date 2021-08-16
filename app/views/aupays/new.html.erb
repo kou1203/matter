@@ -1,7 +1,9 @@
+  <script>
+    window.onload = addToNewUrl();
+  </script>
 <div data-scope-path="aupays/new">
   <h1><%= @store_prop.name %>情報入力（auペイ）</h1>
   <%= render "shared/header" %>
-      
   <%= form_with url: import_aupays_path do |f| %>
     <table >
       <tr>
@@ -14,7 +16,14 @@
   <% end %>
 
   <%= form_with model: @aupay,url: store_prop_aupays_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
-    <%= render "shared/error_messages", model: f.object %>
+    <%# render "shared/error_messages", model: f.object %>
+      <% if session[:error].present? %>
+    <ul class="errors">
+      <% session[:error].each do |e| %>
+        <li><%= e %></li>
+      <% end %>
+      <% session[:error] = nil # 念のため使い終わったら消す %>   
+      <% end %>
     <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
     <table>
       <tr>

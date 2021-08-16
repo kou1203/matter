@@ -9,6 +9,5 @@ class CreateSummitCustomerProps < ActiveRecord::Migration[6.0]
       t.string :contract_name           , null: false 
       t.string :before_electric
     end
-    add_index :summit_customer_props, [:customer_num], unique: true 
   end
 end

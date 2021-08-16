@@ -59,8 +59,16 @@
     <h1>店舗情報</h1>
     <table >
       <tr>
-      </tr>
-      <tr>
+        <th>店舗名</th>
+        <td><%= @store_prop.name %></td>
+        <th>本店名</th>
+        <% if @store_prop.name == @store_prop.head_store %>
+        <td>本店</td>
+        <% elsif @store_prop.head_store.nil? %>
+        <td>複数店なし</td>
+        <% else %>
+        <td><%= @store_prop.head_store %></td>
+        <% end %>
       </tr>
       <tr >
         <th>属性</th>
@@ -68,24 +76,32 @@
         <th>業種</th>
         <td><%= @store_prop.industry %></td>
       </tr>
-
-      <tr >
-        <th>店舗名</th>
-        <td><%= @store_prop.name %></td>
-        <th>法人名</th>
-        <td><%= @store_prop.corporate_name %></td>
-
-      </tr>
-      <tr>
       <th>店舗住所</th>
         <td colspan="3"><%= @store_prop.prefecture %><%= @store_prop.city %><%= @store_prop.municipalities %><%= @store_prop.address %><%= @store_prop.building_name %></td>
       </tr>
+
+      <tr >
+        <th>法人名</th>
+        <td><%= @store_prop.corporate_name %></td>
+        <th>法人番号</th>
+        <td><%= @store_prop.corporate_num %></td>
+      </tr>
+      <tr>
+        <th>法人住所</th>
+        <td colspan="3"><%= @store_prop.corporate_address %></td>
+      </tr>
+      <tr>
     </table>
     <h1>担当者情報</h1>
     <table>
       <tr >
         <th colspan="4">店舗担当者①</th>
       </tr>
+    <tr>
+      <th>性別</th>
+        <td><%= @store_prop.gender_main %></td>
+        <th colspan="2"></th>
+    <tr>
     <tr>
       <th>名前</th>
         <td><%= @store_prop.person_main_name %></td>
@@ -103,6 +119,11 @@
       <th colspan="4">店舗担当者②</th>
     </tr>
     <tr>
+      <th>性別</th>
+        <td><%= @store_prop.gender_sub %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
       <th>名前</th>
         <td><%= @store_prop.person_sub_name %></td>
       <th>フリガナ</th>
@@ -113,16 +134,6 @@
         <td><%= @store_prop.person_sub_birthday %></td>
       <th>役職</th>
         <td><%= @store_prop.person_sub_class %></td>
-    </tr>
-    <tr>
-        <th>本店名</th>
-        <% if @store_prop.name == @store_prop.head_store %>
-        <td>本店</td>
-        <% elsif @store_prop.head_store.nil? %>
-        <td>複数店なし</td>
-        <% else %>
-        <td><%= @store_prop.head_store %></td>
-        <% end %>
     </tr>
     </table>
     <table >

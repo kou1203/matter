@@ -24,13 +24,23 @@ class AupaysController < ApplicationController
     if @aupay.save 
       redirect_to store_prop_path(@store_prop.id)
     else  
-      render :new 
+      session[:error] = @aupay.errors.full_messages
+      
+      redirect_to store_prop_aupays_new_path(@store_prop.id)
     end 
   end
 
-  def import
-    Aupay.import(params[:file])
-    redirect_to aupays_path
+  def import 
+    if params[:file].present?
+      if Aupay.csv_check(params[:file]).present?
+        redirect_to root_path , alert: "エラーが発生したため中断しました#{Aupay.csv_check(params[:file])}"
+      else
+        message = Aupay.import(params[:file]) 
+        redirect_to root_path, alert: "インポート処理を完了しました#{message}"
+      end
+    else
+      redirect_to root_path, alert: "インポートに失敗しました。ファイルを選択してください"
+    end
   end 
 
   def show 

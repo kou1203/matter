@@ -12,7 +12,7 @@
 <%# シフト %>
   <table >
     <tr >
-      <th class="th-head">シフト（メイン商材）</th>
+      <th class="th-side-head">シフト（メイン商材）</th>
       <th class="th-head">予定</th>
       <th class="th-head">消化</th>
       <th class="th-head">残シフト</th>
@@ -41,50 +41,50 @@
       <% end %>
     </tr>
     <tr class="result-shit-tr">
-      <th class="th-head-even">キャッシュレス新規</th><%# 欠勤 %>
+      <th class="th-side-head-even">キャッシュレス新規</th><%# 欠勤 %>
           <td ><%= new_shift %></td>
           <td ><%= digestion_new = @results.where(shift: "キャッシュレス新規").length %></td>
           <td ><%= new_shift - digestion_new %></td>
           <td style="color:red; font-weight:bold;"><%= absence = @results.where(shift: "欠勤").length %></td>
       </tr>
     <tr class="result-shit-tr">
-      <th class="th-head">キャッシュレス決済</th>
+      <th class="th-side-head">キャッシュレス決済</th>
           <td ><%= settlement_shift %></td>
           <td ><%= digestion_settlement = @results.where(shift: "キャッシュレス決済").length %></td>
           <td ><%= settlement_shift - digestion_settlement %></td>
     </tr>
     <tr class="result-shit-tr">
-      <th class="th-head-even">サミット</th>
+      <th class="th-side-head-even">サミット</th>
           <td ><%= summit_shift %></td>
           <td ><%= digestion_summit = @results.where(shift: "サミット").length %></td>
           <td ><%= summit_shift - digestion_summit %></td>
     </tr>
     <tr class="result-shit-tr">
-      <th class="th-head">パンダ</th>
+      <th class="th-side-head">パンダ</th>
           <td ><%= panda_shift %></td>
           <td ><%= digestion_panda = @results.where(shift: "パンダ").length %></td>
           <td ><%= panda_shift - digestion_panda %></td>
     </tr>
     <tr class="result-shit-tr">
-      <th class="th-head-even">フェムト</th>
+      <th class="th-side-head-even">フェムト</th>
           <td ><%= casa_shift %></td>
           <td ><%= digestion_casa = @results.where(shift: "フェムト").length %></td>
           <td ><%= casa_shift - digestion_casa %></td>
     </tr>
     <tr class="result-shit-tr">
-      <th class="th-head">フェムト（設置）</th>
+      <th class="th-side-head">フェムト（設置）</th>
           <td ><%= casa_put_shift %></td>
           <td ><%= digestion_casa_put = @results.where(shift: "フェムト（設置）").length %></td>
           <td ><%= casa_put_shift - digestion_casa_put %></td>
     </tr>
     <tr class="result-shit-tr">
-      <th class="th-head-even">帯同</th>
+      <th class="th-side-head-even">帯同</th>
           <td ><%= ojt_shift %></td>
           <td ><%= digestion_ojt = @results.where(shift: "帯同").length %></td>
           <td ><%= ojt_shift - digestion_ojt %></td>
     </tr>
     <tr class="result-shit-tr">
-      <th class="th-head">内勤</th>
+      <th class="th-side-head">内勤</th>
           <td ><%= house_work_shift %></td>
           <td ><%= digestion_house_work = @results.where(shift: "内勤").length %></td>
           <td ><%= house_work_shift - digestion_house_work %></td>
@@ -103,7 +103,7 @@
   <%# 総合基準値ラベル %>
     <table >
     <tr>
-      <th rowspan="2" class="th-head">商材</th>
+      <th rowspan="3" class="th-side-head">全商材合計</th>
       <th colspan="3" class="th-head">売上</th>
       <th colspan="6" class="th-head">基準値</th>
       <th rowspan="2" class="th-head">平均獲得数</th>
@@ -119,7 +119,7 @@
       <th class="th-head-sub">フル数</th>
       <th class="th-head-sub">成約率</th>
     </tr>
-      <% basic_results = @results.where.not(shift: "キャッシュレス決済").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "フェムト（設置）") %>
+      <% basic_results = @results.where.not(shift: "キャッシュレス決済").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "フェムト（設置）").where.not(shift: "欠勤") %>
       <% visit = basic_results.sum(:first_visit).to_f + basic_results.sum(:latter_visit).to_f %>
       <% interview = basic_results.sum(:first_interview).to_f + basic_results.sum(:latter_interview).to_f %>
       <% full_talk = basic_results.sum(:first_full_talk).to_f + basic_results.sum(:latter_full_talk).to_f %>
@@ -128,60 +128,59 @@
       <% settlement_ave = @results.where(shift: "キャッシュレス決済").average(:profit).round() rescue 0 %>
       <% panda_ave = @results.where(shift: "パンダ").average(:profit).round() rescue 0 %>
       <% casa_ave = @results.where(shift: "フェムト").average(:profit).round() rescue 0 %>
-    <%# 総合基準値値 %>
-      <tr>
-        <th class="th-sum">（全商材合計）</th>
-        <td ><%= @results.where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "休み").where.not(shift: "欠勤").average(:profit).round().to_s(:delimited) rescue 0 %></td>
-        <td ><%= @results.sum(:profit).to_s(:delimited) %></td>
-        <% if shift_sum == 0 %>
-        <td>シフトを入力してください</td>
-        <% else %>
-        <td ><%= (cash_ave * new_shift + settlement_ave * settlement_shift + panda_ave * panda_shift).to_s(:delimited) %></td>
-        <% end %>
-        <td ><%= ( visit / basic_results.length).round(1) %></td>
-        <td ><%= number_to_percentage(interview / visit * 100, precision: 1) rescue 0 %></td>
-        <td ><%=  (interview / @results.length).round(1) %></td>
-        <td ><%= number_to_percentage(full_talk / interview * 100 , precision: 1) rescue 0 %></td>
-        <td ><%= ( full_talk / basic_results.length).round(1) %></td>
-        <td ><%= number_to_percentage(get / full_talk * 100, precision: 1) rescue 0 %></td>
-        <td ><%= ( get / basic_results.length).round(1) rescue 0 %></td>
-      </tr>
-    <%# キャッシュレス基準値早見表 %>
-      <% if @results.where(shift: "キャッシュレス新規").empty? %>
+  <%# 総合基準値値 %>
+    <tr>
+      <td ><%= @results.where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "休み").where.not(shift: "欠勤").average(:profit).round().to_s(:delimited) rescue 0 %></td>
+      <td ><%= @results.sum(:profit).to_s(:delimited) %></td>
+      <% if shift_sum == 0 %>
+      <td>シフトを入力してください</td>
       <% else %>
-      <tr >
-        <th class="th-head">キャッシュレス</th>
-        <th class="th-head-sub">平均売上</th>
-        <th class="th-head-sub">現状売上</th>
-        <th class="th-head-sub">予想終着</th>
-        <th rowspan="2" class="th-head">獲得商材</th>
-        <th class="th-head-sub">dメル（新規）</th>
-        <th class="th-head-sub">dメル（決済）</th>
-        <th class="th-head-sub">aupay（新規）</th>
-        <th class="th-head-sub">aupay（決済）</th>
-        <th class="th-head-sub">PayPay（新規）</th>
-      </tr>
-      <tr>
-        <th class="th-head-even">新規</th>
-        <td ><%= cash_ave.to_s(:delimited) %></td>
-        <td ><%= @results.where(shift: "キャッシュレス新規").sum(:profit).to_s(:delimited) %></td>
-        <% if new_shift == 0 %>
-        <td >シフトを入力してください</td>
-        <% else %>
-        <td ><%= (cash_ave * new_shift).to_s(:delimited) %></td>
-        <% end %>
-        <td ><%= @results.where(shift: "キャッシュレス新規").sum(:dmer) %></td>
-        <td ><%= @results.sum(:dmer_settlement) %></td>
-        <td ><%= @results.where(shift: "キャッシュレス新規").sum(:aupay) %></td>
-        <td ><%= @results.sum(:aupay_settlement) %></td>
-        <td ><%= @results.where(shift: "キャッシュレス新規").sum(:paypay) %></td>
-      </tr>
+      <td ><%= (cash_ave * new_shift + settlement_ave * settlement_shift + panda_ave * panda_shift).to_s(:delimited) %></td>
+      <% end %>
+      <td ><%= ( visit / basic_results.length).round(1) %></td>
+      <td ><%= number_to_percentage(interview / visit * 100, precision: 1) rescue 0 %></td>
+      <td ><%=  (interview / @results.length).round(1) %></td>
+      <td ><%= number_to_percentage(full_talk / interview * 100 , precision: 1) rescue 0 %></td>
+      <td ><%= ( full_talk / basic_results.length).round(1) %></td>
+      <td ><%= number_to_percentage(get / full_talk * 100, precision: 1) rescue 0 %></td>
+      <td ><%= ( get / basic_results.length).round(1) rescue 0 %></td>
+    </tr>
+  <%# キャッシュレス基準値早見表 %>
+    <% if @results.where(shift: "キャッシュレス新規").empty? %>
+    <% else %>
+    <tr >
+      <th class="th-side-head-even">キャッシュレス</th>
+      <th class="th-head-sub">平均売上</th>
+      <th class="th-head-sub">現状売上</th>
+      <th class="th-head-sub">予想終着</th>
+      <th rowspan="2" class="th-head">獲得商材</th>
+      <th class="th-head-sub">dメル（新規）</th>
+      <th class="th-head-sub">dメル（決済）</th>
+      <th class="th-head-sub">aupay（新規）</th>
+      <th class="th-head-sub">aupay（決済）</th>
+      <th class="th-head-sub">PayPay（新規）</th>
+    </tr>
+    <tr>
+      <th class="th-side-head-even">新規</th>
+      <td ><%= cash_ave.to_s(:delimited) %></td>
+      <td ><%= @results.where(shift: "キャッシュレス新規").sum(:profit).to_s(:delimited) %></td>
+      <% if new_shift == 0 %>
+      <td >シフトを入力してください</td>
+      <% else %>
+      <td ><%= (cash_ave * new_shift).to_s(:delimited) %></td>
+      <% end %>
+      <td ><%= @results.where(shift: "キャッシュレス新規").sum(:dmer) %></td>
+      <td ><%= @results.sum(:dmer_settlement) %></td>
+      <td ><%= @results.where(shift: "キャッシュレス新規").sum(:aupay) %></td>
+      <td ><%= @results.sum(:aupay_settlement) %></td>
+      <td ><%= @results.where(shift: "キャッシュレス新規").sum(:paypay) %></td>
+    </tr>
 
     <%# キャッシュレス決済 %>
       <% if @results.where(shift: "キャッシュレス決済").empty? %>
       <% else %>
       <tr>
-        <th class="th-head">決済</th>
+        <th class="th-side-head-even">決済</th>
         <td ><%= settlement_ave.to_s(:delimited) %></td>
         <td ><%= @results.where(shift: "キャッシュレス決済").sum(:profit).to_s(:delimited) %></td>
         <% if settlement_shift == 0 %>
@@ -195,7 +194,7 @@
       
     <%# キャッシュレス成約率 %>
       <tr >
-        <th rowspan="4" class="th-head-even">切り返し</th>
+        <th rowspan="4" class="th-side-head">キャッシュ切り返し</th>
         <th class="th-head-sub">どういうこと？</th>
         <th class="th-head-sub">君は誰？教会？</th>
         <th class="th-head-sub">もらうだけでいいの？</th>
@@ -284,14 +283,14 @@
       <% if @results.where(shift: "パンダ").empty? %>
       <% else %>
       <tr>
-        <th >パンダ</th>
-        <th >平均売上</th>
-        <th >現状売上</th>
-        <th >予想終着</th>
-        <th >パンダ平均獲得数</th>
+        <th rowspan="2" class="th-side-head-even">パンダ</th>
+        <th class="th-head-sub">平均売上</th>
+        <th class="th-head-sub">現状売上</th>
+        <th class="th-head-sub">予想終着</th>
+        <th class="th-head-sub">パンダ平均獲得数</th>
+        <th class="th-head-sub">パンダ合計獲得数</th>
       </tr>
       <tr>
-        <th style="border-bottom:solid 0.5px white;"></th>
         <td ><%= panda_ave.to_s(:delimited) %></td>
         <td ><%= @results.where(shift: "パンダ").sum(:profit).to_s(:delimited) %></td>
         <% if panda_shift == 0 %>
@@ -300,17 +299,17 @@
         <td ><%=  (panda_ave * panda_shift).to_s(:delimited) %></td>
         <% end %>
         <td ><%= @results.average(:panda).round(1) %></td>
+        <td ><%= @results.sum(:panda).round().to_s(:delimited) %></td>
       </tr>
       <tr>
-        <th></th>
-        <th >結構です</th>
-        <th >忙しい</th>
-        <th >検討する</th>
-        <th >デリバリーはいい</th>
-        <th >増やしたくない</th>
+        <th rowspan="4" class="th-side-head">パンダ切り返し</th>
+        <th class="th-head-sub">結構です</th>
+        <th class="th-head-sub">忙しい</th>
+        <th class="th-head-sub">検討する</th>
+        <th class="th-head-sub">デリバリーはいい</th>
+        <th class="th-head-sub">増やしたくない</th>
       </tr>
       <tr>
-        <th >パンダ切り返し</th>
         <td ><%= number_to_percentage(@results.sum(:panda_not_need_get).to_f / @results.sum(:panda_not_need_full_talk) * 100,precision: 1) rescue 0 %></td>
         <td ><%= number_to_percentage(@results.sum(:panda_busy_get).to_f / @results.sum(:panda_busy_full_talk) * 100,precision: 1) rescue 0 %></td>
         <td ><%= number_to_percentage(@results.sum(:panda_yet_get).to_f / @results.sum(:panda_yet_full_talk) * 100,precision: 1) rescue 0 %></td>
@@ -319,17 +318,15 @@
       </tr>
       
       <tr>
-        <th ></th>
-        <th >やる余裕がない</th>
-        <th >面倒くさい</th>
-        <th >情報不足</th>
-        <th >フードネコ</th>
-        <th >ペロ</th>
-        <th >その他</th>
+        <th class="th-head-sub">やる余裕がない</th>
+        <th class="th-head-sub">面倒くさい</th>
+        <th class="th-head-sub">情報不足</th>
+        <th class="th-head-sub">フードネコ</th>
+        <th class="th-head-sub">ペロ</th>
+        <th class="th-head-sub">その他</th>
       </tr>
 
       <tr>
-        <th ></th>
         <td ><%= number_to_percentage(@results.sum(:panda_not_margin_get).to_f / @results.sum(:panda_not_margin_full_talk) * 100,precision: 1) rescue 0 %></td>
         <td ><%= number_to_percentage(@results.sum(:panda_dull_get).to_f / @results.sum(:panda_dull_full_talk) * 100,precision: 1) rescue 0 %></td>
         <td ><%= number_to_percentage(@results.sum(:panda_lack_info_get).to_f / @results.sum(:panda_lack_info_full_talk) * 100,precision: 1) rescue 0 %></td>
@@ -364,19 +361,15 @@
             <% summit_shift += 1 %>
           <% end %> 
         <% end %>
-
         <tr class="">
-          <th >サミット月間獲得</th>
+          <th class="th-side-head">サミット月間獲得</th>
+          <th class="th-head">従量電灯</th>
+          <th class="th-head">低圧電力</th>
+          <th class="th-head">使用量</th>
+          <th class="th-head">獲得件数</th>
         </tr>
         <tr class="">
-          <th >内訳</th>
-          <th >従量電灯</th>
-          <th >低圧電力</th>
-          <th >使用量</th>
-          <th >獲得件数</th>
-        </tr>
-        <tr class="">
-          <th >合計</th>
+          <th class="th-side-head-even">合計</th>
           <td ><%= metered_lamp_sum %>kWh</td>
           <td ><%= low_voltage_sum %>kW</td>
           <td ><%= amount_sum %>kWh</td>
@@ -384,7 +377,7 @@
         </tr>
 
         <tr class="">
-          <th >平均</th>
+          <th class="th-side-head">平均</th>
           <td ><%= metered_lamp_sum / summit_shift rescue 0 %>kWh</td>
           <td ><%= low_voltage_sum / summit_shift rescue 0 %>kW</td>
           <td ><%= amount_sum / summit_shift rescue 0 %>kWh</td>
@@ -393,17 +386,16 @@
         </tr>
   <%# サミット成約率 %>
       <tr>
-        <th >サミット成約率</th>
-        <th >引き落とし拒否</th>
-        <th >忙しい</th>
-        <th >怪しい</th>
-        <th >検討したい</th>
-        <th >変えたくない</th>
-        <th >その他</th>
-        <th >ペロ</th>
+        <th rowspan="2" class="th-side-head-even">サミット成約率</th>
+        <th class="th-head-sub">引き落とし拒否</th>
+        <th class="th-head-sub">忙しい</th>
+        <th class="th-head-sub">怪しい</th>
+        <th class="th-head-sub">検討したい</th>
+        <th class="th-head-sub">変えたくない</th>
+        <th class="th-head-sub">その他</th>
+        <th class="th-head-sub">ペロ</th>
       </tr>
       <tr>
-        <td ></td>
         <td ><%= number_to_percentage(@results.sum(:summit_reject_cash_get).to_f / @results.sum(:summit_reject_cash_full_talk) *100,precision: 1) rescue 0 %></td>
         <td ><%= number_to_percentage(@results.sum(:summit_busy_get).to_f / @results.sum(:summit_busy_full_talk) * 100, precision: 1) rescue 0 %></td>
         <td ><%= number_to_percentage(@results.sum(:summit_doubt_get).to_f / @results.sum(:summit_doubt_full_talk) * 100, precision: 1) rescue 0 %></td>
@@ -533,7 +525,7 @@
       <th colspan="5" class="th-head">合計</th>
       <th colspan="4" class="th-head">前半</th>
       <th colspan="4" class="th-head">後半</th>
-      <th class="th-head">店舗別</th>
+      <th rowspan="2" class="th-head">店舗別</th>
       <th colspan="4" class="th-head">喫茶・カフェ</th>
       <th colspan="4" class="th-head">その他飲食</th>
       <th colspan="4" class="th-head">車屋</th>
@@ -544,7 +536,7 @@
     <%# キャッシュレス切り返し %>
       <% if @results.where(shift: "キャッシュレス新規").empty? %>
       <% else %>
-        <th class="th-head">キャッシュレス切り返し</th>
+        <th rowspan="2" class="th-head">キャッシュレス切り返し</th>
         <th colspan="3" class="th-head">どういうこと？</th>
         <th colspan="3" class="th-head">君は誰？協会？</th>
         <th colspan="3" class="th-head">もらうだけでいいの？</th>
@@ -562,59 +554,37 @@
     <%# サミット切り返し %>
       <% if @results.where(shift: "サミット").empty? %>
       <% else %>
-        <th >サミットNG</th>
-        <th ></th>
-        <th ></th>
-        <th >サミット切り返し</th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
-        <th ></th>
+        <th rowspan="2" class="th-head">サミット切り返し</th>
+        <th colspan="3" class="th-head">NG理由</th>
+        <th colspan="3" class="th-head">引き落とし拒否</th>
+        <th colspan="3" class="th-head">忙しい</th>
+        <th colspan="3" class="th-head">怪しい</th>
+        <th colspan="3" class="th-head">検討したい</th>
+        <th colspan="3" class="th-head">変えたくない</th>
+        <th colspan="3" class="th-head">ペロ</th>
+        <th colspan="3" class="th-head">その他</th>
       <% end %>
       
     <%# パンダ切り返し %>
       <% if @results.where(shift: "パンダ").empty? %>
       <% else %>
-        <th >パンダ切り返し</th>
-        <th colspan="3">結構です</th>
-        <th colspan="3">忙しい</th>
-        <th colspan="3">検討する</th>
-        <th colspan="3">デリバリーはいい</th>
-        <th colspan="3">増やしたくない</th>
-        <th colspan="3">やる余裕がない</th>
-        <th colspan="3">面倒くさい</th>
-        <th colspan="3">情報不足</th>
-        <th colspan="3">フードネコ</th>
-        <th colspan="3">ペロ</th>
-        <th colspan="3">その他</th>
+        <th rowspan="2" class="th-head">パンダ切り返し</th>
+        <th class="th-head" colspan="3">結構です</th>
+        <th class="th-head" colspan="3">忙しい</th>
+        <th class="th-head" colspan="3">検討する</th>
+        <th class="th-head" colspan="3">デリバリーはいい</th>
+        <th class="th-head" colspan="3">増やしたくない</th>
+        <th class="th-head" colspan="3">やる余裕がない</th>
+        <th class="th-head" colspan="3">面倒くさい</th>
+        <th class="th-head" colspan="3">情報不足</th>
+        <th class="th-head" colspan="3">フードネコ</th>
+        <th class="th-head" colspan="3">ペロ</th>
+        <th class="th-head" colspan="3">その他</th>
       <% end %>
     <%# フェムト切り返し %>
       <% if @results.where(shift: "フェムト").empty? %>
       <% else %>
-      <th class="th-head">フェムト切り返し</th>
+      <th rowspan="2" class="th-head">フェムト切り返し</th>
         <th colspan="3" class="th-head">忙しい</th>
         <th colspan="3" class="th-head">面倒くさい</th>
         <th colspan="3" class="th-head">置く場所がない</th>
@@ -628,8 +598,7 @@
       </tr>
     <%# 大枠基準値（見出し） %>
       <tr >
-        <th class="th-head-sub"></th>
-        <th class="th-head-sub">シフト</th>
+        <th colspan="2" class="th-head-sub">シフト</th>
         <th class="th-head-sub">日付</th>
         <th class="th-head-sub">帯同</th>
         <th class="th-head-sub">エリア</th>
@@ -648,7 +617,6 @@
         <th class="th-head-sub">成約数</th>
     <%# 店舗別基準値（見出し） %>
       <%# 喫茶・カフェ %>
-        <th class="th-head-sub"></th>
         <% 7.times do %>
         <th class="th-head-sub">訪問数</th>
         <th class="th-head-sub">対面数</th>
@@ -658,7 +626,6 @@
     <%# キャッシュレス切り返し（見出し） %>
       <% if @results.where(shift: "キャッシュレス新規").empty? %>
       <% else %>
-          <th class="th-head-sub"></th>
           <% 13.times do %>
           <th class="th-head-sub">対面数</th>
           <th class="th-head-sub">フル数</th>
@@ -668,52 +635,28 @@
     <%# サミット切り返し（見出し） %>
       <% if @results.where(shift: "サミット").empty? %>
       <% else %>
-      <th >明細なし</th>
-      <th >口座なし</th>
-      <th >建物一括</th>
-      <th >引き落とし拒否</th>
-        <th >対面数</th>
-        <th >フル数</th>
-        <th >成約数</th>
-      <th >忙しい</th>
-        <th >対面数</th>
-        <th >フル数</th>
-        <th >成約数</th>
-      <th >怪しい</th>
-        <th >対面数</th>
-        <th >フル数</th>
-        <th >成約数</th>
-      <th >検討したい</th>
-        <th >対面数</th>
-        <th >フル数</th>
-        <th >成約数</th>
-      <th >変えたくない</th>
-        <th >対面数</th>
-        <th >フル数</th>
-        <th >成約数</th>
-      <th >その他</th>
-        <th >対面数</th>
-        <th >フル数</th>
-        <th >成約数</th>
-      <th >ペロ</th>
-        <th >対面数</th>
-        <th >フル数</th>
-        <th >成約数</th>
+        <th class="th-head-sub">明細なし</th>
+        <th class="th-head-sub">口座なし</th>
+        <th class="th-head-sub">建物一括</th>
+        
+          <% 7.times do %>
+          <th class="th-head-sub">対面数</th>
+          <th class="th-head-sub">フル数</th>
+          <th class="th-head-sub">成約数</th>
+          <% end %>
       <% end %>
     <%# パンダ切り返し（見出し） %>
       <% if @results.where(shift: "パンダ").empty? %>
       <% else %>
-        <th ></th>
         <% 11.times do %>
-          <th >対面数</th>
-          <th >フル数</th>
-          <th >成約数</th>
+          <th class="th-head-sub">対面数</th>
+          <th class="th-head-sub">フル数</th>
+          <th class="th-head-sub">成約数</th>
         <% end %>
       <% end %>
     <%# フェムト切り返し（見出し） %>
       <% if @results.where(shift: "フェムト").empty? %>
       <% else %>
-        <th class="th-head-sub"></th>
         <% 9.times do %>
           <th class="th-head-sub">対面数</th>
           <th class="th-head-sub">フル数</th>
@@ -845,37 +788,38 @@
       <%# NG %>
       <% if @results.where(shift: "サミット").empty? %>
       <% else %>
+      <td class="td-blank"></td>
       <td ><%= result.summit_ng_detail %></td>
       <td ><%= result.summit_ng_cash %></td>
       <td ><%= result.summit_ng_building %></td>
-      <td ><%# 引き落とし拒否 %></td>
+      <%# 引き落とし拒否 %>
       <td ><%= result.summit_reject_cash_interview %></td>
       <td ><%= result.summit_reject_cash_full_talk %></td>
       <td ><%= result.summit_reject_cash_get %></td>
-      <td ><%# 忙しい %></td>
+      <%# 忙しい %>
       <td ><%= result.summit_busy_interview %></td>
       <td ><%= result.summit_busy_full_talk %></td>
       <td ><%= result.summit_busy_get %></td>
-      <td ><%# 怪しい %></td>
+      <%# 怪しい %>
       <td ><%= result.summit_doubt_interview %></td>
       <td ><%= result.summit_doubt_full_talk %></td>
       <td ><%= result.summit_doubt_get %></td>
-      <td ><%# 検討したい %></td>
+      <%# 検討したい %>
       <td ><%= result.summit_yet_interview %></td>
       <td ><%= result.summit_yet_full_talk %></td>
       <td ><%= result.summit_yet_get %></td>
-      <td ><%# 変えたくない %></td>
+      <%# 変えたくない %>
       <td ><%= result.summit_not_change_interview %></td>
       <td ><%= result.summit_not_change_full_talk %></td>
       <td ><%= result.summit_not_change_get %></td>
-      <td ><%# その他 %></td>
-      <td ><%= result.summit_other_interview %></td>
-      <td ><%= result.summit_other_full_talk %></td>
-      <td ><%= result.summit_other_get %></td>
-      <td ><%# ペロ %></td>
+      <%# ペロ %>
       <td ><%= result.summit_easy_interview %></td>
       <td ><%= result.summit_easy_full_talk %></td>
       <td ><%= result.summit_easy_get %></td>
+      <%# その他 %>
+      <td ><%= result.summit_other_interview %></td>
+      <td ><%= result.summit_other_full_talk %></td>
+      <td ><%= result.summit_other_get %></td>
       <% end %>
     <%# パンダ切り返し %>
       <% if @results.where(shift: "パンダ").empty? %>

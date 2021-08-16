@@ -34,7 +34,15 @@
     </tr>
   </table>
   <h1>店舗担当者情報</h1>
-  <h2>店舗担当者情報①</h2>   
+  <div style="display: flex;">
+    <h2>店舗担当者情報①</h2>   
+    <div class="form-radio">
+      <%= f.radio_button :gender_main, "男性" %>
+      <%= f.label :gender_main, "男性",value: "男性", checked: true, class: "radio-btn" %>
+      <%= f.radio_button :gender_main,"女性" %>
+      <%= f.label :gender_main, "女性", value: "女性",class: "radio-btn" %>
+    </div>
+  </div>
   <table>
     <tr>
       <th><%= f.label :person_main_name, "名前", class: "form-text" %></th>
@@ -51,7 +59,17 @@
       <td></td>
     </tr>
   </table>
-  <h2>店舗担当者情報②</h2>
+  <div style="display: flex;">
+    <h2>店舗担当者情報②</h2>
+    <div class="form-radio">
+      <%= f.radio_button :gender_sub, "男性" %>
+      <%= f.label :gender_sub, "男性",value: "男性", checked: true, class: "radio-btn" %>
+      <%= f.radio_button :gender_sub,"女性" %>
+      <%= f.label :gender_sub, "女性", value: "女性",class: "radio-btn" %>
+      <%= f.radio_button :gender_sub,"" %>
+      <%= f.label :gender_sub, "なし", value: "",class: "radio-btn" %>
+    </div>
+  </div>
   <table>
     <tr>
       <th><%= f.label :person_sub_name, "名前", class: "form-text" %></th>

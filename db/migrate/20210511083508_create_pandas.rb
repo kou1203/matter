@@ -27,6 +27,5 @@ class CreatePandas < ActiveRecord::Migration[6.0]
       t.integer :valuation_profit     ,null: false
       t.integer :actual_profit        ,null: false
     end
-    add_index :pandas, [:grid_id], unique: true
   end
 end

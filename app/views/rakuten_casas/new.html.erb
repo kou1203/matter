@@ -15,22 +15,21 @@
   <%= form_with model: @rakuten_casa,url:  store_prop_rakuten_casas_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
       <%= render "shared/error_messages", model: f.object %>
       <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
-      <h2 class="form-text">獲得者：<%= current_user.name %></h2>
-      <%= f.hidden_field :user_id, value: current_user.id %>
   <table>
   <%# 一列目ラベル %>
     <tr>
     <th><%= f.label :femto_id, "femto ID", class: "form-text" %></th>
     <th><%= f.label :client, "商流", class: "form-text" %></th>  
     <th><%= f.label :date, "獲得日", class: "form-text" %></th>
-    <th><%= f.label :contract_type, "契約名義", class: "form-text" %></th>
+    <th><%= f.label :user_id, "獲得者ID", class: "form-text" %></th>
+      
     </tr>
   <%# 一列目値 %>
     <tr>
       <td><%= f.text_field :femto_id , class: "form-input" %></td>
       <td><%= f.select :client, {"USEN": "USEN"} ,{}, {class: "form-input"} %></td>
       <td><%= f.date_field :date , class: "form-input" %></td>
-      <td><%= f.select :contract_type, {"個人": "個人", "法人": "法人"} , {},{class: "form-input"} %></td>
+      <td><%= f.number_field :user_id, class: "form-input" %></td>
     </tr>
   <%# 二列目ラベル %>
     <tr>
@@ -41,7 +40,7 @@
     </tr>
   <%# 二列目値 %>
     <tr>
-      <td><%= f.select :confirm_method, {"なし": "なし","マイページ": "マイページ", "電話": "電話", "請求書": "請求書", "開通案内": "開通案内"} ,{}, {class: "form-input"} %></td>
+      <td><%= f.select :confirm_method, {"開通案内": "開通案内","マイページ": "マイページ", "請求書": "請求書","その他": "その他" } ,{}, {class: "form-input"} %></td>
       <td><%= f.text_field :line_type ,class: "form-input" %></td>
       <td><%= f.text_field :hikari_collabo ,class: "form-input" %></td>
       <td><%= f.text_field :line_service ,class: "form-input" %></td>

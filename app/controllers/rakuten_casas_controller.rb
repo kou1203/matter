@@ -43,31 +43,49 @@ class RakutenCasasController < ApplicationController
     @rakuten_casa.update(rakuten_casa_params)
     redirect_to rakuten_casas_path
   end 
-
+  
   private 
   def rakuten_casa_params 
     params.require(:rakuten_casa).permit(
-      :client              ,
-      :store_prop_id       ,          
-      :user_id             ,                
-      :date                ,         
-      :contract_type       ,      
-      :contracter          ,       
-      :line_type           ,       
-      :confirm_method      ,       
-      :hikari_collabo      ,       
-      :line_service        ,       
-      :customer_num        ,       
-      :femto_id            ,        
-      :status              ,       
-      :error_status        ,             
-      :error_confirmer     ,                
-      :remarks             ,
-      :payment             ,
-      :get_profit    ,
-      :put_profit       
-    )
-  end 
-
-
-end
+      :client                  ,
+      :user_id                 ,                
+      :store_prop_id           ,          
+      :date                    ,         
+      :status                  ,       
+      :status_update           ,       
+      :net_confirm_method      ,       
+      :net_name                ,      
+      :hikari_collabo          ,       
+      :net_plan                ,       
+      :customer_num            ,       
+      :net_contracter          ,       
+      :net_contracter_kana     ,       
+      :net_phone_number        ,
+      # 不備       
+      :error_status            ,             
+      :error_solution          ,                
+      # 設置
+      :putter_id               ,
+      :status_put              ,
+      :status_update_put       ,
+      :put                     ,
+      :put_deadline            ,
+      :payment                 ,
+      :payment_put             ,
+      :profit_new              ,
+      :profit_put              , 
+      :valuation_new           , 
+      :valuation_put           , 
+      :description_error       ,
+      :description             ,
+      :vendor_material_code    ,
+      :serial_number           ,
+      :delivery_date           ,
+      :inspection              ,
+      :femto_id                ,         
+      )
+    end 
+    
+    
+  end
+  

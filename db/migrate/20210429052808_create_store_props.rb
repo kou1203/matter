@@ -6,12 +6,14 @@ class CreateStoreProps < ActiveRecord::Migration[6.0]
       t.string :industry                , null: false
       t.string :head_store
       t.string :corporate_name
-      t.string :corporate_address
-      t.integer :corporate_num
+      t.text :corporate_address
+      t.string :corporate_num
+      t.string :gender_main             , null: false 
       t.string :person_main_name        , null: false 
       t.string :person_main_kana        , null: false 
       t.string :person_main_class       , null: false 
       t.date :person_main_birthday
+      t.string :gender_sub            
       t.string :person_sub_name 
       t.string :person_sub_kana
       t.string :person_sub_class
@@ -30,6 +32,5 @@ class CreateStoreProps < ActiveRecord::Migration[6.0]
       t.string :description
       
     end
-    add_index :store_props , [:name], unique: true
   end
 end

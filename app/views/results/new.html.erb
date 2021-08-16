@@ -8,7 +8,7 @@
           <th class="csv"><%= f.label :file, "CSV取り込み",class:"" %></td>
           <td class="csv-td"><%= f.file_field :file, accept: ".csv", class: "csv-text" %></td>
           <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
-        <td class="reset"><%= link_to "SS利益表へ移動する", results_path ,class: "reset-link" %></td>
+        <td class="reset"><%= link_to "SS利益表へ移動する", results_path ,class: "reset-link", id: "dl-reload" %></td>
         </tr>
       </table>
     <% end %>
@@ -21,17 +21,12 @@
     <table>
       <tr>
         <th>
-          
           <%= f.label :date, "日付", class: "form-text" %>
           <%= f.date_field :date , class: "form-input" %>
-          
         </th>
-
         <th>
-          
           <%= f.label :ojt, "帯同者", class: "form-text" %>
           <%= f.text_field :ojt,class: "form-input" %>
-          
         </th>
       </tr>
       <tr>
@@ -39,12 +34,10 @@
           <%= f.label :area, "地域", class: "form-text" %>
           <%= f.text_field :area , class: "form-input" %>
         </th>
-
         <th>
           <%= f.label :shift, "シフト", class: "form-text" %>
-          <%= f.select :shift, {"キャッシュレス新規": "キャッシュレス新規", "キャッシュレス決済": "キャッシュレス決済","フェムト": "フェムト", "フェムト（設置）": "フェムト（設置）", "パンダ": "パンダ", "帯同": "帯同","内勤": "内勤", "休み": "休み","欠勤": "欠勤"},{}, {class: "form-input"} %>
+          <%= f.select :shift, {"キャッシュレス新規": "キャッシュレス新規", "キャッシュレス決済": "キャッシュレス決済","フェムト": "フェムト", "フェムト（設置）": "フェムト（設置）", "パンダ": "パンダ", "サミット": "サミット","帯同": "帯同","内勤": "内勤", "休み": "休み","欠勤": "欠勤"},{}, {class: "form-input"} %>
         </th>
-
         <th>
           <%= f.label :profit, "売上", class: "form-text" %>
           <%= f.number_field :profit, value: 0,class: "form-input"%>
@@ -55,40 +48,27 @@
     <h1>獲得商材</h1>
     <table>
       <tr>
-        <th>
-          
+        <th>  
           <%= f.label :dmer, "dメル", class: "form-text" %>
           <%= f.number_field :dmer , value: 0 ,class: "form-input" %>
-          
         </th>
-
         <th>
-          
           <%= f.label :aupay, "auペイ", class: "form-text" %>
           <%= f.number_field :aupay, value: 0 ,class: "form-input" %>
-          
         </th>
-
         <th>
-          
           <%= f.label :paypay, "PayPay", class: "form-text" %>
           <%= f.number_field :paypay, value: 0 ,class: "form-input" %>
-          
         </th>
       </tr>
       <tr>
         <th>
-          
           <%= f.label :praness, "ぷらねす", class: "form-text" %>
           <%= f.number_field :praness, value: 0 ,class: "form-input" %>
-          
         </th>
-
         <th>
-          
           <%= f.label :summit, "サミット", class: "form-text" %>
           <%= f.number_field :summit, value: 0,class: "form-input" %>
-          
         </th>
 
         <th>
@@ -406,47 +386,31 @@
       </tr>
     </table>
   <%# 切り返し（キャッシュレス） %>
-    <% if current_user.base_sub == "キャッシュレス"%>
     <h1 >切り返し（キャッシュレス）</h1>
     <table>
       <tr>
-        <th>
-          
+        <th>          
           <%= f.label :cashless_what_interview, "どういうこと？ 対面", class: "form-text" %>
           <%= f.number_field :cashless_what_interview , value: 0 ,class: "form-input" %>
-          
         </th>
-
         <th>
-          
           <%= f.label :cashless_what_full_talk, "どういうこと？ フル", class: "form-text" %>
           <%= f.number_field :cashless_what_full_talk , value: 0 ,class: "form-input" %>
-          
         </th>
-
         <th>
-          
           <%= f.label :cashless_what_get, "どういうこと？ 獲得", class: "form-text" %>
           <%= f.number_field :cashless_what_get , value: 0 ,class: "form-input" %>
-          
         </th>
       </tr>
-    
       <tr>
         <th>
-          
           <%= f.label :cashless_who_interview, "君は誰？ 対面", class: "form-text" %>
           <%= f.number_field :cashless_who_interview , value: 0 ,class: "form-input" %>
-          
         </th>
-
         <th>
-          
           <%= f.label :cashless_who_full_talk, "君は誰？ フル", class: "form-text" %>
           <%= f.number_field :cashless_who_full_talk , value: 0 ,class: "form-input" %>
-          
         </th>
-
         <th>
           
           <%= f.label :cashless_who_get, "君は誰？ 獲得", class: "form-text" %>
@@ -696,9 +660,7 @@
         </th>
       </tr>
     </table>
-    <% end %>
   <%# サミット切り返し %>
-    <% if current_user.base_sub == "サミット" %>
     <h1 >切り返し（サミット）</h1>
     <table>
       <tr>
@@ -878,9 +840,7 @@
         </th>
       </tr>
     </table>
-    <% end %>
   <%# パンダ切り返し %>
-    <% if current_user.base == "関東SS" %>
     <h1 >切り返し（フードパンダ）</h1>
     <table>
       <tr>
@@ -1161,9 +1121,7 @@
 
       </tr>
     </table>
-    <% end %>
   <%# 楽天カーサ切り返し %>
-    <% if current_user.base_sub == "フェムト" %>
       <h1>フェムト切り返し</h1>
       <table>
         <tr>
@@ -1373,7 +1331,6 @@
           </th>
         </tr>
       </table>
-    <% end %>
     <%= f.submit "登録",data: { confirm: "登録してもよろしいですか？" }, class: "submit-btn" %>
   <% end %>
 </div>
