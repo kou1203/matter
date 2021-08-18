@@ -1,6 +1,6 @@
 class Result < ApplicationRecord
   belongs_to :user
-
+  belongs_to :ojt ,class_name: "User", optional: true
   with_options presence: true do 
     validates :user_id
     validates :date 

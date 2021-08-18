@@ -27,12 +27,34 @@ class StoreProp < ApplicationRecord
   def self.csv_check(file)
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
-      store = StoreProp.find_by(race: row["区分"])
+      store = StoreProp.find_by(name: row["店舗名"])
       if row["ID"].present?
         store_prop = find_by(id: row["ID"])
         errors << "#{index}行目のIDが不適切です" if store_prop.blank?
-      elsif store.blank?
-        errors << "データが不適切です"
+      elsif row["区分"].blank?
+        errors << "#{index}行目の区分が空欄です。"
+      elsif row["店舗名"].blank?
+        errors << "#{index}行目の店舗名が空欄です。"
+      elsif row["業種"].blank?
+        errors << "#{index}行目の業種が空欄です。"
+      elsif row["代表者性別"].blank?
+        errors << "#{index}行目の代表者性別が空欄です。"
+      elsif row["代表者カナ"].blank?
+        errors << "#{index}行目の代表者カナが空欄です。"
+      elsif row["代表者役職"].blank?
+        errors << "#{index}行目の代表者役職が空欄です。"
+      elsif row["電話番号1"].blank?
+        errors << "#{index}行目の電話番号1が空欄です。"
+      elsif row["メールアドレス1"].blank?
+        errors << "#{index}行目のメールアドレス1が空欄です。"
+      elsif row["都道府県"].blank?
+        errors << "#{index}行目の都道府県が空欄です。"
+      elsif row["市区"].blank?
+        errors << "#{index}行目の市区が空欄です。"
+      elsif row["町村"].blank?
+        errors << "#{index}行目の町村が空欄です。"
+      elsif row["番地"].blank?
+        errors << "#{index}行目の番地が空欄です。"
       else  
         store_prop = new(
           id: row["ID"],

@@ -207,10 +207,10 @@
       </table>
       <% end %>
     <%# 東京SS %>
-      <% tokyo_ss = @shifts.includes(:user).where(users: {base: "東京SS"}) %>
+      <% tokyo_ss = @shifts.includes(:user).where(users: {base: "関東SS"}) %>
       <% if tokyo_ss.empty? %>
       <% else %>
-      <h1>東京SSシフト申請<%= tokyo_ss.group(:user_id).length %>/<%= @users.where(base: "東京SS").length %>人</h1>
+      <h1>東京SSシフト申請<%= tokyo_ss.group(:user_id).length %>/<%= @users.where(base: "関西SS").length %>人</h1>
       <% tokyo_ss.find_each do |s| %>
       
       

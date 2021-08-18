@@ -85,54 +85,53 @@ class ResultsController < ApplicationController
       :profit,
       :area,
       :shift,
-      :ojt, 
+      :ojt_id, 
+    # 商材
       :dmer,                    
       :dmer_settlement,         
       :aupay,
-      :paypay,
       :aupay_settlement,
+      :paypay,
       :panda,
       :praness,
-      :summit,
+      :summit_metered_lamp,
+      :summit_power,
       :rakuten_casa,
       :rakuten_casa_put,
+    # 基準値
+      # 前半
       :first_visit,
       :first_interview,
       :first_full_talk, 
-      :first_get,        
+      :first_get,       
+      # 後半 
       :latter_visit,     
       :latter_interview, 
       :latter_full_talk, 
       :latter_get,       
+    # 店舗別基準値
+      # 喫茶・カフェ
       :cafe_visit,          
-      :cafe_interview,      
-      :cafe_full_talk,     
       :cafe_get,            
-      :other_food_visit,          
-      :other_food_interview,      
-      :other_food_full_talk,      
+      # その他・飲食
+      :other_food_visit,             
       :other_food_get       ,     
+      # 車屋
       :car_visit          ,
-      :car_interview      ,
-      :car_full_talk      ,
       :car_get            ,
+      # その他小売
       :other_retail_visit  ,        
-      :other_retail_interview     , 
-      :other_retail_full_talk      ,
       :other_retail_get            ,
+      # 美容・理容
       :hair_salon_visit          ,
-      :hair_salon_interview      ,
-      :hair_salon_full_talk      ,
       :hair_salon_get            ,
+      # 整体・鍼灸
       :manipulative_visit         , 
-      :manipulative_interview      ,
-      :manipulative_full_talk      ,
       :manipulative_get            ,
+      # その他・サービス
       :other_service_visit          ,
-      :other_service_interview      ,
-      :other_service_full_talk      ,
       :other_service_get    ,
-      # キャッシュレス
+    # キャッシュレス
       :cashless_what_interview      ,
       :cashless_what_full_talk      ,
       :cashless_what_get            ,
@@ -172,32 +171,43 @@ class ResultsController < ApplicationController
       :cashless_other_interview      ,
       :cashless_other_full_talk      ,
       :cashless_other_get,
-      # サミット
+    # サミット
+      # NG
+      :summit_no_detail,
       :summit_ng_detail,
-      :summit_ng_cash,
-      :summit_ng_building,
+      # 引き落とし拒否
       :summit_reject_cash_interview,      
       :summit_reject_cash_full_talk ,     
       :summit_reject_cash_get  ,
-      :summit_doubt_interview   ,   
-      :summit_doubt_full_talk    ,  
-      :summit_doubt_get  ,
+      # 忙しい
       :summit_busy_interview   ,   
       :summit_busy_full_talk    ,  
       :summit_busy_get  ,
+      # 怪しい
+      :summit_doubt_interview   ,   
+      :summit_doubt_full_talk    ,  
+      :summit_doubt_get  ,
+      # 検討
       :summit_yet_interview ,     
       :summit_yet_full_talk  ,    
       :summit_yet_get  ,
+      # 変えたくない
       :summit_not_change_interview   ,   
       :summit_not_change_full_talk    ,  
       :summit_not_change_get  ,
+      # 情報不足
+      :summit_lack_info_interview,
+      :summit_lack_info_full_talk,
+      :summit_lack_info_get,
+      # その他
       :summit_other_interview  ,    
       :summit_other_full_talk   ,   
       :summit_other_get  ,
+      # ぺろ
       :summit_easy_interview  ,    
       :summit_easy_full_talk   ,   
       :summit_easy_get  , 
-      # パンダ
+    # パンダ
       :panda_not_need_interview,      
       :panda_not_need_full_talk,      
       :panda_not_need_get, 
@@ -231,7 +241,7 @@ class ResultsController < ApplicationController
       :panda_easy_interview,      
       :panda_easy_full_talk,      
       :panda_easy_get,
-      # 楽天カーサ
+    # 楽天カーサ
       :casa_ng_lack_info,
       :casa_busy_interview,
       :casa_busy_full_talk,

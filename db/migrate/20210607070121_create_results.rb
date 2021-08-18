@@ -6,7 +6,8 @@ class CreateResults < ActiveRecord::Migration[6.0]
       t.integer :profit
       t.string :area                    , null: false 
       t.string :shift                    , null: false 
-      t.string :ojt 
+      t.references :ojt 
+# 商材
       t.integer :dmer                    
       t.integer :dmer_settlement         
       t.integer :aupay
@@ -14,107 +15,128 @@ class CreateResults < ActiveRecord::Migration[6.0]
       t.integer :paypay
       t.integer :panda
       t.integer :praness
-      t.integer :summit
+      t.integer :summit_metered_lamp
+      t.integer :summit_power
       t.integer :rakuten_casa
       t.integer :rakuten_casa_put
+# 前半
       t.integer :first_visit              , null: false
       t.integer :first_interview          , null: false
       t.integer :first_full_talk          , null: false
       t.integer :first_get                , null: false
+# 後半
       t.integer :latter_visit             , null: false
       t.integer :latter_interview         , null: false
       t.integer :latter_full_talk         , null: false
       t.integer :latter_get               , null: false
+# 店舗別基準値（訪問-獲得）
+      # 喫茶・カフェ
       t.integer :cafe_visit          
-      t.integer :cafe_interview      
-      t.integer :cafe_full_talk      
       t.integer :cafe_get            
-      t.integer :other_food_visit          
-      t.integer :other_food_interview      
-      t.integer :other_food_full_talk      
+      # その他・飲食
+      t.integer :other_food_visit              
       t.integer :other_food_get            
-      t.integer :car_visit          
-      t.integer :car_interview      
-      t.integer :car_full_talk      
+      # 車屋
+      t.integer :car_visit              
       t.integer :car_get            
+      # その他小売
       t.integer :other_retail_visit          
-      t.integer :other_retail_interview      
-      t.integer :other_retail_full_talk      
       t.integer :other_retail_get            
+      # 理容・美容
       t.integer :hair_salon_visit          
-      t.integer :hair_salon_interview      
-      t.integer :hair_salon_full_talk      
       t.integer :hair_salon_get            
+      # 整体・鍼灸
       t.integer :manipulative_visit          
-      t.integer :manipulative_interview      
-      t.integer :manipulative_full_talk      
-      t.integer :manipulative_get            
-      t.integer :other_service_visit          
-      t.integer :other_service_interview      
-      t.integer :other_service_full_talk      
+      t.integer :manipulative_get       
+      # その他・サービス     
+      t.integer :other_service_visit              
       t.integer :other_service_get    
 # キャッシュレス
+      # どういうこと？
       t.integer :cashless_what_interview      
       t.integer :cashless_what_full_talk      
       t.integer :cashless_what_get            
+      # 君は誰？
       t.integer :cashless_who_interview      
       t.integer :cashless_who_full_talk      
       t.integer :cashless_who_get            
+      # もらうだけ？
       t.integer :cashless_just_get_interview      
       t.integer :cashless_just_get_full_talk      
       t.integer :cashless_just_get_get            
+      # PayPayのみ
       t.integer :cashless_paypay_only_interview      
       t.integer :cashless_paypay_only_full_talk      
       t.integer :cashless_paypay_only_get            
+      # エアペイのみ
       t.integer :cashless_airpay_only_interview      
       t.integer :cashless_airpay_only_full_talk      
-      t.integer :cashless_airpay_only_get            
+      t.integer :cashless_airpay_only_get      
+      # カードのみ      
       t.integer :cashless_card_only_interview      
       t.integer :cashless_card_only_full_talk      
-      t.integer :cashless_card_only_get            
+      t.integer :cashless_card_only_get           
+      # 先延ばし 
       t.integer :cashless_yet_interview      
       t.integer :cashless_yet_full_talk      
-      t.integer :cashless_yet_get            
+      t.integer :cashless_yet_get       
+      # 現金のみ     
       t.integer :cashless_cash_only_interview      
       t.integer :cashless_cash_only_full_talk      
-      t.integer :cashless_cash_only_get            
+      t.integer :cashless_cash_only_get           
+      # 忙しい 
       t.integer :cashless_busy_interview      
       t.integer :cashless_busy_full_talk      
-      t.integer :cashless_busy_get            
+      t.integer :cashless_busy_get    
+      # めんどくさい        
       t.integer :cashless_dull_interview      
       t.integer :cashless_dull_full_talk      
       t.integer :cashless_dull_get            
+      # 情報不足
       t.integer :cashless_lack_info_interview      
       t.integer :cashless_lack_info_full_talk      
       t.integer :cashless_lack_info_get            
+      # ぺろ
       t.integer :cashless_easy_interview      
       t.integer :cashless_easy_full_talk      
       t.integer :cashless_easy_get   
+      # その他
       t.integer :cashless_other_interview      
       t.integer :cashless_other_full_talk      
       t.integer :cashless_other_get    
 # サミット
+      # NG
+      t.integer :summit_no_detail
       t.integer :summit_ng_detail
-      t.integer :summit_ng_cash
-      t.integer :summit_ng_building
+      # 引き落とし拒否
       t.integer :summit_reject_cash_interview      
       t.integer :summit_reject_cash_full_talk      
       t.integer :summit_reject_cash_get  
+      # 忙しい
       t.integer :summit_busy_interview      
       t.integer :summit_busy_full_talk      
       t.integer :summit_busy_get  
+      # 怪しい
       t.integer :summit_doubt_interview      
       t.integer :summit_doubt_full_talk      
       t.integer :summit_doubt_get  
+      # 検討したい
       t.integer :summit_yet_interview      
       t.integer :summit_yet_full_talk      
       t.integer :summit_yet_get  
+      # 変えたくない
       t.integer :summit_not_change_interview      
       t.integer :summit_not_change_full_talk      
-      t.integer :summit_not_change_get  
+      t.integer :summit_not_change_get
+      # 情報不足  
+      t.integer :summit_lack_info_interview      
+      t.integer :summit_lack_info_full_talk      
+      t.integer :summit_lack_info_get 
+      # その他
       t.integer :summit_other_interview      
       t.integer :summit_other_full_talk      
       t.integer :summit_other_get  
+      # ぺろ  
       t.integer :summit_easy_interview      
       t.integer :summit_easy_full_talk      
       t.integer :summit_easy_get  
@@ -153,34 +175,45 @@ class CreateResults < ActiveRecord::Migration[6.0]
       t.integer :panda_easy_full_talk      
       t.integer :panda_easy_get 
 # 楽天カーサ
+      # NG
       t.integer :casa_ng_lack_info
+      # 忙しい
       t.integer :casa_busy_interview
       t.integer :casa_busy_full_talk
       t.integer :casa_busy_get
+      # めんどくさい
       t.integer :casa_dull_interview
       t.integer :casa_dull_full_talk
       t.integer :casa_dull_get
+      # 置く場所がない
       t.integer :casa_not_put_space_interview
       t.integer :casa_not_put_space_full_talk
       t.integer :casa_not_put_space_get
+      # メリットない
       t.integer :casa_no_merit_interview
       t.integer :casa_no_merit_full_talk
       t.integer :casa_no_merit_get
+      # 不審
       t.integer :casa_distrust_interview
       t.integer :casa_distrust_full_talk
       t.integer :casa_distrust_get
+      # 回線使われたくない
       t.integer :casa_not_use_net_interview
       t.integer :casa_not_use_net_full_talk
       t.integer :casa_not_use_net_get
+      # 結構です
       t.integer :casa_not_need_interview
       t.integer :casa_not_need_full_talk
       t.integer :casa_not_need_get
+      # ぺろ
       t.integer :casa_easy_interview
       t.integer :casa_easy_full_talk
       t.integer :casa_easy_get
+      # その他
       t.integer :casa_other_interview
       t.integer :casa_other_full_talk
       t.integer :casa_other_get
     end
+    add_foreign_key :results,:users, column: :ojt_id
   end
 end

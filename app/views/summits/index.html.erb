@@ -78,10 +78,10 @@
         <% end %>
       </tr>
       <tr>
-        <% low_voltage_claim_expected = [] %>
+        <% low_voltage_profit_expected = [] %>
         <th>低圧電力入金予定</th>
-        <% @low_voltage_claim_expected.each do |amount| %>
-          <% low_voltage_claim_expected << [amount[0],(amount[1] * 0.02 / 12).round] %>
+        <% @low_voltage_profit_expected.each do |amount| %>
+          <% low_voltage_profit_expected << [amount[0],(amount[1] * 0.02 / 12).round] %>
           <td><%= (amount[1] * 0.02 / 12).round %>円</td>
         <% end %>
       </tr>
@@ -90,10 +90,10 @@
         <td></td>
       </tr>
       <tr>
-        <% metered_claim_expected = [] %>
+        <% metered_profit_expected = [] %>
         <th>従量電灯入金予定</th>
-        <% @metered_claim_expected.each do |amount| %>
-          <% metered_claim_expected << [amount[0],(amount[1] * 0.07 / 12).round] %>
+        <% @metered_profit_expected.each do |amount| %>
+          <% metered_profit_expected << [amount[0],(amount[1] * 0.07 / 12).round] %>
           <td><%= (amount[1] * 0.07 / 12).round %>円</td>
         <% end %>
       </tr>
@@ -114,8 +114,8 @@
   <%= area_chart @amount_chart %>
   <h2>月毎の請求予測額</h2>
   <%= line_chart [
-    { name: "予測請求額(従量電灯)",data: metered_claim_expected },
-    { name: "予測請求額(低圧電力)",data: low_voltage_claim_expected }
+    { name: "予測請求額(従量電灯)",data: metered_profit_expected },
+    { name: "予測請求額(低圧電力)",data: low_voltage_profit_expected }
   ] %>
 <% end %>
   <% else %>
