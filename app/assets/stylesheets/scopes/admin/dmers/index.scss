@@ -3,15 +3,20 @@
 h1 {
   padding: 1.0em;
   font-size: 20px;
-  background: linear-gradient(40deg, #d9534f 0%,  #ffad60 90%);
+  background: linear-gradient(40deg, #96C0CE 0%,  #74828F 90%);
   color: white;
+}
+
+h2 {
+  margin-top: 10px;
 }
 // ヘッダー
 header {
   display: flex;
   justify-content: space-between;
   width: 100vw;
-  background: linear-gradient(40deg, #d9534f 0%,  #ffad60 90%);
+  // border-bottom: #d9534f solid 5px;
+  background: linear-gradient(40deg, #96C0CE 0%,  #74828F 90%);
 }
 
 .sign-text {
@@ -44,7 +49,7 @@ label {
 }
 
 label:hover {
-  background: #96ceb4;
+  background: #C25B56;
 }
 
 li {
@@ -65,7 +70,7 @@ li {
 
 li:hover {
   opacity: 1;
-  background: #96ceb4;
+  background: #C25B56;
 }
 
 
@@ -82,7 +87,7 @@ li:hover {
   text-align: center;
   color: white;
   font-weight: bold;
-  background:  #ffad60;
+  background: linear-gradient(40deg, #96C0CE 0%,  #74828F 90%);
   box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
   padding: 15px 0;
   margin: 15px;
@@ -96,14 +101,11 @@ li:hover {
   display: block;
 }
 
-main {
-  width: 80vw;
-  height: 90vh;
-  overflow: scroll;
-  margin-top: 10px;
-  background: rgb(255, 248, 248);
-  padding: 5px;
+
+.status-tb {
+  min-width: 60%;
 }
+
 
 table{
   border-collapse: collapse;
@@ -117,6 +119,7 @@ table{
   max-width: 600px;
 }
 
+
 tr:nth-child(odd) {
   background: #ede5e5;
 }
@@ -126,26 +129,23 @@ tr:nth-child(odd) {
   border-radius: 50px;
 }
 
-
-
-.search1 {
+.search {
   text-align: center;
   color: white;
-  background:  #d9534f;
+  background: linear-gradient(40deg, #96C0CE 0%,  #74828F 90%);
   box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-  padding: 10px 0;
+  padding: 10px;
   margin: 15px;
-  width: 20vw;
+  width: 100px;
 }
 
-.search2 {
-  text-align: center;
-  color: white;
-  background:  #ffad60;
-  box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-  padding: 10px 0;
-  margin: 15px;
-  width: 7vw;
+.date-input {
+  background: none;
+  border: none;
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+  color: rgb(103, 101, 101);
 }
 
 .reset {
@@ -166,18 +166,20 @@ tr:nth-child(odd) {
 th {
   text-align: center;
   color: white;
-  background: #d9534f;
+  background: #74828F;
   padding: 10px;
   width: 15vw;
   border-bottom: none;
 }
-  
-.search1:nth-child(even) {
-  background:  #e65d58;
+
+.th:nth-child(even) {
+  background:  #96C0CE;
 }
 
 .result {
-  background: #96ceb4;
+  background: #96C0CE;
+  width: 40px;
+  border: none;
 }
 
 .result-btn {
@@ -197,9 +199,6 @@ th {
   color: rgb(103, 101, 101);
 }
 
-.search2:nth-child(even) {
-  background:  #ffa148;
-}
 
 td {
   border-bottom: 1px solid rgb(205, 203, 203);
@@ -208,6 +207,18 @@ td {
   padding: 10px 0;
 }
 
+.csv-label {
+  width: 50px;
+  border-radius: 5px 0 5px 0;
+  background: linear-gradient(40deg, #96C0CE 0%,  #74828F 90%);
+  color: white;
+  border: none;
+}
 
-  }
-  
+.csv-td {
+  border: none;
+  color: rgb(255, 253, 253);
+}
+
+}
+

@@ -1,62 +1,52 @@
-
+<div data-scope-path="users/new">
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
   <%= render "devise/shared/error_messages", resource: resource %>
-
-  <div class="sign-frame">
-<h2 class="sign-title">新規登録</h2>
-  <div class="field">
-    <label class="form-text">名前</label><br />
-    <%= f.text_field :name, class: "form-input" %>
-  </div>
-
-  <div class="field">
-    <label class="form-text">拠点①</label><br />
-    <%= f.select :base, {"中部N": "中部N", "関西N": "関西N","中部SS": "中部SS", "関西SS": "関西SS","東京SS": "東京SS"},{},{class: "form-input"} %>
-  </div>
-  <div class="field">
-    <label class="form-text">拠点②(N)</label><br />
+<h1>新規登録</h1>
+  <table>
+    <tr>
+      <th>
+        <label class="form-text">名前</label>
+        <%= f.text_field :name, class: "form-input" %>
+      </th>
+      <th>
+        <label class="form-text">拠点①</label>
+        <%= f.select :base, {"中部N": "中部N", "関西N": "関西N","中部SS": "中部SS", "関西SS": "関西SS","東京SS": "東京SS"},{},{class: "form-input"} %>
+      </th>
+      <th>
+        <label class="form-text">拠点②(N)</label>
         <%= f.select :base_sub, {"一宮": "一宮", "豊田": "豊田","広域": "広域", "三重": "三重", "豊橋": "豊橋","岡崎": "岡崎", "多治見": "多治見", "名古屋中央": "名古屋中央", "阪神": "阪神", "大阪中央": "大阪中央", "守口公募": "守口公募", "北大阪エリア": "北大阪エリア", "北大阪公募": "北大阪公募" },{include_blank: true}, {class: "form-input"} %>
-  </div>
-
-  <div class="field">
-    <label class="form-text">拠点②(SS)</label><br />
+      </th>
+      <th>
+        <label class="form-text">拠点②(SS)</label>
         <%= f.select :base_sub, {"キャッシュレス": "キャッシュレス", "キャッシュ・パンダ": "キャッシュ・パンダ","フェムト": "フェムト", "サミット": "サミット"},{include_blank: true}, {class: "form-input"} %>
-  </div>
-  <div class="field">
-    <label class="form-text">チーム</label><br />
-    <%= f.text_field :team, class: "form-input" %>
-  </div>
-  
-
-  <div class="field">
-    <label class="form-text">役職権限</label><br />
-    <%= f.select :position, {"営業": "営業","管理者": "管理者", "営業管理者": "営業管理者","運営": "運営","休業": "休業"},{},{class: "form-input"} %>
-  </div>
-  
-  
-  <div class="field">
-    <label class="form-text">メールアドレス</label><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-input" %>
-  </div>
-
-
-  <div class="field">
-    <label class="form-text">パススワード</label>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
+      </th>
+    </tr>
+    <tr>
+      <th>
+      <label class="form-text">グループ</label>
+      <%= f.text_field :group, class: "form-input" %>
+      </th>
+      <th>
+      <label class="form-text">チーム</label>
+      <%= f.text_field :team, class: "form-input" %>
+      </th>
+      <th>
+        <label class="form-text">メールアドレス</label>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-input" %>
+      </th>
+      <th>
+        <label class="form-text">パススワード</label>
     <%= f.password_field :password, autocomplete: "new-password", class: "form-input" %>
-  </div>
-
-  <div class="field">
-    <label class="form-text">パスワード確認</label><br />
+      </th>
+      <th>
+    <label class="form-text">パスワード確認</label>
     <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-input" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "登録",class: "form-btn" %>
-  </div>
+      </th>
+    </tr>
+  </table>
+    <%= f.submit "登録",class: "submit-btn" %>
 <% end %>
+<hr>
 <%= render "devise/shared/links" %>
 </div>
 

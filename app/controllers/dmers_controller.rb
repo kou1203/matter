@@ -48,13 +48,13 @@ class DmersController < ApplicationController
   def import 
     if params[:file].present?
       if Dmer.csv_check(params[:file]).present?
-        redirect_to root_path , alert: "エラーが発生したため中断しました#{Dmer.csv_check(params[:file])}"
+        redirect_to dmers_path , alert: "エラーが発生したため中断しました#{Dmer.csv_check(params[:file])}"
       else
         message = Dmer.import(params[:file]) 
-        redirect_to root_path, alert: "インポート処理を完了しました#{message}"
+        redirect_to dmers_path, alert: "インポート処理を完了しました#{message}"
       end
     else
-      redirect_to root_path, alert: "インポートに失敗しました。ファイルを選択してください"
+      redirect_to dmers_path, alert: "インポートに失敗しました。ファイルを選択してください"
     end
   end 
 
@@ -79,6 +79,9 @@ class DmersController < ApplicationController
       :profit_settlement,
       :valuation_new,
       :valuation_settlement,    
+      :deficiency_solution,
+      :deficiency_deadline,
+      :deficiency_remarks,
       :description
     )
   end 

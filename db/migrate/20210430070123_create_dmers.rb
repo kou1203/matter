@@ -18,7 +18,10 @@ class CreateDmers < ActiveRecord::Migration[6.0]
       t.integer :profit_new             ,null: false
       t.integer :profit_settlement       ,null: false
       t.integer :valuation_new           ,null: false 
-      t.integer :valuation_settlement    , null: false 
+      t.integer :valuation_settlement    , null: false
+      t.date :deficiency_solution
+      t.date :deficiency_deadline
+      t.text :deficiency_remarks
       t.text :description
     end
     add_foreign_key :dmers,:users, column: :settlementer_id

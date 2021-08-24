@@ -4,16 +4,7 @@
 <div data-scope-path="aupays/new">
   <h1><%= @store_prop.name %>情報入力（auペイ）</h1>
   <%= render "shared/header" %>
-  <%= form_with url: import_aupays_path do |f| %>
-    <table >
-      <tr>
-        <th class="csv">CSV取り込み</th>
-        <td class="csv-td"><%= f.file_field :file, accept: ".csv", class: "csv-text" %></td>
-        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
-        <td class="reset"><%= link_to "店舗一覧に戻る", root_path ,class: "reset-link" %></td>
-      </tr>
-    </table>
-  <% end %>
+
 
   <%= form_with model: @aupay,url: store_prop_aupays_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
     <%# render "shared/error_messages", model: f.object %>
@@ -71,6 +62,18 @@
         <td><%= f.date_field :payment_settlement , class: "form-input" %></td>
         <td><%= f.text_field :description , class: "form-input" %></td>
       </tr>
+
+      <tr>
+        <th><%= f.label :payment, "不備解消日", class: "form-text" %></th>
+        <th><%= f.label :payment, "不備解消期限", class: "form-text" %></th>
+        <th><%= f.label :payment, "不備詳細", class: "form-text" %></th>
+      </tr>
+      <tr>
+        <td><%= f.date_field :deficiency_solution , class: "form-input" %></td>
+        <td><%= f.date_field :deficiency_deadline , class: "form-input" %></td>
+        <td><%= f.text_field :deficiency_remarks , class: "form-input" %></td>
+      </tr>
+
       <tr>
         <th><%= f.label :valuation_new, "評価売上（新規）", class: "form-text" %></th>
         <th><%= f.label :valuation_new, "評価売上（決済）", class: "form-text" %></th>

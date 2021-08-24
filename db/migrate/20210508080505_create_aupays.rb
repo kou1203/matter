@@ -19,6 +19,9 @@ class CreateAupays < ActiveRecord::Migration[6.0]
       t.integer :profit_settlement       ,null: false
       t.integer :valuation_new           ,null: false 
       t.integer :valuation_settlement    , null: false
+      t.date :deficiency_solution
+      t.date :deficiency_deadline
+      t.text :deficiency_remarks
       t.string :description
     end
     add_foreign_key :aupays, :users, column: :settlementer_id

@@ -40,6 +40,9 @@ ActiveRecord::Schema.define(version: 2021_07_06_093513) do
     t.integer "profit_settlement", null: false
     t.integer "valuation_new", null: false
     t.integer "valuation_settlement", null: false
+    t.date "deficiency_solution"
+    t.date "deficiency_deadline"
+    t.text "deficiency_remarks"
     t.string "description"
     t.index ["settlementer_id"], name: "index_aupays_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_aupays_on_store_prop_id"
@@ -84,6 +87,9 @@ ActiveRecord::Schema.define(version: 2021_07_06_093513) do
     t.integer "profit_settlement", null: false
     t.integer "valuation_new", null: false
     t.integer "valuation_settlement", null: false
+    t.date "deficiency_solution"
+    t.date "deficiency_deadline"
+    t.text "deficiency_remarks"
     t.text "description"
     t.index ["settlementer_id"], name: "index_dmers_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_dmers_on_store_prop_id"

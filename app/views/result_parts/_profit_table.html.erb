@@ -175,7 +175,7 @@
       <td ><%= @results.sum(:aupay_settlement) %></td>
       <td ><%= @results.where(shift: "キャッシュレス新規").sum(:paypay) %></td>
     </tr>
-
+    <% end %>
     <%# キャッシュレス決済 %>
       <% if @results.where(shift: "キャッシュレス決済").empty? %>
       <% else %>
@@ -191,8 +191,9 @@
         
       </tr>
       <% end %>
-      
     <%# キャッシュレス成約率 %>
+      <% if @results.where(shift: "キャッシュレス新規").empty? %>
+      <% else %>
       <tr >
         <th rowspan="4" class="th-side-head">キャッシュ切り返し</th>
         <th class="th-head-sub">どういうこと？</th>
@@ -420,11 +421,12 @@
           <% ojt_date = result.date %>
           <% week_prev = result.date.ago(7.days) %>
           <% week_next = result.date.since(7.days) %>
-        <div class="ojt-group">
-          <h2>帯同資料　</h2>
-          <h2 >帯同者：</h2>
-          <h2 ><%= result.ojt.name %></h2>
-        </div>
+      <table>
+        <tr>
+          <th class="th-head">帯同資料　</th>
+          <th class="th-head">帯同者：</th>
+          <th class="th-head"><%= result.ojt.name %></th>
+        </tr>
         <tr >
           <th class="th-head">帯同日</th>
           <th class="th-head">平均売上</th>

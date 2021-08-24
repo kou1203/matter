@@ -55,8 +55,7 @@
     <td ><%= link_to "店舗情報編集", edit_store_prop_path(@aupay.store_prop.id), class: "link" %></td>
     </tr>
     </table>
-    <h1 >auペイ</h1>
-
+    <h1 >auペイ情報</h1>
     <table >
     <tr>
     <th >獲得日</th>
@@ -75,6 +74,16 @@
       <td ><%= @aupay.status %></td>
       <th >新規ステータス更新日</th>
       <td ><%= @aupay.status_update %></td>
+    </tr>
+    <tr >
+      <th >不備解消日</th>
+      <td ><%= @aupay.deficiency_solution %></td>
+      <th >不備解消期限</th>
+      <td ><%= @aupay.deficiency_deadline %></td>
+    </tr>
+    <tr>
+      <th>不備詳細</th>
+      <td colspan="3"><%= @aupay.deficiency_remarks %></td>
     </tr>
   </table>
   <h1>決済情報</h1>

@@ -1,15 +1,7 @@
 <div data-scope-path="dmers/new">
   <h1 ><%= @store_prop.name %>情報入力（dメル）</h1>
   <%= render "shared/header" %>
-  <%= form_with url: import_dmers_path do |f| %>
-    <table>
-      <tr>
-        <th style="width: 10px;">CSV</th>
-        <td class="cav-td"><%= f.file_field :file, accept: ".csv", class: "csv-td" %></td>
-        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
-      </tr>
-    </table>
-  <% end %>
+
   <%= form_with model: @dmer,url: store_prop_dmers_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
     <%= render "shared/error_messages", model: f.object %>
     <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
@@ -65,6 +57,16 @@
         <td><%= f.date_field :payment , class: "form-input" %></td>
         <td><%= f.date_field :payment_settlement , class: "form-input" %></td>
         <td><%= f.text_field :description , class: "form-input" %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :deficiency_solution, "不備解消日", class: "form-text" %></th>
+        <th><%= f.label :deficiency_deadline, "不備解消期限", class: "form-text" %></th>
+        <th><%= f.label :deficiency_remarks, "不備詳細", class: "form-text" %></th>
+      </tr>
+      <tr>
+        <td><%= f.date_field :deficiency_solution , class: "form-input" %></td>
+        <td><%= f.date_field :deficiency_deadline , class: "form-input" %></td>
+        <td><%= f.text_field :deficiency_remarks , class: "form-input" %></td>
       </tr>
 
       <tr>

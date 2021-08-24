@@ -15,7 +15,6 @@ class SummitsController < ApplicationController
       
       @low_voltage_month = Summit.where(status: "提出済み").where(contract_type: '低圧電力').group("YEAR(get_date)").group("MONTH(get_date)").average(:contract_cap) 
       @metered_month = Summit.where(status: "提出済み").where("contract_type = '従量電灯A' OR contract_type = '従量電灯B'").group("YEAR(get_date)").group("MONTH(get_date)").average(:contract_cap)
-  
       @low_voltage_profit_expected = Summit.where(status: "提出済み").where(contract_type: '低圧電力').group("YEAR(start)").group("MONTH(start)").sum(:profit_expected)
       
       @metered_profit_expected = Summit.where(status: "提出済み").where("contract_type = '従量電灯A' OR contract_type = '従量電灯B'").group("YEAR(start)").group("MONTH(start)").sum(:profit_expected)

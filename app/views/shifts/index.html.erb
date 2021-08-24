@@ -101,7 +101,7 @@
             <% end %>
           <% end %>
         <% end %>
-          <% sum_shift = new_shift + settlement_shift + summit_shift + panda_shift + praness_shift + rakuten_casa_shift + rakuten_casa_put_shift %>
+          <% sum_shift = new_shift + settlement_shift + summit_shift + panda_shift + praness_shift + rakuten_casa_shift + rakuten_casa_put_shift + ojt_shift + house_work_shift %>
         <tr>
           <th>消化シフト</th>
           <td></td>
@@ -187,7 +187,7 @@
             <% end %>
           <% end %>
         <% end %>
-          <% sum_shift = new_shift + settlement_shift + summit_shift + panda_shift + praness_shift + rakuten_casa_shift + rakuten_casa_put_shift %>
+          <% sum_shift = new_shift + settlement_shift + summit_shift + panda_shift + praness_shift + rakuten_casa_shift + rakuten_casa_put_shift + ojt_shift + house_work_shift %>
         <tr>
           <th>消化シフト</th>
           <td></td>
@@ -210,7 +210,7 @@
       <% tokyo_ss = @shifts.includes(:user).where(users: {base: "関東SS"}) %>
       <% if tokyo_ss.empty? %>
       <% else %>
-      <h1>東京SSシフト申請<%= tokyo_ss.group(:user_id).length %>/<%= @users.where(base: "関西SS").length %>人</h1>
+      <h1>東京SSシフト申請<%= tokyo_ss.group(:user_id).length %>/<%= @users.where(base: "関東SS").length %>人</h1>
       <% tokyo_ss.find_each do |s| %>
       
       
@@ -251,6 +251,8 @@
           <% panda_shift = 0 %>
           <% praness_shift = 0 %>
           <% rakuten_casa_shift = 0 %>
+          <% ojt_shift = 0 %>
+          <% house_work_shift = 0 %>
         <% @results.each do |r| %>  
           <% if s.year == r.date.year && s.month == r.date.month && s.user_id == r.user_id %>
             <% if r.shift == "キャッシュレス新規" %>
@@ -263,12 +265,16 @@
               <% panda_shift += 1 %>
             <% elsif r.shift == "ぷらねす" %>
               <% praness_shift += 1 %>
-            <% elsif r.shift == "楽天カーサ" %>
+            <% elsif r.shift == "フェムト" %>
               <% rakuten_casa_shift += 1 %>
+            <% elsif r.shift == "内勤" %>
+              <% house_work_shift += 1 %>
+            <% elsif r.shift == "帯同" %>
+              <% ojt_shift += 1 %>
             <% end %>
           <% end %>
         <% end %>
-          <% sum_shift = new_shift + settlement_shift + summit_shift + panda_shift + praness_shift + rakuten_casa_shift %>
+          <% sum_shift = new_shift + settlement_shift + summit_shift + panda_shift + praness_shift + rakuten_casa_shift + ojt_shift + house_work_shift %>
         <tr>
           <th>消化シフト</th>
           <td></td>
@@ -279,8 +285,8 @@
           <td><%= praness_shift %></td>
           <td><%= panda_shift %></td>
           <td><%= rakuten_casa_shift %></td>
-          <td></td>
-          <td></td>
+          <td><%= house_work_shift %></td>
+          <td><%= ojt_shift %></td>
           <td><%= sum_shift %></td>
         </tr> 
       </table>

@@ -58,6 +58,9 @@ class Dmer < ApplicationRecord
           profit_settlement: row["決済売上"],
           valuation_new: row["獲得評価売上"],
           valuation_settlement: row["決済評価売上"],
+          deficiency_solution: row["不備解消日"],
+          deficiency_deadline: row["不備解消期限"],
+          deficiency_remarks: row["不備詳細"],
           description: row["備考"]
         )
         errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if dmer.invalid?
@@ -102,6 +105,9 @@ class Dmer < ApplicationRecord
           profit_settlement: row["決済売上"],
           valuation_new: row["獲得評価売上"],
           valuation_settlement: row["決済評価売上"],
+          deficiency_solution: row["不備解消日"],
+          deficiency_deadline: row["不備解消期限"],
+          deficiency_remarks: row["不備詳細"],
           description: row["備考"]
         )
         if dmer.has_changes_to_save? 
@@ -131,6 +137,9 @@ class Dmer < ApplicationRecord
           profit_settlement: row["決済売上"],
           valuation_new: row["獲得評価売上"],
           valuation_settlement: row["決済評価売上"],
+          deficiency_solution: row["不備解消日"],
+          deficiency_deadline: row["不備解消期限"],
+          deficiency_remarks: row["不備詳細"],
           description: row["備考"]
           )
         dmer.save!

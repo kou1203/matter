@@ -15,9 +15,8 @@
 
   <%= form_with model: @result,  class: "form-frame", local: true do |f| %>
     <%= render "shared/error_messages", model: f.object %>
-    <%= f.hidden_field :user_id, value: current_user.id %>
   <%# 基本情報 %>
-    <h1>基本情報　拠点：<%= current_user.base + current_user.base_sub%>　<%= current_user.name %></h1>
+    <h1>基本情報　拠点：<%= @result.user.base + @result.user.base_sub%>　<%= @result.user.name %></h1>
     <table>
       <tr>
         <th>

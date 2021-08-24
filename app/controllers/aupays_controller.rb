@@ -33,13 +33,13 @@ class AupaysController < ApplicationController
   def import 
     if params[:file].present?
       if Aupay.csv_check(params[:file]).present?
-        redirect_to root_path , alert: "エラーが発生したため中断しました#{Aupay.csv_check(params[:file])}"
+        redirect_to aupays_path , alert: "エラーが発生したため中断しました#{Aupay.csv_check(params[:file])}"
       else
         message = Aupay.import(params[:file]) 
-        redirect_to root_path, alert: "インポート処理を完了しました#{message}"
+        redirect_to aupays_path, alert: "インポート処理を完了しました#{message}"
       end
     else
-      redirect_to root_path, alert: "インポートに失敗しました。ファイルを選択してください"
+      redirect_to aupays_path, alert: "インポートに失敗しました。ファイルを選択してください"
     end
   end 
 
@@ -79,7 +79,10 @@ class AupaysController < ApplicationController
       :profit_new,
       :profit_settlement,
       :valuation_new,    
-      :valuation_settlement,    
+      :valuation_settlement,   
+      :deficiency_solution,
+      :deficiency_deadline,
+      :deficiency_remarks, 
       :description
     )
 
