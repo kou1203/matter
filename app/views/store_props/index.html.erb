@@ -1,19 +1,26 @@
 <div data-scope-path="store_props/index">
   <h1>店舗一覧</h1>
   <%= render "shared/header" %>
-      <table>
-        <th class="reg"><%= link_to "店舗登録", new_store_prop_path, class: "reg-link" %></th>
-      </table>
-
-      <%= search_form_for @q do |f| %>
-    <table class="table-note">
-      <tr>
-        <th class="">※何も入力しないで絞り込むと全店舗データが表示されます</th>
-      </tr>
+    <table>
+      <th class="reg"><%= link_to "店舗登録", new_store_prop_path, class: "reg-link" %></th>
     </table>
+  <%= form_with url: import_store_props_path do |f| %>
+    <table>
+        <td class="csv-label">CSV</td>
+        <td><%= f.file_field :file, accept: '.csv', class: "input"  %></td>
+        <td class="result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？"},id: "dl-reload", target: "_blank" %>
+    </table>
+  <% end %>
+      <%= search_form_for @q do |f| %>
+      <div class="check-form">
+        <span class="check-label">dメル</span>
+        <%= f.check_box :dmer_id_not_null, {class: "check-input"}, true, false %>
+        <span class="check-label">aupay</span>
+        <%= f.check_box :aupay_id_not_null, {class: "check-input"},true, false %>
+      </div>
     <table>
       <tr>
-        <th>検索</th>
+        <th class="search-title" rowspan="2" >検索</th>
         <th class="search1">業種</th>
         <th class="search1">店舗名</th>
         <th class="search1">担当者名(カナ)</th>
@@ -23,14 +30,13 @@
         <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
       </tr>
       <tr>
-        <th>ここに値入力⇨</th>
         <td><%= f.select :industry_eq, {"飲食": "飲食", "小売": "小売", "サービス": "サービス"} , {include_blank: true},{class: "input"} %></td>
         <td ><%= f.search_field :name_cont, class: "input" %></td>
         <td><%= f.search_field :person_main_kana_or_person_sub_kana_cont, class: "input" %></td>
         <td ><%= f.search_field :phone_number_1_or_phone_number_2_cont, class: "input" %></td>
         <td ><%= f.text_field :prefecture_cont, class: "input" %></td>
         <td ><%= f.text_field :city_cont, class: "input" %></td>
-        <td  class="reset"><%= link_to "絞込みリセット", root_path ,class: "reset-link" %></td>
+        <td  class="reset"><%= link_to "絞込みリセット", store_props_path ,class: "reset-link" %></td>
       </tr>
     </table>
       <% end %>
@@ -44,7 +50,7 @@
         <th class="search2">店舗数</th>
         <th class="search2">法人</th>
         <th class="search2">個人</th>
-        </tr>
+      </tr>
 
       <tr class="search-tr">
         <td ><%= @store_props.length %></td>

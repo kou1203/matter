@@ -1,14 +1,7 @@
 <div data-scope-path="store_props/new">
   <h1>新規情報入力（店舗）</h1>
   <%= render "shared/header" %> 
-  <%= form_with url: import_store_props_path do |f| %>
-    <table>
-        <th style="width: 10px;">CSV</th>
-        <td><%= f.file_field :file, accept: '.csv', class: "input"  %></td>
-        <td class="result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？"},id: "dl-reload", target: "_blank" %>
-        <td class="reset"><%= link_to "店舗一覧に戻る", root_path ,class: "reset-link" %>
-    </table>
-      <% end %>
+
   <%= form_with model: @store_prop, class: "form-frame", local: true do |f| %>
   <%= render "shared/error_messages",model: f.object %>
   <h1>店舗情報</h1>

@@ -87,10 +87,10 @@ class Aupay < ApplicationRecord
     aupay = find_by(store_prop_id:  store_prop.id)
     if store_prop.aupay.present? && Aupay.find_by(customer_num: row["お申込み番号"]).present? 
       aupay.assign_attributes(
-        customer_num: row["お申込み番号"],
+        # customer_num: row["お申込み番号"],
         client: row["商流"],
         user_id: user.id,
-        store_prop_id: store_prop.id,
+        # store_prop_id: store_prop.id,
         date: row["獲得日"],
         status: row["審査ステータス"],
         status_update: row["ステータス更新日"],

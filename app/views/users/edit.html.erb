@@ -1,0 +1,27 @@
+<div data-scope-path="users/edit">
+  <h1><%= @user.name %>情報編集</h1>
+  <%= render "shared/header" %>    
+
+  <%= form_with model: @user, class: "form-frame", local: true do |f| %>
+    <%= render "shared/error_messages", model: f.object %>
+    <table>
+      <tr>
+        <th><%= f.label :base, "拠点", class: "form-text" %></th>
+        <th><%= f.label :base_sub, "担当商材", class: "form-text" %></th>
+        <th><%= f.label :group, "グループ①", class: "form-text" %></th>
+        <th><%= f.label :team, "グループ②",class: "form-text" %></th>
+        <th><%= f.label :position, "権限",class: "form-text" %></th>
+        <th></th>
+      </tr>
+        <td><%= f.select :base, {"中部SS": "中部SS", "関西SS": "関西SS","関東SS": "関東SS","中部N": "中部N","関西N": "関西N" } ,{}, {class: "form-input"} %></td>
+        <td><%= f.select :base_sub, {"キャッシュレス": "キャッシュレス", "サミット": "サミット", "パンダ": "パンダ", "フェムト": "フェムト" }, {include_blank: true}, {class: "form-input"} %></td>
+        <td><%= f.text_field :group ,class: "form-input" %></td>
+        <td><%= f.text_field :team ,class: "form-input" %></td>
+        <td><%= f.select :position, {"なし": "なし", "権限①": "権限①", "権限②": "権限②"}, {include_blank: true}, {class: "form-input"}  %></td>
+      </tr>
+    </table>
+    <%= f.submit "登録", class: "submit-btn" %>
+  
+  
+  <% end %>
+</div>

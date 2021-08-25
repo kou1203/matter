@@ -126,12 +126,15 @@
       <th >評価売上（決済）</th>
       <td ><%= @aupay.valuation_settlement %></td>
     </tr>
+    <% if current_user.position == "権限①" %>
     <tr>
       <th >実売上（新規）</th>
       <td ><%= @aupay.profit_new %></td>
       <th >実売上（決済）</th>
       <td ><%= @aupay.profit_settlement %></td>
     </tr>
+    <% else %>
+    <% end %>
     </table>
 </div>
 

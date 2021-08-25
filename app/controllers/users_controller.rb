@@ -1,31 +1,23 @@
 class UsersController < ApplicationController
 
   def index 
-    @s = SummitResult.ransack(params[:q])
-    @summit_results = 
+    @q = User.ransack(params[:q])
+    @users = 
       if params[:q].nil? 
-        SummitResult.none 
+        User.none 
       else    
-        @s.result(distinct: false)
+        @q.result(distinct: false)
       end
+  end 
 
-    @p = PandaResult.ransack(params[:p])
-    @panda_results = 
-      if params[:p].nil?
-        PandaResult.none 
-      else  
-        @p.result(distinct: false)
-      end 
-
-    @c = CashlessResult.ransack(params[:c], search_key: :c)
-    @cashless_results = 
-      if params[:c].nil? 
-        CashlessResult.none 
-      else  
-        @c.result(distinct: false)
-      end 
-    
-
+  def edit 
+    @user = User.find(params[:id])
+  end 
+  
+  def update 
+    @user = User.find(params[:id])
+    @user.update(user_params)
+    redirect_to users_path
   end 
 
   def show 
@@ -35,5 +27,15 @@ class UsersController < ApplicationController
 
 
   private 
+  def user_params 
+    params.require(:user).permit(
+      :base,
+      :base_sub,
+      :position,
+      :position_sub,
+      :group,
+      :team,
+    )
+  end
 
 end
