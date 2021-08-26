@@ -37,7 +37,11 @@
     </tr>
   <% @users.each do |user| %>
     <tr>
+    <% if current_user.name == "管理用" %>
       <td><%= link_to "編集", edit_user_path(user.id), class: "link" %></td>
+    <% else %>
+      <td></td>
+    <% end %>
       <td><%= user.name %></td>
       <td><%= user.base %></td>
       <td><%= user.base_sub %></td>

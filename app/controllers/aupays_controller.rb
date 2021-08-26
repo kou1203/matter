@@ -1,5 +1,5 @@
 class AupaysController < ApplicationController
-
+  before_action :authenticate_user!
   def index 
     @q = Aupay.includes(:user, :store_prop).ransack(params[:q])
     @aupays = 

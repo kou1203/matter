@@ -1,7 +1,7 @@
 class ResultsController < ApplicationController
-
+  before_action :authenticate_user!
   def index 
-    @q = Result.ransack(params[:q])
+    @q = Result.includes(:user).ransack(params[:q])
     @results = 
       if params[:q].nil? 
         Result.none 

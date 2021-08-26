@@ -1,0 +1,242 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+    <%# 変数 %>
+        <% shift = Shift.includes(:user).where(year: @results.minimum(:date).year).where(month: @results.maximum(:date).month) %>
+        <% chubu = @results.where(users: {base: "中部SS"}) %>
+        <% kansai = @results.where(users: {base: "関西SS"}) %>
+        <% kanto = @results.where(users: {base: "関東SS"}) %>
+        <% chubu_shift = shift.where(users: {base: "中部SS"}) %>
+        <% kansai_shift = shift.where(users: {base: "関西SS"}) %>
+        <% kanto_shift = shift.where(users: {base: "関東SS"}) %>
+    <%# 中部キャッシュレス新規 %>
+        <% cash_chubu_sum = chubu.where(shift: "キャッシュレス新規").sum(:profit) %>
+        <% cash_chubu_average = chubu.where(shift: "キャッシュレス新規").average(:profit).round() rescue "エラー" %>
+    <%# 中部キャッシュレス決済 %>
+        <% settlement_chubu_sum = chubu.where(shift: "キャッシュレス決済").sum(:profit) %>
+        <% settlement_chubu_average = chubu.where(shift: "キャッシュレス決済").average(:profit).round() rescue "エラー" %>
+    <%# 中部フェムト新規 %>
+        <% casa_chubu_sum = chubu.where(shift: "フェムト").sum(:profit) %>
+        <% casa_chubu_average = chubu.where(shift: "フェムト").average(:profit).round() rescue "エラー" %>
+    <%# 中部フェムト設置 %>
+        <% casa_put_chubu_sum = chubu.where(shift: "フェムト（設置）").sum(:profit) %>
+        <% casa_put_chubu_average = chubu.where(shift: "フェムト（設置）").average(:profit).round() rescue "エラー" %>
+    <%# 中部シフト %>
+        <% shift_chubu_new = chubu_shift.sum(:cashless_new) %>
+        <% shift_chubu_settlement = chubu_shift.sum(:cashless_settlement) %>
+        <% shift_chubu_casa = chubu_shift.sum(:rakuten_casa) %>
+        <% shift_chubu_casa_put = chubu_shift.sum(:rakuten_casa_put) %>
+    <%# 関西キャッシュレス新規 %>
+        <% cash_kansai_sum = kansai.where(shift: "キャッシュレス新規").sum(:profit) %>
+        <% cash_kansai_average = kansai.where(shift: "キャッシュレス新規").average(:profit).round() rescue "エラー" %>
+    <%# 関西キャッシュレス決済 %>
+        <% settlement_kansai_sum = kansai.where(shift: "キャッシュレス決済").sum(:profit) %>
+        <% settlement_kansai_average = kansai.where(shift: "キャッシュレス決済").average(:profit).round() rescue "エラー" %>
+    <%# 関西フェムト新規 %>
+        <% casa_kansai_sum = kansai.where(shift: "フェムト").sum(:profit) %>
+        <% casa_kansai_average = kansai.where(shift: "フェムト").average(:profit).round() rescue "エラー" %>
+    <%# 関西フェムト設置 %>
+        <% casa_put_kansai_sum = kansai.where(shift: "フェムト（設置）").sum(:profit) %>
+        <% casa_put_kansai_average = kansai.where(shift: "フェムト（設置）").average(:profit).round() rescue "エラー" %>
+    <%# 関西シフト %>
+        <% shift_kansai_new = kansai_shift.sum(:cashless_new) %>
+        <% shift_kansai_settlement = kansai_shift.sum(:cashless_settlement) %>
+        <% shift_kansai_casa = kansai_shift.sum(:rakuten_casa) %>
+        <% shift_kansai_casa_put = kansai_shift.sum(:rakuten_casa_put) %>
+
+    <%# 関東キャッシュレス新規 %>
+        <% cash_kanto_sum = kanto.where(shift: "キャッシュレス新規").sum(:profit) %>
+        <% cash_kanto_average = kanto.where(shift: "キャッシュレス新規").average(:profit).round() rescue "エラー" %>
+    <%# 関東キャッシュレス決済 %>
+        <% settlement_kanto_sum = kanto.where(shift: "キャッシュレス決済").sum(:profit) %>
+        <% settlement_kanto_average = kanto.where(shift: "キャッシュレス決済").average(:profit).round() rescue "エラー" %>
+    <%# 関東フェムト新規 %>
+        <% casa_kanto_sum = kanto.where(shift: "フェムト").sum(:profit) %>
+        <% casa_kanto_average = kanto.where(shift: "フェムト").average(:profit).round() rescue "エラー" %>
+    <%# 関東フェムト設置 %>
+        <% casa_put_kanto_sum = kanto.where(shift: "フェムト（設置）").sum(:profit) %>
+        <% casa_put_kanto_average = kanto.where(shift: "フェムト（設置）").average(:profit).round() rescue "エラー" %>
+    <%# 関東シフト %>
+        <% shift_kanto_new = kanto_shift.sum(:cashless_new) %>
+        <% shift_kanto_settlement = kanto_shift.sum(:cashless_settlement) %>
+        <% shift_kanto_casa = kanto_shift.sum(:rakuten_casa) %>
+        <% shift_kanto_casa_put = kanto_shift.sum(:rakuten_casa_put) %>
+        <% shift_kanto_summit = kanto_shift.sum(:summit) %>
+    <h1>表示範囲：<%= @results.minimum(:date) %>（<%= days[@results.minimum(:date).wday] %>）〜<%= @results.maximum(:date) %>（<%= days[@results.maximum(:date).wday] %>）</h1>
+    <h1>中部　訪問員<%= chubu_shift.length %>人</h1>
+        <table>
+            <tr>
+                <th class="th-head" rowspan="2">キャッシュレス新規</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+                <th class="th-head" rowspan="2">キャッシュレス決済</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+            </tr>
+            <tr>
+                <%# 新規 %>
+                <td><%= cash_chubu_sum.to_s(:delimited) %></td>
+                <td><%= cash_chubu_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= chubu.where(shift: "キャッシュレス新規").length %></td>
+                <td><%= shift_chubu_new %></td>
+                <td><%= (shift_chubu_new * cash_chubu_average).to_s(:delimited) rescue "エラー" %></td>
+                <%# 決済 %>
+                <td><%= settlement_chubu_sum.to_s(:delimited) %></td>
+                <td><%= settlement_chubu_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= chubu.where(shift: "キャッシュレス決済").length %></td>
+                <td><%= shift_chubu_settlement %></td>
+                <td><%= (settlement_chubu_average * shift_chubu_settlement).to_s(:delimited) rescue "エラー" %></td>
+            </tr>
+            <tr>
+                <th class="th-head" rowspan="2">フェムト</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+                <th class="th-head" rowspan="2">フェムト（設置）</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+            </tr>
+            <tr>
+                <%# 新規 %>
+                <td><%= casa_chubu_sum.to_s(:delimited) %></td>
+                <td><%= casa_chubu_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= chubu.where(shift: "フェムト").length %></td>
+                <td><%= shift_chubu_casa %></td>
+                <td><%= (shift_chubu_casa * acasa_chubu_average).to_s(:delimited) rescue "エラー" %></td>
+                <%# 設置 %>
+                <td><%= casa_put_chubu_sum.to_s(:delimited) %></td>
+                <td><%= casa_put_chubu_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= chubu.where(shift: "フェムト（設置）").length %></td>
+                <td><%= shift_chubu_casa_put %></td>
+                <td><%= (shift_chubu_casa_put * acasa_put_chubu_average).to_s(:delimited) rescue "エラー" %></td>
+            </tr>
+        </table>
+    <h1>関西　訪問員<%= kansai_shift.length %>人</h1>
+        <table>
+            <tr>
+                <th class="th-head" rowspan="2">キャッシュレス新規</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+                <th class="th-head" rowspan="2">キャッシュレス決済</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+            </tr>
+            <tr>
+                <%# 新規 %>
+                <td><%= cash_kansai_sum.to_s(:delimited) %></td>
+                <td><%= cash_kansai_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= kansai.where(shift: "キャッシュレス新規").length %></td>
+                <td><%= shift_kansai_new %></td>
+                <td><%= (shift_kansai_new * cash_kansai_average).to_s(:delimited) rescue "エラー" %></td>
+                <%# 決済 %>
+                <td><%= settlement_kansai_sum.to_s(:delimited) %></td>
+                <td><%= settlement_kansai_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= kansai.where(shift: "キャッシュレス決済").length %></td>
+                <td><%= shift_kansai_settlement %></td>
+                <td><%= (settlement_kansai_average * shift_kansai_settlement).to_s(:delimited) rescue "エラー" %></td>
+            </tr>
+            <tr>
+                <th class="th-head" rowspan="2">フェムト</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+                <th class="th-head" rowspan="2">フェムト（設置）</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+            </tr>
+            <tr>
+                <%# 新規 %>
+                <td><%= casa_kansai_sum.to_s(:delimited) %></td>
+                <td><%= casa_kansai_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= chubu.where(shift: "フェムト").length %></td>
+                <td><%= shift_kansai_casa %></td>
+                <td><%= (shift_kansai_casa * acasa_kansai_average).to_s(:delimited) rescue "エラー" %></td>
+                <%# 設置 %>
+                <td><%= casa_put_kansai_sum.to_s(:delimited) %></td>
+                <td><%= casa_put_kansai_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= chubu.where(shift: "フェムト（設置）").length %></td>
+                <td><%= shift_kansai_casa_put %></td>
+                <td><%= (shift_kansai_casa_put * acasa_put_kansai_average).to_s(:delimited) rescue "エラー" %></td>
+            </tr>
+        </table>
+    <h1>関東　訪問員<%= kanto_shift.length %>人</h1>
+        <table>
+            <tr>
+                <th class="th-head" rowspan="2">キャッシュレス新規</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+                <th class="th-head" rowspan="2">キャッシュレス決済</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+            </tr>
+            <tr>
+                <%# 新規 %>
+                <td><%= cash_kanto_sum.to_s(:delimited) %></td>
+                <td><%= cash_kanto_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= kanto.where(shift: "キャッシュレス新規").length %></td>
+                <td><%= shift_kanto_new %></td>
+                <td><%= (shift_kanto_new * cash_kanto_average).to_s(:delimited) rescue "エラー" %></td>
+                <%# 決済 %>
+                <td><%= settlement_kanto_sum.to_s(:delimited) %></td>
+                <td><%= settlement_kanto_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= kanto.where(shift: "キャッシュレス決済").length %></td>
+                <td><%= shift_kanto_settlement %></td>
+                <td><%= (settlement_kanto_average * shift_kanto_settlement).to_s(:delimited) rescue "エラー" %></td>
+            </tr>
+            <tr>
+                <th class="th-head" rowspan="2">フェムト</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+                <th class="th-head" rowspan="2">フェムト（設置）</th>
+                <th class="th-head">現状売上</th>
+                <th class="th-head">平均平均</th>
+                <th class="th-head">消化シフト数</th>
+                <th class="th-head">予定シフト数</th>
+                <th class="th-head">終着売上</th>
+            </tr>
+            <tr>
+                <%# 新規 %>
+                <td><%= casa_kanto_sum.to_s(:delimited) %></td>
+                <td><%= casa_kanto_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= kanto.where(shift: "フェムト").length %></td>
+                <td><%= shift_kanto_casa %></td>
+                <td><%= (shift_kanto_casa * acasa_kanto_average).to_s(:delimited) rescue "エラー" %></td>
+                <%# 設置 %>
+                <td><%= casa_put_kanto_sum.to_s(:delimited) %></td>
+                <td><%= casa_put_kanto_average.to_s(:delimited) rescue "エラー" %></td>
+                <td><%= kanto.where(shift: "フェムト（設置）").length %></td>
+                <td><%= shift_kanto_casa_put %></td>
+                <td><%= (shift_kanto_casa_put * casa_put_kanto_average).to_s(:delimited) rescue "エラー" %></td>
+            </tr>
+        </table>
+
+    

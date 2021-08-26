@@ -1,4 +1,5 @@
 class StorePropsController < ApplicationController
+  before_action :authenticate_user!
   def index 
     @q = StoreProp.ransack(params[:q])
     @store_props = 

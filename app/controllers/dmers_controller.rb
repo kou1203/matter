@@ -1,5 +1,5 @@
 class DmersController < ApplicationController
-
+  before_action :authenticate_user!
   def index 
     @q = Dmer.includes(:store_prop, :user).ransack(params[:q])
     @dmers = 
