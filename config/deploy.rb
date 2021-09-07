@@ -9,7 +9,7 @@ set :application, "matter"
 set :repo_url, 'git@github.com:kou1203/gain.git'
 
 # deployするブランチ。デフォルトはmasterなのでなくても可。
-set :branch, 'main'
+set :branch, 'master'
 
 # deploy先のディレクトリ。
 set :deploy_to, '/var/www/matter'
