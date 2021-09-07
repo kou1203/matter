@@ -195,40 +195,137 @@
       <% if @results.where(shift: "キャッシュレス新規").empty? %>
       <% else %>
       <tr >
-        <th rowspan="4" class="th-side-head">キャッシュ切り返し</th>
-        <th class="th-head-sub">どういうこと？</th>
-        <th class="th-head-sub">君は誰？教会？</th>
-        <th class="th-head-sub">もらうだけでいいの？</th>
-        <th class="th-head-sub">PayPayのみ</th>
-        <th class="th-head-sub">AirPayのみ</th>
-        <th class="th-head-sub">カードのみ</th>
-        <th class="th-head-sub">先延ばし</th>
-      </tr>
-      <tr >
-        <td ><%= number_to_percentage(@results.sum(:cashless_what_get).to_f / @results.sum(:cashless_what_full_talk) *100,precision: 1) rescue 0 %></td>
-        <td ><%= number_to_percentage(@results.sum(:cashless_who_get).to_f / @results.sum(:cashless_who_full_talk) *100,precision: 1) rescue 0 %></td>
-        <td ><%= number_to_percentage(@results.sum(:cashless_just_get_get).to_f / @results.sum(:cashless_just_get_full_talk) *100,precision: 1) rescue 0 %></td>
-        <td ><%= number_to_percentage(@results.sum(:cashless_paypay_only_get).to_f / @results.sum(:cashless_paypay_only_full_talk) *100,precision: 1) rescue 0 %></td>
-        <td ><%= number_to_percentage(@results.sum(:cashless_airpay_only_get).to_f / @results.sum(:cashless_airpay_only_full_talk) *100,precision: 1) rescue 0 %></td>
-
-        <td ><%= number_to_percentage(@results.sum(:cashless_card_only_get).to_f / @results.sum(:cashless_card_only_full_talk) *100,precision: 1) rescue 0 %></td>
-        <td ><%= number_to_percentage(@results.sum(:cashless_yet_get).to_f / @results.sum(:cashless_yet_full_talk) *100,precision: 1) rescue 0 %></td>
-      </tr>
-      <tr >
-        <th class="th-head-sub">現金のみ</th>
-        <th class="th-head-sub">忙しい</th>
-        <th class="th-head-sub">面倒くさい</th>
-        <th class="th-head-sub">情報不足</th>
-        <th class="th-head-sub">ペロ</th>
-        <th class="th-head-sub">その他</th>
+        <th rowspan="15" class="th-head">キャッシュ切り返し</th>
+        <th class="th-head" colspan="4">どういうこと？</th>
+        <th class="th-head" colspan="4">君は誰？教会？</th>
+        <th class="th-head" colspan="4">もらうだけでいいの？</th>
       </tr>
       <tr>
+      <% 3.times do %>
+        <th class="th-head-sub">対面</th>
+        <th class="th-head-sub">フル</th>
+        <th class="th-head-sub">獲得</th>
+        <th class="th-head-sub">成約率</th>
+      <% end %>
+      </tr>
+      <tr>
+        <td><%= @results.sum(:cashless_what_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_what_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_what_get).round(1) %></td>
+        <td ><%= number_to_percentage(@results.sum(:cashless_what_get).to_f / @results.sum(:cashless_what_full_talk) *100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:cashless_who_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_who_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_who_get).round(1) %></td>
+        <td ><%= number_to_percentage(@results.sum(:cashless_who_get).to_f / @results.sum(:cashless_who_full_talk) *100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:cashless_just_get_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_just_get_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_just_get_get).round(1) %></td>
+        <td ><%= number_to_percentage(@results.sum(:cashless_just_get_get).to_f / @results.sum(:cashless_just_get_full_talk) *100,precision: 1) rescue 0 %></td>
+      </tr>
+      <tr>
+        <th class="th-head" colspan="4">PayPayのみ</th>
+        <th class="th-head" colspan="4">AirPayのみ</th>
+        <th class="th-head" colspan="4">カードのみ</th>
+      </tr>
+      <tr>
+      <% 3.times do %>
+        <th class="th-head-sub">対面</th>
+        <th class="th-head-sub">フル</th>
+        <th class="th-head-sub">獲得</th>
+        <th class="th-head-sub">成約率</th>
+      <% end %>
+      </tr>
+      <tr>
+        <td><%= @results.sum(:cashless_paypay_only_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_paypay_only_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_paypay_only_get).round(1) %></td>
+        <td ><%= number_to_percentage(@results.sum(:cashless_paypay_only_get).to_f / @results.sum(:cashless_paypay_only_full_talk) *100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:cashless_airpay_only_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_airpay_only_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_airpay_only_get).round(1) %></td>
+        <td ><%= number_to_percentage(@results.sum(:cashless_airpay_only_get).to_f / @results.sum(:cashless_airpay_only_full_talk) *100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:cashless_card_only_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_card_only_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_card_only_get).round(1) %></td>
+        <td ><%= number_to_percentage(@results.sum(:cashless_card_only_get).to_f / @results.sum(:cashless_card_only_full_talk) *100,precision: 1) rescue 0 %></td>
+      </tr>
+      <tr>
+        <th class="th-head" colspan="4">先延ばし</th>
+        <th class="th-head" colspan="4">現金のみ</th>
+        <th class="th-head" colspan="4">忙しい</th>
+      </tr>
+      <tr>
+      <% 3.times do %>
+        <th class="th-head-sub">対面</th>
+        <th class="th-head-sub">フル</th>
+        <th class="th-head-sub">獲得</th>
+        <th class="th-head-sub">成約率</th>
+      <% end %>
+      </tr>
+      <tr >
+        <td><%= @results.sum(:cashless_yet_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_yet_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_yet_get).round(1) %></td>
+        <td ><%= number_to_percentage(@results.sum(:cashless_yet_get).to_f / @results.sum(:cashless_yet_full_talk) *100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:cashless_cash_only_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_cash_only_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_cash_only_get).round(1) %></td>
         <td ><%= number_to_percentage(@results.sum(:cashless_cash_only_get).to_f / @results.sum(:cashless_cash_only_full_talk) *100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:cashless_busy_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_busy_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_busy_get).round(1) %></td>
         <td ><%= number_to_percentage(@results.sum(:cashless_busy_get).to_f / @results.sum(:cashless_busy_full_talk) *100,precision: 1) rescue 0 %></td>
+      </tr>
+      <tr >
+        <th class="th-head" colspan="4">面倒くさい</th>
+        <th class="th-head" colspan="4">情報不足</th>
+        <th class="th-head" colspan="4">ペロ</th>
+      </tr>
+      <tr>
+      <% 3.times do %>
+        <th class="th-head-sub">対面</th>
+        <th class="th-head-sub">フル</th>
+        <th class="th-head-sub">獲得</th>
+        <th class="th-head-sub">成約率</th>
+      <% end %>
+      </tr>
+      <tr>
+        <td><%= @results.sum(:cashless_dull_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_dull_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_dull_get).round(1) %></td>
         <td ><%= number_to_percentage(@results.sum(:cashless_dull_get).to_f / @results.sum(:cashless_dull_full_talk) *100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:cashless_lack_info_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_lack_info_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_lack_info_get).round(1) %></td>
         <td ><%= number_to_percentage(@results.sum(:cashless_lack_info_get).to_f / @results.sum(:cashless_lack_info_full_talk) *100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:cashless_easy_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_easy_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_easy_get).round(1) %></td>
         <td ><%= number_to_percentage(@results.sum(:cashless_easy_get).to_f / @results.sum(:cashless_easy_full_talk) *100,precision: 1) rescue 0 %></td>
+      </tr>
+
+      <tr>
+        <th class="th-head" colspan="4">その他</th>
+        <th class="th-head" colspan="8"></th>
+      </tr>
+      <tr>
+        <th class="th-head-sub">対面</th>
+        <th class="th-head-sub">フル</th>
+        <th class="th-head-sub">獲得</th>
+        <th class="th-head-sub">成約率</th>
+      <% 8.times do %>
+        <td rowspan="2" class="td-blank"></td>
+      <% end %>
+      </tr>
+      <tr>
+        <td><%= @results.sum(:cashless_other_interview).round(1) %></td>
+        <td><%= @results.sum(:cashless_other_full_talk).round(1) %></td>
+        <td><%= @results.sum(:cashless_other_get).round(1) %></td>
         <td ><%= number_to_percentage(@results.sum(:cashless_other_get).to_f / @results.sum(:cashless_other_full_talk) *100,precision: 1) rescue 0 %></td>
+      </tr>
+      <tr>
+
+
       </tr>
         <% end %>
     <%# フェムト基準値早見表 %>
@@ -236,12 +333,12 @@
       <% else %>
       <tr>
         <th rowspan="2" class="th-head">フェムト</th>
-        <th class="th-head-sub">平均売上</th>
-        <th class="th-head-sub">現状売上</th>
-        <th class="th-head-sub">予想終着</th>
-        <th class="th-head-sub">フェムト平均獲得数</th>
-        <th class="th-head-sub">フェムト現状獲得数</th>
-        <th class="th-head-sub">フェムト現状設置数</th>
+        <th class="th-head">平均売上</th>
+        <th class="th-head">現状売上</th>
+        <th class="th-head">予想終着</th>
+        <th class="th-head">フェムト平均獲得数</th>
+        <th class="th-head">フェムト現状獲得数</th>
+        <th class="th-head">フェムト現状設置数</th>
       </tr>
       <tr>
         <td><%= casa_ave.to_s(:delimited) %></td>
@@ -257,26 +354,86 @@
       </tr>
     <%# フェムト切り返し %>
       <tr>
-        <th rowspan="2" class="th-head-even">切り返し</th>
-        <th class="th-head-sub">忙しい</th>
-        <th class="th-head-sub">面倒くさい</th>
-        <th class="th-head-sub">置く場所がない</th>
-        <th class="th-head-sub">メリットがない</th>
-        <th class="th-head-sub">不審</th>
-        <th class="th-head-sub">回線を使われたくない</th>
-        <th class="th-head-sub">結構です</th>
-        <th class="th-head-sub">ペロ</th>
-        <th class="th-head-sub">その他</th>
+        <th rowspan="12" class="th-head">フェムト切り返し</th>
+        <th colspan="4" class="th-head">忙しい</th>
+        <th colspan="4" class="th-head">面倒くさい</th>
+        <th colspan="4" class="th-head">置く場所がない</th>
       </tr>
       <tr>
+      <% 3.times do %>
+        <th class="th-head-sub">対面</th>
+        <th class="th-head-sub">フル</th>
+        <th class="th-head-sub">獲得</th>
+        <th class="th-head-sub">成約率</th>
+      <% end %>
+      </tr>
+      <tr>
+        <td><%= @results.sum(:casa_busy_interview).round(1) %></td>
+        <td><%= @results.sum(:casa_busy_full_talk).round(1) %></td>
+        <td><%= @results.sum(:casa_busy_get).round(1) %></td>
+        <td><%= number_to_percentage(@results.sum(:casa_busy_get).to_f / @results.sum(:casa_busy_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:casa_dull_interview).round(1) %></td>
+        <td><%= @results.sum(:casa_dull_full_talk).round(1) %></td>
+        <td><%= @results.sum(:casa_dull_get).round(1) %></td>
         <td><%= number_to_percentage(@results.sum(:casa_dull_get).to_f / @results.sum(:casa_dull_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
-        <td><%= number_to_percentage(@results.sum(:casa_dull_get).to_f / @results.sum(:casa_dull_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
-        <td><%= number_to_percentage(@results.sum(:casa_no_merit_get).to_f / @results.sum(:casa_not_put_space_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
-        <td><%= number_to_percentage(@results.sum(:casa_no_merit_get).to_f / @results.sum(:casa_not_put_space_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:casa_not_put_space_interview).round(1) %></td>
+        <td><%= @results.sum(:casa_not_put_space_full_talk).round(1) %></td>
+        <td><%= @results.sum(:casa_not_put_space_get).round(1) %></td>
+        <td><%= number_to_percentage(@results.sum(:casa_not_put_space_get).to_f / @results.sum(:casa_not_put_space_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
+      </tr>
+      <tr>
+        <th colspan="4" class="th-head">メリットがない</th>
+        <th colspan="4" class="th-head">不審</th>
+        <th colspan="4" class="th-head">回線を使われたくない</th>
+      </tr>
+      <tr>
+      <% 3.times do %>
+        <th class="th-head-sub">対面</th>
+        <th class="th-head-sub">フル</th>
+        <th class="th-head-sub">獲得</th>
+        <th class="th-head-sub">成約率</th>
+      <% end %>
+      </tr>
+      <tr>
+        <td><%= @results.sum(:casa_no_merit_interview).round(1) %></td>
+        <td><%= @results.sum(:casa_no_merit_full_talk).round(1) %></td>
+        <td><%= @results.sum(:casa_no_merit_get).round(1) %></td>
+        <td><%= number_to_percentage(@results.sum(:casa_no_merit_get).to_f / @results.sum(:casa_no_merit_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:casa_distrust_interview).round(1) %></td>
+        <td><%= @results.sum(:casa_distrust_full_talk).round(1) %></td>
+        <td><%= @results.sum(:casa_distrust_get).round(1) %></td>
         <td><%= number_to_percentage(@results.sum(:casa_distrust_get).to_f / @results.sum(:casa_distrust_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:casa_not_use_net_interview).round(1) %></td>
+        <td><%= @results.sum(:casa_not_use_net_full_talk).round(1) %></td>
+        <td><%= @results.sum(:casa_not_use_net_get).round(1) %></td>
         <td><%= number_to_percentage(@results.sum(:casa_not_use_net_get).to_f / @results.sum(:casa_not_use_net_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
+      </tr>
+      <tr>
+        <th colspan="4" class="th-head">結構です</th>
+        <th colspan="4" class="th-head">ペロ</th>
+        <th colspan="4" class="th-head">その他</th>
+      </tr>
+      <tr>
+      <% 3.times do %>
+        <th class="th-head-sub">対面</th>
+        <th class="th-head-sub">フル</th>
+        <th class="th-head-sub">獲得</th>
+        <th class="th-head-sub">成約率</th>
+      <% end %>
+      </tr>
+
+      <tr>
+        <td><%= @results.sum(:casa_not_need_interview).round(1) %></td>
+        <td><%= @results.sum(:casa_not_need_full_talk).round(1) %></td>
+        <td><%= @results.sum(:casa_not_need_get).round(1) %></td>
         <td><%= number_to_percentage(@results.sum(:casa_not_need_get).to_f / @results.sum(:casa_not_need_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:casa_easy_interview).round(1) %></td>
+        <td><%= @results.sum(:casa_easy_full_talk).round(1) %></td>
+        <td><%= @results.sum(:casa_easy_get).round(1) %></td>
         <td><%= number_to_percentage(@results.sum(:casa_easy_get).to_f / @results.sum(:casa_easy_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:casa_other_interview).round(1) %></td>
+        <td><%= @results.sum(:casa_other_full_talk).round(1) %></td>
+        <td><%= @results.sum(:casa_other_get).round(1) %></td>
         <td><%= number_to_percentage(@results.sum(:casa_other_get).to_f / @results.sum(:casa_other_full_talk).to_f * 100,precision: 1) rescue 0 %></td>
       </tr>
       <% end %>
@@ -344,37 +501,26 @@
       <% else %>
       <table >
         <tr >
-            <% amount_sum = 0 %>
-            <% metered_lamp_sum = 0 %>
-            <% low_voltage_sum = 0 %>
-            <% summit_shift = 0 %>
-        <% @summits.where(contract_type: "低圧電力").each do |summit| %>
-          <% if summit.get_date.year == result.date.year && summit.get_date.month == result.date.month && summit.get_date.day == result.date.day && summit.user.name == result.user.name %>
-            <% low_voltage_sum += summit.contract_cap %>
-            <% amount_sum += summit.amount_use %>
-            <% summit_shift += 1 %>
-          <% end %>
-        <% end %>
-        <% @summits.where.not(contract_type: "低圧電力").each do |summit| %>
-          <% if summit.get_date.year == result.date.year && summit.get_date.month == result.date.month && summit.user.name == result.user.name %>
-            <% metered_lamp_sum += summit.contract_cap %>
-            <% amount_sum += summit.amount_use %>
-            <% summit_shift += 1 %>
-          <% end %> 
-        <% end %>
+            <% summit = @summits.where(get_date: @results.minimum(:date)..@results.maximum(:date)) %>
+            <% amount_sum = summit.sum(:amount_use) %>
+            <% metered_lamp_sum = summit.where.not(contract_type: "低圧電力").sum(:contract_cap) %>
+            <% low_voltage_sum = summit.where.not(contract_type: "低圧電力").sum(:contract_cap) %>
+            <% summit_shift = @results.where(shift: "サミット").length %>
         <tr class="">
-          <th class="th-side-head">サミット月間獲得</th>
+          <th class="th-head">サミット月間獲得</th>
           <th class="th-head">従量電灯</th>
           <th class="th-head">低圧電力</th>
           <th class="th-head">使用量</th>
-          <th class="th-head">獲得件数</th>
+          <th class="th-head">獲得件数（従量）</th>
+          <th class="th-head">獲得件数（動力）</th>
         </tr>
         <tr class="">
           <th class="th-side-head-even">合計</th>
           <td ><%= metered_lamp_sum %>kWh</td>
           <td ><%= low_voltage_sum %>kW</td>
           <td ><%= amount_sum %>kWh</td>
-          <td ><%= summit_shift %></td>
+          <td ><%= @results.sum(:summit_metered_lamp) %></td>
+          <td ><%= @results.sum(:summit_power) %></td>
         </tr>
 
         <tr class="">
@@ -382,28 +528,96 @@
           <td ><%= metered_lamp_sum / summit_shift rescue 0 %>kWh</td>
           <td ><%= low_voltage_sum / summit_shift rescue 0 %>kW</td>
           <td ><%= amount_sum / summit_shift rescue 0 %>kWh</td>
-          <td ></td>
+          <td ><%= @results.where(shift: "サミット").average(:summit_metered_lamp).round(1) %></td>
+          <td ><%= @results.where(shift: "サミット").average(:summit_power).round(1) %></td>
 
         </tr>
   <%# サミット成約率 %>
       <tr>
-        <th rowspan="2" class="th-side-head-even">サミット成約率</th>
-        <th class="th-head">引き落とし拒否</th>
-        <th class="th-head">忙しい</th>
-        <th class="th-head">怪しい</th>
-        <th class="th-head">検討したい</th>
-        <th class="th-head">変えたくない</th>
-        <th class="th-head">その他</th>
-        <th class="th-head">ペロ</th>
+        <th rowspan="12" class="th-head">サミット成約率</th>
+        <th colspan="4" class="th-head">明細</th>
+        <th colspan="4" class="th-head">引き落とし拒否</th>
+        <th colspan="4" class="th-head">忙しい</th>
+        
       </tr>
       <tr>
+        <th class="th-head-sub">なし合計</th>
+        <th class="th-head-sub">なし平均</th>
+        <th class="th-head-sub">NG合計</th>
+        <th class="th-head-sub">NG平均</th>
+      <% 2.times do %>
+        <th class="th-head-sub">対面</th>
+        <th class="th-head-sub">フル</th>
+        <th class="th-head-sub">獲得</th>
+        <th class="th-head-sub">成約率</th>
+      <% end %>
+      </tr>
+      <tr>
+        <td><%= @results.sum(:summit_no_detail).round(1) %></td>
+        <td><%= @results.where(shift: "サミット").average(:summit_no_detail).round(1) %></td>
+        <td><%= @results.sum(:summit_ng_detail).round(1) %></td>
+        <td><%= @results.where(shift: "サミット").average(:summit_ng_detail).round(1) %></td>
+        <td><%= @results.sum(:summit_reject_cash_interview).round(1) %></td>
+        <td><%= @results.sum(:summit_reject_cash_full_talk).round(1) %></td>
+        <td><%= @results.sum(:summit_reject_cash_get).round(1) %></td>
         <td ><%= number_to_percentage(@results.sum(:summit_reject_cash_get).to_f / @results.sum(:summit_reject_cash_full_talk) *100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:summit_busy_interview).round(1) %></td>
+        <td><%= @results.sum(:summit_busy_full_talk).round(1) %></td>
+        <td><%= @results.sum(:summit_busy_get).round(1) %></td>
         <td ><%= number_to_percentage(@results.sum(:summit_busy_get).to_f / @results.sum(:summit_busy_full_talk) * 100, precision: 1) rescue 0 %></td>
+
+      </tr>
+      <tr>
+        <th colspan="4" class="th-head">怪しい</th>
+        <th colspan="4" class="th-head">検討したい</th>
+        <th colspan="4" class="th-head">変えたくない</th>
+      </tr>
+      <tr>
+      <% 3.times do %>
+        <th class="th-head-sub">対面</th>
+        <th class="th-head-sub">フル</th>
+        <th class="th-head-sub">獲得</th>
+        <th class="th-head-sub">成約率</th>
+      <% end %>
+      </tr>
+      <tr>
+        <td><%= @results.sum(:summit_doubt_interview).round(1) %></td>
+        <td><%= @results.sum(:summit_doubt_full_talk).round(1) %></td>
+        <td><%= @results.sum(:summit_doubt_get).round(1) %></td>
         <td ><%= number_to_percentage(@results.sum(:summit_doubt_get).to_f / @results.sum(:summit_doubt_full_talk) * 100, precision: 1) rescue 0 %></td>
-        <td ><%= number_to_percentage(@results.sum(:summit_yet_get).to_f / @results.sum(:summit_yet_get) * 100,precision: 1) rescue 0 %></td>
-        <td ><%= number_to_percentage(@results.sum(:summit_not_change_get).to_f / @results.sum(:summit_not_change_get) * 100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:summit_yet_interview).round(1) %></td>
+        <td><%= @results.sum(:summit_yet_full_talk).round(1) %></td>
+        <td><%= @results.sum(:summit_yet_get).round(1) %></td>
+        <td ><%= number_to_percentage(@results.sum(:summit_yet_get).to_f / @results.sum(:summit_yet_full_talk) * 100,precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:summit_not_change_interview).round(1) %></td>
+        <td><%= @results.sum(:summit_not_change_full_talk).round(1) %></td>
+        <td><%= @results.sum(:summit_not_change_get).round(1) %></td>
+        <td ><%= number_to_percentage(@results.sum(:summit_not_change_get).to_f / @results.sum(:summit_not_change_full_talk) * 100,precision: 1) rescue 0 %></td>
+
+      </tr>
+      <tr>
+        <th colspan="4" class="th-head">ペロ</th>
+        <th colspan="4" class="th-head">その他</th>
+        <td colspan="4" rowspan="3" class="td-blank"></td>
+      </tr>
+      <tr>
+        <% 2.times do %>
+        <th class="th-head-sub">対面</th>
+        <th class="th-head-sub">フル</th>
+        <th class="th-head-sub">獲得</th>
+        <th class="th-head-sub">成約率</th>
+        <% end %>
+      </tr>
+      <tr>
+        <td><%= @results.sum(:summit_other_interview).round(1) %></td>
+        <td><%= @results.sum(:summit_other_full_talk).round(1) %></td>
+        <td><%= @results.sum(:summit_other_get).round(1) %></td>
         <td ><%= number_to_percentage(@results.sum(:summit_other_get).to_f / @results.sum(:summit_other_full_talk) * 100, precision: 1) rescue 0 %></td>
+        <td><%= @results.sum(:summit_easy_interview).round(1) %></td>
+        <td><%= @results.sum(:summit_easy_full_talk).round(1) %></td>
+        <td><%= @results.sum(:summit_easy_get).round(1) %></td>
         <td ><%= number_to_percentage(@results.sum(:summit_easy_get).to_f / @results.sum(:summit_easy_full_talk) * 100,precision: 1) rescue 0 %></td>
+
       </tr>
       </table>
       <% end %>

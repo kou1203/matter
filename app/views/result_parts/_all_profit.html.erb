@@ -60,7 +60,7 @@
         <% shift_kanto_casa = kanto_shift.sum(:rakuten_casa) %>
         <% shift_kanto_casa_put = kanto_shift.sum(:rakuten_casa_put) %>
         <% shift_kanto_summit = kanto_shift.sum(:summit) %>
-    <h1>表示範囲：<%= @results.minimum(:date) %>（<%= days[@results.minimum(:date).wday] %>）〜<%= @results.maximum(:date) %>（<%= days[@results.maximum(:date).wday] %>）</h1>
+    <h1>全体売上　表示範囲：<%= @results.minimum(:date) %>（<%= days[@results.minimum(:date).wday] %>）〜<%= @results.maximum(:date) %>（<%= days[@results.maximum(:date).wday] %>）</h1>
     <h1>中部　訪問員<%= chubu_shift.length %>人</h1>
         <table>
             <tr>

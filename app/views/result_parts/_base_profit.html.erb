@@ -1,317 +1,39 @@
-  <%# 基準値一覧（営業マン別） %>
-    <div>
-    <h1>基準値一覧</h1>
-  <%# キャッシュレス中部 %>
-          <table >
-            <tr >
-              <th ><%= Date.today.month %>月早見表</th>
-              <th >中部キャッシュレス</th>
-            </tr>
-            <tr >
-              <th >担当</th>
-            <% @chubu_cash.group(:user_id).each do |c| %>
-              <th ><%= c.user.team %></th>
-            <% end %>
-            </tr>
-            <tr >
-              <th >名前</th>
-            <% @chubu_cash.group(:user_id).each do |c| %>
-              <th ><%= c.user.name %></th>
-            <% end %>
-            </tr>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+    <h1>
+    <% @results.each do |r| %>
+      <%= base_name = r.user.base %>
+      <% break %>
+      <% end %>
+      （稼働訪問員<%= @results.group(:user_id).length %>人）
+      表示範囲：
+      <%= @results.minimum(:date) %>（<%= days[@results.minimum(:date).wday] %>）〜<%= @results.maximum(:date) %>（<%= days[@results.maximum(:date).wday] %>）
+    </h1>
+  <table>
+    <tr>
+      <th class="th-head" rowspan="2">名前</th>
+      <th class="th-head" rowspan="2">合計売上</th>
+      <th class="th-head" rowspan="2">平均売上</th>
+      <th class="th-head" colspan="4">基準値</th>
+    </tr>
+    <tr>
+      <th class="th-head">訪問</th>
+      <th class="th-head">対面</th>
+      <th class="th-head">フル</th>
+      <th class="th-head">獲得</th>
+    </tr>
+      <% @results.group(:user_id).each do |r| %>
+    <tr>
+      <% result_value = @results.where(user_id: r.user.id).where.not(shift: "キャッシュレス決済").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "フェムト（設置）").where.not(shift: "欠勤").where.not(shift: "休み") %>
+      <% result_profit = @results.where(user_id: r.user.id).where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "欠勤").where.not(shift: "休み") %>
+        <th class="th-head"><%= r.user.name %></th>
+        <td ><%= result_profit.sum(:profit).to_s(:delimited)  %></td>
+        <td ><%= result_profit.average(:profit).round().to_s(:delimited) %></td>
+        <td ><%= result_value.average("first_visit + latter_visit").round().to_s(:delimited) %></td>
+        <td ><%= result_value.average("first_interview + latter_interview").round().to_s(:delimited) %></td>
+        <td ><%= result_value.average("first_full_talk + latter_full_talk").round().to_s(:delimited) %></td>
+        <td ><%= result_value.average("first_get + latter_get").round().to_s(:delimited) %></td>
+      
 
-            <tr >
-              <th >現状売上</th>
-            <% @chubu_cash.group(:user_id).sum(:profit).each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-
-            <tr >
-              <th >平均売上</th>
-            <% @chubu_cash.group(:user_id).average(:profit).each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均訪問数</th>
-            <% @chubu_cash.group(:user_id).average("first_visit + latter_visit").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均対面数</th>
-            <% @chubu_cash.group(:user_id).average("first_interview + latter_interview").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均フル数</th>
-            <% @chubu_cash.group(:user_id).average("first_full_talk + latter_full_talk").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均獲得数</th>
-            <% @chubu_cash.group(:user_id).average("first_get + latter_get").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-
-            <tr >
-              <th >dメル獲得合計</th>
-            <% @chubu_cash.group(:user_id).sum(:dmer).each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >dメル獲得平均</th>
-            <% @chubu_cash.group(:user_id).average(:dmer).each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >aupay獲得合計</th>
-            <% @chubu_cash.group(:user_id).sum(:aupay).each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >aupay獲得平均</th>
-            <% @chubu_cash.group(:user_id).average(:aupay).each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >予定シフト数</th>
-            <% @chubu_cash.group(:user_id).each do |c| %>
-              <% @shifts.each do |s| %>
-              <% if c.user_id == s.user_id && s.year == Date.today.year && s.month == Date.today.month %>
-              <td class="result-ptd"><%= s.cashless_new %></td>
-              <% end %>
-              
-              <% end %>
-            <% end %>
-            </tr>
-            <tr >
-              <th >消化シフト数</th>
-            <% @chubu_cash.group(:user_id).count.each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-          </table>
-        <%# 中部フェムト %>
-        <%# キャッシュレス関西 %>
-          <table >
-            <tr >
-              <th ><%= Date.today.month %>月早見表</th>
-              <th >関西キャッシュレス</th>
-            </tr>
-            <tr >
-              <th >担当</th>
-            <% @kansai_cash.group(:user_id).each do |c| %>
-              <th ><%= c.user.team %></th>
-            <% end %>
-            </tr>
-            <tr >
-              <th >名前</th>
-            <% @kansai_cash.group(:user_id).each do |c| %>
-              <th ><%= c.user.name %></th>
-            <% end %>
-            </tr>
-
-            <tr >
-              <th >現状売上</th>
-            <% @kansai_cash.group(:user_id).sum(:profit).each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均売上</th>
-            <% @kansai_cash.group(:user_id).average(:profit).each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均訪問数</th>
-            <% @kansai_cash.group(:user_id).average("first_visit + latter_visit").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均対面数</th>
-            <% @kansai_cash.group(:user_id).average("first_interview + latter_interview").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均フル数</th>
-            <% @kansai_cash.group(:user_id).average("first_full_talk + latter_full_talk").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均獲得数</th>
-            <% @kansai_cash.group(:user_id).average("first_get + latter_get").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-
-            <tr >
-              <th >dメル獲得合計</th>
-            <% @kansai_cash.group(:user_id).sum(:dmer).each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >dメル獲得平均</th>
-            <% @kansai_cash.group(:user_id).average(:dmer).each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >aupay獲得合計</th>
-            <% @kansai_cash.group(:user_id).sum(:aupay).each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >aupay獲得平均</th>
-            <% @kansai_cash.group(:user_id).average(:aupay).each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >予定シフト数</th>
-            <% @kansai_cash.group(:user_id).each do |c| %>
-              <% @shifts.each do |s| %>
-              <% if c.user_id == s.user_id && s.year == Date.today.year && s.month == Date.today.month %>
-              <td class="result-ptd"><%= s.cashless_new %></td>
-              <% end %>
-              
-              <% end %>
-            <% end %>
-            </tr>
-            <tr >
-              <th >消化シフト数</th>
-            <% @kansai_cash.group(:user_id).count.each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-          </table>
-        <%# 関西サミット %>
-        <%# 関西フェムト %>
-        <%# 東京キャッシュレス・パンダ %>
-          <table >
-            <tr >
-              <th ><%= Date.today.month %>月早見表</th>
-              <th >東京キャッシュ・パンダ</th>
-            </tr>
-            <tr >
-              <th >担当</th>
-            <% @tokyo_cash.group(:user_id).each do |c| %>
-              <th ><%= c.user.team %></th>
-            <% end %>
-            </tr>
-            <tr >
-              <th >名前</th>
-            <% @tokyo_cash.group(:user_id).each do |c| %>
-              <th ><%= c.user.name %></th>
-            <% end %>
-            </tr>
-
-            <tr >
-              <th >現状売上</th>
-            <% @tokyo_cash.group(:user_id).sum(:profit).each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均売上</th>
-            <% @tokyo_cash.group(:user_id).average(:profit).each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均訪問数</th>
-            <% @tokyo_cash.group(:user_id).average("first_visit + latter_visit").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均対面数</th>
-            <% @tokyo_cash.group(:user_id).average("first_interview + latter_interview").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr>
-              <th >平均フル数</th>
-            <% @tokyo_cash.group(:user_id).average("first_full_talk + latter_full_talk").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >平均獲得数</th>
-            <% @tokyo_cash.group(:user_id).average("first_get + latter_get").each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-
-            <tr >
-              <th >dメル獲得合計</th>
-            <% @tokyo_cash.group(:user_id).sum(:dmer).each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >dメル獲得平均</th>
-            <% @tokyo_cash.group(:user_id).average(:dmer).each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >aupay獲得合計</th>
-            <% @tokyo_cash.group(:user_id).sum(:aupay).each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >aupay獲得平均</th>
-            <% @tokyo_cash.group(:user_id).average(:aupay).each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >パンダ獲得合計</th>
-            <% @tokyo_cash.group(:user_id).sum(:panda).each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >パンダ獲得平均</th>
-            <% @tokyo_cash.group(:user_id).average(:panda).each do |c| %>
-              <td class="result-ptd"><%= c[1].round(1) %></td>
-            <% end %>
-            </tr>
-            <tr >
-              <th >予定シフト数</th>
-            <% @tokyo_cash.group(:user_id).each do |c| %>
-              <% @shifts.each do |s| %>
-              <% if c.user_id == s.user_id && s.year == Date.today.year && s.month == Date.today.month %>
-              <td class="result-ptd"><%= s.cashless_new + s.panda %></td>
-              <% end %>
-              
-              <% end %>
-            <% end %>
-            </tr>
-            <tr >
-              <th >消化シフト数</th>
-            <% @tokyo_cash.group(:user_id).count.each do |c| %>
-              <td class="result-ptd"><%= c[1] %></td>
-            <% end %>
-            </tr>
-          </table>
-        <%# 東京サミット %>
-        <%# 東京フェムト %>
-      </div>
-    </div>
+    </tr>
+      <% end %>
+  </table>

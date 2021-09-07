@@ -43,15 +43,18 @@
       <% end %>
     <% else %>
     <% if @results.joins(:user).preload(:user).group(:base).length >= 2 %>
-      <%= render "result_parts/month_gain" %>
-    <% elsif @results.group(:user_id).length != 1 %>
-      <h1 class="warning">※訪問員の名前を入力してください,もしくは対象訪問員が複数います。</h1>
-      <h1>表示可能な訪問員</h1>
-      <% @results.group("MONTH('date')").group(:user_id).each do |result| %>
-        <h1>・<%= result.user.name %></h1>
-      <% end %>
+      <%= render "result_parts/all_profit" %>
+    <% elsif @results.group(:user_id).length >= 2 && @results.joins(:user).preload(:user).group(:base).length == 1 %>
+      <%= render "result_parts/base_profit" %>
+
     <% else %>
       <%= render "result_parts/profit_table" %>
     <% end %>
 <% end %>
 </div>
+
+      <%# @results.group("MONTH('date')").group(:user_id).each do |result| %>
+        <%# <h1>・<%= result.user.name</h1> %>
+      <%# end %>
+            <%# <h1 class="warning">※訪問員の名前を入力してください,もしくは対象訪問員が複数います。</h1> %>
+      <%# <h1>表示可能な訪問員</h1> %>

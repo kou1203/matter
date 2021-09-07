@@ -48,10 +48,6 @@
       </table>
     <% end %>
       <hr>
-      
-    <div>
-
-    </div>
       <div class="warning"><%= alert %></div>
       <% if @dmers.empty? %>
       <% else %>
@@ -68,6 +64,9 @@
     <div style="display: flex;">
       <table class="status-tb">
         <tr>
+          <th colspan="6" class="search">獲得ステータス</th>
+        </tr>
+        <tr>
           <th class="search">獲得件数</th>
           <th class="search">入金待ち</th>
           <th class="search">審査待ち</th>
@@ -83,14 +82,18 @@
           <td ><%= hubi + client_hubi %></td>
           <td ><%= @dmers.where(status: '自社NG' ).length + @dmers.where(status: '上位店NG' ).length %></td>
         </tr>
+        <tr>
+          <th colspan="4" class="search">決済内訳</th>
+          <th colspan="3" class="search">不備内訳</th>
+        </tr>
         <tr >
           <th class="search">決済対象</th>
           <th class="search">決済完了</th>
           <th class="search">決済期限切れ件数</th>
-          <th class="search">決済完了率</th>
+          <th class="search">決済完了率（決済完了÷決済対象）</th>
           <th class="search">自社不備</th>
           <th class="search">上位店不備</th>
-          <th class="search">不備率</th>
+          <th class="search">不備率（不備率÷獲得数）</th>
         </tr>
 
         <tr >
@@ -102,11 +105,14 @@
           <td ><%= client_hubi %></td>
           <td ><%= number_to_percentage( (hubi + client_hubi).to_f / @dmers.length.to_f * 100, precision: 1) rescue "-" %></td>
         </tr>
+        <tr>
+          <th colspan="4" class="search">NG内訳</th>
+        </tr>
         <tr >
           <th class="search">上位店NG</th>
           <th class="search">自社NG</th>
           <th class="search">申込取消</th>
-          <th class="search">上位店NG率</th>
+          <th class="search">NG率（NG率÷獲得数）</th>
         </tr>
         <tr >
           <td ><%= ng %></td>
