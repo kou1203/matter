@@ -30,6 +30,11 @@ set :rbenv_ruby, '2.6.5'
 # 出力するログのレベル。
 set :log_level, :debug
 
+set :default_env, {
+    PATH: '$HOME/.nvm/versions/node/v14.15.4/bin/:$PATH',
+    NODE_ENVIRONMENT: 'production'
+}
+
 # デプロイのタスク
 namespace :deploy do
 
