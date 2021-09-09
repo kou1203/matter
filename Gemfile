@@ -46,9 +46,9 @@ group :development do
   gem 'capistrano-rbenv'
 end
 
-group :production, :staging do
-  gem 'unicorn'
-end
+# group :production, :staging do
+#   gem 'unicorn'
+# end
 
 platforms :ruby do
   gem 'unicorn'
