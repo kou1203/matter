@@ -6,7 +6,7 @@ set :application, "matter"
 
 # cloneするgitのレポジトリ
 # 1-3で設定したリモートリポジトリのurl
-set :repo_url, 'git@github.com:kou1203/gain.git'
+set :repo_url, 'git@github.com:kou1203/matter.git'
 
 # deployするブランチ。デフォルトはmasterなのでなくても可。
 set :branch, 'master'
