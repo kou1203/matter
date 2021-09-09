@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '2.6.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.0'
+gem 'rails', '~> 6.1.3.1'
 # Use mysql as the database for Active Record
 gem 'mysql2', '>= 0.4.4'
 # Use Puma as the app server
@@ -46,6 +46,10 @@ group :development do
   gem 'capistrano-rbenv'
 end
 
+group :production, :staging do
+  gem 'unicorn'
+end
+
 platforms :ruby do
   gem 'unicorn'
 end
@@ -74,3 +78,5 @@ gem 'rails-i18n'
 gem 'chartkick'
 
 gem 'lazy_high_charts'
+
+gem 'mimemagic','~>0.4.3'
