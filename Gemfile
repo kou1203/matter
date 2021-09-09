@@ -46,13 +46,13 @@ group :development do
   gem 'capistrano-rbenv'
 end
 
-# group :production, :staging do
-#   gem 'unicorn'
-# end
-
-platforms :ruby do
+group :production do
   gem 'unicorn'
 end
+
+# platforms :ruby do
+#   gem 'unicorn'
+# end
 
 group :test do
   # Adds support for Capybara system testing and selenium driver
