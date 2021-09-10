@@ -46,10 +46,6 @@ group :development do
   gem 'capistrano-rbenv'
 end
 
-group :production do
-  gem 'unicorn'
-end
-
 # platforms :ruby do
 #   gem 'unicorn'
 # end
@@ -80,3 +76,7 @@ gem 'chartkick'
 gem 'lazy_high_charts'
 
 gem 'mimemagic','~>0.4.3'
+
+group :production do
+  gem 'unicorn'
+end
