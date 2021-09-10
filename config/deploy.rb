@@ -38,6 +38,16 @@ namespace :deploy do
   task :restart do
     invoke 'unicorn:restart'
   end
+  # 試しに追加
+  Rake::Task["deploy:symlink:release"].clear
+  namespace :symlink do
+    desc 'Symlink release to current'
+    task :release do
+      on release_roles :all do
+        execute :ln, '-s', release_path, current_path
+      end
+    end
+  end
 
   # データベースの作成
   desc 'Create database'
