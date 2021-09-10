@@ -78,5 +78,5 @@ gem 'lazy_high_charts'
 gem 'mimemagic','~>0.4.3'
 
 group :production do
-  gem 'unicorn'
+  gem 'unicorn', '5.4.1'
 end
