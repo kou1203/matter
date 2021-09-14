@@ -7,21 +7,17 @@
         <%= search_form_for @q do |f| %>
           <table>
           <tr>
-          <th class="search-th">日付（年）</th>
-          <th class="search-th">日付（月）</th>
+            <th class="search-th">日付（年）</th>
+            <th class="search-th">日付（月）</th>
+            <th class="search-th">チーム</th>
+            <th class="search-th">拠点①</th>
+            <th class="search-th">拠点②</th>
+            <th class="search-th">ステータス</th>
+            <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
           </tr>
           <tr>
           <td><%= f.select :year_eq, options_from_collection_for_select(Shift.select(:year).distinct, :year, :year), {} ,{class: "input"} %></td>
           <td><%= f.select :month_eq, options_from_collection_for_select(Shift.select(:month).distinct, :month, :month),{}, {class: "input"} %></td>
-          </tr>
-          <tr>
-          <th class="search-th">チーム</th>
-          <th class="search-th">拠点①</th>
-          <th class="search-th">拠点②</th>
-          <th class="search-th">ステータス</th>
-          <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
-          </tr>
-          <tr>
           <td><%= f.select :user_team_eq, options_from_collection_for_select(User.select(:team).distinct, :team, :team), {include_blank: true} ,{class: "input"} %></td>
           <td><%= f.select :user_base_eq, options_from_collection_for_select(User.select(:base).distinct, :base, :base), {include_blank: true} ,{class: "input"} %></td>
           <td><%= f.select :user_base_sub_eq, options_from_collection_for_select(User.select(:base_sub).distinct, :base_sub, :base_sub), {include_blank: true} ,{class: "input"} %></td>
