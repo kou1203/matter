@@ -29,4 +29,5 @@ window.addEventListener('turbolinks:load', function(){
       pullDownParents3.setAttribute("style", "display:block;")
     }
   })
+
 })

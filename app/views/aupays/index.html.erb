@@ -14,13 +14,13 @@
     <%= search_form_for @q do |f| %>
       <table>
         <tr >
-          <th class="search" colspan="2">獲得日付</th>
-          <th class="search" colspan="2">初回決済日</th>
-          <th class="search" colspan="2">決済期限</th>
+          <th class="search-th" colspan="2">獲得日付</th>
+          <th class="search-th" colspan="2">初回決済日</th>
+          <th class="search-th" colspan="2">決済期限</th>
         </tr>
         <tr>
-          <td ><%= f.date_field :date_gteq, class: "date-input" %>~</td>
-          <td ><%= f.date_field :date_lteq, class: "date-input" %></td>
+          <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
+          <td ><%= f.date_field :date_lteq, class: "input" %></td>
           <td ><%= f.date_field :settlement_gteq, class: "input" %>~</td>
           <td ><%= f.date_field :settlement_lteq, class: "input" %></td>
           <td ><%= f.date_field :settlement_deadline_gteq, class: "input" %>~</td>
@@ -30,11 +30,11 @@
 
       <table >
         <tr >
-          <th class="search">申し込み番号</th>
-          <th class="search">獲得者</th>
-          <th class="search">審査ステータス</th>
-          <th class="search">決済ステータス</th>
-          <th class="search">商流</th>
+          <th class="search-th">申し込み番号</th>
+          <th class="search-th">獲得者</th>
+          <th class="search-th">審査ステータス</th>
+          <th class="search-th">決済ステータス</th>
+          <th class="search-th">商流</th>
           <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
         </tr>
         <tr >
@@ -64,65 +64,62 @@
     <div style="display: flex;">
       <table class="status-tb">
         <tr>
-          <th colspan="6" class="search">獲得ステータス</th>
+          <th colspan="6" class="search-th">獲得ステータス</th>
+          <th colspan="4" class="search-th">決済内訳</th>
         </tr>
         <tr>
-          <th class="search">獲得件数</th>
-          <th class="search">入金待ち</th>
-          <th class="search">審査待ち</th>
-          <th class="search">複数追加</th>
-          <th class="search">不備</th>
-          <th class="search">NG</th>
+          <th class="search-th">　　　　獲得件数　　　　</th>
+          <th class="search-th">　　　　入金待ち　　　　</th>
+          <th class="search-th">　　　　審査待ち　　　　</th>
+          <th class="search-th">　　　　複数追加　　　　</th>
+          <th class="search-th">　　　　不備　　　　</th>
+          <th class="search-th">NG</th>
+          <th class="search-th">　　　　決済対象　　　　</th>
+          <th class="search-th">　　　　決済完了　　　　</th>
+          <th class="search-th">　　　　決済期限切れ件数　　　　</th>
+          <th class="search-th">決済完了率（決済完了÷決済対象）</th>
         </tr>
         <tr>
-          <td ><%= @aupays.length %></td>
-          <td ><%= @aupays.where(status: '入金待ち' ).length %></td>
-          <td ><%= @aupays.where(status: '審査待ち').length %></td>
-          <td ><%= @aupays.where(status: '複数追加' ).length %></td>
-          <td ><%= hubi + client_hubi %></td>
-          <td ><%= @aupays.where(status: '自社NG' ).length + @aupays.where(status: '上位店NG' ).length %></td>
+          <td class="search-td"><%= @aupays.length %></td>
+          <td class="search-td"><%= @aupays.where(status: '入金待ち' ).length %></td>
+          <td class="search-td"><%= @aupays.where(status: '審査待ち').length %></td>
+          <td class="search-td"><%= @aupays.where(status: '複数追加' ).length %></td>
+          <td class="search-td"><%= hubi + client_hubi %></td>
+          <td class="search-td"><%= @aupays.where(status: '自社NG' ).length + @aupays.where(status: '上位店NG' ).length %></td>
+          <td class="search-td"><%= settlement_subject %></td>
+          <td class="search-td"><%= settlement_done %></td>
+          <td class="search-td"><%= settlement_expired %></td>
+          <td class="search-td"><%= number_to_percentage(settlement_done.to_f / settlement_subject.to_f * 100, precision: 1) rescue "-" %></td>
         </tr>
         <tr>
-          <th colspan="4" class="search">決済内訳</th>
-          <th colspan="3" class="search">不備内訳</th>
+          
+          <th colspan="3" class="search-th">不備内訳</th>
+          <th colspan="4" class="search-th">NG内訳</th>
         </tr>
         <tr >
-          <th class="search">決済対象</th>
-          <th class="search">決済完了</th>
-          <th class="search">決済期限切れ件数</th>
-          <th class="search">決済完了率（決済完了÷決済対象）</th>
-          <th class="search">自社不備</th>
-          <th class="search">上位店不備</th>
-          <th class="search">不備率（不備率÷獲得数）</th>
+
+          <th class="search-th">自社不備</th>
+          <th class="search-th">上位店不備</th>
+          <th class="search-th">不備率（不備率÷獲得数）</th>
+          <th class="search-th">上位店NG</th>
+          <th class="search-th">自社NG</th>
+          <th class="search-th">申込取消</th>
+          <th class="search-th">NG率（NG率÷獲得数）</th>
         </tr>
 
         <tr >
-          <td><%= settlement_subject %></td>
-          <td ><%= settlement_done %></td>
-          <td ><%= settlement_expired %></td>
-          <td ><%= number_to_percentage(settlement_done.to_f / settlement_subject.to_f * 100, precision: 1) rescue "-" %></td>
-          <td ><%= hubi %></td>
-          <td ><%= client_hubi %></td>
-          <td ><%= number_to_percentage( (hubi + client_hubi).to_f / @aupays.length.to_f * 100, precision: 1) rescue "-" %></td>
+          <td class="search-td"><%= hubi %></td>
+          <td class="search-td"><%= client_hubi %></td>
+          <td class="search-td"><%= number_to_percentage( (hubi + client_hubi).to_f / @aupays.length.to_f * 100, precision: 1) rescue "-" %></td>
+          <td class="search-td"><%= ng %></td>
+          <td class="search-td"><%= client_ng %></td>
+          <td class="search-td"><%= cancel %></td>
+          <td class="search-td"><%= number_to_percentage( (ng + client_ng + cancel).to_f / @aupays.length.to_f * 100, precision: 1) rescue "-" %></td>
         </tr>
-        <tr>
-          <th colspan="4" class="search">NG内訳</th>
-        </tr>
-        <tr >
-          <th class="search">上位店NG</th>
-          <th class="search">自社NG</th>
-          <th class="search">申込取消</th>
-          <th class="search">NG率（NG率÷獲得数）</th>
-        </tr>
-        <tr >
-          <td ><%= ng %></td>
-          <td ><%= client_ng %></td>
-          <td ><%= cancel %></td>
-          <td ><%= number_to_percentage( (ng + client_ng + cancel).to_f / @aupays.length.to_f * 100, precision: 1) rescue "-" %></td>
-        </tr>
+
       </table>
       <div>
-      <h2>ステータス比率</h2>
+      <h2 style="margin-top: 8px;">ステータス比率</h2>
         <%= pie_chart @aupays.group(:status).count, width:'400px' %>
       </div>
     </div>

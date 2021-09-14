@@ -132,12 +132,15 @@
       <td ><%= @dmer.valuation_settlement %></td>
     </tr>
 
-    <tr >
+    <% if current_user.position == "権限①" %>
+    <tr>
       <th >実売上（新規）</th>
       <td ><%= @dmer.profit_new %></td>
       <th >実売上（決済）</th>
       <td ><%= @dmer.profit_settlement %></td>
     </tr>
+    <% else %>
+    <% end %>
     </table>
   </main>
 </div>

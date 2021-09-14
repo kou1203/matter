@@ -10,22 +10,22 @@
     </h1>
   <table>
     <tr>
-      <th class="th-head" rowspan="2">名前</th>
-      <th class="th-head" rowspan="2">合計売上</th>
-      <th class="th-head" rowspan="2">平均売上</th>
-      <th class="th-head" colspan="4">基準値</th>
+      <th class="search-th" rowspan="2" >名前</th>
+      <th class="search-th" rowspan="2">合計売上</th>
+      <th class="search-th" rowspan="2">平均売上</th>
+      <th class="search-th" colspan="4">基準値</th>
     </tr>
     <tr>
-      <th class="th-head">訪問</th>
-      <th class="th-head">対面</th>
-      <th class="th-head">フル</th>
-      <th class="th-head">獲得</th>
+      <th class="search-th">訪問</th>
+      <th class="search-th">対面</th>
+      <th class="search-th">フル</th>
+      <th class="search-th">獲得</th>
     </tr>
       <% @results.group(:user_id).each do |r| %>
     <tr>
       <% result_value = @results.where(user_id: r.user.id).where.not(shift: "キャッシュレス決済").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "フェムト（設置）").where.not(shift: "欠勤").where.not(shift: "休み") %>
       <% result_profit = @results.where(user_id: r.user.id).where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "欠勤").where.not(shift: "休み") %>
-        <th class="th-head"><%= r.user.name %></th>
+        <td class="th-head"><%= r.user.name %></td>
         <td ><%= result_profit.sum(:profit).to_s(:delimited)  %></td>
         <td ><%= result_profit.average(:profit).round().to_s(:delimited) %></td>
         <td ><%= result_value.average("first_visit + latter_visit").round().to_s(:delimited) %></td>

@@ -13,11 +13,11 @@
         <th><%= f.label :position, "権限",class: "form-text" %></th>
         <th></th>
       </tr>
-        <td><%= f.select :base, {"中部SS": "中部SS", "関西SS": "関西SS","関東SS": "関東SS","中部N": "中部N","関西N": "関西N" } ,{}, {class: "form-input"} %></td>
+        <td><%= f.select :base, {"中部SS": "中部SS", "関西SS": "関西SS","関東SS": "関東SS","中部N": "中部N","関西N": "関西N"} ,{}, {class: "form-input"} %></td>
         <td><%= f.select :base_sub, {"キャッシュレス": "キャッシュレス", "サミット": "サミット", "パンダ": "パンダ", "フェムト": "フェムト" }, {include_blank: true}, {class: "form-input"} %></td>
         <td><%= f.text_field :group ,class: "form-input" %></td>
         <td><%= f.text_field :team ,class: "form-input" %></td>
-        <td><%= f.select :position, {"なし": "なし", "権限①": "権限①", "権限②": "権限②"}, {include_blank: true}, {class: "form-input"}  %></td>
+        <td><%= f.select :position, {"なし": "なし", "権限①": "権限①", "権限②": "権限②","退職": "退職"  }, {include_blank: true}, {class: "form-input"}  %></td>
       </tr>
     </table>
     <%= f.submit "登録", class: "submit-btn" %>

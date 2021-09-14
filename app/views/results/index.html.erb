@@ -23,8 +23,8 @@
         <td class="result"><%= f.submit "絞込み" , class: "result-btn" %></td>
       </tr>
       <tr>
-        <td class="search-td"><%= f.select :user_base_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(base: "退職").select(:base).distinct, :base, :base), {prompt: "全拠点"},{class: "input"} %></td>
-        <td class="search-td"><%= f.select :user_base_sub_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(base: "退職").select(:base_sub).distinct, :base_sub, :base_sub), {prompt: "全拠点"},{class: "input"} %></td>
+        <td class="search-td"><%= f.select :user_base_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base).distinct, :base, :base), {prompt: "全拠点"},{class: "input"} %></td>
+        <td class="search-td"><%= f.select :user_base_sub_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base_sub).distinct, :base_sub, :base_sub), {prompt: "全拠点"},{class: "input"} %></td>
         <td class="search-td"><%= f.text_field :user_name_cont, class: "input" %></td>
         <td class="search-td"><%= f.select :shift_eq, options_from_collection_for_select(Result.select(:shift).distinct, :shift, :shift), {include_blank: true,prompt: "全商材"},{class: "input"} %></td>
 
