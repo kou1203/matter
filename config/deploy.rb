@@ -67,12 +67,6 @@ namespace :deploy do
     end
   end
 
-  #cleacupのオーバーライド
-  task :cleanup, :except => {:no_release => true} do
-    count = fetch(:keep_releases, 5).to_i
-    run "ls -1dt #{releases_path}/* | tail -n +#{count + 1} | #{sudo :as => 'root'} xargs rm -rf"
-  end
-
   after :publishing, :restart
 
   after :restart, :clear_cache do
