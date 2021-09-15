@@ -73,8 +73,6 @@ gem 'rails-i18n'
 
 gem 'chartkick'
 
-gem 'lazy_high_charts'
-
 gem 'mimemagic','~>0.4.3'
 
 group :production do
