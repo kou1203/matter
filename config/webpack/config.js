@@ -1,0 +1,13 @@
+module.exports = {
+  module: {
+   //...
+  },
+  plugins: [
+   //...
+  ],
+  output: {
+   //...
+  },
+  // ...
+  performance: { hints: false } // これ
+}
