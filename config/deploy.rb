@@ -21,7 +21,7 @@ set :linked_files, fetch(:linked_files, []).push('config/secrets.yml')
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
 
 # 保持するバージョンの個数(※後述)
-set :keep_releases, 7
+set :keep_releases, 3
 
 # rubyのバージョン
 # rbenvで設定したサーバー側のrubyのバージョン
@@ -32,7 +32,11 @@ set :log_level, :debug
 
 # デプロイのタスク
 namespace :deploy do
-
+  #cleacupのオーバーライド
+  task :cleanup, :except => {:no_release => true} do
+    count = fetch(:keep_releases, 5).to_i
+    run "ls -1dt #{releases_path}/* | tail -n +#{count + 1} | #{sudo :as => 'root'} xargs rm -rf"
+  end
   # unicornの再起動
   desc 'Restart application'
   task :restart do
