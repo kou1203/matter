@@ -21,7 +21,7 @@ set :linked_files, fetch(:linked_files, []).push('config/secrets.yml')
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
 
 # 保持するバージョンの個数(※後述)
-set :keep_releases, 3
+set :keep_releases, 7
 
 # rubyのバージョン
 # rbenvで設定したサーバー側のrubyのバージョン
