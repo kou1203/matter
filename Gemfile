@@ -78,3 +78,7 @@ gem 'mimemagic','~>0.4.3'
 group :production do
   gem 'unicorn', '5.4.1'
 end
+
+gem 'ed25519'
+
+gem 'bcrypt_pbkdf'
