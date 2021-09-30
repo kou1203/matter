@@ -54,6 +54,22 @@
           <td class="reg-td">登録済み</td>
         <% end %>
       </tr>
+      <tr>
+        <th class="st-insurance-th">少額短期保険</th>
+        <th class="st-insurance-th">楽天ペイ</th>
+      </tr>
+      <tr>
+        <% if @st_insurance.nil? %>
+          <td><%= link_to "新規登録", store_prop_st_insurances_new_path(@store_prop.id), class: "link" %></td>
+        <% else %>
+          <td class="reg-td"><%= link_to "登録済み/詳細", st_insurance_path(@store_prop.st_insurance.id),class: "link" %></td>
+        <% end %>
+        <% if @rakuten_pay.nil? %>
+          <td><%= link_to "新規登録", store_prop_rakuten_pays_new_path(@store_prop.id), class: "link" %></td>
+        <% else %>
+          <td class="reg-td"><%= link_to "登録済み/詳細", rakuten_pay_path(@store_prop.rakuten_pay.id),class: "link" %></td>
+        <% end %>
+      </tr>
     </table>
     <hr>
     <h1>店舗情報</h1>
@@ -71,7 +87,7 @@
         <% end %>
       </tr>
       <tr >
-        <th>属性</th>
+        <th>法人/個人</th>
         <td><%= @store_prop.race %></td>
         <th>業種</th>
         <td><%= @store_prop.industry %></td>

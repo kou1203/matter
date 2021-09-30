@@ -72,9 +72,9 @@
           <td ><%= casa_shift - digestion_casa %></td>
     </tr>
     <tr class="result-shit-tr">
-      <td>フェムト（設置）</td>
+      <td>楽天フェムト設置</td>
           <td ><%= casa_put_shift %></td>
-          <td ><%= digestion_casa_put = @results.where(shift: "フェムト（設置）").length %></td>
+          <td ><%= digestion_casa_put = @results.where(shift: "楽天フェムト設置").length %></td>
           <td ><%= casa_put_shift - digestion_casa_put %></td>
     </tr>
     <tr class="result-shit-tr">
@@ -119,7 +119,7 @@
       <th class="search-th">成約率</th>
       <th class="search-th">平均獲得数</th>
     </tr>
-      <% basic_results = @results.where.not(shift: "キャッシュレス決済").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "フェムト（設置）").where.not(shift: "欠勤").where.not(shift: "休み") %>
+      <% basic_results = @results.where.not(shift: "キャッシュレス決済").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "楽天フェムト設置").where.not(shift: "欠勤").where.not(shift: "休み") %>
       <% visit = basic_results.sum(:first_visit).to_f + basic_results.sum(:latter_visit).to_f %>
       <% interview = basic_results.sum(:first_interview).to_f + basic_results.sum(:latter_interview).to_f %>
       <% full_talk = basic_results.sum(:first_full_talk).to_f + basic_results.sum(:latter_full_talk).to_f %>
@@ -132,7 +132,7 @@
     <tr>
       <td class="search-td"><%= @results.where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "休み").where.not(shift: "欠勤").average(:profit).round().to_s(:delimited) rescue 0 %></td>
       <td ><%= @results.sum(:profit).to_s(:delimited) %></td>
-      <% if shift_sum == 0 %>
+      <% if shift_sum == 0 || shift_sum.empty? %>
       <td>シフトを入力してください</td>
       <% else %>
       <td ><%= (cash_ave * new_shift + settlement_ave * settlement_shift + panda_ave * panda_shift).to_s(:delimited) %></td>
@@ -350,7 +350,7 @@
         <% end %>
         <td class="search-td"><%= @results.where(shift: "フェムト").average(:rakuten_casa).round(1) %></td>
         <td class="search-td"><%= @results.where(shift: "フェムト").sum(:rakuten_casa).round(1) %></td>
-        <td class="search-td"><%= @results.where(shift: "フェムト（設置）").sum(:rakuten_casa_put).round(1) %></td>
+        <td class="search-td"><%= @results.where(shift: "楽天フェムト設置").sum(:rakuten_casa_put).round(1) %></td>
       </tr>
     <%# フェムト切り返し %>
       <tr>

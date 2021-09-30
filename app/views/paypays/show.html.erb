@@ -10,6 +10,7 @@
     <tr>
     <th>店舗名</th>
     <td><%= @paypay.store_prop.name %></td>
+    <th colspan="2"></th>
     </tr>
     <th>属性</th>
     <td><%= @paypay.store_prop.race %></td>
@@ -37,14 +38,14 @@
         </tr>
         <th>好適時間</th>
         <td><%= @paypay.store_prop.suitable_time %></td>
+        <th colspan="2"></th>
         <tr>
         <th>備考</th>
-        <td><%= @paypay.store_prop.description %></td>
+        <td colspan=2><%= @paypay.store_prop.description %></td>
         <td> <%= link_to "編集", edit_store_prop_path(@paypay.store_prop.id), class: "link" %></td>
       </tr>
     </table>
     <h1>PayPay情報</h1>
-      
     <table>
     <tr>
     <th>獲得日</th>
@@ -55,7 +56,8 @@
     <tr>
       <th>商流</th>
       <td><%= @paypay.client %></td>
-      <th colspan="2"></th>
+      <th>上位店管理番号</th>
+      <td><%= @paypay.customer_num %></td>
     </tr>
     <tr>
       <th>審査ステータス</th>
@@ -64,9 +66,23 @@
       <td><%= @paypay.status_update %></td>
     </tr>
     <tr>
+      <th>不備発生日</th>
+      <td><%= @paypay.deficiency %></td>
+      <th>不備解消日</th>
+      <td><%= @paypay.deficiency_solution %></td>
+    </tr>
+    <tr>
+      <th colspan="3"></th>
+      <td><%= link_to "編集", edit_paypay_path, class: "link" %></td>
+    </tr>
+  </table>
+  <h1>売上/評価地点</h1>
+  <table>
+    <tr>
+      <th>上位店連携日</th>
+      <td><%= @paypay.result_point %></td>
       <th>入金日</th>
       <td><%= @paypay.payment %></td>
-      <td><%= link_to "編集", edit_paypay_path, class: "link" %></td>
     </tr>
     <tr>
       <th>評価売上</th>

@@ -1,0 +1,94 @@
+<div data-scope-path="st_insurances/show">
+  <h1>少額短期保険詳細</h1>
+  <%= render "shared/header" %>
+  
+  
+    <table>
+    <tr>
+    <th colspan="4">店舗情報</th>
+    </tr>
+    <tr>
+    <th>店舗名</th>
+    <td><%= @st_insurance.store_prop.name %></td>
+    <th colspan="2"></th>
+    </tr>
+    <th>属性</th>
+    <td><%= @st_insurance.store_prop.race %></td>
+    <th>業種</th>
+    <td><%= @st_insurance.store_prop.industry %></td>
+    </tr>
+    <tr>
+    <th>店舗代表</th>
+    <td><%= @st_insurance.store_prop.person_main_name %></td>
+    <th>店舗担当</th>
+    <td><%= @st_insurance.store_prop.person_sub_name %></td>
+    </tr>
+    <tr>
+    <th>店舗住所</th>
+    <td colspan="3"><%= @st_insurance.store_prop.prefecture %><%= @st_insurance.store_prop.city %><%= @st_insurance.store_prop.municipalities %><%= @st_insurance.store_prop.address %><%= @st_insurance.store_prop.building_name %></td>
+    </tr>
+    </table>
+    <h1>連絡先</h1>
+    <table>
+      <tr>
+        <th>電話番号1</th>
+        <td><%= @st_insurance.store_prop.phone_number_1 %></td>
+        <th>電話番号2</th>
+        <td><%= @st_insurance.store_prop.phone_number_2 %></td>
+        </tr>
+        <th>好適時間</th>
+        <td><%= @st_insurance.store_prop.suitable_time %></td>
+        <th colspan="2"></th>
+        <tr>
+        <th>備考</th>
+        <td colspan=2><%= @st_insurance.store_prop.description %></td>
+        <td> <%= link_to "編集", edit_store_prop_path(@st_insurance.store_prop.id), class: "link" %></td>
+      </tr>
+    </table>
+    <h1>少額短期保険情報</h1>
+    <table>
+    <tr>
+      <th>獲得日</th>
+      <td><%= @st_insurance.date %></td>
+      <th>獲得者</th>
+      <td><%= @st_insurance.user.name %></td>
+    </tr>
+    <tr>
+      <th>商流</th>
+      <td><%= @st_insurance.client %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+      <th>審査ステータス</th>
+      <td><%= @st_insurance.status %></td>
+      <th>ステータス更新日</th>
+      <td><%= @st_insurance.status_update %></td>
+    </tr>
+    <tr>
+      <th>不備発生日</th>
+      <td><%= @st_insurance.deficiency %></td>
+      <th>不備解消日</th>
+      <td><%= @st_insurance.deficiency_solution %></td>
+    </tr>
+    <tr>
+      <th colspan="3"></th>
+      <td><%= link_to "編集", edit_st_insurance_path, class: "link" %></td>
+    </tr>
+  </table>
+  <h1>売上/評価地点</h1>
+  <table>
+    <tr>
+      <th>入金日</th>
+      <td><%= @st_insurance.payment %></td>
+      <th>上位店連携日</th>
+      <td><%= @st_insurance.result_point %></td>
+    </tr>
+    <tr>
+      <th>評価売上</th>
+      <td><%= @st_insurance.valuation %></td>
+      <th>実売上</th>
+      <td><%= @st_insurance.profit %></td>
+    </tr>
+    </table>
+</div>
+

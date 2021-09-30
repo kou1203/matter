@@ -1,0 +1,49 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="results/index">
+  <h1>キャッシュレス利益表</h1>
+  <%= render "shared/header" %>
+    <%# 検索フォーム %>
+      <%= search_form_for @q do |f| %>
+      <table >
+        <tr >
+          <th class="search-th">獲得月</th>
+          <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true} ,{class: "date-input"} %></td>
+          <th class="search-th">獲得期間</th>
+          <td><%= f.date_field :date_gteq, class: "input" %></td>
+          <td class="input" style="width:2px;">〜</td>
+          <td><%= f.date_field :date_lteq, class: "input" %></td>
+        </tr>
+      </table>
+      <table >
+      <tr>
+        <th class="search-th">拠点①</th>
+        <th class="search-th">拠点②</th>
+        <th class="search-th">訪問員</th>
+        <th class="search-th">商材</th>
+        <td class="result"><%= f.submit "絞込み" , class: "result-btn" %></td>
+      </tr>
+      <tr>
+        <td class="search-td"><%= f.select :user_base_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base).distinct, :base, :base), {prompt: "全拠点"},{class: "input"} %></td>
+        <td class="search-td"><%= f.select :user_base_sub_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base_sub).distinct, :base_sub, :base_sub), {prompt: "全拠点"},{class: "input"} %></td>
+        <td class="search-td"><%= f.text_field :user_name_cont, class: "input" %></td>
+        <td class="search-td"><%= f.select :shift_eq, options_from_collection_for_select(Result.select(:shift).distinct, :shift, :shift), {include_blank: true,prompt: "全商材"},{class: "input"} %></td>
+
+        <td class="reset"><%= link_to "絞込みリセット", result_cashes_path, class: "reset-link" %></td>
+
+      </tr>
+      </table>
+      <% end %>
+    <%# /検索フォーム %>
+    <hr>
+    <% if @results.empty? %>
+    <% else %>
+    <% if @results.joins(:user).preload(:user).group(:base).length >= 2 %>
+      <%= render "result_parts/all_profit" %>
+    <% elsif @results.group(:user_id).length >= 2 && @results.joins(:user).preload(:user).group(:base).length == 1 %>
+      <%= render "result_parts/base_profit" %>
+
+    <% else %>
+      <%= render "result_parts/profit_table" %>
+    <% end %>
+<% end %>
+</div>

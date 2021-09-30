@@ -20,6 +20,10 @@ Rails.application.routes.draw do
     post 'rakuten_casas/create'
     get 'trouble_sses/new'
     post 'trouble_sses/create'
+    get 'st_insurances/new'
+    post 'st_insurances/create'
+    get 'rakuten_pays/new'
+    post 'rakuten_pays/create'
     collection { post :import }
   end 
 
@@ -70,8 +74,15 @@ Rails.application.routes.draw do
   resources :panda_profits, only: :index
 
   resources :results do 
+    get 'result_cashes/new'
+    post 'result_cashes/create'
+    get 'result_rakuten_casas/new'
+    post 'result_rakuten_casas/create'
     collection { post :import }
   end  
+
+  resources :result_cashes, expect: [:new, :create]
+  resources :result_rakuten_casas, expect: [:new, :create]
   
   resources :n_results do 
     collection { post :import }
@@ -91,8 +102,14 @@ Rails.application.routes.draw do
     collection { post :import }
   end 
 
-  resources :costs 
+  resources :st_insurances ,expect: [:new, :create] do 
+    collection { post :import }
+  end 
 
-  resources :actual_profits
+  resources :rakuten_pays ,expect: [:new, :create] do 
+    collection { post :import }
+  end 
+  
+  resources :costs 
 
 end

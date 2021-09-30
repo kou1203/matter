@@ -75,15 +75,23 @@
       <th >新規ステータス更新日</th>
       <td ><%= @aupay.status_update %></td>
     </tr>
-    <tr >
+    <tr>
+      <th >不備発生日</th>
+      <td ><%= @aupay.deficiency %></td>
       <th >不備解消日</th>
       <td ><%= @aupay.deficiency_solution %></td>
+    <tr>
+    <tr >
       <th >不備解消期限</th>
       <td ><%= @aupay.deficiency_deadline %></td>
+      <th colspan="2"></th>
     </tr>
-    <tr>
       <th>不備詳細</th>
       <td colspan="3"><%= @aupay.deficiency_remarks %></td>
+    </tr>
+    </tr>
+      <th>備考</th>
+      <td colspan="3"><%= @aupay.description %></td>
     </tr>
   </table>
   <h1>決済情報</h1>
@@ -107,13 +115,25 @@
       <td ><%= @aupay.status_update_settlement %></td>
     </tr>
     <tr>
-      <th >備考</th>
-      <td colspan="2"><%= @aupay.description %></td>
+      <th >不備発生日</th>
+      <td ><%= @aupay.deficiency_settlement %></td>
+      <th >不備解消日</th>
+      <td ><%= @aupay.deficiency_solution_settlement %></td>
+    <tr>
+    <tr>
+      <th >不備詳細</th>
+      <td colspan="2"><%= @aupay.deficiency_remarks_settlement %></td>
       <td ><%= link_to "aupay情報編集", edit_aupay_path, class: "link" %></td>
     </tr>
   </table>
   <h1>入金日/利益</h1>
   <table>
+    <tr>
+      <th>審査完了日（新規）</th>
+      <td ><%= @aupay.result_point %></td>
+      <th>審査完了日（決済）</th>
+      <td ><%= @aupay.result_point_settlement %></td>
+    </tr>
     <tr>
       <th >入金日（新規）</th>
       <td ><%= @aupay.payment %></td>

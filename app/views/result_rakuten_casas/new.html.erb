@@ -1,0 +1,181 @@
+<div data-scope-path="result_rakuten_casas/new">
+  <h1>楽天フェムト（切り返し）</h1>
+  <%= render "shared/header" %>
+
+  <%= form_with model: @result_rakuten_casa,  class: "form-frame", local: true do |f| %>
+    <%= render "shared/error_messages", model: f.object %>
+    <%= f.hidden_field :result_id, value: @result.id %>
+    <h1>切り返し</h1>
+    <table>
+      <tr>
+        <th>
+          <%= f.label :ng_lack_info, "情報不足（NG）", class: "form-text" %>
+          <%= f.number_field :ng_lack_info, value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :busy_interview, "忙しい　対面", class: "form-text" %>
+          <%= f.number_field :busy_interview, value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :busy_full_talk, "忙しい　フル", class: "form-text" %>
+          <%= f.number_field :busy_full_talk, value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :busy_get, "忙しい　獲得", class: "form-text" %>
+          <%= f.number_field :busy_get, value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :dull_interview, "めんどくさい　対面", class: "form-text" %>
+          <%= f.number_field :dull_interview, value: 0 , class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :dull_full_talk, "めんどくさい　フル", class: "form-text" %>
+          <%= f.number_field :dull_full_talk, value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :dull_get, "めんどくさい　獲得", class: "form-text" %>
+          <%= f.number_field :dull_get , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :not_put_space_interview, "置く場所がない　対面", class: "form-text" %>
+          <%= f.number_field :not_put_space_interview , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :not_put_space_full_talk, "置く場所がない　フル", class: "form-text" %>
+          <%= f.number_field :not_put_space_full_talk , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :just_get_get, "置く場所がない　獲得", class: "form-text" %>
+          <%= f.number_field :just_get_get , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :no_merit_interview, "メリットない　対面", class: "form-text" %>
+          <%= f.number_field :no_merit_interview , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :no_merit_full_talk, "メリットない　フル", class: "form-text" %>
+          <%= f.number_field :no_merit_full_talk, value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :no_merit_get, "メリットない　獲得", class: "form-text" %>
+          <%= f.number_field :no_merit_get , class: "form-input", min: 0, value: 0 %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :distrust_interview, "不審　対面", class: "form-text" %>
+          <%= f.number_field :distrust_interview, value: 0 ,class: "form-input", min: 0,value: 0 %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :distrust_full_talk, "不審　フル", class: "form-text" %>
+          <%= f.number_field :distrust_full_talk , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :distrust_get, "不審　獲得", class: "form-text" %>
+          <%= f.number_field :distrust_get, value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :not_use_net_interview, "回線使われたくない　対面", class: "form-text" %>
+          <%= f.number_field :not_use_net_interview , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :not_use_net_full_talk, "回線使われたくない　フル", class: "form-text" %>
+          <%= f.number_field :not_use_net_full_talk, value: 0 ,class: "form-input", min: 0,value: 0 %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :not_use_net_get, "回線使われたくない　獲得", class: "form-text" %>
+          <%= f.number_field :not_use_net_get , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :not_need_interview, "結構です　対面", class: "form-text" %>
+          <%= f.number_field :not_need_interview, value: 0 ,class: "form-input", min: 0,value: 0 %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :not_need_full_talk, "結構です　フル", class: "form-text" %>
+          <%= f.number_field :not_need_full_talk , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :not_need_get, "結構です　獲得", class: "form-text" %>
+          <%= f.number_field :not_need_get, value: 0 ,class: "form-input", min: 0,value: 0 %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :easy_interview, "ぺろ　対面", class: "form-text" %>
+          <%= f.number_field :easy_interview , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :easy_full_talk, "ぺろ　フル", class: "form-text" %>
+          <%= f.number_field :easy_full_talk, value: 0 ,class: "form-input", min: 0,value: 0 %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :easy_get, "ぺろ　獲得", class: "form-text" %>
+          <%= f.number_field :easy_get , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :other_interview, "その他　対面", class: "form-text" %>
+          <%= f.number_field :other_interview , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :other_full_talk, "その他　フル", class: "form-text" %>
+          <%= f.number_field :other_full_talk, value: 0 ,class: "form-input", min: 0,value: 0 %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <%= f.label :other_get, "その他　獲得", class: "form-text" %>
+          <%= f.number_field :other_get , value: 0 ,class: "form-input" %>
+        </th>
+      </tr>
+    </table>
+    <%= f.submit "登録",data: { confirm: "登録してもよろしいですか？" }, class: "submit-btn" %>
+  <% end %>
+</div>

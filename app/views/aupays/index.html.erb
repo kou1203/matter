@@ -6,7 +6,7 @@
     <table >
       <tr>
         <td class="csv-label">CSV</td>
-        <td class="csv-td"><%= f.file_field :file, accept: ".csv", class: "csv-text" %></td>
+        <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
         <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
       </tr>
     </table>
@@ -30,7 +30,8 @@
 
       <table >
         <tr >
-          <th class="search-th">申し込み番号</th>
+          <th class="search-head" rowspan="2" >検索</th>
+          <th class="search-th">申込番号</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">審査ステータス</th>
           <th class="search-th">決済ステータス</th>

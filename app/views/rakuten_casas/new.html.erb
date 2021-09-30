@@ -1,35 +1,47 @@
 <div data-scope-path="rakuten_casas/new">
-  <h1><%= @store_prop.name %>情報入力（楽天カーサ）</h1>
+  <h1><%= @store_prop.name %>情報入力（楽天フェムト）</h1>
 <%= render "shared/header" %>
-  <%= form_with url: import_rakuten_casas_path do |f| %>
-      <table>
-        <tr>
-          <th class="csv"><%= f.label :file, "CSV取り込み",class:"csv-text" %></th>
-          <td class="csv-td"><%= f.file_field :file, accept: ".csv", class: "csv-text" %></td>
-          <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
-        <td class="reset"><%= link_to "楽天カーサ一覧に戻る", rakuten_casas_path ,class: "reset-link" %></td>
-        </tr>
-      </table>
-    <% end %>
 
   <%= form_with model: @rakuten_casa,url:  store_prop_rakuten_casas_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
       <%= render "shared/error_messages", model: f.object %>
       <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
+    <h1>獲得情報</h1>
   <table>
-  <%# 一列目ラベル %>
     <tr>
-    <th><%= f.label :femto_id, "femto ID", class: "form-text" %></th>
-    <th><%= f.label :client, "商流", class: "form-text" %></th>  
-    <th><%= f.label :date, "獲得日", class: "form-text" %></th>
-    <th><%= f.label :user_id, "獲得者ID", class: "form-text" %></th>
-      
+      <th>
+        <%= f.label :client, "商流", class: "form-text" %>
+        <%= f.select :client, {"USEN": "USEN", "マックスサポート": "マックスサポート"} ,{}, {class: "form-input"} %>
+      </th>
+      <th>
+        <%= f.label :user_id, "獲得者ID", class: "form-text" %>
+        <%= f.number_field :user_id, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :date, "獲得日", class: "form-text" %>
+        <%= f.date_field :date , class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :status, "現状ステータス", class: "form-text" %>
+        <%= f.select :confirm_method, {
+          "未処理": "未処理", "マックス共有待ち": "マックス共有待ち",
+          "キャンセル": "キャンセル","情報不足": "情報不足",
+          "保留": "保留", "USEN共有待ち": "USEN共有待ち",
+          "ID発番待ち": "ID発番待ち","チェック依頼中": "チェック依頼中",
+          "審査中": "審査中","反社不備": "反社不備",
+          "反社再チェック中": "反社再チェック中", "回線不備": "回線不備", 
+          "回線再チェック中": "回線再チェック中", "端末発注待ち": "端末発注待ち",
+          "端末到着待ち": "端末到着待ち", "OSS登録待ち": "OSS登録待ち",
+          "未完図書提出待ち": "未完図書提出待ち", "未完図書チェック中": "未完図書チェック中",
+          "未完図書不備": "未完図書不備", "再設置待ち": "再設置待ち",
+          "設置待ち": "設置待ち", "調整図書提出待ち": "調整図書提出待ち",
+          "竣工図書提出待ち": "竣工図書提出待ち", "竣工図書不備": "竣工図書不備",
+          "竣工図書チェック中": "竣工図書チェック中" 
+          } ,{}, {class: "form-input"} %>
+      </th>
+      </th>
     </tr>
   <%# 一列目値 %>
     <tr>
-      <td><%= f.text_field :femto_id , class: "form-input" %></td>
-      <td><%= f.select :client, {"USEN": "USEN"} ,{}, {class: "form-input"} %></td>
-      <td><%= f.date_field :date , class: "form-input" %></td>
-      <td><%= f.number_field :user_id, class: "form-input" %></td>
     </tr>
   <%# 二列目ラベル %>
     <tr>

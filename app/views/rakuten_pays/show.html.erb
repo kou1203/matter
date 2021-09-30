@@ -1,0 +1,101 @@
+<div data-scope-path="rakuten_pays/show">
+  <h1>楽天ペイ詳細</h1>
+  <%= render "shared/header" %>
+  
+  
+    <table>
+    <tr>
+    <th colspan="4">店舗情報</th>
+    </tr>
+    <tr>
+    <th>店舗名</th>
+    <td><%= @rakuten_pay.store_prop.name %></td>
+    <th colspan="2"></th>
+    </tr>
+    <th>属性</th>
+    <td><%= @rakuten_pay.store_prop.race %></td>
+    <th>業種</th>
+    <td><%= @rakuten_pay.store_prop.industry %></td>
+    </tr>
+    <tr>
+    <th>店舗代表</th>
+    <td><%= @rakuten_pay.store_prop.person_main_name %></td>
+    <th>店舗担当</th>
+    <td><%= @rakuten_pay.store_prop.person_sub_name %></td>
+    </tr>
+    <tr>
+    <th>店舗住所</th>
+    <td colspan="3"><%= @rakuten_pay.store_prop.prefecture %><%= @rakuten_pay.store_prop.city %><%= @rakuten_pay.store_prop.municipalities %><%= @rakuten_pay.store_prop.address %><%= @rakuten_pay.store_prop.building_name %></td>
+    </tr>
+    </table>
+    <h1>連絡先</h1>
+    <table>
+      <tr>
+        <th>電話番号1</th>
+        <td><%= @rakuten_pay.store_prop.phone_number_1 %></td>
+        <th>電話番号2</th>
+        <td><%= @rakuten_pay.store_prop.phone_number_2 %></td>
+        </tr>
+        <th>好適時間</th>
+        <td><%= @rakuten_pay.store_prop.suitable_time %></td>
+        <th colspan="2"></th>
+        <tr>
+        <th>備考</th>
+        <td colspan=2><%= @rakuten_pay.store_prop.description %></td>
+        <td> <%= link_to "編集", edit_store_prop_path(@rakuten_pay.store_prop.id), class: "link" %></td>
+      </tr>
+    </table>
+    <h1>楽天ペイ情報</h1>
+    <table>
+    <tr>
+    <th>獲得日</th>
+      <td><%= @rakuten_pay.date %></td>
+      <th>獲得者</th>
+      <td><%= @rakuten_pay.user.name %></td>
+    </tr>
+    <tr>
+      <th>商流</th>
+      <td><%= @rakuten_pay.client %></td>
+      <th>上位店管理番号</th>
+      <td><%= @rakuten_pay.customer_num %></td>
+    </tr>
+    <tr>
+      <th>審査ステータス</th>
+      <td><%= @rakuten_pay.status %></td>
+      <th>ステータス更新日</th>
+      <td><%= @rakuten_pay.status_update %></td>
+    </tr>
+    <tr>
+      <th>不備発生日</th>
+      <td><%= @rakuten_pay.deficiency %></td>
+      <th>不備解消日</th>
+      <td><%= @rakuten_pay.deficiency_solution %></td>
+    </tr>
+    <th>情報不備内容</th>
+      <td><%= @rakuten_pay.deficiency_info %></td>
+    <th>同意書不備内容</th>
+      <td><%= @rakuten_pay.deficiency_consent %></td>
+    <tr>
+      <th colspan="">謄本取得</th>
+      <td><%= @rakuten_pay.transcript %></td>
+      <th colspan=""></th>
+      <td><%= link_to "編集", edit_rakuten_pay_path, class: "link" %></td>
+    </tr>
+  </table>
+  <h1>売上/評価地点</h1>
+  <table>
+    <tr>
+      <th>審査完了日</th>
+      <td><%= @rakuten_pay.result_point %></td>
+      <th>入金日</th>
+      <td><%= @rakuten_pay.payment %></td>
+    </tr>
+    <tr>
+      <th>評価売上</th>
+      <td><%= @rakuten_pay.valuation %></td>
+      <th>実売上</th>
+      <td><%= @rakuten_pay.profit %></td>
+    </tr>
+    </table>
+</div>
+

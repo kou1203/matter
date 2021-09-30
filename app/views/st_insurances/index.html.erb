@@ -1,0 +1,88 @@
+<div data-scope-path="st_insurances/index">
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+  <h1 class="sub-title">少額短期保険一覧</h1>
+  <%= render "shared/header" %>
+
+  <%= form_with url: import_st_insurances_path do |f| %>
+    <table>
+      <tr>
+        <td class="csv-label" >CSV</td>
+        <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
+        </tr>
+      </table>
+    <% end %>
+    <%= search_form_for @q do |f| %>
+      <table>
+        <tr >
+          <th colspan="2" class="search-th">獲得日付</th>
+        </tr>
+        <tr>
+        <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
+        <td ><%= f.date_field :date_lt, class: "input" %></td>
+        </tr>
+      </table>
+      <table >
+        <tr >
+          <th class="search-head" rowspan="2" >検索</th>
+          <th class="search-th">獲得者</th>
+          <th class="search-th">審査ステータス</th>
+          <th class="search-th">商流</th>
+          <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
+        </tr>
+        <tr >
+          <td ><%= f.text_field :user_name_cont, class: "input" %></td>
+          <td ><%= f.select :status_eq, options_from_collection_for_select(StInsurance.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
+          <td ><%= f.select :client_eq, {"マックスサポート": "マックスサポート"}, {include_blank: true}, {class: "input"} %></td>
+          <td class="reset"><%= link_to "絞込みリセット", st_insurances_path, class: "reset-link" %></td>
+        </tr>
+    </table>
+    <% end %>
+  <% if @st_insurances.empty? %>
+    <div class="warning"><%= alert %></div>
+  <% else %>
+      <h1>表示範囲：<%= @st_insurances.minimum(:date) %>（<%= days[@st_insurances.minimum(:date).wday] %>）〜<%= @st_insurances.maximum(:date) %>（<%= days[@st_insurances.maximum(:date).wday] %>）</h1>
+    <table>
+      <tr>
+        <th class="search-th">審査前</th>
+        <th class="search-th">審査中</th>
+        <th class="search-th">審査完了</th>
+      </tr>
+      <tr>
+        <td><%= @st_insurances.where(status: "未審査").length %></td>
+        <td><%= @st_insurances.where(status: "審査中").length %></td>
+        <td><%= @st_insurances.where(status: "審査完了").length %></td>
+      </tr>
+      <tr>
+        <th class="search-th">自社不備</th>
+        <th class="search-th">自社NG</th>
+        <th class="search-th">上位店不備</th>
+        <th class="search-th">上位店NG</th>
+      </tr>
+      <tr>
+        <td><%= @st_insurances.where(status: "自社不備").length %></td>
+        <td><%= @st_insurances.where(status: "自社NG").length %></td>
+        <td><%= @st_insurances.where(status: "上位店不備").length %></td>
+        <td><%= @st_insurances.where(status: "上位店NG").length %></td>
+      </tr>
+    </table>
+    <table>
+      <tr >
+        <th></th>
+        <th ><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+        <th >法人/個人</th>
+        <th >店舗名</th>
+        <th >審査ステータス</th>
+      </tr>
+      <% @st_insurances.each do |s| %>
+      <tr >
+        <td ><%= link_to "詳細",  st_insurance_path(s.id) ,class: "link" %></td>
+        <td ><%= s.date %></td>
+        <td ><%= s.store_prop.race %></td>
+        <td ><%= s.store_prop.name %></td>
+        <td ><%= s.status %></td>
+      </tr>
+      <% end %>
+    </table>
+  <% end %>
+</div>

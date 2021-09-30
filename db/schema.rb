@@ -2,17 +2,17 @@
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# This file is the source Rails uses to define your schema when running `rails
-# db:schema:load`. When creating a new database, `rails db:schema:load` tends to
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
 # be faster and is potentially less error prone than running all of your
 # migrations from scratch. Old migrations may fail to apply correctly if those
 # migrations use external dependencies or application code.
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_24_074711) do
+ActiveRecord::Schema.define(version: 2021_09_27_055146) do
 
-  create_table "actual_profits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "actual_profits", charset: "utf8", force: :cascade do |t|
     t.string "item", null: false
     t.integer "profit", null: false
     t.date "start_date", null: false
@@ -21,35 +21,43 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
-  create_table "aupays", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.string "customer_num"
+  create_table "aupays", charset: "utf8", force: :cascade do |t|
+    t.string "customer_num", null: false
     t.string "client", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
     t.date "date", null: false
+    t.date "share"
     t.string "status", null: false
     t.date "status_update"
     t.bigint "settlementer_id"
+    t.date "shipment"
     t.date "settlement"
     t.date "settlement_deadline"
     t.string "status_settlement", null: false
     t.date "status_update_settlement"
     t.date "payment"
     t.date "payment_settlement"
+    t.date "result_point"
+    t.date "result_point_settlement"
+    t.date "deficiency"
+    t.date "deficiency_settlement"
+    t.date "deficiency_solution"
+    t.date "deficiency_solution_settlement"
+    t.date "deficiency_deadline"
+    t.text "deficiency_remarks"
+    t.text "deficiency_remarks_settlement"
+    t.text "description"
     t.integer "profit_new", null: false
     t.integer "profit_settlement", null: false
     t.integer "valuation_new", null: false
     t.integer "valuation_settlement", null: false
-    t.date "deficiency_solution"
-    t.date "deficiency_deadline"
-    t.text "deficiency_remarks"
-    t.string "description"
     t.index ["settlementer_id"], name: "index_aupays_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_aupays_on_store_prop_id"
     t.index ["user_id"], name: "index_aupays_on_user_id"
   end
 
-  create_table "costs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "costs", charset: "utf8", force: :cascade do |t|
     t.integer "year", null: false
     t.integer "month", null: false
     t.string "base", null: false
@@ -68,35 +76,43 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.date "update_date"
   end
 
-  create_table "dmers", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "dmers", charset: "utf8", force: :cascade do |t|
     t.string "customer_num", null: false
     t.string "client", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
     t.date "date", null: false
+    t.date "share"
     t.string "status", null: false
     t.date "status_update"
     t.bigint "settlementer_id"
+    t.date "shipment"
     t.date "settlement"
     t.date "settlement_deadline"
     t.string "status_settlement", null: false
     t.date "status_update_settlement"
     t.date "payment"
     t.date "payment_settlement"
+    t.date "result_point"
+    t.date "result_point_settlement"
+    t.date "deficiency"
+    t.date "deficiency_settlement"
+    t.date "deficiency_solution"
+    t.date "deficiency_solution_settlement"
+    t.date "deficiency_deadline"
+    t.text "deficiency_remarks"
+    t.text "deficiency_remarks_settlement"
+    t.text "description"
     t.integer "profit_new", null: false
     t.integer "profit_settlement", null: false
     t.integer "valuation_new", null: false
     t.integer "valuation_settlement", null: false
-    t.date "deficiency_solution"
-    t.date "deficiency_deadline"
-    t.text "deficiency_remarks"
-    t.text "description"
     t.index ["settlementer_id"], name: "index_dmers_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_dmers_on_store_prop_id"
     t.index ["user_id"], name: "index_dmers_on_user_id"
   end
 
-  create_table "n_results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "n_results", charset: "utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.date "date", null: false
     t.string "base", null: false
@@ -270,7 +286,7 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.index ["user_id"], name: "index_n_results_on_user_id"
   end
 
-  create_table "pandas", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "pandas", charset: "utf8", force: :cascade do |t|
     t.string "grid_id"
     t.string "food_category", null: false
     t.string "client"
@@ -300,21 +316,26 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.index ["user_id"], name: "index_pandas_on_user_id"
   end
 
-  create_table "paypays", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "paypays", charset: "utf8", force: :cascade do |t|
+    t.string "customer_num"
     t.string "client", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
     t.date "date", null: false
     t.string "status", null: false
     t.date "status_update"
+    t.date "deficiency"
+    t.date "deficiency_solution"
     t.date "payment"
+    t.text "remarks"
+    t.date "result_point"
     t.integer "profit", null: false
     t.integer "valuation", null: false
     t.index ["store_prop_id"], name: "index_paypays_on_store_prop_id"
     t.index ["user_id"], name: "index_paypays_on_user_id"
   end
 
-  create_table "pranesses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "pranesses", charset: "utf8", force: :cascade do |t|
     t.string "customer_num", null: false
     t.string "client"
     t.bigint "user_id"
@@ -339,7 +360,7 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.index ["user_id"], name: "index_pranesses_on_user_id"
   end
 
-  create_table "rakuten_casas", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "rakuten_casas", charset: "utf8", force: :cascade do |t|
     t.string "client", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
@@ -354,49 +375,183 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.string "net_contracter", null: false
     t.string "net_contracter_kana", null: false
     t.string "net_phone_number", null: false
-    t.string "error_status", null: false
-    t.date "error_solution"
-    t.bigint "putter_id"
-    t.string "status_put", null: false
-    t.date "status_update_put"
+    t.date "share"
+    t.date "deficiency"
+    t.string "status_deficiency"
+    t.date "deficiency_solution"
+    t.text "deficiency_remarks"
+    t.date "deficiency_net"
+    t.string "status_deficiency_net"
+    t.date "deficiency_share_net"
+    t.date "deficiency_last_shared_net"
+    t.text "deficiency_result_net"
+    t.text "deficiency_remarks_net"
+    t.date "deficiency_solution_net"
+    t.date "deficiency_anti"
+    t.string "status_deficiency_anti"
+    t.date "deficiency_share_anti"
+    t.date "deficiency_last_shared_anti"
+    t.text "deficiency_result_anti"
+    t.text "deficiency_remarks_anti"
+    t.date "deficiency_solution_anti"
+    t.date "order"
+    t.date "arrival"
+    t.string "femto_id"
+    t.string "inspection"
+    t.date "done_oss"
+    t.date "put_plan"
     t.date "put"
-    t.date "put_deadline"
+    t.bigint "putter_id"
+    t.string "radio_waves"
+    t.date "google_form_share"
+    t.string "status_put"
+    t.date "share_book"
+    t.string "status_book"
+    t.date "deficiency_book"
+    t.text "deficiency_remarks_book"
+    t.text "deficiency_result_book"
+    t.date "deficiency_solution_book"
+    t.date "done_book"
+    t.date "share_undone_book"
+    t.string "status_undone_book"
+    t.date "deficiency_solution_undone_book"
+    t.date "done_undone_book"
+    t.string "radio_waves_undone"
+    t.date "put_adjustment"
+    t.bigint "adjustmenter_id"
+    t.date "share_adjustment"
+    t.date "deficiency_adjustment"
+    t.date "deficiency_solution_adjustment"
+    t.date "google_form_share_adjustment"
+    t.string "adjustment_status"
+    t.date "done_adjustment"
+    t.date "share_app"
+    t.string "app_create"
+    t.string "status_app"
+    t.date "done_app"
+    t.date "share_memo"
+    t.string "memo_create"
+    t.string "status_memo"
+    t.date "done_memo"
+    t.string "letter_pack_num1"
+    t.string "letter_pack_num2"
     t.date "payment"
     t.date "payment_put"
     t.integer "profit_new", null: false
     t.integer "profit_put", null: false
     t.integer "valuation_new", null: false
     t.integer "valuation_put", null: false
-    t.text "description_error"
-    t.text "description"
-    t.string "vendor_material_code"
-    t.string "serial_number"
-    t.date "delivery_date"
-    t.string "inspection"
-    t.string "femto_id"
+    t.index ["adjustmenter_id"], name: "index_rakuten_casas_on_adjustmenter_id"
     t.index ["putter_id"], name: "index_rakuten_casas_on_putter_id"
     t.index ["store_prop_id"], name: "index_rakuten_casas_on_store_prop_id"
     t.index ["user_id"], name: "index_rakuten_casas_on_user_id"
   end
 
-  create_table "results", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "rakuten_pays", charset: "utf8", force: :cascade do |t|
+    t.string "client", null: false
+    t.bigint "user_id"
+    t.bigint "store_prop_id"
+    t.date "date", null: false
+    t.date "share"
+    t.string "status", null: false
+    t.string "transcript"
+    t.string "customer_num"
+    t.date "status_update"
+    t.date "deficiency"
+    t.date "deficiency_solution"
+    t.text "deficiency_info"
+    t.text "deficiency_consent"
+    t.date "result_point"
+    t.date "payment"
+    t.integer "profit", null: false
+    t.integer "valuation", null: false
+    t.index ["store_prop_id"], name: "index_rakuten_pays_on_store_prop_id"
+    t.index ["user_id"], name: "index_rakuten_pays_on_user_id"
+  end
+
+  create_table "result_cashes", charset: "utf8", force: :cascade do |t|
+    t.bigint "result_id"
+    t.integer "what_interview"
+    t.integer "what_full_talk"
+    t.integer "what_get"
+    t.integer "who_interview"
+    t.integer "who_full_talk"
+    t.integer "who_get"
+    t.integer "just_get_interview"
+    t.integer "just_get_full_talk"
+    t.integer "just_get_get"
+    t.integer "paypay_only_interview"
+    t.integer "paypay_only_full_talk"
+    t.integer "paypay_only_get"
+    t.integer "airpay_only_interview"
+    t.integer "airpay_only_full_talk"
+    t.integer "airpay_only_get"
+    t.integer "card_only_interview"
+    t.integer "card_only_full_talk"
+    t.integer "card_only_get"
+    t.integer "yet_interview"
+    t.integer "yet_full_talk"
+    t.integer "yet_get"
+    t.integer "cash_only_interview"
+    t.integer "cash_only_full_talk"
+    t.integer "cash_only_get"
+    t.integer "busy_interview"
+    t.integer "busy_full_talk"
+    t.integer "busy_get"
+    t.integer "dull_interview"
+    t.integer "dull_full_talk"
+    t.integer "dull_get"
+    t.integer "lack_info_interview"
+    t.integer "lack_info_full_talk"
+    t.integer "lack_info_get"
+    t.integer "easy_interview"
+    t.integer "easy_full_talk"
+    t.integer "easy_get"
+    t.integer "other_interview"
+    t.integer "other_full_talk"
+    t.integer "other_get"
+    t.index ["result_id"], name: "index_result_cashes_on_result_id"
+  end
+
+  create_table "result_rakuten_casas", charset: "utf8", force: :cascade do |t|
+    t.bigint "result_id"
+    t.integer "ng_lack_info"
+    t.integer "busy_interview"
+    t.integer "busy_full_talk"
+    t.integer "busy_get"
+    t.integer "dull_interview"
+    t.integer "dull_full_talk"
+    t.integer "dull_get"
+    t.integer "not_put_space_interview"
+    t.integer "not_put_space_full_talk"
+    t.integer "not_put_space_get"
+    t.integer "no_merit_interview"
+    t.integer "no_merit_full_talk"
+    t.integer "no_merit_get"
+    t.integer "distrust_interview"
+    t.integer "distrust_full_talk"
+    t.integer "distrust_get"
+    t.integer "not_use_net_interview"
+    t.integer "not_use_net_full_talk"
+    t.integer "not_use_net_get"
+    t.integer "not_need_interview"
+    t.integer "not_need_full_talk"
+    t.integer "not_need_get"
+    t.integer "easy_interview"
+    t.integer "easy_full_talk"
+    t.integer "easy_get"
+    t.integer "other_interview"
+    t.integer "other_full_talk"
+    t.integer "other_get"
+    t.index ["result_id"], name: "index_result_rakuten_casas_on_result_id"
+  end
+
+  create_table "results", charset: "utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.date "date", null: false
-    t.integer "profit"
     t.string "area", null: false
     t.string "shift", null: false
     t.bigint "ojt_id"
-    t.integer "dmer"
-    t.integer "dmer_settlement"
-    t.integer "aupay"
-    t.integer "aupay_settlement"
-    t.integer "paypay"
-    t.integer "panda"
-    t.integer "praness"
-    t.integer "summit_metered_lamp"
-    t.integer "summit_power"
-    t.integer "rakuten_casa"
-    t.integer "rakuten_casa_put"
     t.integer "first_visit", null: false
     t.integer "first_interview", null: false
     t.integer "first_full_talk", null: false
@@ -419,137 +574,11 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.integer "manipulative_get"
     t.integer "other_service_visit"
     t.integer "other_service_get"
-    t.integer "cashless_what_interview"
-    t.integer "cashless_what_full_talk"
-    t.integer "cashless_what_get"
-    t.integer "cashless_who_interview"
-    t.integer "cashless_who_full_talk"
-    t.integer "cashless_who_get"
-    t.integer "cashless_just_get_interview"
-    t.integer "cashless_just_get_full_talk"
-    t.integer "cashless_just_get_get"
-    t.integer "cashless_paypay_only_interview"
-    t.integer "cashless_paypay_only_full_talk"
-    t.integer "cashless_paypay_only_get"
-    t.integer "cashless_airpay_only_interview"
-    t.integer "cashless_airpay_only_full_talk"
-    t.integer "cashless_airpay_only_get"
-    t.integer "cashless_card_only_interview"
-    t.integer "cashless_card_only_full_talk"
-    t.integer "cashless_card_only_get"
-    t.integer "cashless_yet_interview"
-    t.integer "cashless_yet_full_talk"
-    t.integer "cashless_yet_get"
-    t.integer "cashless_cash_only_interview"
-    t.integer "cashless_cash_only_full_talk"
-    t.integer "cashless_cash_only_get"
-    t.integer "cashless_busy_interview"
-    t.integer "cashless_busy_full_talk"
-    t.integer "cashless_busy_get"
-    t.integer "cashless_dull_interview"
-    t.integer "cashless_dull_full_talk"
-    t.integer "cashless_dull_get"
-    t.integer "cashless_lack_info_interview"
-    t.integer "cashless_lack_info_full_talk"
-    t.integer "cashless_lack_info_get"
-    t.integer "cashless_easy_interview"
-    t.integer "cashless_easy_full_talk"
-    t.integer "cashless_easy_get"
-    t.integer "cashless_other_interview"
-    t.integer "cashless_other_full_talk"
-    t.integer "cashless_other_get"
-    t.integer "summit_no_detail"
-    t.integer "summit_ng_detail"
-    t.integer "summit_reject_cash_interview"
-    t.integer "summit_reject_cash_full_talk"
-    t.integer "summit_reject_cash_get"
-    t.integer "summit_busy_interview"
-    t.integer "summit_busy_full_talk"
-    t.integer "summit_busy_get"
-    t.integer "summit_doubt_interview"
-    t.integer "summit_doubt_full_talk"
-    t.integer "summit_doubt_get"
-    t.integer "summit_yet_interview"
-    t.integer "summit_yet_full_talk"
-    t.integer "summit_yet_get"
-    t.integer "summit_not_change_interview"
-    t.integer "summit_not_change_full_talk"
-    t.integer "summit_not_change_get"
-    t.integer "summit_lack_info_interview"
-    t.integer "summit_lack_info_full_talk"
-    t.integer "summit_lack_info_get"
-    t.integer "summit_other_interview"
-    t.integer "summit_other_full_talk"
-    t.integer "summit_other_get"
-    t.integer "summit_easy_interview"
-    t.integer "summit_easy_full_talk"
-    t.integer "summit_easy_get"
-    t.integer "panda_not_need_interview"
-    t.integer "panda_not_need_full_talk"
-    t.integer "panda_not_need_get"
-    t.integer "panda_busy_interview"
-    t.integer "panda_busy_full_talk"
-    t.integer "panda_busy_get"
-    t.integer "panda_yet_interview"
-    t.integer "panda_yet_full_talk"
-    t.integer "panda_yet_get"
-    t.integer "panda_not_delivery_interview"
-    t.integer "panda_not_delivery_full_talk"
-    t.integer "panda_not_delivery_get"
-    t.integer "panda_not_increment_interview"
-    t.integer "panda_not_increment_full_talk"
-    t.integer "panda_not_increment_get"
-    t.integer "panda_not_margin_interview"
-    t.integer "panda_not_margin_full_talk"
-    t.integer "panda_not_margin_get"
-    t.integer "panda_dull_interview"
-    t.integer "panda_dull_full_talk"
-    t.integer "panda_dull_get"
-    t.integer "panda_lack_info_interview"
-    t.integer "panda_lack_info_full_talk"
-    t.integer "panda_lack_info_get"
-    t.integer "panda_food_neko_interview"
-    t.integer "panda_food_neko_full_talk"
-    t.integer "panda_food_neko_get"
-    t.integer "panda_other_interview"
-    t.integer "panda_other_full_talk"
-    t.integer "panda_other_get"
-    t.integer "panda_easy_interview"
-    t.integer "panda_easy_full_talk"
-    t.integer "panda_easy_get"
-    t.integer "casa_ng_lack_info"
-    t.integer "casa_busy_interview"
-    t.integer "casa_busy_full_talk"
-    t.integer "casa_busy_get"
-    t.integer "casa_dull_interview"
-    t.integer "casa_dull_full_talk"
-    t.integer "casa_dull_get"
-    t.integer "casa_not_put_space_interview"
-    t.integer "casa_not_put_space_full_talk"
-    t.integer "casa_not_put_space_get"
-    t.integer "casa_no_merit_interview"
-    t.integer "casa_no_merit_full_talk"
-    t.integer "casa_no_merit_get"
-    t.integer "casa_distrust_interview"
-    t.integer "casa_distrust_full_talk"
-    t.integer "casa_distrust_get"
-    t.integer "casa_not_use_net_interview"
-    t.integer "casa_not_use_net_full_talk"
-    t.integer "casa_not_use_net_get"
-    t.integer "casa_not_need_interview"
-    t.integer "casa_not_need_full_talk"
-    t.integer "casa_not_need_get"
-    t.integer "casa_easy_interview"
-    t.integer "casa_easy_full_talk"
-    t.integer "casa_easy_get"
-    t.integer "casa_other_interview"
-    t.integer "casa_other_full_talk"
-    t.integer "casa_other_get"
     t.index ["ojt_id"], name: "index_results_on_ojt_id"
     t.index ["user_id"], name: "index_results_on_user_id"
   end
 
-  create_table "return_histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "return_histories", charset: "utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "stock_id"
     t.date "return"
@@ -557,7 +586,7 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.index ["user_id"], name: "index_return_histories_on_user_id"
   end
 
-  create_table "shifts", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "shifts", charset: "utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.integer "year", null: false
     t.integer "month", null: false
@@ -575,7 +604,25 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.index ["user_id"], name: "index_shifts_on_user_id"
   end
 
-  create_table "stock_histories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "st_insurances", charset: "utf8", force: :cascade do |t|
+    t.string "client", null: false
+    t.bigint "user_id"
+    t.bigint "store_prop_id"
+    t.date "date", null: false
+    t.string "status", null: false
+    t.date "status_update"
+    t.date "deficiency"
+    t.date "deficiency_solution"
+    t.date "payment"
+    t.text "remarks"
+    t.date "result_point"
+    t.integer "profit", null: false
+    t.integer "valuation", null: false
+    t.index ["store_prop_id"], name: "index_st_insurances_on_store_prop_id"
+    t.index ["user_id"], name: "index_st_insurances_on_user_id"
+  end
+
+  create_table "stock_histories", charset: "utf8", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "stock_id"
     t.date "take_out"
@@ -583,7 +630,7 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.index ["user_id"], name: "index_stock_histories_on_user_id"
   end
 
-  create_table "stocks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "stocks", charset: "utf8", force: :cascade do |t|
     t.string "stock_num", null: false
     t.string "mac_num"
     t.string "status"
@@ -592,7 +639,7 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.index ["stock_num"], name: "index_stocks_on_stock_num", unique: true
   end
 
-  create_table "store_props", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "store_props", charset: "utf8", force: :cascade do |t|
     t.string "race", null: false
     t.string "name", collation: "utf8_bin"
     t.string "industry", null: false
@@ -624,7 +671,7 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.string "description"
   end
 
-  create_table "summit_customer_props", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "summit_customer_props", charset: "utf8", force: :cascade do |t|
     t.string "customer_num", null: false
     t.string "client", null: false
     t.bigint "store_prop_id"
@@ -635,7 +682,7 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.index ["store_prop_id"], name: "index_summit_customer_props_on_store_prop_id"
   end
 
-  create_table "summits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "summits", charset: "utf8", force: :cascade do |t|
     t.bigint "summit_customer_prop_id"
     t.bigint "user_id"
     t.date "get_date", null: false
@@ -659,7 +706,7 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.index ["user_id"], name: "index_summits_on_user_id"
   end
 
-  create_table "trouble_ns", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "trouble_ns", charset: "utf8", force: :cascade do |t|
     t.string "base", null: false
     t.date "date", null: false
     t.string "category", null: false
@@ -676,7 +723,7 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.index ["user_id"], name: "index_trouble_ns_on_user_id"
   end
 
-  create_table "trouble_sses", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "trouble_sses", charset: "utf8", force: :cascade do |t|
     t.date "date", null: false
     t.bigint "store_prop_id"
     t.string "category", null: false
@@ -694,7 +741,7 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
     t.index ["user_id"], name: "index_trouble_sses_on_user_id"
   end
 
-  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "users", charset: "utf8", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "name", null: false
@@ -727,12 +774,19 @@ ActiveRecord::Schema.define(version: 2021_08_24_074711) do
   add_foreign_key "pranesses", "users"
   add_foreign_key "rakuten_casas", "store_props"
   add_foreign_key "rakuten_casas", "users"
+  add_foreign_key "rakuten_casas", "users", column: "adjustmenter_id"
   add_foreign_key "rakuten_casas", "users", column: "putter_id"
+  add_foreign_key "rakuten_pays", "store_props"
+  add_foreign_key "rakuten_pays", "users"
+  add_foreign_key "result_cashes", "results"
+  add_foreign_key "result_rakuten_casas", "results"
   add_foreign_key "results", "users"
   add_foreign_key "results", "users", column: "ojt_id"
   add_foreign_key "return_histories", "stocks"
   add_foreign_key "return_histories", "users"
   add_foreign_key "shifts", "users"
+  add_foreign_key "st_insurances", "store_props"
+  add_foreign_key "st_insurances", "users"
   add_foreign_key "stock_histories", "stocks"
   add_foreign_key "stock_histories", "users"
   add_foreign_key "summit_customer_props", "store_props"

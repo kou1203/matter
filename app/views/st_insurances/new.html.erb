@@ -1,0 +1,59 @@
+<div data-scope-path="st_insurances/new">
+  <h1><%= @store_prop.name %>情報入力（少額短期保険）</h1>
+  <%= render "shared/header" %>    
+
+  <%= form_with model: @st_insurance,url: store_prop_st_insurances_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
+
+    <%= render "shared/error_messages", model: f.object %>
+    <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
+    <table>
+      <tr>
+        <th><%= f.label :user_id, "獲得者", class: "form-text" %></th>
+        <th><%= f.label :date, "獲得日", class: "form-text" %></th>
+        <th><%= f.label :status, "審査ステータス", class: "form-text" %></th>
+        <th><%= f.label :status_update, "ステータス更新日",class: "form-text" %></th>
+        <th></th>
+      </tr>
+        <td><%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "form-input"}) %></td>
+        <td><%= f.date_field :date , class: "form-input" %></td>
+        <td><%= f.select :status, {"未審査": "未審査","審査中": "審査中", "審査完了": "審査完了", "自社不備": "自社不備","自社NG": "自社NG","上位店不備": "上位店不備","上位店NG": "上位店NG"} ,{}, {class: "form-input"} %></td>
+        <td><%= f.date_field :status_update, value: Date.today, class: "form-input" %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th><%= f.label :client, "商流", class: "form-text" %></th>
+        <th><%= f.label :result_point, "上位店連携日", class: "form-text" %></th>
+        <th><%= f.label :payment, "入金日", class: "form-text" %></th>
+      </tr>
+      <tr>
+        <td><%= f.select :client, {"USEN": "USEN"} ,{}, {class: "form-input"} %></td>
+        <td><%= f.date_field :result_point , class: "form-input" %></td>
+        <td><%= f.date_field :payment , class: "form-input" %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :deficiency, "不備発生日", class: "form-text" %></th>
+        <th><%= f.label :deficiency_solution, "不備解消日", class: "form-text" %></th>
+        <th><%= f.label :valuation, "評価売上", class: "form-text" %></th>
+        <th><%= f.label :profit, "実売上", class: "form-text" %></th>
+      </tr>
+      <tr>
+        <td><%= f.date_field :deficiency , class: "form-input" %></td>
+        <td><%= f.date_field :deficiency_solution , class: "form-input" %></td>
+        <td><%= f.number_field :valuation, class: "form-input" %></td>
+        <td><%= f.number_field :profit , class: "form-input" %></td>
+      </tr>
+      <tr>
+        <th colspan="2"><%= f.label :remarks, "備考", class: "form-text" %></th>
+      </tr>
+      <tr>
+        <td colspan="2"><%= f.text_field :remarks , class: "remarks-input" %></td>
+        <td></td>
+      <tr>
+      </tr>
+    </table>
+
+    <%= f.submit "登録", class: "submit-btn" %>
+  
+  
+  <% end %>
+</div>

@@ -1,6 +1,7 @@
 class RakutenCasa < ApplicationRecord
   belongs_to :user
   belongs_to :putter, class_name: "User", optional: true
+  belongs_to :adjustmenter, class_name: "User", optional: true
   belongs_to :store_prop
 
   with_options presence: true do 

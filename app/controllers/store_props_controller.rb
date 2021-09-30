@@ -55,6 +55,8 @@ class StorePropsController < ApplicationController
     @paypay = @store_prop.paypay
     @praness = @store_prop.praness
     @rakuten_casa = @store_prop.rakuten_casa
+    @st_insurance = @store_prop.st_insurance
+    @rakuten_pay = @store_prop.rakuten_pay
     @summit_customer_prop = @store_prop.summit_customer_prop
     if @summit_customer_prop.nil?
       @summits = 0

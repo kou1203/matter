@@ -1,0 +1,2 @@
+module ResultCashesHelper
+end

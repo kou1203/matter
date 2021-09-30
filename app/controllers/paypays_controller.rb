@@ -30,8 +30,16 @@ class PaypaysController < ApplicationController
   end 
 
   def import 
-    Paypay.import(params[:file])
-    redirect_to paypay_path
+    if params[:file].present?
+      if Paypay.csv_check(params[:file]).present?
+        redirect_to paypays_path , alert: "エラーが発生したため中断しました#{Paypay.csv_check(params[:file])}"
+      else
+        message = Paypay.import(params[:file]) 
+        redirect_to paypays_path, alert: "インポート処理を完了しました#{message}"
+      end
+    else
+      redirect_to paypays_path, alert: "インポートに失敗しました。ファイルを選択してください"
+    end
   end 
 
   def show 
@@ -53,13 +61,18 @@ class PaypaysController < ApplicationController
 
   def paypay_params 
     params.require(:paypay).permit(
+      :customer_num,
       :client,
       :user_id,
       :store_prop_id,
       :date,
       :status,
       :status_update,
+      :deficiency,
+      :deficiency_solution,
+      :result_point,
       :payment,
+      :remarks,
       :profit,
       :valuation
     )

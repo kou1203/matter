@@ -53,14 +53,20 @@ class Aupay < ApplicationRecord
           status_update_settlement: row["決済ステータス更新日"],
           payment: row["入金日"],
           payment_settlement: row["決済入金日"],
+          result_point: row["審査完了日（新規）"],
+          result_point_settlement: row["審査完了日（決済）"],
+          deficiency: row["不備発生日（新規）"],
+          deficiency_settlement: row["不備発生日（決済）"],
+          deficiency_solution: row["不備解消日（新規）"],
+          deficiency_solution_settlement: row["不備解消日（決済）"],
+          deficiency_deadline: row["不備解消期限"],
+          deficiency_remarks: row["不備詳細（新規）"],
+          deficiency_remarks_settlement: row["不備詳細（決済）"],
+          description: row["備考"],
           profit_new: row["獲得売上"],
           profit_settlement: row["決済売上"],
           valuation_new: row["獲得評価売上"],
           valuation_settlement: row["決済評価売上"],
-          deficiency_solution: row["不備解消日"],
-          deficiency_deadline: row["不備解消期限"],
-          deficiency_remarks: row["不備詳細"],
-          description: row["備考"]
         )
         errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if aupay.invalid?
       end
@@ -101,14 +107,20 @@ class Aupay < ApplicationRecord
         status_update_settlement: row["決済ステータス更新日"],
         payment: row["入金日"],
         payment_settlement: row["決済入金日"],
+        result_point: row["審査完了日（新規）"],
+        result_point_settlement: row["審査完了日（決済）"],
+        deficiency: row["不備発生日（新規）"],
+        deficiency_settlement: row["不備発生日（決済）"],
+        deficiency_solution: row["不備解消日（新規）"],
+        deficiency_solution_settlement: row["不備解消日（決済）"],
+        deficiency_deadline: row["不備解消期限"],
+        deficiency_remarks: row["不備詳細（新規）"],
+        deficiency_remarks_settlement: row["不備詳細（決済）"],
+        description: row["備考"],
         profit_new: row["獲得売上"],
         profit_settlement: row["決済売上"],
         valuation_new: row["獲得評価売上"],
         valuation_settlement: row["決済評価売上"],
-        deficiency_solution: row["不備解消日"],
-        deficiency_deadline: row["不備解消期限"],
-        deficiency_remarks: row["不備詳細"],
-        description: row["備考"]
       )
       if aupay.has_changes_to_save? 
         aupay.save!
@@ -133,14 +145,20 @@ class Aupay < ApplicationRecord
         status_update_settlement: row["決済ステータス更新日"],
         payment: row["入金日"],
         payment_settlement: row["決済入金日"],
+        result_point: row["審査完了日（新規）"],
+        result_point_settlement: row["審査完了日（決済）"],
+        deficiency: row["不備発生日（新規）"],
+        deficiency_settlement: row["不備発生日（決済）"],
+        deficiency_solution: row["不備解消日（新規）"],
+        deficiency_solution_settlement: row["不備解消日（決済）"],
+        deficiency_deadline: row["不備解消期限"],
+        deficiency_remarks: row["不備詳細（新規）"],
+        deficiency_remarks_settlement: row["不備詳細（決済）"],
+        description: row["備考"],
         profit_new: row["獲得売上"],
         profit_settlement: row["決済売上"],
         valuation_new: row["獲得評価売上"],
         valuation_settlement: row["決済評価売上"],
-        deficiency_solution: row["不備解消日"],
-        deficiency_deadline: row["不備解消期限"],
-        deficiency_remarks: row["不備詳細"],
-        description: row["備考"]
         )
       aupay.save!
       new_cnt += 1

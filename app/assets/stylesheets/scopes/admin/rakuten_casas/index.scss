@@ -1,9 +1,8 @@
 [data-scope-path="rakuten_casas/index"] {
-
 h1 {
   padding: 1.0em;
   font-size: 20px;
-  background: linear-gradient(40deg, #D81159 0%, #DFD9E2 90%);
+  background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
   color: white;
 }
 // ヘッダー
@@ -11,7 +10,8 @@ header {
   display: flex;
   justify-content: space-between;
   width: 100vw;
-  background: linear-gradient(40deg, #D81159 0%, #DFD9E2 90%);
+  // border-bottom: #d9534f solid 5px;
+  background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
 }
 
 .sign-text {
@@ -44,7 +44,7 @@ label {
 }
 
 label:hover {
-  background: #30BCED;
+  background: #96C0CE;
 }
 
 li {
@@ -65,7 +65,7 @@ li {
 
 li:hover {
   opacity: 1;
-  background: #30BCED;
+  background: #96C0CE;
 }
 
 
@@ -77,25 +77,41 @@ li:hover {
 } 
 
 // ハンバーガーデザイン
-main {
-  width: 80vw;
-  height: 90vh;
-  overflow: scroll;
-  margin-top: 10px;
-  background: rgb(255, 248, 248);
-  padding: 5px;
+
+.reg {
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
+  box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
+  padding: 15px 0;
+  margin: 15px;
+  width: 7vw;
+  border-radius: 18px 0;
 }
+
+.reg-link {
+  text-decoration: none;
+  color: white;
+  display: block;
+}
+
 
 table{
   border-collapse: collapse;
   margin: 20px ;
   table-layout: fixed;
-  min-width: 100%;
+  min-width: 95%;
   display: block;
   overflow-x: scroll;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
   max-width: 600px;
+}
+
+.status-tb {
+  min-width: 65%;
+  // max-width: 800px;
 }
 
 tr:nth-child(odd) {
@@ -104,54 +120,58 @@ tr:nth-child(odd) {
 
 // 検索フォーム
 .table-note {
-  border-radius: 50px;
+  border-radius: 60px;
 }
 
-
-
-.search1 {
+.search-th {
   text-align: center;
   color: white;
-  background:  #e25d6e;
+  // background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
+  background: #c4c2c2;
   box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
   padding: 10px 0;
   margin: 15px;
-  width: 20vw;
-}
-  
-.search1:nth-child(even) {
-  background:  #866667;
+  font-size: 15px;
+  // width: 200px;
 }
 
+.search-title {
+  vertical-align: middle;
+  background: linear-gradient(40deg, #add8e6 20%, #c4c2c2 100%);
+  font-size: 18px;
+  // width: 300px;
+}
+
+.search-title:nth-child(even) {
+  background: linear-gradient(30deg, #c4c2c2 80%, #add8e6 100%);
+}
+
+.search-head {
+  vertical-align: middle;
+  background: linear-gradient(30deg, #add8e6 30%, #c4c2c2 100%);
+  border-radius: 15px 0 0 15px;
+  font-size: 18px;
+  width: 100px;
+}
 
 .search2 {
   text-align: center;
   color: white;
-  background:  #03359D;
+  background:  #96C0CE;
   box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
   padding: 10px 0;
   margin: 15px;
   width: 7vw;
 }
+
 
 .search2:nth-child(even) {
-  background:  #1545ab;
-  
-}
+  background:  #74828F;
 
-.search3 {
-  text-align: center;
-  color: white;
-  background:  #2BBBD8;
-  box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-  padding: 10px 0;
-  margin: 15px;
-  width: 7vw;
 }
-
 
 .reset {
-  background: #DFD9E2;
+  background: #c4bfbb;
   padding: 5px;
 }
 
@@ -168,14 +188,18 @@ tr:nth-child(odd) {
 th {
   text-align: center;
   color: white;
-  background: #e25d6e;
+  background: #96C0CE;
   padding: 10px;
   width: 15vw;
   border-bottom: none;
 }
 
+.th:nth-child(even) {
+  background:  #96C0CE;
+}
+
 .result {
-  background: #30BCED;
+  background: #96C0CE;
 }
 
 .result-btn {
@@ -183,7 +207,7 @@ th {
   background: none;
   color: white;
   font-size: 15px;
-
+  cursor: pointer;
 }
 
 .input {
@@ -203,4 +227,40 @@ td {
   padding: 10px 0;
 }
 
+
+.search-td {
+  border-bottom: 1px solid rgb(205, 203, 203);
+  text-align: center;
+  box-shadow: 0px -3px 5px 1px #eee inset;
+  padding: 10px 0;
+  background: white;
 }
+
+.check-form {
+  margin: 20px;
+}
+
+.check-label {
+  font-weight: bold;
+  // padding: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.check-input {
+  width:24px;
+  height:24px;
+  // -moz-transform:scale(0.8);
+  // -webkit-transform:scale(0.8);
+}
+
+.csv-label {
+  width: 50px;
+  border-radius: 5px 0 5px 0;
+  background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
+  color: white;
+  border: none;
+}
+
+}
+

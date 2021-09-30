@@ -15,4 +15,6 @@ class User < ApplicationRecord
   has_many :rakuten_casas
   has_many :n_results
   has_many :trouble_sses
+  has_many :st_insurances
+  has_many :rakuten_pays
 end

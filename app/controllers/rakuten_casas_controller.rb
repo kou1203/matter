@@ -47,6 +47,7 @@ class RakutenCasasController < ApplicationController
   private 
   def rakuten_casa_params 
     params.require(:rakuten_casa).permit(
+      # 新規 15
       :client                  ,
       :user_id                 ,                
       :store_prop_id           ,          
@@ -61,28 +62,83 @@ class RakutenCasasController < ApplicationController
       :net_contracter          ,       
       :net_contracter_kana     ,       
       :net_phone_number        ,
-      # 不備       
-      :error_status            ,             
-      :error_solution          ,                
-      # 設置
-      :putter_id               ,
-      :status_put              ,
-      :status_update_put       ,
+      :share                   ,
+      # 自社不備 4 
+      :deficiency              ,
+      :status_deficiency       ,
+      :deficiency_solution     ,
+      :deficiency_remarks      ,
+      # 回線不備 7
+      :deficiency_net          ,
+      :status_deficiency_net   ,
+      :deficiency_share_net    ,
+      :deficiency_last_shared_net,
+      :deficiency_result_net   ,
+      :deficiency_remarks_net  ,
+      :deficiency_solution_net ,
+      # 反社不備 7
+      :deficiency_anti          ,
+      :status_deficiency_anti   ,
+      :deficiency_share_anti    ,
+      :deficiency_last_shared_anti,
+      :deficiency_result_anti   ,
+      :deficiency_remarks_anti  ,
+      :deficiency_solution_anti ,
+      # 端末情報 5
+      :oder                    ,
+      :arrival                 ,
+      :femto_id                ,
+      :inspection              ,
+      :done_oss                , # 第一成果地点
+      # 設置 6
+      :put_plan                ,
       :put                     ,
-      :put_deadline            ,
+      :putter_id               ,
+      :radio_waves             ,
+      :google_form_share       ,
+      :status_put              ,
+      # 図書 7
+      :share_book              ,
+      :status_book             ,
+      :deficiency_book         ,
+      :deficiency_remarks_book ,
+      :deficiency_result_book  ,
+      :deficiency_solution_book,
+      :done_book               , #第二成果地点 
+      # 未完図書 4
+      :share_undone_book       ,
+      :status_undone_book      ,
+      :deficiency_solution_undone_book,
+      :done_undone_book        , #第二成果地点
+      # システム調整 9
+      :radio_waves_undone      ,
+      :put_adjustment          ,
+      :adjustmenter            ,
+      :share_adjustment        ,
+      :deficiency_adjustment   ,
+      :deficiency_solution_adjustment,
+      :google_form_share_adjustment,
+      :adjustment_status       ,
+      :done_adjustment         ,#第三成果地点
+      # 申込書 4
+      :share_app               ,
+      :app_create              ,
+      :status_app              ,
+      :done_app                ,
+      # 覚書 6
+      :share_memo              ,
+      :memo_create             ,
+      :status_memo             ,
+      :done_memo               ,
+      :letter_pack_num1        ,
+      :letter_pack_num2        ,
+      # 入金、売上 6
       :payment                 ,
       :payment_put             ,
       :profit_new              ,
       :profit_put              , 
       :valuation_new           , 
-      :valuation_put           , 
-      :description_error       ,
-      :description             ,
-      :vendor_material_code    ,
-      :serial_number           ,
-      :delivery_date           ,
-      :inspection              ,
-      :femto_id                ,         
+      :valuation_put           ,      
       )
     end 
     
