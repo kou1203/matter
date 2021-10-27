@@ -1,14 +1,14 @@
-class ResultCashesController < ApplicationController
+class ResultCasasController < ApplicationController
 
   def new 
-    @result_cash = ResultCash.new 
+    @result_casa = ResultCasa.new 
     @result = Result.find(params[:result_id])
   end 
   
   def create 
+    @result_casa = ResultCasa.new(result_casa_params)
     @result = Result.find(params[:result_id])
-    @result_cash = ResultCash.new(result_cash_params)
-    if @result_cash.save 
+    if @result_casa.save 
       redirect_to results_path
     else  
       render :new 
@@ -16,25 +16,32 @@ class ResultCashesController < ApplicationController
   end
 
   def show 
-    @result_cash = ResultCash.find(params[:id])
+    @result_casa = ResultCasa.find(params[:id])
+    @q = ResultCasa.ransack(params[:q])
+    @result_casas = 
+    if params[:q].nil? 
+      ResultCasa.none 
+    else    
+      @q.result(distinct: false)
+    end
 
   end 
 
   def edit 
-    @result_cash = ResultCash.find(params[:id])
+    @result_casa = ResultCasa.find(params[:id])
   end 
   
   def update 
-    @result_cash = ResultCash.find(params[:id])
-    @result_cash.update(result_cash_params)
+    @result_casa = ResultCasa.find(params[:id])
+    @result_casa.update(result_casa_params)
     redirect_to results_path
   end
 
 
 
   private
-  def result_cash_params
-    params.require(:result_cash).permit(
+  def result_casa_params
+    params.require(:result_casa).permit(
       :result_id,
       # 対象外・NG
       :ng_01,

@@ -6,12 +6,15 @@
       <%= search_form_for @q do |f| %>
       <table >
         <tr >
-          <th class="search-th">獲得月</th>
-          <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true} ,{class: "date-input"} %></td>
-          <th class="search-th">獲得期間</th>
+          <th class="search-th" colspan="">獲得月</th>
+          <th class="search-th" colspan="">獲得期間（始）</th>
+          <th class="search-th" colspan="">獲得期間（終）</th>
+          <td class="input" style="width:2px;"></td>
+        </tr>
+          <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true, include_blank: true} ,{class: "date-input"} %></td>
           <td><%= f.date_field :date_gteq, class: "input" %></td>
-          <td class="input" style="width:2px;">〜</td>
           <td><%= f.date_field :date_lteq, class: "input" %></td>
+        <tr>
         </tr>
       </table>
       <table >
@@ -26,8 +29,7 @@
         <td class="search-td"><%= f.select :user_base_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base).distinct, :base, :base), {prompt: "全拠点"},{class: "input"} %></td>
         <td class="search-td"><%= f.select :user_base_sub_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base_sub).distinct, :base_sub, :base_sub), {prompt: "全拠点"},{class: "input"} %></td>
         <td class="search-td"><%= f.text_field :user_name_cont, class: "input" %></td>
-        <td class="search-td"><%= f.select :shift_eq, options_from_collection_for_select(Result.select(:shift).distinct, :shift, :shift), {include_blank: true,prompt: "全商材"},{class: "input"} %></td>
-
+        <td class="search-td"><%= f.select :shift_cont, { "キャッシュレス": "キャッシュレス", "サミット": "サミット", "楽天フェムト": "楽天フェムト" }, {include_blank: true,prompt: "全商材"},{class: "input"} %></td>
         <td class="reset"><%= link_to "絞込みリセット", results_path, class: "reset-link" %></td>
 
       </tr>
@@ -36,16 +38,15 @@
     <%# /検索フォーム %>
     <hr>
     <% if @results.empty? %>
-      <% if @result_month.empty? %>
-      <% else %>
-      <%# 会議資料 %>
-      <%# render "result_parts/meeting_month" %>
-      <% end %>
     <% else %>
     <% if @results.joins(:user).preload(:user).group(:base).length >= 2 %>
+    <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+    <%# 個別利益表 %>
+    <h1>表示範囲：<%= @results.minimum(:date) %>（<%= days[@results.minimum(:date).wday] %>）〜<%= @results.maximum(:date) %>（<%= days[@results.maximum(:date).wday] %>）</h1>
+    <%# 初期値変数 %>
       <%= render "result_parts/all_profit" %>
     <% elsif @results.group(:user_id).length >= 2 && @results.joins(:user).preload(:user).group(:base).length == 1 %>
-      <%= render "result_parts/base_profit" %>
+      <%# render "result_parts/base_profit" %>
 
     <% else %>
       <%= render "result_parts/profit_table" %>

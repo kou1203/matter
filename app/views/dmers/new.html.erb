@@ -12,7 +12,6 @@
         <th><%= f.label :customer_num, "お客様番号", class: "form-text" %></th>
         <th><%= f.label :user_id, "獲得者", class: "form-text" %></th>
         <th><%= f.label :date, "獲得日", class: "form-text" %></th>
-
       </tr>
       <tr>
         <td><%= f.select :client, {"マックスサポート": "マックスサポート", "USEN": "USEN","ピアズ": "ピアズ"} ,{}, {class: "form-input"} %></td>
@@ -23,12 +22,14 @@
       <tr>
         <th><%= f.label :status, "新規ステータス", class: "form-text" %></th>
         <th><%= f.label :status_update, "新規ステータス更新日", class: "form-text" %></th>
+        <th><%= f.label :share, "上位店共有日", class: "form-text" %></th>
         <th><%= f.label :result_point, "審査完了日（新規）", class: "form-text" %></th>
         <th><%= f.label :payment, "入金日（新規）", class: "form-text" %></th>
       </tr>
       <tr>
         <td><%= f.select :status, {"未審査": "未審査", "審査中": "審査中", "審査完了": "審査完了","自社不備": "自社不備","自社NG": "自社NG","上位店不備": "上位店不備","上位店NG": "上位店NG","複数店追加": "複数店追加", "申込取消": "申込取消"} ,{}, {class: "form-input"} %></td>
         <td><%= f.date_field :status_update, class: "form-input" %></td>
+        <td><%= f.date_field :share , class: "form-input" %></td>
         <td><%= f.date_field :result_point , class: "form-input" %></td>
         <td><%= f.date_field :payment , class: "form-input" %></td>
       </tr>
@@ -57,6 +58,7 @@
     <h1>決済情報</h1>
     <table>
       <tr>
+        <th><%= f.label :shipment, "キット発送日", class: "form-text" %></th>
         <th><%= f.label :settlementer_id, "決済者", class: "form-text" %></th>
         <th><%= f.label :status_settlement, "決済ステータス", class: "form-text" %></th>
         <th><%= f.label :status_update_settlement, "決済ステータス更新日", class: "form-text" %></th>
@@ -65,6 +67,7 @@
 
       </tr>
       <tr>
+        <td><%= f.date_field :shipment , class: "form-input" %></td>
         <td><%= f.collection_select(:settlementer_id, @users, :id, :name,{include_blank: true}, {class: "form-input"})%></td>
         <td><%= f.select :status_settlement, {"未審査": "未審査", "審査中": "審査中", "審査完了": "審査完了","自社不備": "自社不備","自社NG": "自社NG","上位店不備": "上位店不備","上位店NG": "上位店NG"} ,{}, {class: "form-input"} %></td>
         <td><%= f.date_field :settlement_deadline , class: "form-input" %></td>
@@ -76,19 +79,19 @@
       <tr>
         <th><%= f.label :deficiency_settlement, "不備発生日（決済）", class: "form-text" %></th>
         
-        <th><%= f.label :deficiency_remarks_settlement, "不備詳細（決済）", class: "form-text" %></th>
         <th><%= f.label :result_point_settlement, "審査完了日（決済）", class: "form-text" %></th>
+      <th ><%= f.label :deficiency_solution_settlement, "不備解消日（決済）", class: "form-text" %></th>
         <th><%= f.label :payment_settlement, "入金日（決済）", class: "form-text" %></th>
       </tr>
       <tr>
         <td><%= f.date_field :deficiency_settlement , class: "form-input" %></td>
-        <td><%= f.date_field :deficiency_solution_settlement , class: "form-input" %></td>
         
         <td><%= f.date_field :result_point_settlement , class: "form-input" %></td>
+        <td><%= f.date_field :deficiency_solution_settlement , class: "form-input" %></td>
         <td><%= f.date_field :payment_settlement , class: "form-input" %></td>
       </tr>
       <tr>
-      <th colspan="2"><%= f.label :deficiency_solution_settlement, "不備解消日（決済）", class: "form-text" %></th>
+        <th><%= f.label :deficiency_remarks_settlement, "不備詳細（決済）", class: "form-text" %></th>
       </tr>
       <tr>
         <td colspan="2"><%= f.text_field :deficiency_remarks_settlement , class: "remarks-input" %></td>

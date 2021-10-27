@@ -6,6 +6,7 @@
       <%= render "shared/error_messages", model: f.object %>
       <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
     <h1>獲得情報</h1>
+    <h2>基本情報</h2>
   <table>
     <tr>
       <th>
@@ -22,7 +23,7 @@
       </th>
       <th>
         <%= f.label :status, "現状ステータス", class: "form-text" %>
-        <%= f.select :confirm_method, {
+        <%= f.select :status, {
           "未処理": "未処理", "マックス共有待ち": "マックス共有待ち",
           "キャンセル": "キャンセル","情報不足": "情報不足",
           "保留": "保留", "USEN共有待ち": "USEN共有待ち",
@@ -38,62 +39,475 @@
           "竣工図書チェック中": "竣工図書チェック中" 
           } ,{}, {class: "form-input"} %>
       </th>
+      <th>
+        <%= f.label :status_update, "ステータス更新日", class: "form-text" %>
+        <%= f.date_field :status_update , class: "form-input" %>
       </th>
     </tr>
-  <%# 一列目値 %>
     <tr>
+      <th>
+        <%= f.label :net_confirm_method, "回線確認方法", class: "form-text" %>
+        <%= f.select :net_confirm_method, {"開通案内": "開通案内","マイページ": "マイページ", "請求書": "請求書", "電話確認": "電話確認" ,"その他": "その他" } ,{}, {class: "form-input"} %>
+      </th>
+      <th>
+        <%= f.label :net_name, "回線事業者", class: "form-text" %>
+        <%= f.select :net_name, {"NTT西日本": "NTT西日本","NTT東日本": "NTT東日本", "CTC": "CTC","KDDI": "KDDI" , "J:Com": "J:Com" ,"NURO": "NURO" } ,{}, {class: "form-input"} %>
+      </th>
+      <th>
+        <%= f.label :hikari_collabo, "光コラボ", class: "form-text" %>
+        <%= f.text_field :hikari_collabo ,class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :net_plan, "回線プラン名", class: "form-text" %>
+        <%= f.text_field :net_plan ,class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :customer_num, "お客様番号", class: "form-text" %>
+        <%= f.text_field :customer_num ,class: "form-input" %>
+      </th>
+    </tr>      
+      <th>
+        <%= f.label :net_address, "回線設置住所", class: "form-text" %>
+        <%= f.text_field :net_address, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :net_contracter, "回線契約者名", class: "form-text" %>
+        <%= f.text_field :net_contracter, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :net_contracter_kana, "回線契約者名（カナ）", class: "form-text" %>
+        <%= f.text_field :net_contracter_kana, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :net_phone_number, "回線登録電話番号", class: "form-text" %>
+        <%= f.text_field :net_phone_number, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :share, "獲得共有日", class: "form-text" %>
+        <%= f.date_field :share , class: "form-input" %>
+      </th>
     </tr>
-  <%# 二列目ラベル %>
     <tr>
-      <th><%= f.label :confirm_method, "回線確認方法", class: "form-text" %></th>
-      <th><%= f.label :line_type, "回線事業者", class: "form-text" %></th>
-      <th><%= f.label :hikari_collabo, "光コラボ", class: "form-text" %></th>
-      <th><%= f.label :line_service, "回線サービス名", class: "form-text" %></th>
+      <th>
+        <%= f.label :remarks, "備考", class: "form-text" %>
+        <%= f.text_field :remarks, class: "form-input" %>
+      </th>
     </tr>
-  <%# 二列目値 %>
-    <tr>
-      <td><%= f.select :confirm_method, {"開通案内": "開通案内","マイページ": "マイページ", "請求書": "請求書","その他": "その他" } ,{}, {class: "form-input"} %></td>
-      <td><%= f.text_field :line_type ,class: "form-input" %></td>
-      <td><%= f.text_field :hikari_collabo ,class: "form-input" %></td>
-      <td><%= f.text_field :line_service ,class: "form-input" %></td>
+
+  </table>
+  <h2>情報不備</h2>
+  <table>
     </tr>
-  <%# 三列目ラベル %>
-    <tr>
-      <th><%= f.label :customer_num, "お客様番号", class: "form-text" %></th>
-      <th><%= f.label :contracter, "契約者確認", class: "form-text" %></th>
-      <th><%= f.label :femto_id, "Femto ID", class: "form-text" %></th>
-      <th><%= f.label :status, "ステータス", class: "form-text" %></th>
+      <th>
+        <%= f.label :deficiency, "情報不備発生日", class: "form-text" %>
+        <%= f.date_field :deficiency, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :status_deficiency, "情報不備ステータス", class: "form-text" %>
+        <%= f.select :status_deficiency,{"店舗情報": "店舗情報", "回線情報": "回線情報"},{include_blank: true}, {class: "form-input"} %>
+      </th>
+      <th>
+        <%= f.label :deficiency_solution, "情報不備解消日", class: "form-text" %>
+        <%= f.date_field :deficiency_solution, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :deficiency_remarks, "情報不備詳細", class: "form-text" %>
+        <%= f.text_field :deficiency_remarks, class: "form-input" %>
+      </th>
     </tr>
-  <%# 三列目値 %>
+  </table>
+  <h2>回線不備</h2>
+  <table>
     <tr>
-      <td><%= f.text_field :customer_num ,class: "form-input" %></td>
-      <td><%= f.select :contracter, {"法人名": "法人名", "代表者名": "代表者名", "担当者名": "担当者名","その他": "その他"},{},{class: "form-input"} %></td>
-      <td><%= f.text_field :femto_id, class: "form-input" %></td>
-      <td><%= f.text_field :status, class: "form-input" %></td>
+      <th>
+        <%= f.label :deficiency_net, "回線不備発生日", class: "form-text" %>
+        <%= f.date_field :deficiency_net, class: "form-input" %>
+      </th>
     </tr>
-  <%# 四列目ラベル %>
     <tr>
-      <th><%= f.label :error_status, "不備ステータス", class: "form-text" %></th>
-      <th><%= f.label :error_confirmer, "不備対応者", class: "form-text" %></th>
-      <th><%= f.label :payment, "入金日", class: "form-text" %></th>
+      <th>
+        <%= f.label :deficiency_share_net, "回線不備共有日", class: "form-text" %>
+        <%= f.date_field :deficiency_share_net, class: "form-input" %>
+      </th>
+      <th colspan="2">
+        <%= f.label :deficiency_result_net, "回線不備対応結果", class: "form-text" %>
+        <%= f.text_field :deficiency_result_net, class: "remarks-input" %>
+      </th>
+      <th>
+        <%= f.label :status_deficiency_net, "回線不備ステータス", class: "form-text" %>
+        <%= f.select :status_deficiency_net,{ 
+          "010:回線ID相違": "010:回線ID相違",
+          "020:名義相違": "020:名義相違",
+          "030:設置場所相違": "030:設置場所相違",
+          "040:名義・設置場所相違": "040:名義・設置場所相違",
+          "150:その他相違": "150:その他相違",
+          "050:特定不可": "050:特定不可",
+          "060:照合NG": "060:照合NG",
+          "070:照合NG(開通前)": "070:照合NG(開通前)",
+          "080:照合NG（タイプ対象外）": "080:照合NG（タイプ対象外）"
+          },{include_blank: true}, {class: "form-input"} %>
+      </th>
     </tr>
-  <%# 四列目値 %>
     <tr>
-      <td><%= f.select :error_status, { "010:回線ID相違": "010:回線ID相違", "020:名義相違": "020:名義相違", "030:設置場所相違": "030:設置場所相違", "040:名義・設置場所相違": "040:名義・設置場所相違", "150:その他相違": "150:その他相違", "050:特定不可": "050:特定不可", "060:照合NG": "060:照合NG","070:照合NG(開通前)": "070:照合NG(開通前)","080:照合NG（タイプ対象外）": "080:照合NG（タイプ対象外）"}, {include_blank: true}, {class: "form-input"} %></td>
-      <td><%= f.select :error_confirmer, {"営業": "営業", "管理": "管理", "クライアント": "クライアント"}, {include_blank: true} ,{class: "form-input"} %></td>
-      <td><%= f.date_field :payment, class: "form-input" %></td>
+      <th>
+        <%= f.label :deficiency_last_shared_net, "回線不備共有日（前回）", class: "form-text" %>
+        <%= f.date_field :deficiency_last_shared_net, class: "form-input" %>
+      </th>
+      <th colspan="2">
+        <%= f.label :deficiency_remarks_net, "回線不備返答詳細", class: "form-text" %>
+        <%= f.text_field :deficiency_remarks_net, class: "remarks-input" %>
+      </th>
+      <th>
+        <%= f.label :deficiency_solution_net, "回線不備解消日", class: "form-text" %>
+        <%= f.date_field :deficiency_solution_net, class: "form-input" %>
+      </th>
     </tr>
-  <%# 五列目ラベル %>
+  </table>
+  <h2>反社不備</h2>
+  <table>
     <tr>
-      <th><%= f.label :valuation_profit, "評価売上", class: "form-text" %></th>
-      <th><%= f.label :actual_profit, "実売上", class: "form-text" %></th>
-      <th><%= f.label :remarks, "備考", class: "form-text" %></th>
+      <th>
+        <%= f.label :deficiency_anti, "反社不備発生日", class: "form-text" %>
+        <%= f.date_field :deficiency_anti, class: "form-input" %>
+      </th>
     </tr>
-  <%# 五列目値 %>
     <tr>
-      <td><%= f.number_field :valuation_profit , class: "form-input" %></td>
-      <td><%= f.number_field :actual_profit , class: "form-input" %></td>
-      <td><%= f.text_field :remarks, class: "form-input" %></td>
+      <th>
+        <%= f.label :deficiency_share_anti, "反社不備共有日", class: "form-text" %>
+        <%= f.date_field :deficiency_share_anti, class: "form-input" %>
+      </th>
+      <th colspan="2">
+        <%= f.label :deficiency_result_anti, "反社不備対応結果", class: "form-text" %>
+        <%= f.text_field :deficiency_result_anti, class: "remarks-input" %>
+      </th>
+      <th>
+        <%= f.label :status_deficiency_anti, "反社不備ステータス", class: "form-text" %>
+        <%= f.select :status_deficiency_anti,{ 
+          "本店住所相違": "本店住所相違",
+          "代表取締役名相違": "代表取締役名相違",
+          "代表者住所相違": "代表者住所相違",
+          "登記情報なし": "登記情報なし",
+          "その他相違": "その他相違",
+          "複数相違": "複数相違"
+          },{include_blank: true}, {class: "form-input"} %>
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <%= f.label :deficiency_last_shared_anti, "反社不備共有日（前回）", class: "form-text" %>
+        <%= f.date_field :deficiency_last_shared_anti, class: "form-input" %>
+      </th>
+      <th colspan="2">
+        <%= f.label :deficiency_remarks_anti, "反社不備返答詳細", class: "form-text" %>
+        <%= f.text_field :deficiency_remarks_anti, class: "remarks-input" %>
+      </th>
+      <th>
+        <%= f.label :deficiency_solution_anti, "反社不備解消日", class: "form-text" %>
+        <%= f.date_field :deficiency_solution_anti, class: "form-input" %>
+      </th>
+    </tr>
+  </table>
+  <h1>端末/設置情報</h1>
+  <h2>端末情報</h2>
+  <table>
+      <th>
+        <%= f.label :order, "発注日", class: "form-text" %>
+        <%= f.date_field :order, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :arrival, "到着日", class: "form-text" %>
+        <%= f.date_field :arrival, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :femto_id, "Femt_ID", class: "form-text" %>
+        <%= f.text_field :femto_id, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :inspection, "検品", class: "form-text" %>
+        <%= f.select :inspection, {"◯": "◯", "×": "×"}, {include_blank: true}, {class: "form-input"} %>
+      </th>
+      <th>
+        <%= f.label :done_oss, "OSS登録日", class: "form-text" %>
+        <%= f.date_field :done_oss, class: "form-input" %>
+      </th>
+    </tr>
+  </table>
+  <h2>設置情報</h2>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :put_plan, "設置予定日", class: "form-text" %>
+        <%= f.date_field :put_plan, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :put, "設置日", class: "form-text" %>
+        <%= f.date_field :put, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :putter_id, "設置者", class: "form-text" %>
+        <%= f.number_field :putter_id, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :radio_waves, "電波観測", class: "form-text" %>
+        <%= f.select :radio_waves,{"◯": "◯", "×": "×"},{include_blank: true},{class: "form-input"} %>
+      </th>
+    </tr>
+
+    <tr>
+      <th>
+        <%= f.label :google_form_share, "GoogleForm", class: "form-text" %>
+        <%= f.date_field :google_form_share, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :status_put, "報告内容", class: "form-text" %>
+        <%= f.select :status_put,{
+          "完了": "完了",
+          "Casa未接続（設置日時の変更）": "Casa未接続（設置日時の変更）",
+          "Casa未接続（空きポート無し）": "Casa未接続（空きポート無し）",
+          "Casa未接続（プロバイダ情報なし）": "Casa未接続（プロバイダ情報なし）",
+          "Casa未接続（空きスペース無し）": "Casa未接続（空きスペース無し）",
+          "Casa未接続（コードが届かない）": "Casa未接続（コードが届かない）",
+          "Casa未接続（IPv6非対応）": "Casa未接続（IPv6非対応）",
+          "Casa未接続（光回線非対応）": "Casa未接続（光回線非対応）",
+          "Casa未接続（光回線なし）": "Casa未接続（光回線なし）",
+          "Casa未接続（その他）": "Casa未接続（その他）",
+          "障害（Casa未接続、電波吹かない）": "障害（Casa未接続、電波吹かない）"},{include_blank: true},{class: "form-input"} %>
+      </th>
+    </tr>
+  </table>
+  <h1>図書情報</h1>
+  <h2>図書</h2>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :status_book, "図書ステータス", class: "form-text" %>
+        <%= f.select :status_book,{
+          "完了": "完了",
+          "測定数値・設置場所": "測定数値・設置場所",
+          "設置場所": "設置場所",
+          "測定数値": "測定数値",
+          "図書作成不備": "図書作成不備",
+          "ランプ写真": "ランプ写真",
+          "写真不備": "写真不備"
+        },
+        {include_blank: true},{class: "form-input"} %>
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <%= f.label :share_book, "竣工図書提出日", class: "form-text" %>
+        <%= f.date_field :share_book, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :deficiency_remarks_book, "図書不備詳細", class: "form-text" %>
+        <%= f.text_field :deficiency_remarks_book, class: "remarks-input" %>
+      </th>
+      <th>
+        <%= f.label :deficiency_book, "図書不備発生日", class: "form-text" %>
+        <%= f.date_field :deficiency_book, class: "form-input" %>
+      </th>
+    </tr>
+    <tr>
+      <th>
+        <%= f.label :deficiency_solution_book, "図書不備解消日", class: "form-text" %>
+        <%= f.date_field :deficiency_solution_book, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :deficiency_result_book, "図書不備対応結果", class: "form-text" %>
+        <%= f.text_field :deficiency_result_book, class: "remarks-input" %>
+      </th>
+      <th>
+        <%= f.label :done_book, "竣工図書承認日", class: "form-text" %>
+        <%= f.date_field :done_book, class: "form-input" %>
+      </th>
+    </tr>
+  </table>
+  <h2>未完図書</h2>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :share_undone_book, "未完図書提出日", class: "form-text" %>
+        <%= f.date_field :share_undone_book, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :status_undone_book, "未完図書ステータス", class: "form-text" %>
+        <%= f.select :status_undone_book,{
+          "完了": "完了",
+          "測定数値・設置場所": "測定数値・設置場所",
+          "設置場所": "設置場所",
+          "測定数値": "測定数値",
+          "図書作成不備": "図書作成不備",
+          "ランプ写真": "ランプ写真",
+          "写真不備": "写真不備"
+        },
+        {include_blank: true},{class: "form-input"} %>
+      </th>
+      <th>
+        <%= f.label :deficiency_solution_undone_book, "未完図書不備解消日", class: "form-text" %>
+        <%= f.date_field :deficiency_solution_undone_book, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :done_undone_book, "未完図書承認日", class: "form-text" %>
+        <%= f.date_field :done_undone_book, class: "form-input" %>
+      </th>
+    </tr>
+  </table>
+  <h1>システム調整</h1>
+  <h2>基本情報</h2>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :radio_waves_undone, "未完後電波観測", class: "form-text" %>
+        <%= f.select :radio_waves_undone,{"◯": "◯", "×": "×"},{include_blank: true},{class: "form-input"} %>
+      </th>
+      <th>
+        <%= f.label :put_adjustment, "設置日", class: "form-text" %>
+        <%= f.date_field :put_adjustment, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :adjustmenter_id, "対応者", class: "form-text" %>
+        <%= f.number_field :adjustmenter_id, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :share_adjustment, "提出日", class: "form-text" %>
+        <%= f.date_field :share_adjustment, class: "form-input" %>
+      </th>
+    </tr>
+  </table>
+  <h2>不備情報</h2>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :deficiency_adjustment, "不備発生日", class: "form-text" %>
+        <%= f.date_field :deficiency_adjustment, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :deficiency_solution_adjustment, "不備解消日", class: "form-text" %>
+        <%= f.date_field :deficiency_solution_adjustment, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :google_form_share_adjustment, "GoogleForm", class: "form-text" %>
+        <%= f.date_field :google_form_share_adjustment, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :adjustment_status, "報告内容", class: "form-text" %>
+        <%= f.select :adjustment_status,{
+          "完了": "完了",
+          "Casa未接続（設置日時の変更）": "Casa未接続（設置日時の変更）",
+          "Casa未接続（空きポート無し）": "Casa未接続（空きポート無し）",
+          "Casa未接続（プロバイダ情報なし）": "Casa未接続（プロバイダ情報なし）",
+          "Casa未接続（空きスペース無し）": "Casa未接続（空きスペース無し）",
+          "Casa未接続（コードが届かない）": "Casa未接続（コードが届かない）",
+          "Casa未接続（IPv6非対応）": "Casa未接続（IPv6非対応）",
+          "Casa未接続（光回線非対応）": "Casa未接続（光回線非対応）",
+          "Casa未接続（光回線なし）": "Casa未接続（光回線なし）",
+          "Casa未接続（その他）": "Casa未接続（その他）",
+          "障害（Casa未接続、電波吹かない）": "障害（Casa未接続、電波吹かない）"},{include_blank: true},{class: "form-input"} %>
+      </th>
+      <th>
+        <%= f.label :done_adjustment, "調整図書承認日", class: "form-text" %>
+        <%= f.date_field :done_adjustment, class: "form-input" %>
+      </th>
+    </tr>
+  </table>
+  <h1>申込書/覚書</h1>
+  <h2>申込書</h2>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :share_app, "提出日", class: "form-text" %>
+        <%= f.date_field :share_app, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :app_create, "作成日", class: "form-text" %>
+        <%= f.date_field :app_create, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :status_app, "申込書状況", class: "form-text" %>
+        <%= f.select :status_app,{
+          "確認中": "確認中",
+          "不備有り": "不備有り",
+          "受領待ち": "受領待ち",
+          "受領済み": "受領済み"
+          },{include_blank: true},{class: "form-input"} %>
+      </th>
+      <th>
+        <%= f.label :done_app, "楽天受理日", class: "form-text" %>
+        <%= f.date_field :done_app, class: "form-input" %>
+      </th>
+    </tr>
+  </table>
+  <h2>覚書</h2>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :share_memo, "提出日", class: "form-text" %>
+        <%= f.date_field :share_memo, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :memo_create, "作成日", class: "form-text" %>
+        <%= f.date_field :memo_create, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :status_memo, "申込書状況", class: "form-text" %>
+        <%= f.select :status_memo,{
+          "確認中": "確認中",
+          "不備有り": "不備有り",
+          "受領待ち": "受領待ち",
+          "受領済み": "受領済み"
+          },{include_blank: true},{class: "form-input"} %>
+      </th>
+      <th>
+        <%= f.label :done_memo, "楽天受理日", class: "form-text" %>
+        <%= f.date_field :done_memo, class: "form-input" %>
+      </th>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :letter_pack_num1, "レターパック追跡番号①", class: "form-text" %>
+        <%= f.text_field :letter_pack_num1, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :letter_pack_num2, "レターパック追跡番号②", class: "form-text" %>
+        <%= f.text_field :letter_pack_num2, class: "form-input" %>
+      </th>
+    </tr>
+  </table>
+  <h1>入金/売上</h1>
+  <h2>入金</h2>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :payment, "獲得入金日", class: "form-text" %>
+        <%= f.date_field :payment, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :payment_put, "設置入金日", class: "form-text" %>
+        <%= f.date_field :payment_put, class: "form-input" %>
+      </th>
+    </tr>
+  </table>
+  <h2>売上</h2>
+  <table>
+    <tr>
+      <th>
+        <%= f.label :valuation_new, "評価売上（新規）", class: "form-text" %>
+        <%= f.number_field :valuation_new, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :valuation_put, "評価売上（設置）", class: "form-text" %>
+        <%= f.number_field :valuation_put, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :profit_new, "実売上（新規）", class: "form-text" %>
+        <%= f.number_field :profit_new, class: "form-input" %>
+      </th>
+      <th>
+        <%= f.label :profit_put, "実売上（設置）", class: "form-text" %>
+        <%= f.number_field :profit_put, class: "form-input" %>
+      </th>
     </tr>
   </table>
     <%= f.submit "登録", class: "submit-btn" %>

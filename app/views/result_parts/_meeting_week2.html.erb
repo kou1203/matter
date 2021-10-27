@@ -1,0 +1,92 @@
+    <%# シフト %>
+        <% new_shift = 0 %>
+        <% settlement_shift = 0 %>
+        <% summit_shift = 0 %>
+        <% casa_shift = 0 %>
+        <% casa_put_shift = 0 %>
+        <% panda_shift = 0 %>
+        <% ojt_shift = 0 %>
+        <% house_work_shift = 0 %>
+  <%# シフト %>
+    <% @results.each do |result| %>
+    <table>
+      <tr>
+        <th class="shift-th">シフト（内訳）</th>
+        <th class="shift-th">予定</th>
+        <th class="shift-th">消化</th>
+        <th class="shift-th">残シフト</th>
+        <th class="shift-th">欠勤</th>
+      </tr>
+        <% @shifts.each do |shift| %>
+          <% if shift.year == result.date.year && shift.month == result.date.month && shift.user.name == result.user.name %>
+            <% new_shift = shift.cashless_new %>
+            <% settlement_shift = shift.cashless_settlement %>
+            <% summit_shift = shift.summit %>
+            <% casa_shift = shift.rakuten_casa %>
+            <% casa_put_shift= shift.rakuten_casa_put %>
+            <% panda_shift = shift.panda %>
+            <% ojt_shift = shift.ojt %>
+            <% house_work_shift = shift.house_work %> 
+          <% end %>
+        <% end %>
+    <% break %>
+    <% end %>
+      <tr>
+        <td >キャッシュレス新規</td><%# 欠勤 %>
+        <td ><%= new_shift %></td>
+        <td ><%= digestion_new = @results.where(shift: "キャッシュレス新規").length %></td>
+        <td ><%= new_shift - digestion_new %></td>
+        <td style="color:red; font-weight:bold;"><%= absence = @results.where(shift: "欠勤").length %></td>
+      </tr>
+      <tr>
+        <td >キャッシュレス決済</td>
+        <td ><%= settlement_shift %></td>
+        <td ><%= digestion_settlement = @results.where(shift: "キャッシュレス決済").length %></td>
+        <td ><%= settlement_shift - digestion_settlement %></td>
+      </tr>
+      <tr>
+        <td>サミット</td>
+        <td ><%= summit_shift %></td>
+        <td ><%= digestion_summit = @results.where(shift: "サミット").length %></td>
+        <td ><%= summit_shift - digestion_summit %></td>
+      </tr>
+      <tr>
+        <td>パンダ</td>
+        <td ><%= panda_shift %></td>
+        <td ><%= digestion_panda = @results.where(shift: "パンダ").length %></td>
+        <td ><%= panda_shift - digestion_panda %></td>
+      </tr>
+      <tr>
+        <td>楽天フェムト新規</td>
+        <td ><%= casa_shift %></td>
+        <td ><%= digestion_casa = @results.where(shift: "フェムト").length %></td>
+        <td ><%= casa_shift - digestion_casa %></td>
+      </tr>
+      <tr>
+        <td>楽天フェムト設置</td>
+        <td ><%= casa_put_shift %></td>
+        <td ><%= digestion_casa_put = @results.where(shift: "楽天フェムト設置").length %></td>
+        <td ><%= casa_put_shift - digestion_casa_put %></td>
+      </tr>
+      <tr>
+        <td>帯同</td>
+        <td ><%= ojt_shift %></td>
+        <td ><%= digestion_ojt = @results.where(shift: "帯同").length %></td>
+        <td ><%= ojt_shift - digestion_ojt %></td>
+      </tr>
+      <tr>
+        <td>内勤</td>
+        <td ><%= house_work_shift %></td>
+        <td ><%= digestion_house_work = @results.where(shift: "内勤").length %></td>
+        <td ><%= house_work_shift - digestion_house_work %></td>
+      </tr>
+      <tr>
+        <td>合計</td>
+        <td class="td-sum"><%= shift_sum = new_shift + settlement_shift + summit_shift + panda_shift + casa_shift + casa_put_shift + ojt_shift + house_work_shift %></td>
+            <td ><%= digestion_sum = digestion_new + digestion_settlement + digestion_summit + digestion_panda + digestion_casa + digestion_casa_put + digestion_ojt + digestion_house_work + absence %></td>
+        <td ><%= shift_sum - digestion_sum %></td>
+      </tr>
+    </table>
+    <% if shift_sum == 0 %>
+      <h2 class="warning">予定シフトがありません。シフト申請を行ってください</h2>
+    <% end %>

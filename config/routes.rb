@@ -76,13 +76,16 @@ Rails.application.routes.draw do
   resources :results do 
     get 'result_cashes/new'
     post 'result_cashes/create'
-    get 'result_rakuten_casas/new'
-    post 'result_rakuten_casas/create'
+    get 'result_casas/new'
+    post 'result_casas/create'
+    get 'result_summits/new'
+    post 'result_summits/create'
     collection { post :import }
   end  
 
   resources :result_cashes, expect: [:new, :create]
   resources :result_rakuten_casas, expect: [:new, :create]
+  resources :result_summits, expect: [:new, :create]
   
   resources :n_results do 
     collection { post :import }

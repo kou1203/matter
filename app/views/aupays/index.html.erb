@@ -133,8 +133,12 @@
       <th >法人/個人</th>
       <th >店舗名</th>
       <th >審査ステータス</th>
+      <th >不備発生日</th>
+      <th >不備解消日</th>
       <th >初回決済日</th>
       <th >決済期限</th>
+      <th >決済不備発生日</th>
+      <th >決済不備解消日</th>
       <th >入金日</th>
     </tr>
     <% @aupays.find_each do |aupay| %>
@@ -145,8 +149,12 @@
       <td ><%= aupay.store_prop.race %></td>
       <td ><%= aupay.store_prop.name %></td>
       <td ><%= aupay.status %></td>
+      <td ><%= aupay.deficiency %></td>
+      <td ><%= aupay.deficiency_solution %></td>
       <td ><%= aupay.settlement %></td>
       <td ><%= aupay.settlement_deadline %></td>
+      <td ><%= aupay.deficiency_settlement %></td>
+      <td ><%= aupay.deficiency_solution_settlement %></td>
       <td ><%= aupay.payment %></td>
     </tr>
     <% end %>

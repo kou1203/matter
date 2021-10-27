@@ -3,40 +3,91 @@ class ResultsController < ApplicationController
   def index 
     @q = Result.includes(:user).ransack(params[:q])
     @results = 
-      if params[:q].nil? 
-        Result.none 
-      else    
-        @q.result(distinct: false).order(date: :asc)
-      end
+    if params[:q].nil? 
+      Result.none 
+    else    
+      @q.result(distinct: false).order(date: :asc)
+    end
       @shifts = Shift.all
-      # 商材
-      @dmers = Dmer.all 
-      @aupays = Aupay.all 
-      @paypays = Paypay.all 
-      @rakuten_pays = RakutenPay.all
-      @st_insurances = StInsurance.all
-      @summits = Summit.all
-      @costs = Cost.all 
-      
-      @result_month = Result.includes(:user).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
-      @shift_month = Shift.includes(:user).where(year: Date.today.year).where(month: Date.today.month)
+      # 個別利益表
+      if params[:q].nil?
+      else
+        # dメル　新規
+          @dmers_user = Dmer.where(user_id: @results.first.user_id )
+          @dmers_this_month = @dmers_user.where(date: @results.minimum(:date)..@results.maximum(:date))
+          @dmers_not_this_month = @dmers_user.where.not(date: @results.minimum(:date)..@results.maximum(:date))
+          @dmers_inc = @dmers_not_this_month.where(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))
+          @dmers_dec = @dmers_not_this_month.where(deficiency: @results.minimum(:date)..@results.maximum(:date))
+          @dmers_def_this_month = @dmers_this_month.where.not(deficiency: nil).where(deficiency_solution: nil).or(@dmers_this_month.where.not(deficiency: nil).where.not(deficiency_solution: @results.minimum(:date)..@results.maximum(:date)))
+          @dmers_no_def_this_month = @dmers_this_month.where(deficiency: nil).or(@dmers_this_month.where.not(deficiency: nil).where(deficiency_solution: @results.minimum(:date)..@results.maximum(:date)))
+        # dメル　決済
+          @dmers_slmt_this_month = @dmers_user.where(settlement: @results.minimum(:date)..@results.maximum(:date))
+          @dmers_slmt_not_this_month = @dmers_user.where.not(settlement: @results.minimum(:date)..@results.maximum(:date))
+          @dmers_slmt_inc = @dmers_slmt_not_this_month.where(deficiency_solution_settlement: @results.minimum(:date)..@results.maximum(:date))
+          @dmers_slmt_dec = @dmers_slmt_not_this_month.where(deficiency_settlement: @results.minimum(:date)..@results.maximum(:date))
+          @dmers_slmt_def_this_month = @dmers_slmt_this_month.where.not(deficiency_settlement: nil).where(deficiency_solution_settlement: nil).or(@dmers_slmt_this_month.where.not(deficiency_settlement: nil).where.not(deficiency_solution_settlement: @results.minimum(:date)..@results.maximum(:date)))
+          @dmers_slmt_no_def_this_month = @dmers_slmt_this_month.where(deficiency_settlement: nil).or(@dmers_slmt_this_month.where.not(deficiency_settlement: nil).where(deficiency_solution_settlement: @results.minimum(:date)..@results.maximum(:date)))
+        # aupay　新規
+          @aupays_user = Aupay.where(user_id: @results.first.user_id )
+          @aupays_this_month = @aupays_user.where(date: @results.minimum(:date)..@results.maximum(:date))
+          @aupays_not_this_month = @aupays_user.where.not(date: @results.minimum(:date)..@results.maximum(:date))
+          @aupays_inc = @aupays_not_this_month.where(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))
+          @aupays_dec = @aupays_not_this_month.where(deficiency: @results.minimum(:date)..@results.maximum(:date))
+          @aupays_def_this_month = @aupays_this_month.where.not(deficiency: nil).where(deficiency_solution: nil).or(@aupays_this_month.where.not(deficiency: nil).where.not(deficiency_solution: @results.minimum(:date)..@results.maximum(:date)))
+          @aupays_no_def_this_month = @aupays_this_month.where(deficiency: nil).or(@aupays_this_month.where.not(deficiency: nil).where(deficiency_solution: @results.minimum(:date)..@results.maximum(:date)))
+        # aupay　決済
+          @aupays_slmt_this_month = @aupays_user.where(settlement: @results.minimum(:date)..@results.maximum(:date))
+          @aupays_slmt_not_this_month = @aupays_user.where.not(settlement: @results.minimum(:date)..@results.maximum(:date))
+          @aupays_slmt_inc = @aupays_slmt_not_this_month.where(deficiency_solution_settlement: @results.minimum(:date)..@results.maximum(:date))
+          @aupays_slmt_dec = @aupays_slmt_not_this_month.where(deficiency_settlement: @results.minimum(:date)..@results.maximum(:date))
+          @aupays_slmt_def_this_month = @aupays_slmt_this_month.where.not(deficiency_settlement: nil).where(deficiency_solution_settlement: nil).or(@aupays_slmt_this_month.where.not(deficiency_settlement: nil).where.not(deficiency_solution_settlement: @results.minimum(:date)..@results.maximum(:date)))
+          @aupays_slmt_no_def_this_month = @aupays_slmt_this_month.where(deficiency_settlement: nil).or(@aupays_slmt_this_month.where.not(deficiency_settlement: nil).where(deficiency_solution_settlement: @results.minimum(:date)..@results.maximum(:date)))
+        # paypay
+            @paypays_user = Paypay.where(user_id: @results.first.user_id )
+            @paypays_this_month = @paypays_user.where(date: @results.minimum(:date)..@results.maximum(:date))
+            @paypays_def_this_month = @paypays_user.where(deficiency: @results.minimum(:date)..@results.maximum(:date)).where(deficiency_solution: nil)
+            @paypays_no_def_this_month = @paypays_this_month.where(deficiency: nil).or(@paypays_this_month.where.not(deficiency: nil).where(deficiency_solution: @results.minimum(:date)..@results.maximum(:date)))
+        # 少額短期保険
+          @st_insurances_user = StInsurance.where(user_id: @results.first.user_id )
+          @st_insurances_this_month = @st_insurances_user.where(date: @results.minimum(:date)..@results.maximum(:date))
+          @st_insurances_def_this_month = @st_insurances_user.where(deficiency: @results.minimum(:date)..@results.maximum(:date)).where(deficiency_solution: nil)
+          @st_insurances_no_def_this_month = @st_insurances_this_month.where(deficiency: nil).or(@st_insurances_this_month.where.not(deficiency: nil).where(deficiency_solution: @results.minimum(:date)..@results.maximum(:date)))
+        # 楽天ペイ
+          @rakuten_pays_user = RakutenPay.where(user_id: @results.first.user_id )
+          @rakuten_pays_this_month = @rakuten_pays_user.where(date: @results.minimum(:date)..@results.maximum(:date))
+          @rakuten_pays_not_this_month = @rakuten_pays_user.where.not(date: @results.minimum(:date)..@results.maximum(:date))
+          @rakuten_pays_inc = @rakuten_pays_not_this_month.where(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))
+          @rakuten_pays_dec = @rakuten_pays_not_this_month.where(deficiency: @results.minimum(:date)..@results.maximum(:date))
+          @rakuten_pays_def_this_month = @rakuten_pays_this_month.where.not(deficiency: nil).where(deficiency_solution: nil)
+          @rakuten_pays_no_def_this_month = @rakuten_pays_this_month.where(deficiency: nil).or(@rakuten_pays_this_month.where.not(deficiency: nil).where(deficiency_solution: @results.minimum(:date)..@results.maximum(:date)))
+        # 楽天フェムト新規
+          @rakuten_casas_user = RakutenCasa.where(user_id: @results.first.user_id)
+          @rakuten_casas_this_month = @rakuten_casas_user.where(date: @results.minimum(:date)..@results.maximum(:date))
+          @rakuten_casas_not_this_month = @rakuten_casas_user.where.not(date: @results.minimum(:date)..@results.maximum(:date))
+          @rakuten_casas_inc = @rakuten_casas_not_this_month.where(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))
+          @rakuten_casas_dec = @rakuten_casas_not_this_month.where(deficiency: @results.minimum(:date)..@results.maximum(:date))
 
-    @result_week1 = Result.where(date: Time.now.beginning_of_month..Time.now.beginning_of_month.next_week(:monday))
-    @result_week2 = Result.where(date: Time.now.beginning_of_month.next_week(:tuesday)..Time.now.beginning_of_month.next_week(:monday).since(7.days))
-    @result_week3 = Result.where(date: Time.now.beginning_of_month.next_week(:tuesday).since(7.days)..Time.now.beginning_of_month.next_week(:monday).since(14.days))
-    @result_week4 = Result.where(date: Time.now.beginning_of_month.next_week(:tuesday).since(14.days)..Time.now.end_of_month)
-    @result_before_month = Result.where(date: Time.now.months_ago(1).beginning_of_month..Time.now.months_ago(1).end_of_month)
-
-    @chubu_group = Result.includes(:user).where(users: {base: "中部SS"}).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
-    @chubu_cash = @chubu_group.where(shift: "キャッシュレス新規")
-    
-    @kansai_group = Result.includes(:user).where(users: {base: "関西SS"}).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
-    @kansai_cash = @kansai_group.where(shift: "キャッシュレス新規")
-    
-    @tokyo_group = Result.includes(:user).where(users: {base: "関東SS"}).where(date: Time.now.beginning_of_month..Time.now.end_of_month)
-    @tokyo_cash = @tokyo_group.where(shift: "キャッシュレス新規").or(@tokyo_group.where(shift: "パンダ"))
-
-    @users = User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").where.not(base: "")
+          @rakuten_casas_def_this_month = @rakuten_casas_this_month.where.not(deficiency: nil).where(deficiency_solution: nil).or(@rakuten_casas_this_month.where.not(deficiency: nil).where.not(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))).or(@rakuten_casas_this_month.where.not(deficiency_net: nil).where(deficiency_solution_net: nil)).or(@rakuten_casas_this_month.where.not(deficiency_net: nil).where.not(deficiency_solution_net: @results.minimum(:date)..@results.maximum(:date))).or(@rakuten_casas_this_month.where.not(deficiency_anti: nil).where(deficiency_solution_anti: nil)).or(@rakuten_casas_this_month.where.not(deficiency_anti: nil).where(deficiency_solution_anti: @results.minimum(:date)..@results.maximum(:date)))
+        # 楽天フェムト設置
+          @rakuten_casas_put = @rakuten_casas_user.where(put: @results.minimum(:date)..@results.maximum(:date))
+          # 設置
+          @rakuten_casas_put_self = @rakuten_casas_put.where(putter_id: @results.first.user_id)
+          # 他者設置
+          @rakuten_casas_put_other = RakutenCasa.where.not(user_id: @results.first.user_id).where(putter_id: @rakuten_casas_user).where(put: @results.minimum(:date)..@results.maximum(:date))
+          # 設置依頼
+          @rakuten_casas_put_request = @rakuten_casas_put.where.not(putter_id: @results.first.user_id)
+      end
+      # グラフパラメーター
+      @all_store = (@results.sum(:cafe_visit) + @results.sum(:other_food_visit) + @results.sum(:cafe_visit) + @results.sum(:other_retail_visit) + @results.sum(:hair_salon_visit) + @results.sum(:other_service_visit)).to_f
+      @chart = [
+        ["喫茶・カフェ", (@results.sum(:cafe_visit).to_f / @all_store * 100).round(1) ],
+        ["その他飲食", (@results.sum(:other_food_visit).to_f / @all_store * 100).round(1) ],
+        ["車屋", (@results.sum(:cafe_visit).to_f / @all_store * 100).round(1) ],
+        ["その他小売", (@results.sum(:other_retail_visit).to_f / @all_store * 100).round(1) ],
+        ["理容・美容", (@results.sum(:hair_salon_visit).to_f / @all_store * 100).round(1) ],
+        ["整体・鍼灸", (@results.sum(:manipulative_visit).to_f / @all_store * 100).round(1) ],
+        ["その他サービス", (@results.sum(:other_service_visit).to_f / @all_store * 100).round(1) ],
+      ]
   end 
 
   def new 
@@ -51,7 +102,9 @@ class ResultsController < ApplicationController
       if @result.shift == "キャッシュレス新規"
         redirect_to  result_result_cashes_new_path(@result.id)
       elsif @result.shift == "楽天フェムト新規"
-        redirect_to  result_result_rakuten_casas_new_path(@result.id)
+        redirect_to  result_result_casas_new_path(@result.id)
+      elsif @result.shift == "サミット"
+        redirect_to  result_result_summits_new_path(@result.id)
       else  
         redirect_to results_path
       end  
@@ -59,11 +112,6 @@ class ResultsController < ApplicationController
       render :new 
     end
   end
-
-  def import 
-    Result.import(params[:file])
-    redirect_to results_path
-  end 
 
   def show 
     @result = Result.find(params[:id])
@@ -84,12 +132,14 @@ class ResultsController < ApplicationController
   def update 
     @result = Result.find(params[:id])
     @result.update(result_params)
-    redirect_to results_path
+      redirect_to results_path
   end
 
 
-
   private
+
+
+
   def result_params
     params.require(:result).permit(
       :user_id,
@@ -131,76 +181,6 @@ class ResultsController < ApplicationController
       # その他・サービス
       :other_service_visit          ,
       :other_service_get    ,
-    # # サミット
-    #   # NG
-    #   :summit_no_detail,
-    #   :summit_ng_detail,
-    #   # 引き落とし拒否
-    #   :summit_reject_cash_interview,      
-    #   :summit_reject_cash_full_talk ,     
-    #   :summit_reject_cash_get  ,
-    #   # 忙しい
-    #   :summit_busy_interview   ,   
-    #   :summit_busy_full_talk    ,  
-    #   :summit_busy_get  ,
-    #   # 怪しい
-    #   :summit_doubt_interview   ,   
-    #   :summit_doubt_full_talk    ,  
-    #   :summit_doubt_get  ,
-    #   # 検討
-    #   :summit_yet_interview ,     
-    #   :summit_yet_full_talk  ,    
-    #   :summit_yet_get  ,
-    #   # 変えたくない
-    #   :summit_not_change_interview   ,   
-    #   :summit_not_change_full_talk    ,  
-    #   :summit_not_change_get  ,
-    #   # 情報不足
-    #   :summit_lack_info_interview,
-    #   :summit_lack_info_full_talk,
-    #   :summit_lack_info_get,
-    #   # その他
-    #   :summit_other_interview  ,    
-    #   :summit_other_full_talk   ,   
-    #   :summit_other_get  ,
-    #   # ぺろ
-    #   :summit_easy_interview  ,    
-    #   :summit_easy_full_talk   ,   
-    #   :summit_easy_get  , 
-    # # パンダ
-    #   :panda_not_need_interview,      
-    #   :panda_not_need_full_talk,      
-    #   :panda_not_need_get, 
-    #   :panda_busy_interview,      
-    #   :panda_busy_full_talk,      
-    #   :panda_busy_get, 
-    #   :panda_yet_interview,      
-    #   :panda_yet_full_talk,      
-    #   :panda_yet_get, 
-    #   :panda_not_delivery_interview,      
-    #   :panda_not_delivery_full_talk,      
-    #   :panda_not_delivery_get, 
-    #   :panda_not_increment_interview,      
-    #   :panda_not_increment_full_talk,      
-    #   :panda_not_increment_get, 
-    #   :panda_not_margin_interview,      
-    #   :panda_not_margin_full_talk,      
-    #   :panda_not_margin_get, 
-    #   :panda_dull_interview,      
-    #   :panda_dull_full_talk,      
-    #   :panda_dull_get, 
-    #   :panda_lack_info_interview,      
-    #   :panda_lack_info_full_talk,     
-    #   :panda_lack_info_get,
-    #   :panda_food_neko_interview,      
-    #   :panda_food_neko_full_talk,     
-    #   :panda_food_neko_get,
-    #   :panda_other_interview,      
-    #   :panda_other_full_talk,      
-    #   :panda_other_get, 
-    #   :panda_easy_interview,      
-    #   :panda_easy_full_talk,      
-    #   :panda_easy_get,
     )
   end 
 end

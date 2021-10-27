@@ -59,7 +59,7 @@ class Paypay < ApplicationRecord
       u_id = user.id if user.present?
       store_id = store_prop.id if store_prop.present?
       paypay = find_by(store_prop_id:  store_prop.id)
-      if store_prop.paypay.present? && StInsurance.find_by(customer_num: row["お申込み番号"]).present? 
+      if store_prop.paypay.present? && Paypay.find_by(customer_num: row["お申込み番号"]).present? 
         paypay.assign_attributes(
           customer_num: row["上位店管理番号"],
           client: row["商流"],

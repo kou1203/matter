@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ResultRakutenCasasControllerTest < ActionDispatch::IntegrationTest
+class ResultCasasControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
   #   assert true
   # end

@@ -1,14 +1,14 @@
-class ResultCashesController < ApplicationController
+class ResultSummitsController < ApplicationController
 
   def new 
-    @result_cash = ResultCash.new 
+    @result_summit = ResultSummit.new 
     @result = Result.find(params[:result_id])
   end 
   
   def create 
+    @result_summit = ResultSummit.new(result_summit_params)
     @result = Result.find(params[:result_id])
-    @result_cash = ResultCash.new(result_cash_params)
-    if @result_cash.save 
+    if @result_summit.save 
       redirect_to results_path
     else  
       render :new 
@@ -16,25 +16,32 @@ class ResultCashesController < ApplicationController
   end
 
   def show 
-    @result_cash = ResultCash.find(params[:id])
+    @result_summit = ResultSummit.find(params[:id])
+    @q = Result.ransack(params[:q])
+    @results = 
+    if params[:q].nil? 
+      Result.none 
+    else    
+      @q.result(distinct: false)
+    end
 
   end 
 
   def edit 
-    @result_cash = ResultCash.find(params[:id])
+    @result = ResultSummit.find(params[:id])
   end 
   
   def update 
-    @result_cash = ResultCash.find(params[:id])
-    @result_cash.update(result_cash_params)
+    @result_summit = ResultSummit.find(params[:id])
+    @result_summit.update(result_summit_params)
     redirect_to results_path
   end
 
 
 
   private
-  def result_cash_params
-    params.require(:result_cash).permit(
+  def result_summit_params
+    params.require(:result_summit).permit(
       :result_id,
       # 対象外・NG
       :ng_01,

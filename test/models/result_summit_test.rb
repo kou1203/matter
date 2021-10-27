@@ -1,6 +1,6 @@
 require "test_helper"
 
-class ResultRakutenCasaTest < ActiveSupport::TestCase
+class ResultSummitTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

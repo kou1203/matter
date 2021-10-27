@@ -54,7 +54,8 @@
       <% else %>
       <h1>表示範囲：<%= @dmers.minimum(:date) %>（<%= days[@dmers.minimum(:date).wday] %>）〜<%= @dmers.maximum(:date) %>（<%= days[@dmers.maximum(:date).wday] %>）</h1>
         <% settlement_subject = @dmers.where.not(settlement_deadline: nil).length %>
-        <% settlement_done = @dmers.where.not(settlement: nil).length %>
+        <% settlement_done = @dmers.where.not(settlement: nil).length - 
+           @dmers.where.not(settlement: nil).where.not(deficiency_settlement: nil).where(deficiency_solution_settlement: nil).length %>
         <% settlement_expired = @dmers.where(settlement: nil).where(settlement_deadline: Time.now.years_ago(5)..Time.now).length  %>
         <% dmer_sum = @dmers.where.not(status: "申込取消").where.not(status: "審査NG").where.not(status: "自社不備").sum(:profit_new) %>
         <% hubi = @dmers.where(status: '自社不備' ).length %>
@@ -131,8 +132,13 @@
       <th >店舗名</th>
       <th >獲得者</th>
       <th >審査ステータス</th>
+      <th >不備・N G発生日</th>
+      <th >不備・N G解消日</th>
       <th >初回決済日</th>
       <th >決済期限</th>
+      <th >決済ステータス</th>
+      <th >決済不備・N G発生日</th>
+      <th >決済不備・N G解消日</th>
       <th >入金日</th>
     </tr>
     <% @dmers.find_each do |dmer| %>
@@ -150,12 +156,13 @@
       <td class="index-td"><%= dmer.store_prop.name %></td>
       <td class="index-td"><%= dmer.user.name %></td>
       <td class="index-td"><%= dmer.status %></td>
-      <% if dmer.settlement.nil? %>
-      <td class="index-td"></td>
-      <% else %>
+      <td class="index-td"><%= dmer.deficiency %></td>
+      <td class="index-td"><%= dmer.deficiency_solution %></td>
       <td class="index-td"><%= dmer.settlement %></td>
-      <% end %>
       <td class="index-td"><%= dmer.settlement_deadline %></td>
+      <td class="index-td"><%= dmer.status_settlement %></td>
+      <td class="index-td"><%= dmer.deficiency_settlement %></td>
+      <td class="index-td"><%= dmer.deficiency_solution_settlement %></td>
       <td class="index-td"><%= dmer.payment %></td>
 
     </tr>

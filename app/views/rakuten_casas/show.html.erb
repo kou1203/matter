@@ -19,9 +19,9 @@
     </tr>
     <tr>
       <th>店舗代表</th>
-      <td><%= @rakuten_casa.store_prop.person_main %></td>
+      <td><%= @rakuten_casa.store_prop.person_main_name %></td>
       <th>店舗担当</th>
-      <td><%= @rakuten_casa.store_prop.person_sub %></td>
+      <td><%= @rakuten_casa.store_prop.person_sub_name %></td>
     </tr>
     <tr>
       <th>店舗住所</th>
@@ -56,62 +56,336 @@
       <td><%= link_to "編集", edit_store_prop_path(@rakuten_casa.store_prop.id), class: "link" %></td>
     </tr>
     </table>
-    <h1>楽天カーサ</h1>
+    <h1>獲得情報</h1>
+    <table>
+      <tr>
+        <th>獲得日</th>
+        <td><%= @rakuten_casa.date %></td>
+        <th>上位店共有日</th>
+        <td><%= @rakuten_casa.share %></td>
+      </tr>
+      <tr>
+        <th>商流</th>
+        <td><%= @rakuten_casa.client %></td>
+        <th>獲得者</th>
+        <td><%= @rakuten_casa.user.name %></td>
+      </tr>
+      <tr>
+        <th>審査ステータス</th>
+        <td><%= @rakuten_casa.status %></td>
+        <th>ステータス更新日</th>
+        <td><%= @rakuten_casa.status_update %></td>
+      </tr>
+      <tr>
+        <th>回線確認方法</th>
+        <td><%= @rakuten_casa.net_confirm_method %></td>
+        <th>回線事業者</th>
+        <td><%= @rakuten_casa.net_name %></td>
+      </tr>
+      <tr>
+        <th>光コラボ</th>
+        <td><%= @rakuten_casa.hikari_collabo %></td>
+        <th>回線プラン名</th>
+        <td><%= @rakuten_casa.net_plan %></td>
+      </tr>
+      <tr>
+        <th>お客様番号</th>
+        <td><%= @rakuten_casa.customer_num %></td>
+        <th>回線契約連絡先</th>
+        <td><%= @rakuten_casa.net_phone_number %></td>
+      </tr>
+      <tr>
+        <th>回線契約者名</th>
+        <td><%= @rakuten_casa.net_contracter %></td>
+        <th>回線契約者名（カナ）</th>
+        <td><%= @rakuten_casa.net_contracter_kana %></td>
+      </tr>
+      <tr>
+        <th colspan=4>自社不備</th>
+      </tr>
+      <tr>
+        <th>不備発生日</th>
+        <td><%= @rakuten_casa.deficiency %></td>
+        <th>不備ステータス</th>
+        <td><%= @rakuten_casa.status_deficiency %></td>
+      </tr>
+      <tr>
+        <th>不備詳細</th>
+        <td colspan="3"><%= @rakuten_casa.deficiency_remarks %></td>
+      </tr>
+      <tr>
+        <th>不備解決日</th>
+        <td><%= @rakuten_casa.deficiency_solution %></td>
+        <th>備考</th>
+        <td><%= @rakuten_casa.remarks %></td>
+      </tr>
+    </table>
+    <h1>回線不備情報</h1>
     <table>
     <tr>
+        <th>不備発生日</th>
+        <td><%= @rakuten_casa.deficiency_net %></td>
+        <th>不備ステータス</th>
+        <td><%= @rakuten_casa.status_deficiency_net %></td>
     </tr>
     <tr>
-      <th>獲得日</th>
-      <td><%= @rakuten_casa.date %></td>
-      <th>獲得者</th>
-      <td><%= @rakuten_casa.user.name %></td>
-    <tr>
-    </tr>
-      <th>契約名義</th>
-      <td><%= @rakuten_casa.contract_type %></td>
-      <th>商流</th>
-      <td><%= @rakuten_casa.client %></td>
+        <th>不備共有日</th>
+        <td><%= @rakuten_casa.deficiency_share_net %></td>
+        <th colspan="2"></th>
     </tr>
     <tr>
-      <th>契約者確認</th>
-      <td><%= @rakuten_casa.contracter %></td>
-      <th>審査ステータス</th>
-      <td><%= @rakuten_casa.status %></td>
+        <th>不備対応結果</th>
+        <td colspan="3"><%= @rakuten_casa.deficiency_result_net %></td>
     </tr>
     <tr>
-      <th>回線確認方法</th>
-      <td><%= @rakuten_casa.confirm_method %></td>
-      <th>回線事業者</th>
-      <td><%= @rakuten_casa.line_type %></td>
+        <th>前回不備共有日</th>
+        <td ><%= @rakuten_casa.deficiency_last_shared_net %></td>
+        <th colspan="2"></th>
     </tr>
     <tr>
-      <th>光コラボ</th>
-      <td><%= @rakuten_casa.hikari_collabo %></td>
-      <th>回線サービス名</th>
-      <td><%= @rakuten_casa.line_service %></td>
+        <th>不備詳細</th>
+        <td colspan="3"><%= @rakuten_casa.deficiency_remarks_net %></td>
     </tr>
     <tr>
+      <th>不備解決日</th>
+      <td><%= @rakuten_casa.deficiency_solution_net %></td>
+      <th colspan="2"></th>
+    </tr>
+  </table>
+  <h1>反社不備</h1>
+  <table>
+    <tr>
+      <th>不備発生日</th>
+      <td><%= @rakuten_casa.deficiency_anti %></td>
       <th>不備ステータス</th>
-      <td><%= @rakuten_casa.error_status %></td>
-      <th>対応ボール</th>
-      <td><%= @rakuten_casa.error_confirmer %></td>
+      <td><%= @rakuten_casa.status_deficiency_anti %></td>
     </tr>
     <tr>
-      <th>評価売上</th>
-      <td><%= @rakuten_casa.valuation_profit %></td>
-      <th>実売上</th>
-      <td><%= @rakuten_casa.actual_profit %></td>
+      <th>不備共有日</th>
+      <td><%= @rakuten_casa.deficiency_share_anti %></td>
+      <th colspan="2"></th>
     </tr>
     <tr>
-      <th>入金日</th>
-      <td><%= @rakuten_casa.payment %></td>
+      <th>不備対応結果</th>
+      <td colspan="3"><%= @rakuten_casa.deficiency_result_anti %></td>
     </tr>
     <tr>
-      <th>備考</th>
-      <td colspan="2"><%= @rakuten_casa.remarks %></td>
-    <td><%= link_to "編集", edit_rakuten_casa_path, class: "link" %></td>
+      <th>前回不備共有日</th>
+      <td ><%= @rakuten_casa.deficiency_last_shared_anti %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+      <th>不備詳細</th>
+      <td colspan="3"><%= @rakuten_casa.deficiency_remarks_anti %></td>
+    </tr>
+    <tr>
+      <th>不備解決日</th>
+      <td><%= @rakuten_casa.deficiency_solution_anti %></td>
+      <th colspan="2"></th>
     </tr>
     </table>
+    <h1>端末情報</h1>
+    <table>
+      <tr>
+        <th>発注日</th>
+        <td><%= @rakuten_casa.order %></td>
+        <th>端末到着日</th>
+        <td><%= @rakuten_casa.arrival %></td>
+      </tr>
+      <tr>
+        <th>Femt_ID</th>
+        <td><%= @rakuten_casa.femto_id %></td>
+        <th>検品</th>
+        <td><%= @rakuten_casa.inspection %></td>
+      </tr>
+      <th>OOS登録日</th>
+      <td><%= @rakuten_casa.done_oss %></td>
+      <th colspan="2"></th>
+    </table>
+    <h1>設置情報</h1>
+    <table>
+      <tr>
+        <th>設置予定日</th>
+        <td><%= @rakuten_casa.put_plan %></td>
+        <th>設置日</th>
+        <td><%= @rakuten_casa.put %></td>
+      </tr>
+      <tr>
+        <th>設置者</th>
+        <% if @rakuten_casa.putter_id.present? %>
+        <td><%= @rakuten_casa.putter.name %></td>
+        <% else %>
+        <td></td>
+        <% end %>
+        <th>電波計測</th>
+        <td><%= @rakuten_casa.radio_waves %></td>
+      </tr>
+      <tr>
+        <th>GoogleForm</th>
+        <td><%= @rakuten_casa.google_form_share %></td>
+        <th>入力内容</th>
+        <td><%= @rakuten_casa.status_put %></td>
+      </tr>
+    </table>
+    <h1>図書情報</h1>
+    <table>
+      <tr>
+        <th>竣工図書提出日</th>
+        <td><%= @rakuten_casa.share_book %></td>
+        <th>竣工図書ステータス</th>
+        <td><%= @rakuten_casa.status_book %></td>
+      </tr>
+      <tr>
+        <th>不備発生日</th>
+        <td><%= @rakuten_casa.deficiency_book %></td>
+        <th colspan="2"></th>
+      </tr>
+      <tr>
+        <th>不備詳細</th>
+        <td colspan="3"><%= @rakuten_casa.deficiency_remarks_book %></td>
+      </tr>
+      <tr>
+        <th>不備対応結果</th>
+        <td colspan="3"><%= @rakuten_casa.deficiency_result_book %></td>
+      </tr>
+      <tr>
+        <th>不備解消日</th>
+        <td><%= @rakuten_casa.deficiency_solution_book %></td>
+        <th>竣工図書承認日</th>
+        <td><%= @rakuten_casa.done_book %></td>
+      </tr>
+      <tr>
+        <th colspan="4">未完図書</th>
+      </tr>
+      <tr>
+        <th>未完図書提出日</th>
+        <td><%= @rakuten_casa.share_undone_book %></td>
+        <th>未完図書ステータス</th>
+        <td><%= @rakuten_casa.status_undone_book %></td>
+      </tr>
+      <tr>
+        <th>未完図書不備解消日</th>
+        <td><%= @rakuten_casa.deficiency_solution_undone_book %></td>
+        <th>未完図書承認日</th>
+        <td><%= @rakuten_casa.done_undone_book %></td>
+      </tr>
+    </table>
+    <h1>システム調整</h1>
+    <table>
+      <tr>
+        <th>未完後電波観測</th>
+        <td><%= @rakuten_casa.radio_waves_undone %></td>
+        <th>システム調整設置日</th>
+        <td><%= @rakuten_casa.put_adjustment %></td>
+      </tr>
+      <tr>
+        <th>システム調整対応者</th>
+        <% if @rakuten_casa.adjustmenter_id.present? %>
+        <td><%= @rakuten_casa.adjustmenter.name %></td>
+        <% else %>
+        <td></td>
+        <% end %>
+        <th>システム調整提出日</th>
+        <td><%= @rakuten_casa.share_adjustment %></td>
+      </tr>
+      <tr>
+        <th>不備解消日</th>
+        <td><%= @rakuten_casa.deficiency_solution_adjustment %></td>
+        <th colspan="2"></th>
+      </tr>
+        <th>GoogleForm</th>
+        <td><%= @rakuten_casa.google_form_share_adjustment %></td>
+        <th>入力内容</th>
+        <td><%= @rakuten_casa.adjustment_status %></td>
+      </tr>
+      <tr>
+        <th>調整図書承認日</th>
+        <td><%= @rakuten_casa.done_adjustment %></td>
+        <th colspan="2"></th>
+      </tr>
+    </table>
+    <h1>申込書</h1>
+    <table>
+      <tr>
+        <th>提出日</th>
+        <td><%= @rakuten_casa.share_app %></td>
+        <th>作成日</th>
+        <td><%= @rakuten_casa.app_create %></td>
+      </tr>
+      <tr>
+        <th>ステータス</th>
+        <td><%= @rakuten_casa.status_app %></td>
+        <th>楽天受理日</th>
+        <td><%= @rakuten_casa.done_app %></td>
+      </tr>
+    </table>
+    <h1>覚書</h1>
+    <table>
+      <tr>
+        <th>提出日</th>
+        <td><%= @rakuten_casa.share_memo %></td>
+        <th>作成日</th>
+        <td><%= @rakuten_casa.memo_create %></td>
+      </tr>
+      <tr>
+        <th>ステータス</th>
+        <td><%= @rakuten_casa.status_memo %></td>
+        <th>楽天受理日</th>
+        <td><%= @rakuten_casa.done_memo %></td>
+      </tr>
+      <tr>
+        <th>レターパック追跡番号①</th>
+        <td><%= @rakuten_casa.letter_pack_num1 %></td>
+        <th>レターパック追跡番号②</th>
+        <td><%= @rakuten_casa.letter_pack_num2 %></td>
+      </tr>
+    </table>
+    <h1>売上・入金日</h1>
+    <table>
+      <tr>
+        <th>成果達成日①</th>
+        <td><%= @rakuten_casa.done_oss %></td>
+        <th>成果達成日②</th>
+        <% if @rakuten_casa.done_book.present? %>
+        <td><%= @rakuten_casa.done_book %></td>
+        <% elsif @rakuten_casa.done_undone_book.present? %>
+        <td><%= @rakuten_casa.done_undone_book %></td>
+        <% else %>
+        <td></td>
+        <% end  %>
+      </tr>
+      <tr>
+        <th>成果達成日③</th>
+        <td><%= @rakuten_casa.done_adjustment %></td>
+        <th colspan="2"></th>
+      </tr>
+      <tr>
+        <th>獲得入金日</th>
+        <td><%= @rakuten_casa.payment %></td>
+        <th>設置入金日</th>
+        <td><%= @rakuten_casa.payment_put %></td>
+      </tr>
+      <tr>
+        <th>評価売上（新規）</th>
+        <td><%= @rakuten_casa.valuation_new %></td>
+        <th>評価売上（設置）</th>
+        <td><%= @rakuten_casa.valuation_put %></td>
+      </tr>
+      <% if current_user.position == "権限①" %>
+      <tr>
+        <th>実売上（新規）</th>
+        <td><%= @rakuten_casa.profit_new %></td>
+        <th>実売上（設置）</th>
+        <td><%= @rakuten_casa.profit_put %></td>
+      </tr>
+      <tr>
+        <th colspan="3"></th>
+        <td><%= link_to "編集", edit_rakuten_casa_path, class: "link" %></td>
+      </tr>
+      <% else %>
+      <% end %>
+    </table>
+
   </main>
 </div>
 

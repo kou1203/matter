@@ -1,7 +1,7 @@
 class RakutenCasasController < ApplicationController
 
   def index 
-    @q = RakutenCasa.ransack(params[:q])
+    @q = RakutenCasa.includes(:store_prop).ransack(params[:q])
     @rakuten_casas = 
       if params[:q].nil?
         RakutenCasa.none 
@@ -26,8 +26,16 @@ class RakutenCasasController < ApplicationController
   end 
 
   def import 
-    RakutenCasa.import(params[:file])
-    redirect_to rakuten_casas_path
+    if params[:file].present?
+      if RakutenCasa.csv_check(params[:file]).present?
+        redirect_to rakuten_casas_path , alert: "エラーが発生したため中断しました#{RakutenCasa.csv_check(params[:file])}"
+      else
+        message = RakutenCasa.import(params[:file]) 
+        redirect_to rakuten_casas_path, alert: "インポート処理を完了しました#{message}"
+      end
+    else
+      redirect_to rakuten_casas_path, alert: "インポートに失敗しました。ファイルを選択してください"
+    end
   end 
 
   def show 
@@ -41,13 +49,13 @@ class RakutenCasasController < ApplicationController
   def update 
     @rakuten_casa = RakutenCasa.find(params[:id])
     @rakuten_casa.update(rakuten_casa_params)
-    redirect_to rakuten_casas_path
+    redirect_to rakuten_casa_path(params[:id])
   end 
   
   private 
   def rakuten_casa_params 
     params.require(:rakuten_casa).permit(
-      # 新規 15
+      # 新規 17
       :client                  ,
       :user_id                 ,                
       :store_prop_id           ,          
@@ -58,10 +66,12 @@ class RakutenCasasController < ApplicationController
       :net_name                ,      
       :hikari_collabo          ,       
       :net_plan                ,       
-      :customer_num            ,       
+      :customer_num            ,
+      :net_address             ,       
       :net_contracter          ,       
       :net_contracter_kana     ,       
       :net_phone_number        ,
+      :remarks                 ,
       :share                   ,
       # 自社不備 4 
       :deficiency              ,
@@ -85,7 +95,7 @@ class RakutenCasasController < ApplicationController
       :deficiency_remarks_anti  ,
       :deficiency_solution_anti ,
       # 端末情報 5
-      :oder                    ,
+      :order                    ,
       :arrival                 ,
       :femto_id                ,
       :inspection              ,
@@ -113,7 +123,7 @@ class RakutenCasasController < ApplicationController
       # システム調整 9
       :radio_waves_undone      ,
       :put_adjustment          ,
-      :adjustmenter            ,
+      :adjustmenter_id         ,
       :share_adjustment        ,
       :deficiency_adjustment   ,
       :deficiency_solution_adjustment,

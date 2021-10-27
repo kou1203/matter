@@ -37,7 +37,7 @@ class CreateResults < ActiveRecord::Migration[6.0]
       t.integer :manipulative_get       
       # その他・サービス     
       t.integer :other_service_visit              
-      t.integer :other_service_get    
+      t.integer :other_service_get
     end
     add_foreign_key :results,:users, column: :ojt_id
   end

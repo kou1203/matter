@@ -13,9 +13,11 @@ class CreateRakutenCasas < ActiveRecord::Migration[6.0]
       t.string :hikari_collabo               ,null: false
       t.string :net_plan                     ,null: false 
       t.string :customer_num                 ,null: false 
+      t.string :net_address                  ,null: false 
       t.string :net_contracter               ,null: false
       t.string :net_contracter_kana          ,null: false
       t.string :net_phone_number             ,null: false 
+      t.text :remarks
       t.date :share
       # 自社不備
       t.date :deficiency                             
@@ -76,12 +78,12 @@ class CreateRakutenCasas < ActiveRecord::Migration[6.0]
       t.date :done_adjustment #第三成果地点
       # 申込書
       t.date :share_app
-      t.string :app_create 
+      t.date :app_create 
       t.string :status_app
       t.date :done_app
       # 覚書
       t.date :share_memo
-      t.string :memo_create
+      t.date :memo_create
       t.string :status_memo
       t.date :done_memo
       t.string :letter_pack_num1

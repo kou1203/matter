@@ -2,77 +2,105 @@
   <h1>楽天カーサ一覧</h1>
   <%= render "shared/header" %>
   <%= form_with url: import_rakuten_casas_path do |f| %>
-      <table>
-        <tr>
-          <th class="csv"><%= f.label :file, "CSV取り込み",class:"csv-text" %></th>
-          <td class="csv-td"><%= f.file_field :file, accept: ".csv", class: "csv-text" %></td>
-          <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
-        <td class="reset"><%= link_to "楽天カーサ一覧に戻る", rakuten_casas_path ,class: "reset-link" %></td>
+    <table>
+      <tr>
+        <td class="csv-label" >CSV</td>
+        <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
         </tr>
       </table>
     <% end %>
         <%= search_form_for @q do |f| %>
       <table>
         <tr>
-          <th class="search1">獲得日付</th>
-          <td><%= f.date_field :date_gteq, class: "input" %>~</td>
+          <th class="search-th" >獲得日付（始）</th>
+          <th class="search-th" >獲得日付（終）</th>
+          <th class="search-th">端末到着日（始）</th>
+          <th class="search-th">端末到着日（終）</th>
+          <th class="search-th">設置日（始）</th>
+          <th class="search-th">設置日（終）</th>
+        </tr>
+        <tr>
+          <td><%= f.date_field :date_gteq, class: "input" %></td>
           <td><%= f.date_field :date_lteq, class: "input" %></td>
+          <td><%= f.date_field :arrival_gteq, class: "input" %></td>
+          <td><%= f.date_field :arrival_lteq, class: "input" %></td>
+          <td><%= f.date_field :put_gteq, class: "input" %></td>
+          <td><%= f.date_field :put_lteq, class: "input" %></td>
         </tr>
       </table>
       <table>
         <tr>
-          <th class="search1">獲得者</th>
-          <th class="search1">審査ステータス</th>
+          <th class="search-head" rowspan="2" >検索</th>
+          <th class="search-th">FemtoID</th>
+          <th class="search-th">商流</th>
+          <th class="search-th">獲得者</th>
+          <th class="search-th">設置者</th>
+          <th class="search-th">審査ステータス</th>
 
           <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
         </tr>
         <tr>
+          <td><%= f.text_field :femto_id_cont, class: "input" %></td>
+          <td><%= f.select :client_eq, options_from_collection_for_select(RakutenCasa.select(:client).distinct,:client, :client),{include_blank: true}, {class: "input"} %></td>
           <td><%= f.text_field :user_name_cont, class: "input" %></td>
+          <td><%= f.text_field :putter_name_cont, class: "input" %></td>
           <td><%= f.select :status_eq, options_from_collection_for_select(RakutenCasa.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
           <td class="reset"><%= link_to "絞込みリセット", rakuten_casas_path, class: "reset-link" %></td>
         </tr>
       </table>
         <% end %>
       <% if @rakuten_casas.empty? %>
+      <div class="warning"><%= alert %></div>
       <% else %>
-
-      <hr>
       <table>
         <tr>
-          <th class="search1">獲得件数</th>
-          <th class="search1">入金済</th>
-
+          <th class="search-th">獲得数</th>
+          <th class="search-th">自社不備数</th>
+          <th class="search-th">回線不備数</th>
+          <th class="search-th">反社不備数</th>
+          <th class="search-th">図書不備数</th>
+          <th class="search-th">システム調整不備</th>
         </tr>
         <tr>
-          <td><%= @rakuten_casas.length %></td>
-          <td><%= @rakuten_casas.where.not(payment: nil).length %></td>
-
+          <td class="search-td"><%= @rakuten_casas.length %></td>
+          <td class="search-td"><%= @rakuten_casas.where.not(deficiency: nil).where(deficiency_solution: nil).length %></td>
+          <td class="search-td"><%= @rakuten_casas.where.not(deficiency_net: nil).where(deficiency_solution_net: nil).length %></td>
+          <td class="search-td"><%= @rakuten_casas.where.not(deficiency_anti: nil).where(deficiency_solution_anti: nil).length %></td>
+          <td class="search-td"><%= @rakuten_casas.where.not(deficiency_book: nil).where(deficiency_solution_book: nil).length %></td>
+          <td class="search-td"><%= @rakuten_casas.where.not(deficiency_adjustment: nil).where(deficiency_solution_adjustment: nil).length %></td>
         </tr>
       </table>
-
+      <hr>
     <table>
     <tr >
       <th></th>
-      <th>お客様番号</th>
+      <th>FemtoID</th>
       <th>商流</th>
       <th>獲得者</th>
       <th>獲得日</th>
       <th>店舗名</th> 
       <th>審査ステータス</th>
-      <th>不備ステータス</th>
-      <th>不備対応ボール</th>
+      <th>OSS登録日</th>
+      <th>端末到着日</th>
+      <th>設置者</th>
+      <th>設置予定日</th>
+      <th>設置日</th>
       <th>入金日</th>
       <% @rakuten_casas.each do |casa| %>
       <tr >
       <td><%= link_to "詳細",  rakuten_casa_path(casa.id) ,class: "link" %></td>
-      <td><%= casa.customer_num %></td>
+      <td><%= casa.femto_id %></td>
       <td><%= casa.client %></td>
       <td><%= casa.user.name %></td>
       <td><%= casa.date.month %>月<%= casa.date.day %>日</td>
       <td><%= casa.store_prop.name %></td>
       <td><%= casa.status %></td>
-      <td><%= casa.error_status %></td>
-      <td><%= casa.error_confirmer %></td>
+      <td><%= casa.done_oss %></td>
+      <td><%= casa.arrival %></td>
+      <td><%= casa.putter.name if casa.putter_id.present? %></td>
+      <td><%= casa.put_plan %></td>
+      <td><%= casa.put %></td>
       <td><%= casa.payment %></td>
       <% end %>
     <% end %>

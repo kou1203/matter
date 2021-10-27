@@ -54,7 +54,7 @@ class PaypaysController < ApplicationController
   def update 
     @paypay = Paypay.find(params[:id])
     @paypay.update(paypay_params)
-    redirect_to paypay_path(@paypay.store_prop_id)
+    redirect_to paypay_path(@paypay.id)
   end 
 
   private 
