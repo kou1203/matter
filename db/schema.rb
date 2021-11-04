@@ -717,19 +717,9 @@ ActiveRecord::Schema.define(version: 2021_10_18_122051) do
 
   create_table "shifts", charset: "utf8", force: :cascade do |t|
     t.bigint "user_id"
-    t.integer "year", null: false
-    t.integer "month", null: false
-    t.integer "house_work", null: false
-    t.integer "ojt", null: false
-    t.integer "cashless_new", null: false
-    t.integer "n", null: false
-    t.integer "cashless_settlement", null: false
-    t.integer "praness", null: false
-    t.integer "summit", null: false
-    t.integer "panda", null: false
-    t.integer "rakuten_casa", null: false
-    t.integer "rakuten_casa_put", null: false
-    t.integer "goal", null: false
+    t.date "date", null: false
+    t.string "shift", null: false
+    t.boolean "availability", null: false
     t.index ["user_id"], name: "index_shifts_on_user_id"
   end
 

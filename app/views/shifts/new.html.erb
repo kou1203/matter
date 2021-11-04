@@ -1,66 +1,32 @@
 <div data-scope-path="shifts/new">
   <h1>シフト入力：<%= current_user.name %></h1>
   <%= render "shared/header" %>
-  <%= form_with model: @shift, class: "form-frame", local: true do |f| %>
-  <%= f.hidden_field :user_id, value: current_user.id %>
-  <table>
-  <%# 一列目 %>
-    <tr>
-      <th class="date-th">日</th>
-      <th class="date-th">付</th>
-      <td class="date-td"><%= f.number_field :year, value: Date.today.year, class: "input" %></td>
-      <th class="date-th">年</th>
-      <td class="date-td"><%= f.number_field :month, value: Date.today.month, class: "input" %></td>
-      <th class="date-th">月</th>
-    </tr>
-  </table>
-  <table>
-  <%# 2列目ラベル %>
-    <tr>
-      <th><%= f.label :house_work, "内勤日数", class: "form-text" %></th>
-      <th><%= f.label :ojt, "OJT日数", class: "form-text" %></th>
-      <th><%= f.label :cashless_new, "キャッシュレス新規日数", class: "form-text" %></th>
-      <th><%= f.label :cashless_settlement, "キャッシュレス決済日数", class: "form-text" %></th>
-    </tr>
-  <%# 2列目値 %>
-    <tr>
-      <td><%= f.number_field :house_work,value: 0, class: "form-input" %></td>
-      <td><%= f.number_field :ojt,value: 0, class: "form-input" %></td>
-      <td><%= f.number_field :cashless_new,value: 0, class: "form-input" %></td>
-      <td><%= f.number_field :cashless_settlement,value: 0, class: "form-input" %></td>
-    </tr>
-  <%# 3列目ラベル %>
-    <tr>
-      <th><%= f.label :praness, "ぷらねす日数", class: "form-text" %></th>
-      <th><%= f.label :summit, "サミットエナジー日数", class: "form-text" %></th>
-      <th><%= f.label :panda, "フードパンダ日数", class: "form-text" %></th>
-      <th><%= f.label :goal, "目標売上日数", class: "form-text" %></th>
-    </tr>
-  <%# 3列目値 %>
-    <tr>
-      <td><%= f.number_field :praness,value: 0,class: "form-input"  %></td>
-      <td><%= f.number_field :summit,value: 0,class: "form-input"  %></td>
-      <td><%= f.number_field :panda,value: 0,class: "form-input"  %></td>
-      <td><%= f.number_field :goal,value: 0,class: "form-input"  %></td>
-    </tr>
-  <%# 4列目ラベル %>
-    <tr>
-      <th><%= f.label :n, "N対策日数", class: "form-text" %></th>
-      <th><%= f.label :rakuten_casa, "楽天カーサ日数", class: "form-text" %></th>
-      <th><%= f.label :rakuten_casa_put, "楽天カーサ（設置）日数", class: "form-text" %></th>
-      <th></th>
-      <th></th>
-    </tr>
-  <%# 4列目値 %>
-    <tr>
-      <td><%= f.number_field :n,value: 0,class: "form-input"  %></td>
-      <td><%= f.number_field :rakuten_casa,value: 0,class: "form-input"  %></td>
-      <td><%= f.number_field :rakuten_casa_put,value: 0,class: "form-input"  %></td>
-      <td></td>
-      <td></td>
-    </tr>
-  </table>
-    <%= f.submit "登録", class: "submit-btn" %>
+  <%= form_with model: @form, url: shifts_path,method: :post,class: "form-frame", local: true do |form| %>
+    <%= form.fields_for :shifts do |f|  %> 
+    <table>
+      <tr>
+        
+        <th class="form-text">登録　</th>
+        <th><%= form.label :date, "日付", class:  "form-text"%></th>
+        <th><%= form.label :shift, "シフト", class:  "form-text"%></th>
+      </tr>
+    <%= f.hidden_field :user_id, value: current_user.id %>
+      <tr>
+        <td ><%= f.check_box :availability,{} ,{class: "form-checkbox"} %></td>
+        <td><%= f.date_field :date, class: "form-input" %></td>
+        <td><%= f.select :shift, {
+          "キャッシュレス新規": "キャッシュレス新規",
+          "キャッシュレス決済": "キャッシュレス決済",
+          "楽天フェムト新規": "楽天フェムト新規",
+          "楽天フェムト設置": "楽天フェムト設置",
+          "サミット": "サミット",
+          "帯同": "帯同",
+          "内勤": "内勤",
+          "休み": "休み",
+          "欠勤": "欠勤"} ,{}, {class: "form-input"} %></td>
+      </tr>
+    </table>
+    <% end %>
+      <%= form.submit "登録", class: "submit-btn" %>
   <% end %>
-  </main>
 </div>

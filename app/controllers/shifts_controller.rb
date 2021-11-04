@@ -8,22 +8,18 @@ class ShiftsController < ApplicationController
       else  
         @q.result(distinct: true)
       end
-      
-    @users = User.all
-    @results = Result.all 
-    @n_results = NResult.all
   end 
 
   def new 
-    @shift = Shift.new
+    @form = Form::ShiftCollection.new
   end 
 
   def create 
-    @shift = Shift.new(shift_params)
-    @shift.save 
-    if @shift.save 
-      redirect_to shifts_path 
+    @form = Form::ShiftCollection.new(shift_collection_params)
+    if @form.save 
+      redirect_to shifts_path notice: "登録しました"
     else  
+      flash.now[:alert] = "失敗しました"
       render :new 
     end 
   end 
@@ -49,23 +45,8 @@ class ShiftsController < ApplicationController
   end 
 
   private 
-  def shift_params 
-    params.require(:shift).permit(
-      :user_id,
-      :year,
-      :month,
-      :house_work,
-      :ojt,
-      :n,
-      :rakuten_casa,
-      :rakuten_casa_put,
-      :cashless_new,
-      :cashless_settlement,
-      :praness,
-      :summit,
-      :panda,
-      :goal
-    )
+  def shift_collection_params 
+    params.require(:form_shift_collection).permit(shifts_attributes: [:user_id,:date,:shift,:availability])
   end 
   
 end

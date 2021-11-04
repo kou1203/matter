@@ -84,7 +84,7 @@ Rails.application.routes.draw do
   end  
 
   resources :result_cashes, expect: [:new, :create]
-  resources :result_rakuten_casas, expect: [:new, :create]
+  resources :result_casas, expect: [:new, :create]
   resources :result_summits, expect: [:new, :create]
   
   resources :n_results do 

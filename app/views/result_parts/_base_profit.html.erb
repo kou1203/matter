@@ -1,17 +1,17 @@
+
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
     <h1>
-    <% @results.each do |r| %>
-      <%= base_name = r.user.base %>
-      <% break %>
-      <% end %>
+      <%= @results.first.user.base %>
       （稼働訪問員<%= @results.group(:user_id).length %>人）
       表示範囲：
       <%= @results.minimum(:date) %>（<%= days[@results.minimum(:date).wday] %>）〜<%= @results.maximum(:date) %>（<%= days[@results.maximum(:date).wday] %>）
     </h1>
+    
   <table>
     <tr>
       <th class="search-th" rowspan="2" >名前</th>
-      <th class="search-th" rowspan="2">合計売上</th>
+      <th class="search-th" rowspan="2" >担当商材</th>
+      <th class="search-th" rowspan="2">現状売上</th>
       <th class="search-th" rowspan="2">平均売上</th>
       <th class="search-th" colspan="4">基準値</th>
     </tr>
@@ -24,16 +24,22 @@
       <% @results.group(:user_id).each do |r| %>
     <tr>
       <% result_value = @results.where(user_id: r.user.id).where.not(shift: "キャッシュレス決済").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "フェムト（設置）").where.not(shift: "欠勤").where.not(shift: "休み") %>
-      <% result_profit = @results.where(user_id: r.user.id).where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "欠勤").where.not(shift: "休み") %>
-        <td class="th-head"><%= r.user.name %></td>
-        <td ><%= result_profit.sum(:profit).to_s(:delimited)  %></td>
-        <td ><%= result_profit.average(:profit).round().to_s(:delimited) %></td>
-        <td ><%= result_value.average("first_visit + latter_visit").round().to_s(:delimited) %></td>
-        <td ><%= result_value.average("first_interview + latter_interview").round().to_s(:delimited) %></td>
-        <td ><%= result_value.average("first_full_talk + latter_full_talk").round().to_s(:delimited) %></td>
-        <td ><%= result_value.average("first_get + latter_get").round().to_s(:delimited) %></td>
-      
-
+      <%# 各商材変数（評価売） %>
+        <% dmers_all_valuation = @dmers_this_month.where(user_id: r.user_id).sum(:valuation_new) %>
+        <% dmers_inc_valuation = @dmers_inc.where(user_id: r.user_id).sum(:valuation_new) %>
+        <% dmers_dec_valuation = @dmers_dec.where(user_id: r.user_id).sum(:valuation_new) %>
+        <% dmers_def_valuation = @dmers_def.where(user_id: r.user_id).sum(:valuation_new) %>
+        <% dmers_result_valuation = dmers_all_valuation + dmers_inc_valuation - dmers_def_valuation - dmers_dec_valuation %>
+        <% sum_valuation = dmers_result_valuation %>
+      <%# 各商材変数（実売） %>
+      <td class="th-head"><%= r.user.name %></td>
+      <td ><%= r.user.base_sub  %></td>
+      <td ><%= sum_valuation %></td>
+      <td ><%=  %></td>
+      <td ><%= result_value.average("first_visit + latter_visit").round(1) %></td>
+      <td ><%= result_value.average("first_interview + latter_interview").round(1) %></td>
+      <td ><%= result_value.average("first_full_talk + latter_full_talk").round(1) %></td>
+      <td ><%= result_value.average("first_get + latter_get").round(1) %></td>
     </tr>
       <% end %>
   </table>
