@@ -1,31 +1,31 @@
 class ShiftsController < ApplicationController
 
   def index 
-    @q = Shift.ransack(params[:q])
+    @current_shifts = Shift.where(user_id: current_user.id)
+    @shift = Shift.new
+    @q = Shift.includes(:user).ransack(params[:q])
     @shifts = 
       if params[:q].nil?
-        Shift.none
-      else  
-        @q.result(distinct: true)
+        Shift.none 
+      else 
+        @q.result(distinct: false)
       end
+    @results = Result.all
   end 
-
-  def new 
-    @form = Form::ShiftCollection.new
-  end 
-
+  
+  
   def create 
-    @form = Form::ShiftCollection.new(shift_collection_params)
-    if @form.save 
-      redirect_to shifts_path notice: "登録しました"
+    @shift = Shift.new(shift_params)
+    if @shift.start_time.present?
+      @shift.save
+      flash[:notice] = "#{@shift.start_time.to_date}#{@shift.shift}のシフト申請をしました。"
+      redirect_to shifts_path 
     else  
-      flash.now[:alert] = "失敗しました"
-      render :new 
+      render :index
     end 
   end 
-
+  
   def show 
-    @shift = Shift.find(params[:id])
   end 
 
   def edit 
@@ -41,12 +41,13 @@ class ShiftsController < ApplicationController
   def destroy 
     @shift = Shift.find(params[:id])
     @shift.destroy 
+    flash[:notice] = "#{@shift.start_time.to_date}#{@shift.shift}のシフトを削除をしました。"
     redirect_to shifts_path
   end 
 
   private 
-  def shift_collection_params 
-    params.require(:form_shift_collection).permit(shifts_attributes: [:user_id,:date,:shift,:availability])
+  def shift_params 
+    params.require(:shift).permit(:user_id,:start_time,:shift)
   end 
   
 end

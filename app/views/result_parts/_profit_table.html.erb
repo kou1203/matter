@@ -46,18 +46,14 @@
         <th class="shift-th">残シフト</th>
         <th class="shift-th">欠勤</th>
       </tr>
-        <% @shifts.each do |shift| %>
-          <% if (shift.year == @results.first.date.year && shift.month == @results.first.date.month && shift.user.name == @results.first.user.name) || (@results.last.date.year && shift.month == @results.last.date.month && shift.user.name == @results.first.user.name) %>
-            <% new_shift = shift.cashless_new %>
-            <% settlement_shift = shift.cashless_settlement %>
-            <% summit_shift = shift.summit %>
-            <% casa_shift = shift.rakuten_casa %>
-            <% casa_put_shift= shift.rakuten_casa_put %>
-            <% panda_shift = shift.panda %>
-            <% ojt_shift = shift.ojt %>
-            <% house_work_shift = shift.house_work %> 
-          <% end %>
-        <% end %>
+      <% shifts = @shifts.where(user_id: @results.first.user_id).where(start_time: @results.minimum(:date)..@results.maximum(:date)) %>
+            <% new_shift = shifts.where(shift: "キャッシュレス新規").length %>
+            <% settlement_shift = shifts.where(shift: "キャッシュレス決済").length %>
+            <% summit_shift = shifts.where(shift: "サミット").length %>
+            <% casa_shift = shifts.where(shift: "楽天フェムト新規").length %>
+            <% casa_put_shift= shifts.where(shift: "楽天フェムト").length %>
+            <% ojt_shift = shifts.where(shift: "帯同").length %>
+            <% house_work_shift = shifts.where(shift: "内勤").length %> 
       <tr>
         <td >キャッシュレス新規</td><%# 欠勤 %>
         <td ><%= new_shift %></td>

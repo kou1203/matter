@@ -3,8 +3,7 @@ class Shift < ApplicationRecord
 
   with_options presence: true do 
     validates :user_id
-    validates :date
+    validates :start_time
     validates :shift
-    validates :availability, inclusion: { in: [true, false] }
   end 
 end

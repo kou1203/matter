@@ -10,22 +10,12 @@
             <% kanto_casa_shift = 0 %>
             <% kansai_cash_shift = 0 %>
             <% kansai_casa_shift = 0 %>
-            <% @results.group(:user_id).each do |result| %>
-                <% @shifts.each do |shift| %>
-                <% if shift.year == result.date.year && shift.month == result.date.month && shift.user.name == result.user.name %>
-                    <% if result.user.base == "中部SS" %>
-                        <% chubu_cash_shift += shift.cashless_new + shift.cashless_settlement %>
+                        <% chubu_cash_shift += @shifts.where(user: {base: "中部SS"}).where(shift: "キャッシュレス新規").length %>
                         <% chubu_casa_shift += shift.rakuten_casa + shift.rakuten_casa_put %>
-                    <% elsif result.user.base == "関東SS" %>
                         <% kanto_cash_shift += shift.cashless_new + shift.cashless_settlement %>
                         <% kanto_casa_shift += shift.rakuten_casa + shift.rakuten_casa_put %>
-                    <% elsif result.user.base == "関西SS" %>
                         <% kansai_cash_shift += shift.cashless_new + shift.cashless_settlement %>
                         <% kansai_casa_shift += shift.rakuten_casa + shift.rakuten_casa_put %>
-                    <% end %>
-                <% end %>
-                <% end %>
-            <% end %>
         <%# 消化シフト %>
             <% chubu_cash_shift_digestion = @results.where(user: {base: "中部SS"}).where(shift: "キャッシュレス新規").or(@results.where(user: {base: "中部SS"}).where(shift: "キャッシュレス決済")).length %>
             <% chubu_casa_shift_digestion = @results.where(user: {base: "中部SS"}).where(shift: "楽天フェムト新規").or(@results.where(user: {base: "中部SS"}).where(shift: "楽天フェムト設置")).length %>

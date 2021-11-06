@@ -37,4 +37,5 @@ class UsersController < ApplicationController
       :team,
     )
   end
+
 end

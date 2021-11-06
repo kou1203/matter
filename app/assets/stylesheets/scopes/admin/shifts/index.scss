@@ -6,6 +6,17 @@ h1 {
   background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
   color: white;
 }
+
+h2 {
+  margin: 15px;
+  font-size: 20px;
+  color: #add8e6;
+}
+
+.shift-alert {
+  margin: 15px;
+  color: #8f8d8d;
+}
 // ヘッダー
 header {
   display: flex;
@@ -76,108 +87,54 @@ li:hover {
   font-weight: bold;
   display: block;
 } 
-
 // ハンバーガーデザイン
 
-.reg {
-  text-align: center;
-  color: white;
-  font-weight: bold;
-  background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
-  box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-  padding: 15px 0;
-  margin: 15px;
-  width: 7vw;
-  border-radius: 18px 0;
+.shift-table{
+  padding: 20px ;
 }
-
-.reg-link {
-  text-decoration: none;
-  color: white;
-  display: block;
-}
-
 
 table{
   border-collapse: collapse;
-  margin: 20px ;
+  // margin: 20px ;
   table-layout: fixed;
   min-width: 100%;
   display: block;
   overflow-x: scroll;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
-  max-width: 600px;
-}
-
-tr:nth-child(odd) {
-  background: #ede5e5;
-}
-
-// 検索フォーム
-.table-note {
-  border-radius: 50px;
-}
-
-.search-th {
-  text-align: center;
-  color: white;
-  // background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
-  background: #c4c2c2;
-  box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-  padding: 10px 0;
-  margin: 15px;
-  width: 100px;
+  // max-width: 700px;
 }
 
 
-.search-head {
-  vertical-align: middle;
-  background: linear-gradient(40deg, #add8e6 30%, #c4c2c2 85%);
-  border-radius: 15px 0 0 15px;
-  font-size: 18px;
-  width: 100px;
-}
 
-
-.search2 {
-  text-align: center;
-  color: white;
-  background:  #96C0CE;
-  box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-  padding: 10px 0;
-  margin: 15px;
-  width: 7vw;
-}
-
-
-.search2:nth-child(even) {
-  background:  #74828F;
-
-}
-
-.reset {
-  background: #c4bfbb;
-  padding: 5px;
-}
-
-.reset-link {
-  text-decoration: none;
-  color: white;
-}
 
 .link {
   text-decoration: none;
   color: blue;
 }
-// 検索フォーム
-th {
+
+.shift-form {
+  background: whitesmoke;
+  margin: 15px;
+  width: 100%;
+}
+
+.form-th {
   text-align: center;
   color: white;
   background: #96C0CE;
   padding: 10px;
-  width: 15vw;
+  width: 10vw;
   border-bottom: none;
+}
+
+
+.form-td {
+  border-bottom: 1px solid rgb(205, 203, 203);
+  text-align: center;
+  box-shadow: 0px -3px 5px 1px #eee inset;
+  padding: 10px 0;
+  background: white;
 }
 
 .th:nth-child(even) {
@@ -186,6 +143,7 @@ th {
 
 .result {
   background: #96C0CE;
+  cursor: pointer;
 }
 
 .result-btn {
@@ -201,17 +159,49 @@ th {
   border: none;
   width: 100%;
   height: 100%;
-  font-size: 18px;
+  font-size: 12px;
   color: rgb(103, 101, 101);
+  cursor: pointer;
+}
+
+.submit-btn {
+  margin: 15px;
+  border: none;
+  background: #add8e6;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  width: 150px;
+  height: 40px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 
-td {
-  border-bottom: 1px solid rgb(205, 203, 203);
-  text-align: center;
-  box-shadow: 0px -3px 5px 1px #eee inset;
-  padding: 10px 0;
+.reset-btn {
+  margin: 15px;
+  border: none;
+  background: #d7dee0;
+  font-size: 20px;
+  font-weight: bold;
+  width: 150px;
+  height: 40px;
+  border-radius: 5px;
+  cursor: pointer;
 }
+
+.reset-link {
+  margin: 15px;
+  border: none;
+  background: #d7dee0;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  // border-radius: 5px;
+  color: white;
+  text-decoration: none;
+}
+
 
 .check-form {
   margin: 20px;
@@ -231,12 +221,43 @@ td {
   // -webkit-transform:scale(0.8);
 }
 
-.csv-label {
-  width: 50px;
-  border-radius: 5px 0 5px 0;
-  background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
+tr:nth-child(even) {
+  background: #deecf2;
+  opacity: 0.7;
+}
+
+
+th {
+  text-align: center;
   color: white;
-  border: none;
+  background: #96C0CE;
+  padding: 10px;
+  width: 50vw;
+  border-bottom: none;
+}
+
+
+td {
+  border-bottom: 1px solid rgb(205, 203, 203);
+  text-align: center;
+  box-shadow: 0px -3px 5px 1px #eee inset;
+  padding: 10px 0;
+  color: #8f8d8d;
+}
+
+.cal-form {
+  // width: 100%;
+}
+
+.cal-data {
+  font-size: 14px;
+  color: #8f8d8d;
+}
+
+.cal-del {
+  font-size: 14px;
+  color: rgb(223, 118, 160);
+  text-decoration: none;
 }
 
 }

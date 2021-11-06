@@ -717,9 +717,10 @@ ActiveRecord::Schema.define(version: 2021_10_18_122051) do
 
   create_table "shifts", charset: "utf8", force: :cascade do |t|
     t.bigint "user_id"
-    t.date "date", null: false
     t.string "shift", null: false
-    t.boolean "availability", null: false
+    t.datetime "start_time", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_shifts_on_user_id"
   end
 
