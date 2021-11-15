@@ -69,7 +69,11 @@ Rails.application.routes.draw do
 
   resources :users
 
-  resources :shifts
+  resources :shifts do 
+    collection do
+      post :update_month
+    end
+  end 
 
   resources :panda_profits, only: :index
 
@@ -92,6 +96,8 @@ Rails.application.routes.draw do
   end  
 
   resources :products
+  
+  resources :display_periods
   
   resources :trouble_ns do 
     collection { post :import }

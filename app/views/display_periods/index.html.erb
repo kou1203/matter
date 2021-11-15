@@ -1,0 +1,25 @@
+<div data-scope-path="display_periods/index">
+  <h1>会議資料</h1>
+<%= render "shared/header" %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+  <%= render "display_period_parts/period_operation" %>
+
+  <% if DisplayPeriod.all.length == 0 %>
+    <h1 class="warning">期間を入力してください</h1>
+  <% elsif @display_period_1.start_period_01 > @display_period_1.end_period_01 %>
+  <h1 class="warning">01：キャッシュの期間設定がおかしいので設定し直してください</h1>
+  <% elsif @display_period_1.start_period_02 > @display_period_1.end_period_02 %>
+  <h1 class="warning">02：フェムトの期間設定がおかしいので設定し直してください</h1>
+  <% elsif @display_period_1.start_period_03 > @display_period_1.end_period_03 %>
+  <h1 class="warning">03：サミットの期間設定がおかしいので設定し直してください</h1>
+  <% else %>
+  <div style="display:flex;">
+
+  <%= render "display_period_parts/cash_meeting_data" %>
+  </div>
+  <div>
+    <%= render "display_period_parts/cash_product" %>
+  </div>
+</div>
+<% end %>
+</div>

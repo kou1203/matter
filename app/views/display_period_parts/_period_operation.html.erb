@@ -1,0 +1,58 @@
+  <h2>期間指定</h2>
+    <p class="shift-alert"><%= notice %></p>
+    <% if DisplayPeriod.all.length == 0 %>
+    <%= form_with model: @display_period,local: true do |f| %>
+    <table>
+      <tr>
+        <th colspan="2">01：キャッシュ</th>
+        <th colspan="2">02：フェムト</th>
+        <th colspan="2">03：サミット</th>
+      </tr>
+      <tr>
+        <th>対象期間（始）</th>
+        <th>対象期間（終）</th>
+        <th>対象期間（始）</th>
+        <th>対象期間（終）</th>
+        <th>対象期間（始）</th>
+        <th>対象期間（終）</th>
+      </tr>
+      <tr>
+        <td><%= f.date_field :start_period_01, class: "input" %></td>
+        <td><%= f.date_field :end_period_01, class: "input" %></td>
+        <td><%= f.date_field :start_period_02, class: "input" %></td>
+        <td><%= f.date_field :end_period_02, class: "input" %></td>
+        <td><%= f.date_field :start_period_03, class: "input" %></td>
+        <td><%= f.date_field :end_period_03, class: "input" %></td>
+      </tr>
+    </table>
+    <%= f.submit "登録",class: "submit-btn" %>
+    <% end %>
+  <% else %>
+  <%# 更新 %>
+      <%= form_with model: @display_period_1,local: true do |f| %>
+    <table>
+      <tr>
+      </tr>
+      <tr>
+        <th colspan="2">01：キャッシュ</th>
+        <th colspan="2">02：フェムト</th>
+        <th colspan="2">03：サミット</th>
+      </tr>
+      <tr>
+        <th>対象期間（始）</th>
+        <th>対象期間（終）</th>
+        <th>対象期間（始）</th>
+        <th>対象期間（終）</th>
+        <th>対象期間（始）</th>
+        <th>対象期間（終）</th>
+      </tr>
+        <td><%= f.date_field :start_period_01, class: "input" %></td>
+        <td><%= f.date_field :end_period_01, class: "input" %></td>
+        <td><%= f.date_field :start_period_02, class: "input" %></td>
+        <td><%= f.date_field :end_period_02, class: "input" %></td>
+        <td><%= f.date_field :start_period_03, class: "input" %></td>
+        <td><%= f.date_field :end_period_03, class: "input" %></td>
+    </table>
+    <%= f.submit "更新",class: "submit-btn" %>
+  <% end %>
+  <% end %>

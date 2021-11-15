@@ -1,287 +1,195 @@
-<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 
-    <h1>全拠点売上（稼働訪問員<%= @results.group(:user_id).length %>人）　表示範囲：
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+    <h1>
+      <%= @results.first.user.base %>
+      （稼働訪問員<%= @results.group(:user_id).length %>人）
+      表示範囲：
       <%= @results.minimum(:date) %>（<%= days[@results.minimum(:date).wday] %>）〜<%= @results.maximum(:date) %>（<%= days[@results.maximum(:date).wday] %>）
     </h1>
-        <%# 予定シフト数 %>
-            <% chubu_cash_shift = 0 %>
-            <% chubu_casa_shift = 0 %>
-            <% kanto_cash_shift = 0 %>
-            <% kanto_casa_shift = 0 %>
-            <% kansai_cash_shift = 0 %>
-            <% kansai_casa_shift = 0 %>
-                        <% chubu_cash_shift += @shifts.where(user: {base: "中部SS"}).where(shift: "キャッシュレス新規").length %>
-                        <% chubu_casa_shift += shift.rakuten_casa + shift.rakuten_casa_put %>
-                        <% kanto_cash_shift += shift.cashless_new + shift.cashless_settlement %>
-                        <% kanto_casa_shift += shift.rakuten_casa + shift.rakuten_casa_put %>
-                        <% kansai_cash_shift += shift.cashless_new + shift.cashless_settlement %>
-                        <% kansai_casa_shift += shift.rakuten_casa + shift.rakuten_casa_put %>
-        <%# 消化シフト %>
-            <% chubu_cash_shift_digestion = @results.where(user: {base: "中部SS"}).where(shift: "キャッシュレス新規").or(@results.where(user: {base: "中部SS"}).where(shift: "キャッシュレス決済")).length %>
-            <% chubu_casa_shift_digestion = @results.where(user: {base: "中部SS"}).where(shift: "楽天フェムト新規").or(@results.where(user: {base: "中部SS"}).where(shift: "楽天フェムト設置")).length %>
-            <% kanto_cash_shift_digestion = @results.where(user: {base: "関東SS"}).where(shift: "キャッシュレス新規").or(@results.where(user: {base: "関東SS"}).where(shift: "キャッシュレス決済")).length %>
-            <% kanto_casa_shift_digestion = @results.where(user: {base: "関東SS"}).where(shift: "楽天フェムト新規").or(@results.where(user: {base: "関東SS"}).where(shift: "楽天フェムト設置")).length %>
-            <% kansai_cash_shift_digestion = @results.where(user: {base: "関西SS"}).where(shift: "キャッシュレス新規").or(@results.where(user: {base: "関西SS"}).where(shift: "キャッシュレス決済")).length %>
-            <% kansai_casa_shift_digestion = @results.where(user: {base: "関西SS"}).where(shift: "楽天フェムト新規").or(@results.where(user: {base: "関西SS"}).where(shift: "楽天フェムト設置")).length %>
-            <% shift_digestion_sum = chubu_cash_shift_digestion + chubu_casa_shift_digestion + kanto_cash_shift_digestion + kanto_casa_shift_digestion +
-                kansai_cash_shift_digestion + kansai_casa_shift_digestion %>
-        <%# 消化シフト（前週） %>
-            <% chubu_cash_shift_digestion_last_week = @results.where(date: @results.minimum(:date)..@results.maximum(:date).ago(7.days)).where(user: {base: "中部SS"}).where(shift: "キャッシュレス新規").or(@results.where(user: {base: "中部SS"}).where(shift: "キャッシュレス決済")).length %>
-            <% chubu_casa_shift_digestion_last_week = @results.where(date: @results.minimum(:date)..@results.maximum(:date).ago(7.days)).where(user: {base: "中部SS"}).where(shift: "楽天フェムト新規").or(@results.where(user: {base: "中部SS"}).where(shift: "楽天フェムト設置")).length %>
-            <% kanto_cash_shift_digestion_last_week = @results.where(date: @results.minimum(:date)..@results.maximum(:date).ago(7.days)).where(user: {base: "関東SS"}).where(shift: "キャッシュレス新規").or(@results.where(user: {base: "関東SS"}).where(shift: "キャッシュレス決済")).length %>
-            <% kanto_casa_shift_digestion_last_week = @results.where(date: @results.minimum(:date)..@results.maximum(:date).ago(7.days)).where(user: {base: "関東SS"}).where(shift: "楽天フェムト新規").or(@results.where(user: {base: "関東SS"}).where(shift: "楽天フェムト設置")).length %>
-            <% kansai_cash_shift_digestion_last_week= @results.where(date: @results.minimum(:date)..@results.maximum(:date).ago(7.days)).where(user: {base: "関西SS"}).where(shift: "キャッシュレス新規").or(@results.where(user: {base: "関西SS"}).where(shift: "キャッシュレス決済")).length %>
-            <% kansai_casa_shift_digestion_last_week = @results.where(date: @results.minimum(:date)..@results.maximum(:date).ago(7.days)).where(user: {base: "関西SS"}).where(shift: "楽天フェムト新規").or(@results.where(user: {base: "関西SS"}).where(shift: "楽天フェムト設置")).length %>
-            <% sum_shift_last_week = chubu_cash_shift_digestion_last_week + chubu_casa_shift_digestion_last_week +
-                kanto_cash_shift_digestion_last_week + kanto_casa_shift_digestion_last_week +
-                kansai_cash_shift_digestion_last_week + kansai_casa_shift_digestion_last_week %>
-    <h3 class="warning-sub">※予定シフトと終着の入力がない場合,訪問員数と予定シフトは反映されません</h3>
+    
+  <table class="base-tb">
+    <tr>
+      <th class="search-th" rowspan="2" >名前</th>
+      <th class="search-th" rowspan="2" >担当商材</th>
+      <th class="search-th" rowspan="2" >予定シフト</th>
+      <th class="search-th" rowspan="2" >消化シフト</th>
+      <th class="search-th" rowspan="2">平均売上</th>
+      <th class="search-th" rowspan="2">現状売上</th>
+      <th class="search-th" rowspan="2">終着見込売上</th>
+      <th class="search-th" colspan="4">基準値</th>
+      <th class="search-th" colspan="11">商材別獲得数</th>
+    </tr>
+    <tr>
+      <th class="search-th">訪問</th>
+      <th class="search-th">対面</th>
+      <th class="search-th">フル</th>
+      <th class="search-th">獲得</th>
+      <th class="search-th">dメル（新規）</th>
+      <th class="search-th">dメル（決済）</th>
+      <th class="search-th">aupay（新規）</th>
+      <th class="search-th">aupay（決済）</th>
+      <th class="search-th">PayPay</th>
+      <th class="search-th">楽天ペイ</th>
+      <th class="search-th">少額短期保険</th>
+      <th class="search-th">フェムト（新規）</th>
+      <th class="search-th">フェムト（設置）</th>
+      <th class="search-th">フェムト（他者設置）</th>
+      <th class="search-th">フェムト（設置依頼）</th>
+    </tr>
+    <%# 数量を数える変数 %>
+        <% all_valuation_sum = 0 %>
+        <% dmer_num = 0 %>
+        <% dmer_slmt_num = 0 %>
+        <% aupay_num = 0 %>
+        <% aupay_slmt_num = 0 %>
+        <% paypay_num = 0 %>
+        <% rakuten_pay_num = 0 %>
+        <% st_insurance_num = 0 %>
+        <% casa_num = 0 %>
+        <% casa_put_self_num = 0 %>
+        <% casa_put_other_num = 0 %>
+        <% casa_put_request_num = 0 %>
+    <% @results.group(:user_id).each do |r| %>
+    <tr>
+      <% result_value = @results.where(user_id: r.user.id).where.not(shift: "キャッシュレス決済").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "フェムト（設置）").where.not(shift: "欠勤").where.not(shift: "休み") %>
+      <%# 各商材変数（評価売） %>
+        <%# dメル（新規） %>
+            <% dmer_this_period = this_period(Dmer.where(user_id: r.user_id),@results)  %>
+            <% dmer_not_period = not_period(Dmer.where(user_id: r.user_id),@results)  %>
+            <% dmer_def = def_period(dmer_this_period,@results)  %>
+            <% dmer_inc = inc_period(dmer_not_period,@results)  %>
+            <% dmer_dec = dec_period(dmer_not_period,@results)  %>
+            <% dmer_sum = dmer_this_period.sum(:valuation_new) - dmer_def.sum(:valuation_new) + dmer_inc.sum(:valuation_new) - dmer_dec.sum(:valuation_new) %>
+        <%# dメル（決済） %>
+            <% dmer_slmt_this_period = slmt_this_period(Dmer.where(settlementer_id: r.user_id),@results)  %>
+            <% dmer_slmt_not_period = slmt_not_period(Dmer.where(settlementer_id: r.user_id),@results)  %>
+            <% dmer_slmt_def = slmt_def_period(dmer_slmt_this_period,@results) %>
+            <% dmer_slmt_inc = slmt_inc_period(dmer_slmt_not_period,@results) %>
+            <% dmer_slmt_dec = slmt_dec_period(dmer_slmt_not_period,@results) %>
+            <% dmer_slmt_sum = dmer_slmt_this_period.sum(:valuation_settlement) - dmer_slmt_def.sum(:valuation_settlement) + dmer_slmt_inc.sum(:valuation_settlement) - dmer_slmt_dec.sum(:valuation_settlement) %>
+        <%# aupay（新規） %>
+            <% aupay_this_period = this_period(Aupay.where(user_id: r.user_id),@results)  %>
+            <% aupay_not_period = not_period(Aupay.where(user_id: r.user_id),@results)  %>
+            <% aupay_def = def_period(aupay_this_period,@results)  %>
+            <% aupay_inc = inc_period(aupay_not_period,@results)  %>
+            <% aupay_dec = dec_period(aupay_not_period,@results)  %>
+            <% aupay_sum = aupay_this_period.sum(:valuation_new) - aupay_def.sum(:valuation_new) + aupay_inc.sum(:valuation_new) - aupay_dec.sum(:valuation_new) %>
+        <%# aupay（決済） %>
+            <% aupay_slmt_this_period = slmt_this_period(Aupay.where(settlementer_id: r.user_id),@results)  %>
+            <% aupay_slmt_not_period = slmt_not_period(Aupay.where(settlementer_id: r.user_id),@results)  %>
+            <% aupay_slmt_def = slmt_def_period(aupay_slmt_this_period,@results)  %>
+            <% aupay_slmt_inc = slmt_inc_period(aupay_slmt_not_period,@results)  %>
+            <% aupay_slmt_dec = slmt_dec_period(aupay_slmt_not_period,@results)  %>
+            <% aupay_slmt_sum = aupay_slmt_this_period.sum(:valuation_settlement) - aupay_slmt_def.sum(:valuation_settlement) + aupay_slmt_inc.sum(:valuation_settlement) - aupay_slmt_dec.sum(:valuation_settlement) %>
+        <%# PayPay %>
+            <% paypay_this_period = this_period(Paypay.where(user_id: r.user_id),@results)  %>
+            <% paypay_def = def_period(paypay_this_period,@results)  %>
+            <% paypay_sum = paypay_this_period.sum(:valuation) - paypay_def.sum(:valuation) %>
+        <%# 楽天ペイ %>
+            <% rakuten_pay_this_period = this_period(RakutenPay.where(user_id: r.user_id),@results)  %>
+            <% rakuten_pay_not_period = not_period(RakutenPay.where(user_id: r.user_id),@results)  %>
+            <% rakuten_pay_def = def_period(rakuten_pay_this_period,@results)  %>
+            <% rakuten_pay_inc = inc_period(rakuten_pay_not_period,@results)  %>
+            <% rakuten_pay_dec = dec_period(rakuten_pay_not_period,@results)  %>
+            <% rakuten_pay_sum = rakuten_pay_this_period.sum(:valuation) - rakuten_pay_def.sum(:valuation) + rakuten_pay_inc.sum(:valuation) - rakuten_pay_dec.sum(:valuation) %>
+        <%# 少額短期保険 %>
+            <% st_insurance_this_period = this_period(StInsurance.where(user_id: r.user_id),@results)  %>
+            <% st_insurance_def = def_period(st_insurance_this_period,@results)  %>
+            <% st_insurance_sum = st_insurance_this_period.sum(:valuation) - st_insurance_def.sum(:valuation) %>
+        <%# 楽天フェムト（新規） %>
+            <% casa_this_period = this_period(RakutenCasa.where(user_id: r.user_id),@results) %>
+            <% casa_def = def_period(casa_this_period,@results) %>
+            <% casa_def_net = casa_this_period
+            .where.not(deficiency_net: nil).where(deficiency_solution_net: nil)
+            .or(casa_this_period.where.not(deficiency_net: nil)
+            .where(deficiency_solution_net: @results.minimum(:date)..@results.maximum(:date))) %>
+            <% casa_def_anti = casa_this_period
+            .where.not(deficiency_anti: nil).where(deficiency_solution_anti: nil)
+            .or(casa_this_period.where.not(deficiency_anti: nil)
+            .where(deficiency_solution_anti: @results.minimum(:date)..@results.maximum(:date))) %>
 
-<div style="display: flex;">
-    <div>
-        <h2>評価売</h2>
-    <table>
-        <tr>
-            <th></th>
-            <th>中部キャッシュ</th>
-            <th>中部フェムト</th>
-            <th>関東キャッシュ</th>
-            <th>関東フェムト</th>
-            <th>関西キャッシュ</th>
-            <th>関西フェムト</th>
-            <th>キャッシュ・フェムト合計</th>
-        </tr>
-        <tr>
-            <th>訪問員人数</th>
-            <td><%= @chubu_cash_persons.length %></td>
-            <td><%= @chubu_femto_persons.length %></td>
-            <td><%= @kanto_cash_persons.length %></td>
-            <td><%= @kanto_femto_persons.length %></td>
-            <td><%= @kansai_cash_persons.length %></td>
-            <td><%= @kansai_femto_persons.length %></td>
-            <td><%= @results.group(:user_id).length %></td>
-        </tr>
-        <tr>
-            <th>予定シフト</th>
-            <td><%= chubu_cash_shift %></td>
-            <td><%= chubu_casa_shift %></td>
-            <td><%= kanto_cash_shift %></td>
-            <td><%= kanto_casa_shift %></td>
-            <td><%= kansai_cash_shift %></td>
-            <td><%= kansai_casa_shift %></td>
-            <td><%= sum_shift = chubu_cash_shift + chubu_casa_shift + kanto_cash_shift + kanto_casa_shift + kansai_cash_shift + kansai_casa_shift %></td>
-        </tr>
-        <tr>
-            <th>消化シフト</th>
-            <td><%= chubu_cash_shift_digestion %></td>
-            <td><%= chubu_casa_shift_digestion %></td>
-            <td><%= kanto_cash_shift_digestion %></td>
-            <td><%= kanto_casa_shift_digestion %></td>
-            <td><%= kansai_cash_shift_digestion %></td>
-            <td><%= kansai_casa_shift_digestion %></td>
-            <td><%= shift_digestion_sum %></td>
-        </tr>
-        <tr>
-            <th>現状売上</th>
-            <td><%= (@chubu_cash_sum_valuation).to_s(:delimited) %></td>
-            <td><%= (@chubu_rakuten_casa_valuation_sum).round().to_s(:delimited) %></td>
-            <td><%= (@kanto_cash_sum_valuation).to_s(:delimited) %></td>
-            <td><%= (@kanto_rakuten_casa_valuation_sum).round().to_s(:delimited) %></td>
-            <td><%= (@kansai_cash_sum_valuation).to_s(:delimited) %></td>
-            <td><%= (@kansai_rakuten_casa_valuation_sum).round().to_s(:delimited) %></td>
-            <td><%= (@chubu_cash_sum_valuation + @chubu_rakuten_casa_valuation_sum + @kanto_cash_sum_valuation + @kanto_rakuten_casa_valuation_sum + @kansai_cash_sum_valuation + @kansai_rakuten_casa_valuation_sum).round().to_s(:delimited) %></td>
-        </tr>
-        <tr>
-            <th>前週Ave</th>
-            <td><%= (@chubu_cash_sum_valuation_last_week / chubu_cash_shift_digestion_last_week).round().to_s(:delimited) if chubu_cash_shift_digestion_last_week != 0 %></td>
-            <td><%= (@chubu_rakuten_casa_valuation_sum_last_week / chubu_casa_shift_digestion_last_week).round().to_s(:delimited) if chubu_casa_shift_digestion_last_week != 0 %></td>
-            <td><%= (@kanto_cash_sum_valuation_last_week / kanto_cash_shift_digestion_last_week).round().to_s(:delimited) if kanto_cash_shift_digestion_last_week != 0 %></td>
-            <td><%= (@kanto_rakuten_casa_valuation_sum_last_week / kanto_casa_shift_digestion_last_week).round().to_s(:delimited) if kanto_casa_shift_digestion_last_week != 0 %></td>
-            <td><%= (@kansai_cash_sum_valuation_last_week / kansai_cash_shift_digestion_last_week).round().to_s(:delimited) if kansai_cash_shift_digestion_last_week != 0 %></td>
-            <td><%= (@kansai_rakuten_casa_valuation_sum_last_week / kansai_casa_shift_digestion_last_week).round().to_s(:delimited) if kansai_casa_shift_digestion_last_week != 0 %></td>
-            <td><%= (@sum_valuation_last_week / sum_shift_last_week).round().to_s(:delimited) if sum_shift_last_week != 0 %></td>
-        </tr>
-        <tr>
-            <th>現状Ave</th>
-            <td><%= (@chubu_cash_sum_valuation / chubu_cash_shift_digestion).round().to_s(:delimited) if chubu_cash_shift_digestion != 0 %></td>
-            <td><%= (@chubu_rakuten_casa_valuation_sum / chubu_casa_shift_digestion).round().to_s(:delimited) if chubu_casa_shift_digestion != 0 %></td>
-            <td><%= (@kanto_cash_sum_valuation / kanto_cash_shift_digestion).round().to_s(:delimited) if kanto_cash_shift_digestion != 0 %></td>
-            <td><%= (@kanto_rakuten_casa_valuation_sum / kanto_casa_shift_digestion).round().to_s(:delimited) if kanto_casa_shift_digestion != 0 %></td>
-            <td><%= (@kansai_cash_sum_valuation / kansai_cash_shift_digestion).round().to_s(:delimited) if kansai_cash_shift_digestion != 0 %></td>
-            <td><%= (@kansai_rakuten_casa_valuation_sum / kansai_casa_shift_digestion).round().to_s(:delimited) if kansai_casa_shift_digestion != 0 %></td>
-            <td><%= (@sum_valuation / shift_digestion_sum).round().to_s(:delimited) if shift_digestion_sum != 0 %></td>
-        </tr>
-        <tr>
-            <th>前週比</th>
-                <td><%= ((@chubu_cash_sum_valuation / chubu_cash_shift_digestion) - (@chubu_cash_sum_valuation_last_week / chubu_cash_shift_digestion_last_week)).to_s(:delimited) if chubu_cash_shift_digestion != 0 && chubu_cash_shift_digestion_last_week != 0 %></td>
-                <td><%= ((@chubu_rakuten_casa_valuation_sum / chubu_casa_shift_digestion)  - (@chubu_rakuten_casa_valuation_sum_last_week / chubu_casa_shift_digestion_last_week)).round().to_s(:delimited) if chubu_casa_shift_digestion != 0 && chubu_casa_shift_digestion_last_week != 0 %></td>
-                <td><%= ((@kanto_cash_sum_valuation / kanto_cash_shift_digestion) - (@kanto_cash_sum_valuation_last_week / kanto_cash_shift_digestion_last_week)).to_s(:delimited) if kanto_cash_shift_digestion != 0 && kanto_cash_shift_digestion_last_week != 0 %></td>
-                <td><%= ((@kanto_rakuten_casa_valuation_sum / kanto_casa_shift_digestion)  - (@kanto_rakuten_casa_valuation_sum_last_week / kanto_casa_shift_digestion_last_week)).round().to_s(:delimited) if kanto_casa_shift_digestion != 0 && kanto_casa_shift_digestion_last_week != 0 %></td>
-                <td><%= ((@kansai_cash_sum_valuation / kansai_cash_shift_digestion) - (@kansai_cash_sum_valuation_last_week / kansai_cash_shift_digestion_last_week)).to_s(:delimited) if kansai_cash_shift_digestion != 0 && kansai_cash_shift_digestion_last_week != 0 %></td>
-                <td><%= ((@kansai_rakuten_casa_valuation_sum / kansai_casa_shift_digestion)  - (@kansai_rakuten_casa_valuation_sum_last_week / kansai_casa_shift_digestion_last_week)).round().to_s(:delimited) if kansai_casa_shift_digestion != 0 && kansai_casa_shift_digestion_last_week != 0 %></td>
-                <td><%((@sum_valuation / shift_digestion_sum) - (@sum_valuation_last_week / sum_shift_last_week)).round().to_s(:delimited) if shift_digestion_sum != 0 || sum_shift_last_week != 0 %></td>
-        </tr>
-        <tr>
-            <th>終着見込売上</th>
-                <td><%= ((@chubu_cash_sum_valuation / chubu_cash_shift_digestion) * chubu_cash_shift).to_s(:delimited) if chubu_cash_shift_digestion != 0 && chubu_cash_shift != 0 %></td>
-                <td><%= ((@chubu_rakuten_casa_valuation_sum / chubu_casa_shift_digestion) * chubu_casa_shift).round().to_s(:delimited) if chubu_casa_shift_digestion != 0 && chubu_casa_shift != 0 %></td>
-                <td><%= ((@kanto_cash_sum_valuation / kanto_cash_shift_digestion) * kanto_cash_shift).to_s(:delimited) if kanto_cash_shift_digestion != 0 && kanto_cash_shift != 0 %></td>
-                <td><%= ((@kanto_rakuten_casa_valuation_sum / kanto_casa_shift_digestion) * kanto_casa_shift).round().to_s(:delimited) if kanto_casa_shift_digestion != 0 && kanto_casa_shift != 0 %></td>
-                <td><%= ((@kansai_cash_sum_valuation / kansai_cash_shift_digestion) * kansai_cash_shift).to_s(:delimited) if kansai_cash_shift_digestion != 0 && kansai_cash_shift != 0 %></td>
-                <td><%= ((@kansai_rakuten_casa_valuation_sum / kansai_casa_shift_digestion) * kansai_casa_shift).round().to_s(:delimited) if kansai_casa_shift_digestion != 0 && kansai_casa_shift != 0 %></td>
-                <td><%= ((@sum_valuation / shift_digestion_sum) * sum_shift).round().to_s(:delimited) if shift_digestion_sum != 0 || sum_shift != 0 %></td>
-        </tr>
-    </table>
-    </div>
-    <div>
-    <h2>商材別売上</h2>
-    <table>
-        <tr>
-            <th>商材</th>
-            <th>現状売上</th>
-            <th>獲得数</th>
-            <th>不備・NG</th>
-            <th>増加</th>
-            <th>減少</th>
-        </tr>
-        <tr>
-            <th>dメル（新規）</th>
-            <td><%= @chubu_dmers_new_valuation.to_s(:delimited) %></td>
-            <td><%= @chubu_dmers_this_month.length %></td>
-            <td><%= @chubu_dmers_def_this_month.length %></td>
-            <td><%= @chubu_dmers_inc.length %></td>
-            <td><%= @chubu_dmers_dec.length %></td>
-        </tr>
-        <tr>
-            <th>dメル（決済）</th>
-            <td><%= @chubu_dmers_slmt_valuation.to_s(:delimited) %></td>
-            <td><%= @chubu_dmers_slmt_this_month.length %></td>
-            <td><%= @chubu_dmers_slmt_def_this_month.length %></td>
-            <td><%= @chubu_dmers_slmt_inc.length %></td>
-            <td><%= @chubu_dmers_slmt_dec.length %></td>
-        </tr>
-        <tr>
-            <th>aupay（新規）</th>
-            <td><%= @chubu_aupays_new_valuation.to_s(:delimited) %></td>
-            <td><%= @chubu_aupays_this_month.length %></td>
-            <td><%= @chubu_aupays_def_this_month.length %></td>
-            <td><%= @chubu_aupays_inc.length %></td>
-            <td><%= @chubu_aupays_dec.length %></td>
-        </tr>
-        <tr>
-            <th>aupay（決済）</th>
-            <td><%= @chubu_aupays_slmt_valuation.to_s(:delimited) %></td>
-            <td><%= @chubu_aupays_slmt_this_month.length %></td>
-            <td><%= @chubu_aupays_slmt_def_this_month.length %></td>
-            <td><%= @chubu_aupays_slmt_inc.length %></td>
-            <td><%= @chubu_aupays_slmt_dec.length %></td>
-        </tr>
-        <tr>
-            <th>楽天ペイ</th>
-            <td><%= @chubu_rakuten_pays_valuation.to_s(:delimited) %></td>
-            <td><%= @chubu_rakuten_pays_this_month.length %></td>
-            <td><%= @chubu_rakuten_pays_def_this_month.length %></td>
-            <td><%= @chubu_rakuten_pays_inc.length %></td>
-            <td><%= @chubu_rakuten_pays_dec.length %></td>
-        </tr>
-        <tr>
-            <th>楽天フェムト（新規）</th>
-            <td><%= @chubu_rakuten_casas_valuation.to_s(:delimited) %></td>
-            <td><%= @chubu_rakuten_casas_this_month.length %></td>
-            <td><%= @chubu_rakuten_casas_def_this_month.length %></td>
-            <td><%= @chubu_rakuten_casas_inc.length %></td>
-            <td><%= @chubu_rakuten_casas_dec.length %></td>
-        </tr>
-        <tr>
-            <th>楽天フェムト（設置）</th>
-            <td><%= @chubu_rakuten_casas_put_valuation.to_s(:delimited) %></td>
-            <td><%= @chubu_rakuten_casa_put.length %></td>
-            <td class="td-blank"></td>
-            <td class="td-blank"></td>
-            <td class="td-blank"></td>
-        </tr>
-        <tr>
-            <th>PayPay</th>
-            <td><%= @chubu_paypays_valuation.to_s(:delimited) %></td>
-            <td><%= @chubu_paypays_this_month.length %></td>
-            <td><%= @chubu_rakuten_pays_def_this_month.length %></td>
-            <td class="td-blank"></td>
-            <td class="td-blank"></td>
-        </tr>
-        <tr>
-            <th>少額短期保険</th>
-            <td><%= @chubu_st_insurances_valuation.to_s(:delimited) %></td>
-            <td><%= @chubu_st_insurances_this_month.length %></td>
-            <td><%= @chubu_st_insurances_def_this_month.length %></td>
-            <td class="td-blank"></td>
-            <td class="td-blank"></td>
-        </tr>
-    </table>
-    </div>
-</div>
-<% if current_user.position == "権限①" %>
-        <h2>実売</h2>
-        <table>
-            <tr>
-                <th></th>
-                <th>中部キャッシュ</th>
-                <th>中部フェムト</th>
-                <th>関東キャッシュ</th>
-                <th>関東フェムト</th>
-                <th>関西キャッシュ</th>
-                <th>関西フェムト</th>
-                <th>キャッシュ・フェムト合計</th>
-            </tr>
-            <tr>
-                <th>現状売上</th>
-                <td><%= (@chubu_cash_sum_profit).to_s(:delimited) %></td>
-                <td><%= (@chubu_rakuten_casa_profit_sum).round().to_s(:delimited) %></td>
-                <td><%= (@kanto_cash_sum_profit).to_s(:delimited) %></td>
-                <td><%= (@kanto_rakuten_casa_profit_sum).round().to_s(:delimited) %></td>
-                <td><%= (@kansai_cash_sum_profit).to_s(:delimited) %></td>
-                <td><%= (@kansai_rakuten_casa_profit_sum).round().to_s(:delimited) %></td>
-                <td><%= (@sum_profit).round().to_s(:delimited) %></td>
-            </tr>
-            <tr>
-                <th>前週Ave</th>
-                <td><%= (@chubu_cash_sum_profit_last_week / chubu_cash_shift_digestion_last_week).round().to_s(:delimited) if chubu_cash_shift_digestion_last_week != 0 %></td>
-                <td><%= (@chubu_rakuten_casa_profit_sum_last_week / chubu_casa_shift_digestion_last_week).round().to_s(:delimited) if chubu_casa_shift_digestion_last_week != 0 %></td>
-                <td><%= (@kanto_cash_sum_profit_last_week / kanto_cash_shift_digestion_last_week).round().to_s(:delimited) if kanto_cash_shift_digestion_last_week != 0 %></td>
-                <td><%= (@kanto_rakuten_casa_profit_sum_last_week / kanto_casa_shift_digestion_last_week).round().to_s(:delimited) if kanto_casa_shift_digestion_last_week != 0 %></td>
-                <td><%= (@kansai_cash_sum_profit_last_week / kansai_cash_shift_digestion_last_week).round().to_s(:delimited) if kansai_cash_shift_digestion_last_week != 0 %></td>
-                <td><%= (@kansai_rakuten_casa_profit_sum_last_week / kansai_casa_shift_digestion_last_week).round().to_s(:delimited) if kansai_casa_shift_digestion_last_week != 0 %></td>
-                <td><%= (@sum_profit_last_week / sum_shift_last_week).round().to_s(:delimited) if sum_shift_last_week != 0 %></td>
-            </tr>
-            <tr>
-                <th>現状Ave</th>
-                <td><%= (@chubu_cash_sum_profit / chubu_cash_shift_digestion).to_s(:delimited) if chubu_cash_shift_digestion != 0 %></td>
-                <td><%= (@chubu_rakuten_casa_profit_sum / chubu_casa_shift_digestion).round().to_s(:delimited) if chubu_cash_shift_digestion != 0 %></td>
-                <td><%= (@kanto_cash_sum_profit / kanto_cash_shift_digestion).to_s(:delimited) if kanto_cash_shift_digestion != 0 %></td>
-                <td><%= (@kanto_rakuten_casa_profit_sum / kanto_casa_shift_digestion).round().to_s(:delimited) if kanto_casa_shift_digestion != 0 %></td>
-                <td><%= (@kansai_cash_sum_profit / kansai_cash_shift_digestion).to_s(:delimited) if kansai_cash_shift_digestion != 0 %></td>
-                <td><%= (@kansai_rakuten_casa_profit_sum / kansai_casa_shift_digestion).round().to_s(:delimited) if kansai_casa_shift_digestion != 0 %></td>
-                <td><%= (@sum_profit / shift_digestion_sum).round().to_s(:delimited) if shift_digestion_sum != 0 %></td>
-            </tr>
-            <tr>
-                <th>前週比</th>
-                <td><%= ((@chubu_cash_sum_profit / chubu_cash_shift_digestion) - (@chubu_cash_sum_profit_last_week / chubu_cash_shift_digestion_last_week)).to_s(:delimited) if chubu_cash_shift_digestion != 0 && chubu_cash_shift_digestion_last_week != 0 %></td>
-                <td><%= ((@chubu_rakuten_casa_profit_sum / chubu_casa_shift_digestion)  - (@chubu_rakuten_casa_profit_sum_last_week / chubu_casa_shift_digestion_last_week)).round().to_s(:delimited) if chubu_cash_shift_digestion != 0 && chubu_casa_shift_digestion_last_week != 0 %></td>
-                <td><%= ((@kanto_cash_sum_profit / kanto_cash_shift_digestion) - (@kanto_cash_sum_profit_last_week / kanto_cash_shift_digestion_last_week)).to_s(:delimited) if kanto_cash_shift_digestion != 0 && kanto_cash_shift_digestion_last_week != 0 %></td>
-                <td><%= ((@kanto_rakuten_casa_profit_sum / kanto_casa_shift_digestion)  - (@kanto_rakuten_casa_profit_sum_last_week / kanto_casa_shift_digestion_last_week)).round().to_s(:delimited) if kanto_casa_shift_digestion != 0 && kanto_casa_shift_digestion_last_week != 0 %></td>
-                <td><%= ((@kansai_cash_sum_profit / kansai_cash_shift_digestion) - (@kansai_cash_sum_profit_last_week / kansai_cash_shift_digestion_last_week)).to_s(:delimited) if kansai_cash_shift_digestion != 0 && kansai_cash_shift_digestion_last_week != 0 %></td>
-                <td><%= ((@kansai_rakuten_casa_profit_sum / kansai_casa_shift_digestion)  - (@kansai_rakuten_casa_profit_sum_last_week / kansai_casa_shift_digestion_last_week)).round().to_s(:delimited) if kansai_casa_shift_digestion != 0 && kansai_casa_shift_digestion_last_week != 0 %></td>
-                <td><%((@sum_profit / shift_digestion_sum) - (@sum_profit_last_week / sum_shift_last_week)).round().to_s(:delimited) if shift_digestion_sum != 0 || sum_shift_last_week != 0 %></td>
-            </tr>
-            <tr>
-                <th>終着見込売上</th>
-                <td><%= ((@chubu_cash_sum_profit / chubu_cash_shift_digestion) * chubu_cash_shift).to_s(:delimited) if chubu_cash_shift_digestion != 0 && chubu_cash_shift != 0 %></td>
-                <td><%= ((@chubu_rakuten_casa_profit_sum / chubu_casa_shift_digestion) * chubu_casa_shift).round().to_s(:delimited) if chubu_casa_shift_digestion != 0 && chubu_casa_shift != 0 %></td>
-                <td><%= ((@kanto_cash_sum_profit / kanto_cash_shift_digestion) * kanto_cash_shift).to_s(:delimited) if kanto_cash_shift_digestion != 0 && kanto_cash_shift != 0 %></td>
-                <td><%= ((@kanto_rakuten_casa_profit_sum / kanto_casa_shift_digestion) * kanto_casa_shift).round().to_s(:delimited) if kanto_casa_shift_digestion != 0 && kanto_casa_shift != 0 %></td>
-                <td><%= ((@kansai_cash_sum_profit / kansai_cash_shift_digestion) * kansai_cash_shift).to_s(:delimited) if kansai_cash_shift_digestion != 0 && kansai_cash_shift != 0 %></td>
-                <td><%= ((@kansai_rakuten_casa_profit_sum / kansai_casa_shift_digestion) * kansai_casa_shift).round().to_s(:delimited) if kansai_casa_shift_digestion != 0 && kansai_casa_shift != 0 %></td>
-                <td><%= ((@sum_profit / shift_digestion_sum) * sum_shift).round().to_s(:delimited) if shift_digestion_sum != 0 || sum_shift != 0 %></td>
-            </tr>
-        </table>
-<% else %>
-<% end %>
+            <% casa_not_period = not_period(RakutenCasa.where(user_id: r.user_id),@results) %>
+            <% casa_inc = inc_period(casa_not_period, @results) %>
+            <% casa_inc_net = casa_not_period.where(deficiency_solution_net: @results.minimum(:date)..@results.maximum(:date)) %>
+            <% casa_inc_anti = casa_not_period.where(deficiency_solution_anti: @results.minimum(:date)..@results.maximum(:date)) %>
+            <% casa_dec = dec_period(casa_not_period, @results) %>
+            <% casa_dec_net = casa_not_period.where(deficiency_net: @results.minimum(:date)..@results.maximum(:date)) %>
+            <% casa_dec_anti = casa_not_period.where(deficiency_anti: @results.minimum(:date)..@results.maximum(:date)) %>
+            <% casa_sum = 
+            casa_this_period.sum(:valuation_new) - casa_def.sum(:valuation_new) - casa_def_net.sum(:valuation_new) - casa_def_anti.sum(:valuation_new) +
+            casa_inc.sum(:valuation_new) + casa_inc_net.sum(:valuation_new) + casa_inc_anti.sum(:valuation_new) - casa_dec.sum(:valuation_new) - casa_dec_net.sum(:valuation_new) - casa_dec_anti.sum(:valuation_new)
+            %>
+        <%# 楽天フェムト（設置） %>
+            <% casa_put = RakutenCasa.where(user_id: r.user_id).where(put: @results.minimum(:date)..@results.maximum(:date)) %>
+            <% casa_put_self = casa_put.where(putter_id: r.user_id) %>
+            <% casa_put_other = RakutenCasa.where.not(user_id: r.user_id).where(putter_id: r.user_id).where(put: @results.minimum(:date)..@results.maximum(:date)) %>
+            <% casa_put_request = casa_put.where(user_id: r.user_id).where.not(putter_id: r.user_id) %>
+            <% casa_put_sum = casa_put_self.sum(:valuation_put) + casa_put_other.sum(:valuation_put).to_f * 0.8 + casa_put_request.sum(:valuation_put).to_f * 0.3 %>
+        <%# 累計 %>
+        <% sum_valuation = dmer_sum + dmer_slmt_sum + aupay_sum + aupay_slmt_sum + paypay_sum +
+            rakuten_pay_sum + st_insurance_sum + casa_sum + casa_put_sum %>
+        <% all_valuation_sum += sum_valuation %>
+      <td class="th-head"><%= r.user.name %></td>
+      <td ><%= r.user.base_sub  %></td>
+      <td ><%= shifts = Shift.where(user_id: r.user_id).where(start_time: @results.minimum(:date)..@results.maximum(:date)).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "欠勤").length %></td>
+      <td ><%= shift_digestion = @results.where(user_id: r.user_id).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "欠勤").length %></td>
+      <td ><%= (sum_valuation / shift_digestion ).round().to_s(:delimited) %></td>
+      <td ><%= (sum_valuation).round().to_s(:delimited) %></td>
+      <td ><%= (sum_valuation / shift_digestion * shifts ).round().to_s(:delimited) %></td>
+      <td ><%= result_value.average("first_visit + latter_visit").round(1) %></td>
+      <td ><%= result_value.average("first_interview + latter_interview").round(1) %></td>
+      <td ><%= result_value.average("first_full_talk + latter_full_talk").round(1) %></td>
+      <td ><%= result_value.average("first_get + latter_get").round(1) %></td>
+      <td ><%= dmer_this_period.length %></td>
+      <td ><%= slmt_this_period(Dmer.where(settlementer_id: r.user_id),@results).length %></td>
+      <td ><%= this_period(Aupay.where(user_id: r.user_id),@results).length %></td>
+      <td ><%= slmt_this_period(Aupay.where(settlementer_id: r.user_id),@results).length %></td>
+      <td ><%= this_period(Paypay.where(user_id: r.user_id),@results).length %></td>
+      <td ><%= this_period(RakutenPay.where(user_id: r.user_id),@results).length %></td>
+      <td ><%= this_period(StInsurance.where(user_id: r.user_id),@results).length %></td>
+      <td ><%= this_period(RakutenCasa.where(user_id: r.user_id),@results).length %></td>
+      <% rakuten_put = RakutenCasa.where(user_id: r.user_id).where(put: @results.minimum(:date)..@results.maximum(:date)) %>
+      <td ><%= rakuten_put.where(putter_id: r.user_id).where(user_id: r.user_id).length %></td>
+      <td ><%= RakutenCasa.where.not(user_id: r.user_id).where(putter_id: r.user.id).where(put: @results.minimum(:date)..@results.maximum(:date)).length %></td>
+      <td ><%= rakuten_put.where(user_id: r.user_id).where.not(putter_id: r.user_id).length %></td>
+      <% dmer_num += dmer_this_period.length %>
+      <% dmer_slmt_num += slmt_this_period(Dmer.where(settlementer_id: r.user_id),@results).length %>
+      <% aupay_num += this_period(Aupay.where(user_id: r.user_id),@results).length %>
+      <% aupay_slmt_num += slmt_this_period(Aupay.where(settlementer_id: r.user_id),@results).length %>
+      <% paypay_num += this_period(Paypay.where(user_id: r.user_id),@results).length %>
+      <% rakuten_pay_num += this_period(RakutenPay.where(user_id: r.user_id),@results).length %>
+      <% st_insurance_num += this_period(StInsurance.where(user_id: r.user_id),@results).length %>
+      <% casa_num += this_period(RakutenCasa.where(user_id: r.user_id),@results).length %>
+      <% casa_put_self_num += rakuten_put.where(putter_id: r.user_id).where(user_id: r.user_id).length %>
+      <% casa_put_other_num += RakutenCasa.where.not(user_id: r.user_id).where(putter_id: r.user.id).where(put: @results.minimum(:date)..@results.maximum(:date)).length %>
+      <% casa_put_request_num += rakuten_put.where(user_id: r.user_id).where.not(putter_id: r.user_id).length %>
+    </tr>
+      <% end %>
+    <tr>
+        <th colspan="2">合計</th>
+        <td><%= all_shift = Shift.where(start_time: @results.minimum(:date)..@results.maximum(:date)).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "欠勤").length %></td>
+        <td><%= all_shift_digestion = @results.where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同").where.not(shift: "欠勤").length %></td>
+        <td><%= (all_valuation_sum / all_shift_digestion ).round().to_s(:delimited) %></td>
+        <td><%= (all_valuation_sum).round().to_s(:delimited) %></td>
+        <td><%= (all_valuation_sum / all_shift_digestion * all_shift ).round().to_s(:delimited) %></td>
+        <td><%=  %></td>
+        <td><%=  %></td>
+        <td><%=  %></td>
+        <td><%=  %></td>
+        <td><%= dmer_num %></td>
+        <td><%= dmer_slmt_num %></td>
+        <td><%= aupay_num %></td>
+        <td><%= aupay_slmt_num %></td>
+        <td><%= paypay_num %></td>
+        <td><%= rakuten_pay_num %></td>
+        <td><%= st_insurance_num %></td>
+        <td><%= casa_num %></td>
+        <td><%= casa_put_self_num %></td>
+        <td><%= casa_put_other_num %></td>
+        <td><%= casa_put_request_num %></td>
+    </tr>
+  </table>
+
+  <table>
+    
+  </table>

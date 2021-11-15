@@ -2,7 +2,7 @@
   <h1>シフト一覧</h1>
   <%= render "shared/header" %>
   <p class="shift-alert"><%= notice %></p>
-  <div style="display: flex;">
+  <div style="display: flex; padding:15px;">
     <div class="shift-form">
     <h2><%= current_user.name %>シフト申請</h2>
   <%= form_with model: @shift,class: "form-frame", local: true do |f| %>
@@ -30,7 +30,7 @@
         </tr>
       </tbody>
     </table>
-    <%= f.submit "登録", data: {confirm: "入力された内容でシフト申請しますか？"},class: "submit-btn" %>
+    <%= f.submit "登録",class: "submit-btn" %>
     <% end %>
     <h2>全シフト検索</h2>
     <%= search_form_for @q do |f| %>
@@ -61,20 +61,41 @@
     <% end %>
     </div>
     <div class="cal-form">
-    <h2><%= current_user.name %>予定シフト</h2>
-    <%= month_calendar events: @current_shifts do |date, shifts| %>
-      <%= date.day %>
-      <% shifts.each do |shift| %>
-         <br><br><span class="cal-data"><%= shift.shift %></span>
-         <%= link_to "削除", shift_path(shift.id), method: :delete, data: {confirm:"削除しますか？"},class: "cal-del" %>
+    <%= form_with model: @current_shifts, url: update_month_shifts_path , local: true do |f| %>
+      <h2><%= current_user.name %>予定シフト</h2>
+      <%=month_calendar events: @current_shifts do |date, shifts| %>
+        <% current_shift = @current_shifts.find_or_initialize_by(start_time: date) %>
+        <% if current_shift.id.nil? %>
+        <%= f.hidden_field :date,value: date  %>
+        <%= date.day %><br>
+        <%= f.select :shift, {
+          "キャッシュレス新規": "キャッシュレス新規",
+          "キャッシュレス決済": "キャッシュレス決済",
+          "楽天フェムト新規": "楽天フェムト新規",
+          "楽天フェムト設置": "楽天フェムト設置",
+          "サミット": "サミット",
+          "帯同": "帯同",
+          "内勤": "内勤",
+          "休み": "休み",
+          "欠勤": "欠勤"} ,{prompt: "シフトを選択してください"}, {class: "input"} %>
+        <% else %>
+        <%= date.day %>
+        <% shifts.each do |shift| %>
+          <br><br><span class="cal-data"><%= shift.shift %></span>
+          <%= link_to "削除", shift_path(shift.id), method: :delete, data: {confirm:"削除しますか？"},class: "cal-del" %>
+        <% end %>
+        <% end %>
       <% end %>
+      <%= f.submit "一括登録",class: "submit-btn" %>
     <% end %>
     </div>
   </div>
 
   <% if @shifts.empty? %>
   <% else %>
-<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<%# シフト一覧 %>
+  <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+  <div style="padding:15px;">
     <h1>
       予定シフト（稼働訪問員<%= @shifts.group(:user_id).length %>人）
       表示範囲：
@@ -145,4 +166,5 @@
     <% end %>
       </table>
   <% end %>
+  </div>
 </div>

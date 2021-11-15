@@ -16,13 +16,13 @@ class ShiftsController < ApplicationController
   
   def create 
     @shift = Shift.new(shift_params)
-    if @shift.start_time.present?
-      @shift.save
+      if @shift.save
       flash[:notice] = "#{@shift.start_time.to_date}#{@shift.shift}のシフト申請をしました。"
-      redirect_to shifts_path 
-    else  
-      render :index
-    end 
+      redirect_to shifts_path
+    else 
+      flash[:notice] = "申請に失敗しました。"
+      redirect_to shifts_path
+    end
   end 
   
   def show 
@@ -35,6 +35,14 @@ class ShiftsController < ApplicationController
   def update 
     @shift = Shift.find(params[:id])
     @shift.update(shift_params)
+
+  end 
+
+  def update_month
+    shifts_params.keys.each do |key|
+      @shifts_all = Shift.find_or_initialize_by(start_time: shifts_params[key][:start_time].to_date)
+      @shifts_all.update_attributes(shifts_params[key])
+    end
     redirect_to shifts_path
   end 
 
@@ -49,5 +57,7 @@ class ShiftsController < ApplicationController
   def shift_params 
     params.require(:shift).permit(:user_id,:start_time,:shift)
   end 
-  
+  def shifts_params 
+    params.require(:shift).permit!
+  end 
 end

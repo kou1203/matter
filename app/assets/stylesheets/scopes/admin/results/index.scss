@@ -107,17 +107,7 @@ li:hover {
 } 
 
 // ハンバーガーデザイン
-.search-table {
-  border-collapse: collapse;
-  margin: 20px ;
-  table-layout: fixed;
-  min-width: 100%;
-  display: block;
-  overflow-x: scroll;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
-  max-width: 600px;
-}
+
 
 table{
   border-collapse: collapse;
@@ -129,10 +119,6 @@ table{
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
   // max-width: 600px;
-}
-
-.separate {
-  display: flex;
 }
 
 tr:nth-child(odd) {
@@ -166,21 +152,7 @@ tr:nth-child(odd) {
   vertical-align: middle;
 }
 
-  
-.search1:nth-child(even) {
-  background:  #96C0CE;
-}
 
-
-.search2 {
-  text-align: center;
-  color: white;
-  background:  #96C0CE;
-  box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-  padding: 10px 0;
-  margin: 15px;
-  width: 7vw;
-}
 
 
 .search2:nth-child(even) {
@@ -225,24 +197,6 @@ th {
 
 
 
-.th-side-head {
-  vertical-align:middle;
-  border-bottom: 1px solid rgb(205, 203, 203);
-  background: #96C0CE;
-}
-
-.th-side-head-even {
-  vertical-align:middle;
-  border-bottom: 1px solid rgb(205, 203, 203);
-  background: #74828F;
-}
-
-.search-head {
-  vertical-align:middle;
-  border-bottom: 1px solid rgb(205, 203, 203);
-  background: linear-gradient(40deg, #add8e6 10%,  #c4c2c2 100%);
-}
-
 .shift-th {
   text-align: center;
   color: white;
@@ -254,25 +208,30 @@ th {
   vertical-align: middle;
 }
 
-.th-base {
-  vertical-align:middle;
-  border-bottom: 1px solid rgb(205, 203, 203);
-  background: #96C0CE;
+.out-th {
+  text-align:left;
+  vertical-align: middle;
 }
 
-.search-td {
-  border-bottom: 1px solid rgb(205, 203, 203);
-  text-align: center;
-  box-shadow: 0px -3px 5px 1px #eee inset;
-  padding: 10px 5px;
-  background: white;
+.out-tb {
+  max-height: 400px;
 }
+
+.out-tb thead th {
+  /* 縦スクロール時に固定する */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  /* tbody内のセルより手前に表示する */
+  z-index: 1;
+}
+
 
 td {
   border-bottom: 1px solid rgb(205, 203, 203);
   text-align: center;
   box-shadow: 0px -3px 5px 1px #eee inset;
-  padding: 10px 0;
+  padding: 10px 15px;
 }
 
 .result {
@@ -304,6 +263,8 @@ td {
   font-size: 18px;
   color: rgb(103, 101, 101);
 }
+
+
 
 /*==================
 #loading

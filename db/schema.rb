@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_10_18_122051) do
+ActiveRecord::Schema.define(version: 2021_11_06_041034) do
 
   create_table "actual_profits", charset: "utf8", force: :cascade do |t|
     t.string "item", null: false
@@ -74,6 +74,19 @@ ActiveRecord::Schema.define(version: 2021_10_18_122051) do
     t.integer "travel_stock", null: false
     t.integer "other", null: false
     t.date "update_date"
+  end
+
+  create_table "display_periods", charset: "utf8", force: :cascade do |t|
+    t.date "start_period_01"
+    t.date "end_period_01"
+    t.date "start_period_02"
+    t.date "end_period_02"
+    t.date "start_period_03"
+    t.date "end_period_03"
+    t.date "start_period_04"
+    t.date "end_period_04"
+    t.date "start_period_05"
+    t.date "end_period_05"
   end
 
   create_table "dmers", charset: "utf8", force: :cascade do |t|
@@ -717,8 +730,8 @@ ActiveRecord::Schema.define(version: 2021_10_18_122051) do
 
   create_table "shifts", charset: "utf8", force: :cascade do |t|
     t.bigint "user_id"
-    t.string "shift", null: false
-    t.datetime "start_time", null: false
+    t.string "shift"
+    t.datetime "start_time"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_shifts_on_user_id"

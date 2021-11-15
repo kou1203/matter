@@ -1,0 +1,282 @@
+  <div>
+  <h2>キャッシュレス</h2>
+  <table>
+    <tr>
+      <th rowspan="4"></th>
+      <th>拠点</th>
+      <th>中部キャッシュ</th>
+      <th>関東キャッシュ</th>
+      <th>関西キャッシュ</th>
+      <th>全拠点</th>
+    </tr>
+    <tr>
+      <th>対策員人数</th>
+      <td><%= @chubu_cash_persons.length %></td>
+      <td><%= @kanto_cash_persons.length %></td>
+      <td><%= @kansai_cash_persons.length %></td>
+      <td><%= persons_sum = @chubu_cash_persons.length + @kanto_cash_persons.length + @kansai_cash_persons.length %></td>
+    </tr>
+    <tr>
+      <th>予定シフト</th>
+      <td><%= @chubu_cash_shifts.length %></td>
+      <td><%= @kanto_cash_shifts.length %></td>
+      <td><%= @kansai_cash_shifts.length %></td>
+      <td><%= shifts_sum = @chubu_cash_shifts.length + @kanto_cash_shifts.length + @kansai_cash_shifts.length %></td>
+    </tr>
+    <tr>
+      <th>消化シフト</th>
+      <td><%= @chubu_cash_shift_digestion.length %></td>
+      <td><%= @kanto_cash_shift_digestion.length %></td>
+      <td><%= @kansai_cash_shift_digestion.length %></td>
+      <td><%= shift_digestion_sum = @chubu_cash_shift_digestion.length + @kanto_cash_shift_digestion.length + @kansai_cash_shift_digestion.length %></td>
+    </tr>
+    <tr>
+      <th rowspan="5">評価売</th>
+      <th>現状売上</th>
+      <td><%= @chubu_cash_sum_valuation.to_s(:delimited) %></td>
+      <td><%= @kanto_cash_sum_valuation.to_s(:delimited) %></td>
+      <td><%= @kansai_cash_sum_valuation.to_s(:delimited) %></td>
+      <% cash_sum_valuation = @chubu_cash_sum_valuation + @kanto_cash_sum_valuation + @kansai_cash_sum_valuation %>
+      <td><%= (cash_sum_valuation).to_s(:delimited) %></td>
+    </tr>
+    <tr>
+      <th>前週Ave</th>
+      <% cash_valuation_sum_prev_week = 0 %>
+      <% cash_shift_sum_prev_week = 0 %>
+      <% if @chubu_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% chubu_cash_valuation_ave_prev_week = @chubu_cash_sum_valuation_prev_week.to_f / @chubu_cash_shift_digestion_prev_week.length %>
+        <% cash_valuation_sum_prev_week += @chubu_cash_sum_valuation_prev_week %>
+        <% cash_shift_sum_prev_week += @chubu_cash_shift_digestion_prev_week.length %>
+      <td><%= (chubu_cash_valuation_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kanto_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% kanto_cash_valuation_ave_prev_week = @kanto_cash_sum_valuation_prev_week.to_f / @kanto_cash_shift_digestion_prev_week.length %>
+        <% cash_valuation_sum_prev_week += @kanto_cash_sum_valuation_prev_week %>
+        <% cash_shift_sum_prev_week += @kanto_cash_shift_digestion_prev_week.length %>
+      <td><%= (kanto_cash_valuation_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kansai_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% kansai_cash_valuation_ave_prev_week = @kansai_cash_sum_valuation_prev_week.to_f / @kansai_cash_shift_digestion_prev_week.length %>
+        <% cash_valuation_sum_prev_week += @kansai_cash_sum_valuation_prev_week %>
+        <% cash_shift_sum_prev_week += @kansai_cash_shift_digestion_prev_week.length %>
+      <td><%= (kansai_cash_valuation_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if cash_shift_sum_prev_week == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% cash_valuation_total_ave_prev_week = cash_valuation_sum_prev_week / cash_shift_sum_prev_week %>
+      <td><%= (cash_valuation_total_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+    </tr>
+    <tr>
+      <th>現状Ave</th>
+      <% if @chubu_cash_shift_digestion.length == 0  %>
+      <td>計測不可</td>
+      <% else %>
+      <% chubu_cash_valuation_ave = @chubu_cash_sum_valuation.to_f / @chubu_cash_shift_digestion.length %>
+      <td><%= (chubu_cash_valuation_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kanto_cash_shift_digestion.length == 0  %>
+      <td>計測不可</td>
+      <% else %>
+      <% kanto_cash_valuation_ave = @kanto_cash_sum_valuation.to_f / @kanto_cash_shift_digestion.length %>
+      <td><%= (kanto_cash_valuation_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kansai_cash_shift_digestion.length == 0  %>
+      <td>計測不可</td>
+      <% else %>
+      <% kansai_cash_valuation_ave = @kansai_cash_sum_valuation.to_f / @kansai_cash_shift_digestion.length %>
+      <td><%= (kansai_cash_valuation_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% cash_valuation_total_ave = cash_sum_valuation / shift_digestion_sum %>
+      <td><%= (cash_valuation_total_ave).round().to_s(:delimited) %></td>
+    </tr>
+    <tr>
+      <th>前週比</th>
+      <% ave_comparison = 0 %>
+      <% if @chubu_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if chubu_cash_valuation_ave - chubu_cash_valuation_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@chubu_cash_sum_valuation / @chubu_cash_shift_digestion.length) - (@chubu_cash_sum_valuation_prev_week / @chubu_cash_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@chubu_cash_sum_valuation / @chubu_cash_shift_digestion.length) - (@chubu_cash_sum_valuation_prev_week / @chubu_cash_shift_digestion_prev_week.length)).to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if @kanto_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if kanto_cash_valuation_ave - kanto_cash_valuation_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@kanto_cash_sum_valuation / @kanto_cash_shift_digestion.length) - (@kanto_cash_sum_valuation_prev_week / @kanto_cash_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@kanto_cash_sum_valuation / @kanto_cash_shift_digestion.length) - (@kanto_cash_sum_valuation_prev_week / @kanto_cash_shift_digestion_prev_week.length)).to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if @kansai_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if kansai_cash_valuation_ave - kansai_cash_valuation_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@kansai_cash_sum_valuation / @kansai_cash_shift_digestion.length) - (@kansai_cash_sum_valuation_prev_week / @kansai_cash_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@kansai_cash_sum_valuation / @kansai_cash_shift_digestion.length) - (@kansai_cash_sum_valuation_prev_week / @kansai_cash_shift_digestion_prev_week.length)).to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if cash_valuation_total_ave_prev_week.nil? %>
+      <% else %>
+      <% if cash_valuation_total_ave - cash_valuation_total_ave_prev_week >= 0 %>
+      <td style="color:blue;">+<%= cash_valuation_total_ave - cash_valuation_total_ave_prev_week %></td>
+      <% else %>
+      <td style="color:red;"><%= cash_valuation_total_ave - cash_valuation_total_ave_prev_week %></td>
+      <% end %>
+      <% end %>
+    </tr>
+    <tr>
+      <th>終着見込売上</th>
+      <% if @chubu_cash_shifts.length == 0 || chubu_cash_valuation_ave.nil? %>
+      <td>計測不可</td>
+      <% else %>
+      <td><%= (chubu_cash_valuation_ave * @chubu_cash_shifts.length).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kanto_cash_shifts.length == 0 || kanto_cash_valuation_ave.nil? %>
+      <td>計測不可</td>
+      <% else %>
+      <td><%= (kanto_cash_valuation_ave * @kanto_cash_shifts.length).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kansai_cash_shifts.length == 0 || kansai_cash_valuation_ave.nil? %>
+      <td>計測不可</td>
+      <% else %>
+      <td><%= (kansai_cash_valuation_ave * @kansai_cash_shifts.length).round().to_s(:delimited) %></td>
+      <% end %>
+      <td><%= (cash_valuation_total_ave * shifts_sum).round().to_s(:delimited) %></td>
+    </tr>
+    <tr>
+    <th rowspan="5">実売</th>
+      <th>現状売上</th>
+      <td><%= @chubu_cash_sum_profit.to_s(:delimited) %></td>
+      <td><%= @kanto_cash_sum_profit.to_s(:delimited) %></td>
+      <td><%= @kansai_cash_sum_profit.to_s(:delimited) %></td>
+      <td><%= (@chubu_cash_sum_profit + @kanto_cash_sum_profit + @kansai_cash_sum_profit).to_s(:delimited) %></td>
+    </tr>
+    <tr>
+      <th>前週Ave</th>
+      <% cash_profit_sum_prev_week = 0 %>
+      <% if @chubu_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% chubu_cash_profit_ave_prev_week = @chubu_cash_sum_profit_prev_week.to_f / @chubu_cash_shift_digestion_prev_week.length %>
+        <% cash_profit_sum_prev_week += @chubu_cash_sum_profit_prev_week %>
+      <td><%= (chubu_cash_profit_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kanto_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% kanto_cash_profit_ave_prev_week = @kanto_cash_sum_profit_prev_week.to_f / @kanto_cash_shift_digestion_prev_week.length %>
+        <% cash_profit_sum_prev_week += @kanto_cash_sum_profit_prev_week %>
+      <td><%= (kanto_cash_profit_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kansai_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% kansai_cash_profit_ave_prev_week = @kansai_cash_sum_profit_prev_week.to_f / @kansai_cash_shift_digestion_prev_week.length %>
+        <% cash_profit_sum_prev_week += @kansai_cash_sum_profit_prev_week %>
+      <td><%= (kansai_cash_profit_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% cash_profit_total_ave_prev_week = cash_profit_sum_prev_week.to_f / cash_shift_sum_prev_week %>
+      <% if cash_shift_sum_prev_week == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <td><%= (cash_profit_total_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+    </tr>
+    <tr>
+      <th>現状Ave</th>
+      <% cash_profit_sum = 0 %>
+      <% if @chubu_cash_shift_digestion.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% chubu_cash_profit_ave = @chubu_cash_sum_profit.to_f / @chubu_cash_shift_digestion.length %>
+      <% cash_profit_sum += @chubu_cash_sum_profit %>
+      <td><%= (chubu_cash_profit_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kanto_cash_shift_digestion.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% kanto_cash_profit_ave = @kanto_cash_sum_profit.to_f / @kanto_cash_shift_digestion.length %>
+      <% cash_profit_sum += @kanto_cash_sum_profit %>
+      <td><%= (kanto_cash_profit_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kansai_cash_shift_digestion.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% kansai_cash_profit_ave = @kansai_cash_sum_profit.to_f / @kansai_cash_shift_digestion.length %>
+      <% cash_profit_sum += @kansai_cash_sum_profit %>
+      <td><%= (kansai_cash_profit_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% cash_profit_total_ave = cash_profit_sum.to_f / shift_digestion_sum %>
+      <td><%= (cash_profit_total_ave).round().to_s(:delimited) %></td>
+    </tr>
+    <tr>
+      <th>前週比</th>
+      <% if @chubu_cash_shift_digestion.length == 0 || @chubu_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if chubu_cash_profit_ave - chubu_cash_profit_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@chubu_cash_sum_profit / @chubu_cash_shift_digestion.length) - (@chubu_cash_sum_profit_prev_week / @chubu_cash_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@chubu_cash_sum_profit / @chubu_cash_shift_digestion.length) - (@chubu_cash_sum_profit_prev_week / @chubu_cash_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if @kanto_cash_shift_digestion.length == 0 || @kanto_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if kanto_cash_profit_ave - kanto_cash_profit_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@kanto_cash_sum_profit / @kanto_cash_shift_digestion.length) - (@kanto_cash_sum_profit_prev_week / @kanto_cash_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@kanto_cash_sum_profit / @kanto_cash_shift_digestion.length) - (@kanto_cash_sum_profit_prev_week / @kanto_cash_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if @kansai_cash_shift_digestion.length == 0 || @kansai_cash_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if kansai_cash_profit_ave - kansai_cash_profit_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@kansai_cash_sum_profit / @kansai_cash_shift_digestion.length) - (@kansai_cash_sum_profit_prev_week / @kansai_cash_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@kansai_cash_sum_profit / @kansai_cash_shift_digestion.length) - (@kansai_cash_sum_profit_prev_week / @kansai_cash_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if shift_digestion_sum == 0 || cash_shift_sum_prev_week == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if cash_profit_total_ave - cash_profit_total_ave_prev_week >= 0 %>
+      <td style="color:blue;">+<%= (cash_profit_total_ave - cash_profit_total_ave_prev_week).round().to_s(:delimited) %></td>
+      <% else %>
+      <td style="color:red;"><%= (cash_profit_total_ave - cash_profit_total_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+    </tr>
+    <tr>
+      <th>終着見込売上</th>
+      <% if @chubu_cash_shifts.length == 0 || chubu_cash_profit_ave.nil? %>
+      <td>計測不可</td>
+      <% else %>
+      <td><%= (chubu_cash_profit_ave * @chubu_cash_shifts.length).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kanto_cash_shifts.length == 0 || kanto_cash_profit_ave.nil? %>
+      <td>計測不可</td>
+      <% else %>
+      <td><%= (kanto_cash_profit_ave * @kanto_cash_shifts.length).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kansai_cash_shifts.length == 0 || kansai_cash_profit_ave.nil? %>
+      <td>計測不可</td>
+      <% else %>
+      <td><%= (kansai_cash_profit_ave * @kansai_cash_shifts.length).round().to_s(:delimited) %></td>
+      <% end %>
+      <td><%= (cash_profit_total_ave * shifts_sum).round().to_s(:delimited)  %></td>
+    </tr>
+  </table>

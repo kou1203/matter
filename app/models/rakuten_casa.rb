@@ -142,10 +142,10 @@ class RakutenCasa < ApplicationRecord
           # 成果地点、入金日
           payment: row["新規入金日"],
           payment_put: row["設置入金日"],
-          profit_new: row["新規評価売上"],
-          profit_put: row["設置評価売上"],
-          valuation_new: row["新規実売上"],
-          valuation_put: row["設置実売上"]
+          valuation_new: row["新規評価売上"],
+          valuation_put: row["設置評価売上"],
+          profit_new: row["新規実売上"],
+          profit_put: row["設置実売上"]
         )
         errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if rakuten_casa.invalid?
       end
@@ -268,10 +268,10 @@ class RakutenCasa < ApplicationRecord
           # 成果地点、入金日
           payment: row["新規入金日"],
           payment_put: row["設置入金日"],
-          profit_new: row["新規評価売上"],
-          profit_put: row["設置評価売上"],
-          valuation_new: row["新規実売上"],
-          valuation_put: row["設置実売上"]
+          valuation_new: row["新規評価売上"],
+          valuation_put: row["設置評価売上"],
+          profit_new: row["新規実売上"],
+          profit_put: row["設置実売上"]
         )
         if rakuten_casa.has_changes_to_save? 
           rakuten_casa.save!
@@ -371,10 +371,10 @@ class RakutenCasa < ApplicationRecord
           # 成果地点、入金日
           payment: row["新規入金日"],
           payment_put: row["設置入金日"],
-          profit_new: row["新規評価売上"],
-          profit_put: row["設置評価売上"],
-          valuation_new: row["新規実売上"],
-          valuation_put: row["設置実売上"]
+          valuation_new: row["新規評価売上"],
+          valuation_put: row["設置評価売上"],
+          profit_new: row["新規実売上"],
+          profit_put: row["設置実売上"]
           )
         rakuten_casa.save!
         new_cnt += 1

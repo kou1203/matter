@@ -241,7 +241,7 @@
           <td style="color: red;"><%= @rakuten_casas_dec.length %></td>
       </tr>
     </table>
-  <h1>基準値（１日平均）</h1>
+  <h1>基準値</h1>
     <% if @results.where(shift: "キャッシュレス新規").empty? %>
     <% else %>
     <div style="display: flex;">
@@ -325,125 +325,278 @@
     </div>
     <div style="display: flex;">
       <div>
-      <h2>キャッシュレス切り返し（平均）</h2>
-      <table>
+      <h2>キャッシュレス切り返し</h2>
+      <table class="out-tb">
+        <thead>
         <tr>
-          <th></th>
+          <th >切り返し内容</th>
+          <th >内訳</th>
+          <th>合計</th>
+          <th>平均</th>
+          <th>成約率</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th rowspan="3" class="out-th">０１：どういうこと？</th>
           <th>決済者面会</th>
-          <th>フル数</th>
-          <th>フル率（％）</th>
-          <th>成約数</th>
-          <th>成約率（％）</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_01) %></td>
+          <td><%= @results.includes(:result_cash).average(:out_interview_01).to_f.round(1) %></td>
+          <td></td>
         </tr>
         <tr>
-        <th style="text-align:left;">０１：どういうこと？</th>
-          <td><%= @results.includes(:result_cash).average(:out_interview_01).to_f.round(1) %></td>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_01) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_01).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_01).to_f / @results.includes(:result_cash).sum(:out_interview_01).to_f * 100,precision: 1) %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_01)%></td>
           <td><%= @results.includes(:result_cash).average(:out_get_01).to_f.round(1)%></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_01).to_f / @results.includes(:result_cash).sum(:out_full_talk_01).to_f * 100,precision: 1) %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">０２：君は誰？協会？</th>
+        <th rowspan="3" class="out-th">０２：君は誰？協会？</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_02) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_02).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_02) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_02).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_02).to_f / @results.includes(:result_cash).sum(:out_interview_02).to_f * 100,precision: 1)  %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_02) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_02).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_02).to_f / @results.includes(:result_cash).sum(:out_full_talk_02).to_f * 100,precision: 1)  %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">０３：もらうだけでいいの？</th>
+        <th rowspan="3" class="out-th">０３：もらうだけでいいの？</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_03) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_03).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_03).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_03).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_03).to_f / @results.includes(:result_cash).sum(:out_interview_03).to_f * 100,precision: 1)  %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_03).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_03).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_03).to_f / @results.includes(:result_cash).sum(:out_full_talk_03).to_f * 100,precision: 1)  %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">０４：PayPayのみ</th>
+        <th rowspan="3" class="out-th">０４：PayPayのみ</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_04).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_04).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_04).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_04).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_04).to_f / @results.includes(:result_cash).sum(:out_interview_04).to_f * 100,precision: 1)  %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_04).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_04).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_04).to_f / @results.includes(:result_cash).sum(:out_full_talk_04).to_f * 100,precision: 1)  %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">０５：AirPayのみ</th>
+        <th rowspan="3" class="out-th">０５：AirPayのみ</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_05).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_05).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_05).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_05).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_05).to_f / @results.includes(:result_cash).sum(:out_interview_05).to_f * 100,precision: 1) %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_05).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_05).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_05).to_f / @results.includes(:result_cash).sum(:out_full_talk_05).to_f * 100,precision: 1)  %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">０６：カードのみ</th>
+        <th rowspan="3" class="out-th">０６：カードのみ</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_06).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_06).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_06).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_06).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_06).to_f / @results.includes(:result_cash).sum(:out_interview_06).to_f * 100,precision: 1) %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_06).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_06).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_06).to_f / @results.includes(:result_cash).sum(:out_full_talk_06).to_f * 100,precision: 1)  %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">０７：先延ばし</th>
+        <th rowspan="3" class="out-th">０７：先延ばし</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_07).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_07).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_07).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_07).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_07).to_f / @results.includes(:result_cash).sum(:out_interview_07).to_f * 100,precision: 1) %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_07).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_07).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_07).to_f / @results.includes(:result_cash).sum(:out_full_talk_07).to_f * 100,precision: 1)  %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">０８：忙しい</th>
+        <th rowspan="3" class="out-th">０８：忙しい</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_08).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_08).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_08).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_08).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_08).to_f / @results.includes(:result_cash).sum(:out_interview_08).to_f * 100,precision: 1) %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_08).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_08).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_08).to_f / @results.includes(:result_cash).sum(:out_full_talk_08).to_f * 100,precision: 1)  %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">０９：現金のみ</th>
+        <th rowspan="3" class="out-th">０９：現金のみ</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_09).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_09).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_09).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_09).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_09).to_f / @results.includes(:result_cash).sum(:out_interview_09).to_f * 100,precision: 1) %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_09).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_09).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_09).to_f / @results.includes(:result_cash).sum(:out_full_talk_09).to_f * 100,precision: 1)  %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">１０：面倒くさい</th>
+        <th rowspan="3" class="out-th">１０：面倒くさい</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_10).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_10).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_10).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_10).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_10).to_f / @results.includes(:result_cash).sum(:out_interview_10).to_f * 100,precision: 1) %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_10).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_10).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_10).to_f / @results.includes(:result_cash).sum(:out_full_talk_10).to_f * 100,precision: 1)  %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">１１：情報不足</th>
+        <th rowspan="3" class="out-th">１１：情報不足</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_11).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_11).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_11).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_11).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_11).to_f / @results.includes(:result_cash).sum(:out_interview_11).to_f * 100,precision: 1) %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_11).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_11).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_11).to_f / @results.includes(:result_cash).sum(:out_full_talk_11).to_f * 100,precision: 1)  %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">１２：ペロ</th>
+        <th rowspan="3" class="out-th">１２：ペロ</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_12).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_12).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_12).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_12).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_12).to_f / @results.includes(:result_cash).sum(:out_interview_12).to_f * 100,precision: 1) %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_12).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_12).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_12).to_f / @results.includes(:result_cash).sum(:out_full_talk_12).to_f * 100,precision: 1)  %></td>
         </tr>
         <tr>
-        <th style="text-align:left;">１３：その他</th>
+        <th rowspan="3" class="out-th">１３：その他</th>
+          <th>決済者面会</th>
+          <td><%= @results.includes(:result_cash).sum(:out_interview_13).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_interview_13).to_f.round(1) %></td>
+          <td></td>
+        </tr>
+        <tr>
+          <th>フル数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_full_talk_13).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_full_talk_13).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_full_talk_13).to_f / @results.includes(:result_cash).sum(:out_interview_13).to_f * 100,precision: 1) %></td>
+        </tr>
+        <tr>
+          <th>成約数</th>
+          <td><%= @results.includes(:result_cash).sum(:out_get_13).to_f.round(1) %></td>
           <td><%= @results.includes(:result_cash).average(:out_get_13).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_13).to_f / @results.includes(:result_cash).sum(:out_full_talk_13).to_f * 100,precision: 1)  %></td>
         </tr>
-      </table>
+        <tr>
+          <th colspan="6">　　</th>
+        </tr>
+        </tbody>
+        </table>
       </div>
       <div>
       <h2>訪問店舗比率</h2>
         <%= pie_chart @chart, width:'400px',suffix: "%" %>
+      </div>
+      <div>
+      <h2>切り返し比率（母体数）</h2>
+        <%= pie_chart @cash_out_chart, width:'500px',suffix: "%" %>
       </div>
     </div>
     <% end %>
@@ -801,7 +954,7 @@
         <% if result.shift == "キャッシュレス新規" %>
         <td style="padding: 0 20px;"><%= link_to "切り返し編集", edit_result_cash_path(result.result_cash.id),class: "link" %></td>
         <% elsif result.shift == "楽天フェムト新規" %>
-        <td style="padding: 0 20px;"><%= link_to "切り返し編集", edit_result_casa_path(result.result_casa.id),class: "link"  %></td>
+        <td style="padding: 0 20px;"><%# link_to "切り返し編集", edit_result_casa_path(result.result_casa.id),class: "link"  %></td>
         <% else %>
         <td></td>
         <% end %>
