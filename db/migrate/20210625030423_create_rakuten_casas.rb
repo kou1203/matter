@@ -3,6 +3,7 @@ class CreateRakutenCasas < ActiveRecord::Migration[6.0]
     create_table :rakuten_casas do |t|
       # 新規
       t.string :client                       ,null: false 
+      t.string :client_num                   
       t.references :user                     ,foreign_key: true 
       t.references :store_prop               ,foreign_key: true 
       t.date :date                           ,null: false 
@@ -17,6 +18,7 @@ class CreateRakutenCasas < ActiveRecord::Migration[6.0]
       t.string :net_contracter               ,null: false
       t.string :net_contracter_kana          ,null: false
       t.string :net_phone_number             ,null: false 
+      t.date :result_point
       t.text :remarks
       t.date :share
       # 自社不備
@@ -26,24 +28,31 @@ class CreateRakutenCasas < ActiveRecord::Migration[6.0]
       t.text :deficiency_remarks                  
       # 回線不備
       t.date :deficiency_net                             
-      t.string :status_deficiency_net          
+      t.string :status_deficiency_net   
       t.date :deficiency_share_net                             
+      t.date :deficiency_request_net       
       t.date :deficiency_last_shared_net                             
       t.text :deficiency_result_net                  
-      t.text :deficiency_remarks_net                  
       t.date :deficiency_solution_net        
+      t.text :deficiency_remarks_net                  
       # 反社不備
       t.date :deficiency_anti
       t.string :status_deficiency_anti
       t.date :deficiency_share_anti
+      t.date :deficiency_request_anti       
       t.date :deficiency_last_shared_anti
       t.text :deficiency_result_anti
       t.text :deficiency_remarks_anti
       t.date :deficiency_solution_anti
+      # 架電情報
+      t.date :call_date
+      t.string :call_status
+      t.text :call_remark
       # 端末情報
       t.date :order
       t.date :arrival
       t.string :femto_id
+      t.string :femto_serial
       t.string :inspection
       t.date :done_oss # 第一成果地点
       # 設置

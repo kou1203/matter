@@ -84,3 +84,5 @@ gem 'ed25519'
 gem 'bcrypt_pbkdf'
 
 gem 'simple_calendar', '~> 2.0' 
+
+gem 'charlock_holmes'

@@ -1,67 +1,257 @@
   <h2>商材別実売（現状）</h2>
-  <table>
-    <tr>
-      <th>商材</th>
-      <th>評価件数</th>
-      <th>獲得件数</th>
-      <th>不備・NG件数</th>
-      <th>増加数</th>
-      <th>減少数</th>
-      <th>現状売上</th>
-      
-    </tr>
-    <tr>
-      <th>dメル（新規）</th>
-      <td ><%= @chubu_dmers_length + @kanto_dmers_length + @kansai_dmers_length %></td>
-      <td style="color:blue;"><%= @chubu_dmer_this_period.length + @kanto_dmer_this_period.length + @kansai_dmer_this_period.length %></td>
-      <td style="color:red;"><%= @chubu_dmer_def_period.length + @kanto_dmer_def_period.length + @kansai_dmer_def_period.length %></td>
-      <td style="color:blue;"><%= @chubu_dmer_inc_period.length + @kanto_dmer_inc_period.length + @kansai_dmer_inc_period.length %></td>
-      <td style="color:red;"><%= @chubu_dmer_dec_period.length + @kanto_dmer_dec_period.length + @kansai_dmer_dec_period.length %></td>
-      <td><%= (@chubu_dmer_profit + @kanto_dmer_profit + @kansai_dmer_profit).to_s(:delimited) %></td>
-    </tr>
-    <tr>
-      <th>dメル（決済）</th>
-      <td ><%= @chubu_dmers_slmt_length + @kanto_dmers_slmt_length %></td>
-      <td style="color:blue;"><%= @chubu_dmer_slmt_this_period.length + @kanto_dmer_slmt_this_period.length + @kansai_dmer_slmt_this_period.length %></td>
-      <td style="color:red;"><%= @chubu_dmer_slmt_def_period.length + @kanto_dmer_slmt_def_period.length + @kansai_dmer_slmt_def_period.length %></td>
-      <td style="color:blue;"><%= @chubu_dmer_slmt_inc_period.length + @kanto_dmer_slmt_inc_period.length + @kansai_dmer_slmt_inc_period.length %></td>
-      <td style="color:red;"><%= @chubu_dmer_slmt_dec_period.length + @kanto_dmer_slmt_dec_period.length + @kansai_dmer_slmt_dec_period.length %></td>
-      <td><%= (@chubu_dmer_slmt_profit + @kanto_dmer_slmt_profit + @kansai_dmer_slmt_profit).to_s(:delimited) %></td>
-    </tr>
-    <tr>
-      <th>aupay（新規）</th>
-      <td ><%= @chubu_aupays_length + @kanto_aupays_length + @kansai_aupays_length %></td>
-      <td style="color:blue;"><%= @chubu_aupay_this_period.length + @kanto_aupay_this_period.length + @kansai_aupay_this_period.length %></td>
-      <td style="color:red;"><%= @chubu_aupay_def_period.length + @kanto_aupay_def_period.length + @kansai_aupay_def_period.length %></td>
-      <td style="color:blue;"><%= @chubu_aupay_inc_period.length + @kanto_aupay_inc_period.length + @kansai_aupay_inc_period.length %></td>
-      <td style="color:red;"><%= @chubu_aupay_dec_period.length + @kanto_aupay_dec_period.length + @kanto_aupay_dec_period.length %></td>
-      <td><%= (@chubu_aupay_profit + @kanto_aupay_profit + @kansai_aupay_profit).to_s(:delimited) %></td>
-    </tr>
-    <tr>
-      <th>aupay（決済）</th>
-      <td ><%= @chubu_aupays_slmt_length + @kanto_aupays_slmt_length + @kansai_aupays_slmt_length %></td>
-      <td style="color:blue;"><%= @chubu_aupay_slmt_this_period.length + @kanto_aupay_slmt_this_period.length + @kansai_aupay_slmt_this_period.length %></td>
-      <td style="color:red;"><%= @chubu_aupay_slmt_def_period.length + @kanto_aupay_slmt_def_period.length + @kansai_aupay_slmt_def_period.length %></td>
-      <td style="color:blue;"><%= @chubu_aupay_slmt_inc_period.length + @kanto_aupay_slmt_inc_period.length + @kansai_aupay_slmt_inc_period.length %></td>
-      <td style="color:red;"><%= @chubu_aupay_slmt_dec_period.length + @kanto_aupay_slmt_dec_period.length + @kansai_aupay_slmt_dec_period.length %></td>
-      <td><%= (@chubu_aupay_slmt_profit + @kanto_aupay_slmt_profit + @kansai_aupay_slmt_profit).to_s(:delimited) %></td>
-    </tr>
-    <tr>
-      <th>PayPay</th>
-      <td ><%= @chubu_paypays_length + @kanto_paypays_length + @kansai_paypays_length %></td>
-      <td style="color:blue;"><%= @chubu_paypay_this_period.length + @kanto_paypay_this_period.length + @kansai_paypay_this_period.length %></td>
-      <td style="color:red;"><%= @chubu_paypay_def_period.length + @kanto_paypay_def_period.length + @kansai_paypay_def_period.length %></td>
-      <td class="blank"></td>
-      <td class="blank"></td>
-      <td><%= (@chubu_paypay_profit + @kanto_paypay_profit + @kansai_paypay_profit).to_s(:delimited) %></td>
-    </tr>
-    <tr>
-      <th>楽天ペイ</th>
-      <td ><%= @chubu_rakuten_pays_length + @kanto_rakuten_pays_length + @kansai_rakuten_pays_length %></td>
-      <td style="color:blue;"><%= @chubu_rakuten_pay_this_period.length + @kanto_rakuten_pay_this_period.length + @kansai_rakuten_pay_this_period.length %></td>
-      <td style="color:red;"><%= @chubu_rakuten_pay_def_period.length + @kanto_rakuten_pay_def_period.length + @kansai_rakuten_pay_def_period.length %></td>
-      <td style="color:blue;"><%= @chubu_rakuten_pay_inc_period.length + @kanto_rakuten_pay_inc_period.length + @kansai_rakuten_pay_inc_period.length %></td>
-      <td style="color:red;"><%= @chubu_rakuten_pay_dec_period.length + @kanto_rakuten_pay_dec_period.length + @kanto_rakuten_pay_dec_period.length %></td>
-      <td><%= (@chubu_rakuten_pay_profit + @kanto_rakuten_pay_profit + @kansai_rakuten_pay_profit).to_s(:delimited) %></td>
-    </tr>
+  <table class="product-tb">
+    <thead>
+      <tr>
+        <th>商材</th>
+        <th>エリア</th>
+        <th>評価件数</th>
+        <th>獲得件数</th>
+        <th>不備・NG件数</th>
+        <th>増加数</th>
+        <th>減少数</th>
+        <th>現状売上</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="3">dメル（新規）</th>
+        <th>中部</th>
+        <td ><%= @chubu_cash_cash_dmers_length %></td>
+        <td style="color:blue;"><%= @chubu_cash_dmer_this_period.length %></td>
+        <td style="color:red;"><%= @chubu_cash_dmer_def_period.length %></td>
+        <td style="color:blue;"><%= @chubu_cash_dmer_inc_period.length %></td>
+        <td style="color:red;"><%= @chubu_cash_dmer_dec_period.length %></td>
+        <td><%= @chubu_cash_dmer_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関東</th>
+        <td ><%= @kanto_cash_dmers_length %></td>
+        <td style="color:blue;"><%= @kanto_cash_dmer_this_period.length %></td>
+        <td style="color:red;"><%= @kanto_cash_dmer_def_period.length %></td>
+        <td style="color:blue;"><%= @kanto_cash_dmer_inc_period.length %></td>
+        <td style="color:red;"><%= @kanto_cash_dmer_dec_period.length %></td>
+        <td><%= @kanto_cash_dmer_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関西</th>
+        <td ><%= @kansai_cash_dmers_length %></td>
+        <td style="color:blue;"><%= @kansai_cash_dmer_this_period.length %></td>
+        <td style="color:red;"><%= @kansai_cash_dmer_def_period.length %></td>
+        <td style="color:blue;"><%= @kansai_cash_dmer_inc_period.length %></td>
+        <td style="color:red;"><%= @kansai_cash_dmer_dec_period.length %></td>
+        <td><%= @kansai_cash_dmer_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th rowspan="3">dメル（決済）</th>
+        <th >中部</th>
+        <td ><%= @chubu_cash_dmers_slmt_length %></td>
+        <td style="color:blue;"><%= @chubu_cash_dmer_slmt_this_period.length %></td>
+        <td style="color:red;"><%= @chubu_cash_dmer_slmt_def_period.length %></td>
+        <td style="color:blue;"><%= @chubu_cash_dmer_slmt_inc_period.length %></td>
+        <td style="color:red;"><%= @chubu_cash_dmer_slmt_dec_period.length %></td>
+        <td><%= @chubu_cash_dmer_slmt_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th >関東</th>
+        <td ><%= @kanto_cash_dmers_slmt_length %></td>
+        <td style="color:blue;"><%= @kanto_cash_dmer_slmt_this_period.length %></td>
+        <td style="color:red;"><%= @kanto_cash_dmer_slmt_def_period.length %></td>
+        <td style="color:blue;"><%= @kanto_cash_dmer_slmt_inc_period.length %></td>
+        <td style="color:red;"><%= @kanto_cash_dmer_slmt_dec_period.length %></td>
+        <td><%= @kanto_cash_dmer_slmt_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th >関西</th>
+        <td ><%= @kansai_cash_dmers_slmt_length %></td>
+        <td style="color:blue;"><%= @kansai_cash_dmer_slmt_this_period.length %></td>
+        <td style="color:red;"><%= @kansai_cash_dmer_slmt_def_period.length %></td>
+        <td style="color:blue;"><%= @kansai_cash_dmer_slmt_inc_period.length %></td>
+        <td style="color:red;"><%= @kansai_cash_dmer_slmt_dec_period.length %></td>
+        <td><%= @kansai_cash_dmer_slmt_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th rowspan="3">aupay（新規）</th>
+        <th>中部</th>
+        <td ><%= @chubu_cash_aupays_length + @kanto_cash_aupays_length + @kansai_cash_aupays_length %></td>
+        <td style="color:blue;"><%= @chubu_cash_aupay_this_period.length + @kanto_cash_aupay_this_period.length + @kansai_cash_aupay_this_period.length %></td>
+        <td style="color:red;"><%= @chubu_cash_aupay_def_period.length + @kanto_cash_aupay_def_period.length + @kansai_cash_aupay_def_period.length %></td>
+        <td style="color:blue;"><%= @chubu_cash_aupay_inc_period.length + @kanto_cash_aupay_inc_period.length + @kansai_cash_aupay_inc_period.length %></td>
+        <td style="color:red;"><%= @chubu_cash_aupay_dec_period.length + @kanto_cash_aupay_dec_period.length + @kanto_cash_aupay_dec_period.length %></td>
+        <td><%= (@chubu_cash_aupay_profit + @kanto_cash_aupay_profit + @kansai_cash_aupay_profit).to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関東</th>
+        <td ><%= @kanto_cash_aupays_length %></td>
+        <td style="color:blue;"><%= @kanto_cash_aupay_this_period.length %></td>
+        <td style="color:red;"><%= @kanto_cash_aupay_def_period.length %></td>
+        <td style="color:blue;"><%= @kanto_cash_aupay_inc_period.length %></td>
+        <td style="color:red;"><%= @kanto_cash_aupay_dec_period.length %></td>
+        <td><%= @kanto_cash_aupay_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関西</th>
+        <td ><%= @kansai_cash_aupays_length %></td>
+        <td style="color:blue;"><%= @kansai_cash_aupay_this_period.length %></td>
+        <td style="color:red;"><%= @kansai_cash_aupay_def_period.length %></td>
+        <td style="color:blue;"><%= @kansai_cash_aupay_inc_period.length %></td>
+        <td style="color:red;"><%=  @kansai_cash_aupay_dec_period.length %></td>
+        <td><%= @kansai_cash_aupay_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th rowspan="3">aupay（決済）</th>
+        <th>中部</th>
+        <td ><%= @chubu_cash_aupays_slmt_length %></td>
+        <td style="color:blue;"><%= @chubu_cash_aupay_slmt_this_period.length %></td>
+        <td style="color:red;"><%= @chubu_cash_aupay_slmt_def_period.length %></td>
+        <td style="color:blue;"><%= @chubu_cash_aupay_slmt_inc_period.length %></td>
+        <td style="color:red;"><%= @chubu_cash_aupay_slmt_dec_period.length %></td>
+        <td><%= @chubu_cash_aupay_slmt_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関東</th>
+        <td ><%= @kanto_cash_aupays_slmt_length %></td>
+        <td style="color:blue;"><%= @kanto_cash_aupay_slmt_this_period.length %></td>
+        <td style="color:red;"><%= @kanto_cash_aupay_slmt_def_period.length %></td>
+        <td style="color:blue;"><%= @kanto_cash_aupay_slmt_inc_period.length %></td>
+        <td style="color:red;"><%= @kanto_cash_aupay_slmt_dec_period.length %></td>
+        <td><%= @kanto_cash_aupay_slmt_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関西</th>
+        <td ><%= @kansai_cash_aupays_slmt_length %></td>
+        <td style="color:blue;"><%= @kansai_cash_aupay_slmt_this_period.length %></td>
+        <td style="color:red;"><%= @kansai_cash_aupay_slmt_def_period.length %></td>
+        <td style="color:blue;"><%= @kansai_cash_aupay_slmt_inc_period.length %></td>
+        <td style="color:red;"><%= @kansai_cash_aupay_slmt_dec_period.length %></td>
+        <td><%= @kansai_cash_aupay_slmt_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th rowspan="3">PayPay</th>
+        <th>中部</th>
+        <td ><%= @chubu_cash_paypays_length %></td>
+        <td style="color:blue;"><%= @chubu_cash_paypay_this_period.length %></td>
+        <td style="color:red;"><%= @chubu_cash_paypay_def_period.length %></td>
+        <td class="blank"></td>
+        <td class="blank"></td>
+        <td><%= @chubu_cash_paypay_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関東</th>
+        <td ><%= @kanto_cash_paypays_length %></td>
+        <td style="color:blue;"><%= @kanto_cash_paypay_this_period.length %></td>
+        <td style="color:red;"><%= @kanto_cash_paypay_def_period.length %></td>
+        <td class="blank"></td>
+        <td class="blank"></td>
+        <td><%= @kanto_cash_paypay_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関西</th>
+        <td ><%= @kansai_cash_paypays_length %></td>
+        <td style="color:blue;"><%= @kansai_cash_paypay_this_period.length %></td>
+        <td style="color:red;"><%= @kansai_cash_paypay_def_period.length %></td>
+        <td class="blank"></td>
+        <td class="blank"></td>
+        <td><%= @kansai_cash_paypay_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th rowspan="3">楽天ペイ</th>
+        <th>中部</th>
+        <td ><%= @chubu_cash_rakuten_pays_length %></td>
+        <td style="color:blue;"><%= @chubu_cash_rakuten_pay_this_period.length %></td>
+        <td style="color:red;"><%= @chubu_cash_rakuten_pay_def_period.length %></td>
+        <td style="color:blue;"><%= @chubu_cash_rakuten_pay_inc_period.length %></td>
+        <td style="color:red;"><%= @chubu_cash_rakuten_pay_dec_period.length %></td>
+        <td><%= @chubu_cash_rakuten_pay_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関東</th>
+        <td ><%= @chubu_cash_rakuten_pays_length %></td>
+        <td style="color:blue;"><%= @kanto_cash_rakuten_pay_this_period.length %></td>
+        <td style="color:red;"><%= @kanto_cash_rakuten_pay_def_period.length %></td>
+        <td style="color:blue;"><%= @kanto_cash_rakuten_pay_inc_period.length %></td>
+        <td style="color:red;"><%= @kanto_cash_rakuten_pay_dec_period.length %></td>
+        <td><%= @kanto_cash_rakuten_pay_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関西</th>
+        <td ><%= @kansai_cash_rakuten_pays_length %></td>
+        <td style="color:blue;"><%= @kansai_cash_rakuten_pay_this_period.length %></td>
+        <td style="color:red;"><%= @kansai_cash_rakuten_pay_def_period.length %></td>
+        <td style="color:blue;"><%= @kansai_cash_rakuten_pay_inc_period.length %></td>
+        <td style="color:red;"><%= @kansai_cash_rakuten_pay_dec_period.length %></td>
+        <td><%= @kansai_cash_rakuten_pay_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th rowspan="3">楽天フェムト（新規）</th>
+          <%# 楽天フェムト変数 %>
+            <%# 中部 %>
+            <% chubu_cash_casa_def_len = @chubu_cash_casa_def_this_month.length + @chubu_cash_casa_def_net.length + @chubu_cash_casa_def_anti.length %>
+            <% chubu_cash_casa_inc_len = @chubu_cash_casa_inc.length + @chubu_cash_casa_inc_net.length + @chubu_cash_casa_inc_anti.length %>
+            <% chubu_cash_casa_dec_len = @chubu_cash_casa_dec.length + @chubu_cash_casa_dec_net.length + @chubu_cash_casa_dec_anti.length %>
+            <% chubu_cash_casa_dec_profit = @chubu_cash_casa_dec.sum(:profit_new) + @chubu_cash_casa_dec_net.sum(:profit_new) + @chubu_cash_casa_dec_anti.sum(:profit_new) %>
+            <%# 関東 %>
+            <% kanto_cash_casa_def_len = @kanto_cash_casa_def_this_month.length + @kanto_cash_casa_def_net.length + @kanto_cash_casa_def_anti.length %>
+            <% kanto_cash_casa_inc_len = @kanto_cash_casa_inc.length + @kanto_cash_casa_inc_net.length + @kanto_cash_casa_inc_anti.length %>
+            <% kanto_cash_casa_dec_len = @kanto_cash_casa_dec.length + @kanto_cash_casa_dec_net.length + @kanto_cash_casa_dec_anti.length %>
+            <% kanto_cash_casa_dec_profit = @kanto_cash_casa_dec.sum(:profit_new) + @kanto_cash_casa_dec_net.sum(:profit_new) + @kanto_cash_casa_dec_anti.sum(:profit_new) %>
+            <%# 関西 %>
+            <% kansai_cash_casa_def_len = @kansai_cash_casa_def_this_month.length + @kansai_cash_casa_def_net.length + @kansai_cash_casa_def_anti.length %>
+            <% kansai_cash_casa_inc_len = @kansai_cash_casa_inc.length + @kansai_cash_casa_inc_net.length + @kansai_cash_casa_inc_anti.length %>
+            <% kansai_cash_casa_dec_len = @kansai_cash_casa_dec.length + @kansai_cash_casa_dec_net.length + @kansai_cash_casa_dec_anti.length %>
+            <% kansai_cash_casa_dec_profit = @kansai_cash_casa_dec.sum(:profit_new) + @kansai_cash_casa_dec_net.sum(:profit_new) + @kansai_cash_casa_dec_anti.sum(:profit_new) %>
+        <th>中部</th>
+        <td><%= @chubu_cash_casa_this_period.length - chubu_cash_casa_def_len + chubu_cash_casa_inc_len - chubu_cash_casa_dec_len %></td>
+        <td style="color:blue;"><%= @chubu_cash_casa_this_period.length %></td>
+        <td style="color:red;"><%= chubu_cash_casa_def_len %></td>
+        <td style="color:blue;"><%= chubu_cash_casa_inc_len %></td>
+        <td style="color:red;"><%= chubu_cash_casa_dec_len %></td>
+        <td><%= @chubu_cash_casa_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関東</th>
+        <td><%= @kanto_cash_casa_this_period.length - kanto_cash_casa_def_len + kanto_cash_casa_inc_len - kanto_cash_casa_dec_len %></td>
+        <td style="color:blue;"><%= @kanto_cash_casa_this_period.length %></td>
+        <td style="color:red;"><%= kanto_cash_casa_def_len %></td>
+        <td style="color:blue;"><%= kanto_cash_casa_inc_len %></td>
+        <td style="color:red;"><%= kanto_cash_casa_dec_len %></td>
+        <td><%= @kanto_cash_casa_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関西</th>
+        <td><%= @kansai_cash_casa_this_period.length - kansai_cash_casa_def_len + kansai_cash_casa_inc_len - kansai_cash_casa_dec_len %></td>
+        <td style="color:blue;"><%= @kansai_cash_casa_this_period.length %></td>
+        <td style="color:red;"><%= kansai_cash_casa_def_len %></td>
+        <td style="color:blue;"><%= kansai_cash_casa_inc_len %></td>
+        <td style="color:red;"><%= kansai_cash_casa_dec_len %></td>
+        <td><%= @kansai_cash_casa_profit.to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th rowspan="3">楽天フェムト（設置）</th>
+        <th>中部</th>
+        <td></td>
+        <td><%= @chubu_cash_casa_put.length %></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><%= @chubu_cash_casa_put.sum(:profit_put).to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関東</th>
+        <td></td>
+        <td><%= @kanto_cash_casa_put.length %></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><%= @kanto_cash_casa_put.sum(:profit_put).to_s(:delimited) %></td>
+      </tr>
+      <tr>
+        <th>関西</th>
+        <td></td>
+        <td><%= @kansai_cash_casa_put.length %></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><%= @kansai_cash_casa_put.sum(:profit_put).to_s(:delimited) %></td>
+      </tr>
+    </tbody>
   </table>

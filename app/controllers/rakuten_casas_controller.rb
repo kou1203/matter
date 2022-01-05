@@ -8,6 +8,8 @@ class RakutenCasasController < ApplicationController
       else  
         @q.result(distinct: true)
       end
+    @month = params[:month] ? Date.parse(params[:month]) : Time.zone.today
+    @rakuten_casa = RakutenCasa.includes(:user).where(put_plan: @month.all_month)
   end 
 
   def new 
@@ -57,6 +59,7 @@ class RakutenCasasController < ApplicationController
     params.require(:rakuten_casa).permit(
       # 新規 17
       :client                  ,
+      :client_num              ,
       :user_id                 ,                
       :store_prop_id           ,          
       :date                    ,         
@@ -71,6 +74,7 @@ class RakutenCasasController < ApplicationController
       :net_contracter          ,       
       :net_contracter_kana     ,       
       :net_phone_number        ,
+      :result_point            ,
       :remarks                 ,
       :share                   ,
       # 自社不備 4 
@@ -94,10 +98,15 @@ class RakutenCasasController < ApplicationController
       :deficiency_result_anti   ,
       :deficiency_remarks_anti  ,
       :deficiency_solution_anti ,
+      # 架電情報
+      :call_date                ,
+      :call_status              ,
+      :call_remark,
       # 端末情報 5
       :order                    ,
       :arrival                 ,
       :femto_id                ,
+      :femto_serial            ,
       :inspection              ,
       :done_oss                , # 第一成果地点
       # 設置 6
@@ -142,7 +151,7 @@ class RakutenCasasController < ApplicationController
       :done_memo               ,
       :letter_pack_num1        ,
       :letter_pack_num2        ,
-      # 入金、売上 6
+      # 入金、売上 8
       :payment                 ,
       :payment_put             ,
       :profit_new              ,

@@ -8,7 +8,6 @@ class StorePropsController < ApplicationController
       else
         @q.result(distinct: true)
       end
-    
   end 
 
   def new 
@@ -102,6 +101,5 @@ class StorePropsController < ApplicationController
       :description,
       )
     end 
-    
   end
   

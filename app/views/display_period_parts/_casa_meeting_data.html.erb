@@ -1,0 +1,255 @@
+
+  <h2>フェムト</h2>
+  <table>
+    <tr>
+      <th rowspan="4"></th>
+      <th>拠点</th>
+      <th>中部</th>
+      <th>関東</th>
+      <th>関西</th>
+      <th>全拠点</th>
+    </tr>
+    <tr>
+      <th>対策員人数</th>
+      <td><%= @chubu_casa_persons.length %></td>
+      <td><%= @kanto_casa_persons.length %></td>
+      <td><%= @kansai_casa_persons.length %></td>
+      <td><%= persons_sum = @chubu_casa_persons.length + @kanto_casa_persons.length + @kansai_casa_persons.length %></td>
+    </tr>
+    <tr>
+      <th>予定シフト</th>
+      <td><%= @chubu_casa_shifts.length %></td>
+      <td><%= @kanto_casa_shifts.length %></td>
+      <td><%= @kansai_casa_shifts.length %></td>
+      <td><%= shifts_sum = @chubu_casa_shifts.length + @kanto_casa_shifts.length + @kansai_casa_shifts.length %></td>
+    </tr>
+    <tr>
+      <th>消化シフト</th>
+      <td><%= @chubu_casa_shift_digestion.length %></td>
+      <td><%= @kanto_casa_shift_digestion.length %></td>
+      <td><%= @kansai_casa_shift_digestion.length %></td>
+      <td><%= shift_digestion_sum = @chubu_casa_shift_digestion.length + @kanto_casa_shift_digestion.length + @kansai_casa_shift_digestion.length %></td>
+    </tr>
+    <tr>
+      <th rowspan="3">評価売</th>
+      <th>前週Ave</th>
+      <% cash_valuation_sum_prev_week = 0 %>
+      <% cash_shift_sum_prev_week = 0 %>
+      <% if @chubu_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% chubu_casa_valuation_ave_prev_week = @chubu_casa_sum_valuation_prev_week.to_f / @chubu_casa_shift_digestion_prev_week.length %>
+        <% cash_valuation_sum_prev_week += @chubu_casa_sum_valuation_prev_week %>
+        <% cash_shift_sum_prev_week += @chubu_casa_shift_digestion_prev_week.length %>
+      <td><%= (chubu_casa_valuation_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kanto_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% kanto_casa_valuation_ave_prev_week = @kanto_casa_sum_valuation_prev_week.to_f / @kanto_casa_shift_digestion_prev_week.length %>
+        <% cash_valuation_sum_prev_week += @kanto_casa_sum_valuation_prev_week %>
+        <% cash_shift_sum_prev_week += @kanto_casa_shift_digestion_prev_week.length %>
+      <td><%= (kanto_casa_valuation_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kansai_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% kansai_casa_valuation_ave_prev_week = @kansai_casa_sum_valuation_prev_week.to_f / @kansai_casa_shift_digestion_prev_week.length %>
+        <% cash_valuation_sum_prev_week += @kansai_casa_sum_valuation_prev_week %>
+        <% cash_shift_sum_prev_week += @kansai_casa_shift_digestion_prev_week.length %>
+      <td><%= (kansai_casa_valuation_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if cash_shift_sum_prev_week == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% cash_valuation_total_ave_prev_week = cash_valuation_sum_prev_week / cash_shift_sum_prev_week %>
+      <td><%= (cash_valuation_total_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+    </tr>
+    <tr>
+      <th>現状Ave</th>
+      <% if @chubu_casa_shift_digestion.length == 0  %>
+      <td>計測不可</td>
+      <% else %>
+      <% chubu_casa_valuation_ave = @chubu_casa_sum_valuation.to_f / @chubu_casa_shift_digestion.length %>
+      <td><%= (chubu_casa_valuation_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kanto_casa_shift_digestion.length == 0  %>
+      <td>計測不可</td>
+      <% else %>
+      <% kanto_casa_valuation_ave = @kanto_casa_sum_valuation.to_f / @kanto_casa_shift_digestion.length %>
+      <td><%= (kanto_casa_valuation_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kansai_casa_shift_digestion.length == 0  %>
+      <td>計測不可</td>
+      <% else %>
+      <% kansai_casa_valuation_ave = @kansai_casa_sum_valuation.to_f / @kansai_casa_shift_digestion.length %>
+      <td><%= (kansai_casa_valuation_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% casa_valuation_total_ave = @casa_sum_valuation / shift_digestion_sum %>
+      <td><%= (casa_valuation_total_ave).round().to_s(:delimited) %></td>
+    </tr>
+    <tr>
+      <th>前週比</th>
+      <% ave_comparison = 0 %>
+      <% if @chubu_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if chubu_casa_valuation_ave - chubu_casa_valuation_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@chubu_casa_sum_valuation / @chubu_casa_shift_digestion.length) - (@chubu_casa_sum_valuation_prev_week / @chubu_casa_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@chubu_casa_sum_valuation / @chubu_casa_shift_digestion.length) - (@chubu_casa_sum_valuation_prev_week / @chubu_casa_shift_digestion_prev_week.length)).to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if @kanto_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if kanto_casa_valuation_ave - kanto_casa_valuation_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@kanto_casa_sum_valuation / @kanto_casa_shift_digestion.length) - (@kanto_casa_sum_valuation_prev_week / @kanto_casa_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@kanto_casa_sum_valuation / @kanto_casa_shift_digestion.length) - (@kanto_casa_sum_valuation_prev_week / @kanto_casa_shift_digestion_prev_week.length)).to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if @kansai_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if kansai_casa_valuation_ave - kansai_casa_valuation_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@kansai_casa_sum_valuation / @kansai_casa_shift_digestion.length) - (@kansai_casa_sum_valuation_prev_week / @kansai_casa_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@kansai_casa_sum_valuation / @kansai_casa_shift_digestion.length) - (@kansai_casa_sum_valuation_prev_week / @kansai_casa_shift_digestion_prev_week.length)).to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if cash_valuation_total_ave_prev_week.nil? %>
+      <% else %>
+      <% if cash_valuation_total_ave - cash_valuation_total_ave_prev_week >= 0 %>
+      <td style="color:blue;">+<%= cash_valuation_total_ave - cash_valuation_total_ave_prev_week %></td>
+      <% else %>
+      <td style="color:red;"><%= cash_valuation_total_ave - cash_valuation_total_ave_prev_week %></td>
+      <% end %>
+      <% end %>
+    </tr>
+    <tr>
+    <th rowspan="5">実売</th>
+      <th>現状売上</th>
+      <td><%= @chubu_casa_sum_profit.to_s(:delimited) %></td>
+      <td><%= @kanto_casa_sum_profit.to_s(:delimited) %></td>
+      <td><%= @kansai_casa_sum_profit.to_s(:delimited) %></td>
+      <td><%= (@chubu_casa_sum_profit + @kanto_casa_sum_profit + @kansai_casa_sum_profit).to_s(:delimited) %></td>
+    </tr>
+    <tr>
+      <th>前週Ave</th>
+      <% cash_profit_sum_prev_week = 0 %>
+      <% if @chubu_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% chubu_casa_profit_ave_prev_week = @chubu_casa_sum_profit_prev_week.to_f / @chubu_casa_shift_digestion_prev_week.length %>
+        <% cash_profit_sum_prev_week += @chubu_casa_sum_profit_prev_week %>
+      <td><%= (chubu_casa_profit_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kanto_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% kanto_casa_profit_ave_prev_week = @kanto_casa_sum_profit_prev_week.to_f / @kanto_casa_shift_digestion_prev_week.length %>
+        <% cash_profit_sum_prev_week += @kanto_casa_sum_profit_prev_week %>
+      <td><%= (kanto_casa_profit_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kansai_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+        <% kansai_casa_profit_ave_prev_week = @kansai_casa_sum_profit_prev_week.to_f / @kansai_casa_shift_digestion_prev_week.length %>
+        <% cash_profit_sum_prev_week += @kansai_casa_sum_profit_prev_week %>
+      <td><%= (kansai_casa_profit_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% cash_profit_total_ave_prev_week = cash_profit_sum_prev_week.to_f / cash_shift_sum_prev_week %>
+      <% if cash_shift_sum_prev_week == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <td><%= (cash_profit_total_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+    </tr>
+    <tr>
+      <th>現状Ave</th>
+      <% cash_profit_sum = 0 %>
+      <% if @chubu_casa_shift_digestion.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% chubu_casa_profit_ave = @chubu_casa_sum_profit.to_f / @chubu_casa_shift_digestion.length %>
+      <% cash_profit_sum += @chubu_casa_sum_profit %>
+      <td><%= (chubu_casa_profit_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kanto_casa_shift_digestion.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% kanto_casa_profit_ave = @kanto_casa_sum_profit.to_f / @kanto_casa_shift_digestion.length %>
+      <% cash_profit_sum += @kanto_casa_sum_profit %>
+      <td><%= (kanto_casa_profit_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kansai_casa_shift_digestion.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% kansai_casa_profit_ave = @kansai_casa_sum_profit.to_f / @kansai_casa_shift_digestion.length %>
+      <% cash_profit_sum += @kansai_casa_sum_profit %>
+      <td><%= (kansai_casa_profit_ave).round().to_s(:delimited) %></td>
+      <% end %>
+      <% cash_profit_total_ave = cash_profit_sum.to_f / shift_digestion_sum %>
+      <td><%= (cash_profit_total_ave).round().to_s(:delimited) %></td>
+    </tr>
+    <tr>
+      <th>前週比</th>
+      <% if @chubu_casa_shift_digestion.length == 0 || @chubu_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if chubu_casa_profit_ave - chubu_casa_profit_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@chubu_casa_sum_profit / @chubu_casa_shift_digestion.length) - (@chubu_casa_sum_profit_prev_week / @chubu_casa_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@chubu_casa_sum_profit / @chubu_casa_shift_digestion.length) - (@chubu_casa_sum_profit_prev_week / @chubu_casa_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if @kanto_casa_shift_digestion.length == 0 || @kanto_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if kanto_casa_profit_ave - kanto_casa_profit_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@kanto_casa_sum_profit / @kanto_casa_shift_digestion.length) - (@kanto_casa_sum_profit_prev_week / @kanto_casa_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@kanto_casa_sum_profit / @kanto_casa_shift_digestion.length) - (@kanto_casa_sum_profit_prev_week / @kanto_casa_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if @kansai_casa_shift_digestion.length == 0 || @kansai_casa_shift_digestion_prev_week.length == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if kansai_casa_profit_ave - kansai_casa_profit_ave_prev_week >= 0 %>
+      <td style="color:blue;" >+ <%= ((@kansai_casa_sum_profit / @kansai_casa_shift_digestion.length) - (@kansai_casa_sum_profit_prev_week / @kansai_casa_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% else  %>
+      <td style="color:red;" ><%= ((@kansai_casa_sum_profit / @kansai_casa_shift_digestion.length) - (@kansai_casa_sum_profit_prev_week / @kansai_casa_shift_digestion_prev_week.length)).round().to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+      <% if shift_digestion_sum == 0 || cash_shift_sum_prev_week == 0 %>
+      <td>計測不可</td>
+      <% else %>
+      <% if cash_profit_total_ave - cash_profit_total_ave_prev_week >= 0 %>
+      <td style="color:blue;">+<%= (cash_profit_total_ave - cash_profit_total_ave_prev_week).round().to_s(:delimited) %></td>
+      <% else %>
+      <td style="color:red;"><%= (cash_profit_total_ave - cash_profit_total_ave_prev_week).round().to_s(:delimited) %></td>
+      <% end %>
+      <% end %>
+    </tr>
+    <tr>
+      <th>終着見込売上</th>
+      <% if @chubu_casa_shifts.length == 0 || chubu_casa_profit_ave.nil? %>
+      <td>計測不可</td>
+      <% else %>
+      <td><%= (chubu_casa_profit_ave * @chubu_casa_shifts.length).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kanto_casa_shifts.length == 0 || kanto_casa_profit_ave.nil? %>
+      <td>計測不可</td>
+      <% else %>
+      <td><%= (kanto_casa_profit_ave * @kanto_casa_shifts.length).round().to_s(:delimited) %></td>
+      <% end %>
+      <% if @kansai_casa_shifts.length == 0 || kansai_casa_profit_ave.nil? %>
+      <td>計測不可</td>
+      <% else %>
+      <td><%= (kansai_casa_profit_ave * @kansai_casa_shifts.length).round().to_s(:delimited) %></td>
+      <% end %>
+      <td><%= (cash_profit_total_ave * shifts_sum).round().to_s(:delimited)  %></td>
+    </tr>
+  </table>

@@ -1,4 +1,5 @@
 <div data-scope-path="rakuten_casas/index">
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
   <h1>楽天カーサ一覧</h1>
   <%= render "shared/header" %>
   <%= form_with url: import_rakuten_casas_path do |f| %>
@@ -15,16 +16,16 @@
         <tr>
           <th class="search-th" >獲得日付（始）</th>
           <th class="search-th" >獲得日付（終）</th>
-          <th class="search-th">端末到着日（始）</th>
-          <th class="search-th">端末到着日（終）</th>
+          <th class="search-th">設置日予定（始）</th>
+          <th class="search-th">設置日予定（終）</th>
           <th class="search-th">設置日（始）</th>
           <th class="search-th">設置日（終）</th>
         </tr>
         <tr>
           <td><%= f.date_field :date_gteq, class: "input" %></td>
           <td><%= f.date_field :date_lteq, class: "input" %></td>
-          <td><%= f.date_field :arrival_gteq, class: "input" %></td>
-          <td><%= f.date_field :arrival_lteq, class: "input" %></td>
+          <td><%= f.date_field :put_plan_gteq, class: "input" %></td>
+          <td><%= f.date_field :put_plan_lteq, class: "input" %></td>
           <td><%= f.date_field :put_gteq, class: "input" %></td>
           <td><%= f.date_field :put_lteq, class: "input" %></td>
         </tr>
@@ -33,6 +34,7 @@
         <tr>
           <th class="search-head" rowspan="2" >検索</th>
           <th class="search-th">FemtoID</th>
+          <th class="search-th">店舗名</th>
           <th class="search-th">商流</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">設置者</th>
@@ -42,6 +44,7 @@
         </tr>
         <tr>
           <td><%= f.text_field :femto_id_cont, class: "input" %></td>
+          <td><%= f.text_field :store_prop_name_cont, class: "input" %></td>
           <td><%= f.select :client_eq, options_from_collection_for_select(RakutenCasa.select(:client).distinct,:client, :client),{include_blank: true}, {class: "input"} %></td>
           <td><%= f.text_field :user_name_cont, class: "input" %></td>
           <td><%= f.text_field :putter_name_cont, class: "input" %></td>
@@ -52,7 +55,72 @@
         <% end %>
       <% if @rakuten_casas.empty? %>
       <div class="warning"><%= alert %></div>
+      <div style="display: flex;">
+      <h2><%= link_to "<<",rakuten_casas_path(month:@month.prev_month), class:"link" %>
+          <%= @month.year %>年<%= @month.month %>月設置状況
+          <%= link_to ">>",rakuten_casas_path(month:@month.next_month), class:"link" %>
+      </h2>
+      <%# 設置数が合わない時に確認ように使用 %>
+      <%# @rakuten_casa.where(user: {base: '関西N'}).each do |r| %>
+        <%# r.user.name %>
+      <%# end %>
+        <div class="balloonoya">データ参照
+          <span class="balloon">設置済数：設置日に入力があるものの合計</span>
+          <span class="balloon">設置予定数：設置予定日の入力があるものの合計</span>
+        </div>
+      </div>
+      <table>
+        <tr>
+          <th>拠点</th>
+          <th colspan="2">中部</th>
+          <th colspan="2">関東</th>
+          <th colspan="2">関西</th>
+          <th >全拠点設置数</th>
+        </tr>
+        <tr>
+          <th>設置済/設置可能件数</th>
+          <td colspan="2"><%= @rakuten_casa.where.not(put: nil).where(user: {base: '中部SS'}).length %> / <%= @rakuten_casa.where.not(put_plan: nil).where(user: {base: '中部SS'}).length %></td>
+          <td colspan="2"><%= @rakuten_casa.where.not(put: nil).where(user: {base: '関東SS'}).length %> / <%= @rakuten_casa.where.not(put_plan: nil).where(user: {base: '関東SS'}).length %></td>
+          <td colspan="2"><%= @rakuten_casa.where.not(put: nil).where(user: {base: '関西SS'}).length %> / <%= @rakuten_casa.where.not(put_plan: nil).where(user: {base: '関西SS'}).length %></td>
+          <td colspan="2"> <%= @rakuten_casa.where.not(put: nil).length %> / <%= @rakuten_casa.where.not(put_plan: nil).length %></td>
+        </tr>
+        <tr>
+          <th>設置予定日</th><th>設置予定数</th><th>設置数</th><th>設置予定数</th><th>設置数</th><th>設置予定数</th><th>設置数</th><th>設置数</th>
+        </tr>
+        <tr>
+        <% @rakuten_casa.group(:put_plan).each do |casa| %>
+          <th><%= casa.put_plan.month %>月<%= casa.put_plan.day %>日（<%= days[casa.put_plan.wday] %>）</th>
+          <td style="opacity:0.5;"><%= casa_chubu_plan = @rakuten_casa.where(put_plan: casa.put_plan).where(user: {base: '中部SS'}).length %></td>
+          <td><%= casa_chubu = @rakuten_casa.where(put: casa.put_plan).where(user: {base: '中部SS'}).length %></td>
+          <td style="opacity:0.5;"><%= casa_kanto_plan = @rakuten_casa.where(put_plan: casa.put_plan).where(user: {base: '関東SS'}).length %></td>
+          <td><%= casa_kanto = @rakuten_casa.where(put: casa.put_plan).where(user: {base: '関東SS'}).length %></td>
+          <td style="opacity:0.5;"><%= casa_kansai_plan = @rakuten_casa.where(put_plan: casa.put_plan).where(user: {base: '関西SS'}).length %></td>
+          <td><%= casa_kansai = @rakuten_casa.where(put: casa.put_plan).where(user: {base: '関西SS'}).length %></td>
+          <% if (casa_chubu + casa_kanto + casa_kansai) < (casa_chubu_plan + casa_kanto_plan + casa_kansai_plan) %>
+          <td style="color: red;"><%= casa_chubu + casa_kanto + casa_kansai %></td>
+          <% else %>
+          <td style="color: blue;"><%= casa_chubu + casa_kanto + casa_kansai %></td>
+          <% end %>
+        </tr>
+        <% end %>
+      </table>
       <% else %>
+      
+      <table>
+      <% @rakuten_casas.each do |casa| %>
+        <tr>
+          <thead>
+
+          </thead>
+        </tr>
+      <% end %>
+        <tr>
+          <tbody>
+          </tbody>
+        </tr>
+      </table>
+      
+
       <table>
         <tr>
           <th class="search-th">獲得数</th>
@@ -70,25 +138,40 @@
           <td class="search-td"><%= @rakuten_casas.where.not(deficiency_book: nil).where(deficiency_solution_book: nil).length %></td>
           <td class="search-td"><%= @rakuten_casas.where.not(deficiency_adjustment: nil).where(deficiency_solution_adjustment: nil).length %></td>
         </tr>
+        <tr>
+          <th>未設置</th>
+          <th>設置予定</th>
+          <th>設置済み</th>
+          <th>残</th>
+        </tr>
+        <tr>
+          <td><%= @rakuten_casas.where(putter_id: nil).length %></td>
+          <td><%= @rakuten_casas.where.not(put_plan: nil).length %></td>
+          <td><%= @rakuten_casas.where.not(putter_id: nil).length %></td>
+          <td><%= @rakuten_casas.where.not(put_plan: nil).length - @rakuten_casas.where.not(putter_id: nil).length %></td>
+        </tr>
       </table>
       <hr>
     <table>
     <tr >
+      <th>ID</th>
       <th></th>
       <th>FemtoID</th>
       <th>商流</th>
       <th>獲得者</th>
-      <th>獲得日</th>
+      <th><%= sort_link(@q, :date, "獲得日", {},{class: "reset-link"}) %></th>
       <th>店舗名</th> 
-      <th>審査ステータス</th>
+      <th>現状ステータス</th>
+      <th>ステータス更新日</th>
       <th>OSS登録日</th>
       <th>端末到着日</th>
       <th>設置者</th>
-      <th>設置予定日</th>
+      <th><%= sort_link(@q, :put_plan, "設置予定日", {},{class: "reset-link"}) %></th>
       <th>設置日</th>
       <th>入金日</th>
       <% @rakuten_casas.each do |casa| %>
       <tr >
+      <td><%= casa.id %></td>
       <td><%= link_to "詳細",  rakuten_casa_path(casa.id) ,class: "link" %></td>
       <td><%= casa.femto_id %></td>
       <td><%= casa.client %></td>
@@ -96,6 +179,7 @@
       <td><%= casa.date.month %>月<%= casa.date.day %>日</td>
       <td><%= casa.store_prop.name %></td>
       <td><%= casa.status %></td>
+      <td><%= casa.status_update %></td>
       <td><%= casa.done_oss %></td>
       <td><%= casa.arrival %></td>
       <td><%= casa.putter.name if casa.putter_id.present? %></td>

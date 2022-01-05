@@ -65,8 +65,8 @@
         <td><%= @rakuten_casa.share %></td>
       </tr>
       <tr>
-        <th>商流</th>
-        <td><%= @rakuten_casa.client %></td>
+        <th>商流/管理番号</th>
+        <td><%= @rakuten_casa.client %>（<%= @rakuten_casa.client_num %>）</td>
         <th>獲得者</th>
         <td><%= @rakuten_casa.user.name %></td>
       </tr>
@@ -101,6 +101,10 @@
         <td><%= @rakuten_casa.net_contracter_kana %></td>
       </tr>
       <tr>
+        <th>設置住所</th>
+        <td><%= @rakuten_casa.net_address %></td>
+      </tr>
+      <tr>
         <th colspan=4>自社不備</th>
       </tr>
       <tr>
@@ -110,7 +114,7 @@
         <td><%= @rakuten_casa.status_deficiency %></td>
       </tr>
       <tr>
-        <th>不備詳細</th>
+        <th>自社不備内容</th>
         <td colspan="3"><%= @rakuten_casa.deficiency_remarks %></td>
       </tr>
       <tr>
@@ -193,17 +197,32 @@
         <td><%= @rakuten_casa.arrival %></td>
       </tr>
       <tr>
-        <th>Femt_ID</th>
+        <th>FemtoID</th>
         <td><%= @rakuten_casa.femto_id %></td>
         <th>検品</th>
         <td><%= @rakuten_casa.inspection %></td>
       </tr>
-      <th>OOS登録日</th>
+      <th>OSS登録日</th>
       <td><%= @rakuten_casa.done_oss %></td>
-      <th colspan="2"></th>
+      <th>Femtoシリアル</th>
+      <td><%= @rakuten_casa.femto_serial %></td>
     </table>
-    <h1>設置情報</h1>
+    <h1>設置情報/架電情報</h1>
     <table>
+      <tr>
+        <th>架電ステータス</th>
+        <td><%= @rakuten_casa.put_plan %></td>
+        <th colspan="2"></th>
+      </tr>
+      <tr>
+        <th>架電不備詳細</th>
+        <td colspan="3"><%= @rakuten_casa.call_remark %></td>
+      </tr>
+      <tr>
+        <th>アポ着手</th>
+        <td><%= @rakuten_casa.call_date %></td>
+        <th colspan="2"></th>
+      </tr>
       <tr>
         <th>設置予定日</th>
         <td><%= @rakuten_casa.put_plan %></td>

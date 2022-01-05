@@ -12,16 +12,7 @@
 
 ActiveRecord::Schema.define(version: 2021_11_06_041034) do
 
-  create_table "actual_profits", charset: "utf8", force: :cascade do |t|
-    t.string "item", null: false
-    t.integer "profit", null: false
-    t.date "start_date", null: false
-    t.date "end_date", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-  end
-
-  create_table "aupays", charset: "utf8", force: :cascade do |t|
+  create_table "aupays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num", null: false
     t.string "client", null: false
     t.bigint "user_id"
@@ -57,7 +48,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_aupays_on_user_id"
   end
 
-  create_table "costs", charset: "utf8", force: :cascade do |t|
+  create_table "costs", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "year", null: false
     t.integer "month", null: false
     t.string "base", null: false
@@ -76,7 +67,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.date "update_date"
   end
 
-  create_table "display_periods", charset: "utf8", force: :cascade do |t|
+  create_table "display_periods", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "start_period_01"
     t.date "end_period_01"
     t.date "start_period_02"
@@ -89,7 +80,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.date "end_period_05"
   end
 
-  create_table "dmers", charset: "utf8", force: :cascade do |t|
+  create_table "dmers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num", null: false
     t.string "client", null: false
     t.bigint "user_id"
@@ -125,7 +116,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_dmers_on_user_id"
   end
 
-  create_table "n_results", charset: "utf8", force: :cascade do |t|
+  create_table "n_results", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
     t.date "date", null: false
     t.string "base", null: false
@@ -299,7 +290,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_n_results_on_user_id"
   end
 
-  create_table "pandas", charset: "utf8", force: :cascade do |t|
+  create_table "pandas", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "grid_id"
     t.string "food_category", null: false
     t.string "client"
@@ -329,7 +320,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_pandas_on_user_id"
   end
 
-  create_table "paypays", charset: "utf8", force: :cascade do |t|
+  create_table "paypays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num"
     t.string "client", null: false
     t.bigint "user_id"
@@ -348,7 +339,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_paypays_on_user_id"
   end
 
-  create_table "pranesses", charset: "utf8", force: :cascade do |t|
+  create_table "pranesses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num", null: false
     t.string "client"
     t.bigint "user_id"
@@ -373,8 +364,9 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_pranesses_on_user_id"
   end
 
-  create_table "rakuten_casas", charset: "utf8", force: :cascade do |t|
+  create_table "rakuten_casas", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "client", null: false
+    t.string "client_num"
     t.bigint "user_id"
     t.bigint "store_prop_id"
     t.date "date", null: false
@@ -389,6 +381,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.string "net_contracter", null: false
     t.string "net_contracter_kana", null: false
     t.string "net_phone_number", null: false
+    t.date "result_point"
     t.text "remarks"
     t.date "share"
     t.date "deficiency"
@@ -398,20 +391,26 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.date "deficiency_net"
     t.string "status_deficiency_net"
     t.date "deficiency_share_net"
+    t.date "deficiency_request_net"
     t.date "deficiency_last_shared_net"
     t.text "deficiency_result_net"
-    t.text "deficiency_remarks_net"
     t.date "deficiency_solution_net"
+    t.text "deficiency_remarks_net"
     t.date "deficiency_anti"
     t.string "status_deficiency_anti"
     t.date "deficiency_share_anti"
+    t.date "deficiency_request_anti"
     t.date "deficiency_last_shared_anti"
     t.text "deficiency_result_anti"
     t.text "deficiency_remarks_anti"
     t.date "deficiency_solution_anti"
+    t.date "call_date"
+    t.string "call_status"
+    t.text "call_remark"
     t.date "order"
     t.date "arrival"
     t.string "femto_id"
+    t.string "femto_serial"
     t.string "inspection"
     t.date "done_oss"
     t.date "put_plan"
@@ -462,7 +461,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_rakuten_casas_on_user_id"
   end
 
-  create_table "rakuten_pays", charset: "utf8", force: :cascade do |t|
+  create_table "rakuten_pays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "client", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
@@ -484,7 +483,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_rakuten_pays_on_user_id"
   end
 
-  create_table "result_casas", charset: "utf8", force: :cascade do |t|
+  create_table "result_casas", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "result_id"
     t.integer "ng_01"
     t.integer "ng_02"
@@ -552,7 +551,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["result_id"], name: "index_result_casas_on_result_id"
   end
 
-  create_table "result_cashes", charset: "utf8", force: :cascade do |t|
+  create_table "result_cashes", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "result_id"
     t.integer "ng_01"
     t.integer "ng_02"
@@ -620,7 +619,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["result_id"], name: "index_result_cashes_on_result_id"
   end
 
-  create_table "result_summits", charset: "utf8", force: :cascade do |t|
+  create_table "result_summits", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "result_id"
     t.integer "ng_01"
     t.integer "ng_02"
@@ -688,7 +687,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["result_id"], name: "index_result_summits_on_result_id"
   end
 
-  create_table "results", charset: "utf8", force: :cascade do |t|
+  create_table "results", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
     t.date "date", null: false
     t.string "area", null: false
@@ -720,7 +719,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_results_on_user_id"
   end
 
-  create_table "return_histories", charset: "utf8", force: :cascade do |t|
+  create_table "return_histories", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "stock_id"
     t.date "return"
@@ -728,16 +727,14 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_return_histories_on_user_id"
   end
 
-  create_table "shifts", charset: "utf8", force: :cascade do |t|
-    t.bigint "user_id"
-    t.string "shift"
+  create_table "shifts", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.datetime "start_time"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.string "shift"
+    t.bigint "user_id"
     t.index ["user_id"], name: "index_shifts_on_user_id"
   end
 
-  create_table "st_insurances", charset: "utf8", force: :cascade do |t|
+  create_table "st_insurances", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "client", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
@@ -755,7 +752,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_st_insurances_on_user_id"
   end
 
-  create_table "stock_histories", charset: "utf8", force: :cascade do |t|
+  create_table "stock_histories", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "stock_id"
     t.date "take_out"
@@ -763,7 +760,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_stock_histories_on_user_id"
   end
 
-  create_table "stocks", charset: "utf8", force: :cascade do |t|
+  create_table "stocks", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "stock_num", null: false
     t.string "mac_num"
     t.string "status"
@@ -772,9 +769,9 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["stock_num"], name: "index_stocks_on_stock_num", unique: true
   end
 
-  create_table "store_props", charset: "utf8", force: :cascade do |t|
+  create_table "store_props", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "race", null: false
-    t.string "name", collation: "utf8_bin"
+    t.string "name", limit: 255, collation: "utf8mb4_bin"
     t.string "industry", null: false
     t.string "head_store"
     t.string "corporate_name"
@@ -804,7 +801,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.string "description"
   end
 
-  create_table "summit_customer_props", charset: "utf8", force: :cascade do |t|
+  create_table "summit_customer_props", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num", null: false
     t.string "client", null: false
     t.bigint "store_prop_id"
@@ -815,7 +812,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["store_prop_id"], name: "index_summit_customer_props_on_store_prop_id"
   end
 
-  create_table "summits", charset: "utf8", force: :cascade do |t|
+  create_table "summits", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "summit_customer_prop_id"
     t.bigint "user_id"
     t.date "get_date", null: false
@@ -839,7 +836,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_summits_on_user_id"
   end
 
-  create_table "trouble_ns", charset: "utf8", force: :cascade do |t|
+  create_table "trouble_ns", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "base", null: false
     t.date "date", null: false
     t.string "category", null: false
@@ -856,7 +853,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_trouble_ns_on_user_id"
   end
 
-  create_table "trouble_sses", charset: "utf8", force: :cascade do |t|
+  create_table "trouble_sses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date", null: false
     t.bigint "store_prop_id"
     t.string "category", null: false
@@ -874,7 +871,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["user_id"], name: "index_trouble_sses_on_user_id"
   end
 
-  create_table "users", charset: "utf8", force: :cascade do |t|
+  create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "name", null: false

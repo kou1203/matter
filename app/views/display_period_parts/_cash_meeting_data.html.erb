@@ -1,57 +1,80 @@
-  <div>
   <h2>キャッシュレス</h2>
+<%# 合計評価売 %>
+  <% chubu_sum_val = @chubu_cash_dmer_val + @chubu_cash_dmer_slmt_val + @chubu_cash_aupay_val +
+      @chubu_cash_aupay_slmt_val + @chubu_cash_paypay_val + @chubu_cash_rakuten_pay_val + @chubu_cash_st_insurance_val +
+      @chubu_cash_casa_val + @chubu_cash_casa_put_val %>
+  <% kanto_sum_val = @kanto_cash_dmer_val + @kanto_cash_dmer_slmt_val + @kanto_cash_aupay_val +
+      @kanto_cash_aupay_slmt_val + @kanto_cash_paypay_val + @kanto_cash_rakuten_pay_val + @kanto_cash_st_insurance_val +
+      @kanto_cash_casa_val + @kanto_cash_casa_put_val %>
+  <% kansai_sum_val = @kansai_cash_dmer_val + @kansai_cash_dmer_slmt_val + @kansai_cash_aupay_val +
+      @kansai_cash_aupay_slmt_val + @kansai_cash_paypay_val + @kansai_cash_rakuten_pay_val + @kansai_cash_st_insurance_val +
+      @kansai_cash_casa_val + @kansai_cash_casa_put_val %>
+<%# 合計実売 %>
+  <% chubu_sum_profit %>
+  <% kanto_sum_profit %>
+  <% kansai_sum_profit %>
   <table>
     <tr>
       <th rowspan="4"></th>
       <th>拠点</th>
-      <th>中部キャッシュ</th>
-      <th>関東キャッシュ</th>
-      <th>関西キャッシュ</th>
+      <th>中部</th>
+      <th>関東</th>
+      <th>関西</th>
       <th>全拠点</th>
     </tr>
     <tr>
       <th>対策員人数</th>
-      <td><%= @chubu_cash_persons.length %></td>
-      <td><%= @kanto_cash_persons.length %></td>
-      <td><%= @kansai_cash_persons.length %></td>
-      <td><%= persons_sum = @chubu_cash_persons.length + @kanto_cash_persons.length + @kansai_cash_persons.length %></td>
+        <%# 計算式 %>
+          <% chubu_cash_persons = @cash_results.group(:user_id).where(user: {base: "中部SS",base_sub: "キャッシュレス"}) %>
+          <% kanto_cash_persons = @cash_results.group(:user_id).where(user: {base: "関東SS",base_sub: "キャッシュレス"}) %>
+          <% kansai_cash_persons = @cash_results.group(:user_id).where(user: {base: "関西SS",base_sub: "キャッシュレス"}) %>
+        <td><%= chubu_cash_persons.length %></td>
+        <td><%= kanto_cash_persons.length %></td>
+        <td><%= kansai_cash_persons.length %></td>
+        <td><%= persons_sum = chubu_cash_persons.length + kanto_cash_persons.length + kansai_cash_persons.length %></td>
     </tr>
     <tr>
       <th>予定シフト</th>
-      <td><%= @chubu_cash_shifts.length %></td>
-      <td><%= @kanto_cash_shifts.length %></td>
-      <td><%= @kansai_cash_shifts.length %></td>
-      <td><%= shifts_sum = @chubu_cash_shifts.length + @kanto_cash_shifts.length + @kansai_cash_shifts.length %></td>
+      <%# 計算式 %>
+        <% chubu_cash_shifts = @cash_shifts.where(user: {base: "中部SS",base_sub: "キャッシュレス"}).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同") %>
+        <% kanto_cash_shifts = @cash_shifts.where(user: {base: "関東SS",base_sub: "キャッシュレス"}).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同") %>
+        <% kansai_cash_shifts = @cash_shifts.where(user: {base: "関西SS",base_sub: "キャッシュレス"}).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同") %>
+      <td><%= chubu_cash_shifts.length %></td>
+      <td><%= kanto_cash_shifts.length %></td>
+      <td><%= kansai_cash_shifts.length %></td>
+      <td><%= shifts_sum = chubu_cash_shifts.length + kanto_cash_shifts.length + kansai_cash_shifts.length %></td>
     </tr>
     <tr>
       <th>消化シフト</th>
-      <td><%= @chubu_cash_shift_digestion.length %></td>
-      <td><%= @kanto_cash_shift_digestion.length %></td>
-      <td><%= @kansai_cash_shift_digestion.length %></td>
-      <td><%= shift_digestion_sum = @chubu_cash_shift_digestion.length + @kanto_cash_shift_digestion.length + @kansai_cash_shift_digestion.length %></td>
+        <%# 計算式 %>
+          <%# 現状 %>
+          <% chubu_cash_shift_digestion = @cash_results.where(user: {base: "中部SS",base_sub: "キャッシュレス"}).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同") %>
+          <% kanto_cash_shift_digestion = @cash_results.where(user: {base: "関東SS",base_sub: "キャッシュレス"}).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同") %>
+          <% kansai_cash_shift_digestion = @cash_results.where(user: {base: "関西SS",base_sub: "キャッシュレス"}).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同") %>
+          <%# １週間前 %>
+          <% chubu_cash_shift_digestion_prev = @cash_results_prev.where(user: {base: "中部SS",base_sub: "キャッシュレス"}).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同") %>
+          <% kanto_cash_shift_digestion_prev = @cash_results_prev.where(user: {base: "関東SS",base_sub: "キャッシュレス"}).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同") %>
+          <% kansai_cash_shift_digestion_prev = @cash_results_prev.where(user: {base: "関西SS",base_sub: "キャッシュレス"}).where.not(shift: "休み").where.not(shift: "内勤").where.not(shift: "帯同") %>
+      <td><%= chubu_cash_shift_digestion.length %></td>
+      <td><%= kanto_cash_shift_digestion.length %></td>
+      <td><%= kansai_cash_shift_digestion.length %></td>
+      <td><%= shift_digestion_sum = chubu_cash_shift_digestion.length + kanto_cash_shift_digestion.length + kansai_cash_shift_digestion.length %></td>
     </tr>
     <tr>
-      <th rowspan="5">評価売</th>
-      <th>現状売上</th>
-      <td><%= @chubu_cash_sum_valuation.to_s(:delimited) %></td>
-      <td><%= @kanto_cash_sum_valuation.to_s(:delimited) %></td>
-      <td><%= @kansai_cash_sum_valuation.to_s(:delimited) %></td>
-      <% cash_sum_valuation = @chubu_cash_sum_valuation + @kanto_cash_sum_valuation + @kansai_cash_sum_valuation %>
-      <td><%= (cash_sum_valuation).to_s(:delimited) %></td>
-    </tr>
-    <tr>
+      <th rowspan="3">評価売</th>
       <th>前週Ave</th>
-      <% cash_valuation_sum_prev_week = 0 %>
-      <% cash_shift_sum_prev_week = 0 %>
-      <% if @chubu_cash_shift_digestion_prev_week.length == 0 %>
+      <%  %>
+      <% cash_valuation_sum_prev = 0 %>
+      <% cash_shift_sum_prev = 0 %>
+      <% if chubu_cash_shift_digestion_prev.length == 0 %>
       <td>計測不可</td>
       <% else %>
-        <% chubu_cash_valuation_ave_prev_week = @chubu_cash_sum_valuation_prev_week.to_f / @chubu_cash_shift_digestion_prev_week.length %>
-        <% cash_valuation_sum_prev_week += @chubu_cash_sum_valuation_prev_week %>
-        <% cash_shift_sum_prev_week += @chubu_cash_shift_digestion_prev_week.length %>
-      <td><%= (chubu_cash_valuation_ave_prev_week).round().to_s(:delimited) %></td>
+        <% chubu_cash_valuation_ave_prev = @chubu_cash_sum_valuation_prev.to_f / @chubu_cash_shift_digestion_prev.length %>
+        <% cash_valuation_sum_prev += @chubu_cash_sum_valuation_prev %>
+        <% cash_shift_sum_prev += @chubu_cash_shift_digestion_prev.length %>
+      <td><%= (chubu_cash_valuation_ave_prev).round().to_s(:delimited) %></td>
       <% end %>
-      <% if @kanto_cash_shift_digestion_prev_week.length == 0 %>
+      <% if kanto_cash_shift_digestion_prev.length == 0 %>
       <td>計測不可</td>
       <% else %>
         <% kanto_cash_valuation_ave_prev_week = @kanto_cash_sum_valuation_prev_week.to_f / @kanto_cash_shift_digestion_prev_week.length %>
@@ -59,7 +82,7 @@
         <% cash_shift_sum_prev_week += @kanto_cash_shift_digestion_prev_week.length %>
       <td><%= (kanto_cash_valuation_ave_prev_week).round().to_s(:delimited) %></td>
       <% end %>
-      <% if @kansai_cash_shift_digestion_prev_week.length == 0 %>
+      <% if kansai_cash_shift_digestion_prev_week.length == 0 %>
       <td>計測不可</td>
       <% else %>
         <% kansai_cash_valuation_ave_prev_week = @kansai_cash_sum_valuation_prev_week.to_f / @kansai_cash_shift_digestion_prev_week.length %>
@@ -94,7 +117,7 @@
       <% kansai_cash_valuation_ave = @kansai_cash_sum_valuation.to_f / @kansai_cash_shift_digestion.length %>
       <td><%= (kansai_cash_valuation_ave).round().to_s(:delimited) %></td>
       <% end %>
-      <% cash_valuation_total_ave = cash_sum_valuation / shift_digestion_sum %>
+      <% cash_valuation_total_ave = @cash_sum_valuation / shift_digestion_sum %>
       <td><%= (cash_valuation_total_ave).round().to_s(:delimited) %></td>
     </tr>
     <tr>
@@ -135,25 +158,6 @@
       <td style="color:red;"><%= cash_valuation_total_ave - cash_valuation_total_ave_prev_week %></td>
       <% end %>
       <% end %>
-    </tr>
-    <tr>
-      <th>終着見込売上</th>
-      <% if @chubu_cash_shifts.length == 0 || chubu_cash_valuation_ave.nil? %>
-      <td>計測不可</td>
-      <% else %>
-      <td><%= (chubu_cash_valuation_ave * @chubu_cash_shifts.length).round().to_s(:delimited) %></td>
-      <% end %>
-      <% if @kanto_cash_shifts.length == 0 || kanto_cash_valuation_ave.nil? %>
-      <td>計測不可</td>
-      <% else %>
-      <td><%= (kanto_cash_valuation_ave * @kanto_cash_shifts.length).round().to_s(:delimited) %></td>
-      <% end %>
-      <% if @kansai_cash_shifts.length == 0 || kansai_cash_valuation_ave.nil? %>
-      <td>計測不可</td>
-      <% else %>
-      <td><%= (kansai_cash_valuation_ave * @kansai_cash_shifts.length).round().to_s(:delimited) %></td>
-      <% end %>
-      <td><%= (cash_valuation_total_ave * shifts_sum).round().to_s(:delimited) %></td>
     </tr>
     <tr>
     <th rowspan="5">実売</th>

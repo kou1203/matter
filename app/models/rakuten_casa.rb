@@ -1,4 +1,5 @@
 class RakutenCasa < ApplicationRecord
+  require 'charlock_holmes'
   belongs_to :user
   belongs_to :putter, class_name: "User", optional: true
   belongs_to :adjustmenter, class_name: "User", optional: true
@@ -42,23 +43,40 @@ class RakutenCasa < ApplicationRecord
       else  
         row["システム調整対応者"]
       end
-      u_id = user.id if user.present?
-      store_prop = StoreProp.find_by(name: row["店舗名"])
-      errors << "#{index}行目獲得者が不正です" if user.blank?
-      errors << "#{index}行目店舗名が不正です" if store_prop.blank?
+      u_id = user.id if user.present? 
+      store_prop = StoreProp.find_by(phone_number_1: row["店舗電話番号"])
+      errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
+      errors << "#{index}行目店舗名が不正です" if store_prop.blank? && errors.length < 5
+      errors << "#{index}行目商流が空白です" if row["商流"].blank? && errors.length < 5
+      errors << "#{index}行目獲得日が不正です" if row["獲得日"].blank? && errors.length < 5
+      errors << "#{index}行目現状ステータスが不正です" if row["現状ステータス"].blank? && errors.length < 5
+      errors << "#{index}行目回線確認方法が不正です" if row["回線確認方法"].blank? && errors.length < 5
+      errors << "#{index}行目回線事業者が不正です" if row["回線事業者"].blank? && errors.length < 5
+      errors << "#{index}行目光コラボが不正です" if row["光コラボ"].blank? && errors.length < 5
+      errors << "#{index}行目回線サービス名が不正です" if row["回線プラン名"].blank? && errors.length < 5
+      errors << "#{index}行目回線IDが不正です" if row["回線ID"].blank? && errors.length < 5
+      errors << "#{index}行目設置住所が不正です" if row["設置住所"].blank? && errors.length < 5
+      errors << "#{index}行目回線契約者名が不正です" if row["回線契約者名"].blank? && errors.length < 5
+      errors << "#{index}行目回線契約者名（カナ）が不正です" if row["回線契約者名（カナ）"].blank? && errors.length < 5
+      errors << "#{index}行目回線登録連絡先が不正です" if row["回線登録連絡先"].blank? && errors.length < 5
+      errors << "#{index}行目新規評価売上が不正です" if row["新規評価売上"].blank? && errors.length < 5
+      errors << "#{index}行目設置評価売上が不正です" if row["設置評価売上"].blank? && errors.length < 5
+      errors << "#{index}行目新規実売上が不正です" if row["新規実売上"].blank? && errors.length < 5
+      errors << "#{index}行目設置実売上が不正です" if row["設置実売上"].blank? && errors.length < 5
       if row["ID"].present?
         rakuten_casa = find_by(id: row["ID"])
-        errors << "#{index}行目 IDが不適切です" if rakuten_casa.blank?
+        errors << "#{index}行目 IDが不適切です" if rakuten_casa.blank? && errors.length < 5
       else  
         store_id = store_prop.id if store_prop.present?
         rakuten_casa = new(
           id: row["ID"],
           store_prop_id: store_id,
           client: row["商流"],
+          client_num: row['商流管理番号'],
           user_id: u_id,
           date: row["獲得日"],
           status: row["現状ステータス"],
-          status_update: row["ステータス更新日"],
+          # status_update: Date.today,
           net_confirm_method: row["回線確認方法"],
           net_name: row["回線事業者"],
           hikari_collabo: row["光コラボ"],
@@ -72,31 +90,38 @@ class RakutenCasa < ApplicationRecord
           share: row["上位店共有日"],
           # 自社不備
           deficiency: row["自社不備発生日"],
-          status_deficiency: row["自社不備ステータス"],
+          # status_deficiency: row["自社不備ステータス"],
           deficiency_remarks: row["自社不備内容"],
-          deficiency_solution: row["自社不備解消日"],
+          # deficiency_solution: row["自社不備解消日"],
           # 回線不備
           deficiency_net: row["回線初回不備発生日"],
           status_deficiency_net: row["回線不備分類"],
-          deficiency_share_net: row["回線不備共有日"],
-          deficiency_last_shared_net: row["回線不備前回共有日"],
-          deficiency_result_net: row["回線不備対応結果"],
           deficiency_remarks_net: row["回線不備詳細"],
+          deficiency_share_net: row["回線不備共有日"],
+          deficiency_request_net: row["回線確認依頼日"],
+          # deficiency_last_shared_net: row["回線不備前回共有日"],
           deficiency_solution_net: row["回線不備解消日"],
+          deficiency_result_net: row["回線不備対応結果"],
           # 反社不備
+          deficiency_request_anti: row["反社不備確認依頼日"],
+          deficiency_solution_anti: row["反社不備解消日"],
           deficiency_anti: row["反社初回不備発生日"],
           status_deficiency_anti: row["反社不備分類"],
-          deficiency_share_anti: row["反社不備共有日"],
-          deficiency_last_shared_anti: row["反社不備前回共有日"],
-          deficiency_result_anti: row["反社不備対応結果"],
           deficiency_remarks_anti: row["反社不備詳細"],
-          deficiency_solution_anti: row["反社不備解消日"],
+          deficiency_share_anti: row["反社不備共有日"],
+          deficiency_result_anti: row["反社不備対応結果"],
+          # deficiency_last_shared_anti: row["反社不備前回共有日"],
+          # 架電内容
+          call_status: row['架電結果'],
+          call_remark: row['架電不備内容'],
           # 端末情報
           order: row["発注日"],
+          femto_serial: row['Femtoシリアル'],
           arrival: row["納品日"],
+          done_oss: row["OSS登録日"],
+          call_date: row['アポ着手日'],
           femto_id: row["FemtoID"],
           inspection: row["検品"],
-          done_oss: row["OSS登録日"],
           # 設置
           put_plan: row["設置予定日"],
           put: row["設置日"],
@@ -107,10 +132,10 @@ class RakutenCasa < ApplicationRecord
           # 図書
           share_book: row["竣工図書提出日"],
           status_book: row["竣工図書ステータス"],
-          deficiency_book: row["竣工図書不備発生日"],
-          deficiency_remarks_book: row["竣工図書不備詳細"],
-          deficiency_result_book: row["竣工図書不備対応結果"],
-          deficiency_solution_book: row["竣工図書不備解消日"],
+          deficiency_book: row["竣工図書不備対応日"],
+          # deficiency_remarks_book: row["竣工図書不備詳細"],
+          # deficiency_result_book: row["竣工図書不備対応結果"],
+          # deficiency_solution_book: row["竣工図書不備解消日"],
           done_book: row["竣工図書承認日"],
           # 未完図書
           share_undone_book: row["未完図書提出日"],
@@ -122,7 +147,7 @@ class RakutenCasa < ApplicationRecord
           put_adjustment: row["システム調整設置日"],
           adjustmenter_id: a_id,
           share_adjustment: row["システム調整提出日"],
-          deficiency_adjustment: row["システム調整不備発生日"],
+          # deficiency_adjustment: row["システム調整不備発生日"],
           deficiency_solution_adjustment: row["システム調整不備解消日"],
           google_form_share_adjustment: row["GoogleFrom（システム調整）"],
           adjustment_status: row["システム調整ステータス"],
@@ -130,7 +155,7 @@ class RakutenCasa < ApplicationRecord
           # 申込書
           share_app: row["申込書提出日"],
           app_create: row["申込書作成日"],
-          status_app: row["申込ステータス"],
+          # status_app: row["申込ステータス"],
           done_app: row["申込書楽天受理日"],
           # 覚書
           share_memo: row["覚書提出日"],
@@ -147,19 +172,24 @@ class RakutenCasa < ApplicationRecord
           profit_new: row["新規実売上"],
           profit_put: row["設置実売上"]
         )
-        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if rakuten_casa.invalid?
+        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if rakuten_casa.invalid? && errors.length < 5
       end
     end
     errors
   end
 
+  path = 'path/to/file.csv'
+  
   def self.import(file)
+    detection = CharlockHolmes::EncodingDetector.detect(File.read(file.path))
+    encoding = detection[:encoding] == 'Shift_JIS' ? 'CP932' : detection[:encoding]
     new_cnt = 0
     update_cnt = 0
     nochange_cnt = 0
-    CSV.foreach(file.path, headers: true) do |row|
+    # update_femto = []
+    CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
       user = User.find_by(name: row["獲得者"])
-      store_prop = StoreProp.find_by(name: row["店舗名"])
+      store_prop = StoreProp.find_by(phone_number_1: row["店舗電話番号"])
       u_id = user.id if user.present?
       putter = User.find_by(name: row["設置者"])
       p_id = 
@@ -179,12 +209,13 @@ class RakutenCasa < ApplicationRecord
       rakuten_casa = find_by(store_prop_id:  store_prop.id)
       if store_prop.rakuten_casa.present?
         rakuten_casa.assign_attributes(
+          # id: row["ID"],
           store_prop_id: store_id,
           client: row["商流"],
+          client_num: row['商流管理番号'],
           user_id: u_id,
           date: row["獲得日"],
           status: row["現状ステータス"],
-          status_update: row["ステータス更新日"],
           net_confirm_method: row["回線確認方法"],
           net_name: row["回線事業者"],
           hikari_collabo: row["光コラボ"],
@@ -198,31 +229,38 @@ class RakutenCasa < ApplicationRecord
           share: row["上位店共有日"],
           # 自社不備
           deficiency: row["自社不備発生日"],
-          status_deficiency: row["自社不備ステータス"],
-          deficiency_remarks: row["自社不備内容"],
-          deficiency_solution: row["自社不備解消日"],
+          # status_deficiency: row["自社不備ステータス"],
+          # deficiency_remarks: row["自社不備内容"],
+          # deficiency_solution: row["自社不備解消日"],
           # 回線不備
           deficiency_net: row["回線初回不備発生日"],
           status_deficiency_net: row["回線不備分類"],
-          deficiency_share_net: row["回線不備共有日"],
-          deficiency_last_shared_net: row["回線不備前回共有日"],
-          deficiency_result_net: row["回線不備対応結果"],
           deficiency_remarks_net: row["回線不備詳細"],
+          deficiency_share_net: row["回線不備共有日"],
+          deficiency_request_net: row["回線確認依頼日"],
+          # deficiency_last_shared_net: row["回線不備前回共有日"],
           deficiency_solution_net: row["回線不備解消日"],
+          deficiency_result_net: row["回線不備対応結果"],
           # 反社不備
+          deficiency_request_anti: row["反社不備確認依頼日"],
+          deficiency_solution_anti: row["反社不備解消日"],
           deficiency_anti: row["反社初回不備発生日"],
           status_deficiency_anti: row["反社不備分類"],
-          deficiency_share_anti: row["反社不備共有日"],
-          deficiency_last_shared_anti: row["反社不備前回共有日"],
-          deficiency_result_anti: row["反社不備対応結果"],
           deficiency_remarks_anti: row["反社不備詳細"],
-          deficiency_solution_anti: row["反社不備解消日"],
+          deficiency_share_anti: row["反社不備共有日"],
+          deficiency_result_anti: row["反社不備対応結果"],
+          # deficiency_last_shared_anti: row["反社不備前回共有日"],
+          # 架電内容
+          call_status: row['架電結果'],
+          call_remark: row['架電不備内容'],
           # 端末情報
           order: row["発注日"],
+          femto_serial: row['Femtoシリアル'],
           arrival: row["納品日"],
+          done_oss: row["OSS登録日"],
+          call_date: row['アポ着手日'],
           femto_id: row["FemtoID"],
           inspection: row["検品"],
-          done_oss: row["OSS登録日"],
           # 設置
           put_plan: row["設置予定日"],
           put: row["設置日"],
@@ -233,10 +271,10 @@ class RakutenCasa < ApplicationRecord
           # 図書
           share_book: row["竣工図書提出日"],
           status_book: row["竣工図書ステータス"],
-          deficiency_book: row["竣工図書不備発生日"],
-          deficiency_remarks_book: row["竣工図書不備詳細"],
-          deficiency_result_book: row["竣工図書不備対応結果"],
-          deficiency_solution_book: row["竣工図書不備解消日"],
+          deficiency_book: row["竣工図書不備対応日"],
+          # deficiency_remarks_book: row["竣工図書不備詳細"],
+          # deficiency_result_book: row["竣工図書不備対応結果"],
+          # deficiency_solution_book: row["竣工図書不備解消日"],
           done_book: row["竣工図書承認日"],
           # 未完図書
           share_undone_book: row["未完図書提出日"],
@@ -248,7 +286,7 @@ class RakutenCasa < ApplicationRecord
           put_adjustment: row["システム調整設置日"],
           adjustmenter_id: a_id,
           share_adjustment: row["システム調整提出日"],
-          deficiency_adjustment: row["システム調整不備発生日"],
+          # deficiency_adjustment: row["システム調整不備発生日"],
           deficiency_solution_adjustment: row["システム調整不備解消日"],
           google_form_share_adjustment: row["GoogleFrom（システム調整）"],
           adjustment_status: row["システム調整ステータス"],
@@ -256,7 +294,7 @@ class RakutenCasa < ApplicationRecord
           # 申込書
           share_app: row["申込書提出日"],
           app_create: row["申込書作成日"],
-          status_app: row["申込ステータス"],
+          # status_app: row["申込ステータス"],
           done_app: row["申込書楽天受理日"],
           # 覚書
           share_memo: row["覚書提出日"],
@@ -274,7 +312,9 @@ class RakutenCasa < ApplicationRecord
           profit_put: row["設置実売上"]
         )
         if rakuten_casa.has_changes_to_save? 
+          rakuten_casa.assign_attributes(status_update: Date.today)
           rakuten_casa.save!
+          # update_femto << "#{rakuten_casa.store_prop.name}"
           update_cnt += 1
         else  
           nochange_cnt += 1
@@ -284,10 +324,11 @@ class RakutenCasa < ApplicationRecord
           id: row["ID"],
           store_prop_id: store_id,
           client: row["商流"],
+          client_num: row['商流管理番号'],
           user_id: u_id,
           date: row["獲得日"],
           status: row["現状ステータス"],
-          status_update: row["ステータス更新日"],
+          status_update: Date.today,
           net_confirm_method: row["回線確認方法"],
           net_name: row["回線事業者"],
           hikari_collabo: row["光コラボ"],
@@ -301,31 +342,38 @@ class RakutenCasa < ApplicationRecord
           share: row["上位店共有日"],
           # 自社不備
           deficiency: row["自社不備発生日"],
-          status_deficiency: row["自社不備ステータス"],
-          deficiency_remarks: row["自社不備内容"],
-          deficiency_solution: row["自社不備解消日"],
+          # status_deficiency: row["自社不備ステータス"],
+          # deficiency_remarks: row["自社不備内容"],
+          # deficiency_solution: row["自社不備解消日"],
           # 回線不備
           deficiency_net: row["回線初回不備発生日"],
           status_deficiency_net: row["回線不備分類"],
-          deficiency_share_net: row["回線不備共有日"],
-          deficiency_last_shared_net: row["回線不備前回共有日"],
-          deficiency_result_net: row["回線不備対応結果"],
           deficiency_remarks_net: row["回線不備詳細"],
+          deficiency_share_net: row["回線不備共有日"],
+          deficiency_request_net: row["回線確認依頼日"],
+          # deficiency_last_shared_net: row["回線不備前回共有日"],
           deficiency_solution_net: row["回線不備解消日"],
+          deficiency_result_net: row["回線不備対応結果"],
           # 反社不備
+          deficiency_request_anti: row["反社不備確認依頼日"],
+          deficiency_solution_anti: row["反社不備解消日"],
           deficiency_anti: row["反社初回不備発生日"],
           status_deficiency_anti: row["反社不備分類"],
-          deficiency_share_anti: row["反社不備共有日"],
-          deficiency_last_shared_anti: row["反社不備前回共有日"],
-          deficiency_result_anti: row["反社不備対応結果"],
           deficiency_remarks_anti: row["反社不備詳細"],
-          deficiency_solution_anti: row["反社不備解消日"],
+          deficiency_share_anti: row["反社不備共有日"],
+          deficiency_result_anti: row["反社不備対応結果"],
+          # deficiency_last_shared_anti: row["反社不備前回共有日"],
+          # 架電内容
+          call_status: row['架電結果'],
+          call_remark: row['架電不備内容'],
           # 端末情報
           order: row["発注日"],
+          femto_serial: row['Femtoシリアル'],
           arrival: row["納品日"],
+          done_oss: row["OSS登録日"],
+          call_date: row['アポ着手日'],
           femto_id: row["FemtoID"],
           inspection: row["検品"],
-          done_oss: row["OSS登録日"],
           # 設置
           put_plan: row["設置予定日"],
           put: row["設置日"],
@@ -336,10 +384,10 @@ class RakutenCasa < ApplicationRecord
           # 図書
           share_book: row["竣工図書提出日"],
           status_book: row["竣工図書ステータス"],
-          deficiency_book: row["竣工図書不備発生日"],
-          deficiency_remarks_book: row["竣工図書不備詳細"],
-          deficiency_result_book: row["竣工図書不備対応結果"],
-          deficiency_solution_book: row["竣工図書不備解消日"],
+          deficiency_book: row["竣工図書不備対応日"],
+          # deficiency_remarks_book: row["竣工図書不備詳細"],
+          # deficiency_result_book: row["竣工図書不備対応結果"],
+          # deficiency_solution_book: row["竣工図書不備解消日"],
           done_book: row["竣工図書承認日"],
           # 未完図書
           share_undone_book: row["未完図書提出日"],
@@ -351,7 +399,7 @@ class RakutenCasa < ApplicationRecord
           put_adjustment: row["システム調整設置日"],
           adjustmenter_id: a_id,
           share_adjustment: row["システム調整提出日"],
-          deficiency_adjustment: row["システム調整不備発生日"],
+          # deficiency_adjustment: row["システム調整不備発生日"],
           deficiency_solution_adjustment: row["システム調整不備解消日"],
           google_form_share_adjustment: row["GoogleFrom（システム調整）"],
           adjustment_status: row["システム調整ステータス"],
@@ -359,7 +407,7 @@ class RakutenCasa < ApplicationRecord
           # 申込書
           share_app: row["申込書提出日"],
           app_create: row["申込書作成日"],
-          status_app: row["申込ステータス"],
+          # status_app: row["申込ステータス"],
           done_app: row["申込書楽天受理日"],
           # 覚書
           share_memo: row["覚書提出日"],
@@ -380,6 +428,6 @@ class RakutenCasa < ApplicationRecord
         new_cnt += 1
       end
     end
-    "新規登録#{new_cnt}件, 更新#{update_cnt}件, 変更なし#{nochange_cnt}件"
+    "新規登録#{new_cnt}件, 更新#{update_cnt}件, 変更なし#{nochange_cnt}件,更新された店舗"
   end 
 end

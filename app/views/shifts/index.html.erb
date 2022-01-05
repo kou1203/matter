@@ -61,32 +61,42 @@
     <% end %>
     </div>
     <div class="cal-form">
-    <%= form_with model: @current_shifts, url: update_month_shifts_path , local: true do |f| %>
+    <%= form_for :shift, url: update_month_shifts_path , html: { method: :post } do %>
       <h2><%= current_user.name %>予定シフト</h2>
-      <%=month_calendar events: @current_shifts do |date, shifts| %>
-        <% current_shift = @current_shifts.find_or_initialize_by(start_time: date) %>
-        <% if current_shift.id.nil? %>
-        <%= f.hidden_field :date,value: date  %>
+      <%= month_calendar do |date| %>
         <%= date.day %><br>
-        <%= f.select :shift, {
-          "キャッシュレス新規": "キャッシュレス新規",
-          "キャッシュレス決済": "キャッシュレス決済",
-          "楽天フェムト新規": "楽天フェムト新規",
-          "楽天フェムト設置": "楽天フェムト設置",
-          "サミット": "サミット",
-          "帯同": "帯同",
-          "内勤": "内勤",
-          "休み": "休み",
-          "欠勤": "欠勤"} ,{prompt: "シフトを選択してください"}, {class: "input"} %>
+        <% shift = @current_shifts.find_or_initialize_by(start_time: date) %>
+        <% if shift.id.nil? %>
+        <%= hidden_field_tag "shift[#{date}][start_time]", date %>
+        <%= hidden_field_tag "shift[#{date}][user_id]", current_user.id %>
+        <%= select "shift[#{date}]", :shift,
+          [ ["キャッシュレス新規", "キャッシュレス新規"],
+          ["キャッシュレス決済", "キャッシュレス決済"],
+          ["楽天フェムト新規", "楽天フェムト新規"],
+          ["楽天フェムト設置", "楽天フェムト設置"],
+          ["サミット", "サミット"],
+          ["帯同", "帯同"],
+          ["内勤", "内勤"],
+          ["休み", "休み"],
+          ["欠勤", "欠勤"] ] , {:prompt => "選択してください"}, {:class => "input"} %>
         <% else %>
-        <%= date.day %>
-        <% shifts.each do |shift| %>
-          <br><br><span class="cal-data"><%= shift.shift %></span>
-          <%= link_to "削除", shift_path(shift.id), method: :delete, data: {confirm:"削除しますか？"},class: "cal-del" %>
-        <% end %>
+          <%= fields_for "shift[]", shift do |s| %>
+            <%= s.hidden_field :start_time %>
+            <%= s.select :shift, 
+              { "キャッシュレス新規": "キャッシュレス新規",
+              "キャッシュレス決済": "キャッシュレス決済",
+              "楽天フェムト新規": "楽天フェムト新規",
+              "楽天フェムト設置": "楽天フェムト設置",
+              "サミット": "サミット",
+              "帯同": "帯同",
+              "内勤": "内勤",
+              "休み": "休み",
+              "欠勤": "欠勤" }, {prompt: "選択してください"}, {class: "input"} %>
+          <%# link_to "削除", shift_path(s.id), method: :delete, data: {confirm:"削除しますか？"},class: "cal-del" %>
+          <% end %>
         <% end %>
       <% end %>
-      <%= f.submit "一括登録",class: "submit-btn" %>
+      <%= submit_tag "一括登録",class: "submit-btn" %>
     <% end %>
     </div>
   </div>

@@ -1,4 +1,222 @@
 <div data-scope-path="display_periods/index">
+  <%# 商材　キャッシュレス %>
+    <%# dメル（新規） %>
+      <%# 現状　評価売 %>
+        <% @chubu_cash_dmer_val = cash_valuation(@dmers.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_dmer_val = cash_valuation(@dmers.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_dmer_val = cash_valuation(@dmers.where(user: {base: "関西SS"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              %>
+      <%# 前週　評価売 %>
+        <%    @chubu_cash_dmer_val_prev = cash_valuation(@dmers.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_dmer_val_prev = cash_valuation(@dmers.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_dmer_val_prev = cash_valuation(@dmers.where(user: {base: "関西SS", base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              %>
+      <%# 現状　実売 %>
+        <%    @chubu_cash_dmer_profit = cash_profit(@dmers.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_dmer_profit = cash_profit(@dmers.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_dmer_profit = cash_profit(@dmers.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              %>
+      <%# 前週　実売 %>
+        <%    @chubu_cash_dmer_profit_prev = cash_profit(@dmers.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_dmer_profit_prev = cash_profit(@dmers.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_dmer_profit_prev = cash_profit(@dmers.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              %>
+    <%# dメル（決済） %>
+      <%# 現状　評価売 %>
+        <%    @chubu_cash_dmer_slmt_val = cash_slmt_valuation(@dmers.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_dmer_slmt_val = cash_slmt_valuation(@dmers.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kansai_cash_dmer_slmt_val = cash_slmt_valuation(@dmers.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              %>
+      <%# 前週　評価売 %>
+        <%    @chubu_cash_dmer_slmt_val_prev = cash_slmt_valuation(@dmers.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_dmer_slmt_val_prev = cash_slmt_valuation(@dmers.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kansai_cash_dmer_slmt_val_prev = cash_slmt_valuation(@dmers.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              %>
+      <%# 現状　実売 %>
+        <%    @chubu_cash_dmer_slmt_profit = cash_slmt_profit(@dmers.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_dmer_slmt_profit = cash_slmt_profit(@dmers.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kansai_cash_dmer_slmt_profit = cash_slmt_profit(@dmers.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              %>
+      <%# 前週　実売 %>
+        <%    @chubu_cash_dmer_slmt_profit_prev = cash_slmt_profit(@dmers.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_dmer_slmt_profit_prev = cash_slmt_profit(@dmers.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kansai_cash_dmer_slmt_profit_prev = cash_slmt_profit(@dmers.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              %>
+    <%# aupay（新規） %>
+      <%# 現状　評価売 %>
+        <%    @chubu_cash_aupay_val = cash_valuation(@aupays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_aupay_val = cash_valuation(@aupays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_aupay_val = cash_valuation(@aupays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              %>
+      <%# 前週　評価売 %>
+        <%    @chubu_cash_aupay_val = cash_valuation(@aupays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_aupay_val = cash_valuation(@aupays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_aupay_val = cash_valuation(@aupays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              %>
+      <%# 現状　実売 %>
+        <%    @chubu_cash_aupay_profit = cash_profit(@aupays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_aupay_profit = cash_profit(@aupays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_aupay_profit = cash_profit(@aupays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              %>
+      <%# 前週　実売 %>
+        <%    @chubu_cash_aupay_profit_prev = cash_profit(@aupays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_aupay_profit_prev = cash_profit(@aupays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_aupay_profit_prev = cash_profit(@aupays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              %>
+    <%# aupay（決済） %>
+      <%# 現状　評価売 %>
+        <%    @chubu_cash_aupay_slmt_val = cash_slmt_valuation(@aupays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_aupay_slmt_val = cash_slmt_valuation(@aupays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kansai_cash_aupay_slmt_val = cash_slmt_valuation(@aupays.where(user: {base: "関西SS"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              %>
+      <%# 前週　評価売 %>
+        <%    @chubu_cash_aupay_slmt_val_prev = cash_slmt_valuation(@aupays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_aupay_slmt_val_prev = cash_slmt_valuation(@aupays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kansai_cash_aupay_slmt_val_prev = cash_slmt_valuation(@aupays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              %>
+      <%# 現状　実売 %>
+        <%    @chubu_cash_aupay_slmt_profit = cash_slmt_profit(@aupays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kanto_cash_aupay_slmt_profit = cash_slmt_profit(@aupays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              @kansai_cash_aupay_slmt_profit = cash_slmt_profit(@aupays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01)
+              %>
+      <%# 前週　実売 %>
+        <%    @chubu_cash_aupay_slmt_profit_prev = cash_slmt_profit(@aupays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kanto_cash_aupay_slmt_profit_prev = cash_slmt_profit(@aupays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              @kansai_cash_aupay_slmt_profit_prev = cash_slmt_profit(@aupays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),
+                @display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))
+              %>
+    <%# PayPay %>
+      <%# 現状　評価売 %>
+      <% @chubu_cash_paypay_val = product_valuation(@paypays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kanto_cash_paypay_val = product_valuation(@paypays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kansai_cash_paypay_val = product_valuation(@paypays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <%# 前週　評価売 %>
+      <% @chubu_cash_paypay_val_prev = product_valuation(@paypays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kanto_cash_paypay_val_prev = product_valuation(@paypays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kansai_cash_paypay_val_prev = product_valuation(@paypays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <%# 現状　実売 %>
+      <% @chubu_cash_paypay_profit = product_profit(@paypays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kanto_cash_paypay_profit = product_profit(@paypays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kansai_cash_paypay_profit = product_profit(@paypays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <%# 前週　実売 %>
+      <% @chubu_cash_paypay_profit_prev = product_profit(@paypays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kanto_cash_paypay_profit_prev = product_profit(@paypays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kansai_cash_paypay_profit_prev = product_profit(@paypays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+    <%# 楽天ペイ %>
+      <%# 現状　評価売 %>
+      <% @chubu_cash_rakuten_pay_val = product_valuation(@rakuten_pays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kanto_cash_rakuten_pay_val = product_valuation(@rakuten_pays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kansai_cash_rakuten_pay_val = product_valuation(@rakuten_pays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <%# 前週　評価売 %>
+      <% @chubu_cash_rakuten_pay_val_prev = product_valuation(@rakuten_pays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kanto_cash_rakuten_pay_val_prev = product_valuation(@rakuten_pays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kansai_cash_rakuten_pay_val_prev = product_valuation(@rakuten_pays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <%# 現状　実売 %>
+      <% @chubu_cash_rakuten_pay_profit = product_profit(@rakuten_pays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kanto_cash_rakuten_pay_profit = product_profit(@rakuten_pays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kansai_cash_rakuten_pay_profit = product_profit(@rakuten_pays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <%# 前週　実売 %>
+      <% @chubu_cash_rakuten_pay_profit_prev = product_profit(@rakuten_pays.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kanto_cash_rakuten_pay_profit_prev = product_profit(@rakuten_pays.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kansai_cash_rakuten_pay_profit_prev = product_profit(@rakuten_pays.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+    <%# 少額短期保険 %>
+      <%# 現状　評価売 %>
+      <% @chubu_cash_st_insurance_val = product_valuation(@st_insurances.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kanto_cash_st_insurance_val = product_valuation(@st_insurances.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kansai_cash_st_insurance_val = product_valuation(@st_insurances.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <%# 前週　評価売 %>
+      <% @chubu_cash_st_insurance_val_prev = product_valuation(@st_insurances.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kanto_cash_st_insurance_val_prev = product_valuation(@st_insurances.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kansai_cash_st_insurance_val_prev = product_valuation(@st_insurances.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <%# 現状　実売 %>
+      <% @chubu_cash_st_insurance_profit = product_profit(@st_insurances.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kanto_cash_st_insurance_profit = product_profit(@st_insurances.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kansai_cash_st_insurance_profit = product_profit(@st_insurances.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <%# 前週　実売 %>
+      <% @chubu_cash_st_insurance_profit_prev = product_profit(@st_insurances.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kanto_cash_st_insurance_profit_prev = product_profit(@st_insurances.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kansai_cash_st_insurance_profit_prev = product_profit(@st_insurances.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+    <%# フェムト新規 %>
+      <%# 現状　評価売 %>
+      <% @chubu_cash_casa_val = casa_valuation(@rakuten_casas.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kanto_cash_casa_val = casa_valuation(@rakuten_casas.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kansai_cash_casa_val = casa_valuation(@rakuten_casas.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <%# 前週　評価売 %>
+      <% @chubu_cash_casa_val_prev = casa_valuation(@rakuten_casas.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kanto_cash_casa_val_prev = casa_valuation(@rakuten_casas.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kansai_cash_casa_val_prev = casa_valuation(@rakuten_casas.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <%# 現状　実売 %>
+      <% @chubu_cash_casa_profit = casa_profit(@rakuten_casas.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kanto_cash_casa_profit = casa_profit(@rakuten_casas.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <% @kansai_cash_casa_profit = casa_profit(@rakuten_casas.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01) %>
+      <%# 前週　実売 %>
+      <% @chubu_cash_casa_profit_prev = casa_profit(@rakuten_casas.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kanto_cash_casa_profit_prev = casa_profit(@rakuten_casas.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kansai_cash_casa_profit_prev = casa_profit(@rakuten_casas.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+    <%# フェムト設置 %>
+      <%# 現状　評価売 %>
+      <% @chubu_cash_casa_put_val = casa_put_valuation(@rakuten_casas.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01)  %>
+      <% @kanto_cash_casa_put_val = casa_put_valuation(@rakuten_casas.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01)  %>
+      <% @kansai_cash_casa_put_val = casa_put_valuation(@rakuten_casas.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01)  %>
+      <%# 前週　評価売 %>
+      <% @chubu_cash_casa_put_val_prev = casa_put_valuation(@rakuten_casas.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))  %>
+      <% @kanto_cash_casa_put_val_prev = casa_put_valuation(@rakuten_casas.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))  %>
+      <% @kansai_cash_casa_put_val_prev = casa_put_valuation(@rakuten_casas.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days))  %>
+      <%# 現状　実売 %>
+      <% @chubu_cash_casa_put_profit = casa_put_profit(@rakuten_casas.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01)  %>
+      <% @kanto_cash_casa_put_profit = casa_put_profit(@rakuten_casas.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01)  %>
+      <% @kansai_cash_casa_put_profit = casa_put_profit(@rakuten_casas.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01)  %>
+      <%# 前週　実売 %>
+      <% @chubu_cash_casa_put_profit_prev = casa_put_profit(@rakuten_casas.where(user: {base: "中部SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kanto_cash_casa_put_profit_prev = casa_put_profit(@rakuten_casas.where(user: {base: "関東SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
+      <% @kansai_cash_casa_put_profit_prev = casa_put_profit(@rakuten_casas.where(user: {base: "関西SS",base_sub: "キャッシュレス"}),@display_period_1.start_period_01,@display_period_1.end_period_01.ago(7.days)) %>
   <h1>会議資料</h1>
 <%= render "shared/header" %>
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
@@ -14,11 +232,19 @@
   <h1 class="warning">03：サミットの期間設定がおかしいので設定し直してください</h1>
   <% else %>
   <div style="display:flex;">
-
+  <div>
   <%= render "display_period_parts/cash_meeting_data" %>
   </div>
   <div>
-    <%= render "display_period_parts/cash_product" %>
+    <%# render "display_period_parts/cash_product" %>
+  </div>
+</div>
+  <div style="display:flex;">
+  <div>
+    <%# render "display_period_parts/casa_meeting_data" %>
+  </div>
+  <div>
+    <%# render "display_period_parts/casa_product" %>
   </div>
 </div>
 <% end %>

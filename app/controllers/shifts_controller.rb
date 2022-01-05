@@ -39,25 +39,26 @@ class ShiftsController < ApplicationController
   end 
 
   def update_month
-    shifts_params.keys.each do |key|
-      @shifts_all = Shift.find_or_initialize_by(start_time: shifts_params[key][:start_time].to_date)
-      @shifts_all.update_attributes(shifts_params[key])
+    month_shifts_params.keys.each do |key|
+      @shifts_all = Shift.where(user_id: current_user.id).find_or_initialize_by(start_time: month_shifts_params[key][:start_time].to_date)
+      @shifts_all.update(month_shifts_params[key])
     end
-    redirect_to shifts_path
+    flash[:notice] = "複数件の申請をしました"
+    redirect_to shifts_path shifts_path 
   end 
 
   def destroy 
     @shift = Shift.find(params[:id])
     @shift.destroy 
     flash[:notice] = "#{@shift.start_time.to_date}#{@shift.shift}のシフトを削除をしました。"
-    redirect_to shifts_path
+    redirect_to 
   end 
 
   private 
   def shift_params 
     params.require(:shift).permit(:user_id,:start_time,:shift)
   end 
-  def shifts_params 
+  def month_shifts_params 
     params.require(:shift).permit!
   end 
 end

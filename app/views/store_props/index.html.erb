@@ -37,7 +37,6 @@
     <hr>
       <%= alert %>
     <% if @store_props.empty? %>
-
     <% else %>
     <table>
       <tr>
@@ -59,12 +58,18 @@
       <th><%= sort_link(@q, :id, "ID",{},{class: "reset-link"}) %></th>
       <th><%= sort_link(@q, :race, "法人/個人",{},{class: "reset-link"}) %></th>
       <th><%= sort_link(@q, :name, "店舗名",{},{class: "reset-link"}) %></th>
+      <th>フェムト獲得</th>
     <% @store_props.each do |store_prop| %>
     <tr>
     <td ><%= link_to "詳細", store_prop_path(store_prop.id), class: "link" %></td>
     <td ><%= store_prop.id %></td>
     <td ><%= store_prop.race %></td>
     <td ><%= store_prop.name %></td>
+    <% if store_prop.rakuten_casa.present? %>
+    <td ><%= link_to "獲得済/詳細", rakuten_casa_path(store_prop.rakuten_casa.id), class: "link" %></td>
+    <% else %>
+    <td>獲得なし</td>
+    <% end %>
     </tr>
     <% end %>
     </table>

@@ -13,6 +13,10 @@
         <%= f.select :client, {"USEN": "USEN", "マックスサポート": "マックスサポート"} ,{}, {class: "form-input"} %>
       </th>
       <th>
+        <%= f.label :client_num, "商流管理番号", class: "form-text" %>
+        <%= f.text_field :client_num, class: "form-input" %>
+      </th>
+      <th>
         <%= f.label :user_id, "獲得者ID", class: "form-text" %>
         <%= f.number_field :user_id, class: "form-input" %>
       </th>
@@ -20,6 +24,8 @@
         <%= f.label :date, "獲得日", class: "form-text" %>
         <%= f.date_field :date , class: "form-input" %>
       </th>
+    </tr>
+    <tr>
       <th>
         <%= f.label :status, "現状ステータス", class: "form-text" %>
         <%= f.select :status, {
@@ -42,12 +48,16 @@
         <%= f.label :status_update, "ステータス更新日", class: "form-text" %>
         <%= f.date_field :status_update , class: "form-input" %>
       </th>
-    </tr>
-    <tr>
+      <th>
+        <%= f.label :result_point, "審査完了日", class: "form-text" %>
+        <%= f.date_field :result_point , class: "form-input" %>
+      </th>
       <th>
         <%= f.label :net_confirm_method, "回線確認方法", class: "form-text" %>
         <%= f.select :net_confirm_method, {"開通案内": "開通案内","マイページ": "マイページ", "請求書": "請求書", "電話確認": "電話確認" ,"その他": "その他" } ,{}, {class: "form-input"} %>
       </th>
+    </tr>
+    <tr>
       <th>
         <%= f.label :net_name, "回線事業者", class: "form-text" %>
         <%= f.select :net_name, {"NTT西日本": "NTT西日本","NTT東日本": "NTT東日本", "CTC": "CTC","KDDI": "KDDI" , "J:Com": "J:Com" ,"NURO": "NURO" } ,{}, {class: "form-input"} %>
@@ -81,12 +91,12 @@
         <%= f.label :net_phone_number, "回線登録電話番号", class: "form-text" %>
         <%= f.text_field :net_phone_number, class: "form-input" %>
       </th>
-      <th>
-        <%= f.label :share, "獲得共有日", class: "form-text" %>
-        <%= f.date_field :share , class: "form-input" %>
-      </th>
     </tr>
     <tr>
+      <th>
+        <%= f.label :share, "共有日", class: "form-text" %>
+        <%= f.date_field :share , class: "form-input" %>
+      </th>
       <th>
         <%= f.label :remarks, "備考", class: "form-text" %>
         <%= f.text_field :remarks, class: "form-input" %>
@@ -222,6 +232,10 @@
         <%= f.text_field :femto_id, class: "form-input" %>
       </th>
       <th>
+        <%= f.label :femto_serial, "Femtシリアル", class: "form-text" %>
+        <%= f.text_field :femto_serial, class: "form-input" %>
+      </th>
+      <th>
         <%= f.label :inspection, "検品", class: "form-text" %>
         <%= f.select :inspection, {"◯": "◯", "×": "×"}, {include_blank: true}, {class: "form-input"} %>
       </th>
@@ -230,6 +244,21 @@
         <%= f.date_field :done_oss, class: "form-input" %>
       </th>
     </tr>
+  </table>
+  <h2>架電情報</h2>
+  <table>
+    <th>
+        <%= f.label :call_date, "アポ着手", class: "form-text" %>
+        <%= f.date_field :call_date, class: "form-input" %>
+    </th>
+    <th>
+        <%= f.label :call_status, "架電結果", class: "form-text" %>
+        <%= f.select :call_status, {"架電対応中": "架電対応中", "確認完了": "確認完了", "確認不可": "確認不可", "差し戻し_情報相違": "差し戻し_情報相違", "差し戻し_未架電": "差し戻し_情報相違" }, {include_blank: true}, {class: "form-input"} %>
+    </th>
+    <th colspan="2">
+      <%= f.label :call_remark, "架電結果詳細", class: "form-text" %>
+      <%= f.text_field :call_remark, class: "remarks-input" %>
+    </th>
   </table>
   <h2>設置情報</h2>
   <table>
