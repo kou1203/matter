@@ -13,7 +13,7 @@ class CreateAupays < ActiveRecord::Migration[6.0]
       t.date :shipment
       t.date :settlement
       t.date :settlement_deadline
-      t.string :status_settlement       ,null: false 
+      t.string :status_settlement     
       t.date :status_update_settlement
       t.date :payment
       t.date :payment_settlement

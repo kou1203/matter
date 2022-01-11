@@ -7,7 +7,7 @@
       <tr>
         <td class="csv-label">CSV</td>
         <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
-        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？', disable_with: "インポート中" } %></td>
       </tr>
     </table>
   <% end %>
@@ -84,8 +84,8 @@
         <tr>
           <td class="search-td"><%= @dmers.length %></td>
           <td class="search-td"><%= @dmers.where(status: '入金待ち' ).length %></td>
-          <td class="search-td"><%= @dmers.where(status: '審査待ち').length %></td>
-          <td class="search-td"><%= @dmers.where(status: '複数追加' ).length %></td>
+          <td class="search-td"><%= @dmers.where(status: '審査待ち').length + @dmers.where(status: '連携完了' ).length %></td>
+          <td class="search-td"><%= @dmers.where.not(store_props: {head_store: nil}).where(status: '連携完了' ).length %>/<%= @dmers.where(status: '複数店舗' ).length + @dmers.where.not(store_props: {head_store: nil}).where(status: '連携完了' ).length %></td>
           <td class="search-td"><%= hubi + client_hubi %></td>
           <td class="search-td"><%= @dmers.where(status: '自社NG' ).length + @dmers.where(status: '上位店NG' ).length %></td>
           <td class="search-td"><%= settlement_subject %></td>

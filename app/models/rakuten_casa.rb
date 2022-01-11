@@ -25,6 +25,8 @@ class RakutenCasa < ApplicationRecord
     validates :valuation_new  
     validates :valuation_put  
   end
+
+
   def self.csv_check(file)
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
@@ -63,6 +65,8 @@ class RakutenCasa < ApplicationRecord
       errors << "#{index}行目設置評価売上が不正です" if row["設置評価売上"].blank? && errors.length < 5
       errors << "#{index}行目新規実売上が不正です" if row["新規実売上"].blank? && errors.length < 5
       errors << "#{index}行目設置実売上が不正です" if row["設置実売上"].blank? && errors.length < 5
+      # errors << "#{index}行目設置者が#{p_id}ユーザーデータベースに存在しません。" if p_id == row["設置者"]
+      # errors << "#{index}行目システム調整対応者が#{a_id}ユーザーデータベースに存在しません" if a_id == row["システム調整対応者"]
       if row["ID"].present?
         rakuten_casa = find_by(id: row["ID"])
         errors << "#{index}行目 IDが不適切です" if rakuten_casa.blank? && errors.length < 5
@@ -76,7 +80,6 @@ class RakutenCasa < ApplicationRecord
           user_id: u_id,
           date: row["獲得日"],
           status: row["現状ステータス"],
-          # status_update: Date.today,
           net_confirm_method: row["回線確認方法"],
           net_name: row["回線事業者"],
           hikari_collabo: row["光コラボ"],
@@ -109,7 +112,7 @@ class RakutenCasa < ApplicationRecord
           status_deficiency_anti: row["反社不備分類"],
           deficiency_remarks_anti: row["反社不備詳細"],
           deficiency_share_anti: row["反社不備共有日"],
-          deficiency_result_anti: row["反社不備対応結果"],
+          deficiency_result_anti: row["反社不備確認結果"],
           # deficiency_last_shared_anti: row["反社不備前回共有日"],
           # 架電内容
           call_status: row['架電結果'],
@@ -186,7 +189,6 @@ class RakutenCasa < ApplicationRecord
     new_cnt = 0
     update_cnt = 0
     nochange_cnt = 0
-    # update_femto = []
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
       user = User.find_by(name: row["獲得者"])
       store_prop = StoreProp.find_by(phone_number_1: row["店舗電話番号"])
@@ -230,7 +232,7 @@ class RakutenCasa < ApplicationRecord
           # 自社不備
           deficiency: row["自社不備発生日"],
           # status_deficiency: row["自社不備ステータス"],
-          # deficiency_remarks: row["自社不備内容"],
+          deficiency_remarks: row["自社不備内容"],
           # deficiency_solution: row["自社不備解消日"],
           # 回線不備
           deficiency_net: row["回線初回不備発生日"],
@@ -248,7 +250,7 @@ class RakutenCasa < ApplicationRecord
           status_deficiency_anti: row["反社不備分類"],
           deficiency_remarks_anti: row["反社不備詳細"],
           deficiency_share_anti: row["反社不備共有日"],
-          deficiency_result_anti: row["反社不備対応結果"],
+          deficiency_result_anti: row["反社不備確認結果"],
           # deficiency_last_shared_anti: row["反社不備前回共有日"],
           # 架電内容
           call_status: row['架電結果'],
@@ -343,7 +345,7 @@ class RakutenCasa < ApplicationRecord
           # 自社不備
           deficiency: row["自社不備発生日"],
           # status_deficiency: row["自社不備ステータス"],
-          # deficiency_remarks: row["自社不備内容"],
+          deficiency_remarks: row["自社不備内容"],
           # deficiency_solution: row["自社不備解消日"],
           # 回線不備
           deficiency_net: row["回線初回不備発生日"],
@@ -361,7 +363,7 @@ class RakutenCasa < ApplicationRecord
           status_deficiency_anti: row["反社不備分類"],
           deficiency_remarks_anti: row["反社不備詳細"],
           deficiency_share_anti: row["反社不備共有日"],
-          deficiency_result_anti: row["反社不備対応結果"],
+          deficiency_result_anti: row["反社不備確認結果"],
           # deficiency_last_shared_anti: row["反社不備前回共有日"],
           # 架電内容
           call_status: row['架電結果'],

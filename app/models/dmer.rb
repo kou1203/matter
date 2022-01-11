@@ -1,16 +1,15 @@
 class Dmer < ApplicationRecord
+  require 'charlock_holmes'
   belongs_to :user
   belongs_to :settlementer, class_name: "User" , optional: true
   belongs_to :store_prop
 
   with_options presence: true do 
-    validates :customer_num
     validates :client
     validates :user_id 
     validates :store_prop_id 
     validates :date
     validates :status 
-    validates :status_settlement 
     validates :profit_new
     validates :profit_settlement
     validates :valuation_new
@@ -22,7 +21,7 @@ class Dmer < ApplicationRecord
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
       user = User.find_by(name: row["獲得者"])
-      store_prop = StoreProp.find_by(name: row["店舗名"])
+      store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
       settlementer = User.find_by(name: row["決済対応者"])
       settlementer_params = 
       if settlementer.present?
@@ -30,16 +29,12 @@ class Dmer < ApplicationRecord
       else
         row["決済対応者"]
       end
-      errors << "#{index}行目獲得者が不正です" if user.blank?
-      errors << "#{index}行目店舗名が不正です" if store_prop.blank?
-      if row["ID"].present?
-        dmer = find_by(id: row["ID"])
-        errors << "#{index}行目 IDが不適切です" if dmer.blank?
-      else  
+      errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
+      errors << "#{index}行目店舗名が不正です" if store_prop.blank? && errors.length < 5
         u_id = user.id if user.present?
         store_id = store_prop.id if store_prop.present?
         dmer = new(
-          id: row["ID"],
+          # id: row["ID"],
           customer_num: row["お申込み番号"],
           client: row["商流"],
           user_id: u_id,
@@ -66,24 +61,25 @@ class Dmer < ApplicationRecord
           deficiency_remarks: row["不備詳細（新規）"],
           deficiency_remarks_settlement: row["不備詳細（決済）"],
           description: row["備考"],
-          profit_new: row["獲得売上"],
-          profit_settlement: row["決済売上"],
-          valuation_new: row["獲得評価売上"],
-          valuation_settlement: row["決済評価売上"],
+          profit_new: row["獲得実売"],
+          profit_settlement: row["決済実売"],
+          valuation_new: row["獲得評価売"],
+          valuation_settlement: row["決済評価売"],
         )
-        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if dmer.invalid?
-      end
+        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if dmer.invalid? && errors.length < 5
     end
     errors
   end
 
   def self.import(file)
+    detection = CharlockHolmes::EncodingDetector.detect(File.read(file.path))
+    encoding = detection[:encoding] == 'Shift_JIS' ? 'CP932' : detection[:encoding]
     new_cnt = 0
     update_cnt = 0
     nochange_cnt = 0
-    CSV.foreach(file.path, headers: true) do |row|
+    CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
       user = User.find_by(name: row["獲得者"])
-      store_prop = StoreProp.find_by(name: row["店舗名"])
+      store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
       settlementer = User.find_by(name: row["決済対応者"])
       settlementer_params = 
       if settlementer.present?
@@ -93,7 +89,7 @@ class Dmer < ApplicationRecord
       end
 
       dmer = find_by(store_prop_id:  store_prop.id)
-      if store_prop.dmer.present? && Dmer.find_by(customer_num: row["お申込み番号"]).present? 
+      if store_prop.dmer.present?
         dmer.assign_attributes(
           customer_num: row["お申込み番号"],
           client: row["商流"],
@@ -121,10 +117,10 @@ class Dmer < ApplicationRecord
           deficiency_remarks: row["不備詳細（新規）"],
           deficiency_remarks_settlement: row["不備詳細（決済）"],
           description: row["備考"],
-          profit_new: row["獲得売上"],
-          profit_settlement: row["決済売上"],
-          valuation_new: row["獲得評価売上"],
-          valuation_settlement: row["決済評価売上"],
+          profit_new: row["獲得実売"],
+          profit_settlement: row["決済実売"],
+          valuation_new: row["獲得評価売"],
+          valuation_settlement: row["決済評価売"],
         )
         if dmer.has_changes_to_save? 
           dmer.save!
@@ -134,7 +130,6 @@ class Dmer < ApplicationRecord
         end 
       else  
         dmer = new(
-          id: row["ID"],
           customer_num: row["お申込み番号"],
           client: row["商流"],
           user_id: user.id,
@@ -161,10 +156,10 @@ class Dmer < ApplicationRecord
           deficiency_remarks: row["不備詳細（新規）"],
           deficiency_remarks_settlement: row["不備詳細（決済）"],
           description: row["備考"],
-          profit_new: row["獲得売上"],
-          profit_settlement: row["決済売上"],
-          valuation_new: row["獲得評価売上"],
-          valuation_settlement: row["決済評価売上"],
+          profit_new: row["獲得実売"],
+          profit_settlement: row["決済実売"],
+          valuation_new: row["獲得評価売"],
+          valuation_settlement: row["決済評価売"],
           )
         dmer.save!
         new_cnt += 1

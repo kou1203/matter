@@ -25,7 +25,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.date "shipment"
     t.date "settlement"
     t.date "settlement_deadline"
-    t.string "status_settlement", null: false
+    t.string "status_settlement"
     t.date "status_update_settlement"
     t.date "payment"
     t.date "payment_settlement"
@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
   end
 
   create_table "dmers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "customer_num", null: false
+    t.string "customer_num"
     t.string "client", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
@@ -93,7 +93,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.date "shipment"
     t.date "settlement"
     t.date "settlement_deadline"
-    t.string "status_settlement", null: false
+    t.string "status_settlement"
     t.date "status_update_settlement"
     t.date "payment"
     t.date "payment_settlement"
@@ -770,9 +770,9 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
   end
 
   create_table "store_props", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "race", null: false
+    t.string "race"
     t.string "name", limit: 255, collation: "utf8mb4_bin"
-    t.string "industry", null: false
+    t.string "industry"
     t.string "head_store"
     t.string "corporate_name"
     t.text "corporate_address"
@@ -780,7 +780,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.string "gender_main", null: false
     t.string "person_main_name", null: false
     t.string "person_main_kana", null: false
-    t.string "person_main_class", null: false
+    t.string "person_main_class"
     t.date "person_main_birthday"
     t.string "gender_sub"
     t.string "person_sub_name"
@@ -789,7 +789,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.date "person_sub_birthday"
     t.string "phone_number_1", null: false
     t.string "phone_number_2"
-    t.string "mail_1", null: false
+    t.string "mail_1"
     t.string "mail_2"
     t.string "prefecture", null: false
     t.string "city", null: false

@@ -7,7 +7,7 @@
       <tr>
         <td class="csv-label" >CSV</td>
         <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
-        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？', disable_with: "インポート中" } %></td>
         </tr>
       </table>
     <% end %>
@@ -40,7 +40,7 @@
           <th class="search-th">設置者</th>
           <th class="search-th">審査ステータス</th>
 
-          <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
+          <td class="result"><%= f.submit "絞込み", class: "result-btn",data: {disable_with: "絞り込み中"} %></td>
         </tr>
         <tr>
           <td><%= f.text_field :femto_id_cont, class: "input" %></td>
@@ -55,7 +55,6 @@
         <% end %>
       <% if @rakuten_casas.empty? %>
       <div class="warning"><%= alert %></div>
-      <div style="display: flex;">
       <h2><%= link_to "<<",rakuten_casas_path(month:@month.prev_month), class:"link" %>
           <%= @month.year %>年<%= @month.month %>月設置状況
           <%= link_to ">>",rakuten_casas_path(month:@month.next_month), class:"link" %>
@@ -65,10 +64,11 @@
         <%# r.user.name %>
       <%# end %>
         <div class="balloonoya">データ参照
-          <span class="balloon">設置済数：設置日に入力があるものの合計</span>
-          <span class="balloon">設置予定数：設置予定日の入力があるものの合計</span>
+          <span class="balloon">
+          設置済数：設置日に入力があるものの合計<br>
+          設置予定数：設置予定日の入力があるものの合計<br>
+          </span>
         </div>
-      </div>
       <table>
         <tr>
           <th>拠点</th>
@@ -105,47 +105,56 @@
         <% end %>
       </table>
       <% else %>
-      
-      <table>
-      <% @rakuten_casas.each do |casa| %>
-        <tr>
-          <thead>
-
-          </thead>
-        </tr>
-      <% end %>
-        <tr>
-          <tbody>
-          </tbody>
-        </tr>
-      </table>
-      
-
+        <div class="balloonoya">データ参照
+          <span class="balloon">
+          獲得数：全件数の合計<br>
+          審査待ち：OSS登録日が入力されていない合計数から各種不備件数を引いた値<br>
+          審査通過：OSS登録日が入力されている合計数<br>
+          自社不備：ステータス00.情報不足の合計数<br>
+          回線不備：07.回線不備+08.回線際チェック中+04-1.回線依頼中(反社完了)の合計数<br>
+          反社不備：05.反社不備+06.反社再チェック中+04-2.反社依頼中(回線完了)の合計数<br>
+          未設置：設置日が入力されていない案件の数<br>
+          設置予定有り：設置予定日が入力されている案件の数<br>
+          設置済み：設置日が入力されている案件の数<br>
+          残：設置予定有り - 設置済み<br>
+          キャンセル：00.キャンセル+00.解消期限切れの合計数<br>
+          </span>
+        </div>
       <table>
         <tr>
           <th class="search-th">獲得数</th>
+          <th class="search-th">審査待ち</th>
+          <th class="search-th">審査通過</th>
           <th class="search-th">自社不備数</th>
           <th class="search-th">回線不備数</th>
           <th class="search-th">反社不備数</th>
-          <th class="search-th">図書不備数</th>
-          <th class="search-th">システム調整不備</th>
+          <th class="search-th">キャンセル</th>
         </tr>
+        <% done_oss = @rakuten_casas.where.not(done_oss: nil).length %>
+        <% not_done_oss = @rakuten_casas.where(done_oss: nil).length %>
+        <% cancel = @rakuten_casas.where(status: "00.キャンセル").length + @rakuten_casas.where(status: "00.解消期限切れ").length %>
+        <% deficiency = @rakuten_casas.where(status: "00.情報不足").length %>
+        <% deficiency_net = @rakuten_casas.where(status: "07.回線不備").length +
+          @rakuten_casas.where(status: "08.回線再チェック中").length + 
+          @rakuten_casas.where(status: "04-1.回線依頼中(反社完了)").length %>
+        <% deficiency_anti = @rakuten_casas.where(status: "05.反社不備").length +
+          @rakuten_casas.where(status: "06.反社再チェック中").length + 
+          @rakuten_casas.where(status: "04-2.反社依頼中(回線完了)").length  %>
         <tr>
           <td class="search-td"><%= @rakuten_casas.length %></td>
-          <td class="search-td"><%= @rakuten_casas.where.not(deficiency: nil).where(deficiency_solution: nil).length %></td>
-          <td class="search-td"><%= @rakuten_casas.where.not(deficiency_net: nil).where(deficiency_solution_net: nil).length %></td>
-          <td class="search-td"><%= @rakuten_casas.where.not(deficiency_anti: nil).where(deficiency_solution_anti: nil).length %></td>
-          <td class="search-td"><%= @rakuten_casas.where.not(deficiency_book: nil).where(deficiency_solution_book: nil).length %></td>
-          <td class="search-td"><%= @rakuten_casas.where.not(deficiency_adjustment: nil).where(deficiency_solution_adjustment: nil).length %></td>
+          <td class="search-td"><%= not_done_oss - cancel - deficiency - deficiency_net - deficiency_anti %></td>
+          <td class="search-td"><%= done_oss %></td>
+          <td class="search-td"><%= deficiency %></td>
+          <td class="search-td"><%= deficiency_net %></td>
+          <td class="search-td"><%= deficiency_anti %></td>
+          <td class="search-td"><%= cancel %></td>
         </tr>
         <tr>
-          <th>未設置</th>
-          <th>設置予定</th>
+          <th>設置予定有り</th>
           <th>設置済み</th>
-          <th>残</th>
+          <th>設置予定残</th>
         </tr>
         <tr>
-          <td><%= @rakuten_casas.where(putter_id: nil).length %></td>
           <td><%= @rakuten_casas.where.not(put_plan: nil).length %></td>
           <td><%= @rakuten_casas.where.not(putter_id: nil).length %></td>
           <td><%= @rakuten_casas.where.not(put_plan: nil).length - @rakuten_casas.where.not(putter_id: nil).length %></td>

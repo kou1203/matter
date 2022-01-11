@@ -1,7 +1,7 @@
 class CreateDmers < ActiveRecord::Migration[6.0]
   def change
     create_table :dmers do |t|
-      t.string :customer_num            ,null:false 
+      t.string :customer_num            
       t.string :client                  ,null: false 
       t.references :user                , foreign_key: true
       t.references :store_prop          , foreign_key: true
@@ -13,7 +13,7 @@ class CreateDmers < ActiveRecord::Migration[6.0]
       t.date :shipment
       t.date :settlement
       t.date :settlement_deadline
-      t.string :status_settlement       ,null: false 
+      t.string :status_settlement       
       t.date :status_update_settlement
       t.date :payment
       t.date :payment_settlement

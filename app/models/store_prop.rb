@@ -3,11 +3,9 @@ class StoreProp < ApplicationRecord
   with_options presence: true do 
     validates :race
     validates :name
-    validates :industry
     validates :gender_main
     validates :person_main_name
     validates :person_main_kana
-    validates :person_main_class
     validates :phone_number_1
     validates :mail_1
     validates :prefecture
@@ -47,8 +45,6 @@ class StoreProp < ApplicationRecord
         errors << "#{index}行目の代表者名が空欄です。"
       elsif row["代表者名カナ"].blank? && errors.length < 5
         errors << "#{index}行目の代表者名カナが空欄です。"
-      elsif row["代表者役職"].blank? && errors.length < 5
-        errors << "#{index}行目の代表者役職が空欄です。"
       elsif row["電話番号1"].blank? && errors.length < 5
         errors << "#{index}行目の電話番号1が空欄です。"
       elsif row["メールアドレス1"].blank? && errors.length < 5
@@ -78,7 +74,7 @@ class StoreProp < ApplicationRecord
           person_main_birthday: row["代表者生年月日"],
           gender_sub: row["担当者性別"],
           person_sub_name: row["担当者名"],
-          person_sub_kana: row["担当者カナ"],
+          person_sub_kana: row["担当者名カナ"],
           person_sub_class: row["担当者役職"],
           person_sub_birthday: row["担当者生年月日"],
           phone_number_1: row["電話番号1"],
@@ -110,10 +106,9 @@ class StoreProp < ApplicationRecord
     detection = CharlockHolmes::EncodingDetector.detect(File.read(file.path))
     encoding = detection[:encoding] == 'Shift_JIS' ? 'CP932' : detection[:encoding]
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
-      if row["ID"].present?
-        store_prop = find(row["ID"])
+    store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
+      if store_prop.present?
         store_prop.assign_attributes(
-          id: row["ID"],
           race: row["区分"],
           name: row["店舗名"],
           industry: row["業種"],
@@ -128,7 +123,7 @@ class StoreProp < ApplicationRecord
           person_main_birthday: row["代表者生年月日"],
           gender_sub: row["担当者性別"],
           person_sub_name: row["担当者名"],
-          person_sub_kana: row["担当者カナ"],
+          person_sub_kana: row["担当者名カナ"],
           person_sub_class: row["担当者役職"],
           person_sub_birthday: row["担当者生年月日"],
           phone_number_1: row["電話番号1"],
@@ -169,7 +164,7 @@ class StoreProp < ApplicationRecord
           person_main_birthday: row["代表者生年月日"],
           gender_sub: row["担当者性別"],
           person_sub_name: row["担当者名"],
-          person_sub_kana: row["担当者カナ"],
+          person_sub_kana: row["担当者名カナ"],
           person_sub_class: row["担当者役職"],
           person_sub_birthday: row["担当者生年月日"],
           phone_number_1: row["電話番号1"],

@@ -8,7 +8,7 @@
     <table>
         <td class="csv-label">CSV</td>
         <td><%= f.file_field :file, accept: '.csv', class: "input"  %></td>
-        <td class="result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？"},id: "dl-reload", target: "_blank" %>
+        <td class="result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"},id: "dl-reload", target: "_blank" %>
     </table>
   <% end %>
       <%= search_form_for @q do |f| %>
