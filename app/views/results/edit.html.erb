@@ -22,8 +22,8 @@
         </th>
       </tr>
       <tr>
-          <td><%= f.select :shift, {"キャッシュレス新規": "キャッシュレス新規", "キャッシュレス決済": "キャッシュレス決済","楽天フェムト新規": "楽天フェムト新規", "楽天フェムト設置": "楽天フェムト設置", "パンダ": "パンダ", "サミット": "サミット","帯同": "帯同","内勤": "内勤", "休み": "休み","欠勤": "欠勤"},{include_blank: true}, {class: "form-input", id: "selectbox"} %></td>
-          <td><%= f.collection_select(:ojt_id, User.includes(:shifts).where.not(shifts: {ojt: 0}), :id, :name,{include_blank: true}, {class: "form-input"})%></td>
+          <td><%= f.select :shift, {"キャッシュレス新規": "キャッシュレス新規", "キャッシュレス決済": "キャッシュレス決済","楽天フェムト新規": "楽天フェムト新規", "楽天フェムト設置": "楽天フェムト設置", "サミット": "サミット","帯同": "帯同","内勤": "内勤", "休み": "休み","欠勤": "欠勤"},{include_blank: true}, {class: "form-input", id: "selectbox"} %></td>
+          <td><%= f.collection_select(:ojt_id, User.includes(:shifts).where(shifts: {shift: "帯同"}), :id, :name,{include_blank: true}, {class: "form-input"})%></td>
       </tr>
     </table>
   <%# 大枠基準値 %>

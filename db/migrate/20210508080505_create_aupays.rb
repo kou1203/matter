@@ -1,8 +1,8 @@
 class CreateAupays < ActiveRecord::Migration[6.0]
   def change
     create_table :aupays do |t|
-      t.string :customer_num            ,null:false 
-      t.string :client                  ,null: false 
+      t.string :customer_num           
+      t.string :client               
       t.references :user                , foreign_key: true
       t.references :store_prop          , foreign_key: true
       t.date :date                      , null:false 

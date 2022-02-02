@@ -1,4 +1,5 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+      <% shifts = @shifts.where(user_id: @results.first.user_id).where(start_time: @results.minimum(:date)..@results.minimum(:date).next_month.ago(1.days)) %>
   <%# 個別利益表 %>
     <h1>表示範囲：<%= @results.minimum(:date) %>（<%= days[@results.minimum(:date).wday] %>）〜<%= @results.maximum(:date) %>（<%= days[@results.maximum(:date).wday] %>）</h1>
   <%# 初期値変数 %>
@@ -11,33 +12,21 @@
         <% panda_shift = 0 %>
         <% ojt_shift = 0 %>
         <% house_work_shift = 0 %>
-    <%# 商材（評価売上） %>
-      <%# dメル %>
-        <%# 新規 %>
-          <% dmer_new_profit = @dmers_this_month.sum(:valuation_new) - @dmers_def_this_month.sum(:valuation_new) + @dmers_inc.sum(:valuation_new) - @dmers_dec.sum(:valuation_new)%>
-        <%# 決済 %>
-          <% dmer_slmt_profit = @dmers_slmt_this_month.sum(:valuation_settlement) - @dmers_slmt_def_this_month.sum(:valuation_settlement) + @dmers_slmt_inc.sum(:valuation_settlement) - @dmers_slmt_dec.sum(:valuation_settlement) %>
-      <%# aupay %>
-        <%# 新規 %>
-          <% aupay_new_profit = @aupays_this_month.sum(:valuation_new) - @aupays_def_this_month.sum(:valuation_new) + @aupays_inc.sum(:valuation_new) - @aupays_dec.sum(:valuation_new) %>
-        <%# 決済 %>
-          <% aupay_slmt_profit = @aupays_slmt_this_month.sum(:valuation_settlement) - @aupays_slmt_def_this_month.sum(:valuation_settlement) + @aupays_slmt_inc.sum(:valuation_settlement) - @aupays_slmt_dec.sum(:valuation_settlement) %>
-      <%# PayPay %>
-        <% paypay_profit =  @paypays_this_month.sum(:valuation) - @paypays_def_this_month.sum(:valuation) %>
-      <%# 少額短期保険 %>
-        <% st_insurance_profit = @st_insurances_this_month.sum(:valuation) - @st_insurances_def_this_month.sum(:valuation) %>
-      <%# 楽天ペイ %>
-          <% rakuten_pay_profit = @rakuten_pays_this_month.sum(:valuation) - @rakuten_pays_def_this_month.sum(:valuation) + @rakuten_pays_inc.sum(:valuation) - @rakuten_pays_dec.sum(:valuation) %>
-      <%# フェムト新規 %>
-        <% casa_new_profit = @rakuten_casas_this_month.sum(:valuation_new) - @rakuten_casas_def_this_month.sum(:valuation_new) + @rakuten_casas_inc.sum(:valuation_new) + @rakuten_casas_dec.sum(:valuation_new) %>
-      <%# フェムト設置 %>
-        <% casa_put_profit = (@rakuten_casas_put_self.sum(:valuation_put) + (@rakuten_casas_put_other.sum(:valuation_put) * 0.8) + (@rakuten_casas_put_request.sum(:valuation_put) * 0.3)).to_i %>
-      <%# 合計売上 %>
-        <% sum_profit = dmer_new_profit + dmer_slmt_profit + aupay_new_profit + aupay_slmt_profit + paypay_profit + st_insurance_profit + casa_new_profit + casa_put_profit + rakuten_pay_profit %>
-      <%# 平均売上 %>
-        <% ave_profit = (sum_profit.to_f / @results.where.not(shift: "休み").where.not(shift: "帯同").where.not(shift: "内勤").where.not(shift: "欠勤").length) %>
+        <% new_shift = shifts.where(shift: "キャッシュレス新規").length %>
+        <% settlement_shift = shifts.where(shift: "キャッシュレス決済").length %>
+        <% summit_shift = shifts.where(shift: "サミット").length %>
+        <% casa_shift = shifts.where(shift: "楽天フェムト新規").length %>
+        <% casa_put_shift= shifts.where(shift: "楽天フェムト").length %>
+        <% ojt_shift = shifts.where(shift: "帯同").length %>
+        <% house_work_shift = shifts.where(shift: "内勤").length %> 
+
       <h1>拠点：<%= @results.first.user.base %><%= @results.first.user.base_sub %><%= @results.first.user.name %></h1>
   <%# シフト %>
+  <% if shifts.blank? %>
+    <h1 class="warning">予定シフトがありません。シフト申請を行ってください</h1>
+  <% else %>
+  <h2 class="shift-h2">予定シフト：<%= shifts.minimum(:start_time).strftime('%Y-%m-%d') %>（<%= days[shifts.minimum(:start_time).wday] %>）〜<%= shifts.maximum(:start_time).strftime('%Y-%m-%d') %>（<%= days[shifts.maximum(:start_time).wday] %>）</h2>
+  <% end %>
     <table>
       <tr>
         <th class="shift-th">シフト（内訳）</th>
@@ -46,14 +35,6 @@
         <th class="shift-th">残シフト</th>
         <th class="shift-th">欠勤</th>
       </tr>
-      <% shifts = @shifts.where(user_id: @results.first.user_id).where(start_time: @results.minimum(:date)..@results.maximum(:date)) %>
-            <% new_shift = shifts.where(shift: "キャッシュレス新規").length %>
-            <% settlement_shift = shifts.where(shift: "キャッシュレス決済").length %>
-            <% summit_shift = shifts.where(shift: "サミット").length %>
-            <% casa_shift = shifts.where(shift: "楽天フェムト新規").length %>
-            <% casa_put_shift= shifts.where(shift: "楽天フェムト").length %>
-            <% ojt_shift = shifts.where(shift: "帯同").length %>
-            <% house_work_shift = shifts.where(shift: "内勤").length %> 
       <tr>
         <td >キャッシュレス新規</td><%# 欠勤 %>
         <td ><%= new_shift %></td>
@@ -105,14 +86,41 @@
       </tr>
       <tr>
         <td>合計</td>
-        <td class="td-sum"><%= shift_sum = new_shift + settlement_shift + summit_shift + panda_shift + casa_shift + casa_put_shift + ojt_shift + house_work_shift %></td>
+        <td class="td-sum"><%= shift_sum = new_shift + settlement_shift + summit_shift + casa_shift + casa_put_shift + ojt_shift + house_work_shift %></td>
             <td ><%= digestion_sum = digestion_new + digestion_settlement + digestion_summit + digestion_panda + digestion_casa + digestion_casa_put + digestion_ojt + digestion_house_work + absence %></td>
         <td ><%= shift_sum - digestion_sum %></td>
       </tr>
     </table>
-    <% if shift_sum == 0 %>
-      <h1 class="warning">予定シフトがありません。シフト申請を行ってください</h1>
-    <% end %>
+
+    <%# 商材（評価売上） %>
+      <%# dメル %>
+        <%# 新規 %>
+          <% dmer_new_profit = @dmers_this_month.sum(:valuation_new) - @dmers_def_this_month.sum(:valuation_new) + @dmers_inc.sum(:valuation_new) %>
+        <%# 決済 %>
+          <% dmer_slmt_profit = @dmers_slmt_this_month.sum(:valuation_settlement) %>
+      <%# aupay %>
+        <%# 新規 %>
+          <% aupay_new_profit = @aupays_this_month.sum(:valuation_new) %>
+        <%# 決済 %>
+          <% aupay_slmt_profit = @aupays_slmt_this_month.sum(:valuation_settlement) %>
+      <%# PayPay %>
+        <% paypay_profit =  @paypays_this_month.sum(:valuation) - @paypays_def_this_month.sum(:valuation) %>
+      <%# 少額短期保険 %>
+        <% st_insurance_profit = @st_insurances_this_month.sum(:valuation) - @st_insurances_def_this_month.sum(:valuation) %>
+      <%# 楽天ペイ %>
+          <% rakuten_pay_profit = @rakuten_pays_this_month.sum(:valuation) - @rakuten_pays_def_this_month.sum(:valuation) + @rakuten_pays_inc.sum(:valuation)  %>
+      <%# フェムト新規 %>
+        <% casa_new_profit = @rakuten_casas_this_month.sum(:valuation_new) - @rakuten_casas_def_this_month.sum(:valuation_new) + @rakuten_casas_inc.sum(:valuation_new) %>
+      <%# フェムト設置 %>
+        <% casa_put_profit = (@rakuten_casas_put_self.sum(:valuation_put) + (@rakuten_casas_put_other.sum(:valuation_put) * 0.8) + (@rakuten_casas_put_request.sum(:valuation_put) * 0.3)).to_i %>
+      <%# 合計売上 %>
+        <% sum_profit_new = dmer_new_profit + aupay_new_profit + paypay_profit + st_insurance_profit + rakuten_pay_profit %>
+        <% sum_profit_slmt = dmer_slmt_profit +  aupay_slmt_profit %>
+        <% sum_profit = casa_new_profit + casa_put_profit %>
+      <%# 平均売上 %>
+        <% ave_profit_new = sum_profit_new.to_f / digestion_new %>
+        <% ave_profit_slmt = sum_profit_slmt.to_f / digestion_settlement %>
+        <% ave_profit = (sum_profit.to_f / @results.where.not(shift: "休み").where.not(shift: "帯同").where.not(shift: "内勤").where.not(shift: "欠勤").length) %>
   <h1>獲得商材内訳</h1>
     <h2>売上</h2>
     <table>
@@ -123,10 +131,10 @@
         <th>aupay（決済）</th>
         <th>PayPay</th>
         <th>楽天ペイ</th>
-        <th>少額短期保険</th>
         <th>フェムト（新規）</th>
         <th>フェムト（設置）</th>
-        <th>平均売上</th>
+        <th>平均売上（新規）</th>
+        <th>平均売上（決済）</th>
         <th>現状売上</th>
         <th>終着見込売上</th><%# （平均売上 * 予定シフト数） %>
       </tr>
@@ -137,12 +145,13 @@
         <td><%= aupay_slmt_profit.to_s(:delimited) %></td>
         <td><%= paypay_profit.to_s(:delimited) %></td>
         <td><%= rakuten_pay_profit.to_s(:delimited) %></td>
-        <td><%= st_insurance_profit.to_s(:delimited) %></td>
         <td><%= casa_new_profit.to_s(:delimited) %></td>
         <td><%= casa_put_profit.to_s(:delimited) %></td>
-        <td><%= ave_profit.round().to_s(:delimited) %></td>
-        <td><%= sum_profit.to_s(:delimited) %></td>
-        <td><%= (ave_profit * (new_shift + settlement_shift + summit_shift + casa_shift + casa_put_shift)).round().to_s(:delimited) %></td>
+        <td><%= ave_profit_new.round().to_s(:delimited) rescue "計算不可" %></td>
+        <td><%= ave_profit_slmt.round().to_s(:delimited) rescue "計算不可" %></td>
+        
+        <td><%= (sum_profit_new + sum_profit_slmt).to_s(:delimited) %></td>
+        <td><%= (ave_profit_new * new_shift + ave_profit_slmt * settlement_shift).round().to_s(:delimited) rescue "計算不可" %></td>
       </tr>
     </table>
     <h2>獲得数</h2>
@@ -150,13 +159,13 @@
       <tr>
       </tr>
       <tr>
-        <th colspan="4">dメル（新規）</th>
-        <th colspan="4">dメル（決済）</th>
-        <th colspan="4">aupay（新規）</th>
-        <th colspan="4">aupay（決済）</th>
+        <th colspan="3">dメル（新規）</th>
+        <th colspan="">dメル（決済）</th>
+        <th colspan="3">aupay（新規）</th>
+        <th colspan="">aupay（決済）</th>
         <th colspan="2">PayPay</th>
         <th colspan="2">少額短期保険</th>
-        <th colspan="4">楽天ペイ</th>
+        <th colspan="3">楽天ペイ</th>
         <th colspan="4">フェムト（新規）</th>
         <th colspan="">フェムト（設置）</th>
         <th colspan="">フェムト（他者設置）</th>
@@ -165,45 +174,50 @@
       <tr></tr>
       <tr>
       </tr>
-        <% 4.times do %>
-        <th colspan="4" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
+        <% 2.times do %>
+        <th colspan="3" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
+        <th colspan="" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <% end %>
         <% 2.times do %>
         <th colspan="2" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <% end %>
-        <th colspan="4" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
+        <th colspan="3" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <th colspan="4" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <% 3.times do %>
         <th colspan="" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <% end %>
       <tr>
-        <td colspan="4"><%= @dmers_this_month.length - @dmers_def_this_month.length + @dmers_inc.length - @dmers_dec.length %></td>
-        <td colspan="4"><%= @dmers_slmt_this_month.length - @dmers_slmt_def_this_month.length + @dmers_slmt_inc.length - @dmers_slmt_dec.length %></td>
-        <td colspan="4"><%= @aupays_this_month.length - @aupays_def_this_month.length + @aupays_inc.length - @aupays_dec.length %></td>
-        <td colspan="4"><%= @aupays_slmt_this_month.length - @aupays_slmt_def_this_month.length + @aupays_slmt_inc.length - @aupays_slmt_dec.length %></td>
+        <td colspan="3"><%= @dmers_this_month.length - @dmers_def_this_month.length + @dmers_inc.length %></td>
+        <td colspan=""><%= @dmers_slmt_this_month.length %></td>
+        <td colspan="3"><%= @aupays_this_month.length - @aupays_def_this_month.length + @aupays_inc.length %></td>
+        <td colspan=""><%= @aupays_slmt_this_month.length %></td>
         <td colspan="2"><%= @paypays_this_month.length - @paypays_def_this_month.length %></td>
         <td colspan="2"><%= @st_insurances_this_month.length - @st_insurances_def_this_month.length %></td>
-        <td colspan="4"><%= @rakuten_pays_this_month.length - @rakuten_pays_def_this_month.length + @rakuten_pays_inc.length - @rakuten_pays_dec.length %></td>
-        <td colspan="4"><%= @rakuten_casas_this_month.length - @rakuten_casas_def_this_month.length + @rakuten_casas_inc.length - @rakuten_casas_dec.length %></td>
+        <td colspan="3"><%= @rakuten_pays_this_month.length - @rakuten_pays_def_this_month.length %></td>
+        <td colspan="4"><%= @rakuten_casas_this_month.length - @rakuten_casas_def_this_month.length + @rakuten_casas_inc.length %></td>
         <td colspan=""><%= @rakuten_casas_put_self.length %></td>
         <td colspan=""><%= @rakuten_casas_put_other.length %></td>
         <td colspan=""><%= @rakuten_casas_put_request.length %></td>
       </tr>
       <tr>
-        <% 4.times do %>
+        
         <th>獲得数</th>
         <th>不備・NG</th>
         <th>増加数</th>
-        <th>減少数</th>
-        <% end %>
+        <th>獲得数</th>
+        <th>獲得数</th>
+        <th>不備・NG</th>
+        <th>増加数</th>
+        <th>獲得数</th>
+        
         <% 2.times do %>
-        <th colspan="2">不備・NG</th>
+        <th>獲得数</th>
+        <th colspan="">不備・NG</th>
         <% end %>
         <% 2.times do %>
         <th>獲得数</th>
         <th>不備・NG</th>
         <th>増加数</th>
-        <th>減少数</th>
         <% end %>
       </tr>
       <tr>
@@ -211,34 +225,27 @@
           <td style="color: blue;"><%= @dmers_this_month.length  %></td>
           <td style="color: red;"><%= @dmers_def_this_month.length %></td>
           <td style="color: blue;"><%= @dmers_inc.length %></td>
-          <td style="color: red;"><%= @dmers_dec.length %></td>
           <td style="color: blue;"><%= @dmers_slmt_this_month.length %></td>
-          <td style="color: red;"><%= @dmers_slmt_def_this_month.length %></td>
-          <td style="color: blue;"><%= @dmers_slmt_inc.length %></td>
-          <td style="color: red;"><%= @dmers_slmt_dec.length %></td>
+
         <%# aupay %>
           <td style="color: blue;"><%= @aupays_this_month.length %></td>
           <td style="color: red;"><%= @aupays_def_this_month.length %></td>
           <td style="color: blue;"><%= @aupays_inc.length %></td>
-          <td style="color: red;"><%= @aupays_dec.length %></td>
-          <td style="color: blue;"><%= @aupays_slmt_this_month.length - @aupays_slmt_def_this_month.length %></td>
-          <td style="color: red;"><%= @aupays_slmt_def_this_month.length %></td>
-          <td style="color: blue;"><%= @aupays_slmt_inc.length %></td>
-          <td style="color: red;"><%= @aupays_slmt_dec.length %></td>
+          <td style="color: blue;"><%= @aupays_slmt_this_month.length %></td>
         <%# PayPay %>
-          <td colspan="2" style="color: red;"><%= @paypays_def_this_month.length %></td>
+          <td colspan="" style="color: blue;"><%= @paypays_this_month.length %></td>
+          <td colspan="" style="color: red;"><%= @paypays_def_this_month.length %></td>
         <%# 少額短期保険 %>
-          <td colspan="2" style="color: red;"><%= @st_insurances_this_month.length - @st_insurances_def_this_month.length %></td>
+          <td colspan="" style="color: blue;"><%= @st_insurances_this_month.length %></td>
+          <td colspan="" style="color: red;"><%= @st_insurances_def_this_month.length %></td>
         <%# 楽天ペイ %>
           <td style="color: blue;"><%= @rakuten_pays_this_month.length  %></td>
           <td style="color: red;"><%= @rakuten_pays_def_this_month.length %></td>
           <td style="color: blue;"><%= @rakuten_pays_inc.length %></td>
-          <td style="color: red;"><%= @rakuten_pays_dec.length %></td>
         <%# 楽天フェムト新規 %>
           <td style="color: blue;"><%= @rakuten_casas_this_month.length %></td>
           <td style="color: red;"><%= @rakuten_casas_def_this_month.length %></td>
           <td style="color: blue;"><%= @rakuten_casas_inc.length %></td>
-          <td style="color: red;"><%= @rakuten_casas_dec.length %></td>
       </tr>
     </table>
   <h1>基準値</h1>
@@ -832,7 +839,8 @@
     <% end %>
 
   <h1>日々進捗</h1>
-    <table>
+    <table class="out-tb">
+    <thead>
       <tr></tr>
       <tr>
         <th colspan="6">終着</th>
@@ -893,8 +901,8 @@
         <th colspan="3">０９：その他</th>
         <% end %>
       </tr>
+      <tr >
       <%# 大枠基準値（見出し） %>
-        <tr >
           <th></th>
           <th></th>
           <th>シフト</th>
@@ -948,6 +956,9 @@
             <th>成約数</th>
           <% end %>
         <% end %>
+      </tr>
+    </thead>
+    <tbody>
     <% @results.each do |result| %>
       <tr>
         <td style="padding: 0 20px;"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></td>
@@ -971,9 +982,9 @@
           <% casa_put_self = RakutenCasa.where(put: result.date).where(user_id: result.user_id).where(putter_id: result.user_id).sum(:valuation_put).to_f %>
           <% date_profit =
           Dmer.where(user_id: result.user_id).where(date: result.date).sum(:valuation_new) +
-          Dmer.where(user_id: result.user_id).where(settlement: result.date).sum(:valuation_settlement) +
+          Dmer.where(status_settlement: "完了").where(settlementer_id: result.user_id).where(settlement: result.date).sum(:valuation_settlement) +
           Aupay.where(user_id: result.user_id).where(date: result.date).sum(:valuation_new) + 
-          Aupay.where(user_id: result.user_id).where(settlement: result.date).sum(:valuation_settlement) +
+          Aupay.where(status_settlement: "完了").where(settlementer_id: result.user_id).where(settlement: result.date).sum(:valuation_settlement) +
           Paypay.where(user_id: result.user_id).where(date: result.date).sum(:valuation) +
           StInsurance.where(user_id: result.user_id).where(date: result.date).sum(:valuation) +
           RakutenPay.where(user_id: result.user_id).where(date: result.date).sum(:valuation) +
@@ -1133,4 +1144,5 @@
     <%# サミット切り返し %>
       </tr>
     <% end %>
+    </tbody>
     </table>

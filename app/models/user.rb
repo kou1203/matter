@@ -17,4 +17,16 @@ class User < ApplicationRecord
   has_many :trouble_sses
   has_many :st_insurances
   has_many :rakuten_pays
+
+  def update_without_current_password(params, *options)
+    params.delete(:current_password)
+
+    if params[:password].blank?
+      params.delete(:password)
+      params.delete(:password_confirmation) if params[:password_confirmation].blank?
+    end
+
+    clean_up_passwords
+    update_attributes(params, *options)
+  end
 end

@@ -7,6 +7,7 @@ class CreateDmers < ActiveRecord::Migration[6.0]
       t.references :store_prop          , foreign_key: true
       t.date :date                      , null:false 
       t.date :share
+      t.string :industry_status
       t.string :status                  , null: false 
       t.date :status_update
       t.references :settlementer

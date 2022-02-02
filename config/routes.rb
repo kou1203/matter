@@ -118,6 +118,8 @@ Rails.application.routes.draw do
   resources :rakuten_pays ,expect: [:new, :create] do 
     collection { post :import }
   end 
+
+  resources :error_pages
   
   resources :costs 
 

@@ -15,9 +15,11 @@ class UsersController < ApplicationController
   end 
   
   def update 
+    p user_params
     @user = User.find(params[:id])
     @user.update(user_params)
-    redirect_to users_path
+      redirect_to users_path ,alert: "情報の更新をしました。"
+
   end 
 
   def show 
@@ -35,6 +37,9 @@ class UsersController < ApplicationController
       :position_sub,
       :group,
       :team,
+      :email,
+      :password,
+      :password_confirmation
     )
   end
 

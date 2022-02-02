@@ -14,10 +14,13 @@ class ResultsController < ApplicationController
         # dメル　新規
           @dmers_user = Dmer.where(user_id: @results.first.user_id )
           @dmers_this_month = this_period(@dmers_user,@results)
-          @dmers_not_this_month = not_period(@dmers_user,@results)
-          @dmers_def_this_month = def_period(@dmers_this_month,@results)
-          @dmers_inc = inc_period(@dmers_not_this_month,@results)
-          @dmers_dec = dec_period(@dmers_not_this_month,@results)
+          @dmers_def_this_month = this_period(@dmers_this_month.where(status: "自社不備")
+          .or(@dmers_this_month.where(status: "上位店NG"))
+          .or(@dmers_this_month.where(status: "不備対応中"))
+          .or(@dmers_this_month.where(status: "申込取消"))
+          .or(@dmers_this_month.where(status: "審査OK").where.not(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))),@results)
+          @dmers_inc = inc_period(@dmers_this_month,@results)
+          
         # dメル　決済
           @dmers_settlementer = Dmer.where(settlementer_id: @results.first.user_id )
           @dmers_slmt_this_month = slmt_this_period(@dmers_settlementer,@results)
@@ -25,46 +28,50 @@ class ResultsController < ApplicationController
           @dmers_slmt_def_this_month = slmt_def_period(@dmers_slmt_this_month,@results)
           @dmers_slmt_inc = slmt_inc_period(@dmers_slmt_not_this_month,@results)
           @dmers_slmt_dec = slmt_dec_period(@dmers_slmt_not_this_month,@results)
+          @dmers_slmt_def = slmt_this_period(@dmers_settlementer.where(status_settlement: "未決済"),@results)
+          @dmers_slmt_def_pic = slmt_this_period(@dmers_settlementer.where(status_settlement: "写真不備"),@results)
+
         # aupay　新規
           @aupays_user = Aupay.where(user_id: @results.first.user_id )
           @aupays_this_month = this_period(@aupays_user,@results)
           @aupays_not_this_month = not_period(@aupays_user,@results)
-          @aupays_def_this_month = def_period(@aupays_this_month,@results)
+          @aupays_def_this_month = this_period(@aupays_this_month.where(status: "自社不備")
+          .or(@aupays_this_month.where(status: "不合格"))
+          .or(@aupays_this_month.where(status: "差し戻し"))
+          .or(@aupays_this_month.where(status: "解約"))
+          .or(@aupays_this_month.where(status: "重複対象外"))
+          .or(@aupays_this_month.where(status: "審査通過").where.not(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))),@results)
           @aupays_inc = inc_period(@aupays_not_this_month,@results)
-          @aupays_dec = dec_period(@aupays_not_this_month,@results)
           # aupay　決済
           @aupays_settlementer = Aupay.where(settlementer_id: @results.first.user_id )
           @aupays_slmt_this_month = slmt_this_period(@aupays_settlementer,@results)
           @aupays_slmt_not_this_month = slmt_not_period(@aupays_settlementer,@results)
           @aupays_slmt_def_this_month = slmt_def_period(@aupays_this_month,@results)
           @aupays_slmt_inc = slmt_inc_period(@aupays_not_this_month,@results)
-          @aupays_slmt_dec = slmt_dec_period(@aupays_not_this_month,@results)
         # paypay
             @paypays_user = Paypay.where(user_id: @results.first.user_id )
             @paypays_this_month = this_period(@paypays_user,@results)
-            @paypays_def_this_month = def_period(@paypays_this_month,@results)
+            @paypays_def_this_month = @paypays_this_month.where(status: "自社不備")
         # 少額短期保険
           @st_insurances_user = StInsurance.where(user_id: @results.first.user_id )
           @st_insurances_this_month = this_period(@st_insurances_user,@results)
-          @st_insurances_def_this_month = def_period(@st_insurances_this_month,@results)
+          @st_insurances_def_this_month = this_period(@st_insurances_this_month,@results)
         # 楽天ペイ
           @rakuten_pays_user = RakutenPay.where(user_id: @results.first.user_id )
           @rakuten_pays_this_month = this_period(@rakuten_pays_user,@results)
           @rakuten_pays_not_this_month = not_period(@rakuten_pays_user,@results)
           @rakuten_pays_inc = inc_period(@rakuten_pays_not_this_month,@results)
-          @rakuten_pays_dec = dec_period(@rakuten_pays_not_this_month,@results)
-          @rakuten_pays_def_this_month = def_period(@rakuten_pays_this_month,@results)
+          @rakuten_pays_def_this_month = @rakuten_pays_this_month.where(status: "自社不備")
         # 楽天フェムト新規
           @rakuten_casas_user = RakutenCasa.where(user_id: @results.first.user_id)
           @rakuten_casas_this_month = this_period(@rakuten_casas_user, @results)
-          @rakuten_casas_def_this_month = def_period(@rakuten_casas_this_month, @results )
+          @rakuten_casas_def_this_month = this_period(@rakuten_casas_this_month, @results )
           @rakuten_casas_def_net = @rakuten_casas_this_month.where.not(deficiency_net: nil).where(deficiency_solution_net: nil)
           .or(@rakuten_casas_this_month.where.not(deficiency_net: nil).where(deficiency_solution_net: @results.minimum(:date)..@results.maximum(:date)))
           @rakuten_casas_def_anti = @rakuten_casas_this_month.where.not(deficiency_anti: nil).where(deficiency_solution_anti: nil)
           .or(@rakuten_casas_this_month.where.not(deficiency_anti: nil).where(deficiency_solution_anti: @results.minimum(:date)..@results.maximum(:date)))
           @rakuten_casas_not_this_month = not_period(@rakuten_casas_user, @results)
           @rakuten_casas_inc = inc_period(@rakuten_casas_not_this_month, @results)
-          @rakuten_casas_dec = dec_period(@rakuten_casas_not_this_month, @results)
           @rakuten_casas_inc_net = @rakuten_casas_not_this_month.where(deficiency_solution_net: @results.minimum(:date)..@results.maximum(:date))
           @rakuten_casas_dec_net = @rakuten_casas_not_this_month.where(deficiency_net: @results.minimum(:date)..@results.maximum(:date))
           @rakuten_casas_inc_anti = @rakuten_casas_not_this_month.where(deficiency_solution_anti: @results.minimum(:date)..@results.maximum(:date))
@@ -173,25 +180,30 @@ class ResultsController < ApplicationController
   private
   # dメル,aupayメソッド
     # 新規
+    # 絞り込んだ期間のもの
     def this_period(product,date)
       return product.where(date: date.minimum(:date)..date.maximum(:date))
     end
     def not_period(product,date)
       return product.where.not(date: date.minimum(:date)..date.maximum(:date))
     end
+    # 絞り込んだ期間ではなく、不備解消が絞り込んだ期間のもの
     def inc_period(product,date)
-      return product.where(deficiency_solution: date.minimum(:date)..date.maximum(:date))
+      return product.where.not(date: date.minimum(:date)..date.maximum(:date)).where(deficiency_solution: date.minimum(:date)..date.maximum(:date))
     end
-    def dec_period(product,date)
-      return product.where(deficiency: date.minimum(:date)..date.maximum(:date))
-    end
-    def def_period(product,date)
-      return product.where.not(deficiency: nil).where(deficiency_solution: nil).or(product.where.not(deficiency: nil).where.not(deficiency_solution: date.minimum(:date)..date.maximum(:date)))
-    end
+
     # 決済
     def slmt_this_period(product,date)
-      return product.where(settlement: date.minimum(:date)..date.maximum(:date))
+      return product.where(settlement: date.minimum(:date)..date.maximum(:date)).where(status_settlement: "完了")
     end
+    
+    def slmt_def(product,date)
+      return product.where(settlement: date.minimum(:date)..date.maximum(:date)).where(status_settlement: "未決済")
+    end
+    def slmt_pic(product,date)
+      return product.where(settlement: date.minimum(:date)..date.maximum(:date)).where(status_settlement: "写真不備")
+    end
+
     def slmt_not_period(product,date)
       return product.where.not(settlement: date.minimum(:date)..date.maximum(:date))
     end

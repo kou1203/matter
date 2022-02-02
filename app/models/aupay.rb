@@ -1,16 +1,14 @@
 class Aupay < ApplicationRecord
+  require 'charlock_holmes'
   belongs_to :user 
   belongs_to :settlementer ,class_name: "User", optional: true
   belongs_to :store_prop 
 
   with_options presence: true do 
-    validates :customer_num
-    validates :client
     validates :user_id
     validates :store_prop_id
     validates :date 
     validates :status
-    validates :status_settlement
     validates :profit_new
     validates :profit_settlement
     validates :valuation_new
@@ -21,7 +19,7 @@ class Aupay < ApplicationRecord
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
       user = User.find_by(name: row["獲得者"])
-      store_prop = StoreProp.find_by(name: row["店舗名"])
+      store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
       settlementer = User.find_by(name: row["決済対応者"])
       settlementer_params = 
       if settlementer.present?
@@ -29,30 +27,23 @@ class Aupay < ApplicationRecord
       else
         row["決済対応者"]
       end
-      errors << "#{index}行目獲得者が不正です" if user.blank?
-      errors << "#{index}行目店舗名が不正です" if store_prop.blank?
-      if row["ID"].present?
-        aupay = find_by(id: row["ID"])
-        errors << "#{index}行目 IDが不適切です" if aupay.blank?
-      else  
-        u_id = user.id if user.present?
-        store_id = store_prop.id if store_prop.present?
+      errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
+      errors << "#{index}行目店舗名が不正です" if store_prop.blank? && errors.length < 5
+        u_id = user.id if user.present? 
+        store_id = store_prop.id if store_prop.present? 
         aupay = new(
-          id: row["ID"],
           customer_num: row["お申込み番号"],
           client: row["商流"],
           user_id: u_id,
           store_prop_id: store_id,
           date: row["獲得日"],
           status: row["審査ステータス"],
-          status_update: row["ステータス更新日"],
           share: row["上位点共有日"],
           shipment: row["キット発送日"],
           settlementer_id: settlementer_params,
           settlement: row["初回決済発生日"],
           settlement_deadline: row["決済期限"],
           status_settlement: row["決済ステータス"],
-          status_update_settlement: row["決済ステータス更新日"],
           payment: row["入金日"],
           payment_settlement: row["決済入金日"],
           result_point: row["審査完了日（新規）"],
@@ -65,26 +56,25 @@ class Aupay < ApplicationRecord
           deficiency_remarks: row["不備詳細（新規）"],
           deficiency_remarks_settlement: row["不備詳細（決済）"],
           description: row["備考"],
-          profit_new: row["獲得売上"],
-          profit_settlement: row["決済売上"],
-          valuation_new: row["獲得評価売上"],
-          valuation_settlement: row["決済評価売上"],
+          profit_new: row["獲得実売"],
+          profit_settlement: row["決済実売"],
+          valuation_new: row["獲得評価売"],
+          valuation_settlement: row["決済評価売"],
         )
-        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if aupay.invalid?
-      end
+        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if aupay.invalid? && errors.length < 5
     end
     errors
   end
 
   def self.import(file)
-  new_cnt = 0
-  update_cnt = 0
-  nochange_cnt = 0
-  error_cnt = 0
-  error = []
-  CSV.foreach(file.path, headers: true) do |row|
+    detection = CharlockHolmes::EncodingDetector.detect(File.read(file.path))
+    encoding = detection[:encoding] == 'Shift_JIS' ? 'CP932' : detection[:encoding]
+    new_cnt = 0
+    update_cnt = 0
+    nochange_cnt = 0
+    CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
     user = User.find_by(name: row["獲得者"])
-    store_prop = StoreProp.find_by(name: row["店舗名"])
+    store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
     settlementer = User.find_by(name: row["決済対応者"])
     settlementer_params = 
     if settlementer.present?
@@ -92,8 +82,8 @@ class Aupay < ApplicationRecord
     else
       row["決済対応者"]
     end
-    aupay = find_by(store_prop_id:  store_prop.id)
-    if store_prop.aupay.present? && Aupay.find_by(customer_num: row["お申込み番号"]).present? 
+    aupay = find_by(store_prop_id: store_prop.id)
+    if store_prop.aupay.present? 
       aupay.assign_attributes(
         # customer_num: row["お申込み番号"],
         client: row["商流"],
@@ -101,14 +91,12 @@ class Aupay < ApplicationRecord
         # store_prop_id: store_prop.id,
         date: row["獲得日"],
         status: row["審査ステータス"],
-        status_update: row["ステータス更新日"],
         share: row["上位点共有日"],
         shipment: row["キット発送日"],
         settlementer_id: settlementer_params,
         settlement: row["初回決済発生日"],
         settlement_deadline: row["決済期限"],
         status_settlement: row["決済ステータス"],
-        status_update_settlement: row["決済ステータス更新日"],
         payment: row["入金日"],
         payment_settlement: row["決済入金日"],
         result_point: row["審査完了日（新規）"],
@@ -121,34 +109,33 @@ class Aupay < ApplicationRecord
         deficiency_remarks: row["不備詳細（新規）"],
         deficiency_remarks_settlement: row["不備詳細（決済）"],
         description: row["備考"],
-        profit_new: row["獲得売上"],
-        profit_settlement: row["決済売上"],
-        valuation_new: row["獲得評価売上"],
-        valuation_settlement: row["決済評価売上"],
+        profit_new: row["獲得実売"],
+        profit_settlement: row["決済実売"],
+        valuation_new: row["獲得評価売"],
+        valuation_settlement: row["決済評価売"],
       )
       if aupay.has_changes_to_save? 
         aupay.save!
+        aupay.assign_attributes(status_update: Date.today)
         update_cnt += 1
       else  
         nochange_cnt += 1
       end 
     else  
       aupay = new(
-        id: row["ID"],
         customer_num: row["お申込み番号"],
         client: row["商流"],
         user_id: user.id,
         store_prop_id: store_prop.id,
         date: row["獲得日"],
         status: row["審査ステータス"],
-        status_update: row["ステータス更新日"],
+        status_update: Date.today,
         share: row["上位点共有日"],
         shipment: row["キット発送日"],
         settlementer_id: settlementer_params,
         settlement: row["初回決済発生日"],
         settlement_deadline: row["決済期限"],
         status_settlement: row["決済ステータス"],
-        status_update_settlement: row["決済ステータス更新日"],
         payment: row["入金日"],
         payment_settlement: row["決済入金日"],
         result_point: row["審査完了日（新規）"],
@@ -161,10 +148,10 @@ class Aupay < ApplicationRecord
         deficiency_remarks: row["不備詳細（新規）"],
         deficiency_remarks_settlement: row["不備詳細（決済）"],
         description: row["備考"],
-        profit_new: row["獲得売上"],
-        profit_settlement: row["決済売上"],
-        valuation_new: row["獲得評価売上"],
-        valuation_settlement: row["決済評価売上"],
+        profit_new: row["獲得実売"],
+        profit_settlement: row["決済実売"],
+        valuation_new: row["獲得評価売"],
+        valuation_settlement: row["決済評価売"],
         )
       aupay.save!
       new_cnt += 1

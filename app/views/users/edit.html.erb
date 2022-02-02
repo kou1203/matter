@@ -10,18 +10,35 @@
         <th><%= f.label :base_sub, "担当商材", class: "form-text" %></th>
         <th><%= f.label :group, "グループ①", class: "form-text" %></th>
         <th><%= f.label :team, "グループ②",class: "form-text" %></th>
-        <th><%= f.label :position, "権限",class: "form-text" %></th>
-        <th></th>
       </tr>
         <td><%= f.select :base, {"中部SS": "中部SS", "関西SS": "関西SS","関東SS": "関東SS","中部N": "中部N","関西N": "関西N"} ,{include_blank: true}, {class: "form-input"} %></td>
         <td><%= f.select :base_sub, {"キャッシュレス": "キャッシュレス", "サミット": "サミット", "パンダ": "パンダ", "フェムト": "フェムト" }, {include_blank: true}, {class: "form-input"} %></td>
         <td><%= f.text_field :group ,class: "form-input" %></td>
         <td><%= f.text_field :team ,class: "form-input" %></td>
+      </tr>
+      <tr>
+        <th><%= f.label :email, "メールアドレス",class: "form-text" %></th>
+        <th><%= f.label :position, "権限",class: "form-text" %></th>
+      </tr>
+        <td><%= f.text_field :email ,class: "form-input" %></td>
         <td><%= f.select :position, {"なし": "なし", "権限①": "権限①", "権限②": "権限②","退職": "退職"  }, {include_blank: true}, {class: "form-input"}  %></td>
+      <tr>
       </tr>
     </table>
     <%= f.submit "登録", class: "submit-btn" %>
-  
-  
-  <% end %>
+<% end %>
+<h1>パスワードの変更</h1>
+<%= form_with model: @user, class: "form-frame", local: true do |f| %>
+<table>
+      <tr>
+        <th><%= f.label :email, "パスワード",class: "form-text" %></th>
+        <th><%= f.label :email, "パスワード確認用",class: "form-text" %></th>
+      </tr>
+      <tr>
+        <td><%= f.text_field :password, autocomplete: "new-password",class:"form-input" %></td>
+        <td><%= f.text_field :password_confirmation, autocomplete: "new-password",class:"form-input" %></td>
+      </tr>
+</table>
+    <%= f.submit "再設定", class: "submit-btn" %>
+<% end %>
 </div>

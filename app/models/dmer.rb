@@ -40,8 +40,8 @@ class Dmer < ApplicationRecord
           user_id: u_id,
           store_prop_id: store_id,
           date: row["獲得日"],
+          industry_status: row["業種評価"],
           status: row["審査ステータス"],
-          status_update: row["ステータス更新日"],
           share: row["上位点共有日"],
           shipment: row["キット発送日"],
           settlementer_id: settlementer_params,
@@ -77,6 +77,7 @@ class Dmer < ApplicationRecord
     new_cnt = 0
     update_cnt = 0
     nochange_cnt = 0
+    update_message = []
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
       user = User.find_by(name: row["獲得者"])
       store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
@@ -96,15 +97,15 @@ class Dmer < ApplicationRecord
           user_id: user.id,
           store_prop_id: store_prop.id,
           date: row["獲得日"],
+          industry_status: row["業種評価"],
           status: row["審査ステータス"],
-          status_update: row["ステータス更新日"],
           share: row["上位点共有日"],
           shipment: row["キット発送日"],
           settlementer_id: settlementer_params,
+          settlement_deadline: row["決済期限"],
           settlement: row["初回決済発生日"],
           settlement_deadline: row["決済期限"],
           status_settlement: row["決済ステータス"],
-          status_update_settlement: row["決済ステータス更新日"],
           payment: row["入金日"],
           payment_settlement: row["決済入金日"],
           result_point: row["審査完了日（新規）"],
@@ -124,6 +125,8 @@ class Dmer < ApplicationRecord
         )
         if dmer.has_changes_to_save? 
           dmer.save!
+          dmer.assign_attributes(status_update: Date.today)
+          update_message << "#{store_prop.name}の情報を更新しました！" if update_message.length < 10
           update_cnt += 1
         else  
           nochange_cnt += 1
@@ -135,8 +138,9 @@ class Dmer < ApplicationRecord
           user_id: user.id,
           store_prop_id: store_prop.id,
           date: row["獲得日"],
+          industry_status: row["業種評価"],
           status: row["審査ステータス"],
-          status_update: row["ステータス更新日"],
+          status_update: Date.today,
           share: row["上位点共有日"],
           shipment: row["キット発送日"],
           settlementer_id: settlementer_params,
@@ -165,6 +169,6 @@ class Dmer < ApplicationRecord
         new_cnt += 1
       end
     end
-    "新規登録#{new_cnt}件, 更新#{update_cnt}件, 変更なし#{nochange_cnt}件"
+    "新規登録#{new_cnt}件, 更新#{update_cnt}件, 変更なし#{nochange_cnt}件,#{update_message}"
   end 
 end

@@ -1,5 +1,6 @@
 class StorePropsController < ApplicationController
   before_action :authenticate_user!
+  before_action :back_retirement, only: [:index]
   def index 
     @q = StoreProp.ransack(params[:q])
     @store_props = 
@@ -67,6 +68,10 @@ class StorePropsController < ApplicationController
   end
 
   private 
+
+  def back_retirement
+    redirect_to error_pages_path if current_user.position == "退職"
+  end
 
   def store_prop_params
     params.require(:store_prop).permit(

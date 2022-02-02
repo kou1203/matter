@@ -17,23 +17,23 @@ class RakutenPay < ApplicationRecord
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
       user = User.find_by(name: row["獲得者"])
       store_prop = StoreProp.find_by(name: row["店舗名"])
-      errors << "#{index}行目獲得者が不正です" if user.blank?
-      errors << "#{index}行目店舗名が不正です" if store_prop.blank?
+      errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
+      errors << "#{index}行目店舗名が不正です" if store_prop.blank? && errors.length < 5
       if row["ID"].present?
         rakuten_pay = find_by(id: row["ID"])
-        errors << "#{index}行目 IDが不適切です" if rakuten_pay.blank?
+        errors << "#{index}行目 IDが不適切です" if rakuten_pay.blank? && errors.length < 5
       else  
-        u_id = user.id if user.present?
-        store_id = store_prop.id if store_prop.present?
+        u_id = user.id if user.present? && errors.length < 5
+        store_id = store_prop.id if store_prop.present? && errors.length < 5
         rakuten_pay = new(
           id: row["ID"],
           client: row["商流"],
           user_id: u_id,
           store_prop_id: store_id,
+          share: row['上位店共有日'],
           date: row["獲得日"],
           status: row["審査ステータス"],
           transcript: row["謄本取得"],
-          status_update: row["ステータス更新日"],
           customer_num: row["申込番号"],
           deficiency: row["不備発生日"],
           deficiency_solution: row["不備解消日"],
@@ -41,10 +41,10 @@ class RakutenPay < ApplicationRecord
           deficiency_consent: row["同意書不備詳細"],
           result_point: row["審査完了日"],
           payment: row["入金日"],
-          profit: row["実売上"],
-          valuation: row["評価売上"],
+          profit: row["実売"],
+          valuation: row["評価売"],
         )
-        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if rakuten_pay.invalid?
+        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if rakuten_pay.invalid? && errors.length < 5
       end
     end
     errors
@@ -65,10 +65,10 @@ class RakutenPay < ApplicationRecord
           client: row["商流"],
           user_id: u_id,
           store_prop_id: store_id,
+          share: row['上位店共有日'],
           date: row["獲得日"],
           status: row["審査ステータス"],
           transcript: row["謄本取得"],
-          status_update: row["ステータス更新日"],
           customer_num: row["申込番号"],
           deficiency: row["不備発生日"],
           deficiency_solution: row["不備解消日"],
@@ -76,11 +76,12 @@ class RakutenPay < ApplicationRecord
           deficiency_consent: row["同意書不備詳細"],
           result_point: row["審査完了日"],
           payment: row["入金日"],
-          profit: row["実売上"],
-          valuation: row["評価売上"],
+          profit: row["実売"],
+          valuation: row["評価売"],
         )
         if rakuten_pay.has_changes_to_save? 
           rakuten_pay.save!
+          rakuten_pay.assign_attributes(status_update: Date.today)
           update_cnt += 1
         else  
           nochange_cnt += 1
@@ -91,10 +92,11 @@ class RakutenPay < ApplicationRecord
           client: row["商流"],
           user_id: u_id,
           store_prop_id: store_id,
+          share: row['上位店共有日'],
           date: row["獲得日"],
           status: row["審査ステータス"],
           transcript: row["謄本取得"],
-          status_update: row["ステータス更新日"],
+          status_update: Date.today,
           customer_num: row["申込番号"],
           deficiency: row["不備発生日"],
           deficiency_solution: row["不備解消日"],
@@ -102,8 +104,8 @@ class RakutenPay < ApplicationRecord
           deficiency_consent: row["同意書不備詳細"],
           result_point: row["審査完了日"],
           payment: row["入金日"],
-          profit: row["実売上"],
-          valuation: row["評価売上"],
+          profit: row["実売"],
+          valuation: row["評価売"],
           )
         rakuten_pay.save!
         new_cnt += 1

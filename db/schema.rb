@@ -13,8 +13,8 @@
 ActiveRecord::Schema.define(version: 2021_11_06_041034) do
 
   create_table "aupays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "customer_num", null: false
-    t.string "client", null: false
+    t.string "customer_num"
+    t.string "client"
     t.bigint "user_id"
     t.bigint "store_prop_id"
     t.date "date", null: false
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.bigint "store_prop_id"
     t.date "date", null: false
     t.date "share"
+    t.string "industry_status"
     t.string "status", null: false
     t.date "status_update"
     t.bigint "settlementer_id"

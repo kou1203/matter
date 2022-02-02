@@ -23,7 +23,7 @@
           <td ><%= f.date_field :date_lteq, class: "input" %></td>
           <td ><%= f.date_field :settlement_gteq, class: "input" %>~</td>
           <td ><%= f.date_field :settlement_lteq, class: "input" %></td>
-          <td ><%= f.date_field :settlement_deadline_gteq, class: "input" %>~</td>
+          <td ><%= f.date_field :settlement_deadline_gteq, class: "input"%>~</td>
           <td ><%= f.date_field :settlement_deadline_lteq, class: "input" %></td>
         </tr>
       </table>
@@ -32,15 +32,19 @@
         <tr >
           <th class="search-head" rowspan="2" >検索</th>
           <th class="search-th">申込番号</th>
+          <th class="search-th">店舗名</th>
           <th class="search-th">獲得者</th>
+          <th class="search-th">業種チェック</th>
           <th class="search-th">審査ステータス</th>
           <th class="search-th">決済ステータス</th>
           <th class="search-th">商流</th>
-          <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
+          <td class="result"><%= f.submit "絞込み", data: {disable_with: "絞り込み中"},class: "result-btn" %></td>
         </tr>
         <tr >
           <td><%= f.text_field :customer_num_eq, class: "input" %></td>
+          <td><%= f.text_field :store_prop_name_cont, class: "input" %></td>
           <td><%= f.text_field :user_name_cont, class: "input" %></td>
+          <td><%= f.select :industry_status_eq, options_from_collection_for_select(Dmer.select(:industry_status).distinct,:industry_status, :industry_status),{include_blank: true}, {class: "input"} %></td>
           <td><%= f.select :status_eq, options_from_collection_for_select(Dmer.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
           <td><%= f.select :status_settlement_eq, options_from_collection_for_select(Dmer.select(:status_settlement).distinct,:status_settlement, :status_settlement),{include_blank: true}, {class: "input"} %></td>
           <td ><%= f.select :client_eq, options_from_collection_for_select(Dmer.select(:client).distinct, :client, :client), {include_blank: true}, {class: "input"} %></td>
@@ -53,16 +57,31 @@
       <% if @dmers.empty? %>
       <% else %>
       <h1>表示範囲：<%= @dmers.minimum(:date) %>（<%= days[@dmers.minimum(:date).wday] %>）〜<%= @dmers.maximum(:date) %>（<%= days[@dmers.maximum(:date).wday] %>）</h1>
-        <% settlement_subject = @dmers.where.not(settlement_deadline: nil).length %>
-        <% settlement_done = @dmers.where.not(settlement: nil).length - 
-           @dmers.where.not(settlement: nil).where.not(deficiency_settlement: nil).where(deficiency_solution_settlement: nil).length %>
-        <% settlement_expired = @dmers.where(settlement: nil).where(settlement_deadline: Time.now.years_ago(5)..Time.now).length  %>
+
+        <% settlement_subject = @dmers.where.not(status_settlement: '完了' ).where.not(status: "申込取消").where.not(status: "審査NG").where.not(industry_status: "NG").where.not(industry_status: "要確認").length %>
+        <% settlement_done = @dmers.where(status_settlement: '完了' ).length %>
         <% dmer_sum = @dmers.where.not(status: "申込取消").where.not(status: "審査NG").where.not(status: "自社不備").sum(:profit_new) %>
+        <% slmt_pias_len = 0 %>
+        <% slmt_max_len = 0 %>
+        <% slmt_usen_len = 0 %>
+        <% slmt_len = 0 %>
+        <% @dmers.find_each do |dmer| %>
+          <% if dmer.client == "ピアズ（190183）" || dmer.client == "ピアズ（190336）" %>
+            <% slmt_pias_len += 1 if Date.today > dmer.date.since(2.month).end_of_month.ago(7.days) %>
+          <% elsif dmer.client == "マックス即時" %>
+            <% slmt_max_len += 1 if Date.today > dmer.date.since(2.month).end_of_month.ago(12.days) %>
+          <% elsif dmer.client == "USEN（122004）" %>
+            <% slmt_usen_len += 1 if Date.today > dmer.date.since(30.days) %>
+          <% else %>
+            <% slmt_len += 1 if dmer.settlement_deadline.present? && Date.today > dmer.settlement_deadline %>
+          <% end %>
+        <% end %>
         <% hubi = @dmers.where(status: '自社不備' ).length %>
-        <% client_hubi = @dmers.where(status: '上位店不備' ).length %>
-        <% ng = @dmers.where(status: '自社NG' ).length %>
-        <% client_ng = @dmers.where(status: '上位店NG' ).length %>
+        <% client_hubi = @dmers.where(status: '不備対応中' ).length %>
+        <% industry_ng = @dmers.where(status: '審査OK' ).where(industry_status: 'NG').length + @dmers.where(status: '審査OK' ).where(industry_status: '×').length %>
+        <% client_ng = @dmers.where(status: '審査NG' ).length + @dmers.where(status: '申込取消' ).length %>
         <% cancel = @dmers.where(status: '申込取消' ).length %>
+        <% status_ok = @dmers.where(status: '審査OK' ).where.not(industry_status: "NG").where.not(industry_status: "要確認").where.not(industry_status: '×').length %>
     <div style="display: flex;">
       <table class="status-tb">
         <tr>
@@ -71,9 +90,10 @@
         </tr>
         <tr>
           <th class="search-th">　　　　獲得件数　　　　</th>
-          <th class="search-th">　　　　入金待ち　　　　</th>
+          <th class="search-th">　　　　審査通過　　　　</th>
           <th class="search-th">　　　　審査待ち　　　　</th>
-          <th class="search-th">　　　　複数追加　　　　</th>
+          <th class="search-th">　　　複数店追加　　　　</th>
+          <th class="search-th">　　　複数店追加待ち　　　</th>
           <th class="search-th">　　　　　不備　　　　　</th>
           <th class="search-th">　　　　　NG　　　　　</th>
           <th class="search-th">　　　　決済対象　　　　</th>
@@ -83,14 +103,15 @@
         </tr>
         <tr>
           <td class="search-td"><%= @dmers.length %></td>
-          <td class="search-td"><%= @dmers.where(status: '入金待ち' ).length %></td>
-          <td class="search-td"><%= @dmers.where(status: '審査待ち').length + @dmers.where(status: '連携完了' ).length %></td>
-          <td class="search-td"><%= @dmers.where.not(store_props: {head_store: nil}).where(status: '連携完了' ).length %>/<%= @dmers.where(status: '複数店舗' ).length + @dmers.where.not(store_props: {head_store: nil}).where(status: '連携完了' ).length %></td>
+          <td class="search-td"><%= status_ok %></td>
+          <td class="search-td"><%= @dmers.where(status: '審査待ち').length + @dmers.where(status: '社内確認中').length %></td>
+          <td class="search-td"><%= @dmers.where.not(store_props: {head_store: nil}).where.not(status: '複数店舗' ).length %></td>
+          <td class="search-td"><%= @dmers.where(status: '複数店舗' ).length %></td>
           <td class="search-td"><%= hubi + client_hubi %></td>
-          <td class="search-td"><%= @dmers.where(status: '自社NG' ).length + @dmers.where(status: '上位店NG' ).length %></td>
+          <td class="search-td"><%= industry_ng + client_ng %></td>
           <td class="search-td"><%= settlement_subject %></td>
           <td class="search-td"><%= settlement_done %></td>
-          <td class="search-td"><%= settlement_expired %></td>
+          <td class="search-td"><%= slmt_pias_len + slmt_max_len + slmt_usen_len + slmt_len %></td>
           <td class="search-td"><%= number_to_percentage(settlement_done.to_f / settlement_subject.to_f * 100, precision: 1) rescue "-" %></td>
         </tr>
         <tr>
@@ -100,11 +121,10 @@
         <tr >
           <th class="search-th">自社不備</th>
           <th class="search-th">上位店不備</th>
-          <th class="search-th">不備率（不備率÷獲得数）</th>
+          <th class="search-th">不備率（不備÷獲得数）</th>
+          <th class="search-th">業種NG</th>
           <th class="search-th">上位店NG</th>
-          <th class="search-th">自社NG</th>
-          <th class="search-th">申込取消</th>
-          <th class="search-th">NG率（NG率÷獲得数）</th>
+          <th class="search-th">NG率（NG÷獲得数）</th>
         </tr>
 
         <tr >
@@ -112,10 +132,9 @@
           <td class="search-td"><%= hubi %></td>
           <td class="search-td"><%= client_hubi %></td>
           <td class="search-td"><%= number_to_percentage( (hubi + client_hubi).to_f / @dmers.length.to_f * 100, precision: 1) rescue "-" %></td>
-          <td class="search-td"><%= ng %></td>
+          <td class="search-td"><%= industry_ng %></td>
           <td class="search-td"><%= client_ng %></td>
-          <td class="search-td"><%= cancel %></td>
-          <td class="search-td"><%= number_to_percentage( (ng + client_ng + cancel).to_f / @dmers.length.to_f * 100, precision: 1) rescue "-" %></td>
+          <td class="search-td"><%= number_to_percentage( (industry_ng + client_ng).to_f / @dmers.length.to_f * 100, precision: 1) rescue "-" %></td>
         </tr>
       </table>
       <div>
@@ -127,44 +146,41 @@
     <tr class="table-row">
       <th ></th>
       <th ><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
-      <th >法人/個人</th>
+      <th >商流</th>
       <th >複数店</th>
       <th >店舗名</th>
       <th >獲得者</th>
+      <th >業種チェック</th>
       <th >審査ステータス</th>
-      <th >不備・N G発生日</th>
-      <th >不備・N G解消日</th>
+      <th >決済ステータス</th>
+      <th >決済対応者</th>
       <th >初回決済日</th>
       <th >決済期限</th>
-      <th >決済ステータス</th>
-      <th >決済不備・N G発生日</th>
-      <th >決済不備・N G解消日</th>
-      <th >入金日</th>
+      <th >不備内容(新規)</th>
+      <th >不備内容(決済)</th>
     </tr>
     <% @dmers.find_each do |dmer| %>
     <tr class="index-tr">
       <td class="index-td"><%= link_to "　詳細　",  dmer_path(dmer.id) ,class: "link" %></td>
       <td class="index-td"><%= dmer.date.month %>月<%= dmer.date.day %>日</td>
-      <td class="index-td"><%= dmer.store_prop.race %></td>
-      <% if dmer.store_prop.head_store.blank? %>
-        <td class="index-td"></td>
-      <% elsif dmer.store_prop.head_store == dmer.store_prop.name %>
+      <td class="index-td"><%= dmer.client %></td>
+      <% if @dmers.find_by(store_props: {head_store: dmer.store_prop.name}).present? %>
         <td class="index-td">複数店本店</td>
+      <% elsif dmer.store_prop.head_store.blank? %>
+        <td class="index-td"></td>
       <% else %>
-        <td class="index-td">本店名(<%= dmer.store_prop.head_store %>)</td>
+        <td class="index-td">本店名：<%= dmer.store_prop.head_store %></td>
       <% end %>
       <td class="index-td"><%= dmer.store_prop.name %></td>
       <td class="index-td"><%= dmer.user.name %></td>
+      <td class="index-td"><%= dmer.industry_status %></td>
       <td class="index-td"><%= dmer.status %></td>
-      <td class="index-td"><%= dmer.deficiency %></td>
-      <td class="index-td"><%= dmer.deficiency_solution %></td>
+      <td class="index-td"><%= dmer.status_settlement %></td>
+      <td class="index-td"><%= dmer.settlementer.name rescue ' ' %></td>
       <td class="index-td"><%= dmer.settlement %></td>
       <td class="index-td"><%= dmer.settlement_deadline %></td>
-      <td class="index-td"><%= dmer.status_settlement %></td>
-      <td class="index-td"><%= dmer.deficiency_settlement %></td>
-      <td class="index-td"><%= dmer.deficiency_solution_settlement %></td>
-      <td class="index-td"><%= dmer.payment %></td>
-
+      <td class="td-remarks"><%= dmer.deficiency_remarks %></td>
+      <td class="td-remarks"><%= dmer.deficiency_remarks_settlement %></td>
     </tr>
     <% end %>
     </table>

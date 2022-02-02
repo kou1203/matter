@@ -7,7 +7,7 @@
       <tr>
         <td class="csv-label">CSV</td>
         <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
-        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？', disable_with: "インポート中"  } %></td>
       </tr>
     </table>
   <% end %>
@@ -32,14 +32,16 @@
         <tr >
           <th class="search-head" rowspan="2" >検索</th>
           <th class="search-th">申込番号</th>
+          <th class="search-th">店舗名</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">審査ステータス</th>
           <th class="search-th">決済ステータス</th>
           <th class="search-th">商流</th>
-          <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
+          <td class="result"><%= f.submit "絞込み",data: {disable_with: "絞り込み中"} ,class: "result-btn" %></td>
         </tr>
         <tr >
           <td><%= f.text_field :customer_num_eq, class: "input" %></td>
+          <td><%= f.text_field :store_prop_name_cont, class: "input" %></td>
           <td><%= f.text_field :user_name_cont, class: "input" %></td>
           <td><%= f.select :status_eq, options_from_collection_for_select(Aupay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
           <td><%= f.select :status_settlement_eq, options_from_collection_for_select(Aupay.select(:status_settlement).distinct,:status_settlement, :status_settlement),{include_blank: true}, {class: "input"} %></td>
@@ -53,28 +55,30 @@
     <% if @aupays.empty? %>
     <% else %>
       <h1>表示範囲：<%= @aupays.minimum(:date) %>（<%= days[@aupays.minimum(:date).wday] %>〜<%= @aupays.maximum(:date) %>（<%= days[@aupays.maximum(:date).wday] %>）</h1>
+
         <% settlement_subject = @aupays.where.not(settlement_deadline: nil).length %>
         <% settlement_done = @aupays.where.not(settlement: nil).length %>
         <% settlement_expired = @aupays.where(settlement: nil).where(settlement_deadline: Time.now.years_ago(5)..Time.now).length  %>
         <% aupay_sum = @aupays.where.not(status: "申込取消").where.not(status: "審査NG").where.not(status: "自社不備").sum(:profit_new) %>
         <% hubi = @aupays.where(status: '自社不備' ).length %>
-        <% client_hubi = @aupays.where(status: '上位店不備' ).length %>
-        <% ng = @aupays.where(status: '自社NG' ).length %>
-        <% client_ng = @aupays.where(status: '上位店NG' ).length %>
+        <% client_hubi = @aupays.where(status: '差し戻し' ).length %>
+        <% client_ng = @aupays.where(status: '不合格' ).length + @aupays.where(status: '重複対象外' ).length %>
         <% cancel = @aupays.where(status: '申込取消' ).length %>
     <div style="display: flex;">
       <table class="status-tb">
         <tr>
-          <th colspan="6" class="search-th">獲得ステータス</th>
+          <th colspan="5" class="search-th">獲得ステータス</th>
+          <th colspan="2" class="search-th">複数店追加状況</th>
           <th colspan="4" class="search-th">決済内訳</th>
         </tr>
         <tr>
           <th class="search-th">　　　　獲得件数　　　　</th>
-          <th class="search-th">　　　　入金待ち　　　　</th>
+          <th class="search-th">　　　　審査通過　　　　</th>
           <th class="search-th">　　　　審査待ち　　　　</th>
-          <th class="search-th">　　　　複数追加　　　　</th>
           <th class="search-th">　　　　不備　　　　</th>
           <th class="search-th">NG</th>
+          <th class="search-th">　　　　複数追加　　　　</th>
+          <th class="search-th">　　　　複数追加待ち　　　　</th>
           <th class="search-th">　　　　決済対象　　　　</th>
           <th class="search-th">　　　　決済完了　　　　</th>
           <th class="search-th">　　　　決済期限切れ件数　　　　</th>
@@ -82,11 +86,12 @@
         </tr>
         <tr>
           <td class="search-td"><%= @aupays.length %></td>
-          <td class="search-td"><%= @aupays.where(status: '入金待ち' ).length %></td>
+          <td class="search-td"><%= @aupays.where(status: '審査通過' ).length %></td>
           <td class="search-td"><%= @aupays.where(status: '審査待ち').length %></td>
-          <td class="search-td"><%= @aupays.where(status: '複数追加' ).length %></td>
           <td class="search-td"><%= hubi + client_hubi %></td>
-          <td class="search-td"><%= @aupays.where(status: '自社NG' ).length + @aupays.where(status: '上位店NG' ).length %></td>
+          <td class="search-td"><%= client_ng %></td>
+          <td class="search-td"><%= @aupays.where.not(store_props: {head_store: nil}).where.not(status: '複数店舗' ).length %></td>
+          <td class="search-td"><%= @aupays.where(status: '複数店舗' ).length %></td>
           <td class="search-td"><%= settlement_subject %></td>
           <td class="search-td"><%= settlement_done %></td>
           <td class="search-td"><%= settlement_expired %></td>
@@ -94,8 +99,7 @@
         </tr>
         <tr>
           
-          <th colspan="3" class="search-th">不備内訳</th>
-          <th colspan="4" class="search-th">NG内訳</th>
+          <th colspan="5" class="search-th">不備・NG内訳</th>
         </tr>
         <tr >
 
@@ -103,19 +107,15 @@
           <th class="search-th">上位店不備</th>
           <th class="search-th">不備率（不備率÷獲得数）</th>
           <th class="search-th">上位店NG</th>
-          <th class="search-th">自社NG</th>
-          <th class="search-th">申込取消</th>
-          <th class="search-th">NG率（NG率÷獲得数）</th>
+          <th class="search-th">NG率（NG÷獲得数）</th>
         </tr>
 
         <tr >
           <td class="search-td"><%= hubi %></td>
           <td class="search-td"><%= client_hubi %></td>
           <td class="search-td"><%= number_to_percentage( (hubi + client_hubi).to_f / @aupays.length.to_f * 100, precision: 1) rescue "-" %></td>
-          <td class="search-td"><%= ng %></td>
           <td class="search-td"><%= client_ng %></td>
-          <td class="search-td"><%= cancel %></td>
-          <td class="search-td"><%= number_to_percentage( (ng + client_ng + cancel).to_f / @aupays.length.to_f * 100, precision: 1) rescue "-" %></td>
+          <td class="search-td"><%= number_to_percentage( (client_ng + cancel).to_f / @aupays.length.to_f * 100, precision: 1) rescue "-" %></td>
         </tr>
 
       </table>
@@ -131,31 +131,37 @@
       <th ><%= sort_link(@q, :date, "獲得日",{},{class: "reset-link"}) %></th>
       <th >獲得者</th>
       <th >法人/個人</th>
+      <th >本店名</th>
       <th >店舗名</th>
       <th >審査ステータス</th>
-      <th >不備発生日</th>
-      <th >不備解消日</th>
+      <th >決済ステータス</th>
+      <th >決済対応者</th>
       <th >初回決済日</th>
       <th >決済期限</th>
-      <th >決済不備発生日</th>
-      <th >決済不備解消日</th>
-      <th >入金日</th>
+      <th >不備内容(新規)</th>
+      <th >不備内容(決済)</th>
     </tr>
     <% @aupays.find_each do |aupay| %>
     <tr >
-      <td ><%= link_to "詳細",  aupay_path(aupay.id) ,class: "link" %></td>
+      <td ><%= link_to "　詳細　",  aupay_path(aupay.id) ,class: "link" %></td>
       <td ><%= aupay.date.month %>月<%= aupay.date.day %>日</td>
       <td ><%= aupay.user.name %></td>
       <td ><%= aupay.store_prop.race %></td>
+      <% if @aupays.find_by(store_props: {head_store: aupay.store_prop.name}).present? %>
+        <td class="index-td">複数店本店</td>
+      <% elsif aupay.store_prop.head_store.blank? %>
+        <td class="index-td"></td>
+      <% else %>
+        <td class="index-td">本店名：<%= aupay.store_prop.head_store %></td>
+      <% end %>
       <td ><%= aupay.store_prop.name %></td>
       <td ><%= aupay.status %></td>
-      <td ><%= aupay.deficiency %></td>
-      <td ><%= aupay.deficiency_solution %></td>
+      <td ><%= aupay.status_settlement %></td>
+      <td ><%= aupay.settlementer.name rescue ' ' %></td>
       <td ><%= aupay.settlement %></td>
       <td ><%= aupay.settlement_deadline %></td>
-      <td ><%= aupay.deficiency_settlement %></td>
-      <td ><%= aupay.deficiency_solution_settlement %></td>
-      <td ><%= aupay.payment %></td>
+      <td class="td-remarks"><%= aupay.deficiency_remarks %></td>
+      <td class="td-remarks"><%= aupay.deficiency_remarks_settlement %></td>
     </tr>
     <% end %>
     </table>

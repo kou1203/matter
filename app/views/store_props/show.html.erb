@@ -10,10 +10,7 @@
         <th class="dmer-th">dメル</th>
         <th class="aupay-th">auペイ</th>
         <th class="paypay-th">PayPay</th>
-        <th class="praness-th">ぷらねす</th>
         <th class="rakuten-casa-th">楽天フェムト</th>
-        <th class="summit-th">サミットエナジー</th>
-        <th class="panda-th">フードパンダ</th>
       </tr>
       <tr >
         <% if @dmer.nil? %>
@@ -31,27 +28,10 @@
         <% else %>
           <td class="reg-td"><%= link_to "登録済み/詳細", paypay_path(@store_prop.paypay.id),class: "link" %></td>
         <% end %>
-        <% if @praness.nil? %>
-          <td><%= link_to "新規登録", store_prop_pranesses_new_path(@store_prop.id), class: "link" %></td>
-        <% else %>
-          <td class="reg-td"><%= link_to "登録済み/詳細", praness_path(@store_prop.praness.id),class: "link" %></td>
-        <% end %>
         <% if @rakuten_casa.nil? %>
           <td><%= link_to "新規登録", store_prop_rakuten_casas_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
           <td class="reg-td"><%= link_to "登録済み/詳細", rakuten_casa_path(@store_prop.rakuten_casa.id),class: "link" %></td>
-        <% end %>
-        <% if @summit_customer_prop.nil? %>
-          <td><%= link_to "情報入力",  store_prop_summit_customer_props_new_path(@store_prop.id), class: "link" %></td>
-        <% elsif @summits.nil? %>
-          <td class="summit-td"><%= link_to "契約追加(現状0件)",  summit_customer_prop_summits_new_path(@store_prop.summit_customer_prop.id), class: "reset-link" %></td>
-        <% else %>
-          <td class="summit-td"><%= link_to "契約追加(現状#{ @summits.length }件)",  summit_customer_prop_summits_new_path(@store_prop.summit_customer_prop.id), class: "reset-link" %></td>
-        <% end %>
-        <% if @pandas.nil? %>
-          <td><%= link_to "新規登録",  store_prop_pandas_new_path(@store_prop.id), class: "link" %></td>
-        <% else %>
-          <td class="reg-td">登録済み</td>
         <% end %>
       </tr>
       <tr>

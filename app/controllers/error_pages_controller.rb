@@ -1,0 +1,2 @@
+class ErrorPagesController < ApplicationController
+end

@@ -8,7 +8,7 @@
       <tr>
         <td class="csv-label" >CSV</td>
         <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
-        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？' } %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
         </tr>
       </table>
     <% end %>
@@ -44,24 +44,26 @@
       <h1>表示範囲：<%= @rakuten_pays.minimum(:date) %>（<%= days[@rakuten_pays.minimum(:date).wday] %>）〜<%= @rakuten_pays.maximum(:date) %>（<%= days[@rakuten_pays.maximum(:date).wday] %>）</h1>
     <table>
       <tr>
-        <th class="search-th">審査前</th>
-        <th class="search-th">審査中</th>
+        <th class="search-th">獲得数</th>
+        <th class="search-th">複数店舗</th>
+        <th class="search-th">登記簿待ち</th>
+        <th class="search-th">審査待ち</th>
         <th class="search-th">審査完了</th>
       </tr>
       <tr>
-        <td><%= @rakuten_pays.where(status: "審査前").length %></td>
-        <td><%= @rakuten_pays.where(status: "審査中").length %></td>
+        <td><%= @rakuten_pays.length %></td>
+        <td><%= @rakuten_pays.where(status: "複数店舗").length %></td>
+        <td><%= @rakuten_pays.where(status: "登記簿待ち").length %></td>
+        <td><%= @rakuten_pays.where(status: "審査待ち").length %></td>
         <td><%= @rakuten_pays.where(status: "審査完了").length %></td>
       </tr>
       <tr>
         <th class="search-th">自社不備</th>
-        <th class="search-th">自社NG</th>
         <th class="search-th">上位店不備</th>
         <th class="search-th">上位店NG</th>
       </tr>
       <tr>
         <td><%= @rakuten_pays.where(status: "自社不備").length %></td>
-        <td><%= @rakuten_pays.where(status: "自社NG").length %></td>
         <td><%= @rakuten_pays.where(status: "上位店不備").length %></td>
         <td><%= @rakuten_pays.where(status: "上位店NG").length %></td>
       </tr>

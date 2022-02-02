@@ -67,6 +67,7 @@ class DmersController < ApplicationController
       :store_prop_id,
       :date,
       :share,
+      :industry_status,
       :status,
       :status_update,
       :shipment,
