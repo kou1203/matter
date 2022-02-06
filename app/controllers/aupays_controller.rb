@@ -72,6 +72,7 @@ class AupaysController < ApplicationController
       :status_update,
       :settlementer_id,
       :shipment,
+      :picture,
       :settlement,
       :settlement_deadline,
       :status_settlement,

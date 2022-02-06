@@ -1,0 +1,32 @@
+<div data-scope-path="users/edit">
+<%= form_with model: @user, class: "form-frame", local: true do |f| %>
+<h1>新規登録</h1>
+  <table>
+    <tr>
+      <th><label class="form-text">名前</label></th>
+      <th><label class="form-text">拠点①</label></th>
+      <th><label class="form-text">拠点②(SS)</label></th>
+    </tr>
+      <td><%= f.text_field :name, class: "form-input" %></td>
+      <td><%= f.select :base, {"中部N": "中部N", "関西N": "関西N","中部SS": "中部SS", "関西SS": "関西SS","関東SS": "関東SS"},{include_blank: true},{class: "form-input"} %></td>
+      <td><%= f.select :base_sub, {"キャッシュレス": "キャッシュレス", "キャッシュ・パンダ": "キャッシュ・パンダ","フェムト": "フェムト", "サミット": "サミット"},{include_blank: true}, {class: "form-input"} %></td>
+    </tr>
+    <tr>
+      <th><label class="form-text">グループ</label></th>
+      <th><label class="form-text">チーム</label></th>
+      <th><label class="form-text">メールアドレス</label></th>
+      <th><label class="form-text">パススワード</label></th>
+      <th><label class="form-text">パスワード確認</label></th>
+    </tr>
+      
+    </tr>
+      <td><%= f.text_field :group, class: "form-input" %></td>
+      <td><%= f.text_field :team, class: "form-input" %></td>
+      <td><%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-input" %></td>
+      <td><%= f.password_field :password, autocomplete: "new-password", class: "form-input" %></td>
+      <td><%= f.password_field :password_confirmation, autocomplete: "new-password", class: "form-input" %></td>
+    <tr>
+  </table>
+    <%= f.submit "登録",class: "submit-btn" %>
+<% end %>
+</div>

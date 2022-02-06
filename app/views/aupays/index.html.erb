@@ -7,7 +7,7 @@
       <tr>
         <td class="csv-label">CSV</td>
         <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
-        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？', disable_with: "インポート中"  } %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？', disable_with: "インポート中" } %></td>
       </tr>
     </table>
   <% end %>
@@ -56,10 +56,10 @@
     <% else %>
       <h1>表示範囲：<%= @aupays.minimum(:date) %>（<%= days[@aupays.minimum(:date).wday] %>〜<%= @aupays.maximum(:date) %>（<%= days[@aupays.maximum(:date).wday] %>）</h1>
 
-        <% settlement_subject = @aupays.where.not(settlement_deadline: nil).length %>
+        <% settlement_subject = @aupays.where(status: "審査通過").length %>
         <% settlement_done = @aupays.where.not(settlement: nil).length %>
-        <% settlement_expired = @aupays.where(settlement: nil).where(settlement_deadline: Time.now.years_ago(5)..Time.now).length  %>
-        <% aupay_sum = @aupays.where.not(status: "申込取消").where.not(status: "審査NG").where.not(status: "自社不備").sum(:profit_new) %>
+        <% slmt_dead = @aupays.where(status: "審査通過").where.not(status_settlement: "完了").where(settlement_deadline: @aupays.minimum(:date)..Date.today).length  %>
+        <% aupay_sum = @aupays.where.not(status: "申込取消").where.not(status: "不合格").where.not(status: "自社不備").sum(:profit_new) %>
         <% hubi = @aupays.where(status: '自社不備' ).length %>
         <% client_hubi = @aupays.where(status: '差し戻し' ).length %>
         <% client_ng = @aupays.where(status: '不合格' ).length + @aupays.where(status: '重複対象外' ).length %>
@@ -94,7 +94,7 @@
           <td class="search-td"><%= @aupays.where(status: '複数店舗' ).length %></td>
           <td class="search-td"><%= settlement_subject %></td>
           <td class="search-td"><%= settlement_done %></td>
-          <td class="search-td"><%= settlement_expired %></td>
+          <td class="search-td"><%= slmt_dead %></td>
           <td class="search-td"><%= number_to_percentage(settlement_done.to_f / settlement_subject.to_f * 100, precision: 1) rescue "-" %></td>
         </tr>
         <tr>

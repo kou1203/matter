@@ -30,6 +30,7 @@ class ResultsController < ApplicationController
           @dmers_slmt_dec = slmt_dec_period(@dmers_slmt_not_this_month,@results)
           @dmers_slmt_def = slmt_this_period(@dmers_settlementer.where(status_settlement: "未決済"),@results)
           @dmers_slmt_def_pic = slmt_this_period(@dmers_settlementer.where(status_settlement: "写真不備"),@results)
+          @dmers_slmt_target = slmt_dead_line(@dmers_user,@results)
 
         # aupay　新規
           @aupays_user = Aupay.where(user_id: @results.first.user_id )
@@ -48,6 +49,10 @@ class ResultsController < ApplicationController
           @aupays_slmt_not_this_month = slmt_not_period(@aupays_settlementer,@results)
           @aupays_slmt_def_this_month = slmt_def_period(@aupays_this_month,@results)
           @aupays_slmt_inc = slmt_inc_period(@aupays_not_this_month,@results)
+
+          @aupays_slmt_target = slmt_dead_line(@aupays_user,@results)
+          # 決済の合計
+          @slmt_sum = @dmers_slmt_target.sum(:valuation_settlement) + @aupays_slmt_target.sum(:valuation_settlement)
         # paypay
             @paypays_user = Paypay.where(user_id: @results.first.user_id )
             @paypays_this_month = this_period(@paypays_user,@results)
@@ -173,7 +178,21 @@ class ResultsController < ApplicationController
   def update 
     @result = Result.find(params[:id])
     @result.update(result_params)
+    if @result.shift == "キャッシュレス新規" && @result.result_cash.nil?
+      redirect_to  result_result_cashes_new_path(@result.id)
+    elsif @result.shift == "キャッシュレス新規"
+      redirect_to edit_result_cash_path(@result.result_cash.id)
+    elsif @result.shift == "楽天フェムト新規" && @result.result_cash.nil?
+      redirect_to edit_result_casa_path(@result.result_casa.id)
+    elsif @result.shift == "楽天フェムト新規"
+      redirect_to  result_result_cashes_new_path(@result.id)
+    elsif @result.shift == "サミット" && @result.result_cash.nil?
+      redirect_to edit_result_summit_path(@result.result_summit.id)
+    elsif @result.shift == "サミット"
+      redirect_to  result_result_summits_new_path(@result.id)
+    else  
       redirect_to results_path
+    end
   end
 
 
@@ -215,6 +234,13 @@ class ResultsController < ApplicationController
     end
     def slmt_def_period(product,date)
       return product.where.not(deficiency_settlement: nil).where(deficiency_solution_settlement: nil).or(product.where.not(deficiency_settlement: nil).where.not(deficiency_solution_settlement: date.minimum(:date)..date.maximum(:date)))
+    end
+
+    def slmt_dead_line(product,date)
+      return product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: nil)
+      .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where.not(settlement: date.minimum(:date)..date.maximum(:date)))
+      .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: nil))
+      .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: date.minimum(:date)..date.maximum(:date)))
     end
 
   def result_params

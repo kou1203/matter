@@ -7,11 +7,12 @@
   <%= form_with url: import_store_props_path do |f| %>
     <table>
         <td class="csv-label">CSV</td>
-        <td><%= f.file_field :file, accept: '.csv', class: "input"  %></td>
-        <td class="result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"},id: "dl-reload", target: "_blank" %>
+        <td><%= f.file_field :file, accept:'.csv', class:"input" %></td>
+        <td class="result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"} %>
     </table>
   <% end %>
-      <%= search_form_for @q do |f| %>
+
+  <%= search_form_for @q do |f| %>
     <table>
       <tr>
         <th class="search-head" rowspan="2" >検索</th>
@@ -33,11 +34,11 @@
         <td  class="reset"><%= link_to "絞込み解除", store_props_path ,class: "reset-link" %></td>
       </tr>
     </table>
-      <% end %>
+  <% end %>
     <hr>
       <%= alert %>
-    <% if @store_props.empty? %>
-    <% else %>
+  <% if @store_props.empty? %>
+  <% else %>
     <table>
       <tr>
         <th class="search-th">店舗数</th>

@@ -63,6 +63,7 @@
         <th><%= f.label :status_settlement, "決済ステータス", class: "form-text" %></th>
         <th><%= f.label :status_update_settlement, "決済ステータス更新日", class: "form-text" %></th>
         <th><%= f.label :settlement, "決済日", class: "form-text" %></th>
+        <th><%= f.label :picture, "アクセプタンスアップロード日", class: "form-text" %></th>
         <th><%= f.label :settlement_deadline, "決済期限", class: "form-text" %></th>
 
       </tr>
@@ -70,9 +71,10 @@
         <td><%= f.date_field :shipment , class: "form-input" %></td>
         <td><%= f.collection_select(:settlementer_id, @users, :id, :name,{include_blank: true}, {class: "form-input"})%></td>
         <td><%= f.select :status_settlement, {"未審査": "未審査", "審査中": "審査中", "審査完了": "審査完了","自社不備": "自社不備","自社NG": "自社NG","上位店不備": "上位店不備","上位店NG": "上位店NG"} ,{}, {class: "form-input"} %></td>
-        <td><%= f.date_field :settlement_deadline , class: "form-input" %></td>
-        <td><%= f.date_field :settlement , class: "form-input" %></td>
         <td><%= f.date_field :status_update_settlement, class: "form-input" %></td>
+        <td><%= f.date_field :settlement , class: "form-input" %></td>
+        <td><%= f.date_field :picture , class: "form-input" %></td>
+        <td><%= f.date_field :settlement_deadline , class: "form-input" %></td>
       </tr>
     </table>
     <table>

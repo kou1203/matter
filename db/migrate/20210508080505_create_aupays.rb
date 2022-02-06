@@ -12,6 +12,7 @@ class CreateAupays < ActiveRecord::Migration[6.0]
       t.references :settlementer
       t.date :shipment
       t.date :settlement
+      t.date :picture
       t.date :settlement_deadline
       t.string :status_settlement     
       t.date :status_update_settlement

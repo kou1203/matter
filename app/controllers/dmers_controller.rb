@@ -73,6 +73,8 @@ class DmersController < ApplicationController
       :shipment,
       :settlementer_id,
       :settlement,
+      :settlement_second,
+      :picture,
       :settlement_deadline,
       :status_settlement,
       :status_update_settlement,

@@ -16,7 +16,7 @@
         <% settlement_shift = shifts.where(shift: "キャッシュレス決済").length %>
         <% summit_shift = shifts.where(shift: "サミット").length %>
         <% casa_shift = shifts.where(shift: "楽天フェムト新規").length %>
-        <% casa_put_shift= shifts.where(shift: "楽天フェムト").length %>
+        <% casa_put_shift= shifts.where(shift: "楽天フェムト設置").length %>
         <% ojt_shift = shifts.where(shift: "帯同").length %>
         <% house_work_shift = shifts.where(shift: "内勤").length %> 
 
@@ -92,7 +92,7 @@
       </tr>
     </table>
 
-    <%# 商材（評価売上） %>
+    <%# 商材（評価売上変数） %>
       <%# dメル %>
         <%# 新規 %>
           <% dmer_new_profit = @dmers_this_month.sum(:valuation_new) - @dmers_def_this_month.sum(:valuation_new) + @dmers_inc.sum(:valuation_new) %>
@@ -122,23 +122,107 @@
         <% ave_profit_slmt = sum_profit_slmt.to_f / digestion_settlement %>
         <% ave_profit = (sum_profit.to_f / @results.where.not(shift: "休み").where.not(shift: "帯同").where.not(shift: "内勤").where.not(shift: "欠勤").length) %>
   <h1>獲得商材内訳</h1>
-    <h2>売上</h2>
+    <h2>売上/予測値 決済予定</h2>
+    <table>
+      <tr></tr>
+      <tr>
+        <th>平均売上（新規）</th>
+        <th>平均売上（決済）</th>
+        <th>現状売上（新規）</th>
+        <th>現状売上（決済）</th>
+        <th>現状合計売上</th>
+      <tr>
+      </tr>
+        <td><%= ave_profit_new.round().to_s(:delimited) rescue "NaN" %></td>
+        <td><%= ave_profit_slmt.round().to_s(:delimited) rescue "NaN" %></td>
+        <td><%= sum_profit_new.to_s(:delimited) %></td>
+        <td><%= sum_profit_slmt.to_s(:delimited) %></td>
+        <td><%= (sum_profit_new + sum_profit_slmt).to_s(:delimited) %></td>
+      </tr>
+      <tr></tr>
+      <tr>
+        <th>決済対象（dメル）</th>
+        <th>決済対象（aupay）</th>
+        <th>終着見込(新規)</th>
+        <th>終着見込(決済)</th>
+        <th>終着見込（合計）</th><%# （平均売上 * 予定シフト数） %>
+      </tr>
+      <input type="hidden", id="dmer-slmt-price" value="<%= @dmers_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
+      <input type="hidden", id="aupay-slmt-price" value="<%= @aupays_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
+      <input type="hidden", id="new-sum" value="<%= ave_profit_new * new_shift %>"><%# 決済合計売上の値をjsで取得する %>
+      <tr>
+        <td><%= @dmers_slmt_target.length %></td>
+        <td><%= @aupays_slmt_target.length %></td>
+        <td><%= (ave_profit_new * new_shift).round().to_s(:delimited) rescue "計算不可" %></td>
+        <td><span id="slmt-profit">決済率と連動してます</span></td>
+        <td><span id="sum-profit" >決済率と連動してます</span></td>
+      </tr>
+      <tr>
+        <th>dメル決済率</th>
+        <th>auPay決済率</th>
+      </tr>
+      <tr>
+        <td><input type="number", class="input-math", id="slmt-dmer" max="100", placeholder="見込決済率を入力" >％</td>
+        <td><input type="number", class="input-math", id="slmt-aupay" max="100", placeholder="見込決済率を入力" >％</td>
+      </tr>
+    </table>
+    <h2>商材別売上/生産性</h2>
+      <%# 商材別獲得合計（評価対象のみ） %>
+        <% dmer_len = @dmers_this_month.length - @dmers_def_this_month.length + @dmers_inc.length %></td>
+        <% dmer_slmt_len = @dmers_slmt_this_month.length %></td>
+        <% aupay_len = @aupays_this_month.length - @aupays_def_this_month.length + @aupays_inc.length %></td>
+        <% aupay_slmt_len = @aupays_slmt_this_month.length %></td>
+        <% paypay_len = @paypays_this_month.length - @paypays_def_this_month.length %></td>
+        <% rakuten_pay_len = @rakuten_pays_this_month.length - @rakuten_pays_def_this_month.length + @rakuten_pays_inc.length %>
+        <% rakuten_casa_len =  @rakuten_casas_this_month.length - @rakuten_casas_def_this_month.length + @rakuten_casas_inc.length %>
+        <% rakuten_casa_put_len = @rakuten_casas_put_self.length + @rakuten_casas_put_other.length + @rakuten_casas_put_request.length  %>
     <table>
       <tr>
+        <th>商材</th>
         <th>dメル（新規）</th>
         <th>dメル（決済）</th>
         <th>aupay（新規）</th>
         <th>aupay（決済）</th>
         <th>PayPay</th>
         <th>楽天ペイ</th>
-        <th>フェムト（新規）</th>
-        <th>フェムト（設置）</th>
-        <th>平均売上（新規）</th>
-        <th>平均売上（決済）</th>
-        <th>現状売上</th>
-        <th>終着見込売上</th><%# （平均売上 * 予定シフト数） %>
+        <th >フェムト（新規）</th>
+        <th >フェムト（設置）</th>
       </tr>
       <tr>
+        <th>獲得数</th>
+        <td><%= dmer_len %></td>
+        <td><%= dmer_slmt_len %></td>
+        <td><%= aupay_slmt_len %></td>
+        <td><%= aupay_len %></td>
+        <td><%= paypay_len %></td>
+        <td><%= rakuten_pay_len %></td>
+        <td><%= rakuten_casa_len %></td>
+        <td><%= rakuten_casa_put_len %></td>
+      </tr>
+      <tr>
+        <th>生産性</th>
+        <td><%= (dmer_len.to_f / digestion_new).round(1) %></td>
+        <td><%= (dmer_slmt_len.to_f / digestion_settlement).round(1) %></td>
+        <td><%= (aupay_len.to_f / digestion_new).round(1) %></td>
+        <td><%= (aupay_slmt_len.to_f / digestion_settlement).round(1) %></td>
+        <td><%= (paypay_len.to_f / digestion_new).round(1) %></td>
+        <td><%= (rakuten_pay_len.to_f / digestion_new).round(1) %></td>
+        <td><%= (rakuten_casa_len.to_f / digestion_casa).round(1) %></td>
+        <td><%= (rakuten_casa_put_len.to_f / digestion_casa_put).round(1) %></td>
+      </tr>
+      <tr>
+        <th>平均売上</th>
+        <td><%= (dmer_new_profit.to_f / digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
+        <td><%= (dmer_slmt_profit.to_f / digestion_settlement).round().to_s(:delimited) rescue "NaN" %></td>
+        <td><%= (aupay_new_profit.to_f / digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
+        <td><%= (aupay_slmt_profit.to_f / digestion_settlement).round().to_s(:delimited) rescue "NaN" %></td>
+        <td><%= (paypay_profit.to_f / digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
+        <td><%= (rakuten_pay_profit.to_f / digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
+        <td><%= (casa_new_profit.to_f / digestion_casa).round().to_s(:delimited) rescue "NaN" %></td>
+        <td><%= (casa_put_profit.to_f / digestion_casa_put).round().to_s(:delimited) rescue "NaN" %></td>
+      </tr>
+      <tr>
+        <th>合計売上</th>
         <td><%= dmer_new_profit.to_s(:delimited) %></td>
         <td><%= dmer_slmt_profit.to_s(:delimited) %></td>
         <td><%= aupay_new_profit.to_s(:delimited) %></td>
@@ -147,11 +231,6 @@
         <td><%= rakuten_pay_profit.to_s(:delimited) %></td>
         <td><%= casa_new_profit.to_s(:delimited) %></td>
         <td><%= casa_put_profit.to_s(:delimited) %></td>
-        <td><%= ave_profit_new.round().to_s(:delimited) rescue "計算不可" %></td>
-        <td><%= ave_profit_slmt.round().to_s(:delimited) rescue "計算不可" %></td>
-        
-        <td><%= (sum_profit_new + sum_profit_slmt).to_s(:delimited) %></td>
-        <td><%= (ave_profit_new * new_shift + ave_profit_slmt * settlement_shift).round().to_s(:delimited) rescue "計算不可" %></td>
       </tr>
     </table>
     <h2>獲得数</h2>
@@ -253,84 +332,236 @@
     <% else %>
     <div style="display: flex;">
     <div>
-  <h2>キャッシュレス新規</h2>
-    <table>
-    <tr>
-    </tr>
+  <h2>キャッシュレス基準値</h2>
+  <%# 合計変数 %>
+  <% sum_visit = @results.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit") %>
+  <% sum_interview = @results.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview") %>
+  <% sum_full_talk = @results.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") %>
+  <% sum_get = @results.where(shift: "キャッシュレス新規").sum("first_get + latter_get") %>
+  <%# 前半変数 %>
+  <% sum_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_visit) %>
+  <% sum_interview_f = @results.where(shift: "キャッシュレス新規").sum(:first_interview) %>
+  <% sum_full_talk_f = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk) %>
+  <% sum_get_f = @results.where(shift: "キャッシュレス新規").sum(:first_get) %>
+  <%# 後半変数 %>
+  <% sum_visit_l = @results.where(shift: "キャッシュレス新規").sum(:latter_visit) %>
+  <% sum_interview_l = @results.where(shift: "キャッシュレス新規").sum(:latter_interview) %>
+  <% sum_full_talk_l = @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk) %>
+  <% sum_get_l = @results.where(shift: "キャッシュレス新規").sum(:latter_get) %>
+  <table class="out-tb">
+    <thead>
       <tr>
-        <th colspan="4">合計</th>
-        <th colspan="4">前半</th>
-        <th colspan="4">後半</th>
+        <th >項目</th>
+        <th >内訳</th>
+        <th >合計</th>
+        <th >平均</th>
+        <th >比率</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th rowspan="4" class="out-th">合計</th>
+        <th>訪問</th>
+        <td><%= sum_visit %></td>
+        <td><%= (sum_visit.to_f / digestion_new).to_f().round(1) %></td>
+        <td>-</td>
       </tr>
       <tr>
-      <% 3.times do %>
-        <th style="border-left: 1px solid rgb(214, 219, 235);">訪問</th>
-        <th>対面</th>
+        <th>面会</th>
+        <td><%= sum_interview %></td>
+        <td><%= (sum_interview.to_f / digestion_new).to_f().round(1) %></td>
+        <td><%= number_to_percentage(sum_interview.to_f / sum_visit.to_f * 100, precision: 1)  %></td>
+      </tr>
+      <tr>
         <th>フル</th>
-        <th>成約</th>
-      <% end %>
+        <td><%= sum_full_talk %></td>
+        <td><%= (sum_full_talk.to_f / digestion_new).to_f.round(1) %></td>
+        <td><%= number_to_percentage(sum_full_talk.to_f / sum_interview.to_f * 100, precision: 1)  %></td>
       </tr>
       <tr>
-      <%# 合計 %>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit").to_f / @results.where(shift: "キャッシュレス新規").length).to_f().round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview").to_f / @results.where(shift: "キャッシュレス新規").length).to_f().round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk").to_f / @results.where(shift: "キャッシュレス新規").length).to_f().round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum("first_get + latter_get").to_f / @results.where(shift: "キャッシュレス新規").length).to_f().round(1) %></td>
-      <%# 前半 %>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:first_visit).to_f / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:first_interview).to_f / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:first_full_talk).to_f / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:first_get).to_f / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-      <%# 後半 %>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:latter_visit).to_f / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:latter_interview).to_f / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:latter_full_talk).to_f / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:latter_get).to_f / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
+        <th>成約</th>
+        <td><%= sum_get %></td>
+        <td><%= (sum_get.to_f / digestion_new).to_f.round(1) %></td>
+        <td><%= number_to_percentage(sum_get.to_f / sum_full_talk.to_f * 100, precision: 1)  %></td>
       </tr>
-    </table>
+      <tr>
+        <th rowspan="4" class="out-th">前半</th>
+        <th>訪問</th>
+        <td><%= sum_visit_f %></td>
+        <td><%= (sum_visit_f.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>面会</th>
+        <td><%= sum_interview_f %></td>
+        <td><%= (sum_interview_f.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(sum_interview_f.to_f / sum_visit_f.to_f * 100, precision: 1)  %></td>
+      </tr>
+      <tr>
+        <th>フル</th>
+        <td><%= sum_full_talk_f %></td>
+        <td><%= (sum_full_talk_f.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(sum_full_talk_f.to_f / sum_interview_f.to_f * 100, precision: 1)  %></td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= sum_get_f %></td>
+        <td><%= (sum_get_f.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(sum_get_f.to_f / sum_full_talk_f.to_f * 100, precision: 1)  %></td>
+      </tr>
+      <tr>
+        <th rowspan="4" class="out-th">後半</th>
+        <th>訪問</th>
+        <td><%= sum_visit_l %></td>
+        <td><%= (sum_visit_l.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>面会</th>
+        <td><%= sum_interview_l %></td>
+        <td><%= (sum_interview_l.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(sum_interview_l.to_f / sum_visit_l.to_f * 100, precision: 1)  %></td>
+      </tr>
+      <tr>
+        <th>フル</th>
+        <td><%= sum_full_talk_l %></td>
+        <td><%= (sum_full_talk_l.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(sum_full_talk_l.to_f / sum_interview_l.to_f * 100, precision: 1)  %></td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= sum_get_l %></td>
+        <td><%= (sum_get_l.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(sum_get_l.to_f / sum_full_talk_l.to_f * 100, precision: 1)  %></td>
+      </tr>
+    </tbody>
+  </table>
 
     </div>
     <div>
     <h2>店舗別基準値</h2>
-    <table>
+    <%# 店舗別合計変数 %>
+    <% cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit) %>
+    <% cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get) %>
+    <% other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit) %>
+    <% other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get) %>
+    <% car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit) %>
+    <% car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get) %>
+    <% other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit) %>
+    <% other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get) %>
+    <% hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit) %>
+    <% hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get) %>
+    <% manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit) %>
+    <% manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get) %>
+    <% other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit) %>
+    <% other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get) %>
+    <%# 全店舗合計変数 %>
+    <% store_visit_sum = cafe_visit_sum +  other_food_visit_sum + car_visit_sum + other_retail_visit_sum + hair_salon_visit_sum + manipulative_visit_sum + other_service_visit_sum %>
+    <% store_get_sum = cafe_get_sum +  other_food_get_sum + car_get_sum + other_retail_get_sum + hair_salon_get_sum + manipulative_get_sum + other_service_get_sum %>
+    <table class="out-tb">
+      <thead>
+        <th>項目</th>
+        <th>内訳</th>
+        <th>合計</th>
+        <th>平均</th>
+        <th>成約率</th>
+      </thead>
+      <tbody>
+
+      </tbody>
       <tr>
-        <th colspan="2">喫茶・カフェ</th>
-        <th colspan="2">その他飲食</th>
-        <th colspan="2">車屋</th>
-        <th colspan="2">その他小売</th>
-        <th colspan="2">理容・美容</th>
-        <th colspan="2">整体・鍼灸</th>
-        <th colspan="2">その他サービス</th>
-      </tr>
-      <tr>
-      <% 7.times do %>
+        <th rowspan="2" class="out-th">喫茶・カフェ</th>
         <th>訪問</th>
-        <th>獲得</th>
-      <% end %>
+        <td><%= cafe_visit_sum %></td>
+        <td><%= (cafe_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
       </tr>
       <tr>
+        <th>成約</th>
+        <td><%= cafe_get_sum %></td>
+        <td><%= (cafe_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(cafe_get_sum.to_f / cafe_visit_sum.to_f * 100, precision: 1) %></td>
       </tr>
-    <%# 店舗別基準値（値） %>
       <tr>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:cafe_visit).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:cafe_get).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:other_food_visit).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:other_food_get).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:car_visit).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:car_get).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:other_retail_visit).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:other_retail_get).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:hair_salon_get).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:manipulative_visit).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:manipulative_get).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:other_service_visit).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
-        <td><%= (@results.where(shift: "キャッシュレス新規").sum(:other_service_get).to_f() / @results.where(shift: "キャッシュレス新規").length).round(1) %></td>
+        <th rowspan="2" class="out-th">その他飲食</th>
+        <th>訪問</th>
+        <td><%= other_food_visit_sum %></td>
+        <td><%= (other_food_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= other_food_get_sum %></td>
+        <td><%= (other_food_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(other_food_get_sum.to_f / other_food_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+      <tr>
+        <th rowspan="2" class="out-th">車屋</th>
+        <th>訪問</th>
+        <td><%= car_visit_sum %></td>
+        <td><%= (car_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= car_get_sum %></td>
+        <td><%= (car_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(car_get_sum.to_f / car_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+      <tr>
+        <th rowspan="2" class="out-th">その他小売</th>
+        <th>訪問</th>
+        <td><%= other_retail_visit_sum %></td>
+        <td><%= (other_retail_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= other_retail_get_sum %></td>
+        <td><%= (other_retail_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(other_retail_get_sum.to_f / other_retail_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+      <tr>
+        <th rowspan="2" class="out-th">理容・美容</th>
+        <th>訪問</th>
+        <td><%= hair_salon_visit_sum %></td>
+        <td><%= (hair_salon_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= hair_salon_get_sum %></td>
+        <td><%= (hair_salon_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(hair_salon_get_sum.to_f / hair_salon_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+      <tr>
+        <th rowspan="2" class="out-th">整体・鍼灸</th>
+        <th>訪問</th>
+        <td><%= manipulative_visit_sum %></td>
+        <td><%= (manipulative_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= manipulative_get_sum %></td>
+        <td><%= (manipulative_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(manipulative_get_sum.to_f / manipulative_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+      <tr>
+        <th rowspan="2" class="out-th">その他サービス</th>
+        <th>訪問</th>
+        <td><%= other_service_visit_sum %></td>
+        <td><%= (other_service_visit_sum.to_f / digestion_new).round(1) %></td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= other_service_get_sum %></td>
+        <td><%= (other_service_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(other_service_get_sum.to_f / other_service_visit_sum.to_f * 100, precision: 1) %></td>
       </tr>
     </table>
     </div>
-    </div>
-    <div style="display: flex;">
       <div>
       <h2>キャッシュレス切り返し</h2>
       <table class="out-tb">
@@ -591,21 +822,11 @@
           <td><%= @results.includes(:result_cash).average(:out_get_13).to_f.round(1) %></td>
           <td><%= number_to_percentage(@results.includes(:result_cash).sum(:out_get_13).to_f / @results.includes(:result_cash).sum(:out_full_talk_13).to_f * 100,precision: 1)  %></td>
         </tr>
-        <tr>
-          <th colspan="6">　　</th>
-        </tr>
         </tbody>
         </table>
       </div>
-      <div>
-      <h2>訪問店舗比率</h2>
-        <%= pie_chart @chart, width:'400px',suffix: "%" %>
-      </div>
-      <div>
-      <h2>切り返し比率（母体数）</h2>
-        <%= pie_chart @cash_out_chart, width:'500px',suffix: "%" %>
-      </div>
     </div>
+
     <% end %>
     <% if @results.where(shift: "楽天フェムト新規").empty? %>
     <% else %>
@@ -770,10 +991,6 @@
           <td><%= number_to_percentage(casa_out.sum(:out_get_09).to_f / casa_out.sum(:out_full_talk_09).to_f * 100,precision: 1)  %></td>
         </tr>
       </table>
-    <div>
-      <h2>訪問店舗比率</h2>
-        <%= pie_chart @chart, width:'400px',suffix: "%" %>
-    </div>
   </div>
     <% end %>
     <% if @results.where(shift: "サミット").empty? %>
@@ -963,9 +1180,9 @@
       <tr>
         <td style="padding: 0 20px;"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></td>
         <% if result.shift == "キャッシュレス新規" %>
-        <td style="padding: 0 20px;"><%= link_to "切り返し編集", edit_result_cash_path(result.result_cash.id),class: "link" %></td>
+          <td style="padding: 0 20px;"><%= link_to "切り返し編集", edit_result_cash_path(result.result_cash.id),class: "link" rescue "error" %></td>
         <% elsif result.shift == "楽天フェムト新規" %>
-        <td style="padding: 0 20px;"><%# link_to "切り返し編集", edit_result_casa_path(result.result_casa.id),class: "link"  %></td>
+        <td style="padding: 0 20px;"><%= link_to "切り返し編集", edit_result_casa_path(result.result_casa.id),class: "link" %></td>
         <% else %>
         <td></td>
         <% end %>

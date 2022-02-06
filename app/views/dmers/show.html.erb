@@ -104,10 +104,17 @@
       <td ><%= @dmer.settlement_deadline %></td>
     </tr>
     <tr >
-      <th >決済者</th>
-      <td ><%= @dmer.settlementer.name rescue "" %></td>
       <th >初回決済日</th>
       <td ><%= @dmer.settlement %></td>
+      <th >２回目決済日</th>
+      <td ><%= @dmer.settlement_second %></td>
+    </tr>
+    <tr>
+      <th >アクセプタンスアップロード日</th>
+      <td ><%= @dmer.picture %></td>
+      <th >決済者</th>
+      <td ><%= @dmer.settlementer.name rescue "" %></td>
+
     </tr>
     <tr>
       <th>決済審査ステータス</th>

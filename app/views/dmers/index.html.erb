@@ -6,11 +6,14 @@
     <table >
       <tr>
         <td class="csv-label">CSV</td>
-        <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+
+        <td ><%= f.file_field :file , accept: ".csv",class: "input" %></td>
+
         <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？', disable_with: "インポート中" } %></td>
       </tr>
     </table>
   <% end %>
+
     <%= search_form_for @q do |f| %>
       <table>
         <tr >
@@ -58,24 +61,11 @@
       <% else %>
       <h1>表示範囲：<%= @dmers.minimum(:date) %>（<%= days[@dmers.minimum(:date).wday] %>）〜<%= @dmers.maximum(:date) %>（<%= days[@dmers.maximum(:date).wday] %>）</h1>
 
-        <% settlement_subject = @dmers.where.not(status_settlement: '完了' ).where.not(status: "申込取消").where.not(status: "審査NG").where.not(industry_status: "NG").where.not(industry_status: "要確認").length %>
+        <% settlement_subject = @dmers.where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "要確認").length %>
         <% settlement_done = @dmers.where(status_settlement: '完了' ).length %>
         <% dmer_sum = @dmers.where.not(status: "申込取消").where.not(status: "審査NG").where.not(status: "自社不備").sum(:profit_new) %>
-        <% slmt_pias_len = 0 %>
-        <% slmt_max_len = 0 %>
-        <% slmt_usen_len = 0 %>
-        <% slmt_len = 0 %>
-        <% @dmers.find_each do |dmer| %>
-          <% if dmer.client == "ピアズ（190183）" || dmer.client == "ピアズ（190336）" %>
-            <% slmt_pias_len += 1 if Date.today > dmer.date.since(2.month).end_of_month.ago(7.days) %>
-          <% elsif dmer.client == "マックス即時" %>
-            <% slmt_max_len += 1 if Date.today > dmer.date.since(2.month).end_of_month.ago(12.days) %>
-          <% elsif dmer.client == "USEN（122004）" %>
-            <% slmt_usen_len += 1 if Date.today > dmer.date.since(30.days) %>
-          <% else %>
-            <% slmt_len += 1 if dmer.settlement_deadline.present? && Date.today > dmer.settlement_deadline %>
-          <% end %>
-        <% end %>
+        <% slmt_dead = @dmers.where(status: "審査OK").where.not(status_settlement: '完了').where(settlement_deadline: @dmers.minimum(:date)..Date.today).length  %>
+
         <% hubi = @dmers.where(status: '自社不備' ).length %>
         <% client_hubi = @dmers.where(status: '不備対応中' ).length %>
         <% industry_ng = @dmers.where(status: '審査OK' ).where(industry_status: 'NG').length + @dmers.where(status: '審査OK' ).where(industry_status: '×').length %>
@@ -111,7 +101,7 @@
           <td class="search-td"><%= industry_ng + client_ng %></td>
           <td class="search-td"><%= settlement_subject %></td>
           <td class="search-td"><%= settlement_done %></td>
-          <td class="search-td"><%= slmt_pias_len + slmt_max_len + slmt_usen_len + slmt_len %></td>
+          <td class="search-td"><%= slmt_dead %></td>
           <td class="search-td"><%= number_to_percentage(settlement_done.to_f / settlement_subject.to_f * 100, precision: 1) rescue "-" %></td>
         </tr>
         <tr>
