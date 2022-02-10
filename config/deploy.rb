@@ -19,8 +19,8 @@ set :pty, true
 
 # シンボリックリンクをはるファイル
 # set :linked_files, 'config/credentials/production.key'
-set :linked_files, "config/master.key"
-# set :linked_files, fetch(:linked_files, []).push("config/master.key")
+# set :linked_files, "config/master.key"
+set :linked_files, fetch(:linked_files, []).push("config/master.key")
 # set :linked_files, fetch(:linked_files, []).push('config/secrets.yml')
 
 # シンボリックリンクをはるフォルダ
