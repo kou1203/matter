@@ -19,9 +19,9 @@ set :pty, true
 
 # シンボリックリンクをはるファイル
 # append :linked_files, "config/master.key"
-append :linked_files, 'config/credentials/production.key'
+set :linked_files, 'config/credentials/production.key'
 # シンボリックリンクをはるフォルダ
-append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "vendor/bundle", "public/system"
+set :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "vendor/bundle", "public/system"
 
 
 # 保持するバージョンの個数(※後述)
