@@ -16,7 +16,8 @@ set :deploy_to, '/var/www/matter'
 
 # シンボリックリンクをはるファイル
 # append :linked_files, "config/master.key"
-set :linked_files, fetch(:linked_files, []).push('config/secrets.yml')
+set :linked_files, fetch(:linked_files, []).push("config/master.key")
+# set :linked_files, fetch(:linked_files, []).push('config/secrets.yml')
 
 # シンボリックリンクをはるフォルダ
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "vendor/bundle", "public/system"
