@@ -18,8 +18,8 @@ set :deploy_to, '/var/www/matter'
 set :pty, true
 
 # シンボリックリンクをはるファイル
-append :linked_files, "config/master.key"
-
+# append :linked_files, "config/master.key"
+append :linked_files, 'config/credentials/production.key'
 # シンボリックリンクをはるフォルダ
 append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "vendor/bundle", "public/system"
 
