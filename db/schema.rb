@@ -113,8 +113,10 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.text "description"
     t.integer "profit_new", null: false
     t.integer "profit_settlement", null: false
+    t.integer "profit_second_settlement", null: false
     t.integer "valuation_new", null: false
     t.integer "valuation_settlement", null: false
+    t.integer "valuation_second_settlement", null: false
     t.index ["settlementer_id"], name: "index_dmers_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_dmers_on_store_prop_id"
     t.index ["user_id"], name: "index_dmers_on_user_id"

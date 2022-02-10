@@ -99,18 +99,21 @@
     </table>
   <h1>売上</h1>
     <table>
-
       <tr>
         <th><%= f.label :valuation_new, "評価売上（新規）", class: "form-text" %></th>
-        <th><%= f.label :valuation_new, "評価売上（決済）", class: "form-text" %></th>
+        <th><%= f.label :valuation_settlement, "評価売上（決済）", class: "form-text" %></th>
+        <th><%= f.label :valuation_second_settlement, "評価売上（２回目決済）", class: "form-text" %></th>
         <th><%= f.label :profit_new, "実売上（新規）", class: "form-text" %></th>
-        <th><%= f.label :profit_new, "実売上（決済）", class: "form-text" %></th>
+        <th><%= f.label :profit_settlement, "実売上（決済）", class: "form-text" %></th>
+        <th><%= f.label :profit_second_settlement, "実売上（2回目決済）", class: "form-text" %></th>
       </tr>
       <tr>
         <td><%= f.number_field :valuation_new , class: "form-input" %></td>
         <td><%= f.number_field :valuation_settlement , class: "form-input" %></td>
+        <td><%= f.number_field :valuation_second_settlement , class: "form-input" %></td>
         <td><%= f.number_field :profit_new , class: "form-input" %></td>
         <td><%= f.number_field :profit_settlement , class: "form-input" %></td>
+        <td><%= f.number_field :profit_second_settlement , class: "form-input" %></td>
       </tr>
     </table>
     <%= f.submit "登録", class: "submit-btn" %>

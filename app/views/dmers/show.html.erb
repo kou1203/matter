@@ -164,16 +164,26 @@
     <tr >
       <th >評価売上（新規）</th>
       <td ><%= @dmer.valuation_new %></td>
-      <th >評価売上（決済）</th>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+      <th >評価売上（初回決済）</th>
       <td ><%= @dmer.valuation_settlement %></td>
+      <th >評価売上（２回目決済）</th>
+      <td ><%= @dmer.valuation_second_settlement %></td>
     </tr>
 
     <% if current_user.position == "権限①" %>
     <tr>
       <th >実売上（新規）</th>
       <td ><%= @dmer.profit_new %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
       <th >実売上（決済）</th>
       <td ><%= @dmer.profit_settlement %></td>
+      <th >実売上（決済）</th>
+      <td ><%= @dmer.profit_second_settlement %></td>
     </tr>
     <% else %>
     <% end %>

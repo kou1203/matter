@@ -92,8 +92,10 @@ class DmersController < ApplicationController
       :description,
       :profit_new,
       :profit_settlement,
+      :profit_second_settlement,
       :valuation_new,    
-      :valuation_settlement
+      :valuation_settlement,
+      :valuation_second_settlement
     )
   end 
 end
