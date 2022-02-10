@@ -14,9 +14,12 @@ set :branch, 'master'
 # deploy先のディレクトリ。
 set :deploy_to, '/var/www/matter'
 
+# Default value for :pty is false
+set :pty, true
+
 # シンボリックリンクをはるファイル
-set :linked_files, 'config/credentials/production.key'
-# append :linked_files, "config/master.key"
+# set :linked_files, 'config/credentials/production.key'
+set :linked_files, "config/master.key"
 # set :linked_files, fetch(:linked_files, []).push("config/master.key")
 # set :linked_files, fetch(:linked_files, []).push('config/secrets.yml')
 
