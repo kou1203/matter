@@ -66,7 +66,7 @@ namespace :deploy do
                   # クエリの実行。
                 # userとpasswordはmysqlの設定に合わせて
                 execute "mysql --user=root --password=root.. -e '#{sql}'"
-
+                execute :rake, 'tmp:cache:clear'
         end
       end
     end
