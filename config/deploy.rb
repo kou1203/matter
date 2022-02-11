@@ -37,11 +37,6 @@ set :log_level, :debug
 
 # デプロイのタスク
 namespace :deploy do
-  # テスト
-  before_exec do |server|
-    ENV["BUNDLE_GEMFILE"] = File.join(project_home, "Gemfile")
-  end
-  # テスト
   # unicornの再起動
   desc 'Restart application'
   task :restart do
