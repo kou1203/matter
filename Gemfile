@@ -42,8 +42,9 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'capistrano'
   gem 'capistrano-bundler'
-  gem 'capistrano-rails'
+  gem 'capistrano-rails', github: 'k-yamada/capistrano-rails'
   gem 'capistrano-rbenv'
+  gem 'capistrano3-unicorn', github: 'k-yamada/capistrano3-unicorn', :require => false
 end
 
 # platforms :ruby do
