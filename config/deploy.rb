@@ -26,6 +26,8 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "vendor/bund
 
 # gem_bundle path指定
 # set :bundle_gemfile,  "/20220211105419/Gemfile"
+set :default_shell, "bash -l" # .bash_profile で指定した場合は環境変数をロードさせる
+set :bundle_gemfile,  '$BUNDLE_GEMFILE'
 
 # 保持するバージョンの個数(※後述)
 set :keep_releases, 3
