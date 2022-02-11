@@ -24,7 +24,7 @@ set :linked_files, fetch(:linked_files, []).push("config/credentials/production.
 # シンボリックリンクをはるフォルダ
 append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "vendor/bundle", "public/system"
 
-
+set :bundle_gemfile,  "server/Gemfile"
 # 保持するバージョンの個数(※後述)
 set :keep_releases, 3
 
