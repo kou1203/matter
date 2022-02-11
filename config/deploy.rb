@@ -25,7 +25,7 @@ set :linked_files, fetch(:linked_files, []).push("config/credentials/production.
 append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "vendor/bundle", "public/system"
 
 # gem_bundle path指定
-set :bundle_gemfile,  "templates/Gemfile"
+set :bundle_gemfile,  "/Gemfile"
 
 # 保持するバージョンの個数(※後述)
 set :keep_releases, 3
