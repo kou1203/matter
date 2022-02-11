@@ -12,7 +12,7 @@ set :repo_url, 'git@github.com:kou1203/matter.git'
 set :branch, 'master'
 
 # railsのルートディレクトリを指定
-set :rails_root, 'server'
+# set :rails_root, 'server'
 
 # deploy先のディレクトリ。
 set :deploy_to, '/var/www/matter'
