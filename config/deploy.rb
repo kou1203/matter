@@ -65,7 +65,7 @@ namespace :deploy do
                   sql = "CREATE DATABASE IF NOT EXISTS matter_production;"
                   # クエリの実行。
                 # userとpasswordはmysqlの設定に合わせて
-                execute "mysql --user=root --password=@31892562Kh -e '#{sql}'"
+                execute "mysql --user=root --password=root.. -e '#{sql}'"
 
         end
       end
