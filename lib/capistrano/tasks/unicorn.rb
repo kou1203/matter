@@ -3,6 +3,10 @@ namespace :unicorn do
     set :unicorn_pid,    "#{current_path}/tmp/pids/unicorn.pid"
     set :unicorn_config, "#{current_path}/config/unicorn/production.rb"
   end
+  # テスト
+  before_exec do |server|
+    ENV['BUNDLE_GEMFILE'] = '/path/to/app/current/Gemfile';
+   end
 
   def start_unicorn
     within current_path do
