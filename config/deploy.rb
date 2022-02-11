@@ -24,7 +24,9 @@ set :linked_files, fetch(:linked_files, []).push("config/credentials/production.
 # シンボリックリンクをはるフォルダ
 append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "vendor/bundle", "public/system"
 
-set :bundle_gemfile,  "/tmp/ruby-build.20220209192543.36753.6t5CeI/ruby-2.7.5/lib/bundler/templates/Gemfile"
+# gem_bundle path指定
+set :bundle_gemfile,  "templates/Gemfile"
+
 # 保持するバージョンの個数(※後述)
 set :keep_releases, 3
 
