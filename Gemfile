@@ -78,7 +78,7 @@ gem 'mimemagic','~>0.4.3'
 
 group :production, :staging do
   gem 'mysql2'
-  gem 'unicorn'
+  gem 'unicorn', '5.4.1'
 end
 
 gem 'ed25519'
