@@ -44,7 +44,7 @@ group :development do
   gem 'capistrano-bundler'
   gem 'capistrano-rails', github: 'k-yamada/capistrano-rails'
   gem 'capistrano-rbenv'
-  gem 'capistrano3-unicorn', github: 'k-yamada/capistrano3-unicorn', :require => false
+  # gem 'capistrano3-unicorn', github: 'k-yamada/capistrano3-unicorn', :require => false
 end
 
 # platforms :ruby do
