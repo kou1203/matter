@@ -27,6 +27,8 @@ $worker  = 2
     ENV["BUNDLE_GEMFILE"] = File.join(File.expand_path("../../../../", __FILE__), "current", "Gemfile")
   end
 
+  ENV['BUNDLE_GEMFILE'] = rails_root + "/Gemfile"
+
 #fork前に行うことを定義
   before_fork do |server, worker|
     defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
