@@ -79,7 +79,7 @@ namespace :deploy do
 
   after 'deploy:updated', :updated_cache do 
     on roles(:app) do
-       execute :chmod, "-R 777 #{fetch(:deploy_to)}/current/#{fetch(:cache_path)}"
+       execute :chmod, "-R 777 #{fetch(:deploy_to)}/current/20220212073910/#{fetch(:cache_path)}"
     end
   end
 
