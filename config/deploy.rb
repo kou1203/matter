@@ -47,7 +47,7 @@ namespace :deploy do
   task :restart do
     invoke 'unicorn:restart'
   end
-  試しに追加
+  # 試しに追加
   Rake::Task["deploy:symlink:release"].clear
   namespace :symlink do
     desc 'Symlink release to current'
