@@ -77,7 +77,7 @@ gem 'chartkick'
 gem 'mimemagic','~>0.4.3'
 
 group :production, :staging do
-  gem 'mysql2'
+  gem 'mysql2', '~>0.5.3'
   gem 'unicorn', '5.4.1'
 end
 
