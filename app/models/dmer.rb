@@ -12,8 +12,10 @@ class Dmer < ApplicationRecord
     validates :status 
     validates :profit_new
     validates :profit_settlement
+    validates :profit_second_settlement
     validates :valuation_new
     validates :valuation_settlement
+    validates :valuation_second_settlement
   end 
 
 
