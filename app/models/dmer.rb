@@ -65,8 +65,10 @@ class Dmer < ApplicationRecord
           description: row["備考"],
           profit_new: row["獲得実売"],
           profit_settlement: row["決済実売"],
+          profit__second_settlement: row["2回目決済実売"],
           valuation_new: row["獲得評価売"],
           valuation_settlement: row["決済評価売"],
+          valuation__second_settlement: row["2回目決済評価売"]
         )
         errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if dmer.invalid? && errors.length < 5
     end
@@ -124,8 +126,10 @@ class Dmer < ApplicationRecord
           description: row["備考"],
           profit_new: row["獲得実売"],
           profit_settlement: row["決済実売"],
+          profit__second_settlement: row["2回目決済実売"],
           valuation_new: row["獲得評価売"],
           valuation_settlement: row["決済評価売"],
+          valuation__second_settlement: row["2回目決済評価売"]
         )
         if dmer.has_changes_to_save? 
           dmer.save!
@@ -168,8 +172,10 @@ class Dmer < ApplicationRecord
           description: row["備考"],
           profit_new: row["獲得実売"],
           profit_settlement: row["決済実売"],
+          profit__second_settlement: row["2回目決済実売"],
           valuation_new: row["獲得評価売"],
           valuation_settlement: row["決済評価売"],
+          valuation__second_settlement: row["2回目決済評価売"]
           )
         dmer.save!
         new_cnt += 1

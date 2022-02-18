@@ -29,7 +29,7 @@ class StoreProp < ApplicationRecord
   def self.csv_check(file)
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
-      store = StoreProp.find_by(name: row["店舗名"])
+      store = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
       if row["ID"].present?
         store_prop = find_by(id: row["ID"])
         errors << "#{index}行目のIDが不適切です" if store_prop.blank? && errors.length < 5
