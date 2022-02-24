@@ -29,12 +29,12 @@ class Aupay < ApplicationRecord
       end
       errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
       errors << "#{index}行目店舗名が不正です" if store_prop.blank? && errors.length < 5
-        u_id = user.id if user.present? 
+      errors << "#{index}行目決済者名が不正です" if settlementer.blank? && row["決済対応者"].present? && row["決済対応者"] == settlementer_params && errors.length < 5
         store_id = store_prop.id if store_prop.present? 
         aupay = new(
           customer_num: row["お申込み番号"],
           client: row["商流"],
-          user_id: u_id,
+          user_id: user.id,
           store_prop_id: store_id,
           date: row["獲得日"],
           status: row["審査ステータス"],

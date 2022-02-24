@@ -70,7 +70,7 @@ class ResultsController < ApplicationController
         # 楽天フェムト新規
           @rakuten_casas_user = RakutenCasa.where(user_id: @results.first.user_id)
           @rakuten_casas_this_month = this_period(@rakuten_casas_user, @results)
-          @rakuten_casas_def_this_month = this_period(@rakuten_casas_this_month, @results )
+          @rakuten_casas_cancel = casa_cancel(@rakuten_casas_user, @results )
           @rakuten_casas_def_net = @rakuten_casas_this_month.where.not(deficiency_net: nil).where(deficiency_solution_net: nil)
           .or(@rakuten_casas_this_month.where.not(deficiency_net: nil).where(deficiency_solution_net: @results.minimum(:date)..@results.maximum(:date)))
           @rakuten_casas_def_anti = @rakuten_casas_this_month.where.not(deficiency_anti: nil).where(deficiency_solution_anti: nil)
@@ -81,7 +81,6 @@ class ResultsController < ApplicationController
           @rakuten_casas_dec_net = @rakuten_casas_not_this_month.where(deficiency_net: @results.minimum(:date)..@results.maximum(:date))
           @rakuten_casas_inc_anti = @rakuten_casas_not_this_month.where(deficiency_solution_anti: @results.minimum(:date)..@results.maximum(:date))
           @rakuten_casas_dec_anti = @rakuten_casas_not_this_month.where(deficiency_anti: @results.minimum(:date)..@results.maximum(:date))
-
         # 楽天フェムト設置
           @rakuten_casas_put = @rakuten_casas_user.where(put: @results.minimum(:date)..@results.maximum(:date))
           # 設置
@@ -93,47 +92,6 @@ class ResultsController < ApplicationController
       else
         @shift_sum = this_period(@shifts,@results)
       end
-        # グラフパラメーター（訪問）
-        @all_store = (@results.sum(:cafe_visit) + @results.sum(:other_food_visit) + @results.sum(:cafe_visit) + @results.sum(:other_retail_visit) + @results.sum(:hair_salon_visit) + @results.sum(:other_service_visit)).to_f
-      @chart = [
-        ["喫茶・カフェ", (@results.sum(:cafe_visit).to_f / @all_store * 100).round(1) ],
-        ["その他飲食", (@results.sum(:other_food_visit).to_f / @all_store * 100).round(1) ],
-        ["車屋", (@results.sum(:cafe_visit).to_f / @all_store * 100).round(1) ],
-        ["その他小売", (@results.sum(:other_retail_visit).to_f / @all_store * 100).round(1) ],
-        ["理容・美容", (@results.sum(:hair_salon_visit).to_f / @all_store * 100).round(1) ],
-        ["整体・鍼灸", (@results.sum(:manipulative_visit).to_f / @all_store * 100).round(1) ],
-        ["その他サービス", (@results.sum(:other_service_visit).to_f / @all_store * 100).round(1) ],
-      ]
-      # 切り返し
-      @cash_out = @results.includes(:result_cash)
-      @cash_out_all = (@results.includes(:result_cash).sum(:out_interview_01) + 
-      @cash_out.sum(:out_interview_02) +
-      @cash_out.sum(:out_interview_03) +
-      @cash_out.sum(:out_interview_04) +
-      @cash_out.sum(:out_interview_05) +
-      @cash_out.sum(:out_interview_06) +
-      @cash_out.sum(:out_interview_07) +
-      @cash_out.sum(:out_interview_08) +
-      @cash_out.sum(:out_interview_09) +
-      @cash_out.sum(:out_interview_10) +
-      @cash_out.sum(:out_interview_11) +
-      @cash_out.sum(:out_interview_12) +
-      @cash_out.sum(:out_interview_13)).to_f
-      @cash_out_chart = [
-        ["０１：どういうこと？",(@cash_out.includes(:result_cash).sum(:out_interview_01).to_f / @cash_out_all * 100).round(1)],
-        ["０２：君は誰？協会？",(@cash_out.includes(:result_cash).sum(:out_interview_02).to_f / @cash_out_all * 100).round(1)],
-        ["０３：もらうだけでいいの？",(@cash_out.includes(:result_cash).sum(:out_interview_03).to_f / @cash_out_all * 100).round(1)],
-        ["０４：PayPayのみ",(@cash_out.includes(:result_cash).sum(:out_interview_04).to_f / @cash_out_all * 100).round(1)],
-        ["０５：AirPayのみ",(@cash_out.includes(:result_cash).sum(:out_interview_05).to_f / @cash_out_all * 100).round(1)],
-        ["０６：カードのみ",(@cash_out.includes(:result_cash).sum(:out_interview_06).to_f / @cash_out_all * 100).round(1)],
-        ["０７：先延ばし",(@cash_out.includes(:result_cash).sum(:out_interview_07).to_f / @cash_out_all * 100).round(1)],
-        ["０８：忙しい",(@cash_out.includes(:result_cash).sum(:out_interview_08).to_f / @cash_out_all * 100).round(1)],
-        ["０９：現金のみ",(@cash_out.includes(:result_cash).sum(:out_interview_09).to_f / @cash_out_all * 100).round(1)],
-        ["１０：面倒くさい",(@cash_out.includes(:result_cash).sum(:out_interview_10).to_f / @cash_out_all * 100).round(1)],
-        ["１１：情報不足",(@cash_out.includes(:result_cash).sum(:out_interview_11).to_f / @cash_out_all * 100).round(1)],
-        ["１２：ペロ",(@cash_out.includes(:result_cash).sum(:out_interview_12).to_f / @cash_out_all * 100).round(1)],
-        ["１３：その他",(@cash_out.includes(:result_cash).sum(:out_interview_13).to_f / @cash_out_all * 100).round(1)]
-      ]
   end 
 
   def new 
@@ -242,6 +200,13 @@ class ResultsController < ApplicationController
       .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: nil))
       .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: date.minimum(:date)..date.maximum(:date)))
     end
+  # dメル,aupayメソッド
+
+  # 楽天フェムトメソッド
+    def casa_cancel(product, date)
+      return product.where(date: date.minimum(:date)..date.maximum(:date)).where(status: "キャンセル")
+    end
+  # 楽天フェムトメソッド
 
   def result_params
     params.require(:result).permit(

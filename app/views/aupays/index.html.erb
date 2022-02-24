@@ -14,11 +14,13 @@
     <%= search_form_for @q do |f| %>
       <table>
         <tr >
+          <th class="search-th">獲得月</th>
           <th class="search-th" colspan="2">獲得日付</th>
           <th class="search-th" colspan="2">初回決済日</th>
           <th class="search-th" colspan="2">決済期限</th>
         </tr>
         <tr>
+          <td ><%= f.date_select :date_during_month, {discard_day: true, include_blank: true} ,{class: "date-input"} %></td>
           <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
           <td ><%= f.date_field :date_lteq, class: "input" %></td>
           <td ><%= f.date_field :settlement_gteq, class: "input" %>~</td>
