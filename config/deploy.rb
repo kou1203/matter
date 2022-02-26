@@ -81,11 +81,11 @@ namespace :deploy do
 
   after :publishing, :restart
 
-  after 'deploy:updated', :updated_cache do 
-    on roles(:app) do
-       execute :chmod, "-R 777 #{fetch(:deploy_to)}/current/#{fetch(:cache_path)}"
-    end
-  end
+  # after 'deploy:updated', :updated_cache do 
+  #   on roles(:app) do
+  #      execute :chmod, "-R 777 #{fetch(:deploy_to)}/current/#{fetch(:cache_path)}"
+  #   end
+  # end
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
