@@ -40,6 +40,9 @@ set :rbenv_ruby, '2.7.5'
 # 出力するログのレベル。
 set :log_level, :debug
 
+# パスの固定
+set :bundle_binstubs, -> { shared_path.join('bin') }
+
 # デプロイのタスク
 namespace :deploy do
   # unicornの再起動

@@ -11,6 +11,9 @@ $worker  = 2
 #エラーログを吐き出すファイルのディレクトリ
   $std_log = File.expand_path 'log/unicorn.log', $app_dir
 
+# config/deploy.rbで書いたパスの指定
+  app_path = '/var/www/matter'
+  Unicorn::HttpServer::START_CTX[0] = File.join(app_path, 'shared/bin/unicorn')
 # 上記で設定したものが適応されるよう定義
   worker_processes  $worker
   working_directory $app_dir
