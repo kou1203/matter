@@ -12,7 +12,7 @@
           <th class="search-th" colspan="">獲得期間（始）</th>
           <th class="search-th" colspan="">獲得期間（終）</th>
         </tr>
-          <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true, include_blank: true} ,{class: "date-input"} %></td>
+          <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true,prompt: "--"},{class: "date-input"} %></td>
           <td><%= f.date_field :date_gteq, class: "input" %></td>
           <td><%= f.date_field :date_lteq, class: "input" %></td>
         <tr>

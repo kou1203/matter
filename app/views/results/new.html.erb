@@ -38,10 +38,10 @@
         <th><%= f.label :first_get, "獲得", class: "form-text" %></th>
       </tr>
       <tr>
-          <td><%= f.number_field :first_visit, value: 0 ,class: "form-input-num" %></td>
-          <td><%= f.number_field :first_interview, value: 0 ,class: "form-input-num" %></td>
-          <td><%= f.number_field :first_full_talk, value: 0 ,class: "form-input-num" %></td>
-          <td><%= f.number_field :first_get, value: 0 ,class: "form-input-num" %></td>
+          <td><%= f.number_field :first_visit,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :first_interview ,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :first_full_talk,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :first_get ,class: "form-input-num", min: 0 %></td>
       </tr>
     </table>
     <h2 >後半</h2>
@@ -52,10 +52,10 @@
           <th><%= f.label :latter_full_talk, "フル", class: "form-text" %></th>
           <th><%= f.label :latter_get, "後半獲得", class: "form-text" %></th>
       </tr>
-          <td><%= f.number_field :latter_visit, value: 0 , class: "form-input-num" %></td>
-          <td><%= f.number_field :latter_interview, value: 0 ,class: "form-input-num" %></td>
-          <td><%= f.number_field :latter_full_talk , value: 0 ,class: "form-input-num" %></td>
-          <td><%= f.number_field :latter_get , value: 0 ,class: "form-input-num" %></td>
+          <td><%= f.number_field :latter_visit , class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :latter_interview ,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :latter_full_talk ,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :latter_get ,class: "form-input-num", min: 0 %></td>
       </tr>
     </table>
   <%# 店舗別基準値 %>
@@ -68,8 +68,8 @@
           <th><%= f.label :cafe_get, "獲得", class: "form-text" %></th>
         </tr>
         <tr>
-          <td><%= f.number_field :cafe_visit, value: 0 ,class: "form-input-num" %></td>
-          <td><%= f.number_field :cafe_get , class: "form-input-num", min: 0, value: 0 %></td>
+          <td><%= f.number_field :cafe_visit,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :cafe_get , class: "form-input-num", min: 0 %></td>
         </tr>
       </table></div>
       <div><h2 >その他・飲食</h2>
@@ -79,8 +79,8 @@
           <th><%= f.label :other_food_get, "獲得", class: "form-text" %></th>
         </tr>
         <tr>
-          <td><%= f.number_field :other_food_visit, value: 0 ,class: "form-input-num", min: 0,value: 0 %></td>
-          <td><%= f.number_field :other_food_get , value: 0 ,class: "form-input-num" %></td>
+          <td><%= f.number_field :other_food_visit ,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :other_food_get ,class: "form-input-num", min: 0 %></td>
         </tr>
       </table></div>
     </div>
@@ -92,8 +92,8 @@
           <th><%= f.label :car_get, "獲得", class: "form-text" %></th>
         </tr>
         <tr>
-          <td><%= f.number_field :car_visit, value: 0 ,class: "form-input-num" %></td>
-          <td><%= f.number_field :car_get , value: 0 ,class: "form-input-num" %></td>
+          <td><%= f.number_field :car_visit,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :car_get ,class: "form-input-num", min: 0 %></td>
         </tr>
       </table></div>
       <div><h2 >その他・小売</h2>
@@ -103,8 +103,8 @@
           <th><%= f.label :other_retail_get, "獲得", class: "form-text" %></th>
         </tr>
         <tr>
-          <td><%= f.number_field :other_retail_visit, value: 0 ,class: "form-input-num", min: 0,value: 0 %></td>
-          <td><%= f.number_field :other_retail_get , value: 0 ,class: "form-input-num" %></td>
+          <td><%= f.number_field :other_retail_visit,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :other_retail_get ,class: "form-input-num", min: 0 %></td>
           </th>
         </tr>
       </table></div>
@@ -118,8 +118,8 @@
           <th><%= f.label :hair_salon_get, "獲得", class: "form-text" %></th>
         </tr>
         <tr>
-          <td><%= f.number_field :hair_salon_visit, value: 0 ,class: "form-input-num", min: 0,value: 0 %></td>
-          <td><%= f.number_field :hair_salon_get , value: 0 ,class: "form-input-num" %></td>
+          <td><%= f.number_field :hair_salon_visit,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :hair_salon_get ,class: "form-input-num", min: 0 %></td>
         </tr>
       </table></div>
       <div><h2>整体・鍼灸</h2>
@@ -129,8 +129,8 @@
           <th><%= f.label :manipulative_get, "獲得", class: "form-text" %></th>
         </tr>
         <tr>
-          <td><%= f.number_field :manipulative_visit, value: 0 ,class: "form-input-num", min: 0,value: 0 %></td>
-          <td><%= f.number_field :manipulative_get , value: 0 ,class: "form-input-num" %></td>
+          <td><%= f.number_field :manipulative_visit,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :manipulative_get ,class: "form-input-num", min: 0 %></td>
         </tr>
         <tr>
       </table></div>
@@ -142,8 +142,8 @@
           <th><%= f.label :other_service_get, "獲得", class: "form-text" %></th>
         </tr>
         <tr>
-          <td><%= f.number_field :other_service_visit, value: 0 ,class: "form-input-num", min: 0,value: 0 %></td>
-          <td><%= f.number_field :other_service_get , value: 0 ,class: "form-input-num" %></td>
+          <td><%= f.number_field :other_service_visit,class: "form-input-num", min: 0 %></td>
+          <td><%= f.number_field :other_service_get ,class: "form-input-num", min: 0 %></td>
         </tr>
       </table>
 
