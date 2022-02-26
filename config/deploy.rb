@@ -46,36 +46,20 @@ set :bundle_binstubs, -> { shared_path.join('bin') }
 # デプロイのタスク
 namespace :deploy do
   Rake::Task["deploy:check:directories"].clear
-  Rake::Task["deploy:check:linked_dirs"].clear
-  namespace :check do
-    desc '(overwrite) Check shared and release directories exist'
-    task :directories do
-      on release_roles :all do
-        execute :sudo, :mkdir, '-pv', shared_path, releases_path
-        execute :sudo, :chown, '-R', "#{fetch(:user)}:#{fetch(:group)}", deploy_to
-      end
-    end
-
-    task :linked_dirs do
-      next unless any? :linked_dirs
-      on release_roles :all do
-        execute :sudo, :mkdir, '-pv', linked_dirs(shared_path)
-      end
-    end
   # unicornの再起動
-  # desc 'Restart application'
-  # task :restart do
-  #   invoke 'unicorn:restart'
-  # end
+  desc 'Restart application'
+  task :restart do
+    invoke 'unicorn:restart'
+  end
   # 試しに追加
-  # Rake::Task["deploy:symlink:release"].clear
-  # namespace :symlink do
-  #   desc 'Symlink release to current'
-  #   task :release do
-  #     on release_roles :all do
-  #       execute :ln, '-s', release_path, current_path
-  #     end
-  #   end
+  Rake::Task["deploy:symlink:release"].clear
+  namespace :symlink do
+    desc 'Symlink release to current'
+    task :release do
+      on release_roles :all do
+        execute :ln, '-s', release_path, current_path
+      end
+    end
   end
 
   # データベースの作成
