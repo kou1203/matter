@@ -6,26 +6,41 @@ h1 {
   background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
   color: white;
 }
+
+
 // ヘッダー
-header {
-  display: flex;
-  justify-content: space-between;
-  width: 100vw;
-  // border-bottom: #d9534f solid 5px;
-  background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
+
+
+h3 {
+  padding: 0.5em;
+  font-size: 20px;
+  color: #a9a7a7;
+  width: 20vw;
 }
 
 .sign-text {
   text-decoration: none;
   color: white;
+  font-size: 130%;
   font-weight: bold;
-  margin-right: 5px;
+  margin: 5px 5px 10px;
 }
 
 .sign-bar {
   display: flex;
-  justify-content: space-between;
+  justify-content: right;
 }
+
+.side-body{
+  border-right: #c4c2c2 solid 2px;
+  width: 20vw;
+  height: 100vh;
+  margin-top: 20px;
+  padding-left:20px;
+}
+
+
+
 // ヘッダー
 // ハンバーガーデザイン
 .nav {
@@ -35,13 +50,17 @@ header {
 
 .dropdown {
   display: none;
-  margin: 0;
-  position: fixed;
+  margin: 0 auto;
+  // position: fixed;
 }
 label {
   color: #fff;
-  border-right: solid 3px ;
-  width: 200px;
+  width: 17vw;
+  height: 4vh;
+  background: #a9a7a7;
+  text-align: center;
+  border:solid 1px #c4c2c2;
+  padding: 15px 5px 0 5px;
 }
 
 label:hover {
@@ -50,23 +69,23 @@ label:hover {
 
 li {
   background: #a9a7a7;
-  color: white;
-  opacity: 0.9;
-  width: 200px;
+  opacity: 0.7;  
+  width: 17vw;
+  border:solid 1px #c4c2c2;
+  padding: 5px;
 }
 
 label,
 li {
   display: block;
-  padding: 7px;
   text-align: center;
-  letter-spacing: 0.5em;
+  letter-spacing: 0.3em;
   font-weight: bold;
 }
 
 li:hover {
   opacity: 1;
-  background: #96C0CE;
+  background: #bce3f0;
 }
 
 
@@ -78,6 +97,11 @@ li:hover {
 } 
 
 // ハンバーガーデザイン
+
+.main {
+  width: 80vw;
+  height: 100vh;
+}
 
 .reg {
   text-align: center;
@@ -105,7 +129,7 @@ table{
   min-width: 100%;
   display: block;
   overflow-x: scroll;
-  white-space: nowrap;
+  // white-space: nowrap;
   -webkit-overflow-scrolling: touch;
   max-width: 600px;
 }

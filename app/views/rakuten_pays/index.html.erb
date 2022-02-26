@@ -1,8 +1,14 @@
-<div data-scope-path="rakuten_pays/index">
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
   <h1 class="sub-title">楽天ペイ一覧</h1>
   <%= render "shared/header" %>
-
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="rakuten_pays/index">
+<div class="main">
   <%= form_with url: import_rakuten_pays_path do |f| %>
     <table>
       <tr>
@@ -42,7 +48,7 @@
     <div class="warning"><%= alert %></div>
   <% else %>
       <h1>表示範囲：<%= @rakuten_pays.minimum(:date) %>（<%= days[@rakuten_pays.minimum(:date).wday] %>）〜<%= @rakuten_pays.maximum(:date) %>（<%= days[@rakuten_pays.maximum(:date).wday] %>）</h1>
-    <table>
+    <table >
       <tr>
         <th class="search-th">獲得数</th>
         <th class="search-th">複数店舗</th>
@@ -68,14 +74,17 @@
         <td><%= @rakuten_pays.where(status: "上位店NG").length %></td>
       </tr>
     </table>
-    <table>
+    <table class="out-tb">
+      <thead>
       <tr >
-        <th></th>
-        <th ><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
-        <th >法人/個人</th>
-        <th >店舗名</th>
-        <th >審査ステータス</th>
+        <th class="out-th"></th>
+        <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+        <th class="out-th">法人/個人</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">審査ステータス</th>
       </tr>
+      </thead>
+      <tbody>
       <% @rakuten_pays.each do |rakuten_pay| %>
       <tr >
         <td ><%= link_to "詳細",  rakuten_pay_path(rakuten_pay.id) ,class: "link" %></td>
@@ -85,6 +94,9 @@
         <td ><%= rakuten_pay.status %></td>
       </tr>
       <% end %>
+      </tbody>
     </table>
   <% end %>
+  </div>
+  </div>
 </div>

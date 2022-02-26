@@ -1,7 +1,15 @@
-<div data-scope-path="aupays/show">
-  <h1>auペイ詳細</h1>
+
+<div data-scope-path="shared/header">
   <%= render "shared/header" %>
-    <table >
+  <h1>auペイ詳細</h1>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div class="main">
+<div data-scope-path="aupays/show">
+    <table>
     <tr>
       <th colspan="4">店舗詳細</th>
     </tr>
@@ -156,5 +164,7 @@
     <% else %>
     <% end %>
     </table>
+  </div>
+  </div>
 </div>
 

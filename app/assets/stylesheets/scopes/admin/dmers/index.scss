@@ -15,6 +15,11 @@ header {
   background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
 }
 
+.main {
+  width: 80vw;
+  height: 100vh;
+}
+
 .sign-text {
   text-decoration: none;
   color: white;
@@ -99,15 +104,15 @@ li:hover {
 
 
 table{
-  border-collapse: collapse;
+  // border-collapse: collapse;
   margin: 20px ;
-  table-layout: fixed;
-  min-width: 95%;
+  // table-layout: fixed;
+  // min-width: 95%;
   display: block;
   overflow-x: scroll;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
-  max-width: 600px;
+  // max-width: 600px;
 }
 
 .status-tb {
@@ -191,7 +196,7 @@ th {
   color: white;
   background: #96C0CE;
   padding: 10px;
-  width: 15vw;
+  // width: 15vw;
   border-bottom: none;
 }
 
@@ -246,6 +251,7 @@ td {
   box-shadow: 0px -3px 5px 1px #eee inset;
   padding: 10px 0;
   background: white;
+  width: 15vw;
 }
 
 .check-form {
@@ -272,6 +278,28 @@ td {
   background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
   color: white;
   border: none;
+}
+
+.kaminari-page{
+  margin: 20px;
+}
+
+.out-th {
+  text-align:left;
+  vertical-align: middle;
+}
+
+.out-tb {
+  max-height: 70vh;
+}
+
+.out-tb thead th {
+  /* 縦スクロール時に固定する */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  /* tbody内のセルより手前に表示する */
+  z-index: 1;
 }
 
 }

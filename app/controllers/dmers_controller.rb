@@ -8,6 +8,7 @@ class DmersController < ApplicationController
       else
         @q.result(distinct: false)
       end
+    @dmers_data = @dmers.page(params[:page]).per(100)
   end 
 
   def new 

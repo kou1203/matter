@@ -1,7 +1,15 @@
-<div data-scope-path="dmers/new">
-  <h1 ><%= @store_prop.name %>情報入力（dメル）</h1>
+<div data-scope-path="shared/header">
+  <h1 ><%= @store_prop.name %>情報入力（dメル）</h1> 
   <%= render "shared/header" %>
+</div>
 
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+
+<div data-scope-path="dmers/edit">
+<div style="main">
   <%= form_with model: @dmer,url: store_prop_dmers_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
     <%= render "shared/error_messages", model: f.object %>
     <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
@@ -62,32 +70,38 @@
         <th><%= f.label :settlementer_id, "決済者", class: "form-text" %></th>
         <th><%= f.label :status_settlement, "決済ステータス", class: "form-text" %></th>
         <th><%= f.label :status_update_settlement, "決済ステータス更新日", class: "form-text" %></th>
-        <th><%= f.label :settlement, "初回決済日", class: "form-text" %></th>
-        <th><%= f.label :settlement_second, "２回回決済日", class: "form-text" %></th>
       </tr>
+
       <tr>
         <td><%= f.date_field :shipment , class: "form-input" %></td>
         <td><%= f.collection_select(:settlementer_id, @users, :id, :name,{include_blank: true}, {class: "form-input"})%></td>
         <td><%= f.select :status_settlement, {"未審査": "未審査", "審査中": "審査中", "審査完了": "審査完了","自社不備": "自社不備","自社NG": "自社NG","上位店不備": "上位店不備","上位店NG": "上位店NG"} ,{}, {class: "form-input"} %></td>
         <td><%= f.date_field :status_update_settlement, class: "form-input" %></td>
+
+      </tr>
+      <tr>
+        <th><%= f.label :settlement, "初回決済日", class: "form-text" %></th>
+        <th><%= f.label :settlement, "２回回決済日", class: "form-text" %></th>
+        <th><%= f.label :settlement, "アクセプタンスアップロード日", class: "form-text" %></th>
+        <th><%= f.label :settlement_deadline, "決済期限", class: "form-text" %></th>
+      </tr>
+      <tr>
         <td><%= f.date_field :settlement , class: "form-input" %></td>
         <td><%= f.date_field :settlement_second , class: "form-input" %></td>
+        <td><%= f.date_field :picture , class: "form-input" %></td>
+        <td><%= f.date_field :settlement_deadline , class: "form-input" %></td>
       </tr>
     </table>
     <table>
       <tr>
-        <th><%= f.label :picture, "アクセプタンスアップロード日", class: "form-text" %></th>
-        <th><%= f.label :settlement_deadline, "決済期限", class: "form-text" %></th>
 
         <th><%= f.label :deficiency_settlement, "不備発生日（決済）", class: "form-text" %></th>
-        
         <th><%= f.label :result_point_settlement, "審査完了日（決済）", class: "form-text" %></th>
       <th ><%= f.label :deficiency_solution_settlement, "不備解消日（決済）", class: "form-text" %></th>
         <th><%= f.label :payment_settlement, "入金日（決済）", class: "form-text" %></th>
       </tr>
       <tr>
-        <td><%= f.date_field :picture , class: "form-input" %></td>
-        <td><%= f.date_field :settlement_deadline , class: "form-input" %></td>
+
         <td><%= f.date_field :deficiency_settlement , class: "form-input" %></td>
         <td><%= f.date_field :result_point_settlement , class: "form-input" %></td>
         <td><%= f.date_field :deficiency_solution_settlement , class: "form-input" %></td>
@@ -102,20 +116,25 @@
     </table>
   <h1>売上</h1>
     <table>
-
       <tr>
         <th><%= f.label :valuation_new, "評価売上（新規）", class: "form-text" %></th>
         <th><%= f.label :valuation_settlement, "評価売上（決済）", class: "form-text" %></th>
         <th><%= f.label :valuation_second_settlement, "評価売上（２回目決済）", class: "form-text" %></th>
         <th><%= f.label :profit_new, "実売上（新規）", class: "form-text" %></th>
-        <th><%= f.label :profit_settlement, "実売上（決済）", class: "form-text" %></th>
-        <th><%= f.label :profit_second_settlement, "実売上（2回目決済）", class: "form-text" %></th>
       </tr>
+
       <tr>
         <td><%= f.number_field :valuation_new , class: "form-input" %></td>
         <td><%= f.number_field :valuation_settlement , class: "form-input" %></td>
         <td><%= f.number_field :valuation_second_settlement , class: "form-input" %></td>
         <td><%= f.number_field :profit_new , class: "form-input" %></td>
+
+      </tr>
+      <tr>
+        <th><%= f.label :profit_settlement, "実売上（決済）", class: "form-text" %></th>
+        <th><%= f.label :profit_second_settlement, "実売上（2回目決済）", class: "form-text" %></th>
+      </tr>
+      <tr>
         <td><%= f.number_field :profit_settlement , class: "form-input" %></td>
         <td><%= f.number_field :profit_second_settlement , class: "form-input" %></td>
       </tr>

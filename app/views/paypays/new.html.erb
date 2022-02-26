@@ -1,8 +1,12 @@
-<div data-scope-path="paypays/new">
+<div data-scope-path="shared/header">
   <h1><%= @store_prop.name %>情報入力（PayPay）</h1>
   <%= render "shared/header" %>    
-
-
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>    
+</div>
+<div data-scope-path="paypays/new">
   <%= form_with model: @paypay,url: store_prop_paypays_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
     <%= render "shared/error_messages", model: f.object %>
     <%= f.hidden_field :store_prop_id, value: @store_prop.id %>

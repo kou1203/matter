@@ -1,7 +1,14 @@
-<div data-scope-path="dmers/index">
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
   <h1>dメル一覧</h1>
   <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="dmers/index">
+<div class="main">
   <%= form_with url: import_dmers_path do |f| %>
     <table >
       <tr>
@@ -19,17 +26,23 @@
         <tr >
           <th class="search-th">獲得月</th>
           <th class="search-th" colspan="2">獲得日付</th>
-          <th class="search-th" colspan="2">初回決済日</th>
-          <th class="search-th" colspan="2">決済期限</th>
+
         </tr>
         <tr>
           <td ><%= f.date_select :date_during_month, {discard_day: true, include_blank: true} ,{class: "date-input"} %></td>
           <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
           <td ><%= f.date_field :date_lteq, class: "input" %></td>
-          <td ><%= f.date_field :settlement_gteq, class: "input" %>~</td>
-          <td ><%= f.date_field :settlement_lteq, class: "input" %></td>
+
+        </tr>
+        <tr>
+          <th class="search-th" colspan="2">初回決済日</th>
+          <th class="search-th" colspan="2">決済期限</th>
+        </tr>
+        <tr>
           <td ><%= f.date_field :settlement_deadline_gteq, class: "input"%>~</td>
           <td ><%= f.date_field :settlement_deadline_lteq, class: "input" %></td>
+          <td ><%= f.date_field :settlement_gteq, class: "input" %>~</td>
+          <td ><%= f.date_field :settlement_lteq, class: "input" %></td>
         </tr>
       </table>
 
@@ -77,8 +90,7 @@
     <div style="display: flex;">
       <table class="status-tb">
         <tr>
-          <th colspan="6" class="search-th">獲得ステータス</th>
-          <th colspan="4" class="search-th">決済内訳</th>
+          <th colspan="7" class="search-th">獲得ステータス</th>
         </tr>
         <tr>
           <th class="search-th">　　　　獲得件数　　　　</th>
@@ -88,10 +100,6 @@
           <th class="search-th">　　　複数店追加待ち　　　</th>
           <th class="search-th">　　　　　不備　　　　　</th>
           <th class="search-th">　　　　　NG　　　　　</th>
-          <th class="search-th">　　　　決済対象　　　　</th>
-          <th class="search-th">　　　　決済完了　　　　</th>
-          <th class="search-th">　　決済期限切れ件数　　</th>
-          <th class="search-th">決済完了率（決済完了÷決済対象）</th>
         </tr>
         <tr>
           <td class="search-td"><%= @dmers.length %></td>
@@ -101,6 +109,17 @@
           <td class="search-td"><%= @dmers.where(status: '複数店舗' ).length %></td>
           <td class="search-td"><%= hubi + client_hubi %></td>
           <td class="search-td"><%= industry_ng + client_ng %></td>
+        </tr>
+        <tr>
+          <th colspan="4" class="search-th">決済内訳</th>
+        </tr>
+        <tr>
+          <th class="search-th">　　　　決済対象　　　　</th>
+          <th class="search-th">　　　　決済完了　　　　</th>
+          <th class="search-th">　　決済期限切れ件数　　</th>
+          <th class="search-th">決済完了率（決済完了÷決済対象）</th>
+        </tr>
+        <tr>
           <td class="search-td"><%= settlement_subject %></td>
           <td class="search-td"><%= settlement_done %></td>
           <td class="search-td"><%= slmt_dead %></td>
@@ -108,7 +127,7 @@
         </tr>
         <tr>
           <th colspan="3" class="search-th">不備内訳</th>
-          <th colspan="4" class="search-th">NG内訳</th>
+          <th colspan="3" class="search-th">NG内訳</th>
         </tr>
         <tr >
           <th class="search-th">自社不備</th>
@@ -129,29 +148,28 @@
           <td class="search-td"><%= number_to_percentage( (industry_ng + client_ng).to_f / @dmers.length.to_f * 100, precision: 1) rescue "-" %></td>
         </tr>
       </table>
-      <div>
-      <h2 style="margin-top: 8px;">ステータス比率</h2>
-        <%= pie_chart @dmers.group(:status).count, width:'400px' %>
-      </div>
     </div>
-      <table >
+    <table  class="out-tb">
+    <thead>
     <tr class="table-row">
-      <th ></th>
-      <th ><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
-      <th >商流</th>
-      <th >複数店</th>
-      <th >店舗名</th>
-      <th >獲得者</th>
-      <th >業種チェック</th>
-      <th >審査ステータス</th>
-      <th >決済ステータス</th>
-      <th >決済対応者</th>
-      <th >初回決済日</th>
-      <th >決済期限</th>
-      <th >不備内容(新規)</th>
-      <th >不備内容(決済)</th>
+      <th class="out-th"></th>
+      <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+      <th class="out-th">商流</th>
+      <th class="out-th">複数店</th>
+      <th class="out-th">店舗名</th>
+      <th class="out-th">獲得者</th>
+      <th class="out-th">業種チェック</th>
+      <th class="out-th">審査ステータス</th>
+      <th class="out-th">決済ステータス</th>
+      <th class="out-th">決済対応者</th>
+      <th class="out-th">初回決済日</th>
+      <th class="out-th">決済期限</th>
+      <th class="out-th">不備内容(新規)</th>
+      <th class="out-th">不備内容(決済)</th>
     </tr>
-    <% @dmers.find_each do |dmer| %>
+    </thead>
+    <tbody>
+    <% @dmers_data.find_each do |dmer| %>
     <tr class="index-tr">
       <td class="index-td"><%= link_to "　詳細　",  dmer_path(dmer.id) ,class: "link" %></td>
       <td class="index-td"><%= dmer.date.month %>月<%= dmer.date.day %>日</td>
@@ -175,6 +193,12 @@
       <td class="td-remarks"><%= dmer.deficiency_remarks_settlement %></td>
     </tr>
     <% end %>
+    </tbody>
     </table>
+  <div class="kaminari-page">
+    <%= paginate @dmers_data %>
+  </div>
   <% end %>
+  </div>
+  </div>
 </div>

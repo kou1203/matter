@@ -1,11 +1,17 @@
-<div data-scope-path="store_props/show">
+<div data-scope-path="shared/header">
   <h1 class="sub-title">店舗詳細</h1>
   <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="store_props/show">
+<div class="main">
   <table>
-
     <th class="reg"><%= link_to "客対応報告", store_prop_trouble_sses_new_path(@store_prop.id), class: "reg-link" %></th>
   </table>
-    <table >
+    <table>
       <tr >
         <th class="dmer-th">dメル</th>
         <th class="aupay-th">auペイ</th>
@@ -205,5 +211,6 @@
       </tr>
     <table >
   <% end %>
-
+  </div>
+  </div>
 </div>

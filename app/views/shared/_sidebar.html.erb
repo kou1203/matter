@@ -1,0 +1,28 @@
+  <ul class="nav">
+    <div class="side-body">
+    <h3>メニュー</h3>
+      <div class="side-head">
+      <label class="header-label" id="lists1">店舗情報/商材</label>
+      </div>
+        <ul class="dropdown" id="pull-down1" >
+          <li id="lists1"><%= link_to "店舗一覧", root_path , class: "side-link" %></li>
+          <li id="lists1"><%= link_to "dメル一覧", dmers_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "aupay一覧", aupays_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "PayPay一覧", paypays_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "楽天ペイ一覧", rakuten_pays_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "楽天フェムト", rakuten_casas_path, class: "side-link" %></li>
+        </ul>
+      <div>
+      <label class="header-label" id="lists2">利益表</label>
+        <ul class="dropdown" id="pull-down2">
+          <li id="lists2"><%= link_to "SS利益表", results_path,class: "side-link"%></li>
+        </ul>
+      </div>
+      <label class="header-label" id="lists3">終着報告/シフト</label>
+      <ul class="dropdown" id="pull-down3">
+        <li id="lists3"><%= link_to "SS終着報告", new_result_path, class: "side-link" %></li>
+        <li id="lists3"><%= link_to "シフト申請/確認", shifts_path, class: "side-link" %></li>
+        <li id="lists3"><%= link_to "ユーザー情報", users_path, class: "side-link" %></li>
+      </ul>
+    </div>
+  </ul>

@@ -1,8 +1,15 @@
-<div data-scope-path="paypays/index">
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
-  <h1 class="sub-title">PayPay一覧</h1>
+<div data-scope-path="shared/header">
+  <h1>PayPay一覧</h1>
   <%= render "shared/header" %>
+</div>
 
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="paypays/index">
+<div class="main">
   <%= form_with url: import_paypays_path do |f| %>
     <table>
       <tr>
@@ -60,14 +67,17 @@
         <td><%= @paypays.where(status: "上位店NG").length %></td>
       </tr>
     </table>
-    <table>
+    <table class="out-tb">
+    <thead>
       <tr >
-        <th></th>
-        <th ><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
-        <th >法人/個人</th>
-        <th >店舗名</th>
-        <th >審査ステータス</th>
+        <th class="out-tb"></th>
+        <th class="out-tb"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+        <th class="out-tb">法人/個人</th>
+        <th class="out-tb">店舗名</th>
+        <th class="out-tb">審査ステータス</th>
       </tr>
+    </thead>
+    <tbody>
       <% @paypays.each do |paypay| %>
       <tr >
         <td ><%= link_to "詳細",  paypay_path(paypay.id) ,class: "link" %></td>
@@ -77,7 +87,9 @@
         <td ><%= paypay.status %></td>
       </tr>
       <% end %>
+    </tbody>
     </table>
   <% end %>
   </div>
-</main>
+  </div>
+</div>

@@ -1,7 +1,14 @@
-<div data-scope-path="paypays/edit">
+<div data-scope-path="shared/header">
   <h1><%= @paypay.store_prop.name %>情報入力（PayPay）</h1>
   <%= render "shared/header" %>    
+</div>
 
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>    
+</div>
+
+<div data-scope-path="paypays/edit">
   <%= form_with model: @paypay, class: "form-frame", local: true do |f| %>
     <%= render "shared/error_messages", model: f.object %>
     <table>
@@ -58,4 +65,6 @@
 
   
   <% end %>
+  </div>
+  </div>
 </div>

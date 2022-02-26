@@ -1,8 +1,13 @@
-<div data-scope-path="paypays/show">
+<div data-scope-path="shared/header">
   <h1>PayPay詳細</h1>
   <%= render "shared/header" %>
-  
-  
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div class="main">
+<div data-scope-path="paypays/show">
     <table>
     <tr>
     <th colspan="4">店舗情報</th>
@@ -94,5 +99,7 @@
     <% else %>
     <% end %>
     </table>
+  </div>
+  </div>
 </div>
 

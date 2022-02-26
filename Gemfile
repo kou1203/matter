@@ -88,3 +88,5 @@ gem 'bcrypt_pbkdf'
 gem 'simple_calendar', '~> 2.0' 
 
 gem 'charlock_holmes'
+
+gem 'kaminari'

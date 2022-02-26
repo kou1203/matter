@@ -1,6 +1,13 @@
-<div data-scope-path="store_props/index">
+<div data-scope-path="shared/header">
   <h1>店舗一覧</h1>
   <%= render "shared/header" %>
+</div>
+  <div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="store_props/index">
+  <div class="main">
     <table>
       <th class="reg"><%= link_to "店舗登録", new_store_prop_path, class: "reg-link" %></th>
     </table>
@@ -69,4 +76,6 @@
     <% end %>
     </table>
   <% end %>
+  </div>
+  </div>
 </div>

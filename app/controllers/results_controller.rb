@@ -196,7 +196,7 @@ class ResultsController < ApplicationController
 
     def slmt_dead_line(product,date)
       return product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: nil)
-      .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where.not(settlement: date.minimum(:date)..date.maximum(:date)))
+      .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: date.minimum(:date)..date.maximum(:date)))
       .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: nil))
       .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: date.minimum(:date)..date.maximum(:date)))
     end

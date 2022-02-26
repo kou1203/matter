@@ -8,6 +8,7 @@ class AupaysController < ApplicationController
       else 
         @q.result(distinct: false)
       end
+      @aupays_data = @aupays.page(params[:page]).per(100)
   end
 
   def new 

@@ -1,7 +1,13 @@
-<div data-scope-path="store_props/edit">
+<div data-scope-path="shared/header">
   <h1>情報編集（店舗）</h1>
   <%= render "shared/header" %> 
-
+  </div>
+  <div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="store_props/edit">
+<div class="main">
   <%= form_with model: @store_prop, class: "form-frame", local: true do |f| %>
   <%= render "shared/error_messages",model: f.object %>
   <h1>店舗情報</h1>
@@ -137,4 +143,6 @@
   </table>
       <%= f.submit "登録", class: "submit-btn" %>
   <% end %>
+  </div>
+  </div>
 </div>

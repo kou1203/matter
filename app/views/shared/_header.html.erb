@@ -1,38 +1,11 @@
 <header>
-  <ul class="nav">
-    <div>
-      <label class="header-label" id="lists1">店舗情報/商材</label>
-        <ul class="dropdown" id="pull-down1" >
-          <li id="lists1"><%= link_to "店舗一覧", root_path , class: "side-link" %></li>
-          <li id="lists1"><%= link_to "dメル一覧", dmers_path, class: "side-link" %></li>
-          <li id="lists1"><%= link_to "aupay一覧", aupays_path, class: "side-link" %></li>
-          <li id="lists1"><%= link_to "PayPay一覧", paypays_path, class: "side-link" %></li>
-          <li id="lists1"><%= link_to "楽天ペイ一覧", rakuten_pays_path, class: "side-link" %></li>
-          <li id="lists1"><%= link_to "少額短期保険一覧", st_insurances_path, class: "side-link" %></li>
-          <li id="lists1"><%= link_to "楽天フェムト", rakuten_casas_path, class: "side-link" %></li>
-        </ul>
-    </div>
-    <div>
-      <label class="header-label" id="lists2">利益表</label>
-        <ul class="dropdown" id="pull-down2">
-          <li id="lists2"><%= link_to "SS利益表", results_path,class: "side-link"%></li>
-        </ul>
-    </div>
-    <div>
-      <label class="header-label" id="lists3">終着報告/シフト</label>
-      <ul class="dropdown" id="pull-down3">
-        <li id="lists3"><%= link_to "SS終着報告", new_result_path, class: "side-link" %></li>
-        <li id="lists3"><%= link_to "シフト申請/確認", shifts_path, class: "side-link" %></li>
-        <li id="lists3"><%= link_to "ユーザー情報", users_path, class: "side-link" %></li>
-      </ul>
-    </div>
-  </ul>
     <div class="sign-bar">
+      <%= link_to "< Home >", root_path, class: "sign-text" %>
     <% if user_signed_in? %>
-      <%= link_to current_user.name, root_path, class: "sign-text" %>
+      <%= link_to current_user.name, root_path, class: "sign-text" %><span class="sign-text">/</span>
       <%= link_to "ログアウト", destroy_user_session_path,method: :delete, class: "sign-text" %>
     <% else %>
-      <%= link_to "新規登録", new_user_registration_path, class: "sign-text" %>
+      <%= link_to "新規登録", new_user_registration_path, class: "sign-text" %><span class="sign-text">/</span>
       <%= link_to "ログイン", new_user_session_path, class: "sign-text" %>
     <% end %>
     </div>

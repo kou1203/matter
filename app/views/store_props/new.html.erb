@@ -1,11 +1,19 @@
-<div data-scope-path="store_props/new">
+
+<div data-scope-path="shared/header">
   <h1>新規情報入力（店舗）</h1>
   <%= render "shared/header" %> 
+</div>
 
-  <%= form_with model: @store_prop, class: "form-frame", local: true do |f| %>
-  <%= render "shared/error_messages",model: f.object %>
-  <h1>店舗情報</h1>
-  <table>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %> 
+</div>
+  <div data-scope-path="store_props/new">
+  <div class="main">
+    <%= form_with model: @store_prop, class: "form-frame", local: true do |f| %>
+    <%= render "shared/error_messages",model: f.object %>
+    <h1>店舗情報</h1>
+    <table>
   <%# 一列目 %>
     <tr>
       <th><%= f.label :head_store, "本店名（複数点のみ）", class: "form-text" %></th>
@@ -135,6 +143,8 @@
       <td></td>
     </tr>
   </table>
-      <%= f.submit "登録", class: "submit-btn" %>
+    <%= f.submit "登録", class: "submit-btn" %>
   <% end %>
+  </div>
+  </div>
 </div>
