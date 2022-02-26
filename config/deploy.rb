@@ -45,21 +45,11 @@ set :bundle_binstubs, -> { shared_path.join('bin') }
 
 # デプロイのタスク
 namespace :deploy do
-  Rake::Task["deploy:check:directories"].clear
+
   # unicornの再起動
   desc 'Restart application'
   task :restart do
     invoke 'unicorn:restart'
-  end
-  # 試しに追加
-  Rake::Task["deploy:symlink:release"].clear
-  namespace :symlink do
-    desc 'Symlink release to current'
-    task :release do
-      on release_roles :all do
-        execute :ln, '-s', release_path, current_path
-      end
-    end
   end
 
   # データベースの作成
@@ -68,24 +58,19 @@ namespace :deploy do
     on roles(:db) do |host|
       with rails_env: fetch(:rails_env) do
         within current_path do
-                  # データベース作成のsqlセット
+                # データベース作成のsqlセット
                 # データベース名はdatabase.ymlに設定した名前で
-                  sql = "CREATE DATABASE IF NOT EXISTS matter_production;"
-                  # クエリの実行。
+                  sql = "CREATE DATABASE IF NOT EXISTS hoge_app_production;"
+                # クエリの実行。
                 # userとpasswordはmysqlの設定に合わせて
-                execute "mysql --user=root --password=root.. -e '#{sql}'"
+                execute "mysql --user=root --password=root -e '#{sql}'"
+
         end
       end
     end
   end
 
   after :publishing, :restart
-
-  # after 'deploy:updated', :updated_cache do 
-  #   on roles(:app) do
-  #      execute :chmod, "-R 777 #{fetch(:deploy_to)}/current/#{fetch(:cache_path)}"
-  #   end
-  # end
 
   after :restart, :clear_cache do
     on roles(:web), in: :groups, limit: 3, wait: 10 do
