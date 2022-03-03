@@ -36,7 +36,18 @@ class UsersController < ApplicationController
 
   def show 
     @user = User.find(params[:id])
+    @month = params[:month] ? Date.parse(params[:month]) : Time.zone.today
 
+    @dmer_data = Dmer.includes(:store_prop).where(date: @month.all_month)
+    @dmer_hubi = @dmer_data.where(user_id: @user.id).where(status: "不備対応中")
+    @dmer_ng = @dmer_data.where(user_id: @user.id).where.not(status: "審査OK").where.not(status: "未審査").where.not(status: "審査待ち").where.not(status: "不備対応中")
+
+    @aupay_data = Aupay.includes(:store_prop).where(date: @month.all_month)
+    @aupay_hubi = @aupay_data.where(user_id: @user.id).where(status: "差し戻し")
+    @aupay_ng = @aupay_data.where(user_id: @user.id).where.not(status: "審査通過").where.not(status: "未審査").where.not(status: "審査待ち").where.not(status: "差し戻し")
+
+    @rakuten_pay_data = RakutenPay.includes(:store_prop).where(date: @month.all_month)
+    @rakuten_pay_hubi = @rakuten_pay_data.where(user_id: @user.id).where(status: "自社不備")
   end 
 
 

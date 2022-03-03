@@ -60,16 +60,25 @@
     </div>
     <% end %>
     </div>
+
     <div class="cal-form">
     <%= form_for :shift, url: update_month_shifts_path , html: { method: :post } do %>
       <h2><%= current_user.name %>予定シフト</h2>
+      <select id="shift-select" >
+        <option value="">シフトを選択してください</option>
+        <option value="キャッシュレス新規">キャッシュレス新規</option>
+        <option value="キャッシュレス決済">キャッシュレス決済</option>
+        <option value="帯同">帯同</option>
+        <option value="内勤">内勤</option>
+      </select>
       <%= month_calendar do |date| %>
         <%= date.day %><br>
         <% shift = @current_shifts.find_or_initialize_by(start_time: date) %>
         <% if shift.id.nil? %>
         <%= hidden_field_tag "shift[#{date}][start_time]", date %>
         <%= hidden_field_tag "shift[#{date}][user_id]", current_user.id %>
-        <%= select "shift[#{date}]", :shift,
+        <%= text_field "shift[#{date}]", :shift,{:class => "input",:id => "shift-set"} %>
+        <%# select "shift[#{date}]", :shift,
           [ ["キャッシュレス新規", "キャッシュレス新規"],
           ["キャッシュレス決済", "キャッシュレス決済"],
           ["楽天フェムト新規", "楽天フェムト新規"],
@@ -92,7 +101,6 @@
               "内勤": "内勤",
               "休み": "休み",
               "欠勤": "欠勤" }, {prompt: "選択してください"}, {class: "input"} %>
-          <%# link_to "削除", shift_path(s.id), method: :delete, data: {confirm:"削除しますか？"},class: "cal-del" %>
           <% end %>
         <% end %>
       <% end %>
@@ -150,7 +158,6 @@
                   @shifts.where(user_id: shift.user.id).where(shift: "内勤").length +
                   @shifts.where(user_id: shift.user.id).where(shift: "休み").length +
                   @shifts.where(user_id: shift.user.id).where(shift: "欠勤").length %></td>
-
         </tr>
         <tr>
           <td>消化シフト</td>

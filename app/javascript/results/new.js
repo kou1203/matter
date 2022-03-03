@@ -11,12 +11,11 @@ window.addEventListener('load', () => {
     const inputAupaySlmt = priceAupaySlmt.value;
     const inputSum = priceSum.value;
     const slmtSum = Math.floor(inputDmerSlmt * 0.01 * inputDmerValue + inputAupaySlmt * 0.01 * inputAupayValue);
-    console.log(slmtSum)
+    // console.log(slmtSum)
     const profitDom = document.getElementById('slmt-profit');
     profitDom.innerHTML = Math.floor(inputDmerSlmt * 0.01 * inputDmerValue + inputAupaySlmt * 0.01 * inputAupayValue).toLocaleString();
     const sumProfit = document.getElementById('sum-profit');
     sumProfit.innerHTML = Math.floor(eval(inputSum) + eval(slmtSum));
-
   })
   priceAupayInput.addEventListener('input', () => {
     const inputDmerValue = priceDmerInput.value;
@@ -30,6 +29,5 @@ window.addEventListener('load', () => {
     profitDom.innerHTML = Math.floor(inputDmerSlmt * 0.01 * inputDmerValue + inputAupaySlmt * 0.01 * inputAupayValue).toLocaleString();
     const sumProfit = document.getElementById('sum-profit');
     sumProfit.innerHTML = Math.floor(eval(inputSum) + eval(slmtSum));
-
   })
 })

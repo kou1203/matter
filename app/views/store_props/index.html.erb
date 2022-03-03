@@ -2,24 +2,23 @@
   <h1>店舗一覧</h1>
   <%= render "shared/header" %>
 </div>
-  <div style="display:flex;">
-<div data-scope-path="shared/side_bar">
-  <%= render "shared/sidebar" %>
-</div>
-<div data-scope-path="store_props/index">
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="store_props/index">
   <div class="main">
     <table>
       <th class="reg"><%= link_to "店舗登録", new_store_prop_path, class: "reg-link" %></th>
     </table>
-  <%= form_with url: import_store_props_path do |f| %>
+    <%= form_with url: import_store_props_path do |f| %>
     <table>
-        <td class="csv-label">CSV</td>
-        <td><%= f.file_field :file, accept:'.csv', class:"input" %></td>
-        <td class="result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"} %>
+      <td class="csv-label">CSV</td>
+      <td><%= f.file_field :file, accept:'.csv', class:"input" %></td>
+      <td class="result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"} %>
     </table>
-  <% end %>
-
-  <%= search_form_for @q do |f| %>
+    <% end %>
+    <%= search_form_for @q do |f| %>
     <table>
       <tr>
         <th class="search-head" rowspan="2" >検索</th>
@@ -41,41 +40,48 @@
         <td  class="reset"><%= link_to "絞込み解除", store_props_path ,class: "reset-link" %></td>
       </tr>
     </table>
-  <% end %>
-    <hr>
-      <%= alert %>
-  <% if @store_props.empty? %>
-  <% else %>
-    <table>
-      <tr>
-        <th class="search-th">店舗数</th>
-        <th class="search-th">法人</th>
-        <th class="search-th">個人</th>
-      </tr>
-
-      <tr class="search-tr">
-        <td ><%= @store_props.length %></td>
-        <td ><%= @store_props.where(race: '法人').length %></td>
-        <td ><%= @store_props.where(race: '個人').length %></td>
-      </tr>
-    </table>
-  
-    <table>
-    <tr>
-      <th></th>
-      <th><%= sort_link(@q, :id, "ID",{},{class: "reset-link"}) %></th>
-      <th><%= sort_link(@q, :race, "法人/個人",{},{class: "reset-link"}) %></th>
-      <th><%= sort_link(@q, :name, "店舗名",{},{class: "reset-link"}) %></th>
-    <% @store_props.each do |store_prop| %>
-    <tr>
-    <td ><%= link_to "詳細", store_prop_path(store_prop.id), class: "link" %></td>
-    <td ><%= store_prop.id %></td>
-    <td ><%= store_prop.race %></td>
-    <td ><%= store_prop.name %></td>
-    </tr>
     <% end %>
-    </table>
-  <% end %>
-  </div>
+    
+    <hr>
+    <%= alert %>
+      <% if @store_props.empty? %>
+      <% else %>
+        <table>
+          <tr>
+            <th class="search-th">店舗数</th>
+            <th class="search-th">法人</th>
+            <th class="search-th">個人</th>
+          </tr>
+          <tr class="search-tr">
+            <td ><%= @store_props.length %></td>
+            <td ><%= @store_props.where(race: '法人').length %></td>
+            <td ><%= @store_props.where(race: '個人').length %></td>
+          </tr>
+        </table>
+        <table class="out-tb">
+        <thead>
+        <tr>
+          <th class="out-th"></th>
+          <th class="out-th"><%= sort_link(@q, :id, "ID",{},{class: "reset-link"}) %></th>
+          <th class="out-th"><%= sort_link(@q, :race, "法人/個人",{},{class: "reset-link"}) %></th>
+          <th class="out-th"><%= sort_link(@q, :name, "店舗名",{},{class: "reset-link"}) %></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @store_props_data.each do |store_prop| %>
+        <tr>
+          <td ><%= link_to "詳細", store_prop_path(store_prop.id), class: "link" %></td>
+          <td ><%= store_prop.id %></td>
+          <td ><%= store_prop.race %></td>
+          <td ><%= store_prop.name %></td>
+        </tr>
+        <% end %>
+        </tbody>
+        </table>
+        <div class="kaminari-page">
+          <%= paginate @store_props_data %>
+        </div>
+      <% end %>
+    </div>
   </div>
 </div>

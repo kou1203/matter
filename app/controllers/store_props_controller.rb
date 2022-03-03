@@ -9,6 +9,7 @@ class StorePropsController < ApplicationController
       else
         @q.result(distinct: true)
       end
+      @store_props_data = @store_props.page(params[:page]).per(100)
   end 
 
   def new 
