@@ -7,8 +7,7 @@ window.addEventListener('load', ()=>{
   for(let i =0; i<shiftCheck.length; i++){
     let set = "shift-set" + i;
     target[i] = document.getElementById(set);
-    // console.log('shift-set'+i)
-    console.log(target[i])
+    // console.log(target[i])
   }
   checkAll.onclick = function() {
     for(i = 0; i < shiftCheck.length; i++) {
