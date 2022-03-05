@@ -1,4 +1,4 @@
-window.addEventListener('load', ()=>{
+window.addEventListener('turbolinks:load', ()=>{
   const select = document.getElementById('shift-select');
   const checkAll = document.getElementById('check-all');
   const uncheckAll = document.getElementById('uncheck-all');
