@@ -35,7 +35,6 @@ class ShiftsController < ApplicationController
   def update 
     @shift = Shift.find(params[:id])
     @shift.update(shift_params)
-
   end 
 
   def update_month

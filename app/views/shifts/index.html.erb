@@ -2,83 +2,34 @@
   <h1>シフト一覧</h1>
   <%= render "shared/header" %>
   <p class="shift-alert"><%= notice %></p>
-  <div style="display: flex; padding:15px;">
-    <div class="shift-form">
-    <h2><%= current_user.name %>シフト申請</h2>
-  <%= form_with model: @shift,class: "form-frame", local: true do |f| %>
-  <%= f.hidden_field :user_id, value: current_user.id %>
-    <table class="shift-table">
-      <thead>
-        <tr>
-          <th class="form-th">シフト</th>
-          <th class="form-th">日付</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-        <td class="form-td"><%= f.select :shift, {
-          "キャッシュレス新規": "キャッシュレス新規",
-          "キャッシュレス決済": "キャッシュレス決済",
-          "楽天フェムト新規": "楽天フェムト新規",
-          "楽天フェムト設置": "楽天フェムト設置",
-          "サミット": "サミット",
-          "帯同": "帯同",
-          "内勤": "内勤",
-          "休み": "休み",
-          "欠勤": "欠勤"} ,{}, {class: "input"} %></td>
-          <td class="form-td"><%= f.date_field :start_time, value: Date.today ,class: "input" %></td>
-        </tr>
-      </tbody>
-    </table>
-    <%= f.submit "登録",class: "submit-btn" %>
-    <% end %>
-    <h2>全シフト検索</h2>
-    <%= search_form_for @q do |f| %>
-      <table  class="shift-table">
-        <tr >
-          <th class="form-th">日付（始）</th>
-          <th class="form-th">日付（終）</th>
-        </tr>
-        <tr>
-        <td class="form-td"><%= f.date_field :start_time_gteq, class: "input" %></td>
-        <td class="form-td"><%= f.date_field :start_time_lt, class: "input" %></td>
-        </tr>
-      </table>
-      <table class="shift-table">
-        <tr >
-          <th class="form-th">ユーザー名</th>
-          <th class="form-th">拠点</th>
-        </tr>
-        <tr >
-          <td class="form-td"><%= f.text_field :user_name_cont, class: "input" %></td>
-          <td class="form-td"><%= f.text_field :user_base_cont, class: "input" %></td>
-        </tr>
-    </table>
-    <div style="display: flex;">
-        <%= f.submit "絞込み", class: "submit-btn" %>
-        <button class="reset-btn"><%= link_to "リセット", shifts_path, class:"reset-link" %></button>
-    </div>
-    <% end %>
-    </div>
 
     <div class="cal-form">
     <%= form_for :shift, url: update_month_shifts_path , html: { method: :post } do %>
       <h2><%= current_user.name %>予定シフト</h2>
-      <select id="shift-select" >
+      <div class="slct-form">
+      <input type="button" id="check-all" class="check-btn"  value="全選択">
+      <input type="button" id="uncheck-all" class="uncheck-btn" value="選択解除" >
+      <select id="shift-select" class="shift-slct">
         <option value="">シフトを選択してください</option>
         <option value="キャッシュレス新規">キャッシュレス新規</option>
         <option value="キャッシュレス決済">キャッシュレス決済</option>
+        <option value="楽天フェムト設置">楽天フェムト設置</option>
+        <option value="サミット">サミット</option>
         <option value="帯同">帯同</option>
         <option value="内勤">内勤</option>
+        <option value="休み">休み</option>
       </select>
+      </div>
+      <% cnt = 0 %>
       <%= month_calendar do |date| %>
+        <input name="shift-check" type="checkbox" , class="shiftcheckbox">
         <%= date.day %><br>
         <% shift = @current_shifts.find_or_initialize_by(start_time: date) %>
         <% if shift.id.nil? %>
         <%= hidden_field_tag "shift[#{date}][start_time]", date %>
         <%= hidden_field_tag "shift[#{date}][user_id]", current_user.id %>
-        <%= text_field "shift[#{date}]", :shift,{:class => "input",:id => "shift-set"} %>
-        <%# select "shift[#{date}]", :shift,
+        <%# text_field_tag "shift[#{date}][shift]", {},{:class => "input", :id => "shift-set#{cnt}" } %>
+        <%= select "shift[#{date}]", :shift,
           [ ["キャッシュレス新規", "キャッシュレス新規"],
           ["キャッシュレス決済", "キャッシュレス決済"],
           ["楽天フェムト新規", "楽天フェムト新規"],
@@ -87,10 +38,12 @@
           ["帯同", "帯同"],
           ["内勤", "内勤"],
           ["休み", "休み"],
-          ["欠勤", "欠勤"] ] , {:prompt => "選択してください"}, {:class => "input"} %>
+          ["欠勤", "欠勤"] ] , {:prompt => "選択してください"}, {:class => "input",:id => "shift-set#{cnt}"} %>
+        <% cnt += 1 %>
         <% else %>
           <%= fields_for "shift[]", shift do |s| %>
             <%= s.hidden_field :start_time %>
+            <%# s.text_field :shift, {:class => "input",:id => "shift-set#{cnt}"} %>
             <%= s.select :shift, 
               { "キャッシュレス新規": "キャッシュレス新規",
               "キャッシュレス決済": "キャッシュレス決済",
@@ -100,15 +53,48 @@
               "帯同": "帯同",
               "内勤": "内勤",
               "休み": "休み",
-              "欠勤": "欠勤" }, {prompt: "選択してください"}, {class: "input"} %>
+              "欠勤": "欠勤" }, {prompt: "選択してください"}, {class: "input",:id => "shift-set#{cnt}"} %>
+            <% cnt += 1 %>
           <% end %>
         <% end %>
       <% end %>
       <%= submit_tag "一括登録",class: "submit-btn" %>
     <% end %>
     </div>
-  </div>
-
+    <div class="shift-form">
+    <h2>全シフト検索</h2>
+    <%= search_form_for @q do |f| %>
+      <table  class="shift-table">
+        <tr >
+          <th class="form-th">日付</th>
+          <th class="form-th">日付範囲（始）</th>
+          <th class="form-th">日付範囲（終）</th>
+          <th class="form-th">ユーザー名</th>
+          <th class="form-th">拠点</th>
+          <th class="form-th">担当商材</th>
+        </tr>
+        <tr>
+        <td class="form-td"><%= f.date_field :start_time_eq, class: "input" %></td>
+        <td class="form-td"><%= f.date_field :start_time_gteq, class: "input" %></td>
+        <td class="form-td"><%= f.date_field :start_time_lt, class: "input" %></td>
+        <td class="form-td"><%= f.text_field :user_name_cont, class: "input" %></td>
+        <td class="form-td">
+          <%= f.select :user_base_cont,
+            { "中部": "中部","関東": "関東","関西": "関西"},
+            {include_blank: true},class: "input" %>
+        </td>
+        <td class="form-td">
+          <%= f.select :user_base_sub_cont,
+            { "キャッシュレス": "キャッシュレス","フェムト": "フェムト","サミット": "サミット"},
+            {include_blank: true},class: "input" %>
+        </td>
+        </tr>
+      </table>
+    <div style="display: flex;">
+        <%= f.submit "絞込み", class: "submit-btn" %>
+        <button class="reset-btn"><%= link_to "リセット", shifts_path, class:"reset-link" %></button>
+    </div>
+    <% end %>
   <% if @shifts.empty? %>
   <% else %>
 <%# シフト一覧 %>
