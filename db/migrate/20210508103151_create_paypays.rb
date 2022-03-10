@@ -4,7 +4,7 @@ class CreatePaypays < ActiveRecord::Migration[6.0]
       t.string :customer_num
       t.string :client                 , null: false 
       t.references :user               , foreign_key: true 
-      t.references :store_prop         , foreign_key: true 
+      t.references :store_prop         , index: { unique: true }, foreign_key: true 
       t.date :date                     , null: false 
       t.string :status                 , null: false 
       t.date :status_update

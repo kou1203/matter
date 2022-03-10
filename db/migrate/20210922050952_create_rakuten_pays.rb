@@ -3,7 +3,7 @@ class CreateRakutenPays < ActiveRecord::Migration[6.1]
     create_table :rakuten_pays do |t|
       t.string :client                 , null: false 
       t.references :user               , foreign_key: true 
-      t.references :store_prop         , foreign_key: true 
+      t.references :store_prop         , index: { unique: true }, foreign_key: true 
       t.date :date                     , null: false 
       t.date :share
       t.string :status                 , null: false 

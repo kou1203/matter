@@ -45,7 +45,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.integer "valuation_new", null: false
     t.integer "valuation_settlement", null: false
     t.index ["settlementer_id"], name: "index_aupays_on_settlementer_id"
-    t.index ["store_prop_id"], name: "index_aupays_on_store_prop_id"
+    t.index ["store_prop_id"], name: "index_aupays_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_aupays_on_user_id"
   end
 
@@ -118,7 +118,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.integer "valuation_settlement", null: false
     t.integer "valuation_second_settlement", null: false
     t.index ["settlementer_id"], name: "index_dmers_on_settlementer_id"
-    t.index ["store_prop_id"], name: "index_dmers_on_store_prop_id"
+    t.index ["store_prop_id"], name: "index_dmers_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_dmers_on_user_id"
   end
 
@@ -341,7 +341,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.date "result_point"
     t.integer "profit", null: false
     t.integer "valuation", null: false
-    t.index ["store_prop_id"], name: "index_paypays_on_store_prop_id"
+    t.index ["store_prop_id"], name: "index_paypays_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_paypays_on_user_id"
   end
 
@@ -463,7 +463,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.integer "valuation_put", null: false
     t.index ["adjustmenter_id"], name: "index_rakuten_casas_on_adjustmenter_id"
     t.index ["putter_id"], name: "index_rakuten_casas_on_putter_id"
-    t.index ["store_prop_id"], name: "index_rakuten_casas_on_store_prop_id"
+    t.index ["store_prop_id"], name: "index_rakuten_casas_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_rakuten_casas_on_user_id"
   end
 
@@ -485,7 +485,7 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.date "payment"
     t.integer "profit", null: false
     t.integer "valuation", null: false
-    t.index ["store_prop_id"], name: "index_rakuten_pays_on_store_prop_id"
+    t.index ["store_prop_id"], name: "index_rakuten_pays_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_rakuten_pays_on_user_id"
   end
 

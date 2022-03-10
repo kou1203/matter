@@ -5,7 +5,7 @@ class CreateRakutenCasas < ActiveRecord::Migration[6.0]
       t.string :client                       ,null: false 
       t.string :client_num                   
       t.references :user                     ,foreign_key: true 
-      t.references :store_prop               ,foreign_key: true 
+      t.references :store_prop               , index: { unique: true },foreign_key: true 
       t.date :date                           ,null: false 
       t.string :status                       ,null: false
       t.date :status_update

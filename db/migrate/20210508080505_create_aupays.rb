@@ -4,7 +4,7 @@ class CreateAupays < ActiveRecord::Migration[6.0]
       t.string :customer_num           
       t.string :client               
       t.references :user                , foreign_key: true
-      t.references :store_prop          , foreign_key: true
+      t.references :store_prop          , index: { unique: true }, foreign_key: true
       t.date :date                      , null:false 
       t.date :share 
       t.string :status                  , null: false 
