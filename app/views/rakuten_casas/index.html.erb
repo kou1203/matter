@@ -1,7 +1,13 @@
-<div data-scope-path="rakuten_casas/index">
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
   <h1>楽天カーサ一覧</h1>
   <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="rakuten_casas/index">
   <%= form_with url: import_rakuten_casas_path do |f| %>
     <table>
       <tr>
@@ -198,4 +204,4 @@
       <% end %>
     <% end %>
   </div>
-</main>
+</div>
