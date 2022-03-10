@@ -50,6 +50,7 @@
         <tr >
           <th class="search-head" rowspan="2" >検索</th>
           <th class="search-th">申込番号</th>
+          <th class="search-th">拠点</th>
           <th class="search-th">店舗名</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">決済者</th>
@@ -61,6 +62,7 @@
         </tr>
         <tr >
           <td><%= f.text_field :customer_num_eq, class: "input" %></td>
+          <td><%= f.select :user_base_cont,{"中部SS": "中部SS","関東SS": "関東SS","関西SS": "関西SS"},{include_blank: true},{ class: "input"} %></td>
           <td><%= f.text_field :store_prop_name_cont, class: "input" %></td>
           <td><%= f.text_field :user_name_cont, class: "input" %></td>
           <td><%= f.text_field :settlementer_name_cont, class: "input" %></td>
@@ -107,8 +109,8 @@
           <td class="search-td"><%= @dmers.length %></td>
           <td class="search-td"><%= status_ok %></td>
           <td class="search-td"><%= @dmers.where(status: '審査待ち').length + @dmers.where(status: '社内確認中').length %></td>
-          <td class="search-td"><%= @dmers.where.not(store_props: {head_store: nil}).where.not(status: '複数店舗' ).length %></td>
-          <td class="search-td"><%= @dmers.where(status: '複数店舗' ).length %></td>
+          <td class="search-td"><%= @dmers.where.not(store_props: {head_store: nil}).where.not(share: nil).length %></td>
+          <td class="search-td"><%= @dmers.where.not(store_props: {head_store: nil}).where(share: nil).length %></td>
           <td class="search-td"><%= hubi + client_hubi %></td>
           <td class="search-td"><%= industry_ng + client_ng %></td>
         </tr>

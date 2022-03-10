@@ -44,10 +44,12 @@
 
       <table >
         <tr >
-          <th class="search-head" rowspan="2" >検索</th>
+          <th class="search-head" rowspan="4" >検索</th>
           <th class="search-th">申込番号</th>
+          <th class="search-th">拠点</th>
           <th class="search-th">店舗名</th>
           <th class="search-th">獲得者</th>
+          <th class="search-th">決済者</th>
           <th class="search-th">審査ステータス</th>
           <th class="search-th">決済ステータス</th>
           <th class="search-th">商流</th>
@@ -55,8 +57,10 @@
         </tr>
         <tr >
           <td><%= f.text_field :customer_num_eq, class: "input" %></td>
+          <td><%= f.select :user_base_cont,{"中部SS": "中部SS","関東SS": "関東SS","関西SS": "関西SS"},{include_blank: true},{ class: "input"} %></td>
           <td><%= f.text_field :store_prop_name_cont, class: "input" %></td>
           <td><%= f.text_field :user_name_cont, class: "input" %></td>
+          <td><%= f.text_field :settlementer_name_cont, class: "input" %></td>
           <td><%= f.select :status_eq, options_from_collection_for_select(Aupay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
           <td><%= f.select :status_settlement_eq, options_from_collection_for_select(Aupay.select(:status_settlement).distinct,:status_settlement, :status_settlement),{include_blank: true}, {class: "input"} %></td>
           <td ><%= f.select :client_eq, options_from_collection_for_select(Aupay.select(:client).distinct, :client, :client), {include_blank: true}, {class: "input"} %></td>
@@ -97,8 +101,8 @@
           <td class="search-td"><%= @aupays.where(status: '審査待ち').length %></td>
           <td class="search-td"><%= hubi + client_hubi %></td>
           <td class="search-td"><%= client_ng %></td>
-          <td class="search-td"><%= @aupays.where.not(store_props: {head_store: nil}).where.not(status: '複数店舗' ).length %></td>
-          <td class="search-td"><%= @aupays.where(status: '複数店舗' ).length %></td>
+          <td class="search-td"><%= @aupays.where.not(store_props: {head_store: nil}).where.not(share: nil).length %></td>
+          <td class="search-td"><%= @aupays.where.not(store_props: {head_store: nil}).where(share: nil).length %></td>
         </tr>
         <tr>
           <th colspan="4" class="search-th">決済内訳</th>

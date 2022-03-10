@@ -142,9 +142,7 @@ class StoreProp < ApplicationRecord
            if store_prop.has_changes_to_save?
             store_prop.save!
             update_cnt += 1
-            sleep 0.1
           else   
-            sleep 0.1
           nochange_cnt += 1
         end 
       elsif StoreProp.find_by(phone_number_1: row["電話番号1"]).present? && StoreProp.find_by(name: row["店舗名"]).present?
@@ -184,7 +182,6 @@ class StoreProp < ApplicationRecord
         )
         store_prop.save!
         new_cnt += 1
-        sleep 0.1
       end
     end
     "新規登録#{new_cnt}件, 更新#{update_cnt}件, 変更なし#{nochange_cnt}件"
