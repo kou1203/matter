@@ -121,53 +121,55 @@
         <% ave_profit_new = sum_profit_new.to_f / digestion_new %>
         <% ave_profit_slmt = sum_profit_slmt.to_f / digestion_settlement %>
         <% ave_profit = (sum_profit.to_f / @results.where.not(shift: "休み").where.not(shift: "帯同").where.not(shift: "内勤").where.not(shift: "欠勤").length) %>
-  <h1>獲得商材内訳</h1>
-    <h2>売上/予測値 決済予定</h2>
-    <table>
-      <tr></tr>
-      <tr>
-        <th>平均売上（新規）</th>
-        <th>平均売上（決済）</th>
-        <th>現状売上（新規）</th>
-        <th>現状売上（決済）</th>
-        <th>現状合計売上</th>
-      <tr>
-      </tr>
-        <td><%= ave_profit_new.round().to_s(:delimited) rescue "NaN" %></td>
-        <td><%= ave_profit_slmt.round().to_s(:delimited) rescue "NaN" %></td>
-        <td><%= sum_profit_new.to_s(:delimited) %></td>
-        <td><%= sum_profit_slmt.to_s(:delimited) %></td>
-        <td><%= (sum_profit_new + sum_profit_slmt).to_s(:delimited) %></td>
-      </tr>
-      <tr></tr>
-      <tr>
-        <th>決済対象（dメル）</th>
-        <th>決済対象（aupay）</th>
-        <th>終着見込(新規)</th>
-      </tr>
-      <input type="hidden", id="dmer-slmt-price" value="<%= @dmers_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
-      <input type="hidden", id="aupay-slmt-price" value="<%= @aupays_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
-      <input type="hidden", id="new-sum" value="<%= ave_profit_new * new_shift %>"><%# 決済合計売上の値をjsで取得する %>
-      <tr>
-        <td><%= @dmers_slmt_target.length %></td>
-        <td><%= @aupays_slmt_target.length %></td>
-        <td><%= (ave_profit_new * new_shift).round().to_s(:delimited) rescue "計算不可" %></td>
-      </tr>
-      <tr>
-        <th>dメル決済率</th>
-        <th>auPay決済率</th>
-        <th>終着見込(決済)</th>
-        <th>終着見込（合計）</th><%# （平均売上 * 予定シフト数） %>
-      </tr>
-      <tr>
-        <td><input type="number", class="input-math", id="slmt-dmer" max="100", placeholder="見込決済率を入力" >％</td>
-        <td><input type="number", class="input-math", id="slmt-aupay" max="100", placeholder="見込決済率を入力" >％</td>
-        <td><span id="slmt-profit">決済率と連動してます</span></td>
-        <td><span id="sum-profit" >決済率と連動してます</span></td>
-      </tr>
-      <tr>
-      </tr>
-    </table>
+    <h1>獲得商材内訳</h1>
+      <h2>売上/予測値 決済予定</h2>
+      <table>
+        <tr></tr>
+        <tr>
+          <th>平均売上（新規）</th>
+          <th>平均売上（決済）</th>
+          <th>現状売上（新規）</th>
+          <th>現状売上（決済）</th>
+          <th>現状合計売上</th>
+        <tr>
+        </tr>
+          <td><%= ave_profit_new.round().to_s(:delimited) rescue "NaN" %></td>
+          <td><%= ave_profit_slmt.round().to_s(:delimited) rescue "NaN" %></td>
+          <td><%= sum_profit_new.to_s(:delimited) %></td>
+          <td><%= sum_profit_slmt.to_s(:delimited) %></td>
+          <td><%= (sum_profit_new + sum_profit_slmt).to_s(:delimited) %></td>
+        </tr>
+        <tr></tr>
+        <tr>
+          <th>決済対象（dメル）</th>
+          <th>決済対象（aupay）</th>
+          <th>終着見込(新規)</th>
+        </tr>
+        <input type="hidden", id="dmer-slmt-price" value="<%= @dmers_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
+        <input type="hidden", id="aupay-slmt-price" value="<%= @aupays_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
+        <input type="hidden", id="new-sum" value="<%= ave_profit_new * new_shift %>"><%# 決済合計売上の値をjsで取得する %>
+        <tr>
+          <td><%= @dmers_slmt_target.length %></td>
+          <td><%= @aupays_slmt_target.length %></td>
+          <td><%= (ave_profit_new * new_shift).round().to_s(:delimited) rescue "計算不可" %></td>
+        </tr>
+        <tr>
+          <th>dメル決済率</th>
+          <th>auPay決済率</th>
+          <th>終着見込(決済)</th>
+          <th>終着見込（合計）</th><%# （平均売上 * 予定シフト数） %>
+        </tr>
+        <tr>
+          <td><input type="number", class="input-math", id="slmt-dmer" max="100", placeholder="見込決済率を入力" >％</td>
+          <td><input type="number", class="input-math", id="slmt-aupay" max="100", placeholder="見込決済率を入力" >％</td>
+          <td><span id="slmt-profit">決済率と連動してます</span></td>
+          <td><span id="sum-profit" >決済率と連動してます</span></td>
+        </tr>
+        <tr>
+        </tr>
+      </table>
+              <p class="nav-text">決済対象は決済期限が検索した日付の初日〜3ヶ月後の末日までの決済対象になります。</p>
+          <p class="caution-text">※検索範囲外で決済されている案件は決済対象に含まれません。</p>
     <h2>商材別売上/生産性</h2>
       <%# 商材別獲得合計（評価対象のみ） %>
         <% dmer_len = @dmers_this_month.length - @dmers_def_this_month.length + @dmers_inc.length %></td>
@@ -321,7 +323,7 @@
           <td colspan="" style="color: red;"><%= @st_insurances_def_this_month.length %></td>
         <%# 楽天ペイ %>
           <td style="color: blue;"><%= @rakuten_pays_this_month.length  %></td>
-          <td style="color: red;"><%= link_to  @rakuten_pays_def_this_month.length, user_path(@results.first.user.id), class: "def-link" %></td>
+          <td style="color: red;"><%= link_to  @rakuten_pays_def_this_month.length, user_path(@results.first.user.id, month: @month), class: "def-link" %></td>
           <td style="color: blue;"><%= @rakuten_pays_inc.length %></td>
         <%# 楽天フェムト新規 %>
           <td style="color: blue;"><%= @rakuten_casas_this_month.length %></td>

@@ -8,6 +8,7 @@ class ResultsController < ApplicationController
     else    
       @q.result(distinct: false).includes(:user).order(date: :asc)
     end
+    @month = params[:month] ? Date.parse(params[:month]) : @results.minimum(:date)
       @shifts = Shift.includes(:user).all
       # 個別利益表 
       if @results.group(:user_id).length == 1 

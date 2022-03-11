@@ -22,27 +22,26 @@
     <%= search_form_for @q do |f| %>
       <table>
         <tr >
-          <th colspan="2" class="search-th">獲得日付</th>
         </tr>
         <tr>
-        <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
-        <td ><%= f.date_field :date_lt, class: "input" %></td>
+
         </tr>
       </table>
       <table >
         <tr >
           <th class="search-head" rowspan="2" >検索</th>
+          <th colspan="2" class="search-th">獲得日付</th>
           <th class="search-th">店舗名</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">審査ステータス</th>
-          <th class="search-th">商流</th>
           <td class="result"><%= f.submit "絞込み", data: {disable_with: "絞り込み中"},class: "result-btn" %></td>
         </tr>
         <tr >
+          <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
+          <td ><%= f.date_field :date_lt, class: "input" %></td>
           <td ><%= f.text_field :store_prop_name_cont, class: "input" %></td>
           <td ><%= f.text_field :user_name_cont, class: "input" %></td>
           <td ><%= f.select :status_eq, options_from_collection_for_select(Paypay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
-          <td ><%= f.select :client_eq, {"マックスサポート": "マックスサポート"}, {include_blank: true}, {class: "input"} %></td>
           <td class="reset"><%= link_to "絞込みリセット", paypays_path, class: "reset-link" %></td>
         </tr>
     </table>
@@ -78,7 +77,7 @@
       </tr>
     </thead>
     <tbody>
-      <% @paypays.each do |paypay| %>
+      <% @paypays_data.each do |paypay| %>
       <tr >
         <td ><%= link_to "詳細",  paypay_path(paypay.id) ,class: "link" %></td>
         <td ><%= paypay.date %></td>
@@ -89,6 +88,9 @@
       <% end %>
     </tbody>
     </table>
+  <div class="kaminari-page">
+    <%= paginate @paypays_data %>
+  </div>
   <% end %>
   </div>
   </div>

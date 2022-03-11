@@ -19,27 +19,19 @@
       </table>
     <% end %>
     <%= search_form_for @q do |f| %>
-      <table>
-        <tr >
-          <th colspan="2" class="search-th">獲得日付</th>
-        </tr>
-        <tr>
-        <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
-        <td ><%= f.date_field :date_lt, class: "input" %></td>
-        </tr>
-      </table>
       <table >
         <tr >
           <th class="search-head" rowspan="2" >検索</th>
+          <th colspan="2" class="search-th">獲得日付</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">審査ステータス</th>
-          <th class="search-th">商流</th>
           <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
         </tr>
         <tr >
+        <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
+        <td ><%= f.date_field :date_lt, class: "input" %></td>
           <td ><%= f.text_field :user_name_cont, class: "input" %></td>
           <td ><%= f.select :status_eq, options_from_collection_for_select(RakutenPay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
-          <td ><%= f.select :client_eq, {"USEN": "USEN"}, {include_blank: true}, {class: "input"} %></td>
           <td class="reset"><%= link_to "絞込みリセット", rakuten_pays_path, class: "reset-link" %></td>
         </tr>
     </table>
@@ -79,23 +71,30 @@
       <tr >
         <th class="out-th"></th>
         <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
-        <th class="out-th">法人/個人</th>
         <th class="out-th">店舗名</th>
+        <th class="out-th">獲得者</th>
         <th class="out-th">審査ステータス</th>
+        <th class="out-th">情報不備</th>
+        <th class="out-th">上位店共有日</th>
       </tr>
       </thead>
       <tbody>
-      <% @rakuten_pays.each do |rakuten_pay| %>
+      <% @rakuten_pays_data.each do |rakuten_pay| %>
       <tr >
         <td ><%= link_to "詳細",  rakuten_pay_path(rakuten_pay.id) ,class: "link" %></td>
         <td ><%= rakuten_pay.date %></td>
-        <td ><%= rakuten_pay.store_prop.race %></td>
         <td ><%= rakuten_pay.store_prop.name %></td>
+        <td ><%= rakuten_pay.user.name %></td>
         <td ><%= rakuten_pay.status %></td>
+        <td ><%= rakuten_pay.deficiency_info %></td>
+        <td ><%= rakuten_pay.share %></td>
       </tr>
       <% end %>
       </tbody>
     </table>
+  <div class="kaminari-page">
+    <%= paginate @rakuten_pays_data %>
+  </div>
   <% end %>
   </div>
   </div>

@@ -8,6 +8,7 @@ class RakutenPaysController < ApplicationController
     else  
       @q.result(distinct: true)
     end
+    @rakuten_pays_data = @rakuten_pays.page(params[:page]).per(100)
   end 
 
   def new

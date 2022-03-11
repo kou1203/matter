@@ -8,6 +8,7 @@ class PaypaysController < ApplicationController
       else
         @q.result(distinct: false)
       end
+      @paypays_data = @paypays.page(params[:page]).per(100)
   end 
 
   def new 
