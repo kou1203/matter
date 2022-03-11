@@ -15,9 +15,10 @@ class ResultsController < ApplicationController
           @dmers_user = Dmer.where(user_id: @results.first.user_id )
           @dmers_this_month = this_period(@dmers_user,@results)
           @dmers_def_this_month = this_period(@dmers_this_month.where(status: "自社不備")
-          .or(@dmers_this_month.where(status: "上位店NG"))
+          .or(@dmers_this_month.where(status: "審査NG"))
           .or(@dmers_this_month.where(status: "不備対応中"))
           .or(@dmers_this_month.where(status: "申込取消"))
+          .or(@dmers_this_month.where(status: "申込取消（不備）"))
           .or(@dmers_this_month.where(status: "審査OK").where.not(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))),@results)
           @dmers_inc = inc_period(@dmers_this_month,@results)
           
@@ -30,6 +31,7 @@ class ResultsController < ApplicationController
           @dmers_slmt_dec = slmt_dec_period(@dmers_slmt_not_this_month,@results)
           @dmers_slmt_def = slmt_this_period(@dmers_settlementer.where(status_settlement: "未決済"),@results)
           @dmers_slmt_def_pic = slmt_this_period(@dmers_settlementer.where(status_settlement: "写真不備"),@results)
+          # 決済対象
           @dmers_slmt_target = slmt_dead_line(@dmers_user,@results)
 
         # aupay　新規

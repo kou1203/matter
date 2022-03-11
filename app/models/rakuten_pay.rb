@@ -16,7 +16,7 @@ class RakutenPay < ApplicationRecord
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
       user = User.find_by(name: row["獲得者"])
-      store_prop = StoreProp.find_by(name: row["店舗名"])
+      store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
       errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
       errors << "#{index}行目店舗名が不正です" if store_prop.blank? && errors.length < 5
       if row["ID"].present?
@@ -56,7 +56,7 @@ class RakutenPay < ApplicationRecord
     nochange_cnt = 0
     CSV.foreach(file.path, headers: true) do |row|
       user = User.find_by(name: row["獲得者"])
-      store_prop = StoreProp.find_by(name: row["店舗名"])
+      store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
       u_id = user.id if user.present?
       store_id = store_prop.id if store_prop.present?
       rakuten_pay = find_by(store_prop_id: store_prop.id)
@@ -88,7 +88,6 @@ class RakutenPay < ApplicationRecord
         end 
       else  
         rakuten_pay = new(
-          id: row["ID"],
           client: row["商流"],
           user_id: u_id,
           store_prop_id: store_id,
