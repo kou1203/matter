@@ -151,7 +151,144 @@
         </table>
       </div>
       <div class="group1">
+      <h2 class="hubi-title">楽天PayNG(<%= @rakuten_pay_hubi.length %>件)</h2>
+        <table>
+        <% if @rakuten_pay_hubi.length != 0 %>
+          <thead>
+            <tr>
+              <th>詳細</th>
+              <th>店舗名</th>
+              <th>獲得日</th>
+              <th>ステータス</th>
+            </tr>
+          </thead>
+        <% end %>
+          <tbody>
+          <% @rakuten_pay_hubi.each do |rakuten_pay| %>
+            <tr>
+              <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id), class: "link" %></td>
+              <td><%= rakuten_pay.store_prop.name %></td>
+              <td><%= rakuten_pay.date %></td>
+              <td><%= rakuten_pay.status %></td>
+          <% end %>
+            </tr>
+          </tbody>
+        </table>
       </div>
+    </div>
+    <h1>複数店情報</h1>
+    <div style="display:flex;">
+      <div class="group1">
+      <h2>dメル複数追加待ち</h2>
+          <table>
+          <% if @dmer_db_wait.length != 0 %>
+            <thead>
+              <tr>
+              <th>詳細</th>
+              <th>店舗名</th>
+              <th>獲得日</th>
+              <th>ステータス</th>
+              <th>上位店連携日</th>
+              </tr>
+            </thead>
+          <% end %>
+            <tbody>
+            <% @dmer_db_wait.each do |dmer| %>
+              <tr>
+              <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
+              <td><%= dmer.store_prop.name %></td>
+              <td><%= dmer.date %></td>
+              <td><%= dmer.status %></td>
+              <td><%= dmer.share %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+      </div>
+      <div class="group1">
+      <h2>dメル複数追加済み</h2>
+          <table>
+          <% if @dmer_db_done.length != 0 %>
+            <thead>
+              <tr>
+              <th>詳細</th>
+              <th>店舗名</th>
+              <th>獲得日</th>
+              <th>ステータス</th>
+              <th>上位店連携日</th>
+              </tr>
+            </thead>
+          <% end %>
+            <tbody>
+            <% @dmer_db_done.each do |dmer| %>
+              <tr>
+              <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
+              <td><%= dmer.store_prop.name %></td>
+              <td><%= dmer.date %></td>
+              <td><%= dmer.status %></td>
+              <td><%= dmer.share %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+      </div>
+    </div>
+    <div style="display:flex;">
+      <div class="group1">
+      <h2>auPay複数追加待ち</h2>
+          <table>
+          <% if @aupay_db_wait.length != 0 %>
+            <thead>
+              <tr>
+              <th>詳細</th>
+              <th>店舗名</th>
+              <th>獲得日</th>
+              <th>ステータス</th>
+              <th>上位店連携日</th>
+              </tr>
+            </thead>
+          <% end %>
+            <tbody>
+            <% @aupay_db_wait.each do |aupay| %>
+              <tr>
+              <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
+              <td><%= aupay.store_prop.name %></td>
+              <td><%= aupay.date %></td>
+              <td><%= aupay.status %></td>
+              <td><%= aupay.share %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+      </div>
+      <div class="group1">
+      <h2>auPay複数追加済み</h2>
+          <table>
+          <% if @aupay_db_done.length != 0 %>
+            <thead>
+              <tr>
+              <th>詳細</th>
+              <th>店舗名</th>
+              <th>獲得日</th>
+              <th>ステータス</th>
+              <th>上位店連携日</th>
+              </tr>
+            </thead>
+          <% end %>
+            <tbody>
+            <% @aupay_db_done.each do |aupay| %>
+              <tr>
+              <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
+              <td><%= aupay.store_prop.name %></td>
+              <td><%= aupay.date %></td>
+              <td><%= aupay.status %></td>
+              <td><%= aupay.share %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+      </div>
+
     </div>
   </div>
 </div>

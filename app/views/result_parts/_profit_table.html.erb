@@ -95,12 +95,13 @@
     <%# 商材（評価売上変数） %>
       <%# dメル %>
         <%# 新規 %>
-          <% dmer_new_profit = @dmers_this_month.sum(:valuation_new) - @dmers_def_this_month.sum(:valuation_new) + @dmers_inc.sum(:valuation_new) %>
+          <% dmer_new_profit = @dmers_this_month.sum(:valuation_new) - @dmers_def_this_month.sum(:valuation_new) + @dmers_inc.sum(:valuation_new) + @dmer_db.sum(:valuation_new) %>
         <%# 決済 %>
           <% dmer_slmt_profit = @dmers_slmt_this_month.sum(:valuation_settlement) %>
+          <% dmer_slmt2nd_profit = @slmt2nd.sum(:valuation_second_settlement) %>
       <%# aupay %>
         <%# 新規 %>
-          <% aupay_new_profit = @aupays_this_month.sum(:valuation_new) %>
+          <% aupay_new_profit = @aupays_this_month.sum(:valuation_new) - @aupays_def_this_month.sum(:valuation_new) + @aupay_db.sum(:valuation_new) + @aupays_inc.sum(:valuation_new) %>
         <%# 決済 %>
           <% aupay_slmt_profit = @aupays_slmt_this_month.sum(:valuation_settlement) %>
       <%# PayPay %>
@@ -115,7 +116,7 @@
         <% casa_put_profit = (@rakuten_casas_put_self.sum(:valuation_put) + (@rakuten_casas_put_other.sum(:valuation_put) * 0.8) + (@rakuten_casas_put_request.sum(:valuation_put) * 0.3)).to_i %>
       <%# 合計売上 %>
         <% sum_profit_new = dmer_new_profit + aupay_new_profit + paypay_profit + st_insurance_profit + rakuten_pay_profit %>
-        <% sum_profit_slmt = dmer_slmt_profit +  aupay_slmt_profit %>
+        <% sum_profit_slmt = dmer_slmt_profit + dmer_slmt2nd_profit + aupay_slmt_profit %>
         <% sum_profit = casa_new_profit + casa_put_profit %>
       <%# 平均売上 %>
         <% ave_profit_new = sum_profit_new.to_f / digestion_new %>
@@ -139,28 +140,32 @@
           <td><%= sum_profit_slmt.to_s(:delimited) %></td>
           <td><%= (sum_profit_new + sum_profit_slmt).to_s(:delimited) %></td>
         </tr>
-        <tr></tr>
         <tr>
           <th>決済対象（dメル）</th>
+          <th>決済対象（ピアズ２回目）</th>
           <th>決済対象（aupay）</th>
           <th>終着見込(新規)</th>
         </tr>
         <input type="hidden", id="dmer-slmt-price" value="<%= @dmers_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
+        <input type="hidden", id="pias-slmt2nd-price" value="<%= @slmt2nd.sum(:valuation_second_settlement) %>"><%# 決済売上の値をjsで取得する %>
         <input type="hidden", id="aupay-slmt-price" value="<%= @aupays_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
         <input type="hidden", id="new-sum" value="<%= ave_profit_new * new_shift %>"><%# 決済合計売上の値をjsで取得する %>
         <tr>
           <td><%= @dmers_slmt_target.length %></td>
+          <td><%= @slmt2nd.length %></td>
           <td><%= @aupays_slmt_target.length %></td>
           <td><%= (ave_profit_new * new_shift).round().to_s(:delimited) rescue "計算不可" %></td>
         </tr>
         <tr>
           <th>dメル決済率</th>
+          <th>dメル決済率（2回目）</th>
           <th>auPay決済率</th>
           <th>終着見込(決済)</th>
           <th>終着見込（合計）</th><%# （平均売上 * 予定シフト数） %>
         </tr>
         <tr>
           <td><input type="number", class="input-math", id="slmt-dmer" max="100", placeholder="見込決済率を入力" >％</td>
+          <td><input type="number", class="input-math", id="slmt-dmer2nd" max="100", placeholder="見込決済率を入力" >％</td>
           <td><input type="number", class="input-math", id="slmt-aupay" max="100", placeholder="見込決済率を入力" >％</td>
           <td><span id="slmt-profit">決済率と連動してます</span></td>
           <td><span id="sum-profit" >決済率と連動してます</span></td>
@@ -169,11 +174,13 @@
         </tr>
       </table>
               <p class="nav-text">決済対象は決済期限が検索した日付の初日〜3ヶ月後の末日までの決済対象になります。</p>
+              <p class="nav-text">2回目決済対象は決済期限が検索した日付の初日より1ヶ月前〜検索した日付より3ヶ月後の末日までの決済対象になります。</p>
           <p class="caution-text">※検索範囲外で決済されている案件は決済対象に含まれません。</p>
     <h2>商材別売上/生産性</h2>
       <%# 商材別獲得合計（評価対象のみ） %>
         <% dmer_len = @dmers_this_month.length - @dmers_def_this_month.length + @dmers_inc.length %></td>
         <% dmer_slmt_len = @dmers_slmt_this_month.length %></td>
+        <% dmer_slmt2nd_len = @slmt2nd.length %></td>
         <% aupay_len = @aupays_this_month.length - @aupays_def_this_month.length + @aupays_inc.length %></td>
         <% aupay_slmt_len = @aupays_slmt_this_month.length %></td>
         <% paypay_len = @paypays_this_month.length - @paypays_def_this_month.length %></td>
@@ -185,6 +192,7 @@
         <th>商材</th>
         <th>dメル（新規）</th>
         <th>dメル（決済）</th>
+        <th>dメル（2回目決済）</th>
         <th>aupay（新規）</th>
         <th>aupay（決済）</th>
         <th>PayPay</th>
@@ -196,6 +204,7 @@
         <th>獲得数</th>
         <td><%= dmer_len %></td>
         <td><%= dmer_slmt_len %></td>
+        <td><%= dmer_slmt2nd_len %></td>
         <td><%= aupay_len %></td>
         <td><%= aupay_slmt_len %></td>
         <td><%= paypay_len %></td>
@@ -207,6 +216,7 @@
         <th>生産性</th>
         <td><%= (dmer_len.to_f / digestion_new).round(1) %></td>
         <td><%= (dmer_slmt_len.to_f / digestion_settlement).round(1) %></td>
+        <td><%= (dmer_slmt2nd_len.to_f / digestion_settlement).round(1) %></td>
         <td><%= (aupay_len.to_f / digestion_new).round(1) %></td>
         <td><%= (aupay_slmt_len.to_f / digestion_settlement).round(1) %></td>
         <td><%= (paypay_len.to_f / digestion_new).round(1) %></td>
@@ -218,6 +228,7 @@
         <th>平均売上</th>
         <td><%= (dmer_new_profit.to_f / digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
         <td><%= (dmer_slmt_profit.to_f / digestion_settlement).round().to_s(:delimited) rescue "NaN" %></td>
+        <td><%= (dmer_slmt2nd_profit.to_f / digestion_settlement).round().to_s(:delimited) rescue "NaN" %></td>
         <td><%= (aupay_new_profit.to_f / digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
         <td><%= (aupay_slmt_profit.to_f / digestion_settlement).round().to_s(:delimited) rescue "NaN" %></td>
         <td><%= (paypay_profit.to_f / digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
@@ -229,6 +240,7 @@
         <th>合計売上</th>
         <td><%= dmer_new_profit.to_s(:delimited) %></td>
         <td><%= dmer_slmt_profit.to_s(:delimited) %></td>
+        <td><%= dmer_slmt2nd_profit.to_s(:delimited) %></td>
         <td><%= aupay_new_profit.to_s(:delimited) %></td>
         <td><%= aupay_slmt_profit.to_s(:delimited) %></td>
         <td><%= paypay_profit.to_s(:delimited) %></td>
@@ -270,9 +282,9 @@
         <th colspan="" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <% end %>
       <tr>
-        <td colspan="3"><%= @dmers_this_month.length - @dmers_def_this_month.length + @dmers_inc.length %></td>
+        <td colspan="3"><%= @dmers_this_month.length - @dmers_def_this_month.length + @dmers_inc.length + @dmer_db.length %></td>
         <td colspan=""><%= @dmers_slmt_this_month.length %></td>
-        <td colspan="3"><%= @aupays_this_month.length - @aupays_def_this_month.length + @aupays_inc.length %></td>
+        <td colspan="3"><%= @aupays_this_month.length - @aupays_def_this_month.length + @aupays_inc.length + @aupay_db.length %></td>
         <td colspan=""><%= @aupays_slmt_this_month.length %></td>
         <td colspan="2"><%= @paypays_this_month.length - @paypays_def_this_month.length %></td>
         <td colspan="2"><%= @st_insurances_this_month.length - @st_insurances_def_this_month.length %></td>
@@ -305,15 +317,15 @@
       </tr>
       <tr>
         <%# dメル %>
-          <td style="color: blue;"><%= @dmers_this_month.length  %></td>
+          <td style="color: blue;"><%= @dmers_this_month.length %></td>
           <td ><%= link_to @dmers_def_this_month.length,user_path(@results.first.user.id), class: "def-link" %></td>
-          <td style="color: blue;"><%= @dmers_inc.length %></td>
+          <td style="color: blue;"><%= @dmers_inc.length + @dmer_db.length %></td>
           <td style="color: blue;"><%= @dmers_slmt_this_month.length %></td>
 
         <%# aupay %>
           <td style="color: blue;"><%= @aupays_this_month.length %></td>
-          <td ><%= link_to @aupays_def_this_month.length,user_path(@results.first.user.id), class: "def-link" %></td>
-          <td style="color: blue;"><%= @aupays_inc.length %></td>
+          <td ><%= link_to @aupays_def_this_month.length, user_path(@results.first.user.id), class: "def-link" %></td>
+          <td style="color: blue;"><%= @aupays_inc.length + @aupay_db.length %></td>
           <td style="color: blue;"><%= @aupays_slmt_this_month.length %></td>
         <%# PayPay %>
           <td colspan="" style="color: blue;"><%= @paypays_this_month.length %></td>

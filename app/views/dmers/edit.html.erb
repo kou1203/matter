@@ -32,7 +32,7 @@
         <th><%= f.label :payment, "入金日（新規）", class: "form-text" %></th>
       </tr>
       <tr>
-        <td><%= f.select :status, {"未審査": "未審査", "審査中": "審査中", "審査完了": "審査完了","自社不備": "自社不備","自社NG": "自社NG","上位店不備": "上位店不備","上位店NG": "上位店NG","複数店追加": "複数店追加", "申込取消": "申込取消"} ,{}, {class: "form-input"} %></td>
+        <td><%= f.select :status, {"未審査": "未審査", "審査中": "審査中", "審査OK": "審査OK","不備対応中": "不備対応中","上位店NG": "上位店NG"} ,{}, {class: "form-input"} %></td>
         <td><%= f.date_field :status_update, class: "form-input" %></td>
         <td><%= f.date_field :share , class: "form-input" %></td>
         <td><%= f.date_field :result_point , class: "form-input" %></td>
@@ -72,7 +72,7 @@
       <tr>
         <td><%= f.date_field :shipment , class: "form-input" %></td>
         <td><%= f.collection_select(:settlementer_id, @users, :id, :name,{include_blank: true}, {class: "form-input"})%></td>
-        <td><%= f.select :status_settlement, {"未審査": "未審査", "審査中": "審査中", "審査完了": "審査完了","自社不備": "自社不備","自社NG": "自社NG","上位店不備": "上位店不備","上位店NG": "上位店NG"} ,{}, {class: "form-input"} %></td>
+        <td><%= f.select :status_settlement, {"未対応": "未対応", "決済不備": "決済不備", "写真不備": "写真不備","完了": "完了"} ,{include_blank: true}, {class: "form-input"} %></td>
         <td><%= f.date_field :status_update_settlement, class: "form-input" %></td>
 
       </tr>

@@ -64,15 +64,15 @@
     </tr>
     </table>
     <h1 >auペイ情報</h1>
-    <table >
+    <table>
     <tr>
-    <th >獲得日</th>
+      <th >獲得日</th>
       <td ><%= @aupay.date %></td>
       <th >獲得者</th>
       <td ><%= @aupay.user.name %></td>
     </tr>
     <tr>
-      <th >管理番号</th>
+      <th >お申込み番号</th>
       <td ><%= @aupay.customer_num %></td>
       <th >商流</th>
       <td ><%= @aupay.client %></td>
@@ -84,20 +84,22 @@
       <td ><%= @aupay.status_update %></td>
     </tr>
     <tr>
+      <th >上位店共有日</th>
+      <td ><%= @aupay.share %></td>
       <th >不備発生日</th>
-      <td ><%= @aupay.deficiency %></td>
+      <td ><%= @aupay.deficiency %></td>>
+    </tr>
+    <tr>
       <th >不備解消日</th>
       <td ><%= @aupay.deficiency_solution %></td>
-    <tr>
-    <tr >
       <th >不備解消期限</th>
       <td ><%= @aupay.deficiency_deadline %></td>
-      <th colspan="2"></th>
     </tr>
+    <tr>
       <th>不備詳細</th>
       <td colspan="3"><%= @aupay.deficiency_remarks %></td>
     </tr>
-    </tr>
+    <tr>
       <th>備考</th>
       <td colspan="3"><%= @aupay.description %></td>
     </tr>

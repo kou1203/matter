@@ -166,6 +166,7 @@
       <th class="out-th">決済ステータス</th>
       <th class="out-th">決済対応者</th>
       <th class="out-th">初回決済日</th>
+      <th class="out-th">2回目決済日</th>
       <th class="out-th">決済期限</th>
       <th class="out-th">不備内容(新規)</th>
       <th class="out-th">不備内容(決済)</th>
@@ -191,6 +192,7 @@
       <td class="index-td"><%= dmer.status_settlement %></td>
       <td class="index-td"><%= dmer.settlementer.name rescue ' ' %></td>
       <td class="index-td"><%= dmer.settlement %></td>
+      <td class="index-td"><%= dmer.settlement_second %></td>
       <td class="index-td"><%= dmer.settlement_deadline %></td>
       <td class="td-remarks"><%= dmer.deficiency_remarks %></td>
       <td class="td-remarks"><%= dmer.deficiency_remarks_settlement %></td>

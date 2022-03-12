@@ -13,8 +13,8 @@ class ResultsController < ApplicationController
       # 個別利益表 
       if @results.group(:user_id).length == 1 
         # dメル　新規
-          @dmers_user = Dmer.where(user_id: @results.first.user_id )
-          @dmers_this_month = this_period(@dmers_user,@results)
+          @dmers_user = Dmer.includes(:store_prop).where(user_id: @results.first.user_id )
+          @dmers_this_month = this_period(@dmers_user,@results).where(store_prop: {head_store: nil})
           @dmers_def_this_month = this_period(@dmers_this_month.where(status: "自社不備")
           .or(@dmers_this_month.where(status: "審査NG"))
           .or(@dmers_this_month.where(status: "不備対応中"))
@@ -22,6 +22,7 @@ class ResultsController < ApplicationController
           .or(@dmers_this_month.where(status: "申込取消（不備）"))
           .or(@dmers_this_month.where(status: "審査OK").where.not(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))),@results)
           @dmers_inc = inc_period(@dmers_this_month,@results)
+          @dmer_db = share_period(@dmers_user,@results).where.not(store_prop: {head_store: nil})
           
         # dメル　決済
           @dmers_settlementer = Dmer.where(settlementer_id: @results.first.user_id )
@@ -34,10 +35,11 @@ class ResultsController < ApplicationController
           @dmers_slmt_def_pic = slmt_this_period(@dmers_settlementer.where(status_settlement: "写真不備"),@results)
           # 決済対象
           @dmers_slmt_target = slmt_dead_line(@dmers_user,@results)
+          @slmt2nd = slmt2nd_dead_line(@dmers_user,@results)
 
         # aupay　新規
-          @aupays_user = Aupay.where(user_id: @results.first.user_id )
-          @aupays_this_month = this_period(@aupays_user,@results)
+          @aupays_user = Aupay.includes(:store_prop).where(user_id: @results.first.user_id )
+          @aupays_this_month = this_period(@aupays_user,@results).where(store_prop: {head_store: nil})
           @aupays_not_this_month = not_period(@aupays_user,@results)
           @aupays_def_this_month = this_period(@aupays_this_month.where(status: "自社不備")
           .or(@aupays_this_month.where(status: "不合格"))
@@ -46,6 +48,8 @@ class ResultsController < ApplicationController
           .or(@aupays_this_month.where(status: "重複対象外"))
           .or(@aupays_this_month.where(status: "審査通過").where.not(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))),@results)
           @aupays_inc = inc_period(@aupays_not_this_month,@results)
+          @aupay_db = share_period(@aupays_user,@results).where.not(store_prop: {head_store: nil})
+
           # aupay　決済
           @aupays_settlementer = Aupay.where(settlementer_id: @results.first.user_id )
           @aupays_slmt_this_month = slmt_this_period(@aupays_settlementer,@results)
@@ -56,6 +60,7 @@ class ResultsController < ApplicationController
           @aupays_slmt_target = slmt_dead_line(@aupays_user,@results)
           # 決済の合計
           @slmt_sum = @dmers_slmt_target.sum(:valuation_settlement) + @aupays_slmt_target.sum(:valuation_settlement)
+
         # paypay
             @paypays_user = Paypay.where(user_id: @results.first.user_id )
             @paypays_this_month = this_period(@paypays_user,@results)
@@ -172,6 +177,10 @@ class ResultsController < ApplicationController
       return product.where.not(date: date.minimum(:date)..date.maximum(:date)).where(deficiency_solution: date.minimum(:date)..date.maximum(:date))
     end
 
+    def share_period(product, date)
+      return product.where(share: date.minimum(:date)..date.maximum(:date))
+    end
+
     # 決済
     def slmt_this_period(product,date)
       return product.where(settlement: date.minimum(:date)..date.maximum(:date)).where(status_settlement: "完了")
@@ -202,6 +211,11 @@ class ResultsController < ApplicationController
       .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: date.minimum(:date)..date.maximum(:date)))
       .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: nil))
       .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: date.minimum(:date)..date.maximum(:date)))
+    end
+
+    def slmt2nd_dead_line(product,date)
+      return product.where(client: "ピアズ").where(settlement_deadline: date.minimum(:date).prev_month..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where.not(settlement: nil).where(settlement_second: date.minimum(:date)..date.maximum(:date))
+      .or(product.where(client: "ピアズ").where(settlement_deadline: date.minimum(:date).prev_month..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where.not(settlement: nil).where(settlement_second: date.minimum(:date)..date.maximum(:date)))
     end
   # dメル,aupayメソッド
 
