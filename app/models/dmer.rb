@@ -90,8 +90,8 @@ class Dmer < ApplicationRecord
   def self.import(file)
     detection = CharlockHolmes::EncodingDetector.detect(File.read(file.path))
     encoding = detection[:encoding] == 'Shift_JIS' ? 'CP932' : detection[:encoding]
-    new_cnt = 0
-    exist_cnt = 0
+    @new_cnt = 0
+    @exist_cnt = 0
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true).each_slice(500) do |rows|
       dmers = []
       dmers_update = []

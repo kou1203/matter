@@ -6,6 +6,7 @@
     <div class="cal-form">
     <%= form_for :shift, url: update_month_shifts_path , html: { method: :post } do %>
       <h2><%= current_user.name %>予定シフト</h2>
+      <p class="text">チェックボックスにレ点をつけてから下のシフトを選択することで一括入力ができるようになっています。</p>
       <div class="slct-form">
       <input type="button" id="check-all" class="check-btn"  value="全選択">
       <input type="button" id="uncheck-all" class="uncheck-btn" value="選択解除" >
@@ -58,7 +59,7 @@
           <% end %>
         <% end %>
       <% end %>
-      <%= submit_tag "一括登録",class: "submit-btn" %>
+      <%= submit_tag "登録",class: "submit-btn" %>
     <% end %>
     </div>
     <div class="shift-form">
