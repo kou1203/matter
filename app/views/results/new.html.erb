@@ -7,6 +7,7 @@
     <%= f.hidden_field :user_id, value: current_user.id %>
   <%# 基本情報 %>
     <h1>基本情報　拠点：<%= current_user.base + current_user.base_sub%>　<%= current_user.name %></h1>
+    <p class="caution-text">※基本情報(日付、地域、シフト、帯同者)の入力は必須になります。</p>
     <table>
       <tr>
         <th><%= f.label :date, "日付", class: "form-text" %></th>

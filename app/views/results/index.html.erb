@@ -1,10 +1,10 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <div data-scope-path="results/index">
 
-
   <h1>利益表SS</h1>
   <%= render "shared/header" %>
     <%# 検索フォーム %>
+      <p class="nav-text">こちらから条件を絞り込んでください。</p>
       <%= search_form_for @q do |f| %>
       <table >
         <tr >
@@ -20,17 +20,17 @@
       </table>
       <table >
       <tr>
-        <th class="search-th">拠点①</th>
-        <th class="search-th">拠点②</th>
+        <th class="search-th">拠点</th>
+        <th class="search-th">担当商材</th>
         <th class="search-th">グループ①</th>
         <th class="search-th">グループ②</th>
         <th class="search-th">訪問員</th>
-        <th class="search-th">商材</th>
+        <th class="search-th">獲得商材</th>
         <td class="result"><%= f.submit "絞込み",data: {"turbolinks" => false, disable_with: "絞込み中"} , class: "result-btn" %></td>
       </tr>
       <tr>
         <td class="search-td"><%= f.select :user_base_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base).distinct, :base, :base), {prompt: "全拠点"},{class: "input"} %></td>
-        <td class="search-td"><%= f.select :user_base_sub_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base_sub).distinct, :base_sub, :base_sub), {prompt: "全拠点"},{class: "input"} %></td>
+        <td class="search-td"><%= f.select :user_base_sub_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base_sub).distinct, :base_sub, :base_sub), {prompt: "全て選択"},{class: "input"} %></td>
         <td class="search-td"><%= f.text_field :user_group_cont, class: "input" %></td>
         <td class="search-td"><%= f.text_field :user_team_cont, class: "input" %></td>
         <td class="search-td"><%= f.text_field :user_name_cont, class: "input" %></td>
@@ -42,6 +42,7 @@
     <%# /検索フォーム %>
     <hr>
     <% if @results.empty? %>
+    <p class="caution-text">※検索対象が複数人いる場合は複数の利益表が表示されます。</p>
     <% else %>
     <% if @results.group(:user_id).length == 1 %>
       <%= render "result_parts/profit_table" %>
