@@ -38,10 +38,6 @@ class Dmer < ApplicationRecord
         errors << "#{index}行目決済者名が不正です" if settlementer.blank? && row["決済対応者"].present? && row["決済対応者"] == settlementer_params && errors.length < 5
           u_id = user.id if user.present?
           store_id = store_prop.id if store_prop.present?
-          dmers << 
-          {
-
-          }
           dmer = new(
             customer_num: row["お申込み番号"],
             client: row["商流"],

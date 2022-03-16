@@ -48,7 +48,7 @@ class ResultsController < ApplicationController
           .or(@aupays_this_month.where(status: "重複対象外"))
           .or(@aupays_this_month.where(status: "審査通過").where.not(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))),@results)
           @aupays_inc = inc_period(@aupays_not_this_month,@results)
-          @aupay_db = share_period(@aupays_user,@results).where.not(store_prop: {head_store: nil})
+          @aupay_db = share_period(@aupays_user,@results).where.not(store_prop: {head_store: nil}).where(status: "審査通過")
 
           # aupay　決済
           @aupays_settlementer = Aupay.where(settlementer_id: @results.first.user_id )
