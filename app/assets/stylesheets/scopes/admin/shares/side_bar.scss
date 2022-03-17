@@ -1,119 +1,254 @@
 [data-scope-path="shared/side_bar"] {
+@media screen and (min-width: 599px) {
+  h3 {
+    padding: 0.5em;
+    font-size: 20px;
+    color: #a9a7a7;
+    width: 20vw;
+  }
+
+  .nav-list{
+    border-right: #c4c2c2 solid 2px;
+    width: 20vw;
+    height: 200vh;
+    margin-top: 20px;
+    padding-left:20px;
+  }
+
+
+
+  // ヘッダー
+  // ハンバーガーデザイン
+
+.btn-burger {
+    display: none;  /*768px以上では使用しない */
+}
+
+.nav-toggle:checked ~ .nav .nav-list {
+  display: none;
+}
+
+.nav-toggle {
+  display: none;
+}
+
+  .nav {
+    display: flex;
+    
+  }
+
+  .dropdown {
+    display: none;
+    margin: 0 auto;
+    // position: fixed;
+  }
+  label {
+    color: #fff;
+    width: 17vw;
+    height: 4vh;
+    background: #a9a7a7;
+    text-align: center;
+    border:solid 1px #c4c2c2;
+    padding: 15px 5px 0 5px;
+  }
+
+  label:hover {
+    background: #96C0CE;
+  }
+
+  li {
+    background: #a9a7a7;
+    opacity: 0.7;  
+    width: 17vw;
+    height: 4vh;
+    border:solid 1px #c4c2c2;
+    padding: 15px 5px 0 5px;
+  }
+
+  label,
+  li {
+    display: block;
+    text-align: center;
+    letter-spacing: 0.3em;
+    font-weight: bold;
+  }
+
+  li:hover {
+    opacity: 1;
+    background: #bce3f0;
+  }
+
+
+  .side-link {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    display: block;
+  } 
+
+  // ハンバーガーデザイン
+
+  .main {
+    width: 80vw;
+    height: 100vh;
+  }
+
+  .reg {
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
+    box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
+    padding: 15px 0;
+    margin: 15px;
+    width: 7vw;
+    border-radius: 18px 0;
+  }
+
+  .reg-link {
+    text-decoration: none;
+    color: white;
+    display: block;
+  }
+
+
+  table{
+    border-collapse: collapse;
+    margin: 20px ;
+    table-layout: fixed;
+    min-width: 100%;
+    display: block;
+    overflow-x: scroll;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    max-width: 600px;
+  }
+
+  tr:nth-child(odd) {
+    background: #ede5e5;
+  }
+}
+
+// スマホ用デザイン
+@media screen and (max-width: 599px) {
+
 h3 {
-  padding: 0.5em;
-  font-size: 20px;
-  color: #a9a7a7;
-  width: 20vw;
+  display: none;
 }
 
-.side-body{
-  border-right: #c4c2c2 solid 2px;
-  width: 20vw;
-  height: 200vh;
-  margin-top: 20px;
-  padding-left:20px;
+label {
+  display: none;
+}
+
+header {
+  position: relative;
+  padding: 15px 0 0 0px;
+  background-color: #fff;
+}
+
+.logo {
+  width: 60px;
+  // margin: 0 auto;
+}
+
+/*ハンバーガーアイコン*/
+.btn-burger {
+  cursor: pointer;
+  display: block;
+  width: 56px;
+  height: 60px;
+  position: absolute;
+  top: 5px;
+  right: 10px;
+}
+
+/*ハンバーガーアイコンを作る三本線*/
+.icon, .icon:before, .icon:after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  height: 2px; /*線の太さ*/
+  width: 35px; /*線の長さ*/
+  background-color: #444;
+  border-radius: 2px;
+  display: block;
+  content: '';
+  cursor: pointer;
+  margin: auto;
+}
+
+/*三本線の間隔*/
+.icon:before {
+  top: 20px;
+}
+.icon:after {
+  top: -20px;
+}
+
+/*チェックボックス非表示*/
+.nav-toggle {
+  display: none;
+}
+/*アイコンをクリックしたら*/
+.nav-toggle:checked ~ .btn-burger .icon {
+  background: transparent;
+}
+.nav-toggle:checked ~ .btn-burger .icon:before {
+  transform: rotate(-45deg);
+  top: 0;
+}
+.nav-toggle:checked ~ .btn-burger .icon:after {
+  transform: rotate(45deg);
+  top: 0;
+}
+.icon,
+.icon:before,
+.icon:after {
+  transition: all .8s;
 }
 
 
-
-// ヘッダー
-// ハンバーガーデザイン
+/*表示されるメニューの中身*/
 .nav {
-  display: flex;
+  background-color: #ede5e5;
   
 }
 
-.dropdown {
-  display: none;
-  margin: 0 auto;
-  // position: fixed;
-}
-label {
-  color: #fff;
-  width: 17vw;
-  height: 4vh;
-  background: #a9a7a7;
-  text-align: center;
-  border:solid 1px #c4c2c2;
-  padding: 15px 5px 0 5px;
-}
-
-label:hover {
-  background: #96C0CE;
-}
-
-li {
-  background: #a9a7a7;
-  opacity: 0.7;  
-  width: 17vw;
-  height: 4vh;
-  border:solid 1px #c4c2c2;
-  padding: 15px 5px 0 5px;
-}
-
-label,
-li {
-  display: block;
-  text-align: center;
-  letter-spacing: 0.3em;
-  font-weight: bold;
-}
-
-li:hover {
-  opacity: 1;
-  background: #bce3f0;
-}
-
-
 .side-link {
   text-decoration: none;
-  color: white;
   font-weight: bold;
+  color: white;
+}
+
+.nav-list .side-linnk {
   display: block;
-} 
-
-// ハンバーガーデザイン
-
-.main {
-  width: 80vw;
-  height: 100vh;
-}
-
-.reg {
-  text-align: center;
-  color: white;
-  font-weight: bold;
-  background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
-  box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-  padding: 15px 0;
-  margin: 15px;
-  width: 7vw;
-  border-radius: 18px 0;
-}
-
-.reg-link {
   text-decoration: none;
-  color: white;
+  color: #fff;
+}
+
+.nav-list {
+  list-style: none;
+  display: none;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.nav-list li {
+  // margin: 0;
+  padding: 10px;
+  width: 50vw;
+  font-size: 120%;
+  border-bottom: solid 1px white;
+
+}
+
+.nav-toggle:checked ~ .nav .nav-list {
   display: block;
 }
 
 
-table{
-  border-collapse: collapse;
-  margin: 20px ;
-  table-layout: fixed;
-  min-width: 100%;
-  display: block;
-  overflow-x: scroll;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
-  max-width: 600px;
-}
 
-tr:nth-child(odd) {
-  background: #ede5e5;
-}
-
-
-
-}
+} // @mediaの末尾
+} // data-scopeの末尾
