@@ -23,22 +23,20 @@
     <table>
       <tr>
         <th class="search-head" rowspan="2" >検索</th>
-        <th class="search-th">業種</th>
         <th class="search-th">店舗名</th>
-        <th class="search-th">担当者名カナ</th>
+        <th class="search-th">担当カナ</th>
         <th class="search-th">連絡先</th>
         <th class="search-th">都道府県</th>
         <th class="search-th">市区</th>
-        <td class="result"><%= f.submit "絞込み", data: {disable_with: '絞込み中'}, class: "result-btn" %></td>
+        <td class="result"><%= f.submit "絞込", data: {disable_with: '絞込中'}, class: "result-btn" %></td>
       </tr>
       <tr>
-        <td><%= f.select :industry_eq, {"飲食": "飲食", "小売": "小売", "サービス": "サービス"} , {include_blank: true},{class: "input"} %></td>
         <td ><%= f.search_field :name_cont, class: "input" %></td>
         <td><%= f.search_field :person_main_kana_or_person_sub_kana_cont, class: "input" %></td>
         <td ><%= f.search_field :phone_number_1_or_phone_number_2_cont, class: "input" %></td>
         <td ><%= f.text_field :prefecture_cont, class: "input" %></td>
         <td ><%= f.text_field :city_cont, class: "input" %></td>
-        <td  class="reset"><%= link_to "絞込み解除", store_props_path ,class: "reset-link" %></td>
+        <td  class="reset"><%= link_to "リセット", store_props_path ,class: "reset-link" %></td>
       </tr>
     </table>
     <% end %>
