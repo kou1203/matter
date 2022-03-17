@@ -1,4 +1,3 @@
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <div data-scope-path="shared/header">
   <h1 class="sub-title">店舗詳細</h1>
   <%= render "shared/header" %>
@@ -14,47 +13,47 @@
   </table>
     <table>
       <tr >
-        <th class="dmer-th">dメル</th>
-        <th class="aupay-th">auペイ</th>
-        <th class="paypay-th">PayPay</th>
-        <th class="rakuten-casa-th">楽天フェムト</th>
+        <th class="product-th">dメル</th>
+        <th class="product-th">auペイ</th>
+        <th class="product-th">PayPay</th>
+        <th class="product-th">楽天フェムト</th>
       </tr>
       <tr >
         <% if @dmer.nil? %>
           <td><%= link_to "新規登録", store_prop_dmers_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="reg-td"><%= link_to "登録済み/詳細", dmer_path(@store_prop.dmer.id),class: "link" %></td>
+          <td class="reg-td"><%= link_to "登録済/詳細", dmer_path(@store_prop.dmer.id),class: "link" %></td>
         <% end %>
         <% if @aupay.nil? %>
           <td><%= link_to "新規登録",  store_prop_aupays_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="reg-td"><%= link_to "登録済み/詳細", aupay_path(@store_prop.aupay.id),class: "link" %></td>
+          <td class="reg-td"><%= link_to "登録済/詳細", aupay_path(@store_prop.aupay.id),class: "link" %></td>
         <% end %>
         <% if @paypay.nil? %>
           <td><%= link_to "新規登録",  store_prop_paypays_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="reg-td"><%= link_to "登録済み/詳細", paypay_path(@store_prop.paypay.id),class: "link" %></td>
+          <td class="reg-td"><%= link_to "登録済/詳細", paypay_path(@store_prop.paypay.id),class: "link" %></td>
         <% end %>
         <% if @rakuten_casa.nil? %>
           <td><%= link_to "新規登録", store_prop_rakuten_casas_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="reg-td"><%= link_to "登録済み/詳細", rakuten_casa_path(@store_prop.rakuten_casa.id),class: "link" %></td>
+          <td class="reg-td"><%= link_to "登録済/詳細", rakuten_casa_path(@store_prop.rakuten_casa.id),class: "link" %></td>
         <% end %>
       </tr>
       <tr>
-        <th class="st-insurance-th">少額短期保険</th>
-        <th class="st-insurance-th">楽天ペイ</th>
+        <th class="product-th">少額短期保険</th>
+        <th class="product-th">楽天ペイ</th>
       </tr>
       <tr>
         <% if @st_insurance.nil? %>
           <td><%= link_to "新規登録", store_prop_st_insurances_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="reg-td"><%= link_to "登録済み/詳細", st_insurance_path(@store_prop.st_insurance.id),class: "link" %></td>
+          <td class="reg-td"><%= link_to "登録済/詳細", st_insurance_path(@store_prop.st_insurance.id),class: "link" %></td>
         <% end %>
         <% if @rakuten_pay.nil? %>
           <td><%= link_to "新規登録", store_prop_rakuten_pays_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
-          <td class="reg-td"><%= link_to "登録済み/詳細", rakuten_pay_path(@store_prop.rakuten_pay.id),class: "link" %></td>
+          <td class="reg-td"><%= link_to "登録済/詳細", rakuten_pay_path(@store_prop.rakuten_pay.id),class: "link" %></td>
         <% end %>
       </tr>
     </table>

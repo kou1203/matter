@@ -7,15 +7,15 @@ class CreateResults < ActiveRecord::Migration[6.0]
       t.string :shift                    , null: false 
       t.references :ojt 
 # 前半
-      t.integer :first_visit              , null: false
-      t.integer :first_interview          , null: false
-      t.integer :first_full_talk          , null: false
-      t.integer :first_get                , null: false
+      t.integer :first_visit             
+      t.integer :first_interview         
+      t.integer :first_full_talk         
+      t.integer :first_get               
 # 後半
-      t.integer :latter_visit             , null: false
-      t.integer :latter_interview         , null: false
-      t.integer :latter_full_talk         , null: false
-      t.integer :latter_get               , null: false
+      t.integer :latter_visit            
+      t.integer :latter_interview        
+      t.integer :latter_full_talk        
+      t.integer :latter_get              
 # 店舗別基準値（訪問-獲得）
       # 喫茶・カフェ
       t.integer :cafe_visit          

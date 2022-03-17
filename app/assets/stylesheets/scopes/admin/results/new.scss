@@ -1,9 +1,11 @@
 [data-scope-path="results/new"] {
+
 h1 {
   padding: 1.0em;
-  font-size: 140%;
-  background: linear-gradient(40deg, #c4c2c2 40%,  #96ceb4 90%);
-color: white;
+  font-size: 120%;
+  background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
+  color: white;
+  width: 75vw;
 }
 
 h2 {
@@ -21,7 +23,7 @@ header {
   display: flex;
   justify-content: space-between;
   width: 100vw;
-  background: linear-gradient(40deg, #c4c2c2 40%,  #96ceb4 90%);
+  background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
 }
 
 .sign-text {
@@ -54,43 +56,14 @@ border-right: solid 3px ;
 width: 200px;
 }
 
-label:hover {
-background: #C25B56;
-color: white;
-}
 
-li {
-background: #a9a7a7;
-color: white;
-opacity: 0.9;
-width: 200px;
-}
-
-label,
-li {
+label {
 display: block;
 padding: 7px;
 text-align: center;
 letter-spacing: 0.5em;
 font-weight: bold;
 }
-
-li:hover {
-opacity: 1;
-background: #C25B56;
-color: white;
-}
-
-
-.side-link {
-text-decoration: none;
-color: white;
-font-weight: bold;
-display: block;
-} 
-
-// ハンバーガーデザイン
-
 .reg-link {
   text-decoration: none;
   color: white;
@@ -111,13 +84,13 @@ border: none;
 // width: 15w;
 // height: 3vh;
 color: rgb(103, 101, 101);
-font-size: 130%;
+font-size: 100%;
 font-weight: bold;
 text-align: left;
 }
 
 .form-input {
-width: 40vw;
+width: 30vw;
 height: 4vh;
 padding: 5px 0 5px 10px;
 margin-right: 25px;
@@ -152,11 +125,12 @@ color: white;
 font-size: 180%;
 border: none;
 border-radius: 5px;
-width: 100vw;
+width: 80vw;
 height: 7vh;
-background: #96ceb4;
+background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
 cursor: pointer;
 margin-top: 20px;
+
 }
 // 登録フォーム
 // 検索フォーム
@@ -171,6 +145,22 @@ table {
   margin: 10px;
   color: rgb(239, 148, 148);
   font-weight: bold;
+}
+
+@media screen and (max-width:599px) {
+  h1 {
+    width:70vw;
+    font-size:15px;
+  }
+  h2 {
+    font-size:10px;
+  }
+  .caution-text {font-size: 3px;}
+  .form-text {font-size: 3px; margin-right: 0;}
+  .form-input {font-size: 8px;}
+  label {width: 15vw;}
+  .form-input {width: 30vw; height: 3vh; font-size: 60%;}
+  // .submit-btn
 }
 
 }

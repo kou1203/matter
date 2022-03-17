@@ -1,6 +1,12 @@
-<div data-scope-path="results/new">
+<div data-scope-path="shared/header">
   <h1>キャッシュレス切り返し</h1>
   <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="results/new">
   <%= form_with model: @result_cash,url: result_result_cashes_create_path(@result.id), local: true, class: "form-frame", local: true do |f| %>
     <%= render "shared/error_messages", model: f.object %>
     <%= f.hidden_field :result_id, value: @result.id %>
@@ -174,4 +180,5 @@
     </table>
   <%= f.submit "登録",data: { confirm: "登録してもよろしいですか？" }, class: "submit-btn" %>
   <% end %>
+  </div>
 </div>

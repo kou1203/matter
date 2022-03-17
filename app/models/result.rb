@@ -8,14 +8,6 @@ class Result < ApplicationRecord
     validates :date 
     validates :area
     validates :shift
-    validates :first_visit
-    validates :first_interview
-    validates :first_full_talk
-    validates :first_get
-    validates :latter_visit
-    validates :latter_interview
-    validates :latter_full_talk
-    validates :latter_get
   end
 
   def self.import(file)

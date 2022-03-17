@@ -699,14 +699,14 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.string "area", null: false
     t.string "shift", null: false
     t.bigint "ojt_id"
-    t.integer "first_visit", null: false
-    t.integer "first_interview", null: false
-    t.integer "first_full_talk", null: false
-    t.integer "first_get", null: false
-    t.integer "latter_visit", null: false
-    t.integer "latter_interview", null: false
-    t.integer "latter_full_talk", null: false
-    t.integer "latter_get", null: false
+    t.integer "first_visit"
+    t.integer "first_interview"
+    t.integer "first_full_talk"
+    t.integer "first_get"
+    t.integer "latter_visit"
+    t.integer "latter_interview"
+    t.integer "latter_full_talk"
+    t.integer "latter_get"
     t.integer "cafe_visit"
     t.integer "cafe_get"
     t.integer "other_food_visit"

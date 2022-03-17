@@ -1225,20 +1225,20 @@
           RakutenCasa.where(user_id: result.user_id).where(date: result.date).sum(:valuation_new) +
           casa_put_self + casa_put_other + casa_put_request %>
         <td ><%= date_profit.round().to_s(:delimited) %></td>
-        <td ><%= result.first_visit + result.latter_visit %></td>
-        <td ><%= result.first_interview + result.latter_interview %></td>
-        <td ><%= result.first_full_talk + result.latter_full_talk %></td>
-      <td ><%= result.first_get + result.latter_get %></td>
+        <td ><%= result.first_visit + result.latter_visit rescue "NaN" %></td>
+        <td ><%= result.first_interview + result.latter_interview rescue "NaN" %></td>
+        <td ><%= result.first_full_talk + result.latter_full_talk rescue "NaN" %></td>
+      <td ><%= result.first_get + result.latter_get rescue "NaN" %></td>
     <%#前半%>
-      <td ><%= result.first_visit  %></td>
-      <td ><%= result.first_interview %></td>
-      <td ><%= result.first_full_talk %></td>
-      <td ><%= result.first_get %></td>
+      <td ><%= result.first_visit rescue "NaN" %></td>
+      <td ><%= result.first_interview rescue "NaN" %></td>
+      <td ><%= result.first_full_talk rescue "NaN" %></td>
+      <td ><%= result.first_get rescue "NaN" %></td>
     <%# 後半 %>
-      <td ><%= result.latter_visit %></td>
-      <td ><%= result.latter_interview %></td>
-      <td ><%= result.latter_full_talk %></td>
-      <td ><%= result.latter_get %></td>
+      <td ><%= result.latter_visit rescue "NaN" %></td>
+      <td ><%= result.latter_interview rescue "NaN" %></td>
+      <td ><%= result.latter_full_talk rescue "NaN" %></td>
+      <td ><%= result.latter_get rescue "NaN" %></td>
     <%# 店舗別基準値(値) %>
       <td class="td-blank"></td>
       <%# 喫茶・カフェ %>
