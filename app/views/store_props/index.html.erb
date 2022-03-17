@@ -1,3 +1,4 @@
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <div data-scope-path="shared/header">
   <h1>店舗一覧</h1>
   <%= render "shared/header" %>
@@ -12,10 +13,10 @@
       <th class="reg"><%= link_to "店舗登録", new_store_prop_path, class: "reg-link" %></th>
     </table>
     <%= form_with url: import_store_props_path do |f| %>
-    <table>
+    <table class="csv-tb">
       <td class="csv-label">CSV</td>
-      <td><%= f.file_field :file, accept:'.csv', class:"input" %></td>
-      <td class="result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"} %>
+      <td><%= f.file_field :file, accept:'.csv', class:"csv-input" %></td>
+      <td class="csv-result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"} %>
     </table>
     <% end %>
     <%= search_form_for @q do |f| %>
