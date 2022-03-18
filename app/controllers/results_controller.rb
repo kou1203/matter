@@ -33,9 +33,11 @@ class ResultsController < ApplicationController
           @dmers_slmt_dec = slmt_dec_period(@dmers_slmt_not_this_month,@results)
           @dmers_slmt_def = slmt_this_period(@dmers_settlementer.where(status_settlement: "未決済"),@results)
           @dmers_slmt_def_pic = slmt_this_period(@dmers_settlementer.where(status_settlement: "写真不備"),@results)
+
+          @slmt2nd = slmt_second(@dmers_settlementer,@results)
           # 決済対象
           @dmers_slmt_target = slmt_dead_line(@dmers_user,@results)
-          @slmt2nd = slmt2nd_dead_line(@dmers_user,@results)
+          @slmt2nd_target = slmt2nd_dead_line(@dmers_user,@results)
 
         # aupay　新規
           @aupays_user = Aupay.includes(:store_prop).where(user_id: @results.first.user_id )
@@ -183,7 +185,8 @@ class ResultsController < ApplicationController
 
     # 決済
     def slmt_this_period(product,date)
-      return product.where(settlement: date.minimum(:date)..date.maximum(:date)).where(status_settlement: "完了")
+      return product.where(settlement: date.minimum(:date)..date.maximum(:date)).where(status: "審査OK").where(status_settlement: "完了")
+      .or(product.where(settlement: date.minimum(:date)..date.maximum(:date)).where(status: "審査通過").where(status_settlement: "完了"))
     end
     
     def slmt_def(product,date)
@@ -207,15 +210,19 @@ class ResultsController < ApplicationController
     end
 
     def slmt_dead_line(product,date)
-      return product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: nil)
-      .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: date.minimum(:date)..date.maximum(:date)))
-      .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: nil))
-      .or(product.where(settlement_deadline: date.minimum(:date)..date.minimum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: date.minimum(:date)..date.maximum(:date)))
+      return product.where(settlement_deadline: date.minimum(:date)..date.maximum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: nil)
+      .or(product.where(settlement_deadline: date.minimum(:date)..date.maximum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: date.minimum(:date)..date.maximum(:date)))
+      .or(product.where(settlement_deadline: date.minimum(:date)..date.maximum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: nil))
+      .or(product.where(settlement_deadline: date.minimum(:date)..date.maximum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: date.minimum(:date)..date.maximum(:date)))
     end
 
+    def slmt_second(product,date)
+      return product.where(client: "ピアズ").where(status: "審査OK").where(status_settlement: "完了").where(settlement_second: date.minimum(:date)..date.maximum(:date))
+    end 
+
     def slmt2nd_dead_line(product,date)
-      return product.where(client: "ピアズ").where(settlement_deadline: date.minimum(:date).prev_month..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where.not(settlement: nil).where(settlement_second: date.minimum(:date)..date.maximum(:date))
-      .or(product.where(client: "ピアズ").where(settlement_deadline: date.minimum(:date).prev_month..date.minimum(:date).since(3.month).end_of_month).where(status: "審査OK").where.not(settlement: nil).where(settlement_second: date.minimum(:date)..date.maximum(:date)))
+      return product.where(client: "ピアズ").where(settlement_deadline: date.minimum(:date).prev_month..date.maximum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: date.minimum(:date).prev_month.beginning_of_month..date.maximum(:date).prev_month.end_of_month).where(settlement_second: date.minimum(:date)..date.maximum(:date))
+      .or(product.where(client: "ピアズ").where(settlement_deadline: date.minimum(:date).prev_month..date.maximum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: date.minimum(:date).prev_month.beginning_of_month..date.maximum(:date).prev_month.end_of_month).where(settlement_second: nil))
     end
   # dメル,aupayメソッド
 

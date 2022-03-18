@@ -1,8 +1,14 @@
-<div data-scope-path="shifts/index">
+<div data-scope-path="shared/header">
   <h1>シフト一覧</h1>
   <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div class="main">
+<div data-scope-path="shifts/index">
   <p class="shift-alert"><%= notice %></p>
-
     <div class="cal-form">
     <%= form_for :shift, url: update_month_shifts_path , html: { method: :post } do %>
       <h2><%= current_user.name %>予定シフト</h2>
@@ -11,7 +17,7 @@
       <input type="button" id="check-all" class="check-btn"  value="全選択">
       <input type="button" id="uncheck-all" class="uncheck-btn" value="選択解除" >
       <select id="shift-select" class="shift-slct">
-        <option value="">シフトを選択してください</option>
+        <option value="">シフトを選択</option>
         <option value="キャッシュレス新規">キャッシュレス新規</option>
         <option value="キャッシュレス決済">キャッシュレス決済</option>
         <option value="楽天フェムト設置">楽天フェムト設置</option>
@@ -170,5 +176,6 @@
     <% end %>
       </table>
   <% end %>
+  </div>
   </div>
 </div>

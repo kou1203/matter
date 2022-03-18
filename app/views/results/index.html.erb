@@ -1,8 +1,14 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
-<div data-scope-path="results/index">
-
+<div data-scope-path="shared/header">
   <h1>利益表SS</h1>
   <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+<div class="main">
+<div data-scope-path="results/index">
     <%# 検索フォーム %>
       <p class="nav-text">こちらから条件を絞り込んでください。</p>
       <%= search_form_for @q do |f| %>
@@ -50,4 +56,6 @@
       <%= render "result_parts/all_profit" %>
     <% end %>
 <% end %>
+</div>
+</div>
 </div>

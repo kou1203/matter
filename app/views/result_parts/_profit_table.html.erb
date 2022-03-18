@@ -147,12 +147,12 @@
           <th>終着見込(新規)</th>
         </tr>
         <input type="hidden", id="dmer-slmt-price" value="<%= @dmers_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
-        <input type="hidden", id="pias-slmt2nd-price" value="<%= @slmt2nd.sum(:valuation_second_settlement) %>"><%# 決済売上の値をjsで取得する %>
+        <input type="hidden", id="pias-slmt2nd-price" value="<%= @slmt2nd_target.sum(:valuation_second_settlement) %>"><%# 決済売上の値をjsで取得する %>
         <input type="hidden", id="aupay-slmt-price" value="<%= @aupays_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
         <input type="hidden", id="new-sum" value="<%= ave_profit_new * new_shift %>"><%# 決済合計売上の値をjsで取得する %>
         <tr>
           <td><%= @dmers_slmt_target.length %></td>
-          <td><%= @slmt2nd.length %></td>
+          <td><%= @slmt2nd_target.length %></td>
           <td><%= @aupays_slmt_target.length %></td>
           <td><%= (ave_profit_new * new_shift).round().to_s(:delimited) rescue "計算不可" %></td>
         </tr>
@@ -174,7 +174,7 @@
         </tr>
       </table>
               <p class="nav-text">決済対象は決済期限が検索した日付の初日〜3ヶ月後の末日までの決済対象になります。</p>
-              <p class="nav-text">2回目決済対象は決済期限が検索した日付の初日より1ヶ月前〜検索した日付より3ヶ月後の末日までの決済対象になります。</p>
+              <p class="nav-text">2回目決済対象は決済期限が検索した日付の初日より1ヶ月前の初日〜検索した日付より3ヶ月後の末日までで尚且つ初回決済日が検索期間初日前月の初日~検索期間末日の前月末日まで決済したものが対象になります。</p>
           <p class="caution-text">※検索範囲外で決済されている案件は決済対象に含まれません。</p>
     <h2>商材別売上/生産性</h2>
       <%# 商材別獲得合計（評価対象のみ） %>
@@ -346,8 +346,8 @@
   <h1>基準値</h1>
     <% if @results.where(shift: "キャッシュレス新規").empty? %>
     <% else %>
-    <div style="display: flex;">
-    <div>
+    <div class="result-flex">
+    <div class="base-frame">
   <h2>基準値</h2>
   <%# 合計変数 %>
   <% sum_visit = @results.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit") %>
@@ -454,7 +454,7 @@
   </table>
 
     </div>
-    <div>
+    <div class="base-frame">
     <h2>店舗別基準値</h2>
     <%# 店舗別合計変数 %>
     <% cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit) %>
@@ -580,7 +580,7 @@
     </table>
     </div>
       <div>
-      <h2>切り返し</h2>
+      <h2 class="base-frame">切り返し</h2>
       <table class="out-tb">
         <thead>
         <tr>
