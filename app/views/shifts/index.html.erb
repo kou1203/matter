@@ -6,7 +6,6 @@
 <div data-scope-path="shared/side_bar">
   <%= render "shared/sidebar" %>
 </div>
-<div class="main">
 <div data-scope-path="shifts/index">
   <p class="shift-alert"><%= notice %></p>
     <div class="cal-form">
@@ -20,13 +19,14 @@
         <option value="">シフトを選択</option>
         <option value="キャッシュレス新規">キャッシュレス新規</option>
         <option value="キャッシュレス決済">キャッシュレス決済</option>
+        <option value="楽天フェムト新規">楽天フェムト新規</option>
         <option value="楽天フェムト設置">楽天フェムト設置</option>
         <option value="サミット">サミット</option>
         <option value="帯同">帯同</option>
         <option value="内勤">内勤</option>
         <option value="休み">休み</option>
       </select>
-      </div>
+    </div>
       <% cnt = 0 %>
       <%= month_calendar do |date| %>
         <input name="shift-check" type="checkbox" , class="shiftcheckbox">
@@ -37,10 +37,10 @@
         <%= hidden_field_tag "shift[#{date}][user_id]", current_user.id %>
         <%# text_field_tag "shift[#{date}][shift]", {},{:class => "input", :id => "shift-set#{cnt}" } %>
         <%= select "shift[#{date}]", :shift,
-          [ ["キャッシュレス新規", "キャッシュレス新規"],
-          ["キャッシュレス決済", "キャッシュレス決済"],
-          ["楽天フェムト新規", "楽天フェムト新規"],
-          ["楽天フェムト設置", "楽天フェムト設置"],
+          [ ["新規", "キャッシュレス新規"],
+          ["決済", "キャッシュレス決済"],
+          ["フェムト", "楽天フェムト新規"],
+          ["設置", "楽天フェムト設置"],
           ["サミット", "サミット"],
           ["帯同", "帯同"],
           ["内勤", "内勤"],
@@ -52,10 +52,10 @@
             <%= s.hidden_field :start_time %>
             <%# s.text_field :shift, {:class => "input",:id => "shift-set#{cnt}"} %>
             <%= s.select :shift, 
-              { "キャッシュレス新規": "キャッシュレス新規",
-              "キャッシュレス決済": "キャッシュレス決済",
-              "楽天フェムト新規": "楽天フェムト新規",
-              "楽天フェムト設置": "楽天フェムト設置",
+              { "新規": "キャッシュレス新規",
+              "決済": "キャッシュレス決済",
+              "フェムト": "楽天フェムト新規",
+              "設置": "楽天フェムト設置",
               "サミット": "サミット",
               "帯同": "帯同",
               "内勤": "内勤",
@@ -176,6 +176,5 @@
     <% end %>
       </table>
   <% end %>
-  </div>
   </div>
 </div>
