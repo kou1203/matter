@@ -1,8 +1,12 @@
-<div data-scope-path="rakuten_pays/show">
+<div data-scope-path="shared/header">
   <h1>楽天ペイ詳細</h1>
   <%= render "shared/header" %>
-  
-  
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="rakuten_pays/show">
     <table>
     <tr>
     <th colspan="4">店舗情報</th>
@@ -97,5 +101,5 @@
       <td><%= @rakuten_pay.profit %></td>
     </tr>
     </table>
+  </div>
 </div>
-

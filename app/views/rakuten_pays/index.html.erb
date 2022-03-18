@@ -43,17 +43,17 @@
     <table >
       <tr>
         <th class="search-th">獲得数</th>
-        <th class="search-th">複数店舗</th>
-        <th class="search-th">登記簿待ち</th>
+        <th class="search-th">未処理</th>
         <th class="search-th">審査待ち</th>
         <th class="search-th">審査完了</th>
+        <th class="search-th">複数店舗</th>
       </tr>
       <tr>
         <td><%= @rakuten_pays.length %></td>
-        <td><%= @rakuten_pays.where(status: "複数店舗").length %></td>
-        <td><%= @rakuten_pays.where(status: "登記簿待ち").length %></td>
+        <td><%= @rakuten_pays.where(status: "未処理").length %></td>
         <td><%= @rakuten_pays.where(status: "審査待ち").length %></td>
         <td><%= @rakuten_pays.where(status: "審査完了").length %></td>
+        <td><%= @rakuten_pays.where(status: "複数店舗").length %></td>
       </tr>
       <tr>
         <th class="search-th">自社不備</th>
