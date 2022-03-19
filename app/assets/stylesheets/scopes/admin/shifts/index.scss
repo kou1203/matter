@@ -98,11 +98,11 @@ table{
   border-collapse: collapse;
   // margin: 20px ;
   table-layout: fixed;
-  min-width: 80vw;
+  // min-width: 80vw;
   display: block;
   overflow-x: scroll;
   white-space: nowrap;
-  // -webkit-overflow-scrolling: touch;
+  -webkit-overflow-scrolling: touch;
   max-width: 80vw;
 }
 
@@ -285,6 +285,7 @@ th {
   background: #96C0CE;
   padding: 10px;
   border-bottom: none;
+  width: 20vw;
 }
 
 
@@ -314,13 +315,15 @@ td {
 @media screen and(max-width:599px) {
   .text {font-size: 10px;}
   .cal-data {font-size: 10px;}
-  .th {font-size: 10px;}
+  th {
+    font-size: 10px;
+    padding: 10px 40px;
+  }
   .td {font-size: 10px; padding: 0;}
-  .shift-slct {width: 40vw;}
+  .shift-slct {width: 35vw;}
   .check-btn {width: 20vw;}
   .uncheck-btn {width: 20vw;}
   .input {font-size: 10px; }
-  // table {max-width: 80vw; min-width: 80vw; max-height: 80vh;}
   .main {width: 80vw; overflow-x: scroll;}
 }
 
