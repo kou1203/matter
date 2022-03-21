@@ -5,6 +5,7 @@ h1 {
   font-size: 20px;
   background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
   color: white;
+  width: 80vw;
 }
 
 h2 {
@@ -308,6 +309,8 @@ td {
 
 .result-flex {
   display: flex;
+  max-width: 80vw;
+  overflow-x:scroll
 }
 
 .sticky {
@@ -324,8 +327,9 @@ td {
   border: 1px solid #ccc;
 }
 
-@media screen and (max-width: 599px) {
 .main {width:80vw;}
+
+@media screen and (max-width: 599px) {
 .result-flex {
   display: flex;
   flex-flow: column;

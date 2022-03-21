@@ -3,59 +3,61 @@
   <h1>利益表SS</h1>
   <%= render "shared/header" %>
 </div>
-<div style="display:flex;">
+  <div style="display:flex;">
   <div data-scope-path="shared/side_bar">
     <%= render "shared/sidebar" %>
   </div>
-<div class="main">
-<div data-scope-path="results/index">
-    <%# 検索フォーム %>
+  <div class="main">
+    <div data-scope-path="results/index">
+      <%# 検索フォーム %>
       <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
       <%= search_form_for @q do |f| %>
-      <table >
-        <tr >
-          <th class="search-th" colspan="">獲得月</th>
-          <th class="search-th" colspan="">獲得期間（始）</th>
-          <th class="search-th" colspan="">獲得期間（終）</th>
-        </tr>
-          <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true,prompt: "--"},{class: "date-input"} %></td>
-          <td><%= f.date_field :date_gteq, class: "input" %></td>
-          <td><%= f.date_field :date_lteq, class: "input" %></td>
-        <tr>
-        </tr>
-      </table>
-      <table >
-      <tr>
-        <th class="search-th">拠点</th>
-        <th class="search-th">担当商材</th>
-        <th class="search-th">グループ①</th>
-        <th class="search-th">グループ②</th>
-        <th class="search-th">訪問員</th>
-        <th class="search-th">獲得商材</th>
-        <td class="result"><%= f.submit "絞込み",data: {"turbolinks" => false, disable_with: "絞込み中"} , class: "result-btn" %></td>
-      </tr>
-      <tr>
-        <td class="search-td"><%= f.select :user_base_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base).distinct, :base, :base), {prompt: "全拠点"},{class: "input"} %></td>
-        <td class="search-td"><%= f.select :user_base_sub_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base_sub).distinct, :base_sub, :base_sub), {prompt: "全て選択"},{class: "input"} %></td>
-        <td class="search-td"><%= f.text_field :user_group_cont, class: "input" %></td>
-        <td class="search-td"><%= f.text_field :user_team_cont, class: "input" %></td>
-        <td class="search-td"><%= f.text_field :user_name_cont, class: "input" %></td>
-        <td class="search-td"><%= f.select :shift_cont, { "キャッシュレス": "キャッシュレス", "サミット": "サミット", "楽天フェムト": "楽天フェムト" }, {include_blank: true,prompt: "全商材"},{class: "input"} %></td>
-        <td class="reset"><%= link_to "絞込みリセット", results_path, class: "reset-link" %></td>
-      </tr>
-      </table>
+        <table >
+          <tr >
+            <th class="search-th" colspan="">獲得月</th>
+            <th class="search-th" colspan="">獲得期間（始）</th>
+            <th class="search-th" colspan="">獲得期間（終）</th>
+          </tr>
+          <tr>
+            <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true,prompt: "--"},{class: "date-input"} %></td>
+            <td><%= f.date_field :date_gteq, class: "input" %></td>
+            <td><%= f.date_field :date_lteq, class: "input" %></td>
+          <tr>
+          </tr>
+        </table>
+        <table >
+          <tr>
+            <th class="search-th">拠点</th>
+            <th class="search-th">担当商材</th>
+            <th class="search-th">グループ①</th>
+            <th class="search-th">グループ②</th>
+            <th class="search-th">訪問員</th>
+            <th class="search-th">獲得商材</th>
+            <td class="result"><%= f.submit "絞込み",data: {"turbolinks" => false, disable_with: "絞込み中"} , class: "result-btn" %></td>
+          </tr>
+          <tr>
+            <td class="search-td"><%= f.select :user_base_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base).distinct, :base, :base), {prompt: "全拠点"},{class: "input"} %></td>
+            <td class="search-td"><%= f.select :user_base_sub_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base_sub).distinct, :base_sub, :base_sub), {prompt: "全て選択"},{class: "input"} %></td>
+            <td class="search-td"><%= f.text_field :user_group_cont, class: "input" %></td>
+            <td class="search-td"><%= f.text_field :user_team_cont, class: "input" %></td>
+            <td class="search-td"><%= f.text_field :user_name_cont, class: "input" %></td>
+            <td class="search-td"><%= f.select :shift_cont, { "キャッシュレス": "キャッシュレス", "サミット": "サミット", "楽天フェムト": "楽天フェムト" }, {include_blank: true,prompt: "全商材"},{class: "input"} %></td>
+            <td class="reset"><%= link_to "絞込みリセット", results_path, class: "reset-link" %></td>
+          </tr>
+        </table>
       <% end %>
-    <%# /検索フォーム %>
-    <hr>
-    <% if @results.empty? %>
-    <p class="caution-text">※検索対象が複数人いる場合は複数の利益表が表示されます。</p>
-    <% else %>
-    <% if @results.group(:user_id).length == 1 %>
-      <%= render "result_parts/profit_table" %>
-    <% else %>
-      <%= render "result_parts/all_profit" %>
-    <% end %>
-<% end %>
-</div>
-</div>
+      <%# /検索フォーム %>
+      <hr>
+
+      <% if @results.empty? %>
+      <p class="caution-text">※検索対象が複数人いる場合は複数の利益表が表示されます。</p>
+      <% else %>
+        <% if @results.group(:user_id).length == 1 %>
+          <%= render "result_parts/profit_table" %>
+        <% else %>
+          <%= render "result_parts/all_profit" %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
 </div>

@@ -318,13 +318,12 @@
       <tr>
         <%# dメル %>
           <td style="color: blue;"><%= @dmers_this_month.length %></td>
-          <td ><%= link_to @dmers_def_this_month.length,user_path(@results.first.user.id), class: "def-link" %></td>
+          <td ><%= link_to @dmers_def_this_month.length,user_path(@results.first.user.id,month: @month), class: "def-link" %></td>
           <td style="color: blue;"><%= @dmers_inc.length + @dmer_db.length %></td>
           <td style="color: blue;"><%= @dmers_slmt_this_month.length %></td>
-
         <%# aupay %>
           <td style="color: blue;"><%= @aupays_this_month.length %></td>
-          <td ><%= link_to @aupays_def_this_month.length, user_path(@results.first.user.id), class: "def-link" %></td>
+          <td ><%= link_to @aupays_def_this_month.length, user_path(@results.first.user.id,month: @month), class: "def-link" %></td>
           <td style="color: blue;"><%= @aupays_inc.length + @aupay_db.length %></td>
           <td style="color: blue;"><%= @aupays_slmt_this_month.length %></td>
         <%# PayPay %>
@@ -346,113 +345,112 @@
   <h1>基準値</h1>
     <% if @results.where(shift: "キャッシュレス新規").empty? %>
     <% else %>
-    <div class="result-flex">
-    <div class="base-frame">
-  <h2>基準値</h2>
   <%# 合計変数 %>
-  <% sum_visit = @results.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit") %>
-  <% sum_interview = @results.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview") %>
-  <% sum_full_talk = @results.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") %>
-  <% sum_get = @results.where(shift: "キャッシュレス新規").sum("first_get + latter_get") %>
+    <% sum_visit = @results.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit") %>
+    <% sum_interview = @results.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview") %>
+    <% sum_full_talk = @results.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") %>
+    <% sum_get = @results.where(shift: "キャッシュレス新規").sum("first_get + latter_get") %>
   <%# 前半変数 %>
-  <% sum_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_visit) %>
-  <% sum_interview_f = @results.where(shift: "キャッシュレス新規").sum(:first_interview) %>
-  <% sum_full_talk_f = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk) %>
-  <% sum_get_f = @results.where(shift: "キャッシュレス新規").sum(:first_get) %>
+    <% sum_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_visit) %>
+    <% sum_interview_f = @results.where(shift: "キャッシュレス新規").sum(:first_interview) %>
+    <% sum_full_talk_f = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk) %>
+    <% sum_get_f = @results.where(shift: "キャッシュレス新規").sum(:first_get) %>
   <%# 後半変数 %>
-  <% sum_visit_l = @results.where(shift: "キャッシュレス新規").sum(:latter_visit) %>
-  <% sum_interview_l = @results.where(shift: "キャッシュレス新規").sum(:latter_interview) %>
-  <% sum_full_talk_l = @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk) %>
-  <% sum_get_l = @results.where(shift: "キャッシュレス新規").sum(:latter_get) %>
-  <table class="out-tb">
-    <thead>
-      <tr>
-        <th >項目</th>
-        <th >内訳</th>
-        <th >合計</th>
-        <th >平均</th>
-        <th >比率</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th rowspan="4" class="out-th">合計</th>
-        <th>訪問</th>
-        <td><%= sum_visit %></td>
-        <td><%= (sum_visit.to_f / digestion_new).to_f().round(1) %></td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <th>面会</th>
-        <td><%= sum_interview %></td>
-        <td><%= (sum_interview.to_f / digestion_new).to_f().round(1) %></td>
-        <td><%= number_to_percentage(sum_interview.to_f / sum_visit.to_f * 100, precision: 1)  %></td>
-      </tr>
-      <tr>
-        <th>フル</th>
-        <td><%= sum_full_talk %></td>
-        <td><%= (sum_full_talk.to_f / digestion_new).to_f.round(1) %></td>
-        <td><%= number_to_percentage(sum_full_talk.to_f / sum_interview.to_f * 100, precision: 1)  %></td>
-      </tr>
-      <tr>
-        <th>成約</th>
-        <td><%= sum_get %></td>
-        <td><%= (sum_get.to_f / digestion_new).to_f.round(1) %></td>
-        <td><%= number_to_percentage(sum_get.to_f / sum_full_talk.to_f * 100, precision: 1)  %></td>
-      </tr>
-      <tr>
-        <th rowspan="4" class="out-th">前半</th>
-        <th>訪問</th>
-        <td><%= sum_visit_f %></td>
-        <td><%= (sum_visit_f.to_f / digestion_new).round(1) %></td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <th>面会</th>
-        <td><%= sum_interview_f %></td>
-        <td><%= (sum_interview_f.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(sum_interview_f.to_f / sum_visit_f.to_f * 100, precision: 1)  %></td>
-      </tr>
-      <tr>
-        <th>フル</th>
-        <td><%= sum_full_talk_f %></td>
-        <td><%= (sum_full_talk_f.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(sum_full_talk_f.to_f / sum_interview_f.to_f * 100, precision: 1)  %></td>
-      </tr>
-      <tr>
-        <th>成約</th>
-        <td><%= sum_get_f %></td>
-        <td><%= (sum_get_f.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(sum_get_f.to_f / sum_full_talk_f.to_f * 100, precision: 1)  %></td>
-      </tr>
-      <tr>
-        <th rowspan="4" class="out-th">後半</th>
-        <th>訪問</th>
-        <td><%= sum_visit_l %></td>
-        <td><%= (sum_visit_l.to_f / digestion_new).round(1) %></td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <th>面会</th>
-        <td><%= sum_interview_l %></td>
-        <td><%= (sum_interview_l.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(sum_interview_l.to_f / sum_visit_l.to_f * 100, precision: 1)  %></td>
-      </tr>
-      <tr>
-        <th>フル</th>
-        <td><%= sum_full_talk_l %></td>
-        <td><%= (sum_full_talk_l.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(sum_full_talk_l.to_f / sum_interview_l.to_f * 100, precision: 1)  %></td>
-      </tr>
-      <tr>
-        <th>成約</th>
-        <td><%= sum_get_l %></td>
-        <td><%= (sum_get_l.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(sum_get_l.to_f / sum_full_talk_l.to_f * 100, precision: 1)  %></td>
-      </tr>
-    </tbody>
-  </table>
-
+    <% sum_visit_l = @results.where(shift: "キャッシュレス新規").sum(:latter_visit) %>
+    <% sum_interview_l = @results.where(shift: "キャッシュレス新規").sum(:latter_interview) %>
+    <% sum_full_talk_l = @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk) %>
+    <% sum_get_l = @results.where(shift: "キャッシュレス新規").sum(:latter_get) %>
+  <div class="result-flex">
+    <div class="base-frame">
+      <h2>基準値</h2>
+      <table class="out-tb">
+        <thead>
+          <tr>
+            <th >項目</th>
+            <th >内訳</th>
+            <th >合計</th>
+            <th >平均</th>
+            <th >比率</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th rowspan="4" class="out-th">合計</th>
+            <th>訪問</th>
+            <td><%= sum_visit %></td>
+            <td><%= (sum_visit.to_f / digestion_new).to_f().round(1) %></td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <th>面会</th>
+            <td><%= sum_interview %></td>
+            <td><%= (sum_interview.to_f / digestion_new).to_f().round(1) %></td>
+            <td><%= number_to_percentage(sum_interview.to_f / sum_visit.to_f * 100, precision: 1)  %></td>
+          </tr>
+          <tr>
+            <th>フル</th>
+            <td><%= sum_full_talk %></td>
+            <td><%= (sum_full_talk.to_f / digestion_new).to_f.round(1) %></td>
+            <td><%= number_to_percentage(sum_full_talk.to_f / sum_interview.to_f * 100, precision: 1)  %></td>
+          </tr>
+          <tr>
+            <th>成約</th>
+            <td><%= sum_get %></td>
+            <td><%= (sum_get.to_f / digestion_new).to_f.round(1) %></td>
+            <td><%= number_to_percentage(sum_get.to_f / sum_full_talk.to_f * 100, precision: 1)  %></td>
+          </tr>
+          <tr>
+            <th rowspan="4" class="out-th">前半</th>
+            <th>訪問</th>
+            <td><%= sum_visit_f %></td>
+            <td><%= (sum_visit_f.to_f / digestion_new).round(1) %></td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <th>面会</th>
+            <td><%= sum_interview_f %></td>
+            <td><%= (sum_interview_f.to_f / digestion_new).round(1) %></td>
+            <td><%= number_to_percentage(sum_interview_f.to_f / sum_visit_f.to_f * 100, precision: 1)  %></td>
+          </tr>
+          <tr>
+            <th>フル</th>
+            <td><%= sum_full_talk_f %></td>
+            <td><%= (sum_full_talk_f.to_f / digestion_new).round(1) %></td>
+            <td><%= number_to_percentage(sum_full_talk_f.to_f / sum_interview_f.to_f * 100, precision: 1)  %></td>
+          </tr>
+          <tr>
+            <th>成約</th>
+            <td><%= sum_get_f %></td>
+            <td><%= (sum_get_f.to_f / digestion_new).round(1) %></td>
+            <td><%= number_to_percentage(sum_get_f.to_f / sum_full_talk_f.to_f * 100, precision: 1)  %></td>
+          </tr>
+          <tr>
+            <th rowspan="4" class="out-th">後半</th>
+            <th>訪問</th>
+            <td><%= sum_visit_l %></td>
+            <td><%= (sum_visit_l.to_f / digestion_new).round(1) %></td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <th>面会</th>
+            <td><%= sum_interview_l %></td>
+            <td><%= (sum_interview_l.to_f / digestion_new).round(1) %></td>
+            <td><%= number_to_percentage(sum_interview_l.to_f / sum_visit_l.to_f * 100, precision: 1)  %></td>
+          </tr>
+          <tr>
+            <th>フル</th>
+            <td><%= sum_full_talk_l %></td>
+            <td><%= (sum_full_talk_l.to_f / digestion_new).round(1) %></td>
+            <td><%= number_to_percentage(sum_full_talk_l.to_f / sum_interview_l.to_f * 100, precision: 1)  %></td>
+          </tr>
+          <tr>
+            <th>成約</th>
+            <td><%= sum_get_l %></td>
+            <td><%= (sum_get_l.to_f / digestion_new).round(1) %></td>
+            <td><%= number_to_percentage(sum_get_l.to_f / sum_full_talk_l.to_f * 100, precision: 1)  %></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
     <div class="base-frame">
     <h2>店舗別基準値</h2>
