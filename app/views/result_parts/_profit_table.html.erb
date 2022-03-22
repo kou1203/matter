@@ -341,6 +341,20 @@
           <td style="color: red;"><%= @rakuten_casas_cancel.length %></td>
           <td style="color: blue;"><%= @rakuten_casas_inc.length %></td>
       </tr>
+      <tr>
+        <th colspan=3>商材内訳</th>
+      </tr>
+      <tr>
+        <th>USEN</th>
+        <th>マックス即時</th>
+        <th>ピアズ</th>
+      </tr>
+      <tr></tr>
+      <tr>
+        <td><%= @dmers_this_month.where(client: "USEN").length %></td>
+        <td><%= @dmers_this_month.where(client: "マックス即時").length %></td>
+        <td><%= @dmers_this_month.where(client: "ピアズ").length %></td>
+      </tr>
     </table>
   <h1>基準値</h1>
     <% if @results.where(shift: "キャッシュレス新規").empty? %>
@@ -1377,9 +1391,10 @@
       <% end %>
     <%# サミット切り返し %>
       <% dmer_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).length %>
-      <% dmer_slmt_date_len = Dmer.where(settlementer_id: result.user_id).where(date: result.date).length %>
+      <% dmer_slmt_date_len = Dmer.where(settlementer_id: result.user_id).where(settlement: result.date).length %>
+      <% dmer_slmt2nd_date_len = Dmer.where(settlementer_id: result.user_id).where(settlement_second: result.date).length %>
       <% aupay_date_len = Aupay.where(user_id: result.user_id).where(date: result.date).length %>
-      <% aupay_slmt_date_len = Aupay.where(settlementer_id: result.user_id).where(date: result.date).length %>
+      <% aupay_slmt_date_len = Aupay.where(settlementer_id: result.user_id).where(settlement: result.date).length %>
       <% paypay_date_len = Paypay.where(user_id: result.user_id).where(date: result.date).length %>
       <% rakuten_pay_date_len = RakutenPay.where(user_id: result.user_id).where(date: result.date).length %>
       <td>
@@ -1397,6 +1412,9 @@
         <% end %>
         <% if dmer_slmt_date_len != 0 %>
           dメル決済<%= dmer_slmt_date_len %>
+        <% end %>
+        <% if dmer_slmt2nd_date_len != 0 %>
+          dメル決済（2回目）<%= dmer_slmt2nd_date_len %>
         <% end %>
         <% if aupay_slmt_date_len != 0 %>
           auPay決済<%= aupay_slmt_date_len %>
