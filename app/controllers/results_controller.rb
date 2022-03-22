@@ -22,7 +22,7 @@ class ResultsController < ApplicationController
           .or(@dmers_this_month.where(status: "申込取消（不備）"))
           .or(@dmers_this_month.where(status: "審査OK").where.not(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))),@results)
           @dmers_inc = inc_period(@dmers_this_month,@results)
-          @dmer_db = share_period(@dmers_user,@results).where.not(store_prop: {head_store: nil})
+          @dmer_db = share_period(@dmers_user,@results).where.not(store_prop: {head_store: nil}).where(status: "審査OK")
           
         # dメル　決済
           @dmers_settlementer = Dmer.where(settlementer_id: @results.first.user_id )
@@ -72,8 +72,8 @@ class ResultsController < ApplicationController
           @st_insurances_this_month = this_period(@st_insurances_user,@results)
           @st_insurances_def_this_month = this_period(@st_insurances_this_month,@results)
         # 楽天ペイ
-          @rakuten_pays_user = RakutenPay.where(user_id: @results.first.user_id )
-          @rakuten_pays_this_month = this_period(@rakuten_pays_user,@results)
+          @rakuten_pays_user = RakutenPay.includes(:store_prop).where(user_id: @results.first.user_id )
+          @rakuten_pays_this_month = this_period(@rakuten_pays_user,@results).where(store_prop: {head_store: nil})
           @rakuten_pays_not_this_month = not_period(@rakuten_pays_user,@results)
           @rakuten_pays_inc = inc_period(@rakuten_pays_not_this_month,@results)
           @rakuten_pays_def_this_month = @rakuten_pays_this_month.where(status: "自社不備")

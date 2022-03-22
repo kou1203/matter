@@ -7,7 +7,7 @@
   <div data-scope-path="shared/side_bar">
     <%= render "shared/sidebar" %>
   </div>
-<div data-scope-path="results/new">
+<div data-scope-path="results/new_edit">
   <%= form_with model: @result,  class: "form-frame", local: true do |f| %>
     <%= render "shared/error_messages", model: f.object %>
     <%= f.hidden_field :user_id, value: current_user.id %>
