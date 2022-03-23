@@ -342,9 +342,13 @@
           <td style="color: blue;"><%= @rakuten_casas_inc.length %></td>
       </tr>
       <tr>
-        <th colspan=3>商材内訳</th>
+        <th colspan=3>dメル獲得 内訳</th>
+        <th colspan=3>dメル決済内訳</th>
       </tr>
       <tr>
+        <th>USEN</th>
+        <th>マックス即時</th>
+        <th>ピアズ</th>
         <th>USEN</th>
         <th>マックス即時</th>
         <th>ピアズ</th>
@@ -354,6 +358,9 @@
         <td><%= @dmers_this_month.where(client: "USEN").length %></td>
         <td><%= @dmers_this_month.where(client: "マックス即時").length %></td>
         <td><%= @dmers_this_month.where(client: "ピアズ").length %></td>
+        <td><%= @dmers_slmt_this_month.where(client: "USEN").length %></td>
+        <td><%= @dmers_slmt_this_month.where(client: "マックス即時").length %></td>
+        <td><%= @dmers_slmt_this_month.where(client: "ピアズ").length %></td>
       </tr>
     </table>
   <h1>基準値</h1>
