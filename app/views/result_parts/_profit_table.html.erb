@@ -110,6 +110,7 @@
         <% st_insurance_profit = @st_insurances_this_month.sum(:valuation) - @st_insurances_def_this_month.sum(:valuation) %>
       <%# 楽天ペイ %>
           <% rakuten_pay_profit = @rakuten_pays_this_month.sum(:valuation) - @rakuten_pays_def_this_month.sum(:valuation) + @rakuten_pays_inc.sum(:valuation)  %>
+
       <%# フェムト新規 %>
         <% casa_new_profit = @rakuten_casas_this_month.sum(:valuation_new) - @rakuten_casas_cancel.sum(:valuation_new) + @rakuten_casas_inc.sum(:valuation_new) %>
       <%# フェムト設置 %>
@@ -122,6 +123,36 @@
         <% ave_profit_new = sum_profit_new.to_f / digestion_new %>
         <% ave_profit_slmt = sum_profit_slmt.to_f / digestion_settlement %>
         <% ave_profit = (sum_profit.to_f / @results.where.not(shift: "休み").where.not(shift: "帯同").where.not(shift: "内勤").where.not(shift: "欠勤").length) %>
+      <%# 商材別獲得数（評価対象のみ） %>
+        <% dmer_len = @dmers_this_month.length - @dmers_def_this_month.length + @dmers_inc.length + @dmer_db.length %></td>
+        <% dmer_slmt_len = @dmers_slmt_this_month.length %></td>
+        <% dmer_slmt2nd_len = @slmt2nd.length %></td>
+        <% aupay_len = @aupays_this_month.length - @aupays_def_this_month.length + @aupays_inc.length + @aupay_db.length %></td>
+        <% aupay_slmt_len = @aupays_slmt_this_month.length %></td>
+        <% paypay_len = @paypays_this_month.length - @paypays_def_this_month.length %></td>
+        <% rakuten_pay_len = @rakuten_pays_this_month.length - @rakuten_pays_def_this_month.length + @rakuten_pays_inc.length %>
+        <% rakuten_casa_len =  @rakuten_casas_this_month.length - @rakuten_casas_cancel.length + @rakuten_casas_inc.length %>
+        <% rakuten_casa_put_len = @rakuten_casas_put_self.length + @rakuten_casas_put_other.length + @rakuten_casas_put_request.length  %>
+      <%# 楽天ペイインセン（40件で5万, 50件で10万） %>
+          <% rakuten_bonus_len = @rakuten_pays_user.where(date: @results.minimum(:date).prev_month.since(25.days)..@results.minimum(:date).since(24.days)).where(store_prop: {head_store: nil}).where.not(status: "自社不備").length %><%# 検索範囲が○月1日〜末日で絞り込みがあった場合 %>
+          <% rakuten_bonus = 0 %>
+          <% if @results.minimum(:date).day == 1 %>
+            <% if rakuten_bonus_len >= 50 %>
+              <% rakuten_bonus = 100000 %>
+            <% elsif rakuten_bonus_len >= 40  %>
+              <% rakuten_bonus = 50000 %>
+            <% else %>
+              <% rakuten_bonus = 0 %>
+            <% end %>
+          <% elsif @results.minimum(:date).day == 26 %>
+            <% if rakuten_pay_len >= 50 %>
+              <% rakuten_bonus = 100000 %>
+            <% elsif rakuten_pay_len >= 40  %>
+              <% rakuten_bonus = 50000 %>
+            <% else %>
+              <% rakuten_bonus = 0 %>
+            <% end %>
+          <% end %>
     <h1>獲得商材内訳</h1>
       <h2>売上/予測値 決済予定</h2>
       <table>
@@ -138,23 +169,25 @@
           <td><%= ave_profit_slmt.round().to_s(:delimited) rescue "NaN" %></td>
           <td><%= sum_profit_new.to_s(:delimited) %></td>
           <td><%= sum_profit_slmt.to_s(:delimited) %></td>
-          <td><%= (sum_profit_new + sum_profit_slmt).to_s(:delimited) %></td>
+          <td><%= (sum_profit_new + sum_profit_slmt + rakuten_bonus).to_s(:delimited) %></td>
         </tr>
         <tr>
           <th>決済対象（dメル）</th>
           <th>決済対象（ピアズ２回目）</th>
           <th>決済対象（aupay）</th>
+          <th>楽天ペイ特別インセン</th>
           <th>終着見込(新規)</th>
         </tr>
         <input type="hidden", id="dmer-slmt-price" value="<%= @dmers_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
         <input type="hidden", id="pias-slmt2nd-price" value="<%= @slmt2nd_target.sum(:valuation_second_settlement) %>"><%# 決済売上の値をjsで取得する %>
         <input type="hidden", id="aupay-slmt-price" value="<%= @aupays_slmt_target.sum(:valuation_settlement) %>"><%# 決済売上の値をjsで取得する %>
-        <input type="hidden", id="new-sum" value="<%= ave_profit_new * new_shift %>"><%# 決済合計売上の値をjsで取得する %>
+        <input type="hidden", id="new-sum" value="<%= ave_profit_new * new_shift + rakuten_bonus %>"><%# 決済合計売上の値をjsで取得する %>
         <tr>
           <td><%= @dmers_slmt_target.length %></td>
           <td><%= @slmt2nd_target.length %></td>
           <td><%= @aupays_slmt_target.length %></td>
-          <td><%= (ave_profit_new * new_shift).round().to_s(:delimited) rescue "計算不可" %></td>
+          <td><%= rakuten_bonus.to_s(:delimited) %></td>
+          <td><%= (ave_profit_new * new_shift + rakuten_bonus).round().to_s(:delimited) rescue "計算不可" %></td>
         </tr>
         <tr>
           <th>dメル決済率</th>
@@ -173,20 +206,11 @@
         <tr>
         </tr>
       </table>
-              <p class="nav-text">決済対象は決済期限が検索した日付の初日〜3ヶ月後の末日までの決済対象になります。</p>
-              <p class="nav-text">2回目決済対象は決済期限が検索した日付の初日より1ヶ月前の初日〜検索した日付より3ヶ月後の末日までで尚且つ初回決済日が検索期間初日前月の初日~検索期間末日の前月末日までに決済したものが対象になります。</p>
+              <p class="nav-text">決済対象は決済期限が検索した日付の初日〜検索した日付の最終日より3ヶ月後の末日までの決済対象になります。</p>
+              <p class="nav-text">2回目決済対象は決済期限が検索した日付の初日より1ヶ月前の初日〜検索した日付の最終日より3ヶ月後の末日までで尚且つ初回決済日が検索期間初日前月の初日~検索期間末日の前月末日までに決済したものが対象になります。</p>
           <p class="caution-text">※検索範囲外で決済されている案件は決済対象に含まれません。</p>
     <h2>商材別売上/生産性</h2>
-      <%# 商材別獲得合計（評価対象のみ） %>
-        <% dmer_len = @dmers_this_month.length - @dmers_def_this_month.length + @dmers_inc.length + @dmer_db.length %></td>
-        <% dmer_slmt_len = @dmers_slmt_this_month.length %></td>
-        <% dmer_slmt2nd_len = @slmt2nd.length %></td>
-        <% aupay_len = @aupays_this_month.length - @aupays_def_this_month.length + @aupays_inc.length + @aupay_db.length %></td>
-        <% aupay_slmt_len = @aupays_slmt_this_month.length %></td>
-        <% paypay_len = @paypays_this_month.length - @paypays_def_this_month.length %></td>
-        <% rakuten_pay_len = @rakuten_pays_this_month.length - @rakuten_pays_def_this_month.length + @rakuten_pays_inc.length %>
-        <% rakuten_casa_len =  @rakuten_casas_this_month.length - @rakuten_casas_cancel.length + @rakuten_casas_inc.length %>
-        <% rakuten_casa_put_len = @rakuten_casas_put_self.length + @rakuten_casas_put_other.length + @rakuten_casas_put_request.length  %>
+
     <table>
       <tr>
         <th>商材</th>
