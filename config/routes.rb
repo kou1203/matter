@@ -123,4 +123,6 @@ Rails.application.routes.draw do
   
   resources :costs 
 
+  resources :product_checkers, only: [:index]
+
 end

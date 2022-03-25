@@ -1,0 +1,2 @@
+class ProductChecker < ApplicationRecord
+end

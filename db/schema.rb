@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_06_041034) do
+ActiveRecord::Schema.define(version: 2022_03_25_065516) do
 
   create_table "aupays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num"
@@ -368,6 +368,25 @@ ActiveRecord::Schema.define(version: 2021_11_06_041034) do
     t.index ["stock_id"], name: "index_pranesses_on_stock_id"
     t.index ["store_prop_id"], name: "index_pranesses_on_store_prop_id"
     t.index ["user_id"], name: "index_pranesses_on_user_id"
+  end
+
+  create_table "product_checkers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "store_name"
+    t.string "tel1"
+    t.string "tel2"
+    t.string "mail1"
+    t.string "mail2"
+    t.string "mail3"
+    t.string "product1"
+    t.string "product2"
+    t.string "product3"
+    t.string "product4"
+    t.string "product5"
+    t.string "product6"
+    t.string "product7"
+    t.string "product8"
+    t.string "product9"
+    t.string "product10"
   end
 
   create_table "rakuten_casas", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|

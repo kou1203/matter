@@ -1,0 +1,76 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>過去獲得案件一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="dmers/index">
+    <div class="main">
+    <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
+    <%= search_form_for @q do |f| %>
+      <table >
+        <tr >
+          <th class="search-head" rowspan="2" >検索</th>
+          <th class="search-th">店舗名</th>
+          <th class="search-th">電話番号</th>
+          <th class="search-th">メールアドレス</th>
+          <td class="result"><%= f.submit "絞込み", data: {disable_with: "絞り込み中"},class: "result-btn" %></td>
+        </tr>
+        <tr >
+          <td><%= f.text_field :store_name_cont, class: "input" %></td>
+          <td><%= f.text_field :tel1_or_tel2_cont, class: "input" %></td>
+          <td><%= f.text_field :mail1_or_mail2_or_mail3_cont, class: "input" %></td>
+          <td class="reset"><%= link_to "絞込みリセット", dmers_path, class: "reset-link" %></td>
+        </tr>
+      </table>
+    <% end %>
+      <% if @products.empty? %>
+      <% else %>
+        <table class="out-tb">
+          <thead>
+            <tr class="table-row">
+              <th class="out-th">店舗名</th>
+              <th class="out-th">店舗電話番号</th>
+              <th class="out-th">担当電話番号</th>
+              <th class="out-th">メールアドレス1</th>
+              <th class="out-th">メールアドレス2</th>
+              <th class="out-th">メールアドレス3</th>
+              <th class="out-th">N_P</th>
+              <th class="out-th">PayPay</th>
+              <th class="out-th">楽天Pay</th>
+              <th class="out-th">auPay</th>
+              <th class="out-th">メルペイ</th>
+              <th class="out-th">クラウド</th>
+              <th class="out-th">dメル</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @products_data.find_each do |product| %>
+              <tr class="index-tr">
+                <td class="index-td"><%= product.store_name %></td>
+                <td class="index-td"><%= product.tel1 %></td>
+                <td class="index-td"><%= product.tel2 %></td>
+                <td class="index-td"><%= product.mail1 %></td>
+                <td class="index-td"><%= product.mail2 %></td>
+                <td class="index-td"><%= product.mail3 %></td>
+                <td class="index-td"><%= product.product1 %></td>
+                <td class="index-td"><%= product.product2 %></td>
+                <td class="index-td"><%= product.product3 %></td>
+                <td class="index-td"><%= product.product4 %></td>
+                <td class="index-td"><%= product.product5 %></td>
+                <td class="index-td"><%= product.product6 %></td>
+                <td class="index-td"><%= product.product7 %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        <table>
+        <div class="kaminari-page">
+          <%= paginate @products_data %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
