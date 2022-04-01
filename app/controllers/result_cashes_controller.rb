@@ -31,6 +31,19 @@ class ResultCashesController < ApplicationController
   end
 
 
+  def import 
+    if params[:file].present?
+      if ResultCash.csv_check(params[:file]).present?
+        redirect_to results_path , alert: "エラーが発生したため中断しました#{ResultCash.csv_check(params[:file])}"
+      else
+        message = ResultCash.import(params[:file]) 
+        redirect_to results_path, alert: "インポート処理を完了しました#{message}"
+      end
+    else
+      redirect_to results_path, alert: "インポートに失敗しました。ファイルを選択してください"
+    end
+  end 
+
 
   private
   def result_cash_params

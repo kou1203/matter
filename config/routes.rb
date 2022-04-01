@@ -87,7 +87,9 @@ Rails.application.routes.draw do
     collection { post :import }
   end  
 
-  resources :result_cashes, expect: [:new, :create]
+  resources :result_cashes do 
+    collection { post :import}
+  end
   resources :result_casas, expect: [:new, :create]
   resources :result_summits, expect: [:new, :create]
   
@@ -124,5 +126,9 @@ Rails.application.routes.draw do
   resources :costs 
 
   resources :product_checkers, only: [:index]
+  
+  resources :result_sales, only: [:index] do 
+    collection { post :import }
+  end 
 
 end

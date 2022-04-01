@@ -24,6 +24,7 @@
         <tr >
           <th class="search-head" rowspan="2" >検索</th>
           <th colspan="2" class="search-th">獲得日付</th>
+          <th class="search-th">店舗名</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">審査ステータス</th>
           <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
@@ -31,6 +32,7 @@
         <tr >
         <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
         <td ><%= f.date_field :date_lt, class: "input" %></td>
+          <td ><%= f.text_field :store_prop_name_cont, class: "input" %></td>
           <td ><%= f.text_field :user_name_cont, class: "input" %></td>
           <td ><%= f.select :status_eq, options_from_collection_for_select(RakutenPay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
           <td class="reset"><%= link_to "絞込みリセット", rakuten_pays_path, class: "reset-link" %></td>
@@ -71,6 +73,7 @@
       <thead>
       <tr >
         <th class="out-th"></th>
+        <th class="out-th">ID</th>
         <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
         <th class="out-th">店舗名</th>
         <th class="out-th">獲得者</th>
@@ -83,6 +86,7 @@
       <% @rakuten_pays_data.each do |rakuten_pay| %>
       <tr >
         <td ><%= link_to "詳細",  rakuten_pay_path(rakuten_pay.id) ,class: "link" %></td>
+        <td ><%= rakuten_pay.id %></td>
         <td ><%= rakuten_pay.date %></td>
         <td ><%= rakuten_pay.store_prop.name %></td>
         <td ><%= rakuten_pay.user.name %></td>

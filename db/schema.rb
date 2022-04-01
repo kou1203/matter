@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_25_065516) do
+ActiveRecord::Schema.define(version: 2022_03_26_055447) do
 
   create_table "aupays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num"
@@ -644,6 +644,16 @@ ActiveRecord::Schema.define(version: 2022_03_25_065516) do
     t.index ["result_id"], name: "index_result_cashes_on_result_id"
   end
 
+  create_table "result_sales", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.integer "year", null: false
+    t.integer "month", null: false
+    t.integer "valuation", null: false
+    t.integer "profit", null: false
+    t.string "product"
+    t.index ["user_id"], name: "index_result_sales_on_user_id"
+  end
+
   create_table "result_summits", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "result_id"
     t.integer "ng_01"
@@ -935,6 +945,7 @@ ActiveRecord::Schema.define(version: 2022_03_25_065516) do
   add_foreign_key "rakuten_pays", "users"
   add_foreign_key "result_casas", "results"
   add_foreign_key "result_cashes", "results"
+  add_foreign_key "result_sales", "users"
   add_foreign_key "result_summits", "results"
   add_foreign_key "results", "users"
   add_foreign_key "results", "users", column: "ojt_id"

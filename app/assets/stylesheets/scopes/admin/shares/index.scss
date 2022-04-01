@@ -1,0 +1,212 @@
+[data-scope-path="shares/index"] {
+
+h1 {
+  padding: 1.0em;
+  font-size: 20px;
+  background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
+  color: white;
+}
+
+h2 {font-size: 17px;}
+
+table{
+  border-collapse: collapse;
+  margin: 20px ;
+  table-layout: fixed;
+  min-width: 80vw;
+  display: block;
+  overflow-x: scroll;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  max-width: 80vw;
+}
+
+tr:nth-child(odd) {background: #ede5e5;}
+
+th {
+  text-align: center;
+  color: white;
+  background: #96C0CE;
+  padding: 10px;
+  border-bottom: none;
+}
+
+.th-head {background: #969595;}
+
+td {
+  border-bottom: 1px solid rgb(205, 203, 203);
+  text-align: center;
+  box-shadow: 0px -3px 5px 1px #eee inset;
+  padding: 10px ;
+}
+
+// スクロール
+
+.out-th {
+  text-align:left;
+  vertical-align: middle;
+}
+
+.out-tb {
+  max-height: 70vh;
+}
+
+.out-tb thead th {
+  /* 縦スクロール時に固定する */
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  /* tbody内のセルより手前に表示する */
+  z-index: 1;
+}
+
+// スクロール
+
+// 検索フォーム
+
+.search-th {
+  text-align: center;
+  color: white;
+  background: #c4c2c2;
+  box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
+  padding: 10px 0;
+  font-size: 15px;
+}
+
+.search-head {
+  vertical-align: middle;
+  background: linear-gradient(30deg, #add8e6 30%, #c4c2c2 100%);
+  border-radius: 15px 0 0 15px;
+  font-size: 18px;
+  width: 100px;
+}
+
+// 検索フォーム
+
+.reset-link {
+  text-decoration: none;
+  color: white;
+}
+
+.link {
+  text-decoration: none;
+  color: blue;
+}
+
+.result {
+  background: #96C0CE;
+}
+
+.reset {
+  background: #c4bfbb;
+  padding: 5px;
+}
+
+.result-btn {
+  border: none;
+  background: none;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+// 検索フォーム
+
+
+// 入力フォーム
+
+.input {
+  background: none;
+  border: none;
+  width: 100%;
+  height: 100%;
+  font-size: 18px;
+  color: rgb(103, 101, 101);
+}
+
+.date-input {
+  background: none;
+  border: none;
+  width: 48%;
+  height: 100%;
+  font-size: 18px;
+  color: rgb(103, 101, 101);
+}
+
+// 入力フォーム
+
+.check-form {
+  margin: 20px;
+}
+
+.check-label {
+  font-weight: bold;
+  // padding: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.check-input {
+  width:24px;
+  height:24px;
+}
+
+// 入力フォーム
+
+// テキストフォーム
+
+.nav-text {
+  margin: 15px;
+  color: #676565;
+  font-weight: bold;
+}
+
+.text-form {
+  margin: 10px;
+  padding: 15px;
+  width: 20vw;
+  border: solid 3px #cfcccc;
+}
+
+// テキストフォーム
+
+// CSVフォーム
+.csv-label {
+  background: linear-gradient(30deg, #add8e6 30%, #c4c2c2 100%);
+  color: white;
+}
+// CSVフォーム
+
+.kaminari-page{
+  margin: 20px;
+}
+
+
+
+@media screen and (max-width: 599px) {
+  .main {width:80vw;}
+  h1 {font-size: 100%;}
+  h2 {width: 40vw;}
+  .csv-tb {display: none;}
+  .search-head {font-size: 12px;}
+  .input {font-size: 10px;}
+  .date-input {font-size: 10px;}
+  th {font-size: 10px;}
+  td {
+    font-size: 10px; 
+    width: 20vw;
+    padding: 10px;
+  }
+  .search-th {
+    font-size: 10px;
+    width: 20vw;
+    padding:8px 15px;
+  }
+  .caution-text {font-size: 10px;}
+  .result-btn {font-size: 10px;}
+  .nav-text {font-size: 10px;}
+  .text-form {width: 50vw; padding: 10px;}
+}
+
+}
+

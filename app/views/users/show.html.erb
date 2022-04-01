@@ -151,29 +151,6 @@
         </table>
       </div>
       <div class="group1">
-      <h2 class="hubi-title">楽天PayNG(<%= @rakuten_pay_hubi.length %>件)</h2>
-        <table>
-        <% if @rakuten_pay_hubi.length != 0 %>
-          <thead>
-            <tr>
-              <th>詳細</th>
-              <th>店舗名</th>
-              <th>獲得日</th>
-              <th>ステータス</th>
-            </tr>
-          </thead>
-        <% end %>
-          <tbody>
-          <% @rakuten_pay_hubi.each do |rakuten_pay| %>
-            <tr>
-              <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id), class: "link" %></td>
-              <td><%= rakuten_pay.store_prop.name %></td>
-              <td><%= rakuten_pay.date %></td>
-              <td><%= rakuten_pay.status %></td>
-          <% end %>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </div>
     <h1>複数店情報</h1>

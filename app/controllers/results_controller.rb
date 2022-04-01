@@ -12,7 +12,7 @@ class ResultsController < ApplicationController
       @shifts = Shift.includes(:user).all
       # 個別利益表 
       if @results.group(:user_id).length == 1 
-        # dメル　新規
+        # dメル新規
           @dmers_user = Dmer.includes(:store_prop).where(user_id: @results.first.user_id )
           @dmers_this_month = this_period(@dmers_user,@results).where(store_prop: {head_store: nil})
           @dmers_def_this_month = this_period(@dmers_this_month.where(status: "自社不備")
@@ -24,7 +24,7 @@ class ResultsController < ApplicationController
           @dmers_inc = inc_period(@dmers_this_month,@results)
           @dmer_db = share_period(@dmers_user,@results).where.not(store_prop: {head_store: nil}).where(status: "審査OK")
           
-        # dメル　決済
+        # dメル決済
           @dmers_settlementer = Dmer.where(settlementer_id: @results.first.user_id )
           @dmers_slmt_this_month = slmt_this_period(@dmers_settlementer,@results)
           @dmers_slmt_not_this_month = slmt_not_period(@dmers_settlementer,@results)
@@ -39,7 +39,7 @@ class ResultsController < ApplicationController
           @dmers_slmt_target = slmt_dead_line(@dmers_user,@results)
           @slmt2nd_target = slmt2nd_dead_line(@dmers_user,@results)
 
-        # aupay　新規
+        # aupay新規
           @aupays_user = Aupay.includes(:store_prop).where(user_id: @results.first.user_id )
           @aupays_this_month = this_period(@aupays_user,@results).where(store_prop: {head_store: nil})
           @aupays_not_this_month = not_period(@aupays_user,@results)
@@ -47,18 +47,18 @@ class ResultsController < ApplicationController
           .or(@aupays_this_month.where(status: "不合格"))
           .or(@aupays_this_month.where(status: "差し戻し"))
           .or(@aupays_this_month.where(status: "解約"))
+          .or(@aupays_this_month.where(status: "報酬対象外"))
           .or(@aupays_this_month.where(status: "重複対象外"))
           .or(@aupays_this_month.where(status: "審査通過").where.not(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))),@results)
           @aupays_inc = inc_period(@aupays_not_this_month,@results)
           @aupay_db = share_period(@aupays_user,@results).where.not(store_prop: {head_store: nil}).where(status: "審査通過")
 
-          # aupay　決済
+        # aupay決済
           @aupays_settlementer = Aupay.where(settlementer_id: @results.first.user_id )
           @aupays_slmt_this_month = slmt_this_period(@aupays_settlementer,@results)
           @aupays_slmt_not_this_month = slmt_not_period(@aupays_settlementer,@results)
           @aupays_slmt_def_this_month = slmt_def_period(@aupays_this_month,@results)
           @aupays_slmt_inc = slmt_inc_period(@aupays_not_this_month,@results)
-
           @aupays_slmt_target = slmt_dead_line(@aupays_user,@results)
           # 決済の合計
           @slmt_sum = @dmers_slmt_target.sum(:valuation_settlement) + @aupays_slmt_target.sum(:valuation_settlement)
@@ -126,6 +126,19 @@ class ResultsController < ApplicationController
       render :new 
     end
   end
+
+  def import 
+    if params[:file].present?
+      if Result.csv_check(params[:file]).present?
+        redirect_to results_path , alert: "エラーが発生したため中断しました#{Result.csv_check(params[:file])}"
+      else
+        message = Result.import(params[:file]) 
+        redirect_to results_path, alert: "インポート処理を完了しました#{message}"
+      end
+    else
+      redirect_to results_path, alert: "インポートに失敗しました。ファイルを選択してください"
+    end
+  end 
 
   def show 
     @result = Result.find(params[:id])
@@ -236,7 +249,6 @@ class ResultsController < ApplicationController
     params.require(:result).permit(
       :user_id,
       :date,
-      :profit,
       :area,
       :shift,
       :ojt_id, 

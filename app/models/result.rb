@@ -1,4 +1,5 @@
 class Result < ApplicationRecord
+  require 'charlock_holmes'
   belongs_to :user
   belongs_to :ojt ,class_name: "User", optional: true
   has_one :result_casa
@@ -10,200 +11,141 @@ class Result < ApplicationRecord
     validates :shift
   end
 
-  def self.import(file)
-    CSV.foreach(file.path, headers: true) do |row|
-      store = find_by(id: ["id"]) || new 
-      store.attributes = row.to_hash.slice(*updatable_attributes)
-      store.save
+  def self.csv_check(file)
+    errors = []
+    CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
+      user = User.find_by(name: row["ユーザー名"])
+      errors << "ユーザー名が不正です" if user.blank? && errors.length < 5
+        u_id = user.id if user.present?
+        result = new(
+          user_id: u_id,
+          date: row["日付"],
+          area: row["エリア"],
+          shift: row["シフト"],
+          # 前半
+          first_visit: row["前半訪問"],
+          first_interview: row["前半対面"] ,
+          first_full_talk: row["前半フル"], 
+          first_get: row["前半獲得"],       
+          # 後半 
+          latter_visit: row["後半訪問"],     
+          latter_interview: row["後半対面"], 
+          latter_full_talk: row["後半フル"], 
+          latter_get: row["後半獲得"],       
+        # 店舗別基準値
+          # 喫茶・カフェ
+          cafe_visit: row["喫茶カフェ訪問"],          
+          cafe_get: row["喫茶カフェ獲得"],            
+          # その他・飲食
+          other_food_visit: row["その他飲食訪問"],             
+          other_food_get: row["その他飲食獲得"]       ,     
+          car_visit: row["車屋訪問"]          ,
+          car_get: row["車屋獲得"]            ,
+          other_retail_visit: row["その他小売訪問"]  ,        
+          other_retail_get:   row["その他小売獲得"]         ,
+          hair_salon_visit: row["美容理容訪問"]          ,
+          hair_salon_get:   row["美容理容獲得"]         ,
+          manipulative_visit: row["整体鍼灸訪問"]         , 
+          manipulative_get:   row["整体鍼灸獲得"]         ,
+          other_service_visit: row["その他サービス訪問"]         ,
+          other_service_get:   row["その他サービス獲得"]
+        )
+        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if result.invalid? && errors.length < 5
     end
+    errors
   end
 
-  def self.updatable_attributes 
-    ["user_id",
-     "date",
-     "profit",
-     "area",
-     "shift",
-     "ojt", 
-     "dmer",                    
-     "dmer_settlement",         
-    # 商材
-     "aupay",
-     "paypay",
-     "aupay_settlement",
-     "panda",
-     "praness",
-     "summit",
-     "rakuten_casa",
-     "rakuten_casa_put",
-     # 前半基準値
-     "first_visit",
-     "first_interview",
-     "first_full_talk", 
-     "first_get",     
-    # 後半基準値   
-     "latter_visit",     
-     "latter_interview", 
-     "latter_full_talk", 
-     "latter_get",    
-    # 店舗別基準値   
-     "cafe_visit",          
-     "cafe_interview",      
-     "cafe_full_talk",     
-     "cafe_get",            
-     "other_food_visit",          
-     "other_food_interview",      
-     "other_food_full_talk",      
-     "other_food_get"       ,     
-     "car_visit"          ,
-     "car_interview",
-     "car_full_talk"      ,
-     "car_get"            ,
-     "other_retail_visit"  ,        
-     "other_retail_interview"     , 
-     "other_retail_full_talk"      ,
-     "other_retail_get"            ,
-     "hair_salon_visit"          ,
-     "hair_salon_interview"      ,
-     "hair_salon_full_talk"      ,
-     "hair_salon_get"            ,
-     "manipulative_visit"         , 
-     "manipulative_interview"      ,
-     "manipulative_full_talk"      ,
-     "manipulative_get"            ,
-     "other_service_visit"          ,
-     "other_service_interview"      ,
-     "other_service_full_talk"      ,
-     "other_service_get"    ,
-    # キャッシュレス切り返し
-     "cashless_what_interview"      ,
-     "cashless_what_full_talk"      ,
-     "cashless_what_get"            ,
-     "cashless_who_interview"      ,
-     "cashless_who_full_talk"      ,
-     "cashless_who_get"            ,
-     "cashless_just_get_interview"  ,    
-     "cashless_just_get_full_talk"   ,   
-     "cashless_just_get_get"          ,  
-     "cashless_paypay_only_interview"  ,    
-     "cashless_paypay_only_full_talk"   ,   
-     "cashless_paypay_only_get"          ,  
-     "cashless_airpay_only_interview"     , 
-     "cashless_airpay_only_full_talk"      ,
-     "cashless_airpay_only_get"            ,
-     "cashless_card_only_interview"      ,
-     "cashless_card_only_full_talk"      ,
-     "cashless_card_only_get"            ,
-     "cashless_yet_interview"      ,
-     "cashless_yet_full_talk"      ,
-     "cashless_yet_get"            ,
-     "cashless_cash_only_interview" ,     
-     "cashless_cash_only_full_talk"  ,    
-     "cashless_cash_only_get"         ,   
-     "cashless_busy_interview"      ,
-     "cashless_busy_full_talk"      ,
-     "cashless_busy_get"            ,
-     "cashless_dull_interview"      ,
-     "cashless_dull_full_talk"      ,
-     "cashless_dull_get"            ,
-     "cashless_lack_info_interview"  ,    
-     "cashless_lack_info_full_talk"   ,   
-     "cashless_lack_info_get"          ,  
-     "cashless_easy_interview"      ,
-     "cashless_easy_full_talk"      ,
-     "cashless_easy_get"   ,
-     "cashless_other_interview"      ,
-     "cashless_other_full_talk"      ,
-     "cashless_other_get",
-    # サミット切り返し
-     "summit_ng_detail",
-     "summit_ng_cash",
-     "summit_ng_building",
-     "summit_reject_cash_interview",      
-     "summit_reject_cash_full_talk" ,     
-     "summit_reject_cash_get"  ,
-     "summit_doubt_interview"   ,   
-     "summit_doubt_full_talk"    ,  
-     "summit_doubt_get"  ,
-     "summit_busy_interview"   ,   
-     "summit_busy_full_talk"    ,  
-     "summit_busy_get"  ,
-     "summit_yet_interview" ,     
-     "summit_yet_full_talk"  ,    
-     "summit_yet_get"  ,
-     "summit_not_change_interview"   ,   
-     "summit_not_change_full_talk"    ,  
-     "summit_not_change_get"  ,
-     "summit_other_interview"  ,    
-     "summit_other_full_talk"   ,   
-     "summit_other_get"  ,
-     "summit_easy_interview"  ,    
-     "summit_easy_full_talk"   ,   
-     "summit_easy_get"  , 
-    # パンダ切り返し
-     "panda_not_need_interview",      
-     "panda_not_need_full_talk",      
-     "panda_not_need_get", 
-     "panda_busy_interview",      
-     "panda_busy_full_talk",      
-     "panda_busy_get", 
-     "panda_yet_interview",      
-     "panda_yet_full_talk",      
-     "panda_yet_get", 
-     "panda_not_delivery_interview",      
-     "panda_not_delivery_full_talk",      
-     "panda_not_delivery_get", 
-     "panda_not_increment_interview",      
-     "panda_not_increment_full_talk",      
-     "panda_not_increment_get", 
-     "panda_not_margin_interview",      
-     "panda_not_margin_full_talk",      
-     "panda_not_margin_get", 
-     "panda_dull_interview",      
-     "panda_dull_full_talk",      
-     "panda_dull_get", 
-     "panda_lack_info_interview",      
-     "panda_lack_info_full_talk",     
-     "panda_lack_info_get",
-     "panda_food_neko_interview",      
-     "panda_food_neko_full_talk",     
-     "panda_food_neko_get",
-     "panda_other_interview",      
-     "panda_other_full_talk",      
-     "panda_other_get", 
-     "panda_easy_interview",      
-     "panda_easy_full_talk",      
-     "panda_easy_get",
-    # 楽天カーサ切り返し
-    "casa_ng_lack_info",
-    "casa_busy_interview",
-    "casa_busy_full_talk",
-    "casa_busy_get",
-    "casa_dull_interview",
-    "casa_dull_full_talk",
-    "casa_dull_get",
-    "casa_not_put_space_interview",
-    "casa_not_put_space_full_talk",
-    "casa_not_put_space_get",
-    "casa_no_merit_interview",
-    "casa_no_merit_full_talk",
-    "casa_no_merit_get",
-    "casa_distrust_interview",
-    "casa_distrust_full_talk",
-    "casa_distrust_get",
-    "casa_not_use_net_interview",
-    "casa_not_use_net_full_talk",
-    "casa_not_use_net_get",
-    "casa_not_need_interview",
-    "casa_not_need_full_talk",
-    "casa_not_need_get",
-    "casa_easy_interview",
-    "casa_easy_full_talk",
-    "casa_easy_get",
-    "casa_other_interview",
-    "casa_other_full_talk",
-    "casa_other_get"
-
-    ]
-  end
+  def self.import(file)
+    detection = CharlockHolmes::EncodingDetector.detect(File.read(file.path))
+    encoding = detection[:encoding] == 'Shift_JIS' ? 'CP932' : detection[:encoding]
+    new_cnt = 0
+    update_cnt = 0
+    nochange_cnt = 0
+    CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
+      user = User.find_by(name: row["ユーザー名"])
+      u_id = user.id if user.present?
+      result = find_by(user_id:  u_id,date: row["日付"])
+      if result.present? 
+        result.assign_attributes(
+          user_id: u_id,
+          date: row["日付"],
+          area: row["エリア"],
+          shift: row["シフト"],
+          # 前半
+          first_visit: row["前半訪問"],
+          first_interview: row["前半対面"] ,
+          first_full_talk: row["前半フル"], 
+          first_get: row["前半獲得"],       
+          # 後半 
+          latter_visit: row["後半訪問"],     
+          latter_interview: row["後半対面"], 
+          latter_full_talk: row["後半フル"], 
+          latter_get: row["後半獲得"],       
+          # 店舗別基準値
+          cafe_visit: row["喫茶カフェ訪問"],          
+          cafe_get: row["喫茶カフェ獲得"],            
+          other_food_visit: row["その他飲食訪問"],             
+          other_food_get: row["その他飲食獲得"]       ,     
+          car_visit: row["車屋訪問"]          ,
+          car_get: row["車屋獲得"]            ,
+          other_retail_visit: row["その他小売訪問"]  ,        
+          other_retail_get:   row["その他小売獲得"]         ,
+          hair_salon_visit: row["美容理容訪問"]          ,
+          hair_salon_get:   row["美容理容獲得"]         ,
+          manipulative_visit: row["整体鍼灸訪問"]         , 
+          manipulative_get:   row["整体鍼灸獲得"]         ,
+          other_service_visit: row["その他サービス訪問"]         ,
+          other_service_get:   row["その他サービス獲得"]
+        )
+        if result.has_changes_to_save? 
+          result.save!
+          update_cnt += 1
+        else  
+          nochange_cnt += 1
+        end 
+      else  
+        result = new(
+          user_id: u_id,
+          date: row["日付"],
+          area: row["エリア"],
+          shift: row["シフト"],
+          # 前半
+          first_visit: row["前半訪問"],
+          first_interview: row["前半対面"] ,
+          first_full_talk: row["前半フル"], 
+          first_get: row["前半獲得"],       
+          # 後半 
+          latter_visit: row["後半訪問"],     
+          latter_interview: row["後半対面"], 
+          latter_full_talk: row["後半フル"], 
+          latter_get: row["後半獲得"],       
+          # 店舗別基準値
+          # 喫茶・カフェ
+          cafe_visit: row["喫茶カフェ訪問"],          
+          cafe_get: row["喫茶カフェ獲得"],            
+          # その他・飲食
+          other_food_visit: row["その他飲食訪問"],             
+          other_food_get: row["その他飲食獲得"]       ,     
+          # 車屋
+          car_visit: row["車屋訪問"]          ,
+          car_get: row["車屋獲得"]            ,
+          # その他小売
+          other_retail_visit: row["その他小売訪問"]  ,        
+          other_retail_get:   row["その他小売獲得"]         ,
+          # 美容・理容
+          hair_salon_visit: row["美容理容訪問"]          ,
+          hair_salon_get:   row["美容理容獲得"]         ,
+          # 整体・鍼灸
+          manipulative_visit: row["整体鍼灸訪問"]         , 
+          manipulative_get:   row["整体鍼灸獲得"]         ,
+          # その他・サービス
+          other_service_visit: row["その他サービス訪問"]         ,
+          other_service_get:   row["その他サービス獲得"]
+          )
+          result.save!
+        new_cnt += 1
+      end
+    end
+    "新規登録#{new_cnt}件, 更新#{update_cnt}件, 変更なし#{nochange_cnt}件"
+  end 
 end

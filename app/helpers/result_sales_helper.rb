@@ -1,0 +1,2 @@
+module ResultSalesHelper
+end

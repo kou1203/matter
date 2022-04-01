@@ -48,9 +48,29 @@
       <% end %>
       <%# /検索フォーム %>
       <hr>
-
       <% if @results.empty? %>
       <p class="caution-text">※検索対象が複数人いる場合は複数の利益表が表示されます。</p>
+      <% if current_user.position == "権限①" %>
+        <h2>利益表（基準値）インポート</h2>
+        <%= form_with url: import_results_path do |f| %>
+          <table class="csv-tb">
+            <tr>
+              <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+              <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
+            </tr>
+          </table>
+        <% end %>
+        <h2>利益表（切り返し）インポート</h2>
+        <%= form_with url: import_result_cashes_path do |f| %>
+          <table class="csv-tb">
+            <tr>
+              <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+              <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
+            </tr>
+          </table>
+        <% end %>
+      <% end %>
+      <div class="nav-text"><%= alert %></div>
       <% else %>
         <% if @results.group(:user_id).length == 1 %>
           <%= render "result_parts/profit_table" %>

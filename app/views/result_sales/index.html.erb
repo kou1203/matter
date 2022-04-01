@@ -1,0 +1,341 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>評価売上結果一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="main">
+      <%# CSVインポート %>
+          <%= form_with url: import_result_sales_path do |f| %>
+            <table class="csv-tb">
+              <tr>
+                <td class="csv-label" >CSV</td>
+                <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+                <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
+              </tr>
+            </table>
+          <% end %>
+      <%# CSVインポート %>
+      <%# 検索フォーム %>
+        <%= search_form_for @q do |f| %>
+          <table >
+            <tr >
+              <th class="search-head" rowspan="2" >検索</th>
+              <th class="search-th">日付（年）</th>
+              <th class="search-th">日付（月）</th>
+              <th class="search-th">拠点</th>
+              <th class="search-th">ユーザー名</th>
+              <th class="search-th">担当商材</th>
+              <td class="result"><%= f.submit "絞込み", data: {disable_with: "絞り込み中"},class: "result-btn" %></td>
+            </tr>
+            <tr >
+              <td><%= f.select :year_eq, options_from_collection_for_select(ResultSale.select(:year).distinct,:year, :year),{include_blank: true}, {class: "input"} %></td>
+              <td><%= f.select :month_eq, options_from_collection_for_select(ResultSale.select(:month).distinct,:month, :month),{include_blank: true}, {class: "input"} %></td>
+              <td><%= f.select :user_base_cont, {"中部SS": "中部SS", "関東SS": "関東SS", "関西SS": "関西SS"} ,{include_blank: true}, {class: "input"} %></td>
+              <td><%= f.text_field :user_name_cont, class: "input" %></td>
+              <td><%= f.text_field :product, class: "input" %></td>
+              <td class="reset"><%= link_to "絞込みリセット", result_sales_path, class: "reset-link" %></td>
+            </tr>
+          </table>
+        <% end %>
+      <%# 検索フォーム %>
+      <% if @result_sales.empty? %>
+      <div class="warning"><%= alert %></div>
+      <%# 人事基準 %>
+        <div class="text-form">
+          <h2 class="nav-text">人事基準</h2>
+          <p class="nav-text">主任:2ヶ月合計売上200万</p>
+          <p class="nav-text">課長代理:2ヶ月合計売上230万</p>
+        </div>
+      <%# 人事基準 %>
+      <%# インセンティブ表 %>
+        <h2 class="nav-text">　インセンティブ表</h2>
+        <table class="out-tb">
+          <thead>
+            <tr>
+              <th class="out-th">役職/売上</th>
+              <th class="out-th">一般</th>
+              <th class="out-th">主任</th>
+              <th class="out-th">課長代理</th>
+              <th class="out-th">新人</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+            <tr>
+              <th class="th-head">0</th>
+              <td>250,000</td>
+              <td>250,000</td>
+              <td>250,000</td>
+              <td>209,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">500,000</th>
+              <td>260,000</td>
+              <td>260,000</td>
+              <td>260,000</td>
+              <td>260,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">600,000</th>
+              <td>275,000</td>
+              <td>280,000</td>
+              <td>300,000</td>
+              <td>275,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">700,000</th>
+              <td>300,000</td>
+              <td>330,000</td>
+              <td>350,000</td>
+              <td>300,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">750,000</th>
+              <td>315,000</td>
+              <td>330,000</td>
+              <td>350,000</td>
+              <td>315,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">800,000</th>
+              <td>350,000</td>
+              <td>380,000</td>
+              <td>400,000</td>
+              <td>350,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">850,000</th>
+              <td>375,000</td>
+              <td>380,000</td>
+              <td>400,000</td>
+              <td>375,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">900,000</th>
+              <td>400,000</td>
+              <td>430,000</td>
+              <td>450,000</td>
+              <td>400,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">950,000</th>
+              <td>425,000</td>
+              <td>430,000</td>
+              <td>450,000</td>
+              <td>425,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">1,000,000</th>
+              <td>450,000</td>
+              <td>460,000</td>
+              <td>470,000</td>
+              <td>450,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">1,100,000</th>
+              <td>470,000</td>
+              <td>480,000</td>
+              <td>490,000</td>
+              <td>470,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">1,200,000</th>
+              <td>500,000</td>
+              <td>510,000</td>
+              <td>520,000</td>
+              <td>500,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">1,300,000</th>
+              <td>550,000</td>
+              <td>560,000</td>
+              <td>570,000</td>
+              <td>550,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">1,400,000</th>
+              <td>600,000</td>
+              <td>610,000</td>
+              <td>620,000</td>
+              <td>600,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">1,500,000</th>
+              <td>650,000</td>
+              <td>660,000</td>
+              <td>670,000</td>
+              <td>650,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">1,600,000</th>
+              <td>700,000</td>
+              <td>710,000</td>
+              <td>720,000</td>
+              <td>700,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">1,700,000</th>
+              <td>750,000</td>
+              <td>760,000</td>
+              <td>770,000</td>
+              <td>750,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">1,800,000</th>
+              <td>800,000</td>
+              <td>810,000</td>
+              <td>820,000</td>
+              <td>800,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">1,900,000</th>
+              <td>850,000</td>
+              <td>860,000</td>
+              <td>870,000</td>
+              <td>850,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">2,000,000</th>
+              <td>900,000</td>
+              <td>910,000</td>
+              <td>920,000</td>
+              <td>900,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">2,100,000</th>
+              <td>950,000</td>
+              <td>960,000</td>
+              <td>970,000</td>
+              <td>950,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">2,200,000</th>
+              <td>1,000,000</td>
+              <td>1,010,000</td>
+              <td>1,020,000</td>
+              <td>1,000,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">2,300,000</th>
+              <td>1,050,000</td>
+              <td>1,060,000</td>
+              <td>1,070,000</td>
+              <td>1,050,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">2,400,000</th>
+              <td>1,100,000</td>
+              <td>1,110,000</td>
+              <td>1,120,000</td>
+              <td>1,100,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">2,500,000</th>
+              <td>1,150,000</td>
+              <td>1,160,000</td>
+              <td>1,170,000</td>
+              <td>1,150,000</td>
+            </tr>
+            <tr>
+              <th class="th-head">2,600,000</th>
+              <td>1,200,000</td>
+              <td>1,210,000</td>
+              <td>1,220,000</td>
+              <td>1,200,000</td>
+            </tr>
+          </tbody>
+        </table>
+
+      <%# インセンティブ表 %>
+      <% else %>
+      <%# 検索結果 %>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th>全拠点</th>
+              <th>中部SS</th>
+              <th>関東SS</th>
+              <th>関西SS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr></tr>
+            <tr>
+              <th>人員</th>
+              <td><%= @result_sales.length %></td>
+              <td><%= @result_sales.where(users: {base: "中部SS"}).length %></td>
+              <td><%= @result_sales.where(users: {base: "関東SS"}).length %></td>
+              <td><%= @result_sales.where(users: {base: "関西SS"}).length %></td>
+            </tr>
+            <tr>
+              <th>総評価売</th>
+              <td><%= @result_sales.sum(:valuation).to_s(:delimited) %></td>
+              <td><%= @result_sales.where(users: {base: "中部SS"}).sum(:valuation).to_s(:delimited) %></td>
+              <td><%= @result_sales.where(users: {base: "関東SS"}).sum(:valuation).to_s(:delimited) %></td>
+              <td><%= @result_sales.where(users: {base: "関西SS"}).sum(:valuation).to_s(:delimited) %></td>
+            </tr>
+            <tr>
+              <th>平均評価売</th>
+              <td><%= @result_sales.average(:valuation).round().to_s(:delimited) rescue "NaN" %></td>
+              <td><%= @result_sales.where(users: {base: "中部SS"}).average(:valuation).round().to_s(:delimited) rescue "NaN" %></td>
+              <td><%= @result_sales.where(users: {base: "関東SS"}).average(:valuation).round().to_s(:delimited) rescue "NaN" %></td>
+              <td><%= @result_sales.where(users: {base: "関西SS"}).average(:valuation).round().to_s(:delimited) rescue "NaN" %></td>
+            </tr>
+            <% if current_user.position == "権限①" %>
+            <tr>
+              <th>総実売</th>
+              <td><%= @result_sales.sum(:profit).to_s(:delimited) %></td>
+              <td><%= @result_sales.where(users: {base: "中部SS"}).sum(:profit).to_s(:delimited) %></td>
+              <td><%= @result_sales.where(users: {base: "関東SS"}).sum(:profit).to_s(:delimited) %></td>
+              <td><%= @result_sales.where(users: {base: "関西SS"}).sum(:profit).to_s(:delimited) %></td>
+            </tr>
+            <tr>
+              <th>平均実売</th>
+              <td><%= @result_sales.average(:profit).round().to_s(:delimited) rescue "NaN" %></td>
+              <td><%= @result_sales.where(users: {base: "中部SS"}).average(:profit).round().to_s(:delimited) rescue "NaN" %></td>
+              <td><%= @result_sales.where(users: {base: "関東SS"}).average(:profit).round().to_s(:delimited) rescue "NaN" %></td>
+              <td><%= @result_sales.where(users: {base: "関西SS"}).average(:profit).round().to_s(:delimited)  rescue "NaN"%></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <table class="out-tb">
+          <thead>
+            <tr>
+              <th class="out-th">日付</th>
+              <th class="out-th">ユーザー名</th>
+              <th class="out-th">担当商材</th>
+              <th class="out-th">評価売</th>
+              <% if current_user.position == "権限①" %>
+              <th class="out-th">実売</th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+            <% @result_sales_data.each do |r| %>
+            <tr>
+              <td><%= r.year %>年<%= r.month %>月</td>
+              <td><%= r.user.name %></td>
+              <td><%= r.product %></td>
+              <td><%= r.valuation.to_s(:delimited) %></td>
+              <% if current_user.position == "権限①" %>
+              <td><%= r.profit.to_s(:delimited) %></td>
+              <% end %>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <%# 検索結果 %>
+      <% end %>
+      <div class="kaminari-page">
+        <%= paginate @result_sales_data %>
+      </div>
+    </div>
+  </div>
+</div>

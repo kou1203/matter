@@ -142,11 +142,11 @@
     <thead>
     <tr >
       <th class="out-th"></th>
-      <th class="out-th"><%= sort_link(@q, :date, "獲得日",{},{class: "reset-link"}) %></th>
-      <th class="out-th">獲得者</th>
-      <th class="out-th">法人/個人</th>
+      <th class="out-th">ID</th>
       <th class="out-th">本店名</th>
       <th class="out-th">店舗名</th>
+      <th class="out-th"><%= sort_link(@q, :date, "獲得日",{},{class: "reset-link"}) %></th>
+      <th class="out-th">獲得者</th>
       <th class="out-th">審査ステータス</th>
       <th class="out-th">決済ステータス</th>
       <th class="out-th">決済対応者</th>
@@ -160,9 +160,7 @@
     <% @aupays_data.find_each do |aupay| %>
     <tr >
       <td ><%= link_to "　詳細　",  aupay_path(aupay.id) ,class: "link" %></td>
-      <td ><%= aupay.date.month %>月<%= aupay.date.day %>日</td>
-      <td ><%= aupay.user.name %></td>
-      <td ><%= aupay.store_prop.race %></td>
+      <td ><%= aupay.id %></td>
       <% if @aupays.find_by(store_props: {head_store: aupay.store_prop.name}).present? %>
         <td class="index-td">複数店本店</td>
       <% elsif aupay.store_prop.head_store.blank? %>
@@ -171,6 +169,8 @@
         <td class="index-td">本店名：<%= aupay.store_prop.head_store %></td>
       <% end %>
       <td ><%= aupay.store_prop.name %></td>
+      <td ><%= aupay.date.month %>月<%= aupay.date.day %>日</td>
+      <td ><%= aupay.user.name %></td>
       <td ><%= aupay.status %></td>
       <td ><%= aupay.status_settlement %></td>
       <td ><%= aupay.settlementer.name rescue ' ' %></td>

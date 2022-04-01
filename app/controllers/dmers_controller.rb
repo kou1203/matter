@@ -11,8 +11,7 @@ class DmersController < ApplicationController
     @dmers_data = @dmers.page(params[:page]).per(100)
   end 
 
-  def new 
-
+  def new
     @dmer = Dmer.new
     @users = User.all
     @store_prop = StoreProp.find(params[:store_prop_id])
