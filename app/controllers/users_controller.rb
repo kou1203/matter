@@ -37,14 +37,14 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @month = params[:month] ? Date.parse(params[:month]) : Time.zone.today
 
-    @dmer_data = Dmer.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id).where(head_store:)
+    @dmer_data = Dmer.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id).where(store_prop: {head_store: nil})
     @dmer_db = Dmer.includes(:store_prop).where(share: @month.all_month).where(user_id: @user.id)
     @dmer_hubi = @dmer_data.where(status: "不備対応中")
     @dmer_ng = @dmer_data.where.not(status: "審査OK").where.not(status: "未審査").where.not(status: "審査待ち").where.not(status: "不備対応中").where.not(status: "本店審査待ち")
     @dmer_db_done = @dmer_db.where.not(store_prop: {head_store: nil}).where.not(share: nil)
     @dmer_db_wait = @dmer_db.where.not(store_prop: {head_store: nil}).where(share: nil)
 
-    @aupay_data = Aupay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
+    @aupay_data = Aupay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id).where(store_prop: {head_store: nil})
     @aupay_db = Aupay.includes(:store_prop).where(share: @month.all_month).where(user_id: @user.id)
     @aupay_hubi = @aupay_data.where(status: "差し戻し")
     @aupay_ng = @aupay_data.where.not(status: "審査通過").where.not(status: "未審査").where.not(status: "審査待ち").where.not(status: "差し戻し").where.not(status: "本店審査待ち")
