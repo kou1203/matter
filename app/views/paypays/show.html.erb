@@ -7,99 +7,99 @@
   <%= render "shared/sidebar" %>
 </div>
 <div class="main">
-<div data-scope-path="paypays/show">
-    <table>
-    <tr>
-    <th colspan="4">店舗情報</th>
-    </tr>
-    <tr>
-    <th>店舗名</th>
-    <td><%= @paypay.store_prop.name %></td>
-    <th colspan="2"></th>
-    </tr>
-    <th>属性</th>
-    <td><%= @paypay.store_prop.race %></td>
-    <th>業種</th>
-    <td><%= @paypay.store_prop.industry %></td>
-    </tr>
-    <tr>
-    <th>店舗代表</th>
-    <td><%= @paypay.store_prop.person_main_name %></td>
-    <th>店舗担当</th>
-    <td><%= @paypay.store_prop.person_sub_name %></td>
-    </tr>
-    <tr>
-    <th>店舗住所</th>
-    <td colspan="3"><%= @paypay.store_prop.prefecture %><%= @paypay.store_prop.city %><%= @paypay.store_prop.municipalities %><%= @paypay.store_prop.address %><%= @paypay.store_prop.building_name %></td>
-    </tr>
-    </table>
-    <h1>連絡先</h1>
-    <table>
+  <div data-scope-path="paypays/show">
+      <table>
       <tr>
-        <th>電話番号1</th>
-        <td><%= @paypay.store_prop.phone_number_1 %></td>
-        <th>電話番号2</th>
-        <td><%= @paypay.store_prop.phone_number_2 %></td>
-        </tr>
-        <th>好適時間</th>
-        <td><%= @paypay.store_prop.suitable_time %></td>
-        <th colspan="2"></th>
+      <th colspan="4">店舗情報</th>
+      </tr>
+      <tr>
+      <th>店舗名</th>
+      <td><%= @paypay.store_prop.name %></td>
+      <th colspan="2"></th>
+      </tr>
+      <th>属性</th>
+      <td><%= @paypay.store_prop.race %></td>
+      <th>業種</th>
+      <td><%= @paypay.store_prop.industry %></td>
+      </tr>
+      <tr>
+      <th>店舗代表</th>
+      <td><%= @paypay.store_prop.person_main_name %></td>
+      <th>店舗担当</th>
+      <td><%= @paypay.store_prop.person_sub_name %></td>
+      </tr>
+      <tr>
+      <th>店舗住所</th>
+      <td colspan="3"><%= @paypay.store_prop.prefecture %><%= @paypay.store_prop.city %><%= @paypay.store_prop.municipalities %><%= @paypay.store_prop.address %><%= @paypay.store_prop.building_name %></td>
+      </tr>
+      </table>
+      <h1>連絡先</h1>
+      <table>
         <tr>
-        <th>備考</th>
-        <td colspan=2><%= @paypay.store_prop.description %></td>
-        <td> <%= link_to "編集", edit_store_prop_path(@paypay.store_prop.id), class: "link" %></td>
+          <th>電話番号1</th>
+          <td><%= @paypay.store_prop.phone_number_1 %></td>
+          <th>電話番号2</th>
+          <td><%= @paypay.store_prop.phone_number_2 %></td>
+          </tr>
+          <th>好適時間</th>
+          <td><%= @paypay.store_prop.suitable_time %></td>
+          <th colspan="2"></th>
+          <tr>
+          <th>備考</th>
+          <td colspan=2><%= @paypay.store_prop.description %></td>
+          <td> <%= link_to "編集", edit_store_prop_path(@paypay.store_prop.id), class: "link" %></td>
+        </tr>
+      </table>
+      <h1>PayPay情報</h1>
+      <table>
+      <tr>
+      <th>獲得日</th>
+        <td><%= @paypay.date %></td>
+        <th>獲得者</th>
+        <td><%= @paypay.user.name %></td>
+      </tr>
+      <tr>
+        <th>商流</th>
+        <td><%= @paypay.client %></td>
+        <th>上位店管理番号</th>
+        <td><%= @paypay.customer_num %></td>
+      </tr>
+      <tr>
+        <th>審査ステータス</th>
+        <td><%= @paypay.status %></td>
+        <th>ステータス更新日</th>
+        <td><%= @paypay.status_update %></td>
+      </tr>
+      <tr>
+        <th>不備発生日</th>
+        <td><%= @paypay.deficiency %></td>
+        <th>不備解消日</th>
+        <td><%= @paypay.deficiency_solution %></td>
       </tr>
     </table>
-    <h1>PayPay情報</h1>
+    <h1>売上/評価地点</h1>
     <table>
-    <tr>
-    <th>獲得日</th>
-      <td><%= @paypay.date %></td>
-      <th>獲得者</th>
-      <td><%= @paypay.user.name %></td>
-    </tr>
-    <tr>
-      <th>商流</th>
-      <td><%= @paypay.client %></td>
-      <th>上位店管理番号</th>
-      <td><%= @paypay.customer_num %></td>
-    </tr>
-    <tr>
-      <th>審査ステータス</th>
-      <td><%= @paypay.status %></td>
-      <th>ステータス更新日</th>
-      <td><%= @paypay.status_update %></td>
-    </tr>
-    <tr>
-      <th>不備発生日</th>
-      <td><%= @paypay.deficiency %></td>
-      <th>不備解消日</th>
-      <td><%= @paypay.deficiency_solution %></td>
-    </tr>
-  </table>
-  <h1>売上/評価地点</h1>
-  <table>
-    <tr>
-      <th>上位店連携日</th>
-      <td><%= @paypay.result_point %></td>
-      <th>入金日</th>
-      <td><%= @paypay.payment %></td>
-    </tr>
-    <tr>
-      <th>評価売上</th>
-      <td><%= @paypay.valuation %></td>
-    <% if current_user.position == "権限①" %>
-      <th>実売上</th>
-      <td><%= @paypay.profit %></td>
-    </tr>
-    <tr>
-      <th colspan="3"></th>
-      <td><%= link_to "編集", edit_paypay_path, class: "link" %></td>
-    </tr>
-    <% else %>
-    <% end %>
-    </table>
-  </div>
+      <tr>
+        <th>上位店連携日</th>
+        <td><%= @paypay.result_point %></td>
+        <th>入金日</th>
+        <td><%= @paypay.payment %></td>
+      </tr>
+      <tr>
+        <th>評価売上</th>
+        <td><%= @paypay.valuation %></td>
+      <% if current_user.position == "権限①" %>
+        <th>実売上</th>
+        <td><%= @paypay.profit %></td>
+      </tr>
+      <tr>
+        <th colspan="3"></th>
+        <td><%= link_to "編集", edit_paypay_path, class: "link" %></td>
+      </tr>
+      <% else %>
+      <% end %>
+      </table>
+    </div>
   </div>
 </div>
 
