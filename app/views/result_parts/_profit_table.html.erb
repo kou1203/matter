@@ -366,23 +366,27 @@
           <td style="color: blue;"><%= @rakuten_casas_inc.length %></td>
       </tr>
       <tr>
-        <th colspan=3>dメル獲得 内訳</th>
-        <th colspan=3>dメル決済内訳</th>
+        <th colspan=4>dメル獲得 内訳</th>
+        <th colspan=4>dメル決済内訳</th>
       </tr>
       <tr>
         <th>USEN</th>
+        <th>マックス通常</th>
         <th>マックス即時</th>
         <th>ピアズ</th>
         <th>USEN</th>
+        <th>マックス通常</th>
         <th>マックス即時</th>
         <th>ピアズ</th>
       </tr>
       <tr></tr>
       <tr>
         <td><%= @dmers_this_month.where(client: "USEN").length %></td>
+        <td><%= @dmers_this_month.where(client: "マックスサポート").length %></td>
         <td><%= @dmers_this_month.where(client: "マックス即時").length %></td>
         <td><%= @dmers_this_month.where(client: "ピアズ").length %></td>
         <td><%= @dmers_slmt_this_month.where(client: "USEN").length %></td>
+        <td><%= @dmers_slmt_this_month.where(client: "マックスサポート").length %></td>
         <td><%= @dmers_slmt_this_month.where(client: "マックス即時").length %></td>
         <td><%= @dmers_slmt_this_month.where(client: "ピアズ").length %></td>
       </tr>
@@ -1423,6 +1427,7 @@
         <% end %>
       <% end %>
     <%# サミット切り返し %>
+      <% dmaxspt_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).where(client: "マックスサポート").length %>
       <% dmax_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).where(client: "マックス即時").length %>
       <% dpias_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).where(client: "ピアズ").length %>
       <% dusen_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).where(client: "USEN").length %>
@@ -1435,6 +1440,9 @@
       <% paypay_date_len = Paypay.where(user_id: result.user_id).where(date: result.date).length %>
       <% rakuten_pay_date_len = RakutenPay.where(user_id: result.user_id).where(date: result.date).length %>
       <td>
+        <% if dmaxspt_date_len != 0 %>
+          dメルマックス<%= dmaxspt_date_len %>
+        <% end %>
         <% if dmax_date_len != 0 %>
           dメル即時<%= dmax_date_len %>
         <% end %>
