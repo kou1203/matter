@@ -156,6 +156,7 @@
     <thead>
     <tr class="table-row">
       <th class="out-th"></th>
+      <th class="out-th">ID</th>
       <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
       <th class="out-th">商流</th>
       <th class="out-th">複数店</th>
@@ -176,6 +177,7 @@
     <% @dmers_data.find_each do |dmer| %>
     <tr class="index-tr">
       <td class="index-td"><%= link_to "　詳細　",  dmer_path(dmer.id) ,class: "link" %></td>
+      <td class="index-td"><%= dmer.id %></td>
       <td class="index-td"><%= dmer.date.month %>月<%= dmer.date.day %>日</td>
       <td class="index-td"><%= dmer.client %></td>
       <% if @dmers.find_by(store_props: {head_store: dmer.store_prop.name}).present? %>
