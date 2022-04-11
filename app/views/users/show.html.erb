@@ -239,7 +239,7 @@
           </table>
       </div>
       <div class="group1">
-      <h2>auPay複数追加済み</h2>
+        <h2>auPay複数追加済み</h2>
           <table>
           <% if @aupay_db_done.length != 0 %>
             <thead>
@@ -265,7 +265,119 @@
             </tbody>
           </table>
       </div>
-
+    </div>
+    <h1>審査結果別月の案件一覧</h1>
+    <div style="display:flex;">
+      <div class="group1">
+        <h2>dメル過去月審査完了(<%= @dmer_status_done.length %>件)</h2>
+          <table>
+          <% if @dmer_status_done.length != 0 %>
+            <thead>
+              <tr>
+              <th>詳細</th>
+              <th>店舗名</th>
+              <th>獲得日</th>
+              <th>ステータス</th>
+              <th>審査完了日</th>
+              </tr>
+            </thead>
+          <% end %>
+            <tbody>
+          <% @dmer_status_done.each do |dmer| %>
+            <tr>
+            <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
+            <td><%= dmer.store_prop.name %></td>
+            <td><%= dmer.date %></td>
+            <td><%= dmer.status %></td>
+            <td><%= dmer.result_point %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="group1">
+        <h2 class="ng-title">dメル審査完了別月(<%= @dmer_status_undone.length %>件)</h2>
+          <table>
+          <% if @dmer_status_undone.length != 0 %>
+            <thead>
+              <tr>
+              <th>詳細</th>
+              <th>店舗名</th>
+              <th>獲得日</th>
+              <th>ステータス</th>
+              <th>審査完了日</th>
+              </tr>
+            </thead>
+          <% end %>
+            <tbody>
+          <% @dmer_status_undone.each do |dmer| %>
+            <tr>
+            <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
+            <td><%= dmer.store_prop.name %></td>
+            <td><%= dmer.date %></td>
+            <td><%= dmer.status %></td>
+            <td><%= dmer.result_point %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div style="display:flex;">
+      <div class="group1">
+        <h2>auPay過去月審査完了(<%= @aupay_status_done.length %>件)</h2>
+          <table>
+          <% if @aupay_status_done.length != 0 %>
+            <thead>
+              <tr>
+              <th>詳細</th>
+              <th>店舗名</th>
+              <th>獲得日</th>
+              <th>ステータス</th>
+              <th>審査完了日</th>
+              </tr>
+            </thead>
+          <% end %>
+            <tbody>
+          <% @aupay_status_done.each do |aupay| %>
+            <tr>
+            <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
+            <td><%= aupay.store_prop.name %></td>
+            <td><%= aupay.date %></td>
+            <td><%= aupay.status %></td>
+            <td><%= aupay.result_point %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="group1">
+        <h2 class="ng-title">auPay審査完了別月(<%= @aupay_status_undone.length %>件)</h2>
+          <table>
+          <% if @aupay_status_undone.length != 0 %>
+            <thead>
+              <tr>
+              <th>詳細</th>
+              <th>店舗名</th>
+              <th>獲得日</th>
+              <th>ステータス</th>
+              <th>審査完了日</th>
+              </tr>
+            </thead>
+          <% end %>
+            <tbody>
+          <% @aupay_status_undone.each do |aupay| %>
+            <tr>
+            <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
+            <td><%= aupay.store_prop.name %></td>
+            <td><%= aupay.date %></td>
+            <td><%= aupay.status %></td>
+            <td><%= aupay.result_point %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>

@@ -63,7 +63,6 @@
           .or(r_user.where(shift: "フェムト新規"))
           .or(r_user.where(shift: "サミット")).length
         %>
-
         <%
           shifts = Shift.where(user_id: r.user_id)
           .where(start_time: @results.minimum(:date)..@results.maximum(:date))
@@ -80,8 +79,6 @@
           .where.not(shift: "帯同")
           .where.not(shift: "欠勤").length 
         %>
-
-
       <%# 基準値 %>
         <% sum_visit = r_user.sum("first_visit + latter_visit").to_f %>
         <% sum_interview = r_user.sum("first_interview + latter_interview").to_f %>
@@ -102,19 +99,22 @@
               .where(status: "審査OK")
           %>
           <% dmer_def =  dmer_def(dmer_uq,@results) %>
-          <% dmer_inc = inc_period(dmer_uq,@results)  %>
+          <% dmer_inc = judge_inc(dmer_user,@results)  %>
+          <% dmer_judge_dec = judge_dec(dmer_user,@results)  %>
           <%# 合計 %>
           <% 
             dmer_valuations =
               dmer_uq.sum(:valuation_new) - 
               dmer_def.sum(:valuation_new) + 
               dmer_inc.sum(:valuation_new) +
-              dmer_db.sum(:valuation_new)
+              dmer_db.sum(:valuation_new) -
+              dmer_judge_dec.sum(:valuation_new)
           %>
           <% 
             dmer_len = 
               dmer_uq.length - dmer_def.length + 
-              dmer_inc.length + dmer_db.length 
+              dmer_inc.length + dmer_db.length -
+              dmer_judge_dec.length
           %>
         <%# dメル（決済） %>
           <% dmer_slmt_user = Dmer.where(settlementer_id: r.user_id) %>
@@ -135,19 +135,22 @@
               .where(status: "審査通過")
           %>
           <% aupay_def =  aupay_def(aupay_uq,@results) %>
-          <% aupay_inc = inc_period(aupay_uq,@results)  %>
+          <% aupay_inc = judge_inc(aupay_user,@results)  %>
+          <% aupay_judge_dec = judge_dec(aupay_user,@results)  %>
           <%# 合計 %>
           <% 
             aupay_valuations =
               aupay_uq.sum(:valuation_new) - 
               aupay_def.sum(:valuation_new) + 
               aupay_inc.sum(:valuation_new) +
-              aupay_db.sum(:valuation_new)
+              aupay_db.sum(:valuation_new) -
+              aupay_judge_dec.sum(:valuation_new)
           %>
           <% 
             aupay_len = 
               aupay_uq.length - aupay_def.length + 
-              aupay_inc.length + aupay_db.length 
+              aupay_inc.length + aupay_db.length -
+              aupay_judge_dec.length
           %>
         <%# aupay（決済） %>
           <% aupay_slmt_user = Aupay.where(settlementer_id: r.user_id) %>

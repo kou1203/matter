@@ -5,14 +5,32 @@ module ResultsHelper
       return product.where(date: date.minimum(:date)..date.maximum(:date))
     end
 
+
+    def judge_inc(product, date)
+      return product.where.not(date: date.minimum(:date)..date.maximum(:date))
+        .where(status: "審査通過")
+        .where(result_point: date.maximum(:date).beginning_of_month..date.maximum(:date).end_of_month)
+        .or(product.where.not(date: date.minimum(:date)..date.maximum(:date))
+        .where(status: "審査OK").where(result_point: date.maximum(:date).beginning_of_month..date.maximum(:date).end_of_month))
+    end
+
+    def judge_dec(product, date)
+      return product.where(date: date.minimum(:date)..date.maximum(:date))
+        .where(status: "審査通過")
+        .where.not(result_point: date.maximum(:date).beginning_of_month..date.maximum(:date).end_of_month)
+        .or(product.where(date: date.minimum(:date)..date.maximum(:date))
+        .where(status: "審査OK")
+        .where.not(result_point: date.maximum(:date).beginning_of_month..date.maximum(:date).end_of_month))
+    end
+
     def dmer_def(product, date)
       return product.where(status: "自社不備")
-      .or(product.where(status: "審査NG"))
-      .or(product.where(status: "不備対応中"))
-      .or(product.where(status: "申込取消"))
-      .or(product.where(status: "申込取消（不備）"))
-      # .or(product.where(status: "審査OK")
-      # .where.not(result_point: date.minimum(:date)..date.maximum(:date).end_of_month))
+        .or(product.where(status: "審査NG"))
+        .or(product.where(status: "不備対応中"))
+        .or(product.where(status: "申込取消"))
+        .or(product.where(status: "申込取消（不備）"))
+        # .or(product.where(status: "審査OK")
+        # .where.not(result_point: date.minimum(:date)..date.maximum(:date).end_of_month))
     end
 
     def aupay_def(product, date)
@@ -49,19 +67,23 @@ module ResultsHelper
     def slmt_this_period(product,date)
       return product
         .where(status_update_settlement: date.minimum(:date)..date.maximum(:date))
-        .where(status: "審査OK")
+        .where.not(status: "不備対応中")
+        .where.not(status: "審査NG")
+        .where.not(status: "申込取消")
+        .where.not(status: "申込取消（不備）")
         .where(status_settlement: "完了")
-        .or(product.where(status_update_settlement: date.minimum(:date)..date.maximum(:date))
-        .where(status: "審査通過")
-        .where(status_settlement: "完了"))
+        .where.not(status: "不合格")
+        .where.not(status: "報酬対象外")
+        .where.not(status: "重複対象外")
+        .where.not(status: "差し戻し")
+        .where.not(status: "解約")
+        .where(status_settlement: "完了")
     end
 
-    def slmt_not_period(product,date)
-      return product.where.not(settlement: date.minimum(:date)..date.maximum(:date))
-    end
-
-    def slmt_inc_period(product,date)
-      return product.where(deficiency_solution_settlement: date.minimum(:date)..date.maximum(:date))
+    def slmt_inc(product,date)
+      return product.where(status_settlement: "完了")
+        .where(status_update_settlement: date.maximum(:date).beginning_of_month..date.maximum(:date).end_of_month)
+        .where.not(settlement: date.minimum(:date)..date.maximum(:date))
     end
 
     def slmt_dec_period(product,date)
@@ -71,4 +93,34 @@ module ResultsHelper
     def slmt_def_period(product,date)
       return product.where.not(deficiency_settlement: nil).where(deficiency_solution_settlement: nil).or(product.where.not(deficiency_settlement: nil).where.not(deficiency_solution_settlement: date.minimum(:date)..date.maximum(:date)))
     end
+
+    def slmt_second(product,date)
+      return product.where(status: "審査OK")
+        .where(status_settlement: "完了")
+        .where(settlement_second: date.minimum(:date)..date.maximum(:date))
+    end 
+
+
+    def slmt_dead_line(product,date)
+      return product.where(settlement_deadline: date.minimum(:date)..date.maximum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: nil)
+      .or(product.where(settlement_deadline: date.minimum(:date)..date.maximum(:date).since(3.month).end_of_month).where(status: "審査OK").where(settlement: date.minimum(:date)..date.maximum(:date)))
+      .or(product.where(settlement_deadline: date.minimum(:date)..date.maximum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: nil))
+      .or(product.where(settlement_deadline: date.minimum(:date)..date.maximum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: date.minimum(:date)..date.maximum(:date)))
+    end
+
+
+    def slmt2nd_dead_line(product,date)
+      return product.where(client: "ピアズ")
+        .where(settlement_deadline: date.minimum(:date)
+        .prev_month..date.maximum(:date).since(3.month).end_of_month)
+        .where(status: "審査OK")
+        .where(settlement: Date.new(2021-12-01)..date.maximum(:date).prev_month.end_of_month)
+        .where(settlement_second: date.minimum(:date)..date.maximum(:date))
+        .or(product.where(client: "ピアズ")
+        .where(settlement_deadline: date.minimum(:date).prev_month..date.maximum(:date).since(3.month).end_of_month)
+        .where(status: "審査OK")
+        .where(settlement: Date.new(2021-12-01)..date.maximum(:date)
+        .prev_month.end_of_month).where(settlement_second: nil))
+    end
+
 end

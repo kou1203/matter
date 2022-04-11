@@ -44,12 +44,36 @@ class UsersController < ApplicationController
     @dmer_db_done = @dmer_db.where.not(store_prop: {head_store: nil}).where.not(share: nil)
     @dmer_db_wait = @dmer_db.where.not(store_prop: {head_store: nil}).where(share: nil)
 
+    @dmer_status_done = Dmer.includes(:store_prop)
+      .where(user_id: @user.id)
+      .where(status: "審査OK")
+      .where.not(industry_status: "NG")
+      .where.not(industry_status: "×")
+      .where(store_prop: {head_store: nil})
+      .where(result_point: @month.all_month)
+      .where.not(date: @month.all_month)
+
+    @dmer_status_undone = @dmer_data.where.not(result_point: @month.all_month)
+      .where.not(industry_status: "NG")
+      .where.not(industry_status: "×")
+      .where(status: "審査OK")
+
     @aupay_data = Aupay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id).where(store_prop: {head_store: nil})
     @aupay_db = Aupay.includes(:store_prop).where(share: @month.all_month).where(user_id: @user.id)
     @aupay_hubi = @aupay_data.where(status: "差し戻し")
     @aupay_ng = @aupay_data.where.not(status: "審査通過").where.not(status: "未審査").where.not(status: "審査待ち").where.not(status: "差し戻し").where.not(status: "本店審査待ち")
     @aupay_db_done = @aupay_db.where.not(store_prop: {head_store: nil}).where.not(share: nil)
     @aupay_db_wait = @aupay_db.where.not(store_prop: {head_store: nil}).where(share: nil)
+
+    @aupay_status_done = Aupay.includes(:store_prop)
+      .where(user_id: @user.id)
+      .where(status: "審査通過")
+      .where(store_prop: {head_store: nil})
+      .where(result_point: @month.all_month)
+      .where.not(date: @month.all_month)
+
+    @aupay_status_undone = @aupay_data.where.not(result_point: @month.all_month)
+      .where(status: "審査通過")
 
     @rakuten_pay_data = RakutenPay.includes(:store_prop).where(date: @month.all_month)
     @rakuten_pay_hubi = @rakuten_pay_data.where(user_id: @user.id).where(status: "自社不備")

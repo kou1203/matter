@@ -12,46 +12,6 @@ class ResultsController < ApplicationController
       @shifts = Shift.includes(:user).all
       # 個別利益表 
       if @results.group(:user_id).length == 1 
-        # dメル新規
-          @dmers_user = Dmer.includes(:store_prop).where(user_id: @results.first.user_id )
-          @dmers_this_month = this_period(@dmers_user,@results).where(store_prop: {head_store: nil})
-          @dmers_def_this_month = dmer_def(@dmers_this_month, @results)
-          @dmers_inc = inc_period(@dmers_this_month,@results)
-          @dmer_db = share_period(@dmers_user,@results).where.not(store_prop: {head_store: nil}).where(status: "審査OK")
-          
-        # dメル決済
-          @dmers_settlementer = Dmer.where(settlementer_id: @results.first.user_id )
-          @dmers_slmt_this_month = slmt_this_period(@dmers_settlementer,@results)
-          @dmers_slmt_not_this_month = slmt_not_period(@dmers_settlementer,@results)
-          @dmers_slmt_def_this_month = slmt_def_period(@dmers_slmt_this_month,@results)
-          @dmers_slmt_inc = slmt_inc_period(@dmers_slmt_not_this_month,@results)
-          @dmers_slmt_dec = slmt_dec_period(@dmers_slmt_not_this_month,@results)
-          @dmers_slmt_def = slmt_this_period(@dmers_settlementer.where(status_settlement: "未決済"),@results)
-          @dmers_slmt_def_pic = slmt_this_period(@dmers_settlementer.where(status_settlement: "写真不備"),@results)
-
-          @slmt2nd = slmt_second(@dmers_settlementer,@results)
-          # 決済対象
-          @dmers_slmt_target = slmt_dead_line(@dmers_user,@results)
-          @slmt2nd_target = slmt2nd_dead_line(@dmers_user,@results)
-
-        # aupay新規
-          @aupays_user = Aupay.includes(:store_prop).where(user_id: @results.first.user_id )
-          @aupays_this_month = this_period(@aupays_user,@results).where(store_prop: {head_store: nil})
-          @aupays_def_this_month = aupay_def(@aupays_this_month, @results)
-          @aupays_not_this_month = not_period(@aupays_user,@results)
-          @aupays_inc = inc_period(@aupays_not_this_month,@results)
-          @aupay_db = share_period(@aupays_user,@results).where.not(store_prop: {head_store: nil}).where(status: "審査通過")
-
-        # aupay決済
-          @aupays_settlementer = Aupay.where(settlementer_id: @results.first.user_id )
-          @aupays_slmt_this_month = slmt_this_period(@aupays_settlementer,@results)
-          @aupays_slmt_not_this_month = slmt_not_period(@aupays_settlementer,@results)
-          @aupays_slmt_def_this_month = slmt_def_period(@aupays_this_month,@results)
-          @aupays_slmt_inc = slmt_inc_period(@aupays_not_this_month,@results)
-          @aupays_slmt_target = slmt_dead_line(@aupays_user,@results)
-          # 決済の合計
-          @slmt_sum = @dmers_slmt_target.sum(:valuation_settlement) + @aupays_slmt_target.sum(:valuation_settlement)
-
         # paypay
             @paypays_user = Paypay.where(user_id: @results.first.user_id )
             @paypays_this_month = this_period(@paypays_user,@results)
@@ -60,12 +20,7 @@ class ResultsController < ApplicationController
           @st_insurances_user = StInsurance.where(user_id: @results.first.user_id )
           @st_insurances_this_month = this_period(@st_insurances_user,@results)
           @st_insurances_def_this_month = this_period(@st_insurances_this_month,@results)
-        # 楽天ペイ
-          @rakuten_pays_user = RakutenPay.includes(:store_prop).where(user_id: @results.first.user_id )
-          @rakuten_pays_this_month = this_period(@rakuten_pays_user,@results).where(store_prop: {head_store: nil})
-          @rakuten_pays_not_this_month = not_period(@rakuten_pays_user,@results)
-          @rakuten_pays_inc = inc_period(@rakuten_pays_not_this_month,@results)
-          @rakuten_pays_def_this_month = @rakuten_pays_this_month.where(status: "自社不備")
+
         # 楽天フェムト新規
           @rakuten_casas_user = RakutenCasa.where(user_id: @results.first.user_id)
           @rakuten_casas_this_month = this_period(@rakuten_casas_user, @results)
@@ -184,6 +139,27 @@ class ResultsController < ApplicationController
           # .or(product.where(status: "審査OK")
           # .where.not(result_point: date.minimum(:date)..date.maximum(:date).end_of_month))
       end
+
+      
+
+      def judge_inc(product, date)
+        return product.where.not(date: date.minimum(:date)..date.maximum(:date))
+          .where(status: "審査通過")
+          .where(result_point: date.maximum(:date).beginning_of_month..date.maximum(:date).end_of_month)
+          .or(product.where.not(date: date.minimum(:date)..date.maximum(:date))
+          .where(status: "審査OK").where(result_point: date.maximum(:date).beginning_of_month..date.maximum(:date).end_of_month))
+      end
+
+      def judge_dec(product, date)
+        return product.where(date: date.minimum(:date)..date.maximum(:date))
+          .where(status: "審査通過")
+          .where.not(result_point: date.maximum(:date).beginning_of_month..date.maximum(:date).end_of_month)
+          .or(product.where(date: date.minimum(:date)..date.maximum(:date))
+          .where(status: "審査OK")
+          .where.not(result_point: date.maximum(:date).beginning_of_month..date.maximum(:date).end_of_month))
+      end
+
+
 
       def aupay_def(product, date)
         return product.where(status: "自社不備")
