@@ -99,7 +99,7 @@
           %>
           <% 
             dmer_db = 
-              share_period(dmer_user,@results)
+              result_period(dmer_user,@results)
               .where.not(store_prop: {head_store: nil})
               .where.not(industry_status: "×")
               .where.not(industry_status: "NG")
@@ -109,7 +109,7 @@
           <% dmer_def = dmer_def(dmer_uq, @results) %>
           <% 
             dmer_inc = 
-              judge_inc(dmer_user,@results)
+              judge_inc(dmer_uq,@results)
               .where.not(industry_status: "NG")
               .where.not(industry_status: "×") 
           %>
@@ -169,7 +169,7 @@
           %>
           <% 
             aupay_db = 
-              share_period(aupay_user,@results)
+              result_period(aupay_user,@results)
               .where.not(store_prop: {head_store: nil})
               .where(status: "審査通過")
           %>
@@ -212,22 +212,31 @@
         <% 
           rakuten_pay_uq =
             this_period(rakuten_pay_user,@results)
-            .where(store_prop: {head_store: nil})
+            
         %>
-          <% rakuten_pay_def =  rakuten_pay_uq.where(status: "自社不備") %>
-          <% rakuten_pay_inc = rakuten_inc(rakuten_pay_user,@results)  %>
-          <%# 合計 %>
+        <% 
+          rakuten_pay_dec = 
+            rakuten_pay_uq.where.not(deficiency: nil)
+            .where.not(share: @results.minimum(:date)..@results.maximum(:date))
+        %>
+
+        <% rakuten_pay_def =  rakuten_pay_uq.where(status: "自社不備") %>
+        
+        <% rakuten_pay_inc = rakuten_inc(rakuten_pay_user,@results)  %>
+      <%# 合計 %>
           <%
             rakuten_pay_valuations =
               rakuten_pay_uq.sum(:valuation) - 
               rakuten_pay_def.sum(:valuation) + 
-              rakuten_pay_inc.sum(:valuation)
+              rakuten_pay_inc.sum(:valuation) - 
+              rakuten_pay_dec.sum(:valuation)
           %>
           <% 
             rakuten_pay_len =  
               rakuten_pay_uq.length - 
               rakuten_pay_def.length + 
-              rakuten_pay_inc.length
+              rakuten_pay_inc.length -
+              rakuten_pay_dec.length
           %>
       <%# フェムト新規 %>
         <% casa_new_profit = @rakuten_casas_this_month.sum(:valuation_new) - @rakuten_casas_cancel.sum(:valuation_new) + @rakuten_casas_inc.sum(:valuation_new) %>
@@ -394,7 +403,7 @@
         <th colspan="">aupay（決済）</th>
         <th colspan="">PayPay</th>
         <th colspan="">少額短期保険</th>
-        <th colspan="3">楽天ペイ</th>
+        <th colspan="4">楽天ペイ</th>
         <th colspan="4">フェムト（新規）</th>
         <th colspan="">フェムト（設置）</th>
         <th colspan="">フェムト（他者設置）</th>
@@ -410,7 +419,7 @@
         <% 2.times do %>
         <th colspan="" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <% end %>
-        <th colspan="3" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
+        <th colspan="4" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <th colspan="4" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <% 3.times do %>
         <th colspan="" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
@@ -423,7 +432,7 @@
         <td colspan=""><%= aupay_slmt_len %></td>
         <td colspan=""><%= paypay_len %></td>
         <td colspan=""><%= st_insurance_len %></td>
-        <td colspan="3"><%= rakuten_pay_len %></td>
+        <td colspan="4"><%= rakuten_pay_len %></td>
         <td colspan="4"><%= @rakuten_casas_this_month.length - @rakuten_casas_cancel.length + @rakuten_casas_inc.length %></td>
         <td colspan=""><%= @rakuten_casas_put_self.length %></td>
         <td colspan=""><%= @rakuten_casas_put_other.length %></td>
@@ -441,11 +450,13 @@
         <% 2.times do %>
         <th>獲得数</th>
         <% end %>
-        <% 2.times do %>
         <th>獲得数</th>
         <th>不備・NG</th>
         <th>増加数</th>
-        <% end %>
+        <th>不備解消別月</th>
+        <th>獲得数</th>
+        <th>不備・NG</th>
+        <th>増加数</th>
       </tr>
       <tr>
       <%# 各商材の対象店舗の確認 %>
@@ -474,6 +485,7 @@
           <td style="color: blue;"><%= rakuten_pay_uq.length  %></td>
           <td style="color: red;"><%= link_to  rakuten_pay_def.length, user_path(@results.first.user.id, month: @month), class: "def-link" %></td>
           <td style="color: blue;"><%= rakuten_pay_inc.length %></td>
+          <td style="color: red;"><%= rakuten_pay_dec.length %></td>
         <%# 楽天フェムト新規 %>
           <td style="color: blue;"><%= @rakuten_casas_this_month.length %></td>
           <td style="color: red;"><%= @rakuten_casas_cancel.length %></td>

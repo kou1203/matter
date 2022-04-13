@@ -31,7 +31,7 @@
         </tr>
         <tr >
         <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
-        <td ><%= f.date_field :date_lt, class: "input" %></td>
+        <td ><%= f.date_field :date_lteq, class: "input" %></td>
           <td ><%= f.text_field :store_prop_name_cont, class: "input" %></td>
           <td ><%= f.text_field :user_name_cont, class: "input" %></td>
           <td ><%= f.select :status_eq, options_from_collection_for_select(RakutenPay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>

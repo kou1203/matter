@@ -24,7 +24,8 @@
       <th class="search-th">フル</th>
       <th class="search-th">獲得</th>
       <th class="search-th">dメル（新規）</th>
-      <th class="search-th">dメル（決済）</th>
+      <th class="search-th">dメル（初回決済）</th>
+      <th class="search-th">dメル（2回目決済）</th>
       <th class="search-th">aupay（新規）</th>
       <th class="search-th">aupay（決済）</th>
       <th class="search-th">PayPay</th>
@@ -94,7 +95,7 @@
           %>
           <% 
             dmer_db = 
-              share_period(dmer_user,@results)
+              result_period(dmer_user,@results)
               .where.not(store_prop: {head_store: nil})
               .where(status: "審査OK")
           %>
@@ -121,6 +122,9 @@
           <% dmer_slmt = slmt_this_period(dmer_slmt_user ,@results) %>
           <% dmer_slmt_valuations = dmer_slmt.sum(:valuation_settlement) %>
           <% dmer_slmt_len = dmer_slmt.length %>
+          <% dmer_slmt2nd = slmt_second(dmer_slmt_user,@results) %>
+          <% dmer_slmt2nd_valuations = dmer_slmt2nd.sum(:valuation_second_settlement) %>
+          <% dmer_slmt2nd_len = dmer_slmt2nd.length %>
         <%# aupay（新規） %>
           <% aupay_user = Aupay.includes(:store_prop).where(user_id: r.user_id) %>
           <% 
@@ -130,7 +134,7 @@
           %>
           <% 
             aupay_db = 
-              share_period(aupay_user,@results)
+              result_period(aupay_user,@results)
               .where.not(store_prop: {head_store: nil})
               .where(status: "審査通過")
           %>
@@ -167,8 +171,13 @@
           <% 
             rakuten_pay_uq = 
               this_period(rakuten_pay_user,@results)
-              .where(store_prop: {head_store: nil})
           %>
+          <% 
+            rakuten_pay_dec = 
+              rakuten_pay_uq.where.not(deficiency: nil)
+              .where.not(share: @results.minimum(:date)..@results.maximum(:date))
+          %>
+
           <% rakuten_pay_def =  rakuten_pay_uq.where(status: "自社不備") %>
           <% rakuten_pay_inc = rakuten_inc(rakuten_pay_user,@results)  %>
           <%# 合計 %>
@@ -176,13 +185,15 @@
             rakuten_pay_valuations =
               rakuten_pay_uq.sum(:valuation) - 
               rakuten_pay_def.sum(:valuation) + 
-              rakuten_pay_inc.sum(:valuation)
+              rakuten_pay_inc.sum(:valuation) -
+              rakuten_pay_dec.sum(:valuation)
           %>
           <% 
             rakuten_pay_len = 
               rakuten_pay_uq.length - 
               rakuten_pay_def.length + 
-              rakuten_pay_inc.length
+              rakuten_pay_inc.length -
+              rakuten_pay_dec.length
           %>
         <%# 楽天ペイインセン（40件で5万, 50件で10万） %>
           <% rakuten_bonus_len = rakuten_pay_user.where(date: @results.minimum(:date).prev_month.since(25.days)..@results.minimum(:date).since(24.days)).where(store_prop: {head_store: nil}).where.not(status: "自社不備").length %><%# 検索範囲が○月1日〜末日で絞り込みがあった場合 %>
@@ -216,6 +227,7 @@
             sum_valuations = 
               dmer_valuations +
               dmer_slmt_valuations +
+              dmer_slmt2nd_valuations +
               aupay_valuations + 
               aupay_slmt_valuations +
               paypay_valuations +
@@ -249,6 +261,7 @@
       <%# 獲得数 %>
       <td ><%= dmer_len %></td>
       <td ><%= dmer_slmt_len %></td>
+      <td ><%= dmer_slmt2nd_len %></td>
       <td ><%= aupay_len %></td>
       <td ><%= aupay_slmt_len %></td>
       <td ><%= paypay_len %></td>

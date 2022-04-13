@@ -59,8 +59,8 @@ module ResultsHelper
       return product.where(deficiency: date.minimum(:date)..date.maximum(:date))
     end
 
-    def share_period(product, date)
-      return product.where(share: date.minimum(:date)..date.maximum(:date))
+    def result_period(product, date)
+      return product.where(result_point: date.minimum(:date)..date.maximum(:date))
     end
 
   # 決済
