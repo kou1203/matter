@@ -1,0 +1,94 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>不備一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="def-respondings/index">
+    <table>
+        <tr>
+          <th colspan="5">不備件数</th>
+        </tr>
+        <tr>
+          <th>商材</th>
+          <th>全体</th>
+          <th>中部SS</th>
+          <th>関東SS</th>
+          <th>関西SS</th>
+        </tr>
+        <tr>
+          <th>dメル</th>
+          <td><%= @dmers.length %></td>
+          <td><%= @dmers.where(user: {base: "中部SS"}).length %></td>
+          <td><%= @dmers.where(user: {base: "関東SS"}).length %></td>
+          <td><%= @dmers.where(user: {base: "関西SS"}).length %></td>
+        </tr>
+        <tr>
+          <th>auPay</th>
+          <td><%= @aupays.length %></td>
+          <td><%= @aupays.where(user: {base: "中部SS"}).length %></td>
+          <td><%= @aupays.where(user: {base: "関東SS"}).length %></td>
+          <td><%= @aupays.where(user: {base: "関西SS"}).length %></td>
+        </tr>
+        <tr>
+          <th>楽天ペイ</th>
+          <td><%= @rakuten_pays.length %></td>
+          <td><%= @rakuten_pays.where(user: {base: "中部SS"}).length %></td>
+          <td><%= @rakuten_pays.where(user: {base: "関東SS"}).length %></td>
+          <td><%= @rakuten_pays.where(user: {base: "関西SS"}).length %></td>
+        </tr>
+
+    </table>
+    <table class="out-tb">
+      <thead>
+        <tr>
+          <th class="out-th">店舗名</th>
+          <th class="out-th">商材</th>
+          <th class="out-th">商流</th>
+          <th class="out-th">拠点</th>
+          <th class="out-th">獲得者</th>
+          <th class="out-th">獲得日</th>
+          <th class="out-th-text">不備内容</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @dmers.each do |dmer| %>
+        <tr>
+          <th class="sticky"><%= dmer.store_prop.name %></td>
+          <td class="out-td">dメル</td>
+          <td class="out-td"><%= dmer.client %></td>
+          <td class="out-td"><%= dmer.user.base %></td>
+          <td class="out-td"><%= dmer.user.name %></td>
+          <td class="out-td"><%= dmer.date %></td>
+          <td class="out-td-text"><%= dmer.deficiency_remarks %></td>
+        </tr>
+        <% end %>
+        <% @aupays.each do |aupay| %>
+        <tr>
+          <th class="sticky"><%= aupay.store_prop.name %></td>
+          <td class="out-td">auPay</td>
+          <td class="out-td"><%= aupay.client %></td>
+          <td class="out-td"><%= aupay.user.base %></td>
+          <td class="out-td"><%= aupay.user.name %></td>
+          <td class="out-td"><%= aupay.date %></td>
+          <td class="out-td-text"><%= aupay.deficiency_remarks %></td>
+        </tr>
+        <% end %>
+        <% @rakuten_pays.each do |rakuten_pay| %>
+        <tr>
+          <th class="sticky"><%= rakuten_pay.store_prop.name %></td>
+          <td class="out-td">楽天ペイ</td>
+          <td class="out-td"><%= rakuten_pay.client %></td>
+          <td class="out-td"><%= rakuten_pay.user.base %></td>
+          <td class="out-td"><%= rakuten_pay.user.name %></td>
+          <td class="out-td"><%= rakuten_pay.date %></td>
+          <td class="out-td-text"><%= rakuten_pay.deficiency_info %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

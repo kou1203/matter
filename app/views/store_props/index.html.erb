@@ -56,6 +56,9 @@
             <td ><%= @store_props.where(race: '個人').length %></td>
           </tr>
         </table>
+
+        <p class="text">※不備となっている案件は獲得案件の文字が赤くなっています。</p>
+
         <table class="out-tb">
         <thead>
         <tr>
@@ -63,15 +66,43 @@
           <th class="out-th"><%= sort_link(@q, :id, "ID",{},{class: "reset-link"}) %></th>
           <th class="out-th"><%= sort_link(@q, :race, "法人/個人",{},{class: "reset-link"}) %></th>
           <th class="out-th"><%= sort_link(@q, :name, "店舗名",{},{class: "reset-link"}) %></th>
+          <th class="out-th">獲得商材</th>
         </tr>
         </thead>
         <tbody>
         <% @store_props_data.each do |store_prop| %>
         <tr>
-          <td ><%= link_to "詳細", store_prop_path(store_prop.id), class: "link" %></td>
+          <td ><%= link_to "　詳細　", store_prop_path(store_prop.id), class: "link" %></td>
           <td ><%= store_prop.id %></td>
           <td ><%= store_prop.race %></td>
           <td ><%= store_prop.name %></td>
+
+          <td >
+          <%  if store_prop.dmer.present? %>
+            <% if store_prop.dmer.status == "不備対応中" %>
+              <%= link_to "dメル", dmer_path(store_prop.dmer.id),class:"caution-link" %>
+            <% else %>
+              <%= link_to "dメル", dmer_path(store_prop.dmer.id),class:"link" %>
+            <% end %>
+          <% end %>
+          <%  if store_prop.aupay.present? %>
+            <% if store_prop.aupay.status == "差し戻し" %>
+              <%= link_to "auPay", aupay_path(store_prop.aupay.id),class:"caution-link" %>
+            <% else %>
+              <%= link_to "auPay", aupay_path(store_prop.aupay.id),class:"link" %>
+            <% end %>
+          <% end %>
+          <%  if store_prop.paypay.present? %>
+              <%= link_to "PayPay", paypay_path(store_prop.paypay.id),class:"link" %>
+          <% end %>
+          <%  if store_prop.rakuten_pay.present? %>
+            <% if store_prop.rakuten_pay.status == "自社不備" %>
+              <%= link_to "楽天ペイ", rakuten_pay_path(store_prop.rakuten_pay.id),class:"caution-link" %>
+            <% else %>
+              <%= link_to "楽天ペイ", rakuten_pay_path(store_prop.rakuten_pay.id),class:"link" %>
+            <% end %>
+          <% end %>
+          </td>
         </tr>
         <% end %>
         </tbody>

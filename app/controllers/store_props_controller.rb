@@ -2,7 +2,7 @@ class StorePropsController < ApplicationController
   before_action :authenticate_user!
   before_action :back_retirement, only: [:index]
   def index 
-    @q = StoreProp.ransack(params[:q])
+    @q = StoreProp.includes(:dmer, :aupay, :paypay,:rakuten_pay).ransack(params[:q])
     @store_props = 
       if params[:q].nil?
         StoreProp.none 

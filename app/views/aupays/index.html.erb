@@ -148,9 +148,10 @@
       <th class="out-th"><%= sort_link(@q, :date, "獲得日",{},{class: "reset-link"}) %></th>
       <th class="out-th">獲得者</th>
       <th class="out-th">審査ステータス</th>
-      <th class="out-th">決済ステータス</th>
+      <th class="out-th">審査完了日</th>
       <th class="out-th">決済対応者</th>
-      <th class="out-th">初回決済日</th>
+      <th class="out-th">決済ステータス</th>
+      <th class="out-th">決済完了日</th>
       <th class="out-th">決済期限</th>
       <th class="out-th">不備内容(新規)</th>
       <th class="out-th">不備内容(決済)</th>
@@ -172,9 +173,10 @@
       <td ><%= aupay.date.month %>月<%= aupay.date.day %>日</td>
       <td ><%= aupay.user.name %></td>
       <td ><%= aupay.status %></td>
-      <td ><%= aupay.status_settlement %></td>
+      <td ><%= aupay.result_point %></td>
       <td ><%= aupay.settlementer.name rescue ' ' %></td>
-      <td ><%= aupay.settlement %></td>
+      <td ><%= aupay.status_settlement %></td>
+      <td ><%= aupay.status_update_settlement %></td>
       <td ><%= aupay.settlement_deadline %></td>
       <td class="td-remarks"><%= aupay.deficiency_remarks %></td>
       <td class="td-remarks"><%= aupay.deficiency_remarks_settlement %></td>

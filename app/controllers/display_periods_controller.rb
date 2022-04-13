@@ -1,5 +1,5 @@
 class DisplayPeriodsController < ApplicationController
-
+  before_action :authenticate_user!
   def index 
     @display_period = DisplayPeriod.new
     @display_period_1 = DisplayPeriod.first if DisplayPeriod.first.present?

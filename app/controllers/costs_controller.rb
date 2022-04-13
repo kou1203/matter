@@ -1,5 +1,5 @@
 class CostsController < ApplicationController
-
+  before_action :authenticate_user!
   def index 
     @q = Cost.ransack(params[:q])
     @costs = 

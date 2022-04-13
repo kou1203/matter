@@ -131,4 +131,6 @@ Rails.application.routes.draw do
     collection { post :import }
   end 
 
+  resources :def_respondings, only: [:index]
+  
 end
