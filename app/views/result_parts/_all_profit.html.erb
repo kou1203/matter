@@ -8,7 +8,7 @@
     </h1> 
   <table class="base-tb">
     <tr>
-      <th class="search-th" rowspan="2" >名前</th>
+      <th class="sticky" rowspan="2" >名前</th>
       <th class="search-th" rowspan="2" >担当商材</th>
       <th class="search-th" rowspan="2" >予定シフト</th>
       <th class="search-th" rowspan="2" >消化シフト</th>
@@ -16,7 +16,7 @@
       <th class="search-th" rowspan="2">現状売上</th>
       <th class="search-th" rowspan="2">終着見込売上</th>
       <th class="search-th" colspan="4">基準値</th>
-      <th class="search-th" colspan="11">商材別獲得数</th>
+      <th class="search-th" colspan="12">商材別獲得数</th>
     </tr>
     <tr>
       <th class="search-th">訪問</th>
@@ -97,11 +97,18 @@
             dmer_db = 
               result_period(dmer_user,@results)
               .where.not(store_prop: {head_store: nil})
+              .where.not(industry_status: "×")
+              .where.not(industry_status: "NG")
               .where(status: "審査OK")
           %>
           <% dmer_def =  dmer_def(dmer_uq,@results) %>
-          <% dmer_inc = judge_inc(dmer_user,@results)  %>
-          <% dmer_judge_dec = judge_dec(dmer_user,@results)  %>
+          <% 
+            dmer_inc = 
+              judge_inc(dmer_user,@results)
+              .where.not(industry_status: "NG")
+              .where.not(industry_status: "×") 
+          %>
+          <% dmer_dec = judge_dec(dmer_user,@results)  %>
           <%# 合計 %>
           <% 
             dmer_valuations =
@@ -109,20 +116,27 @@
               dmer_def.sum(:valuation_new) + 
               dmer_inc.sum(:valuation_new) +
               dmer_db.sum(:valuation_new) -
-              dmer_judge_dec.sum(:valuation_new)
+              dmer_dec.sum(:valuation_new)
           %>
           <% 
             dmer_len = 
               dmer_uq.length - dmer_def.length + 
               dmer_inc.length + dmer_db.length -
-              dmer_judge_dec.length
+              dmer_dec.length
           %>
         <%# dメル（決済） %>
-          <% dmer_slmt_user = Dmer.where(settlementer_id: r.user_id) %>
-          <% dmer_slmt = slmt_this_period(dmer_slmt_user ,@results) %>
+          <% dmer_slmter = Dmer.where(settlementer_id: r.user_id) %>
+          <% 
+            dmer_slmt = 
+              slmt_this_period(dmer_slmter ,@results)
+              .where.not(industry_status: "×")
+              .where.not(industry_status: "NG")
+              .or(slmt_this_period(dmer_slmter, @results)
+              .where(industry_status: nil))
+          %>
           <% dmer_slmt_valuations = dmer_slmt.sum(:valuation_settlement) %>
           <% dmer_slmt_len = dmer_slmt.length %>
-          <% dmer_slmt2nd = slmt_second(dmer_slmt_user,@results) %>
+          <% dmer_slmt2nd = slmt_second(dmer_slmter,@results) %>
           <% dmer_slmt2nd_valuations = dmer_slmt2nd.sum(:valuation_second_settlement) %>
           <% dmer_slmt2nd_len = dmer_slmt2nd.length %>
         <%# aupay（新規） %>
@@ -178,7 +192,10 @@
               .where.not(share: @results.minimum(:date)..@results.maximum(:date))
           %>
 
-          <% rakuten_pay_def =  rakuten_pay_uq.where(status: "自社不備") %>
+          <% 
+            rakuten_pay_def =  
+              rakuten_pay_uq.where(status: "自社不備")
+              .or(rakuten_pay_uq.where(status: "自社NG")) %>
           <% rakuten_pay_inc = rakuten_inc(rakuten_pay_user,@results)  %>
           <%# 合計 %>
           <% 
@@ -196,12 +213,11 @@
               rakuten_pay_dec.length
           %>
         <%# 楽天ペイインセン（40件で5万, 50件で10万） %>
-          <% rakuten_bonus_len = rakuten_pay_user.where(date: @results.minimum(:date).prev_month.since(25.days)..@results.minimum(:date).since(24.days)).where(store_prop: {head_store: nil}).where.not(status: "自社不備").length %><%# 検索範囲が○月1日〜末日で絞り込みがあった場合 %>
           <% rakuten_bonus = 0 %>
           <% if @results.minimum(:date).day == 1 %>
-            <% if rakuten_bonus_len >= 50 %>
+            <% if rakuten_pay_len >= 50 %>
               <% rakuten_bonus = 100000 %>
-            <% elsif rakuten_bonus_len >= 40  %>
+            <% elsif rakuten_pay_len >= 40  %>
               <% rakuten_bonus = 50000 %>
             <% else %>
               <% rakuten_bonus = 0 %>
@@ -245,7 +261,7 @@
           <% base_st_insurace += st_insurance_len %>
           <% base_sum += sum_valuations %>
     <tr>
-      <td class="th-head"><%= r.user.name %></td>
+      <th class="sticky"><%= r.user.name %></th>
       <td ><%= r.user.base_sub  %></td>
       <td ><%= shifts %></td>
       <td ><%= shift_digestion %></td>

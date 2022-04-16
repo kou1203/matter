@@ -52,7 +52,7 @@ module ResultsHelper
     end 
 
     def inc_period(product,date)
-      return product.where(deficiency_solution: date.minimum(:date)..date.maximum(:date))
+      return product.where(result_point: date.minimum(:date)..date.maximum(:date))
     end
 
     def dec_period(product,date)
@@ -60,7 +60,8 @@ module ResultsHelper
     end
 
     def result_period(product, date)
-      return product.where(result_point: date.minimum(:date)..date.maximum(:date))
+      return product
+        .where(result_point: date.maximum(:date).beginning_of_month...date.maximum(:date).end_of_month)
     end
 
   # 決済

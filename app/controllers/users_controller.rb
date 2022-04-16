@@ -77,6 +77,7 @@ class UsersController < ApplicationController
 
     @rakuten_pay_data = RakutenPay.includes(:store_prop).where(date: @month.all_month)
     @rakuten_pay_hubi = @rakuten_pay_data.where(user_id: @user.id).where(status: "自社不備")
+    @rakuten_pay_ng = @rakuten_pay_data.where(user_id: @user.id).where(status: "自社NG")
 
   end 
 

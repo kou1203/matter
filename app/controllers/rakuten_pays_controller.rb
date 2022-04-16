@@ -1,7 +1,7 @@
 class RakutenPaysController < ApplicationController
 
   def index 
-    @q = RakutenPay.ransack(params[:q])
+    @q = RakutenPay.includes(:store_prop).ransack(params[:q])
     @rakuten_pays = 
     if params[:q].nil?
       RakutenPay.none 

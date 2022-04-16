@@ -56,17 +56,17 @@
         <td><%= @rakuten_pays.where(status: "未処理").length %></td>
         <td><%= @rakuten_pays.where(status: "審査待ち").length %></td>
         <td><%= @rakuten_pays.where(status: "審査完了").length %></td>
-        <td><%= @rakuten_pays.where(status: "複数店舗").length %></td>
+        <td><%= @rakuten_pays.where.not(store_prop: {head_store: nil}).length %></td>
       </tr>
       <tr>
         <th class="search-th">自社不備</th>
+        <th class="search-th">自社NG</th>
         <th class="search-th">上位店不備</th>
-        <th class="search-th">上位店NG</th>
       </tr>
       <tr>
         <td><%= @rakuten_pays.where(status: "自社不備").length %></td>
+        <td><%= @rakuten_pays.where(status: "自社NG").length %></td>
         <td><%= @rakuten_pays.where(status: "上位店不備").length %></td>
-        <td><%= @rakuten_pays.where(status: "上位店NG").length %></td>
       </tr>
     </table>
     <table class="out-tb">
