@@ -56,7 +56,7 @@
         <td><%= @rakuten_pays.where(status: "未処理").length %></td>
         <td><%= @rakuten_pays.where(status: "審査待ち").length %></td>
         <td><%= @rakuten_pays.where(status: "審査完了").length %></td>
-        <td><%= @rakuten_pays.where.not(store_prop: {head_store: nil}).length %></td>
+        <td><%= @rakuten_pays.where.not(store_props: {head_store: nil}).length %></td>
       </tr>
       <tr>
         <th class="search-th">自社不備</th>

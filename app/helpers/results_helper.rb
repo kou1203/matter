@@ -29,6 +29,7 @@ module ResultsHelper
         .or(product.where(status: "不備対応中"))
         .or(product.where(status: "申込取消"))
         .or(product.where(status: "申込取消（不備）"))
+        .or(product.where(status: "社内確認中"))
         # .or(product.where(status: "審査OK")
         # .where.not(result_point: date.minimum(:date)..date.maximum(:date).end_of_month))
     end
@@ -87,19 +88,16 @@ module ResultsHelper
         .where.not(settlement: date.minimum(:date)..date.maximum(:date))
     end
 
-    def slmt_dec_period(product,date)
-      return product.where(deficiency_settlement: date.minimum(:date)..date.maximum(:date))
-    end
-
-    def slmt_def_period(product,date)
-      return product.where.not(deficiency_settlement: nil).where(deficiency_solution_settlement: nil).or(product.where.not(deficiency_settlement: nil).where.not(deficiency_solution_settlement: date.minimum(:date)..date.maximum(:date)))
-    end
-
     def slmt_second(product,date)
       return product.where(status: "審査OK")
         .where(status_settlement: "完了")
         .where(settlement_second: date.minimum(:date)..date.maximum(:date))
     end 
+
+    def slmt_quick(product, date)
+      return product.where(client: "マックス即時")
+        .where(settlement: date.minimum(:date)..date.maximum(:date))
+    end
 
 
     def slmt_dead_line(product,date)

@@ -105,6 +105,7 @@
           <% 
             dmer_inc = 
               judge_inc(dmer_user,@results)
+              .where(store_prop: {head_store: nil})
               .where.not(industry_status: "NG")
               .where.not(industry_status: "×") 
           %>

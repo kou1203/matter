@@ -110,8 +110,10 @@
           <% 
             dmer_inc = 
               judge_inc(dmer_user,@results)
+              .where(store_prop: {head_store: nil})
               .where.not(industry_status: "NG")
-              .where.not(industry_status: "×") 
+              .where.not(industry_status: "×")
+              .where(status: "審査OK")
           %>
           <% 
             dmer_dec = 
@@ -144,7 +146,8 @@
               .where.not(industry_status: "×")
               .where.not(industry_status: "NG")
               .or(slmt_this_period(dmer_slmter, @results)
-              .where(industry_status: nil)) %>
+              .where(industry_status: nil))
+          %>
           <% dmer_slmt_valuations = dmer_slmt.sum(:valuation_settlement) %>
           <% dmer_slmt_len = dmer_slmt.length %>
           <% dmer_slmt2nd = slmt_second(dmer_slmter,@results) %>
@@ -399,9 +402,9 @@
       <tr>
       </tr>
       <tr>
-        <th colspan="4">dメル（新規）</th>
+        <th colspan="5">dメル（新規）</th>
         <th colspan="">dメル（決済）</th>
-        <th colspan="4">aupay（新規）</th>
+        <th colspan="5">aupay（新規）</th>
         <th colspan="">aupay（決済）</th>
         <th colspan="">PayPay</th>
         <th colspan="">少額短期保険</th>
@@ -415,7 +418,7 @@
       <tr>
       </tr>
         <% 2.times do %>
-        <th colspan="4" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
+        <th colspan="5" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <th colspan="" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <% end %>
         <% 2.times do %>
@@ -427,10 +430,10 @@
         <th colspan="" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <% end %>
       <tr>
-        <td colspan="4"><%= dmer_len %></td>
+        <td colspan="5"><%= dmer_len %></td>
         <td colspan=""><%= dmer_slmt_len %></td>
 
-        <td colspan="4"><%= aupay_len %></td>
+        <td colspan="5"><%= aupay_len %></td>
         <td colspan=""><%= aupay_slmt_len %></td>
         <td colspan=""><%= paypay_len %></td>
         <td colspan=""><%= st_insurance_len %></td>
@@ -444,8 +447,9 @@
         <% 2.times do %>
         <th>獲得数</th>
         <th>不備・NG</th>
-        <th>増加数</th>
-        <th>審査別月</th>
+        <th>複数追加</th>
+        <th>審査別月（増加）</th>
+        <th>審査別月（減少）</th>
         <th>獲得数</th>
         <% end %>
         
@@ -468,14 +472,16 @@
         <%# dメル %>
           <td style="color: blue;"><%= dmer_uq.length %></td>
           <td><%= link_to dmer_def.length,user_path(@results.first.user.id,month: @month), class: "def-link" %></td>
-          <td style="color: blue;"><%= dmer_inc.length + dmer_db.length %></td>
+          <td style="color: blue;"><%= dmer_db.length %></td>
+          <td style="color: blue;"><%= dmer_inc.length %></td>
           <td><%= link_to dmer_dec.length,user_path(@results.first.user.id,month: @month), class: "def-link" %></td>
 
           <td style="color: blue;"><%= dmer_slmt_len %></td>
         <%# aupay %>
           <td style="color: blue;"><%= aupay_uq.length %></td>
           <td ><%= link_to aupay_def.length, user_path(@results.first.user.id,month: @month), class: "def-link" %></td>
-          <td style="color: blue;"><%= aupay_inc.length + aupay_db.length %></td>
+          <td style="color: blue;"><%= aupay_db.length %></td>
+          <td style="color: blue;"><%= aupay_inc.length %></td>
           <td ><%= link_to aupay_dec.length, user_path(@results.first.user.id,month: @month), class: "def-link" %></td>
 
           <td style="color: blue;"><%= aupay_slmt_len %></td>
@@ -1610,7 +1616,7 @@
     <% end %>
     </tbody>
   </table>
-  <h1>評価対象一覧</h1>
+  <h1>評価対象一覧新規</h1>
     <% 
       dmer_new = 
         dmer_user
@@ -1683,6 +1689,7 @@
         </table>
       </div>
     </div>
+    <h1>評価対象一覧決済</h1>
     <div class="result-flex">
       <div class="base-frame">
       <h2>dメル決済<%= dmer_slmt.length %>件</h2>
