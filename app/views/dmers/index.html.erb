@@ -158,17 +158,20 @@
     <table  class="out-tb">
     <thead>
     <tr class="table-row">
-      <th class="out-th"></th>
       <th class="out-th">ID</th>
-      <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+      <th class="out-th"></th>
       <th class="out-th">商流</th>
       <th class="out-th">複数店</th>
       <th class="out-th">店舗名</th>
       <th class="out-th">獲得者</th>
+      <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
       <th class="out-th">業種チェック</th>
       <th class="out-th">審査ステータス</th>
       <th class="out-th">審査完了日</th>
+      <th class="out-th">キット発送日</th>
       <th class="out-th">決済対応者</th>
+      <th class="out-th">初回決済日</th>
+      <th class="out-th">アクセプタンス</th>
       <th class="out-th">決済ステータス</th>
       <th class="out-th">決済完了日</th>
       <th class="out-th">2回目決済日</th>
@@ -180,9 +183,8 @@
     <tbody>
     <% @dmers_data.find_each do |dmer| %>
     <tr class="index-tr">
-      <td class="index-td"><%= link_to "　詳細　",  dmer_path(dmer.id) ,class: "link" %></td>
       <td class="index-td"><%= dmer.id %></td>
-      <td class="index-td"><%= dmer.date.month %>月<%= dmer.date.day %>日</td>
+      <td class="index-td"><%= link_to "　詳細　",  dmer_path(dmer.id) ,class: "link" %></td>
       <td class="index-td"><%= dmer.client %></td>
       <% if @dmers.find_by(store_props: {head_store: dmer.store_prop.name}).present? %>
         <td class="index-td">複数店本店</td>
@@ -193,10 +195,14 @@
       <% end %>
       <td class="index-td"><%= dmer.store_prop.name %></td>
       <td class="index-td"><%= dmer.user.name %></td>
+      <td class="index-td"><%= dmer.date.month %>月<%= dmer.date.day %>日</td>
       <td class="index-td"><%= dmer.industry_status %></td>
       <td class="index-td"><%= dmer.status %></td>
       <td class="index-td"><%= dmer.result_point %></td>
+      <td class="index-td"><%= dmer.shipment %></td>
       <td class="index-td"><%= dmer.settlementer.name rescue ' ' %></td>
+      <td class="index-td"><%= dmer.settlement %></td>
+      <td class="index-td"><%= dmer.picture %></td>
       <td class="index-td"><%= dmer.status_settlement %></td>
       <td class="index-td"><%= dmer.status_update_settlement %></td>
       <td class="index-td"><%= dmer.settlement_second %></td>

@@ -24,20 +24,23 @@
         <tr >
           <th class="search-th">獲得月</th>
           <th class="search-th" colspan="2">獲得日付</th>
+          <th class="search-th" colspan="2">審査完了日</th>
         </tr>
         <tr>
           <td ><%= f.date_select :date_during_month, {discard_day: true, include_blank: true} ,{class: "date-input"} %></td>
           <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
           <td ><%= f.date_field :date_lteq, class: "input" %></td>
+          <td ><%= f.date_field :result_point_gteq, class: "input" %>~</td>
+          <td ><%= f.date_field :result_point_lteq, class: "input" %></td>
         </tr>
         <tr>
-          <th class="search-th" colspan="2">初回決済日</th>
+          <th class="search-th" colspan="2">決済完了日</th>
           <th class="search-th" colspan="2">決済期限</th>
         </tr>
         <tr>
 
-          <td ><%= f.date_field :settlement_gteq, class: "input" %>~</td>
-          <td ><%= f.date_field :settlement_lteq, class: "input" %></td>
+          <td ><%= f.date_field :status_update_settlement_gteq, class: "input" %>~</td>
+          <td ><%= f.date_field :status_update_settlement_lteq, class: "input" %></td>
           <td ><%= f.date_field :settlement_deadline_gteq, class: "input" %>~</td>
           <td ><%= f.date_field :settlement_deadline_lteq, class: "input" %></td>
         </tr>
@@ -77,11 +80,18 @@
 
         <% settlement_subject = @aupays.where(status: "審査通過").length %>
         <% settlement_done = @aupays.where.not(settlement: nil).length %>
-        <% slmt_dead = @aupays.where(status: "審査通過").where.not(status_settlement: "完了").where(settlement_deadline: @aupays.minimum(:date)..Date.today).length  %>
-        <% aupay_sum = @aupays.where.not(status: "申込取消").where.not(status: "不合格").where.not(status: "自社不備").sum(:profit_new) %>
+        <% 
+          slmt_dead = 
+            @aupays.where(status: "審査通過")
+            .where.not(status_settlement: "完了")
+            .where(settlement_deadline: @aupays.minimum(:date)..Date.today).length  
+        %>
+        <% 
+          aupay_sum = @aupays.where.not(status: "申込取消").where.not(status: "不合格").where.not(status: "自社不備").sum(:profit_new) 
+        %>
         <% hubi = @aupays.where(status: '自社不備' ).length %>
         <% client_hubi = @aupays.where(status: '差し戻し' ).length %>
-        <% client_ng = @aupays.where(status: '不合格' ).length + @aupays.where(status: '重複対象外' ).length %>
+        <% client_ng = @aupays.where(status: '不合格' ).length + @aupays.where(status: '重複対象外' ).length + @aupays.where(status: '報酬対象外' ).length %>
         <% cancel = @aupays.where(status: '申込取消' ).length %>
       <table>
         <tr>
@@ -145,11 +155,14 @@
       <th class="out-th">ID</th>
       <th class="out-th">本店名</th>
       <th class="out-th">店舗名</th>
-      <th class="out-th"><%= sort_link(@q, :date, "獲得日",{},{class: "reset-link"}) %></th>
       <th class="out-th">獲得者</th>
+      <th class="out-th"><%= sort_link(@q, :date, "獲得日",{},{class: "reset-link"}) %></th>
       <th class="out-th">審査ステータス</th>
       <th class="out-th">審査完了日</th>
+      <th class="out-th">キット発送日</th>
       <th class="out-th">決済対応者</th>
+      <th class="out-th">初回決済日</th>
+      <th class="out-th">アクセプタンス</th>
       <th class="out-th">決済ステータス</th>
       <th class="out-th">決済完了日</th>
       <th class="out-th">決済期限</th>
@@ -170,11 +183,14 @@
         <td class="index-td">本店名：<%= aupay.store_prop.head_store %></td>
       <% end %>
       <td ><%= aupay.store_prop.name %></td>
-      <td ><%= aupay.date.month %>月<%= aupay.date.day %>日</td>
       <td ><%= aupay.user.name %></td>
+      <td ><%= aupay.date.month %>月<%= aupay.date.day %>日</td>
       <td ><%= aupay.status %></td>
       <td ><%= aupay.result_point %></td>
+      <td ><%= aupay.shipment %></td>
       <td ><%= aupay.settlementer.name rescue ' ' %></td>
+      <td ><%= aupay.settlement %></td>
+      <td ><%= aupay.picture %></td>
       <td ><%= aupay.status_settlement %></td>
       <td ><%= aupay.status_update_settlement %></td>
       <td ><%= aupay.settlement_deadline %></td>

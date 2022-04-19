@@ -1720,6 +1720,34 @@
         </table>
       </div>
       <div class="base-frame">
+      <h2>dメル2回目決済<%= dmer_slmt2nd_len %>件</h2>
+        <table class="out-tb">
+          <thead>
+          <tr>
+            <th class="out-th"></th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">審査ステータス</th>
+            <th class="out-th">決済完了日</th>
+          </tr>
+          </thead>
+          <tr>
+          <% dmer_slmt2nd.each do |dmer| %>
+            <td class="out-tb"><%=link_to "詳細",dmer_path(dmer.id),class: "link"  %></td>
+            <td class="out-tb">dメル2回目決済</td>
+            <td class="out-tb"><%= dmer.client %></td>
+            <td class="out-tb"><%= dmer.store_prop.name %></td>
+            <td class="out-tb"><%= dmer.date %></td>
+            <td class="out-tb"><%= dmer.status %></td>
+            <td class="out-tb"><%= dmer.status_update_settlement %></td>
+          </tr>
+          <% end %>
+          <tbody>
+        </table>
+      </div>
+      <div class="base-frame">
       <h2>auPay決済<%= aupay_slmt.length %>件</h2>
         <table class="out-tb">
           <thead>
