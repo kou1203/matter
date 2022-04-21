@@ -68,12 +68,12 @@ module ResultsHelper
   # 決済
     def slmt_this_period(product,date)
       return product
-        .where(status_update_settlement: date.maximum(:date).beginning_of_month...date.maximum(:date).end_of_month)
+        .where("result_point < ?", date.maximum(:date).end_of_month)
+        .where(status_update_settlement: date.maximum(:date).beginning_of_month..date.maximum(:date).end_of_month)
         .where.not(status: "不備対応中")
         .where.not(status: "審査NG")
         .where.not(status: "申込取消")
         .where.not(status: "申込取消（不備）")
-        .where(status_settlement: "完了")
         .where.not(status: "不合格")
         .where.not(status: "報酬対象外")
         .where.not(status: "重複対象外")
@@ -81,7 +81,7 @@ module ResultsHelper
         .where.not(status: "解約")
         .where(status_settlement: "完了")
         .or(
-          product.where("status_update_settlement < ?", date.minimum(:date))
+          product.where("status_update_settlement < ?", date.maximum(:date).beginning_of_month)
           .where.not(status: "不備対応中")
           .where.not(status: "審査NG")
           .where.not(status: "申込取消")
