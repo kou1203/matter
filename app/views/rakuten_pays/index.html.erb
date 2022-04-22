@@ -47,7 +47,9 @@
       <tr>
         <th class="search-th">獲得数</th>
         <th class="search-th">未処理</th>
-        <th class="search-th">審査待ち</th>
+        <th class="search-th">自社審査待ち</th>
+        <th class="search-th">商流審査待ち</th>
+        <th class="search-th">審査中</th>
         <th class="search-th">審査完了</th>
         <th class="search-th">複数店舗</th>
       </tr>
@@ -55,23 +57,37 @@
         <td><%= @rakuten_pays.length %></td>
         <td><%= @rakuten_pays.where(status: "未処理").length %></td>
         <td><%= @rakuten_pays.where(status: "審査待ち").length %></td>
-        <td><%= @rakuten_pays.where(status: "審査完了").length %></td>
+        <td><%= 
+          @rakuten_pays.where(status: "２次審査待ち").length +
+          @rakuten_pays.where(status: "未着手").length 
+        %></td>
+        <td><%= 
+          @rakuten_pays.where(status: "2次審査中").length +
+          @rakuten_pays.where(status: "審査中").length 
+        %></td>
+        <td><%= @rakuten_pays.where(status: "OK").length %></td>
         <td><%= @rakuten_pays.where.not(store_props: {head_store: nil}).length %></td>
       </tr>
       <tr>
         <th class="search-th">自社不備</th>
         <th class="search-th">自社NG</th>
         <th class="search-th">上位店不備</th>
+        <th class="search-th">上位店NG</th>
       </tr>
       <tr>
         <td><%= @rakuten_pays.where(status: "自社不備").length %></td>
         <td><%= @rakuten_pays.where(status: "自社NG").length %></td>
-        <td><%= @rakuten_pays.where(status: "上位店不備").length %></td>
+        <td><%= @rakuten_pays.where(status: "１次審査不備").length %></td>
+        <td><%= 
+          @rakuten_pays.where(status: "NG").length +
+          @rakuten_pays.where(status: "CANCEL").length +
+          @rakuten_pays.where(status: "申込取消").length
+        %></td>
       </tr>
     </table>
     <table class="out-tb">
       <thead>
-      <tr >
+      <tr>
         <th class="out-th"></th>
         <th class="out-th">ID</th>
         <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
@@ -80,19 +96,21 @@
         <th class="out-th">審査ステータス</th>
         <th class="out-th">情報不備</th>
         <th class="out-th">上位店共有日</th>
+        <th class="out-th">審査完了日</th>
       </tr>
       </thead>
       <tbody>
       <% @rakuten_pays_data.each do |rakuten_pay| %>
       <tr >
-        <td ><%= link_to "詳細",  rakuten_pay_path(rakuten_pay.id) ,class: "link" %></td>
-        <td ><%= rakuten_pay.id %></td>
-        <td ><%= rakuten_pay.date %></td>
-        <td ><%= rakuten_pay.store_prop.name %></td>
-        <td ><%= rakuten_pay.user.name %></td>
-        <td ><%= rakuten_pay.status %></td>
-        <td ><%= rakuten_pay.deficiency_info %></td>
-        <td ><%= rakuten_pay.share %></td>
+        <td class="out-td"><%= link_to "詳細",  rakuten_pay_path(rakuten_pay.id) ,class: "link" %></td>
+        <td class="out-td"><%= rakuten_pay.id %></td>
+        <td class="out-td"><%= rakuten_pay.date %></td>
+        <td class="out-td"><%= rakuten_pay.store_prop.name %></td>
+        <td class="out-td"><%= rakuten_pay.user.name %></td>
+        <td class="out-td"><%= rakuten_pay.status %></td>
+        <td class="out-td"><%= rakuten_pay.deficiency_info %></td>
+        <td class="out-td"><%= rakuten_pay.share %></td>
+        <td class="out-td"><%= rakuten_pay.result_point %></td>
       </tr>
       <% end %>
       </tbody>

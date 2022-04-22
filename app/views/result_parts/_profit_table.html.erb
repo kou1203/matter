@@ -99,7 +99,7 @@
           %>
           <% 
             dmer_db = 
-              result_period(dmer_user,@results)
+              share_period(dmer_user,@results)
               .where.not(store_prop: {head_store: nil})
               .where.not(industry_status: "×")
               .where.not(industry_status: "NG")
@@ -1621,6 +1621,7 @@
       dmer_new = 
         dmer_user
         .where(result_point: @results.maximum(:date).beginning_of_month..@results.maximum(:date).end_of_month)
+        .where(store_prop: {head_store: nil})
         .where.not(industry_status: "×")
         .where.not(industry_status: "NG")
         .where(status: "審査OK")
@@ -1633,7 +1634,7 @@
     %>
     <div class="result-flex">
       <div class="base-frame">
-      <h2>dメル新規<%= dmer_new.length %>件</h2>
+      <h2>dメル新規<%= dmer_new.length + dmer_db.length %>件</h2>
         <table class="out-tb">
           <thead>
           <tr>
@@ -1643,7 +1644,7 @@
             <th class="out-th">店舗名</th>
             <th class="out-th">獲得日</th>
             <th class="out-th">審査ステータス</th>
-            <th class="out-th">審査完了日</th>
+            <th class="out-th">審査完了日（複数店は共有日）</th>
           </tr>
           </thead>
           <tr>
@@ -1655,6 +1656,16 @@
             <td class="out-tb"><%= dmer.date %></td>
             <td class="out-tb"><%= dmer.status %></td>
             <td class="out-tb"><%= dmer.result_point %></td>
+          </tr>
+          <% end %>
+          <% dmer_db.each do |dmer| %>
+            <td class="out-tb"><%=link_to "詳細",dmer_path(dmer.id),class: "link"  %></td>
+            <td class="out-tb">dメル複数</td>
+            <td class="out-tb"><%= dmer.client %></td>
+            <td class="out-tb"><%= dmer.store_prop.name %></td>
+            <td class="out-tb"><%= dmer.date %></td>
+            <td class="out-tb"><%= dmer.status %></td>
+            <td class="out-tb"><%= dmer.share %></td>
           </tr>
           <% end %>
           <tbody>

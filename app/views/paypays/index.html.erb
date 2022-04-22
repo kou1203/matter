@@ -28,6 +28,7 @@
           <th class="search-th">店舗名</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">審査ステータス</th>
+          <th class="search-th">後確状況</th>
           <td class="result"><%= f.submit "絞込み", data: {disable_with: "絞り込み中"},class: "result-btn" %></td>
         </tr>
         <tr >
@@ -36,6 +37,7 @@
           <td ><%= f.text_field :store_prop_name_cont, class: "input" %></td>
           <td ><%= f.text_field :user_name_cont, class: "input" %></td>
           <td ><%= f.select :status_eq, options_from_collection_for_select(Paypay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
+          <td ><%= f.select :remarks_eq, options_from_collection_for_select(Paypay.select(:remarks).distinct,:remarks, :remarks),{include_blank: true}, {class: "input"} %></td>
           <td class="reset"><%= link_to "絞込みリセット", paypays_path, class: "reset-link" %></td>
         </tr>
     </table>
@@ -46,18 +48,28 @@
       <h1>表示範囲：<%= @paypays.minimum(:date) %>（<%= days[@paypays.minimum(:date).wday] %>）〜<%= @paypays.maximum(:date) %>（<%= days[@paypays.maximum(:date).wday] %>）</h1>
     <table>
       <tr>
+        <th class="search-th">獲得数</th>
         <th class="search-th">審査待ち</th>
         <th class="search-th">審査完了</th>
-        <th class="search-th">自社不備</th>
-        <th class="search-th">上位店不備</th>
+        <th class="search-th">審査中</th>
         <th class="search-th">上位店NG</th>
       </tr>
       <tr>
-        <td><%= @paypays.where(status: "審査待ち").length %></td>
-        <td><%= @paypays.where(status: "審査完了").length %></td>
-        <td><%= @paypays.where(status: "自社不備").length %></td>
-        <td><%= @paypays.where(status: "上位店不備").length %></td>
-        <td><%= @paypays.where(status: "上位店NG").length %></td>
+        <td><%= @paypays.length %></td>
+        <td><%= 
+          @paypays.where(status: "審査待ち").length +
+          @paypays.where(status: "30手動審査待ち").length 
+        %></td>
+        <td><%= @paypays.where(status: "60審査可決").length %></td>
+        <td><%= 
+          @paypays.where(status: "110審査留保（営業）_40手動審査中").length + 
+          @paypays.where(status: "100審査留保（CS）_40手動審査中").length +
+          @paypays.where(status: "40手動審査中").length 
+          %></td>
+        <td><%= 
+          @paypays.where(status: "70審査否決").length +
+          @paypays.where(status: "90審査取消").length
+        %></td>
       </tr>
     </table>
     <table class="out-tb">
@@ -68,7 +80,9 @@
         <th class="out-tb"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
         <th class="out-tb">法人/個人</th>
         <th class="out-tb">店舗名</th>
+        <th class="out-tb">後確状況</th>
         <th class="out-tb">審査ステータス</th>
+        <th class="out-tb">審査完了日</th>
       </tr>
     </thead>
     <tbody>
@@ -79,7 +93,9 @@
         <td ><%= paypay.date %></td>
         <td ><%= paypay.store_prop.race %></td>
         <td ><%= paypay.store_prop.name %></td>
+        <td ><%= paypay.remarks %></td>
         <td ><%= paypay.status %></td>
+        <td ><%= paypay.result_point %></td>
       </tr>
       <% end %>
     </tbody>
