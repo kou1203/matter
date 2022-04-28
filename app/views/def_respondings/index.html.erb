@@ -10,7 +10,7 @@
   <div data-scope-path="def-respondings/index">
     <table>
         <tr>
-          <th colspan="5">不備件数</th>
+          <th class="out-th" colspan="5">不備件数</th>
         </tr>
         <tr>
           <th>商材</th>
@@ -22,26 +22,26 @@
         <tr>
           <th>dメル</th>
           <td><%= @dmers.length %></td>
-          <td><%= @dmers.where(user: {base: "中部SS"}).length %></td>
-          <td><%= @dmers.where(user: {base: "関東SS"}).length %></td>
-          <td><%= @dmers.where(user: {base: "関西SS"}).length %></td>
+          <td><%= @dmers_chubu.length %></td>
+          <td><%= @dmers_kansai.length %></td>
+          <td><%= @dmers_kanto.length %></td>
         </tr>
         <tr>
           <th>auPay</th>
           <td><%= @aupays.length %></td>
-          <td><%= @aupays.where(user: {base: "中部SS"}).length %></td>
-          <td><%= @aupays.where(user: {base: "関東SS"}).length %></td>
-          <td><%= @aupays.where(user: {base: "関西SS"}).length %></td>
+          <td><%= @aupays_chubu.length %></td>
+          <td><%= @aupays_kansai.length %></td>
+          <td><%= @aupays_kanto.length %></td>
         </tr>
         <tr>
           <th>楽天ペイ</th>
           <td><%= @rakuten_pays.length %></td>
-          <td><%= @rakuten_pays.where(user: {base: "中部SS"}).length %></td>
-          <td><%= @rakuten_pays.where(user: {base: "関東SS"}).length %></td>
-          <td><%= @rakuten_pays.where(user: {base: "関西SS"}).length %></td>
+          <td><%= @rakuten_pays_chubu.length %></td>
+          <td><%= @rakuten_pays_kansai.length %></td>
+          <td><%= @rakuten_pays_kanto.length %></td>
         </tr>
-
     </table>
+    
     <table class="out-tb">
       <thead>
         <tr>
