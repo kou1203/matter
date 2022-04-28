@@ -71,6 +71,7 @@
           <td class="reset"><%= link_to "絞込みリセット", aupays_path, class: "reset-link" %></td>
         </tr>
       </table>
+      <label></label>
     <% end %>
     <%= alert %>
     <hr>
@@ -91,7 +92,16 @@
         %>
         <% hubi = @aupays.where(status: '自社不備' ).length %>
         <% client_hubi = @aupays.where(status: '差し戻し' ).length %>
-        <% client_ng = @aupays.where(status: '不合格' ).length + @aupays.where(status: '重複対象外' ).length + @aupays.where(status: '報酬対象外' ).length %>
+        <% 
+          client_ng = 
+            @aupays.where(status: '不合格' ).length + 
+            @aupays.where(status: '重複対象外' ).length + 
+            @aupays.where(status: '報酬対象外' ).length + 
+            @aupays.where(status: '報酬対象外（登録期限切れ）' ).length +
+            @aupays.where(status: '解約' ).length +
+            @aupays.where(status: '本店NG' ).length +
+            @aupays.where(status: '自社NG' ).length
+        %>
         <% cancel = @aupays.where(status: '申込取消' ).length %>
       <table>
         <tr>
@@ -109,11 +119,11 @@
         <tr>
           <td class="search-td"><%= @aupays.length %></td>
           <td class="search-td"><%= @aupays.where(status: '審査通過' ).length %></td>
-          <td class="search-td"><%= @aupays.where(status: '審査待ち').length %></td>
+          <td class="search-td"><%= @aupays.where(status: '審査待ち').length + @aupays.where(status: '未審査').length %></td>
           <td class="search-td"><%= hubi + client_hubi %></td>
           <td class="search-td"><%= client_ng %></td>
           <td class="search-td"><%= @aupays.where.not(store_props: {head_store: nil}).where.not(share: nil).length %></td>
-          <td class="search-td"><%= @aupays.where.not(store_props: {head_store: nil}).where(share: nil).length %></td>
+          <td class="search-td"><%= @aupays.where.not(store_props: {head_store: nil}).where(status: "本店審査待ち").length %></td>
         </tr>
         <tr>
           <th colspan="4" class="search-th">決済内訳</th>
@@ -156,9 +166,10 @@
       <th class="out-th">本店名</th>
       <th class="out-th">店舗名</th>
       <th class="out-th">獲得者</th>
-      <th class="out-th"><%= sort_link(@q, :date, "獲得日",{},{class: "reset-link"}) %></th>
+      <th class="out-th">獲得日</th>
+      <th class="out-th">共有日</th>
       <th class="out-th">審査ステータス</th>
-      <th class="out-th">審査完了日</th>
+      <th class="out-th"><%= sort_link(@q, :result_point, "審査完了日",{},{class: "reset-link"}) %></th>
       <th class="out-th">キット発送日</th>
       <th class="out-th">決済対応者</th>
       <th class="out-th">初回決済日</th>
@@ -184,7 +195,8 @@
       <% end %>
       <td ><%= aupay.store_prop.name %></td>
       <td ><%= aupay.user.name %></td>
-      <td ><%= aupay.date.month %>月<%= aupay.date.day %>日</td>
+      <td ><%= aupay.date %></td>
+      <td ><%= aupay.share %></td>
       <td ><%= aupay.status %></td>
       <td ><%= aupay.result_point %></td>
       <td ><%= aupay.shipment %></td>

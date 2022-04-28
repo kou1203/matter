@@ -24,7 +24,7 @@
           <td><%= f.text_field :area , class: "form-input" %></td>
       </tr>
       <tr>
-          <th> <%= f.label :shift, "シフト", class: "form-text" %></th>
+        <th> <%= f.label :shift, "シフト", class: "form-text" %></th>
         <th><%= f.label :ojt_id, "帯同者", class: "form-text" %></th>
         <th>
         </th>
@@ -34,6 +34,8 @@
           <td><%= f.collection_select(:ojt_id, User.includes(:shifts).where(shifts: {shift: "帯同"}), :id, :name,{include_blank: true}, {class: "form-input"})%></td>
       </tr>
     </table>
+    <label class="textarea-label">一時メモ</label>
+    <textarea></textarea>
   <%# 大枠基準値 %>
     <h1>基準値</h1>
     <h2 >前半</h2>

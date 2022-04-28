@@ -95,7 +95,7 @@
           %>
           <% 
             dmer_db = 
-              result_period(dmer_user,@results)
+              share_period(dmer_user,@results)
               .where.not(store_prop: {head_store: nil})
               .where.not(industry_status: "×")
               .where.not(industry_status: "NG")
@@ -179,8 +179,10 @@
         <%# PayPay %>
           <% paypay_user = Paypay.where(user_id: r.user_id) %>
           <% paypay_data = this_period(paypay_user ,@results) %>
-          <% paypay_valuations = paypay_data.sum(:valuation) %>
+          <% paypay_result = result_period(paypay_user ,@results) %>
+          <% paypay_valuations = paypay_result.sum(:valuation) %>
           <% paypay_len = paypay_data.length %>
+          <% paypay_r_len = paypay_result.length %>
         <%# 楽天ペイ %>
           <% rakuten_pay_user = RakutenPay.includes(:store_prop).where(user_id: r.user_id) %>
           <% 
@@ -257,7 +259,7 @@
           <% base_dmer_slmt += dmer_slmt_len %>
           <% base_aupay += aupay_len %>
           <% base_aupay_slmt += aupay_slmt_len %>
-          <% base_paypay += paypay_len %>
+          <% base_paypay += paypay_r_len %>
           <% base_rakuten_pay += rakuten_pay_len %>
           <% base_st_insurace += st_insurance_len %>
           <% base_sum += sum_valuations %>
@@ -281,7 +283,7 @@
       <td ><%= dmer_slmt2nd_len %></td>
       <td ><%= aupay_len %></td>
       <td ><%= aupay_slmt_len %></td>
-      <td ><%= paypay_len %></td>
+      <td ><%= paypay_r_len %></td>
       <td ><%= rakuten_pay_len %></td>
       <td ><%= st_insurance_len %></td>
       <td ><%=  %></td>

@@ -35,7 +35,7 @@ class Paypay < ApplicationRecord
           deficiency_solution: row["不備解消日"],
           payment: row["入金日"],
           remarks: row["備考"],
-          result_point: row["上位店共有日"],
+          result_point: row["審査完了日"],
           profit: row["実売"],
           valuation: row["評価売"],
         )
@@ -68,7 +68,7 @@ class Paypay < ApplicationRecord
           deficiency_solution: row["不備解消日"],
           payment: row["入金日"],
           remarks: row["備考"],
-          result_point: row["上位店共有日"],
+          result_point: row["審査完了日"],
           profit: row["実売"],
           valuation: row["評価売"],
         )
@@ -93,7 +93,7 @@ class Paypay < ApplicationRecord
           deficiency_solution: row["不備解消日"],
           payment: row["入金日"],
           remarks: row["備考"],
-          result_point: row["上位店共有日"],
+          result_point: row["審査完了日"],
           profit: row["実売"],
           valuation: row["評価売"],
           )

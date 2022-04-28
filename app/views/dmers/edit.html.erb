@@ -17,12 +17,14 @@
         <th><%= f.label :customer_num, "お客様番号", class: "form-text" %></th>
         <th><%= f.label :user_id, "獲得者", class: "form-text" %></th>
         <th><%= f.label :date, "獲得日", class: "form-text" %></th>
+        <th><%= f.label :date, "業種ステータス", class: "form-text" %></th>
       </tr>
       <tr>
         <td><%= f.select :client, {"マックスサポート": "マックスサポート", "USEN": "USEN","ピアズ": "ピアズ"} ,{}, {class: "form-input"} %></td>
         <td><%= f.text_field :customer_num , class: "form-input" %></td>
         <td><%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "form-input"})%></td>
         <td><%= f.date_field :date , class: "form-input" %></td>
+        <td><%= f.text_field :industry_status , class: "form-input" %></td>
       </tr>
       <tr>
         <th><%= f.label :status, "新規ステータス", class: "form-text" %></th>

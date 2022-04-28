@@ -203,8 +203,10 @@
       <%# PayPay %>
         <% paypay_user = Paypay.where(user_id: @results.first.user_id) %>
         <% paypay_data = this_period(paypay_user ,@results) %>
-        <% paypay_valuations = paypay_data.sum(:valuation) %>
+        <% paypay_result = result_period(paypay_user ,@results) %>
+        <% paypay_valuations = paypay_result.sum(:valuation) %>
         <% paypay_len = paypay_data.length %>
+        <% paypay_r_len = paypay_result.length %>
       <%# 少額短期保険 %>
         <% st_insurance_user = StInsurance.where(user_id: @results.first.user_id) %>
         <% st_insurance_data = this_period(st_insurance_user,@results) %>
@@ -355,7 +357,7 @@
         <td><%= dmer_slmt2nd_len %></td>
         <td><%= aupay_len %></td>
         <td><%= aupay_slmt_len %></td>
-        <td><%= paypay_len %></td>
+        <td><%= paypay_r_len %></td>
         <td><%= rakuten_pay_len %></td>
         <td><%= rakuten_casa_len %></td>
         <td><%= rakuten_casa_put_len %></td>
@@ -367,7 +369,7 @@
         <td><%= (dmer_slmt2nd_len.to_f / digestion_settlement).round(1) %></td>
         <td><%= (aupay_len.to_f / digestion_new).round(1) %></td>
         <td><%= (aupay_slmt_len.to_f / digestion_settlement).round(1) %></td>
-        <td><%= (paypay_len.to_f / digestion_new).round(1) %></td>
+        <td><%= (paypay_r_len.to_f / digestion_new).round(1) %></td>
         <td><%= (rakuten_pay_len.to_f / digestion_new).round(1) %></td>
         <td><%= (rakuten_casa_len.to_f / digestion_casa).round(1) %></td>
         <td><%= (rakuten_casa_put_len.to_f / digestion_casa_put).round(1) %></td>
@@ -435,7 +437,7 @@
 
         <td colspan="5"><%= aupay_len %></td>
         <td colspan=""><%= aupay_slmt_len %></td>
-        <td colspan=""><%= paypay_len %></td>
+        <td colspan=""><%= paypay_r_len %></td>
         <td colspan=""><%= st_insurance_len %></td>
         <td colspan="4"><%= rakuten_pay_len %></td>
         <td colspan="4"><%= @rakuten_casas_this_month.length - @rakuten_casas_cancel.length + @rakuten_casas_inc.length %></td>
@@ -453,9 +455,8 @@
         <th>獲得数</th>
         <% end %>
         
-        <% 2.times do %>
+        <th>審査完了/獲得数</th>
         <th>獲得数</th>
-        <% end %>
         <th>獲得数</th>
         <th>不備・NG</th>
         <th>増加数</th>
@@ -486,7 +487,7 @@
 
           <td style="color: blue;"><%= aupay_slmt_len %></td>
         <%# PayPay %>
-          <td colspan="" style="color: blue;"><%= @paypays_this_month.length %></td>
+          <td colspan="" style="color: blue;"><%= paypay_r_len %> / <%= paypay_len %></td>
         <%# 少額短期保険 %>
           <td colspan="" style="color: blue;"><%= @st_insurances_this_month.length %></td>
         <%# 楽天ペイ %>
@@ -1662,7 +1663,7 @@
             <td class="out-tb"><%=link_to "詳細",dmer_path(dmer.id),class: "link"  %></td>
             <td class="out-tb">dメル複数</td>
             <td class="out-tb"><%= dmer.client %></td>
-            <td class="out-tb"><%= dmer.store_prop.name %></td>
+            <td class="out-tb"><%= dmer.store_prop.name %>（本店：<%= dmer.store_prop.head_store %>）</td>
             <td class="out-tb"><%= dmer.date %></td>
             <td class="out-tb"><%= dmer.status %></td>
             <td class="out-tb"><%= dmer.share %></td>
@@ -1672,7 +1673,7 @@
         </table>
       </div>
       <div class="base-frame">
-      <h2>auPay新規<%= aupay_new.length %>件</h2>
+      <h2>auPay新規<%= aupay_new.length + aupay_db.length %>件</h2>
         <table class="out-tb">
           <thead>
           <tr>
@@ -1694,6 +1695,44 @@
             <td class="out-tb"><%= aupay.date %></td>
             <td class="out-tb"><%= aupay.status %></td>
             <td class="out-tb"><%= aupay.result_point %></td>
+          </tr>
+          <% end %>
+          <% aupay_db.each do |aupay| %>
+            <td class="out-tb"><%=link_to "詳細",aupay_path(aupay.id),class: "link"  %></td>
+            <td class="out-tb">auPay複数</td>
+            <td class="out-tb"><%= aupay.client %></td>
+            <td class="out-tb"><%= aupay.store_prop.name %>（本店：<%= aupay.store_prop.head_store %>）</td>
+            <td class="out-tb"><%= aupay.date %></td>
+            <td class="out-tb"><%= aupay.status %></td>
+            <td class="out-tb"><%= aupay.result_point %></td>
+          </tr>
+          <% end %>
+          <tbody>
+        </table>
+      </div>
+      <div class="base-frame">
+      <h2>PayPay<%= paypay_r_len %>件</h2>
+        <table class="out-tb">
+          <thead>
+          <tr>
+            <th class="out-th"></th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">審査ステータス</th>
+            <th class="out-th">審査完了日</th>
+          </tr>
+          </thead>
+          <tr>
+          <% paypay_result.each do |paypay| %>
+            <td class="out-tb"><%=link_to "詳細",paypay_path(paypay.id),class: "link"  %></td>
+            <td class="out-tb">auPay新規</td>
+            <td class="out-tb"><%= paypay.client %></td>
+            <td class="out-tb"><%= paypay.store_prop.name %></td>
+            <td class="out-tb"><%= paypay.date %></td>
+            <td class="out-tb"><%= paypay.status %></td>
+            <td class="out-tb"><%= paypay.result_point %></td>
           </tr>
           <% end %>
           <tbody>

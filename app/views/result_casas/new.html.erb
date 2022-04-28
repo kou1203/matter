@@ -3,6 +3,8 @@
   <%= render "shared/header" %>
   <%= form_with model: @result_casa,url: result_result_casas_create_path(@result.id), local: true, class: "form-frame", local: true do |f| %>
     <%= render "shared/error_messages", model: f.object %>
+    <label class="textarea-label">一時メモ</label>
+    <textarea></textarea>
     <%= f.hidden_field :result_id, value: @result.id %>
     <h2>N G０１：情報不足G</h2>
     <table>
