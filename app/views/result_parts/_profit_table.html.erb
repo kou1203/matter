@@ -501,13 +501,14 @@
           <td style="color: blue;"><%= @rakuten_casas_inc.length %></td>
       </tr>
       <tr>
-        <th colspan=4>dメル獲得 内訳</th>
+        <th colspan=5>dメル獲得 内訳</th>
         <th colspan=4>dメル決済内訳</th>
       </tr>
       <tr>
         <th>USEN</th>
         <th>マックス通常</th>
-        <th>マックス即時</th>
+        <th>マックス即時（d）</th>
+        <th>マックス即時（メル）</th>
         <th>ピアズ</th>
         <th>USEN</th>
         <th>マックス通常</th>
@@ -517,8 +518,9 @@
       <tr></tr>
       <tr>
         <td><%= dmer_uq.where(client: "USEN").length %></td>
-        <td><%= dmer_uq.where(client: "マックスサポート").length %></td>
-        <td><%= dmer_uq.where(client: "マックス即時").length %></td>
+        <td><%= dmer_uq.where(client: "マックス通常").length %></td>
+        <td><%= dmer_uq.where(client: "マックス即時（d）").length %></td>
+        <td><%= dmer_uq.where(client: "マックス即時（メル）").length %></td>
         <td><%= dmer_uq.where(client: "ピアズ").length %></td>
         <td><%= dmer_slmt.where(client: "USEN").length %></td>
         <td><%= dmer_slmt.where(client: "マックスサポート").length %></td>
@@ -1562,31 +1564,38 @@
         <td ><%= casa_out.out_get_09 %></td>
         <% end %>
       <% end %>
-    <%# サミット切り返し %>
-      <% dmaxspt_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).where(client: "マックスサポート").length %>
-      <% dmax_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).where(client: "マックス即時").length %>
+    <%# 獲得商材 %>
+      <% dmax_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).where(client: "マックス通常").length %>
+      <% dmax_mer_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).where(client: "マックス即時（メル）").length %>
+      <% dmax_d_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).where(client: "マックス即時（d）").length %>
       <% dpias_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).where(client: "ピアズ").length %>
       <% dusen_date_len = Dmer.where(user_id: result.user_id).where(date: result.date).where(client: "USEN").length %>
-      <% dmax_slmt_date_len = Dmer.where(settlementer_id: result.user_id).where(settlement: result.date).where(client: "マックス即時").length %>
-      <% dpias_slmt_date_len = Dmer.where(settlementer_id: result.user_id).where(settlement: result.date).where(client: "ピアズ").length %>
-      <% dusen_slmt_date_len = Dmer.where(settlementer_id: result.user_id).where(settlement: result.date).where(client: "USEN").length %>
+      <%# 決済 %>
+      <% dmax_mer_slmt_date_len = Dmer.where(settlementer_id: result.user_id).where(picture: result.date).where(client: "マックス即時（メル）").length %>
+      <% dpias_slmt_date_len = Dmer.where(settlementer_id: result.user_id).where(picture: result.date).where(client: "ピアズ").length %>
+      <% dmax_slmt_date_len = Dmer.where(settlementer_id: result.user_id).where(picture: result.date).where(client: "マックス通常").length %>
+      <% dmax_d_slmt_date_len = Dmer.where(settlementer_id: result.user_id).where(picture: result.date).where(client: "マックス即時（d）").length %>
+      <% dusen_slmt_date_len = Dmer.where(settlementer_id: result.user_id).where(picture: result.date).where(client: "USEN").length %>
       <% dmer_slmt2nd_date_len = Dmer.where(settlementer_id: result.user_id).where(settlement_second: result.date).length %>
       <% aupay_date_len = Aupay.where(user_id: result.user_id).where(date: result.date).length %>
-      <% aupay_slmt_date_len = Aupay.where(settlementer_id: result.user_id).where(settlement: result.date).length %>
+      <% aupay_slmt_date_len = Aupay.where(settlementer_id: result.user_id).where(picture: result.date).length %>
       <% paypay_date_len = Paypay.where(user_id: result.user_id).where(date: result.date).length %>
       <% rakuten_pay_date_len = RakutenPay.where(user_id: result.user_id).where(date: result.date).length %>
       <td>
-        <% if dmaxspt_date_len != 0 %>
-          dメルマックス<%= dmaxspt_date_len %>
-        <% end %>
         <% if dmax_date_len != 0 %>
-          dメル即時<%= dmax_date_len %>
+          dマックス通常<%= dmax_date_len %>
+        <% end %>
+        <% if dmax_mer_date_len != 0 %>
+          d即時（メル）<%= dmax_mer_date_len %>
+        <% end %>
+        <% if dmax_d_date_len != 0 %>
+          d即時（d）<%= dmax_d_date_len %>
         <% end %>
         <% if dpias_date_len != 0 %>
-          dメルピアズ<%= dpias_date_len %>
+          dピアズ<%= dpias_date_len %>
         <% end %>
         <% if dusen_date_len != 0 %>
-          dメルUSEN<%= dpias_date_len %>
+          dUSEN<%= dpias_date_len %>
         <% end %>
         <% if aupay_date_len != 0 %>
           auPay<%= aupay_date_len %>
@@ -1598,10 +1607,16 @@
           楽天ペイ<%= rakuten_pay_date_len %>
         <% end %>
         <% if dmax_slmt_date_len != 0 %>
-          dメル決済マックス<%= dmax_slmt_date_len %>
+          dマックス通常決済<%= dmax_slmt_date_len %>
+        <% end %>
+        <% if dmax_mer_slmt_date_len != 0 %>
+          d即時（メル）決済<%= dmax_mer_slmt_date_len %>
+        <% end %>
+        <% if dmax_d_slmt_date_len != 0 %>
+          d即時（d）決済<%= dmax_d_slmt_date_len %>
         <% end %>
         <% if dpias_slmt_date_len != 0 %>
-          dメル決済ピアズ<%= dpias_slmt_date_len %>
+          dピアズ決済<%= dpias_slmt_date_len %>
         <% end %>
         <% if dusen_slmt_date_len != 0 %>
           dメル決済USEN<%= dusen_slmt_date_len %>
@@ -1633,6 +1648,18 @@
         .where(result_point: @results.maximum(:date).beginning_of_month..@results.maximum(:date).end_of_month)
         .where(status: "審査通過")
     %>
+    <% rakuten_pay_new = 
+        rakuten_pay_user
+        .where(date: @results.minimum(:date)..@results.maximum(:date))
+        .where.not(status: "自社不備")
+        .or(rakuten_pay_user
+        .where.not(date: @results.minimum(:date)..@results.maximum(:date))
+        .where(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))
+        .where.not(status: "自社不備")
+        )
+
+     
+     %>
     <div class="result-flex">
       <div class="base-frame">
       <h2>dメル新規<%= dmer_new.length + dmer_db.length %>件</h2>
@@ -1646,6 +1673,7 @@
             <th class="out-th">獲得日</th>
             <th class="out-th">審査ステータス</th>
             <th class="out-th">審査完了日（複数店は共有日）</th>
+            <th class="out-th">評価売上</th>
           </tr>
           </thead>
           <tr>
@@ -1657,6 +1685,7 @@
             <td class="out-tb"><%= dmer.date %></td>
             <td class="out-tb"><%= dmer.status %></td>
             <td class="out-tb"><%= dmer.result_point %></td>
+            <td class="out-tb"><%= dmer.valuation_new %></td>
           </tr>
           <% end %>
           <% dmer_db.each do |dmer| %>
@@ -1667,6 +1696,7 @@
             <td class="out-tb"><%= dmer.date %></td>
             <td class="out-tb"><%= dmer.status %></td>
             <td class="out-tb"><%= dmer.share %></td>
+            <td class="out-tb"><%= dmer.valuation_new %></td>
           </tr>
           <% end %>
           <tbody>
@@ -1684,6 +1714,7 @@
             <th class="out-th">獲得日</th>
             <th class="out-th">審査ステータス</th>
             <th class="out-th">審査完了日</th>
+            <th class="out-th">評価売上</th>
           </tr>
           </thead>
           <tr>
@@ -1695,6 +1726,7 @@
             <td class="out-tb"><%= aupay.date %></td>
             <td class="out-tb"><%= aupay.status %></td>
             <td class="out-tb"><%= aupay.result_point %></td>
+            <td class="out-tb"><%= aupay.valuation_new %></td>
           </tr>
           <% end %>
           <% aupay_db.each do |aupay| %>
@@ -1705,6 +1737,7 @@
             <td class="out-tb"><%= aupay.date %></td>
             <td class="out-tb"><%= aupay.status %></td>
             <td class="out-tb"><%= aupay.result_point %></td>
+            <td class="out-tb"><%= aupay.valuation_new %></td>
           </tr>
           <% end %>
           <tbody>
@@ -1722,6 +1755,7 @@
             <th class="out-th">獲得日</th>
             <th class="out-th">審査ステータス</th>
             <th class="out-th">審査完了日</th>
+            <th class="out-th">評価売上</th>
           </tr>
           </thead>
           <tr>
@@ -1733,6 +1767,37 @@
             <td class="out-tb"><%= paypay.date %></td>
             <td class="out-tb"><%= paypay.status %></td>
             <td class="out-tb"><%= paypay.result_point %></td>
+            <td class="out-tb"><%= paypay.valuation %></td>
+          </tr>
+          <% end %>
+          <tbody>
+        </table>
+      </div>
+      <div class="base-frame">
+      <h2>楽天ペイ<%= rakuten_pay_new.length %>件</h2>
+        <table class="out-tb">
+          <thead>
+          <tr>
+            <th class="out-th"></th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">審査ステータス</th>
+            <th class="out-th">審査完了日</th>
+            <th class="out-th">評価売上</th>
+          </tr>
+          </thead>
+          <tr>
+          <% rakuten_pay_new.each do |rakuten_pay| %>
+            <td class="out-tb"><%=link_to "詳細",rakuten_pay_path(rakuten_pay.id),class: "link"  %></td>
+            <td class="out-tb">auPay新規</td>
+            <td class="out-tb"><%= rakuten_pay.client %></td>
+            <td class="out-tb"><%= rakuten_pay.store_prop.name %></td>
+            <td class="out-tb"><%= rakuten_pay.date %></td>
+            <td class="out-tb"><%= rakuten_pay.status %></td>
+            <td class="out-tb"><%= rakuten_pay.result_point %></td>
+            <td class="out-tb"><%= rakuten_pay.valuation %></td>
           </tr>
           <% end %>
           <tbody>
@@ -1753,6 +1818,7 @@
             <th class="out-th">獲得日</th>
             <th class="out-th">審査ステータス</th>
             <th class="out-th">決済完了日</th>
+            <th class="out-th">評価売上</th>
           </tr>
           </thead>
           <tr>
@@ -1764,6 +1830,7 @@
             <td class="out-tb"><%= dmer.date %></td>
             <td class="out-tb"><%= dmer.status %></td>
             <td class="out-tb"><%= dmer.status_update_settlement %></td>
+            <td class="out-tb"><%= dmer.valuation_settlement %></td>
           </tr>
           <% end %>
           <tbody>
@@ -1781,6 +1848,7 @@
             <th class="out-th">獲得日</th>
             <th class="out-th">審査ステータス</th>
             <th class="out-th">決済完了日</th>
+            <th class="out-th">評価売上</th>
           </tr>
           </thead>
           <tr>
@@ -1792,6 +1860,7 @@
             <td class="out-tb"><%= dmer.date %></td>
             <td class="out-tb"><%= dmer.status %></td>
             <td class="out-tb"><%= dmer.status_update_settlement %></td>
+            <td class="out-tb"><%= dmer.valuation_second_settlement %></td>
           </tr>
           <% end %>
           <tbody>
@@ -1809,6 +1878,7 @@
             <th class="out-th">獲得日</th>
             <th class="out-th">審査ステータス</th>
             <th class="out-th">決済完了日</th>
+            <th class="out-th">評価売上</th>
           </tr>
           </thead>
           <tr>
@@ -1820,6 +1890,7 @@
             <td class="out-tb"><%= aupay.date %></td>
             <td class="out-tb"><%= aupay.status %></td>
             <td class="out-tb"><%= aupay.status_update_settlement %></td>
+            <td class="out-tb"><%= aupay.valuation_settlement %></td>
           </tr>
           <% end %>
           <tbody>
