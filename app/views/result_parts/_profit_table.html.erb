@@ -280,6 +280,41 @@
             <% end %>
           <% end %>
     <h1>獲得商材内訳</h1>
+      <h2>営業打込売上</h2>
+      <%# 変数 %>
+        <% about_new_sum = @results.where(shift: "キャッシュレス新規").sum(:profit) %>
+        <% about_slmt_sum = @results.where(shift: "キャッシュレス決済").sum(:profit) %>
+        <% about_new_ave = about_new_sum / @results.where(shift: "キャッシュレス新規").length %>
+        <% about_slmt_ave = about_slmt_sum / @results.where(shift: "キャッシュレス決済").length %>
+        <% about_new_fin = about_new_ave * new_shift %>
+        <% about_slmt_fin = about_slmt_ave * settlement_shift %>
+      <table>
+        <tr>
+          <th>平均売上（新規）</th>
+          <th>平均売上（決済）</th>
+          <th>現状売上（新規）</th>
+          <th>現状売上（決済）</th>
+          <th>現状合計売上</th>
+        </tr>
+        <tr>
+          <td><%= about_new_ave.to_s(:delimited) rescue "0" %></td>
+          <td><%= about_slmt_ave.to_s(:delimited) rescue "0" %></td>
+          <td><%= about_new_sum.to_s(:delimited) rescue "0" %></td>
+          <td><%= about_slmt_sum.to_s(:delimited) rescue "0" %></td>
+          <td><%= (about_new_sum + about_slmt_sum).to_s(:delimited) rescue "0" %></td>
+        </tr>
+        <tr>
+          <th>終着見込（新規）</th>
+          <th>終着見込（決済）</th>
+          <th>終着見込（合計）</th>
+        </tr>
+        <tr>
+          <td><%= about_new_fin.to_s(:delimited) rescue "0" %></td>
+          <td><%= about_slmt_fin.to_s(:delimited) rescue "0" %></td>
+          <td><%= (about_new_fin + about_slmt_fin).to_s(:delimited) rescue "0" %></td>
+        </tr>
+
+      </table>
       <h2>売上/予測値 決済予定</h2>
       <table>
         <tr></tr>
@@ -329,7 +364,23 @@
           <td><span class="input-math", id="slmt-profit">決済率と連動してます</span></td>
           <td ><span id="sum-profit" >決済率と連動してます</span></td>
         </tr>
+        <input type="hidden", id="new-shift" value="<%= new_shift - digestion_new %>"><%# 新規残りシフト数をjsで取得する %>
+        <input type="hidden", id="slmt-shift" value="<%= settlement_shift - digestion_settlement %>"><%# 決済残りシフト数をjsで取得する %>
+        <input type="hidden", id="new-sum-now" value="<%= sum_profit_new %>"><%# 決済残りシフト数をjsで取得する %>
+        <input type="hidden", id="slmt-sum-now" value="<%= sum_profit_slmt %>"><%# 決済残りシフト数をjsで取得する %>
         <tr>
+          <th>目標合計売上</th>
+          <th>目標新規売上</th>
+          <th>目標決済売上</th>
+          <th>必要新規Ave</th>
+          <th>必要決済Ave</th>
+        </tr>
+        <tr>
+          <td><span class="input-math", id="sum-goal">目標売上から逆算</span></td>
+          <td><input type="number", class="input-math", id="new-goal", placeholder="目標売上を入力" ></td>
+          <td><input type="number", class="input-math", id="slmt-goal" , placeholder="目標売上を入力" ></td>
+          <td ><span id="new-need" >目標売上から逆算</span></td>
+          <td ><span id="slmt-need" >目標売上から逆算</span></td>
         </tr>
       </table>
               <p class="nav-text">決済対象は決済期限が検索した日付の初日〜検索した日付の最終日より3ヶ月後の末日までの決済対象になります。</p>
@@ -1262,7 +1313,7 @@
       <tr></tr>
       <tr>
       <%# カラム %>
-        <th colspan="7" >終着</th>
+        <th colspan="8" >終着</th>
         <th colspan="5" >合計</th>
         <th colspan="4" >前半</th>
         <th colspan="4 ">後半</th>
@@ -1330,6 +1381,7 @@
           <th class="sticky">日付</th>
           <th >帯同</th>
           <th >エリア</th>
+          <th >営業予想売上</th>
           <th >売上</th>
           <th >訪問数</th>
           <th >対面数</th>
@@ -1413,6 +1465,16 @@
           RakutenPay.where(user_id: result.user_id).where(date: result.date).sum(:valuation) +
           RakutenCasa.where(user_id: result.user_id).where(date: result.date).sum(:valuation_new) +
           casa_put_self + casa_put_other + casa_put_request %>
+        <% if result.profit.present? %>
+          <% if result.profit == date_profit.to_i %>
+          <td style="color:blue;"><%= result.profit.to_s(:delimited) %></td>
+          <% else %>
+          <td style="color:red;"><%= result.profit.to_s(:delimited) %></td>
+          <% end %>
+        <% else %>
+          <td><%= result.profit.to_s(:delimited) rescue "未入力" %></td>
+        <% end %>
+        
         <td ><%= date_profit.round().to_s(:delimited) %></td>
         <td ><%= result.first_visit + result.latter_visit rescue "NaN" %></td>
         <td ><%= result.first_interview + result.latter_interview rescue "NaN" %></td>
@@ -1685,7 +1747,7 @@
             <td class="out-tb"><%= dmer.date %></td>
             <td class="out-tb"><%= dmer.status %></td>
             <td class="out-tb"><%= dmer.result_point %></td>
-            <td class="out-tb"><%= dmer.valuation_new %></td>
+            <td class="out-tb"><%= dmer.valuation_new.to_s(:delimited) %></td>
           </tr>
           <% end %>
           <% dmer_db.each do |dmer| %>
@@ -1696,7 +1758,7 @@
             <td class="out-tb"><%= dmer.date %></td>
             <td class="out-tb"><%= dmer.status %></td>
             <td class="out-tb"><%= dmer.share %></td>
-            <td class="out-tb"><%= dmer.valuation_new %></td>
+            <td class="out-tb"><%= dmer.valuation_new.to_s(:delimited) %></td>
           </tr>
           <% end %>
           <tbody>
@@ -1726,7 +1788,7 @@
             <td class="out-tb"><%= aupay.date %></td>
             <td class="out-tb"><%= aupay.status %></td>
             <td class="out-tb"><%= aupay.result_point %></td>
-            <td class="out-tb"><%= aupay.valuation_new %></td>
+            <td class="out-tb"><%= aupay.valuation_new.to_s(:delimited) %></td>
           </tr>
           <% end %>
           <% aupay_db.each do |aupay| %>
@@ -1737,7 +1799,7 @@
             <td class="out-tb"><%= aupay.date %></td>
             <td class="out-tb"><%= aupay.status %></td>
             <td class="out-tb"><%= aupay.result_point %></td>
-            <td class="out-tb"><%= aupay.valuation_new %></td>
+            <td class="out-tb"><%= aupay.valuation_new.to_s(:delimited) %></td>
           </tr>
           <% end %>
           <tbody>
@@ -1767,7 +1829,7 @@
             <td class="out-tb"><%= paypay.date %></td>
             <td class="out-tb"><%= paypay.status %></td>
             <td class="out-tb"><%= paypay.result_point %></td>
-            <td class="out-tb"><%= paypay.valuation %></td>
+            <td class="out-tb"><%= paypay.valuation.to_s(:delimited) %></td>
           </tr>
           <% end %>
           <tbody>
@@ -1797,7 +1859,7 @@
             <td class="out-tb"><%= rakuten_pay.date %></td>
             <td class="out-tb"><%= rakuten_pay.status %></td>
             <td class="out-tb"><%= rakuten_pay.result_point %></td>
-            <td class="out-tb"><%= rakuten_pay.valuation %></td>
+            <td class="out-tb"><%= rakuten_pay.valuation.to_s(:delimited) %></td>
           </tr>
           <% end %>
           <tbody>
@@ -1830,7 +1892,7 @@
             <td class="out-tb"><%= dmer.date %></td>
             <td class="out-tb"><%= dmer.status %></td>
             <td class="out-tb"><%= dmer.status_update_settlement %></td>
-            <td class="out-tb"><%= dmer.valuation_settlement %></td>
+            <td class="out-tb"><%= dmer.valuation_settlement.to_s(:delimited) %></td>
           </tr>
           <% end %>
           <tbody>
@@ -1860,7 +1922,7 @@
             <td class="out-tb"><%= dmer.date %></td>
             <td class="out-tb"><%= dmer.status %></td>
             <td class="out-tb"><%= dmer.status_update_settlement %></td>
-            <td class="out-tb"><%= dmer.valuation_second_settlement %></td>
+            <td class="out-tb"><%= dmer.valuation_second_settlement.to_s(:delimited) %></td>
           </tr>
           <% end %>
           <tbody>
@@ -1890,7 +1952,7 @@
             <td class="out-tb"><%= aupay.date %></td>
             <td class="out-tb"><%= aupay.status %></td>
             <td class="out-tb"><%= aupay.status_update_settlement %></td>
-            <td class="out-tb"><%= aupay.valuation_settlement %></td>
+            <td class="out-tb"><%= aupay.valuation_settlement.to_s(:delimited) %></td>
           </tr>
           <% end %>
           <tbody>

@@ -252,6 +252,8 @@ class ResultsController < ApplicationController
       :area,
       :shift,
       :ojt_id, 
+      :profit,
+      :product,
     # 基準値
       # 前半
       :first_visit,

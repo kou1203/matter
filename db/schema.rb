@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_26_055447) do
+ActiveRecord::Schema.define(version: 2022_04_30_065908) do
 
   create_table "aupays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num"
@@ -750,6 +750,8 @@ ActiveRecord::Schema.define(version: 2022_03_26_055447) do
     t.integer "manipulative_get"
     t.integer "other_service_visit"
     t.integer "other_service_get"
+    t.integer "profit"
+    t.string "product"
     t.index ["ojt_id"], name: "index_results_on_ojt_id"
     t.index ["user_id"], name: "index_results_on_user_id"
   end
