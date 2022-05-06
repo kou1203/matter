@@ -76,6 +76,9 @@
     <%= alert %>
     <hr>
     <% if @aupays.empty? %>
+    
+
+    
     <% else %>
       <h1>表示範囲：<%= @aupays.minimum(:date) %>（<%= days[@aupays.minimum(:date).wday] %>〜<%= @aupays.maximum(:date) %>（<%= days[@aupays.maximum(:date).wday] %>）</h1>
 

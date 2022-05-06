@@ -3,12 +3,43 @@ class ResultsController < ApplicationController
   def index 
     @q = Result.ransack(params[:q])
     @results = 
-    if params[:q].nil? 
+    if params[:q].nil?
       Result.none 
     else    
       @q.result(distinct: false).includes(:user).order(date: :asc)
     end
-    @month = params[:month] ? Date.parse(params[:month]) : @results.minimum(:date)
+    @month = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
+    # 日々進捗
+    @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today
+    # 日付が~25までは前月の26日が初日と計算するようにする
+    if 26 > @month_daily.day
+      @shift_month = 
+        Shift.includes(:user)
+        .where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.since(24.days))
+      @result_month = Result.includes(:user).where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily)
+      @result_yesterday = Result.includes(:user).where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.yesterday)
+      @result_last_month = Result.includes(:user).where(date: @month_daily.ago(2.month).beginning_of_month.since(25.days)..@month_daily.prev_month.beginning_of_month.since(24.days))
+      @dmer_month = Dmer.includes(:user).all
+      @dmer_slmt_month = Dmer.includes(:user).all
+      @dmer_2ndslmt_month = Dmer.includes(:user).all
+      @aupay_month = Aupay.includes(:user).all
+      @aupay_slmt_month = Aupay.includes(:user).all
+      @rakuten_pay_month = RakutenPay.includes(:user).all
+      @paypay_month = Paypay.includes(:user).all
+    else
+      @shift_month = Shift.includes(:user).where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily.next_month.beginning_of_month.since(24.days))
+      @result_month = Result.includes(:user).where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily)
+      @result_yesterday = Result.includes(:user).where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily.yesterday)
+      @result_last_month = Result.includes(:user).where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily
+      .beginning_of_month.since(24.days))
+      @dmer_month = Dmer.includes(:user).all
+      @dmer_slmt_month = Dmer.includes(:user).all
+      @dmer_2ndslmt_month = Dmer.includes(:user).all
+      @aupay_month = Aupay.includes(:user).all
+      @aupay_slmt_month = Aupay.includes(:user).all
+      @rakuten_pay_month = RakutenPay.includes(:user).all
+      @paypay_month = Paypay.includes(:user).all
+    end
       @shifts = Shift.includes(:user).all
       # 個別利益表 
       if @results.group(:user_id).length == 1 
@@ -20,7 +51,6 @@ class ResultsController < ApplicationController
           @st_insurances_user = StInsurance.where(user_id: @results.first.user_id )
           @st_insurances_this_month = this_period(@st_insurances_user,@results)
           @st_insurances_def_this_month = this_period(@st_insurances_this_month,@results)
-
         # 楽天フェムト新規
           @rakuten_casas_user = RakutenCasa.where(user_id: @results.first.user_id)
           @rakuten_casas_this_month = this_period(@rakuten_casas_user, @results)
