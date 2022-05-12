@@ -1,0 +1,176 @@
+<h2>経費詳細</h2>
+<button class="submit-btn"><%= link_to "経費追加", new_cost_path, class: "btn-link" %></button>
+
+
+<table>
+  <thead>
+    <tr>
+      <th class="profit-th">項目</th>
+      <th class="profit-th">中部キャッシュ</th>
+      <th class="profit-th">関西キャッシュ</th>
+      <th class="profit-th">関東キャッシュ</th>
+      <th class="profit-th">キャッシュ合計</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr></tr>
+    <tr>
+      <th class="profit-th">編集</th>
+      <td>
+      <% @cost_chubu.each do |cost| %>
+        <%= link_to cost.group, edit_cost_path(cost.id) ,class: "edit-link" %>
+      <% end %>
+      </td>
+      <td>
+      <% @cost_kansai.each do |cost| %>
+        <%= link_to cost.group, edit_cost_path(cost.id) ,class: "edit-link" %>
+      <% end %>
+      </td>
+      <td>
+      <% @cost_kanto.each do |cost| %>
+        <%= link_to cost.group, edit_cost_path(cost.id) ,class: "edit-link" %>
+      <% end %>
+      </td>
+      <td></td>
+
+    </tr>
+    <tr>
+      <th class="profit-th">営業人件費</th>
+      <td><%= @cost_chubu.sum(:sales_man).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kansai.sum(:sales_man).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kanto.sum(:sales_man).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_all.sum(:sales_man).to_s(:delimited) rescue "未入力" %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">管理・運営人件費</th>
+      <td><%= @cost_chubu.sum(:office_worker).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kansai.sum(:office_worker).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kanto.sum(:office_worker).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_all.sum(:office_worker).to_s(:delimited) rescue "未入力" %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">給与の15％</th>
+      <% paying15per_chubu = ((@cost_chubu.sum(:sales_man) + @cost_chubu.sum(:office_worker)) * 0.15).round() %>
+      <% paying15per_kansai = ((@cost_kansai.sum(:sales_man) + @cost_kansai.sum(:office_worker)) * 0.15).round() %>
+      <% paying15per_kanto = ((@cost_kanto.sum(:sales_man) + @cost_kanto.sum(:office_worker)) * 0.15).round() %>
+      <% paying15per_all = ((@cost_all.sum(:sales_man) + @cost_all.sum(:office_worker)) * 0.15).round() %>
+      <td><%= paying15per_chubu.to_s(:delimited) %></td>
+      <td><%= paying15per_kansai.to_s(:delimited) %></td>
+      <td><%= paying15per_kanto.to_s(:delimited) %></td>
+      <td><%= paying15per_all.to_s(:delimited) %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">営業側 交通費・経費</th>
+      <td><%= @cost_chubu.sum(:sales_man_cost).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kansai.sum(:sales_man_cost).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kanto.sum(:sales_man_cost).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_all.sum(:sales_man_cost).to_s(:delimited) rescue "未入力" %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">管理側 交通費・経費</th>
+      <td><%= @cost_chubu.sum(:office_worker_cost).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kansai.sum(:office_worker_cost).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kanto.sum(:office_worker_cost).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_all.sum(:office_worker_cost).to_s(:delimited) rescue "未入力" %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">社会保険</th>
+      <td><%= @cost_chubu.sum(:social_insurance).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kansai.sum(:social_insurance).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kanto.sum(:social_insurance).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_all.sum(:social_insurance).to_s(:delimited) rescue "未入力" %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">オフィス</th>
+      <td><%= @cost_chubu.sum(:office).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kansai.sum(:office).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kanto.sum(:office).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_all.sum(:office).to_s(:delimited) rescue "未入力" %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">水道光熱費・通信費など</th>
+      <td><%= @cost_chubu.sum(:utility_net_cost).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kansai.sum(:utility_net_cost).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kanto.sum(:utility_net_cost).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_all.sum(:utility_net_cost).to_s(:delimited) rescue "未入力" %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">寮</th>
+      <td><%= @cost_chubu.sum(:dorm).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kansai.sum(:dorm).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kanto.sum(:dorm).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_all.sum(:dorm).to_s(:delimited) rescue "未入力" %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">賞与貯蓄</th>
+      <td><%= @cost_chubu.sum(:bonus_stock).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kansai.sum(:bonus_stock).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kanto.sum(:bonus_stock).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_all.sum(:bonus_stock).to_s(:delimited) rescue "未入力" %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">旅行貯蓄</th>
+      <td><%= @cost_chubu.sum(:travel_stock).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kansai.sum(:travel_stock).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kanto.sum(:travel_stock).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_all.sum(:travel_stock).to_s(:delimited) rescue "未入力" %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">臨時費用</th>
+      <td><%= @cost_chubu.sum(:other).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kansai.sum(:other).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_kanto.sum(:other).to_s(:delimited) rescue "未入力" %></td>
+      <td><%= @cost_all.sum(:other).to_s(:delimited) rescue "未入力" %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">人件費合計</th>
+      <td><%=
+        (@cost_chubu.sum("sales_man + office_worker") + paying15per_chubu)
+        .to_s(:delimited) rescue "未入力" 
+      %></td>
+      <td><%=
+        (@cost_kansai.sum("sales_man + office_worker") + paying15per_kansai)
+        .to_s(:delimited) rescue "未入力" 
+      %></td>
+      <td><%=
+        (@cost_kanto.sum("sales_man + office_worker") + paying15per_kanto)
+        .to_s(:delimited) rescue "未入力" 
+      %></td>
+      <td><%=
+        (@cost_all.sum("sales_man + office_worker") + paying15per_all)
+        .to_s(:delimited) rescue "未入力" 
+      %></td>
+    </tr>
+    <tr>
+      <th class="profit-th">販管費合計</th>
+      <td><%= 
+        (@cost_chubu.sum("
+          sales_man + office_worker + administrator + social_insurance +
+          sales_man_cost + office_worker_cost + office + dorm + utility_net_cost +
+          bonus_stock + travel_stock + other
+        ") + paying15per_chubu).to_s(:delimited)
+      %></td>
+      <td><%= 
+        (@cost_kansai.sum("
+          sales_man + office_worker + administrator + social_insurance +
+          sales_man_cost + office_worker_cost + office + dorm + utility_net_cost +
+          bonus_stock + travel_stock + other
+        ") + paying15per_kansai).to_s(:delimited)
+      %></td>
+      <td><%= 
+        (@cost_kanto.sum("
+          sales_man + office_worker + administrator + social_insurance +
+          sales_man_cost + office_worker_cost + office + dorm + utility_net_cost +
+          bonus_stock + travel_stock + other
+        ") + paying15per_kanto).to_s(:delimited)
+      %></td>
+      <td><%= 
+        (@cost_all.sum("
+          sales_man + office_worker + administrator + social_insurance +
+          sales_man_cost + office_worker_cost + office + dorm + utility_net_cost +
+          bonus_stock + travel_stock + other
+        ") + paying15per_all).to_s(:delimited)
+      %></td>
+    </tr>
+  </tbody>
+</table>

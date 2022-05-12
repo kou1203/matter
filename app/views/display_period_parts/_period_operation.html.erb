@@ -4,9 +4,9 @@
     <%= form_with model: @display_period,local: true do |f| %>
     <table>
       <tr>
-        <th colspan="2">01：キャッシュ</th>
-        <th colspan="2">02：フェムト</th>
-        <th colspan="2">03：サミット</th>
+        <th colspan="2" class="profit-th">01：キャッシュ</th>
+        <th colspan="2" class="profit-th">02：フェムト</th>
+        <th colspan="2" class="profit-th">03：サミット</th>
       </tr>
       <tr>
         <th>対象期間（始）</th>
@@ -25,7 +25,7 @@
         <td><%= f.date_field :end_period_03, class: "input" %></td>
       </tr>
     </table>
-    <%= f.submit "登録",class: "submit-btn" %>
+    <%= f.submit "期間登録",class: "submit-btn" %>
     <% end %>
   <% else %>
   <%# 更新 %>
@@ -34,9 +34,9 @@
       <tr>
       </tr>
       <tr>
-        <th colspan="2">01：キャッシュ</th>
-        <th colspan="2">02：フェムト</th>
-        <th colspan="2">03：サミット</th>
+        <th colspan="2" class="profit-th">01：キャッシュ</th>
+        <th colspan="2" class="profit-th">02：フェムト</th>
+        <th colspan="2" class="profit-th">03：サミット</th>
       </tr>
       <tr>
         <th>対象期間（始）</th>
@@ -53,6 +53,6 @@
         <td><%= f.date_field :start_period_03, class: "input" %></td>
         <td><%= f.date_field :end_period_03, class: "input" %></td>
     </table>
-    <%= f.submit "更新",class: "submit-btn" %>
+    <%= f.submit "期間更新",class: "submit-btn" %>
   <% end %>
   <% end %>

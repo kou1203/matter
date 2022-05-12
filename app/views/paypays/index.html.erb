@@ -25,6 +25,7 @@
         <tr >
           <th class="search-head" rowspan="2" >検索</th>
           <th colspan="2" class="search-th">獲得日付</th>
+          <th class="search-th">管理番号</th>
           <th class="search-th">店舗名</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">審査ステータス</th>
@@ -34,6 +35,7 @@
         <tr >
           <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
           <td ><%= f.date_field :date_lteq, class: "input" %></td>
+          <td ><%= f.text_field :customer_num_cont, class: "input" %></td>
           <td ><%= f.text_field :store_prop_name_cont, class: "input" %></td>
           <td ><%= f.text_field :user_name_cont, class: "input" %></td>
           <td ><%= f.select :status_eq, options_from_collection_for_select(Paypay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
@@ -83,6 +85,7 @@
         <th class="out-tb">後確状況</th>
         <th class="out-tb">審査ステータス</th>
         <th class="out-tb">審査完了日</th>
+        <th class="out-tb">管理番号</th>
       </tr>
     </thead>
     <tbody>
@@ -96,6 +99,7 @@
         <td ><%= paypay.remarks %></td>
         <td ><%= paypay.status %></td>
         <td ><%= paypay.result_point %></td>
+        <td ><%= paypay.customer_num %></td>
       </tr>
       <% end %>
     </tbody>

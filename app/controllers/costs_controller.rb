@@ -17,7 +17,7 @@ class CostsController < ApplicationController
   def create 
     @cost = Cost.new(cost_params)
     if @cost.save
-      redirect_to costs_path
+      redirect_to display_periods_path
     else  
       render :new 
     end 
@@ -30,7 +30,7 @@ class CostsController < ApplicationController
   def update 
     @cost = Cost.find(params[:id])
     @cost.update(cost_params)
-    redirect_to costs_path
+    redirect_to display_periods_path
   end 
 
   private 
@@ -39,6 +39,7 @@ class CostsController < ApplicationController
       :year, 
       :month, 
       :base,
+      :group,
       :sales_man, 
       :office_worker, 
       :social_insurance, 

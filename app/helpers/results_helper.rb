@@ -144,13 +144,13 @@ module ResultsHelper
 
 
     def slmt2nd_dead_line(product,date)
-      return product.where(client: "ピアズ")
+      return product
         .where(settlement_deadline: date.minimum(:date)
         .prev_month..date.maximum(:date).since(3.month).end_of_month)
         .where(status: "審査OK")
         .where(settlement: Date.new(2021-12-01)..date.maximum(:date).prev_month.end_of_month)
         .where(settlement_second: date.minimum(:date)..date.maximum(:date))
-        .or(product.where(client: "ピアズ")
+        .or(product
         .where(settlement_deadline: date.minimum(:date).prev_month..date.maximum(:date).since(3.month).end_of_month)
         .where(status: "審査OK")
         .where(settlement: Date.new(2021-12-01)..date.maximum(:date)

@@ -1,20 +1,37 @@
-<div data-scope-path="costs/edit">
-  <h1>販管費入力</h1>
+<div data-scope-path="shared/header">
+  <h1>販管費編集</h1>
   <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div class="main">
+  <div data-scope-path="costs/new_edit">
   <%= form_with model: @cost, class: "form-frame", local: true do |f| %>
   <%= render "shared/error_messages", model: f.object %>
   <%= f.hidden_field :update_date , value: Date.today %>  
   <table>
   <%# 一列目 %>
     <tr>
-      <th class="date-th">日</th>
-      <th class="date-th">付</th>
-      <td class="date-td"><%= f.number_field :year, value: Date.today.year, class: "input" %></td>
+    
+    </tr>
+    <tr>
+      <th style="color:#676565;">日付：</th>
+      <td class="date-td"><%= f.number_field :year, class: "input" %></td>
       <th class="date-th">年</th>
-      <td class="date-td"><%= f.number_field :month, value: Date.today.month, class: "input" %></td>
+      <td class="date-td"><%= f.number_field :month, class: "input" %></td>
       <th class="date-th">月</th>
-      <th style="color:#676565;">　　拠点：</th>
+    </tr>
+  </table><br>
+  <table>
+    <tr>
+      <th ><%= f.label :base, "拠点", class: "form-text" %></th>
+      <th ><%= f.label :group, "グループ", class: "form-text" %></th>
+    <tr>
+    </tr>
       <td><%= f.select :base,{"中部キャッシュレス": "中部キャッシュレス", "関西キャッシュレス": "関西キャッシュレス", "関東キャッシュレス": "関東キャッシュレス","中部フェムト": "中部フェムト", "関西フェムト": "関西フェムト", "関東フェムト": "関東フェムト", "関西サミット": "関西サミット", "関東サミット": "関東サミット"}, {}, {class: "form-input"} %></td>
+      <td><%= f.text_field :group, class: "form-input" %></td>
     </tr>
   </table>
   <table>
@@ -22,15 +39,15 @@
     <tr>
       <th><%= f.label :sales_man, "営業人件費", class: "form-text" %></th>
       <th><%= f.label :office_worker, "管理人件費", class: "form-text" %></th>
-      <th><%= f.label :social_insurance, "社会保険", class: "form-text" %></th>
       <th><%= f.label :administrator, "運営人件費", class: "form-text" %></th>
+      
     </tr>
   <%# 2列目値 %>
     <tr>
       <td><%= f.number_field :sales_man, class: "form-input" %></td>
       <td><%= f.number_field :office_worker, class: "form-input" %></td>
-      <td><%= f.number_field :social_insurance, class: "form-input" %></td>
       <td><%= f.number_field :administrator, class: "form-input" %></td>
+      
 
     </tr>
   <%# 3列目ラベル %>
@@ -38,31 +55,41 @@
       <th><%= f.label :sales_man_cost, "営業側　交通費・経費", class: "form-text" %></th>
       <th><%= f.label :office_worker_cost, "管理側　交通費・経費", class: "form-text" %></th>
       <th><%= f.label :office, "オフィス", class: "form-text" %></th>
-      <th><%= f.label :utility_net_cost, "光熱費・通信費", class: "form-text" %></th>
+      
     </tr>
   <%# 3列目値 %>
     <tr>
       <td><%= f.number_field :sales_man_cost,class: "form-input"  %></td>
       <td><%= f.number_field :office_worker_cost, class: "form-input"  %></td>
       <td><%= f.number_field :office,class: "form-input"  %></td>
-      <td><%= f.number_field :utility_net_cost,class: "form-input"  %></td>
     </tr>
   <%# 4列目ラベル %>
     <tr>
       <th><%= f.label :dorm, "寮", class: "form-text" %></th>
       <th><%= f.label :bonus_stock, "賞与貯蓄", class: "form-text" %></th>
       <th><%= f.label :travel_stock, "旅行貯蓄", class: "form-text" %></th>
-      <th><%= f.label :other, "臨時費用", class: "form-text" %></th>
     </tr>
   <%# 4列目値 %>
     <tr>
       <td><%= f.number_field :dorm,class: "form-input"  %></td>
       <td><%= f.number_field :bonus_stock,class: "form-input"  %></td>
       <td><%= f.number_field :travel_stock,class: "form-input"  %></td>
+    </tr>
+  <%# 5列目ラベル %>
+    <tr>
+      <th><%= f.label :social_insurance, "社会保険", class: "form-text" %></th>
+      <th><%= f.label :utility_net_cost, "光熱費・通信費", class: "form-text" %></th>
+      <th><%= f.label :other, "臨時費用", class: "form-text" %></th>
+
+    </tr>
+  <%# 5列目値 %>
+    <tr>
+      <td><%= f.number_field :social_insurance, class: "form-input" %></td>
+      <td><%= f.number_field :utility_net_cost,class: "form-input"  %></td>
       <td><%= f.number_field :other,class: "form-input"  %></td>
     </tr>
   </table>
     <%= f.submit "登録", class: "submit-btn" %>
   <% end %>
-  </main>
+  </div>
 </div>

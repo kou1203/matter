@@ -842,8 +842,8 @@
                 <% elsif cnt == 2 %>
                   <% 
                     last_month_shift = 
-                      @result_last_month.where(user: {base: "関東SS"}).where(shift: "キャッシュレス新規").length +
-                      @result_last_month.where(user: {base: "関東SS"}).where(shift: "キャッシュレス決済").length
+                      @result_last_month.where(shift: "キャッシュレス新規").length +
+                      @result_last_month.where(shift: "キャッシュレス決済").length
                   %>
                   <% last_month_p_ave = cash_p_sum / last_month_shift rescue 0 %>
                   <% last_month_p_fin = cash_p_sum + dmer_slmt2nd_p_sum %>

@@ -2,6 +2,7 @@ class Cost < ApplicationRecord
   with_options presence: true do 
     validates :year
     validates :month
+    validates :group
     validates :base
     validates :sales_man
     validates :office_worker
