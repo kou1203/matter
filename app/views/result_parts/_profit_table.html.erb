@@ -142,11 +142,19 @@
           <% dmer_slmter = Dmer.where(settlementer_id: @results.first.user_id ) %>
           <% 
             dmer_slmt = 
+              if @results.maximum(:date).day == 25
               slmt_this_period(dmer_slmter, @results)
               .where.not(industry_status: "×")
               .where.not(industry_status: "NG")
               .or(slmt_this_period(dmer_slmter, @results)
               .where(industry_status: nil))
+              else
+              slmt_period(dmer_slmter, @results)
+              .where.not(industry_status: "×")
+              .where.not(industry_status: "NG")
+              .or(slmt_period(dmer_slmter, @results)
+              .where(industry_status: nil))
+              end
           %>
           <% dmer_slmt_valuations = dmer_slmt.sum(:valuation_settlement) %>
           <% dmer_slmt_len = dmer_slmt.length %>
@@ -196,7 +204,14 @@
           %>
         <%# 決済 %>
           <% aupay_slmter = Aupay.where(settlementer_id: @results.first.user_id ) %>
-          <% aupay_slmt = slmt_this_period(aupay_slmter,@results) %>
+          <% 
+            aupay_slmt = 
+              if @results.maximum(:date).day == 25
+              slmt_this_period(aupay_slmter,@results) 
+              else
+              slmt_period(aupay_slmter,@results) 
+              end
+          %>
           <% aupay_slmt_valuations = aupay_slmt.sum(:valuation_settlement) %>
           <% aupay_slmt_len = aupay_slmt.length %>
           <% aupay_slmt_target = slmt_dead_line(aupay_user, @results)  %>
@@ -284,9 +299,9 @@
       <%# 変数 %>
         <% about_new_sum = @results.where(shift: "キャッシュレス新規").sum(:profit) %>
         <% about_slmt_sum = @results.where(shift: "キャッシュレス決済").sum(:profit) %>
-        <% about_new_ave = about_new_sum / @results.where(shift: "キャッシュレス新規").length %>
-        <% about_slmt_ave = about_slmt_sum / @results.where(shift: "キャッシュレス決済").length %>
-        <% about_new_fin = about_new_ave * new_shift %>
+        <% about_new_ave = about_new_sum / @results.where(shift: "キャッシュレス新規").length rescue "NaN" %>
+        <% about_slmt_ave = about_slmt_sum / @results.where(shift: "キャッシュレス決済").length rescue "NaN" %>
+        <% about_new_fin = about_new_ave * new_shift rescue "NaN" %>
         <% about_slmt_fin = about_slmt_ave * settlement_shift %>
       <table>
         <tr>

@@ -49,23 +49,37 @@
     %>
     <%# 前週 %>
     <% 
-      shift_chubu_lweek_d = 
-        @cash_results
+      shift_chubu_d_prev_week = 
+        @cash_results.where(shift: "キャッシュレス新規")
         .where(user: {base: "中部SS"})
-        .where(date: @cash_results.minimum(:date)..@cash_results.maximum(:date).ago(7.days)) 
+        .where(date: @cash_results.minimum(:date)..@cash_results.maximum(:date).ago(7.days))
+        .or(
+          @cash_results.where(shift: "キャッシュレス決済")
+          .where(user: {base: "中部SS"})
+          .where(date: @cash_results.minimum(:date)..@cash_results.maximum(:date).ago(7.days))
+        )
     %>
     <% 
-      shift_kansai_lweek_d = 
-        @cash_results
+      shift_kansai_d_prev_week = 
+        @cash_results.where(shift: "キャッシュレス新規")
+        .where(user: {base: "関西SS"})
+        .where(date: @cash_results.minimum(:date)..@cash_results.maximum(:date).ago(7.days))
+        .or(
+          @cash_results.where(shift: "キャッシュレス決済")
           .where(user: {base: "関西SS"})
-          .where(date: @cash_results.minimum(:date)..@cash_results.maximum(:date).ago(7.days)
-          ) 
+          .where(date: @cash_results.minimum(:date)..@cash_results.maximum(:date).ago(7.days))
+        )
     %>
     <% 
-      shift_kanto_lweek_d = 
-        @cash_results
+      shift_kanto_d_prev_week = 
+        @cash_results.where(shift: "キャッシュレス新規")
         .where(user: {base: "関東SS"})
-        .where(date: @cash_results.minimum(:date)..@cash_results.maximum(:date).ago(7.days)) 
+        .where(date: @cash_results.minimum(:date)..@cash_results.maximum(:date).ago(7.days))
+        .or(
+          @cash_results.where(shift: "キャッシュレス決済")
+          .where(user: {base: "関東SS"})
+          .where(date: @cash_results.minimum(:date)..@cash_results.maximum(:date).ago(7.days))
+        )
     %>
 <%# 指定した期間 %>
   <%# 中部キャッシュ %>
@@ -501,13 +515,13 @@
   <%# 新規 %>
     <% 
       dmer_chubu_lweek_uq = 
-        this_period(dmer_chubu_lweek,shift_chubu_lweek_d)
+        this_period(dmer_chubu_lweek,shift_chubu_d_prev_week)
         .where(store_prop: {head_store: nil})
     %>
-    <% dmer_chubu_lweek_def =  dmer_def(dmer_chubu_lweek_uq,shift_chubu_lweek_d) %>
+    <% dmer_chubu_d_prev_weekef =  dmer_def(dmer_chubu_lweek_uq,shift_chubu_d_prev_week) %>
     <% 
-      dmer_chubu_lweek_db = 
-        share_period(dmer_chubu_lweek,shift_chubu_lweek_d)
+      dmer_chubu_d_prev_weekb = 
+        share_period(dmer_chubu_lweek,shift_chubu_d_prev_week)
         .where.not(store_prop: {head_store: nil})
         .where.not(industry_status: "×")
         .where.not(industry_status: "NG")
@@ -515,13 +529,13 @@
     %>
     <% 
       dmer_chubu_lweek_v =  
-        dmer_chubu_lweek_uq.sum(:valuation_new) - dmer_chubu_lweek_def.sum(:valuation_new) +
-        dmer_chubu_lweek_db.sum(:valuation_new)
+        dmer_chubu_lweek_uq.sum(:valuation_new) - dmer_chubu_d_prev_weekef.sum(:valuation_new) +
+        dmer_chubu_d_prev_weekb.sum(:valuation_new)
     %>
     <% 
       dmer_chubu_lweek_p =  
-        dmer_chubu_lweek_uq.sum(:profit_new) - dmer_chubu_lweek_def.sum(:profit_new) +
-        dmer_chubu_lweek_db.sum(:profit_new)
+        dmer_chubu_lweek_uq.sum(:profit_new) - dmer_chubu_d_prev_weekef.sum(:profit_new) +
+        dmer_chubu_d_prev_weekb.sum(:profit_new)
     %>
     <% valuation_sum_chubu_lweek += dmer_chubu_lweek_v %>
     <% profit_sum_chubu_lweek += dmer_chubu_lweek_p %>
@@ -534,16 +548,16 @@
     %>
     <% 
       dmer_slmt_chubu_lweek = 
-        slmt_this_period(dmer_slmter_chubu_lweek ,shift_chubu_lweek_d)
+        slmt_this_period(dmer_slmter_chubu_lweek ,shift_chubu_d_prev_week)
         .where.not(industry_status: "×")
         .where.not(industry_status: "NG")
-        .or(slmt_this_period(dmer_slmter_chubu_lweek, shift_chubu_lweek_d)
+        .or(slmt_this_period(dmer_slmter_chubu_lweek, shift_chubu_d_prev_week)
         .where(industry_status: nil))
     %>
     <% valuation_sum_chubu_lweek += dmer_slmt_chubu_lweek.sum(:valuation_settlement) %>
     <% profit_sum_chubu_lweek += dmer_slmt_chubu_lweek.sum(:profit_settlement) %>
 
-    <% dmer_2ndslmt_chubu_lweek = slmt_second(dmer_slmter_chubu_lweek,shift_chubu_lweek_d) %>
+    <% dmer_2ndslmt_chubu_lweek = slmt_second(dmer_slmter_chubu_lweek,shift_chubu_d_prev_week) %>
     <% valuation_sum_chubu_lweek += dmer_2ndslmt_chubu_lweek.sum(:valuation_second_settlement) %>
     <% profit_sum_chubu_lweek += dmer_2ndslmt_chubu_lweek.sum(:profit_second_settlement) %>
   <%# auPay %>
@@ -556,25 +570,25 @@
   <%# 新規 %>
     <% 
       aupay_chubu_lweek_uq = 
-        this_period(aupay_chubu_lweek,shift_chubu_lweek_d)
+        this_period(aupay_chubu_lweek,shift_chubu_d_prev_week)
         .where(store_prop: {head_store: nil})
     %>
-    <% aupay_chubu_lweek_def =  aupay_def(aupay_chubu_lweek_uq,shift_chubu_lweek_d) %>
+    <% aupay_chubu_d_prev_weekef =  aupay_def(aupay_chubu_lweek_uq,shift_chubu_d_prev_week) %>
     <% 
-      aupay_chubu_lweek_db = 
-        share_period(aupay_chubu_lweek,shift_chubu_lweek_d)
+      aupay_chubu_d_prev_weekb = 
+        share_period(aupay_chubu_lweek,shift_chubu_d_prev_week)
         .where.not(store_prop: {head_store: nil})
         .where(status: "審査通過")
     %>
     <% 
       aupay_chubu_lweek_v =  
-        aupay_chubu_lweek_uq.sum(:valuation_new) - aupay_chubu_lweek_def.sum(:valuation_new) +
-        aupay_chubu_lweek_db.sum(:valuation_new)
+        aupay_chubu_lweek_uq.sum(:valuation_new) - aupay_chubu_d_prev_weekef.sum(:valuation_new) +
+        aupay_chubu_d_prev_weekb.sum(:valuation_new)
     %>
     <% 
       aupay_chubu_lweek_p =  
-        aupay_chubu_lweek_uq.sum(:profit_new) - aupay_chubu_lweek_def.sum(:profit_new) +
-        aupay_chubu_lweek_db.sum(:profit_new)
+        aupay_chubu_lweek_uq.sum(:profit_new) - aupay_chubu_d_prev_weekef.sum(:profit_new) +
+        aupay_chubu_d_prev_weekb.sum(:profit_new)
     %>
     <% valuation_sum_chubu_lweek += aupay_chubu_lweek_v %>
     <% profit_sum_chubu_lweek += aupay_chubu_lweek_p %>
@@ -587,7 +601,7 @@
     %>
     <% 
       aupay_slmt_chubu_lweek = 
-        slmt_this_period(aupay_slmter_chubu_lweek ,shift_chubu_lweek_d)
+        slmt_this_period(aupay_slmter_chubu_lweek ,shift_chubu_d_prev_week)
     %>
     <% valuation_sum_chubu_lweek += aupay_slmt_chubu_lweek.sum(:valuation_settlement) %>
     <% profit_sum_chubu_lweek += aupay_slmt_chubu_lweek.sum(:profit_settlement) %>
@@ -598,9 +612,9 @@
         .where(user: {base: "中部SS"})
         .where(user: {base_sub: "キャッシュレス"})  
     %>
-    <% paypay_chubu_lweek_data = this_period(paypay_chubu_lweek ,shift_chubu_lweek_d) %>
-    <% valuation_sum_chubu_lweek += paypay_chubu_lweek_data.sum(:valuation) %>
-    <% profit_sum_chubu_lweek += paypay_chubu_lweek_data.sum(:profit) %>
+    <% paypay_chubu_d_prev_weekata = this_period(paypay_chubu_lweek ,shift_chubu_d_prev_week) %>
+    <% valuation_sum_chubu_lweek += paypay_chubu_d_prev_weekata.sum(:valuation) %>
+    <% profit_sum_chubu_lweek += paypay_chubu_d_prev_weekata.sum(:profit) %>
   <%# 楽天ペイ %>
     <% 
       rakuten_pay_chubu_lweek = 
@@ -608,25 +622,25 @@
         .where(user: {base: "中部SS"})
         .where(user: {base_sub: "キャッシュレス"})
     %>
-    <% rakuten_pay_chubu_lweek_data = this_period(rakuten_pay_chubu_lweek ,shift_chubu_lweek_d) %>
+    <% rakuten_pay_chubu_d_prev_weekata = this_period(rakuten_pay_chubu_lweek ,shift_chubu_d_prev_week) %>
     <% 
-      rakuten_pay_chubu_lweek_def = 
-        rakuten_pay_chubu_lweek_data.where(status: "自社不備")
-        .or(rakuten_pay_chubu_lweek_data.where(status: "自社NG"))
+      rakuten_pay_chubu_d_prev_weekef = 
+        rakuten_pay_chubu_d_prev_weekata.where(status: "自社不備")
+        .or(rakuten_pay_chubu_d_prev_weekata.where(status: "自社NG"))
     %>
     <% rakuten_pay_chubu_lweek_v = 
-       rakuten_pay_chubu_lweek_data.sum(:valuation) - 
-       rakuten_pay_chubu_lweek_def.sum(:valuation) 
+       rakuten_pay_chubu_d_prev_weekata.sum(:valuation) - 
+       rakuten_pay_chubu_d_prev_weekef.sum(:valuation) 
     %>
     <% rakuten_pay_chubu_lweek_p = 
-       rakuten_pay_chubu_lweek_data.sum(:profit) - 
-       rakuten_pay_chubu_lweek_def.sum(:profit) 
+       rakuten_pay_chubu_d_prev_weekata.sum(:profit) - 
+       rakuten_pay_chubu_d_prev_weekef.sum(:profit) 
     %>
     <% valuation_sum_chubu_lweek += rakuten_pay_chubu_lweek_v %>
     <% profit_sum_chubu_lweek += rakuten_pay_chubu_lweek_p %>
   <%# 平均売 %>
-    <% valuation_ave_chubu_lweek = valuation_sum_chubu_lweek / shift_chubu_lweek_d.length %>
-    <% profit_ave_chubu_lweek = profit_sum_chubu_lweek / shift_chubu_lweek_d.length %>
+    <% valuation_ave_chubu_lweek = valuation_sum_chubu_lweek / shift_chubu_d_prev_week.length %>
+    <% profit_ave_chubu_lweek = profit_sum_chubu_lweek / shift_chubu_d_prev_week.length %>
   <%# 関西キャッシュ %>
   <% valuation_sum_kansai_lweek = 0 %>
   <% profit_sum_kansai_lweek = 0 %>
@@ -640,13 +654,13 @@
   <%# 新規 %>
     <% 
       dmer_kansai_lweek_uq = 
-        this_period(dmer_kansai_lweek,shift_kansai_lweek_d)
+        this_period(dmer_kansai_lweek,shift_kansai_d_prev_week)
         .where(store_prop: {head_store: nil})
     %>
-    <% dmer_kansai_lweek_def =  dmer_def(dmer_kansai_lweek_uq,shift_kansai_lweek_d) %>
+    <% dmer_kansai_d_prev_weekef =  dmer_def(dmer_kansai_lweek_uq,shift_kansai_d_prev_week) %>
     <% 
-      dmer_kansai_lweek_db = 
-        share_period(dmer_kansai_lweek,shift_kansai_lweek_d)
+      dmer_kansai_d_prev_weekb = 
+        share_period(dmer_kansai_lweek,shift_kansai_d_prev_week)
         .where.not(store_prop: {head_store: nil})
         .where.not(industry_status: "×")
         .where.not(industry_status: "NG")
@@ -654,13 +668,13 @@
     %>
     <% 
       dmer_kansai_lweek_v =  
-        dmer_kansai_lweek_uq.sum(:valuation_new) - dmer_kansai_lweek_def.sum(:valuation_new) +
-        dmer_kansai_lweek_db.sum(:valuation_new)
+        dmer_kansai_lweek_uq.sum(:valuation_new) - dmer_kansai_d_prev_weekef.sum(:valuation_new) +
+        dmer_kansai_d_prev_weekb.sum(:valuation_new)
     %>
     <% 
       dmer_kansai_lweek_p =  
-        dmer_kansai_lweek_uq.sum(:profit_new) - dmer_kansai_lweek_def.sum(:profit_new) +
-        dmer_kansai_lweek_db.sum(:profit_new)
+        dmer_kansai_lweek_uq.sum(:profit_new) - dmer_kansai_d_prev_weekef.sum(:profit_new) +
+        dmer_kansai_d_prev_weekb.sum(:profit_new)
     %>
     <% valuation_sum_kansai_lweek += dmer_kansai_lweek_v %>
     <% profit_sum_kansai_lweek += dmer_kansai_lweek_p %>
@@ -673,16 +687,16 @@
     %>
     <% 
       dmer_slmt_kansai_lweek = 
-        slmt_this_period(dmer_slmter_kansai_lweek ,shift_kansai_lweek_d)
+        slmt_this_period(dmer_slmter_kansai_lweek ,shift_kansai_d_prev_week)
         .where.not(industry_status: "×")
         .where.not(industry_status: "NG")
-        .or(slmt_this_period(dmer_slmter_kansai_lweek, shift_kansai_lweek_d)
+        .or(slmt_this_period(dmer_slmter_kansai_lweek, shift_kansai_d_prev_week)
         .where(industry_status: nil))
     %>
     <% valuation_sum_kansai_lweek += dmer_slmt_kansai_lweek.sum(:valuation_settlement) %>
     <% profit_sum_kansai_lweek += dmer_slmt_kansai_lweek.sum(:profit_settlement) %>
 
-    <% dmer_2ndslmt_kansai_lweek = slmt_second(dmer_slmter_kansai_lweek,shift_kansai_lweek_d) %>
+    <% dmer_2ndslmt_kansai_lweek = slmt_second(dmer_slmter_kansai_lweek,shift_kansai_d_prev_week) %>
     <% valuation_sum_kansai_lweek += dmer_2ndslmt_kansai_lweek.sum(:valuation_second_settlement) %>
     <% profit_sum_kansai_lweek += dmer_2ndslmt_kansai_lweek.sum(:profit_second_settlement) %>
   <%# auPay %>
@@ -695,25 +709,25 @@
   <%# 新規 %>
     <% 
       aupay_kansai_lweek_uq = 
-        this_period(aupay_kansai_lweek,shift_kansai_lweek_d)
+        this_period(aupay_kansai_lweek,shift_kansai_d_prev_week)
         .where(store_prop: {head_store: nil})
     %>
-    <% aupay_kansai_lweek_def =  aupay_def(aupay_kansai_lweek_uq,shift_kansai_lweek_d) %>
+    <% aupay_kansai_d_prev_weekef =  aupay_def(aupay_kansai_lweek_uq,shift_kansai_d_prev_week) %>
     <% 
-      aupay_kansai_lweek_db = 
-        share_period(aupay_kansai_lweek,shift_kansai_lweek_d)
+      aupay_kansai_d_prev_weekb = 
+        share_period(aupay_kansai_lweek,shift_kansai_d_prev_week)
         .where.not(store_prop: {head_store: nil})
         .where(status: "審査通過")
     %>
     <% 
       aupay_kansai_lweek_v =  
-        aupay_kansai_lweek_uq.sum(:valuation_new) - aupay_kansai_lweek_def.sum(:valuation_new) +
-        aupay_kansai_lweek_db.sum(:valuation_new)
+        aupay_kansai_lweek_uq.sum(:valuation_new) - aupay_kansai_d_prev_weekef.sum(:valuation_new) +
+        aupay_kansai_d_prev_weekb.sum(:valuation_new)
     %>
     <% 
       aupay_kansai_lweek_p =  
-        aupay_kansai_lweek_uq.sum(:profit_new) - aupay_kansai_lweek_def.sum(:profit_new) +
-        aupay_kansai_lweek_db.sum(:profit_new)
+        aupay_kansai_lweek_uq.sum(:profit_new) - aupay_kansai_d_prev_weekef.sum(:profit_new) +
+        aupay_kansai_d_prev_weekb.sum(:profit_new)
     %>
     <% valuation_sum_kansai_lweek += aupay_kansai_lweek_v %>
     <% profit_sum_kansai_lweek += aupay_kansai_lweek_p %>
@@ -726,7 +740,7 @@
     %>
     <% 
       aupay_slmt_kansai_lweek = 
-        slmt_this_period(aupay_slmter_kansai_lweek ,shift_kansai_lweek_d)
+        slmt_this_period(aupay_slmter_kansai_lweek ,shift_kansai_d_prev_week)
     %>
     <% valuation_sum_kansai_lweek += aupay_slmt_kansai_lweek.sum(:valuation_settlement) %>
     <% profit_sum_kansai_lweek += aupay_slmt_kansai_lweek.sum(:profit_settlement) %>
@@ -737,9 +751,9 @@
         .where(user: {base: "関西SS"})
         .where(user: {base_sub: "キャッシュレス"})  
     %>
-    <% paypay_kansai_lweek_data = this_period(paypay_kansai_lweek ,shift_kansai_lweek_d) %>
-    <% valuation_sum_kansai_lweek += paypay_kansai_lweek_data.sum(:valuation) %>
-    <% profit_sum_kansai_lweek += paypay_kansai_lweek_data.sum(:profit) %>
+    <% paypay_kansai_d_prev_weekata = this_period(paypay_kansai_lweek ,shift_kansai_d_prev_week) %>
+    <% valuation_sum_kansai_lweek += paypay_kansai_d_prev_weekata.sum(:valuation) %>
+    <% profit_sum_kansai_lweek += paypay_kansai_d_prev_weekata.sum(:profit) %>
   <%# 楽天ペイ %>
     <% 
       rakuten_pay_kansai_lweek = 
@@ -747,25 +761,25 @@
         .where(user: {base: "関西SS"})
         .where(user: {base_sub: "キャッシュレス"})
     %>
-    <% rakuten_pay_kansai_lweek_data = this_period(rakuten_pay_kansai_lweek ,shift_kansai_lweek_d) %>
+    <% rakuten_pay_kansai_d_prev_weekata = this_period(rakuten_pay_kansai_lweek ,shift_kansai_d_prev_week) %>
     <% 
-      rakuten_pay_kansai_lweek_def = 
-        rakuten_pay_kansai_lweek_data.where(status: "自社不備")
-        .or(rakuten_pay_kansai_lweek_data.where(status: "自社NG"))
+      rakuten_pay_kansai_d_prev_weekef = 
+        rakuten_pay_kansai_d_prev_weekata.where(status: "自社不備")
+        .or(rakuten_pay_kansai_d_prev_weekata.where(status: "自社NG"))
     %>
     <% rakuten_pay_kansai_lweek_v = 
-       rakuten_pay_kansai_lweek_data.sum(:valuation) - 
-       rakuten_pay_kansai_lweek_def.sum(:valuation) 
+       rakuten_pay_kansai_d_prev_weekata.sum(:valuation) - 
+       rakuten_pay_kansai_d_prev_weekef.sum(:valuation) 
     %>
     <% rakuten_pay_kansai_lweek_p = 
-       rakuten_pay_kansai_lweek_data.sum(:profit) - 
-       rakuten_pay_kansai_lweek_def.sum(:profit) 
+       rakuten_pay_kansai_d_prev_weekata.sum(:profit) - 
+       rakuten_pay_kansai_d_prev_weekef.sum(:profit) 
     %>
     <% valuation_sum_kansai_lweek += rakuten_pay_kansai_lweek_v %>
     <% profit_sum_kansai_lweek += rakuten_pay_kansai_lweek_p %>
   <%# 平均売 %>
-    <% valuation_ave_kansai_lweek = valuation_sum_kansai_lweek / shift_kansai_lweek_d.length %>
-    <% profit_ave_kansai_lweek = profit_sum_kansai_lweek / shift_kansai_lweek_d.length %>
+    <% valuation_ave_kansai_lweek = valuation_sum_kansai_lweek / shift_kansai_d_prev_week.length %>
+    <% profit_ave_kansai_lweek = profit_sum_kansai_lweek / shift_kansai_d_prev_week.length %>
   <%# 関東キャッシュ %>
   <% valuation_sum_kanto_lweek = 0 %>
   <% profit_sum_kanto_lweek = 0 %>
@@ -779,13 +793,13 @@
   <%# 新規 %>
     <% 
       dmer_kanto_lweek_uq = 
-        this_period(dmer_kanto_lweek,shift_kanto_lweek_d)
+        this_period(dmer_kanto_lweek,shift_kanto_d_prev_week)
         .where(store_prop: {head_store: nil})
     %>
-    <% dmer_kanto_lweek_def =  dmer_def(dmer_kanto_lweek_uq,shift_kanto_lweek_d) %>
+    <% dmer_kanto_d_prev_weekef =  dmer_def(dmer_kanto_lweek_uq,shift_kanto_d_prev_week) %>
     <% 
-      dmer_kanto_lweek_db = 
-        share_period(dmer_kanto_lweek,shift_kanto_lweek_d)
+      dmer_kanto_d_prev_weekb = 
+        share_period(dmer_kanto_lweek,shift_kanto_d_prev_week)
         .where.not(store_prop: {head_store: nil})
         .where.not(industry_status: "×")
         .where.not(industry_status: "NG")
@@ -793,13 +807,13 @@
     %>
     <% 
       dmer_kanto_lweek_v =  
-        dmer_kanto_lweek_uq.sum(:valuation_new) - dmer_kanto_lweek_def.sum(:valuation_new) +
-        dmer_kanto_lweek_db.sum(:valuation_new)
+        dmer_kanto_lweek_uq.sum(:valuation_new) - dmer_kanto_d_prev_weekef.sum(:valuation_new) +
+        dmer_kanto_d_prev_weekb.sum(:valuation_new)
     %>
     <% 
       dmer_kanto_lweek_p =  
-        dmer_kanto_lweek_uq.sum(:profit_new) - dmer_kanto_lweek_def.sum(:profit_new) +
-        dmer_kanto_lweek_db.sum(:profit_new)
+        dmer_kanto_lweek_uq.sum(:profit_new) - dmer_kanto_d_prev_weekef.sum(:profit_new) +
+        dmer_kanto_d_prev_weekb.sum(:profit_new)
     %>
     <% valuation_sum_kanto_lweek += dmer_kanto_lweek_v %>
     <% profit_sum_kanto_lweek += dmer_kanto_lweek_p %>
@@ -812,16 +826,16 @@
     %>
     <% 
       dmer_slmt_kanto_lweek = 
-        slmt_this_period(dmer_slmter_kanto_lweek ,shift_kanto_lweek_d)
+        slmt_this_period(dmer_slmter_kanto_lweek ,shift_kanto_d_prev_week)
         .where.not(industry_status: "×")
         .where.not(industry_status: "NG")
-        .or(slmt_this_period(dmer_slmter_kanto_lweek, shift_kanto_lweek_d)
+        .or(slmt_this_period(dmer_slmter_kanto_lweek, shift_kanto_d_prev_week)
         .where(industry_status: nil))
     %>
     <% valuation_sum_kanto_lweek += dmer_slmt_kanto_lweek.sum(:valuation_settlement) %>
     <% profit_sum_kanto_lweek += dmer_slmt_kanto_lweek.sum(:profit_settlement) %>
 
-    <% dmer_2ndslmt_kanto_lweek = slmt_second(dmer_slmter_kanto_lweek,shift_kanto_lweek_d) %>
+    <% dmer_2ndslmt_kanto_lweek = slmt_second(dmer_slmter_kanto_lweek,shift_kanto_d_prev_week) %>
     <% valuation_sum_kanto_lweek += dmer_2ndslmt_kanto_lweek.sum(:valuation_second_settlement) %>
     <% profit_sum_kanto_lweek += dmer_2ndslmt_kanto_lweek.sum(:profit_second_settlement) %>
   <%# auPay %>
@@ -834,25 +848,25 @@
   <%# 新規 %>
     <% 
       aupay_kanto_lweek_uq = 
-        this_period(aupay_kanto_lweek,shift_kanto_lweek_d)
+        this_period(aupay_kanto_lweek,shift_kanto_d_prev_week)
         .where(store_prop: {head_store: nil})
     %>
-    <% aupay_kanto_lweek_def =  aupay_def(aupay_kanto_lweek_uq,shift_kanto_lweek_d) %>
+    <% aupay_kanto_d_prev_weekef =  aupay_def(aupay_kanto_lweek_uq,shift_kanto_d_prev_week) %>
     <% 
-      aupay_kanto_lweek_db = 
-        share_period(aupay_kanto_lweek,shift_kanto_lweek_d)
+      aupay_kanto_d_prev_weekb = 
+        share_period(aupay_kanto_lweek,shift_kanto_d_prev_week)
         .where.not(store_prop: {head_store: nil})
         .where(status: "審査通過")
     %>
     <% 
       aupay_kanto_lweek_v =  
-        aupay_kanto_lweek_uq.sum(:valuation_new) - aupay_kanto_lweek_def.sum(:valuation_new) +
-        aupay_kanto_lweek_db.sum(:valuation_new)
+        aupay_kanto_lweek_uq.sum(:valuation_new) - aupay_kanto_d_prev_weekef.sum(:valuation_new) +
+        aupay_kanto_d_prev_weekb.sum(:valuation_new)
     %>
     <% 
       aupay_kanto_lweek_p =  
-        aupay_kanto_lweek_uq.sum(:profit_new) - aupay_kanto_lweek_def.sum(:profit_new) +
-        aupay_kanto_lweek_db.sum(:profit_new)
+        aupay_kanto_lweek_uq.sum(:profit_new) - aupay_kanto_d_prev_weekef.sum(:profit_new) +
+        aupay_kanto_d_prev_weekb.sum(:profit_new)
     %>
     <% valuation_sum_kanto_lweek += aupay_kanto_lweek_v %>
     <% profit_sum_kanto_lweek += aupay_kanto_lweek_p %>
@@ -865,7 +879,7 @@
     %>
     <% 
       aupay_slmt_kanto_lweek = 
-        slmt_this_period(aupay_slmter_kanto_lweek ,shift_kanto_lweek_d)
+        slmt_this_period(aupay_slmter_kanto_lweek ,shift_kanto_d_prev_week)
     %>
     <% valuation_sum_kanto_lweek += aupay_slmt_kanto_lweek.sum(:valuation_settlement) %>
     <% profit_sum_kanto_lweek += aupay_slmt_kanto_lweek.sum(:profit_settlement) %>
@@ -876,9 +890,9 @@
         .where(user: {base: "関東SS"})
         .where(user: {base_sub: "キャッシュレス"})  
     %>
-    <% paypay_kanto_lweek_data = this_period(paypay_kanto_lweek ,shift_kanto_lweek_d) %>
-    <% valuation_sum_kanto_lweek += paypay_kanto_lweek_data.sum(:valuation) %>
-    <% profit_sum_kanto_lweek += paypay_kanto_lweek_data.sum(:profit) %>
+    <% paypay_kanto_d_prev_weekata = this_period(paypay_kanto_lweek ,shift_kanto_d_prev_week) %>
+    <% valuation_sum_kanto_lweek += paypay_kanto_d_prev_weekata.sum(:valuation) %>
+    <% profit_sum_kanto_lweek += paypay_kanto_d_prev_weekata.sum(:profit) %>
   <%# 楽天ペイ %>
     <% 
       rakuten_pay_kanto_lweek = 
@@ -886,25 +900,25 @@
         .where(user: {base: "関東SS"})
         .where(user: {base_sub: "キャッシュレス"})
     %>
-    <% rakuten_pay_kanto_lweek_data = this_period(rakuten_pay_kanto_lweek ,shift_kanto_lweek_d) %>
+    <% rakuten_pay_kanto_d_prev_weekata = this_period(rakuten_pay_kanto_lweek ,shift_kanto_d_prev_week) %>
     <% 
-      rakuten_pay_kanto_lweek_def = 
-        rakuten_pay_kanto_lweek_data.where(status: "自社不備")
-        .or(rakuten_pay_kanto_lweek_data.where(status: "自社NG"))
+      rakuten_pay_kanto_d_prev_weekef = 
+        rakuten_pay_kanto_d_prev_weekata.where(status: "自社不備")
+        .or(rakuten_pay_kanto_d_prev_weekata.where(status: "自社NG"))
     %>
     <% rakuten_pay_kanto_lweek_v = 
-       rakuten_pay_kanto_lweek_data.sum(:valuation) - 
-       rakuten_pay_kanto_lweek_def.sum(:valuation) 
+       rakuten_pay_kanto_d_prev_weekata.sum(:valuation) - 
+       rakuten_pay_kanto_d_prev_weekef.sum(:valuation) 
     %>
     <% rakuten_pay_kanto_lweek_p = 
-       rakuten_pay_kanto_lweek_data.sum(:profit) - 
-       rakuten_pay_kanto_lweek_def.sum(:profit) 
+       rakuten_pay_kanto_d_prev_weekata.sum(:profit) - 
+       rakuten_pay_kanto_d_prev_weekef.sum(:profit) 
     %>
     <% valuation_sum_kanto_lweek += rakuten_pay_kanto_lweek_v %>
     <% profit_sum_kanto_lweek += rakuten_pay_kanto_lweek_p %>
   <%# 平均売 %>
-    <% valuation_ave_kanto_lweek = valuation_sum_kanto_lweek / shift_kanto_lweek_d.length %>
-    <% profit_ave_kanto_lweek = profit_sum_kanto_lweek / shift_kanto_lweek_d.length %>
+    <% valuation_ave_kanto_lweek = valuation_sum_kanto_lweek / shift_kanto_d_prev_week.length %>
+    <% profit_ave_kanto_lweek = profit_sum_kanto_lweek / shift_kanto_d_prev_week.length %>
 <% end %>
 
 <h2>キャッシュレス</h2>
@@ -945,12 +959,15 @@
     </tr>
     <tr>
       <th>前週Ave（評価売）</th>
-      <% if shift_chubu_lweek_d.present? %>
+      <% if shift_chubu_d_prev_week.present? %>
       <td><%= (valuation_ave_chubu_lweek).to_s(:delimited) %></td>
       <td><%= (valuation_ave_kansai_lweek).to_s(:delimited) %></td>
       <td><%= (valuation_ave_kanto_lweek).to_s(:delimited) %></td>
       <td><%= (valuation_ave_kanto_lweek + valuation_ave_kansai_lweek + valuation_ave_chubu_lweek).to_s(:delimited) %></td>
       <% else %>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>NaN</td>
       <% end %>
     </tr>
@@ -986,6 +1003,9 @@
       <% end %>
     <% else %>
       <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
     <% end %>
     </tr>
     <tr>
@@ -1006,12 +1026,15 @@
     </tr>
     <tr>
       <th class="profit-th">前週Ave（実売）</th>
-      <% if shift_chubu_lweek_d.present? %>
+      <% if shift_chubu_d_prev_week.present? %>
       <td><%= (profit_ave_chubu_lweek).to_s(:delimited) %></td>
       <td><%= (profit_ave_kansai_lweek).to_s(:delimited) %></td>
       <td><%= (profit_ave_kanto_lweek).to_s(:delimited) %></td>
       <td><%= (profit_ave_kanto_lweek + profit_ave_kansai_lweek + profit_ave_chubu_lweek).to_s(:delimited) %></td>
       <% else %>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>NaN</td>
       <% end %>
     </tr>
@@ -1046,6 +1069,9 @@
       <td style="color:red;"><%= ((profit_ave_chubu + profit_ave_kansai + profit_ave_kanto) - (profit_ave_kanto_lweek + profit_ave_kansai_lweek + profit_ave_chubu_lweek)).to_s(:delimited) %></td>
       <% end %>
     <% else %>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
       <td>NaN</td>
     <% end %>
     </tr>
