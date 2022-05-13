@@ -3,22 +3,24 @@ class DisplayPeriodsController < ApplicationController
   def index 
     @display_period = DisplayPeriod.new
     @display_period_1 = DisplayPeriod.first if DisplayPeriod.first.present?
-    @cash_results = 
-      Result.includes(:user).where(user: {base_sub: "キャッシュレス"})
-      .where(date: @display_period_1.start_period_01..@display_period_1.end_period_01)
-    @cash_results_chubu = @cash_results.where(user: {base: "中部SS"})
-    @cash_results_kansai = @cash_results.where(user: {base: "関西SS"})
-    @cash_results_kanto = @cash_results.where(user: {base: "関東SS"})
-    @cash_shifts = 
-      Shift.includes(:user).where(user: {base_sub: "キャッシュレス"})
-      .where(start_time: @display_period_1.start_period_01..@display_period_1.start_period_01.beginning_of_month.since(1.month).since(24.days))
-    @cost = Cost.new
-    @cost_all = 
-      Cost.where(year: @display_period_1.end_period_01.year)
-      .where(month: @display_period_1.end_period_01.month)
-    @cost_chubu = @cost_all.where(base: "中部キャッシュレス")
-    @cost_kansai = @cost_all.where(base: "関西キャッシュレス")
-    @cost_kanto = @cost_all.where(base: "関東キャッシュレス")
+    if @display_period_1.present?
+      @cash_results = 
+        Result.includes(:user).where(user: {base_sub: "キャッシュレス"})
+        .where(date: @display_period_1.start_period_01..@display_period_1.end_period_01)
+      @cash_results_chubu = @cash_results.where(user: {base: "中部SS"})
+      @cash_results_kansai = @cash_results.where(user: {base: "関西SS"})
+      @cash_results_kanto = @cash_results.where(user: {base: "関東SS"})
+      @cash_shifts = 
+        Shift.includes(:user).where(user: {base_sub: "キャッシュレス"})
+        .where(start_time: @display_period_1.start_period_01..@display_period_1.start_period_01.beginning_of_month.since(1.month).since(24.days))
+      @cost = Cost.new
+      @cost_all = 
+        Cost.where(year: @display_period_1.end_period_01.year)
+        .where(month: @display_period_1.end_period_01.month)
+      @cost_chubu = @cost_all.where(base: "中部キャッシュレス")
+      @cost_kansai = @cost_all.where(base: "関西キャッシュレス")
+      @cost_kanto = @cost_all.where(base: "関東キャッシュレス")
+    end
   end 
   
   def create 
