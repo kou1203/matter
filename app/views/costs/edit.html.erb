@@ -3,10 +3,9 @@
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;">
-<div data-scope-path="shared/side_bar">
-  <%= render "shared/sidebar" %>
-</div>
-<div class="main">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
   <div data-scope-path="costs/new_edit">
   <%= form_with model: @cost, class: "form-frame", local: true do |f| %>
   <%= render "shared/error_messages", model: f.object %>

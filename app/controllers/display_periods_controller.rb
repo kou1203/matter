@@ -32,7 +32,6 @@ class DisplayPeriodsController < ApplicationController
       flash[:notice] = "失敗しました。"
       render :index 
     end 
-    @cost = Cost.new(cost_params)
   end 
 
   def update 
@@ -60,6 +59,24 @@ class DisplayPeriodsController < ApplicationController
   end 
 
   def cost_params 
-    params.require(:cost).permit!
+    params.require(:cost).permit(
+       :year                            ,
+       :month                           ,
+       :base                            ,
+       :group                           ,
+       :sales_man                       ,
+       :office_worker                   ,
+       :administrator                   ,
+       :social_insurance                ,
+       :sales_man_cost                  ,
+       :office_worker_cost              ,
+       :office                          ,
+       :dorm                            ,
+       :utility_net_cost                ,
+       :bonus_stock                     ,
+       :travel_stock                    ,
+       :other                           ,
+       :update_date
+    )
   end
 end
