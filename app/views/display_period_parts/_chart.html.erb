@@ -1,0 +1,251 @@
+<div class="list-none" id="chart-page">
+<h2>SS売上早見</h2>
+<% results_data = [@cash_results, @cash_results_kansai, @cash_results_kanto] %>
+<table>
+  <thead>
+    <tr>
+      <th class="profit-th" rowspan="2">拠点</th>
+      <th class="profit-th" colspan="6">キャッシュ実売見込</th>
+      <th class="profit-th" colspan="5">実売平均</th>
+    </tr>
+    <tr>
+      <th class="profit-th">現状売上</th>
+      <th class="profit-th">終着売上</th>
+      <th class="profit-th">先週比</th>
+      <th class="profit-th">先週終着</th>
+      <th class="profit-th">前月同日比</th>
+      <th class="profit-th">前月同日終着</th>
+      <th class="profit-th">実売Ave</th>
+      <th class="profit-th">先週比</th>
+      <th class="profit-th">先週Ave</th>
+      <th class="profit-th">前月同日比</th>
+      <th class="profit-th">前月同日Ave</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr></tr>
+  <% results_data.each do |r| %>
+    <tr>
+  <%# 期間 %>
+  <% shifts_data = [] %>
+  <%# 指定期間 %>
+    <% 
+      shift_specify = 
+        @cash_results
+        .where(user: {base: r.first.user.base}).where(shift: "キャッシュレス新規")
+        .or(
+          @cash_results
+          .where(user: {base: r.first.user.base}).where(shift: "キャッシュレス決済")
+        )
+    %>
+    <% shifts_data << shift_specify %>
+  <%# 前週 %>
+    <% 
+      shift_prev_week = 
+        Result.includes(:user)
+        .where(user: {base_sub: "キャッシュレス"})
+        .where(user: {base: r.first.user.base})
+        .where(shift: "キャッシュレス新規")
+        .where(date: r.minimum(:date)..r.maximum(:date).ago(7.days))
+        .or(
+          Result.includes(:user)
+          .where(user: {base_sub: "キャッシュレス"})
+          .where(user: {base: r.first.user.base})
+          .where(shift: "キャッシュレス決済")
+          .where(date: r.minimum(:date)..r.maximum(:date).ago(7.days))
+        )
+    %>
+    <% shifts_data << shift_prev_week %>
+  <%# 前月同日 %>
+    <% 
+      shift_prev_month = 
+        Result.includes(:user)
+        .where(user: {base_sub: "キャッシュレス"})
+        .where(user: {base: r.first.user.base})
+        .where(shift: "キャッシュレス新規")
+        .where(date: r.minimum(:date).prev_month..r.maximum(:date).prev_month)
+        .or(
+          Result.includes(:user)
+          .where(user: {base_sub: "キャッシュレス"})
+          .where(user: {base: r.first.user.base})
+          .where(shift: "キャッシュレス決済")
+          .where(date: r.minimum(:date).prev_month..r.maximum(:date).prev_month)
+        )
+    %>
+  <%# 予定シフト %>
+    <%  
+      shift_plan = 
+      @cash_shifts.where(user: {base: r.first.user.base}).where(shift: "キャッシュレス新規").length +  
+      @cash_shifts.where(user: {base: r.first.user.base}).where(shift: "キャッシュレス決済").length  
+    %>
+    <% shifts_data << shift_prev_month %>
+    <% profit_specify = 0 %>
+    <% profit_specify_ave = 0 %>
+    <% profit_prev_week = 0 %>
+    <% profit_prev_week_ave = 0 %>
+    <% profit_prev_month = 0 %>
+    <% profit_prev_month_ave = 0 %>
+    <% cnt = 0 %><%# each文で回した回数 %>
+    <% shifts_data.each do |shift| %>
+      <%# 商材別変数 %>
+      <% profit_sum = 0 %>
+      <%# dメル %>
+        <% 
+          dmer = 
+            Dmer.includes(:store_prop, :user)
+            .where(user: {base: r.first.user.base})
+            .where(user: {base_sub: r.first.user.base_sub})
+        %>
+      <%# 新規 %>
+        <% 
+          dmer_uq = 
+            this_period(dmer,shift)
+            .where(store_prop: {head_store: nil})
+        %>
+        <% dmer_def =  dmer_def(dmer_uq,shift) %>
+        <% 
+          dmer_db = 
+            share_period(dmer,shift)
+            .where.not(store_prop: {head_store: nil})
+            .where.not(industry_status: "×")
+            .where.not(industry_status: "NG")
+            .where(status: "審査OK")
+        %>
+        <% 
+          dmer_p =  
+            dmer_uq.sum(:profit_new) - dmer_def.sum(:profit_new) +
+            dmer_db.sum(:profit_new)
+        %>
+        <% profit_sum += dmer_p %>
+      <%# 決済 %>
+        <%         
+          dmer_slmter = 
+            Dmer.includes(:store_prop, :settlementer)
+            .where(settlementer: {base: r.first.user.base})
+            .where(settlementer: {base_sub: r.first.user.base_sub})
+        %>
+        <% 
+          dmer_slmt = 
+            slmt_this_period(dmer_slmter ,shift)
+            .where.not(industry_status: "×")
+            .where.not(industry_status: "NG")
+            .or(slmt_this_period(dmer_slmter, shift)
+            .where(industry_status: nil))
+        %>
+        <% profit_sum += dmer_slmt.sum(:profit_settlement) %>
+
+        <% dmer_2ndslmt = slmt_second(dmer_slmter,shift) %>
+        <% profit_sum += dmer_2ndslmt.sum(:profit_second_settlement) %>
+      <%# auPay %>
+        <% 
+          aupay = 
+            Aupay.includes(:store_prop, :user)
+            .where(user: {base: r.first.user.base})
+            .where(user: {base_sub: r.first.user.base_sub})
+        %>
+      <%# 新規 %>
+        <% 
+          aupay_uq = 
+            this_period(aupay,shift)
+            .where(store_prop: {head_store: nil})
+        %>
+        <% aupay_def =  aupay_def(aupay_uq,shift) %>
+        <% 
+          aupay_db = 
+            share_period(aupay,shift)
+            .where.not(store_prop: {head_store: nil})
+            .where(status: "審査通過")
+        %>
+        <% 
+          aupay_p =  
+            aupay_uq.sum(:profit_new) - aupay_def.sum(:profit_new) +
+            aupay_db.sum(:profit_new)
+        %>
+        <% profit_sum += aupay_p %>
+      <%# 決済 %>
+        <%         
+          aupay_slmter = 
+            Aupay.includes(:store_prop, :settlementer)
+            .where(settlementer: {base: r.first.user.base})
+            .where(settlementer: {base_sub: r.first.user.base_sub})
+        %>
+        <% 
+          aupay_slmt = 
+            slmt_this_period(aupay_slmter,shift)
+        %>
+        <% profit_sum += aupay_slmt.sum(:profit_settlement) %>
+      <%# PayPay %>
+        <% 
+          paypay = 
+            Paypay.includes(:user)
+            .where(user: {base: r.first.user.base})
+            .where(user: {base_sub: r.first.user.base_sub})
+        %>
+        <% paypay_data = this_period(paypay ,shift) %>
+        <% profit_sum += paypay_data.sum(:profit) %>
+      <%# 楽天ペイ %>
+        <% 
+          rakuten_pay = 
+            RakutenPay.includes(:user)
+            .where(user: {base: r.first.user.base})
+            .where(user: {base_sub: r.first.user.base_sub})
+        %>
+        <% rakuten_pay_data = this_period(rakuten_pay ,shift) %>
+        <% 
+          rakuten_pay_def = 
+            rakuten_pay_data.where(status: "自社不備")
+            .or(rakuten_pay_data.where(status: "自社NG"))
+        %>
+        <% rakuten_pay_p = 
+          rakuten_pay_data.sum(:profit) - 
+          rakuten_pay_def.sum(:profit) 
+        %>
+        <% profit_sum += rakuten_pay_p %>
+        <% if cnt == 0 %>
+          <% profit_specify = profit_sum %>
+          <% profit_specify_ave = profit_sum / shift.length %>
+        <% elsif cnt == 1  %>
+          <% profit_prev_week = profit_sum %>
+          <% profit_prev_week_ave = profit_sum / shift.length %>
+        <% elsif cnt == 2 %>
+          <% profit_prev_month = profit_sum %>
+          <% profit_prev_month_ave = profit_sum / shift.length %>
+        <% end %>
+        <% cnt += 1 %>
+    <% end %>
+      <%# 終着見込 %>
+        <% profit_specify_fin = profit_specify_ave * shift_plan %>
+        <% profit_prev_week_fin = profit_prev_week_ave * shift_plan %>
+      <td><%= r.first.user.base %><%= r.first.user.base_sub %></td>
+      <td><%= profit_specify.to_s(:delimited) %></td>
+      <td><%= profit_specify_fin.to_s(:delimited) %></td>
+      <% if profit_specify_fin >= profit_prev_week_fin %>
+      <td style="color:blue;"><%= (profit_specify_fin - profit_prev_week_fin).to_s(:delimited) %></td>
+      <% else %>
+      <td style="color:red;"><%= (profit_specify_fin - profit_prev_week_fin).to_s(:delimited) %></td>
+      <% end %>
+      <td><%= profit_prev_week_fin.to_s(:delimited) %></td>
+      <% if profit_specify_fin >= profit_prev_month %>
+      <td style="color:blue;"><%= (profit_specify_fin - profit_prev_month).to_s(:delimited) %></td>
+      <% else %>
+      <td style="color:red;"><%= (profit_specify_fin - profit_prev_month).to_s(:delimited) %></td>
+      <% end %>
+      <td><%= profit_prev_month.to_s(:delimited) %></td>
+      <td><%= profit_specify_ave.to_s(:delimited) %></td>
+      <% if profit_specify_ave > profit_prev_week_ave %>
+      <td style="color:blue;"><%= (profit_specify_ave - profit_prev_week_ave).to_s(:delimited) %></td>
+      <% else %>
+      <td style="color:red;"><%= (profit_specify_ave - profit_prev_week_ave).to_s(:delimited) %></td>
+      <% end %>
+      <td><%= profit_prev_week_ave.to_s(:delimited) %></td>
+      <% if profit_specify_ave > profit_prev_month_ave %>
+      <td style="color:blue;"><%= (profit_specify_ave - profit_prev_month_ave).to_s(:delimited) %></td>
+      <% else %>
+      <td style="color:red;"><%= (profit_specify_ave - profit_prev_month_ave).to_s(:delimited) %></td>
+      <% end %>
+      <td><%= profit_prev_month_ave.to_s(:delimited) %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+</div>

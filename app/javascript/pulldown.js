@@ -14,6 +14,8 @@ window.addEventListener('turbolinks:load', function(){
   const kansaiPage = document.getElementById("kansai-page")
   const kantoPage = document.getElementById("kanto-page")
 
+
+
   // サイドバーの関数
   pullDownButton1.addEventListener('click', function(){
     if (pullDownParents1.getAttribute("style") == "display:block;") {
@@ -38,6 +40,8 @@ window.addEventListener('turbolinks:load', function(){
       pullDownParents3.setAttribute("style", "display:block;")
     }
   })
+
+
 
   // 拠点別絞り込み関数
   chubuPageButton.addEventListener('click', function(){
@@ -79,6 +83,7 @@ window.addEventListener('turbolinks:load', function(){
       kansaiPageButton.removeAttribute("style", "background: #74828F;")
     }
   })
+
 
   
 

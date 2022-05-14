@@ -199,7 +199,11 @@
       <td class="index-td"><%= dmer.store_prop.name %></td>
       <td class="index-td"><%= dmer.user.name %></td>
       <td class="index-td"><%= dmer.date.month %>月<%= dmer.date.day %>日</td>
+      <% if dmer.industry_status == "NG" || dmer.industry_status == "×" || dmer.industry_status == "要確認" %>
+      <td class="index-td" style="color:red;"><%= dmer.industry_status %></td>
+      <% else %>
       <td class="index-td"><%= dmer.industry_status %></td>
+      <% end %>
       <td class="index-td"><%= dmer.status %></td>
       <td class="index-td"><%= dmer.result_point %></td>
       <td class="index-td"><%= dmer.shipment %></td>

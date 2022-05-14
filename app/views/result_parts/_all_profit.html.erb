@@ -12,13 +12,18 @@
       <th class="search-th" rowspan="2" >担当商材</th>
       <th class="search-th" rowspan="2" >予定シフト</th>
       <th class="search-th" rowspan="2" >消化シフト</th>
-      <th class="search-th" rowspan="2">平均売上</th>
-      <th class="search-th" rowspan="2">現状売上</th>
-      <th class="search-th" rowspan="2">終着見込売上</th>
+      <th class="search-th" colspan="3" >営業予想</th>
+      <th class="search-th" colspan="3" >案件ベース</th>
       <th class="search-th" colspan="4">基準値</th>
       <th class="search-th" colspan="12">商材別獲得数</th>
     </tr>
     <tr>
+      <th class="search-th">平均売上</th>
+      <th class="search-th" >現状売上</th>
+      <th class="search-th" >見込終着</th>
+      <th class="search-th">平均売上</th>
+      <th class="search-th" >現状売上</th>
+      <th class="search-th" >見込終着</th>
       <th class="search-th">訪問</th>
       <th class="search-th">対面</th>
       <th class="search-th">フル</th>
@@ -85,6 +90,13 @@
         <% sum_interview = r_user.sum("first_interview + latter_interview").to_f %>
         <% sum_full_talk = r_user.sum("first_full_talk + latter_full_talk").to_f %>
         <% sum_get = r_user.sum("first_get + latter_get").to_f %>
+      <%# 営業予想売上 %>
+        <% exp_sum = @results.where(user_id: r.user_id).sum(:profit) %>
+        <% exp_ave = exp_sum / @results.where(user_id: r.user_id).length rescue "NaN" %>
+        <% exp_fin = exp_ave * shifts rescue "NaN" %>
+        <% base_exp_sum = @results.sum(:profit) %>
+        <% base_exp_ave = base_exp_sum / @results.length rescue "NaN" %>
+        <% base_exp_fin = base_exp_ave * base_shift %>
       <%# 各商材変数（評価売） %>
         <%# dメル（新規） %>
           <% dmer_user = Dmer.includes(:store_prop).where(user_id: r.user_id) %>
@@ -201,20 +213,20 @@
               .or(rakuten_pay_uq.where(status: "自社NG")) %>
           <% rakuten_pay_inc = rakuten_inc(rakuten_pay_user,@results)  %>
           <%# 合計 %>
-          <% 
-            rakuten_pay_valuations =
-              rakuten_pay_uq.sum(:valuation) - 
-              rakuten_pay_def.sum(:valuation) + 
-              rakuten_pay_inc.sum(:valuation) -
-              rakuten_pay_dec.sum(:valuation)
-          %>
-          <% 
-            rakuten_pay_len = 
-              rakuten_pay_uq.length - 
-              rakuten_pay_def.length + 
-              rakuten_pay_inc.length -
-              rakuten_pay_dec.length
-          %>
+            <% 
+              rakuten_pay_valuations =
+                rakuten_pay_uq.sum(:valuation) - 
+                rakuten_pay_def.sum(:valuation) + 
+                rakuten_pay_inc.sum(:valuation) -
+                rakuten_pay_dec.sum(:valuation)
+            %>
+            <% 
+              rakuten_pay_len = 
+                rakuten_pay_uq.length - 
+                rakuten_pay_def.length + 
+                rakuten_pay_inc.length -
+                rakuten_pay_dec.length
+            %>
         <%# 楽天ペイインセン（40件で5万, 50件で10万） %>
           <% rakuten_bonus = 0 %>
           <% if @results.minimum(:date).day == 1 %>
@@ -255,7 +267,7 @@
               rakuten_bonus
           %>
           <% ave_valuations = sum_valuations / shift_digestion %>
-              <% base_dmer += dmer_len %>
+          <% base_dmer += dmer_len %>
           <% base_dmer_slmt += dmer_slmt_len %>
           <% base_aupay += aupay_len %>
           <% base_aupay_slmt += aupay_slmt_len %>
@@ -269,6 +281,9 @@
       <td ><%= shifts %></td>
       <td ><%= shift_digestion %></td>
       <%# 売上 %>
+      <td ><%= exp_ave.to_s(:delimited) %></td>
+      <td ><%= exp_sum.to_s(:delimited) %></td>
+      <td ><%= exp_fin.to_s(:delimited) %></td>
       <td ><%= ave_valuations.to_s(:delimited) rescue "NaN" %></td>
       <td ><%= sum_valuations.to_s(:delimited) rescue "NaN" %></td>
       <td ><%= (ave_valuations * shifts).to_s(:delimited) rescue "NaN" %></td>
@@ -293,16 +308,20 @@
     </tr>
       <% end %>
     <tr>
-        <th colspan="2">合計</th>
+        <th class="sticky">全体</th>
+        <td ></td>
         <td><%= base_shift %></td>
         <td><%= base_shift_digestion %></td>
-        <td><%= (base_sum / base_shift_digestion).to_s(:delimited) %></td>
-        <td><%= base_sum.to_s(:delimited) %></td>
+        <td><%= base_exp_ave.to_s(:delimited) rescue "NaN" %></td>
+        <td><%= base_exp_sum.to_s(:delimited) rescue "NaN" %></td>
+        <td><%= base_exp_fin.to_s(:delimited) rescue "NaN" %></td>
+        <td><%= (base_sum / base_shift_digestion).to_s(:delimited) rescue "NaN" %></td>
+        <td><%= base_sum.to_s(:delimited) rescue "NaN" %></td>
         <td><%= base_ave * base_shift %></td>
-        <td><%= @results.average("first_visit + latter_visit").round(1) %></td>
-        <td><%= @results.average("first_interview + latter_interview").round(1) %></td>
-        <td><%= @results.average("first_full_talk + latter_full_talk").round(1) %></td>
-        <td><%= @results.average("first_get + latter_get").round(1) %></td>
+        <td><%= @results.average("first_visit + latter_visit").round(1) rescue "NaN" %></td>
+        <td><%= @results.average("first_interview + latter_interview").round(1) rescue "NaN" %></td>
+        <td><%= @results.average("first_full_talk + latter_full_talk").round(1) rescue "NaN" %></td>
+        <td><%= @results.average("first_get + latter_get").round(1) rescue "NaN" %></td>
         <td><%= base_dmer %></td>
         <td><%= base_dmer_slmt %></td>
         <td><%= base_aupay %></td>
@@ -310,6 +329,7 @@
         <td><%= base_paypay %></td>
         <td><%= base_rakuten_pay %></td>
         <td><%= base_st_insurace %></td>
+        <td><%=  %></td>
         <td><%=  %></td>
         <td><%=  %></td>
         <td><%=  %></td>

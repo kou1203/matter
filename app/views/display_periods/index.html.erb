@@ -9,6 +9,12 @@
 </div>
   <div data-scope-path="display_periods/index">
     <%= render "display_period_parts/period_operation" %>
+    <h2>表示フィルター</h2>
+    <div class="btn-form">
+      <button id="chart-button">早見</button>
+      <button id="cash-button">キャッシュ実売/経費</button>
+      <button id="show-button">個別実売詳細</button>
+    </div>
   <% if DisplayPeriod.all.length == 0 %>
     <h1 class="warning">期間を入力してください</h1>
   <% elsif @display_period_1.start_period_01 > @display_period_1.end_period_01 %>
@@ -20,6 +26,7 @@
   <% else %>
   <div style="display:flex;">
   <div>
+  <%= render "display_period_parts/chart" %>
   <%= render "display_period_parts/cash_meeting_data" %>
   <%= render "display_period_parts/cash_cost" %>
   <%= render "display_period_parts/cash_meeting_show" %>
