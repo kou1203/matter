@@ -8,266 +8,205 @@
     <%= render "shared/sidebar" %>
   </div>
   <div data-scope-path="users/show">
-  <div class="main">
+    <button id="month-button">月間増減</button>
+    <button id="slmt-button">決済一覧</button>
+    <button id="def-button">不備一覧</button>
     <h2>
       <%= @user.name %>
       <%= link_to "<<",user_path(@user.id,month:@month.prev_month), class:"link" %>
-      <%= @month.year %>年<%= @month.month %>月 不備・NG一覧
+      <%= @month.year %>年<%= @month.month %>月 詳細
       <%= link_to ">>",user_path(@user.id,month:@month.next_month), class:"link" %>
     </h2><br>
-    <h1>不備・NG一覧</h1>
-      <div class="group1">
-      <h2 class="hubi-title">不備対応中</h2>
-        <table>
-          <thead>
+    <div class="main" id="month-page">
+      <h2>dメル審査状況</h2>
+      <table>
+        <thead>
           <tr>
             <th>詳細</th>
-            <th>商材</th>
             <th>商流</th>
             <th>店舗名</th>
             <th>獲得日</th>
-            <th>ステータス</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-          <% @dmer_hubi.each do |dmer| %>
-              <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
-              <td>dメル</td>
-              <td><%= dmer.client %></td>
-              <td><%= dmer.store_prop.name %></td>
-              <td><%= dmer.date %></td>
-              <td><%= dmer.status %></td>
-          </tr>
-          <% end %>
-          <tr>
-          <% @aupay_hubi.each do |aupay| %>
-            <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
-            <td>auPay</td>
-            <td><%= aupay.client %></td>
-            <td><%= aupay.store_prop.name %></td>
-            <td><%= aupay.date %></td>
-            <td><%= aupay.status %></td>
-          </tr>
-          <% end %>
-          <tr>
-          <% @rakuten_pay_hubi.each do |rakuten_pay| %>
-            <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id), class: "link" %></td>
-            <td>楽天ペイ</td>
-            <td><%= rakuten_pay.client %></td>
-            <td><%= rakuten_pay.store_prop.name %></td>
-            <td><%= rakuten_pay.date %></td>
-            <td><%= rakuten_pay.status %></td>
-          </tr>
-          <% end %>
-          </tbody>
-        </table>
-      </div>
-      <div class="group1">
-      <h2 class="ng-title">審査NG</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>詳細</th>
-              <th>商材</th>
-              <th>商流</th>
-              <th>店舗名</th>
-              <th>獲得日</th>
-              <th>ステータス</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-            <% @dmer_ng.each do |dmer| %>
-              <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
-              <td>dメル</td>
-              <td><%= dmer.client %></td>
-              <td><%= dmer.store_prop.name %></td>
-              <td><%= dmer.date %></td>
-              <td><%= dmer.status %></td>
-            </tr>
-            <% end %>
-          <tr>
-          <% @aupay_ng.each do |aupay| %>
-            <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
-            <td>auPay</td>
-            <td><%= aupay.client %></td>
-            <td><%= aupay.store_prop.name %></td>
-            <td><%= aupay.date %></td>
-            <td><%= aupay.status %></td>
-          </tr>
-          <% end %>
-          <tr>
-          <% @rakuten_pay_ng.each do |rakuten_pay| %>
-              <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id), class: "link" %></td>
-              <td>楽天ペイ</td>
-              <td><%= rakuten_pay.client %></td>
-              <td><%= rakuten_pay.store_prop.name %></td>
-              <td><%= rakuten_pay.date %></td>
-              <td><%= rakuten_pay.status %></td>
-          </tr>
-          <% end %>
-          </tbody>
-        </table>
-      </div>
-    <h1>複数店情報</h1>
-      <div class="group1">
-      <h2>複数店追加待ち</h2>
-          <table>
-            <thead>
-              <tr>
-              <th>詳細</th>
-              <th>商材</th>
-              <th>商流</th>
-              <th>店舗名</th>
-              <th>獲得日</th>
-              <th>ステータス</th>
-              <th>本店ステータス</th>
-              </tr>
-            </thead>
-            <tbody>
-            <% @dmer_db_wait.each do |dmer| %>
-              <tr>
-              <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
-              <td>dメル</td>
-              <td><%= dmer.client %></td>
-              <td><%= dmer.store_prop.name %></td>
-              <td><%= dmer.date %></td>
-              <td><%= dmer.status %></td>
-              <td><%= StoreProp.find_by(name: dmer.store_prop.head_store).dmer.status %></td>
-              </tr>
-            <% end %>
-            <% @aupay_db_wait.each do |aupay| %>
-              <tr>
-              <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
-              <td><%= aupay.store_prop.name %></td>
-              <td><%= aupay.date %></td>
-              <td><%= aupay.status %></td>
-              <td><%= StoreProp.find_by(name: aupay.store_prop.head_store).aupay.status %></td>
-              </tr>
-            <% end %>
-            </tbody>
-          </table>
-      </div>
-      <div class="group1">
-        <h2>複数店追加済み</h2>
-          <table>
-            <thead>
-              <tr>
-              <th>詳細</th>
-              <th>商材</th>
-              <th>商流</th>
-              <th>店舗名</th>
-              <th>獲得日</th>
-              <th>ステータス</th>
-              <th>上位店連携日</th>
-              </tr>
-            </thead>
-            <tbody>
-            <% @dmer_db_done.each do |dmer| %>
-              <tr>
-              <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
-              <td>dメル</td>
-              <td><%= dmer.client %></td>
-              <td><%= dmer.store_prop.name %></td>
-              <td><%= dmer.date %></td>
-              <td><%= dmer.status %></td>
-              <td><%= dmer.share %></td>
-              </tr>
-            <% end %>
-            <% @aupay_db_done.each do |aupay| %>
-              <tr>
-              <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
-              <td>auPay</td>
-              <td><%= aupay.client %></td>
-              <td><%= aupay.store_prop.name %></td>
-              <td><%= aupay.date %></td>
-              <td><%= aupay.status %></td>
-              <td><%= aupay.share %></td>
-              </tr>
-            <% end %>
-            </tbody>
-          </table>
-      </div>
-    <h1>審査結果別月の案件一覧</h1>
-      <div class="group1">
-        <h2>審査別月（増加）</h2>
-          <table>
-            <thead>
-              <tr>
-              <th>詳細</th>
-              <th>商材</th>
-              <th>商流</th>
-              <th>店舗名</th>
-              <th>獲得日</th>
-              <th>ステータス</th>
-              <th>審査完了日</th>
-              </tr>
-            </thead>
-            <tbody>
-          <% @dmer_status_done.each do |dmer| %>
-            <tr>
-            <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
-            <td>dメル</td>
-            <td><%= dmer.client %></td>
-            <td><%= dmer.store_prop.name %></td>
-            <td><%= dmer.date %></td>
-            <td><%= dmer.status %></td>
-            <td><%= dmer.result_point %></td>
-            </tr>
-          <% end %>
-            <tr>
-          <% @aupay_status_done.each do |aupay| %>
-            <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
-            <td>auPay</td>
-            <td><%= aupay.client %></td>
-            <td><%= aupay.store_prop.name %></td>
-            <td><%= aupay.date %></td>
-            <td><%= aupay.status %></td>
-            <td><%= aupay.result_point %></td>
-            </tr>
-          <% end %>
-          </tbody>
-        </table>
-      </div>
-        <h2 class="ng-title">審査別月（減少）</h2>
-        <table>
-          <thead>
-            <tr>
-            <th>詳細</th>
-            <th>商材</th>
-            <th>商流</th>
-            <th>店舗名</th>
-            <th>獲得日</th>
-            <th>ステータス</th>
+            <th>業種評価</th>
+            <th>審査ステータス</th>
             <th>審査完了日</th>
-            </tr>
-          </thead>
-          <tbody>
-          <tr>
-          <% @dmer_status_undone.each do |dmer| %>
+            <th>決済ステータス</th>
+            <th>決済完了日</th>
+            <th>決済期限</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @dmers.each do |dmer| %>
+            <% 
+              if dmer.industry_status == "×" || dmer.industry_status == "NG" ||
+                 dmer.status == "審査NG" || dmer.status == "申込取消" ||
+                 dmer.status == "申込取消（不備）"
+            %>
+            <tr style="color:red;">
+            <% elsif dmer.status == "不備対応中" %>
+            <tr style="color:purple;">
+            <% else %>
+            <tr>
+            <% end %>
             <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
-            <td>dメル</td>
             <td><%= dmer.client %></td>
             <td><%= dmer.store_prop.name %></td>
             <td><%= dmer.date %></td>
-            <td><%= dmer.status %></td>
+            <td><%= dmer.industry_status %></td>
+            <td ><%= dmer.status %></td>
             <td><%= dmer.result_point %></td>
+            <td><%= dmer.status_settlement %></td>
+            <td><%= dmer.status_update_settlement %></td>
+            <td><%= dmer.settlement_deadline %></td>
           </tr>
           <% end %>
+        </tbody>
+      </table>
+    </div>
+  <div class="main" id="slmt-page">
+    <h2>決済リスト</h2>
+      <h2>内訳</h2>
+        <table>
           <tr>
-          <% @aupay_status_undone.each do |aupay| %>
-            <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
-            <td>auPay</td>
-            <td><%= aupay.client %></td>
-            <td><%= aupay.store_prop.name %></td>
-            <td><%= aupay.date %></td>
-            <td><%= aupay.status %></td>
-            <td><%= aupay.result_point %></td>
+            <th>dメル</th>
+            <th>auPay</th>
           </tr>
-          <% end %>
+          <tr>
+            <td><%= 
+                    @slmts.where.not(dmer: {id: nil})
+                    .where(dmer: {user_id: @user.id}) 
+                    .where.not(dmer: {industry_status: "×"}) 
+                    .where.not(dmer: {industry_status: "NG"}) 
+                    .where.not(dmer: {industry_status: "要確認"}) 
+                    .where(dmer: {status: "審査OK"}) 
+                    .where.not(dmer: {status_settlement: "完了"}) 
+                    .where.not(dmer: {status_settlement: "期限切れ"}).length 
+            %></td>
+            <td><%= 
+                    @slmts.where.not(aupay: {id: nil})
+                    .where(aupay: {user_id: @user.id})
+                    .where(aupay: {status: "審査通過"})
+                    .where.not(aupay: {status_settlement: "完了"}) 
+                    .where.not(aupay: {status_settlement: "期限切れ"}).length 
+            %></td>
+          </tr>
+        </table>
+        <table class="out-tb">
+          <thead>
+            <tr>
+              <th class="out-th">店舗名</th>
+              <th class="out-th">商材</th>
+              <th class="out-th">商流</th>
+              <th class="out-th">拠点</th>
+              <th class="out-th">獲得者</th>
+              <th class="out-th">獲得日</th>
+              <th class="out-th">決済ステータス</th>
+              <th class="out-th">決済期限</th>
+              <th class="out-th-text">不備内容</th>
+              <th class="out-th-text">商材詳細</th>
+              <th class="out-th-text">店舗詳細</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+            <% @slmts.each do |store| %>
+              <% if 
+                store.dmer.present? && 
+                store.dmer.user_id == @user.id &&
+                store.dmer.status_settlement != "完了" && 
+                store.dmer.status_settlement != "期限切れ" &&
+                store.dmer.status == "審査OK" &&
+                store.dmer.industry_status != "×" &&
+                store.dmer.industry_status != "要確認" &&
+                store.dmer.industry_status != "NG"
+              %>
+              <th class="sticky"><%= store.name %></td>
+              <td class="out-td">dメル</td>
+              <td class="out-td"><%= store.dmer.client %></td>
+              <td class="out-td"><%= store.dmer.user.base %></td>
+              <td class="out-td"><%= store.dmer.user.name %></td>
+              <td class="out-td"><%= store.dmer.date %></td>
+              <td class="out-td"><%= store.dmer.status_settlement %></td>
+              <td class="out-td"><%= store.dmer.settlement_deadline %></td>
+              <td class="out-td-text"><%= store.dmer.deficiency_remarks_settlement %></td>
+              <td class="out-td-text" ><%= link_to "dメル詳細", dmer_path(store.dmer.id),class: "link" %></td>
+              <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+              </tr>
+              <% end %>
+              <% if 
+                store.aupay.present? && 
+                store.aupay.user_id == @user.id &&
+                store.aupay.status_settlement != "完了" && 
+                store.aupay.status_settlement != "期限切れ" &&
+                store.aupay.status == "審査通過" &&
+              %>
+              <tr>
+              <th class="sticky"><%= store.name %></td>
+              <td class="out-td">auPay</td>
+              <td class="out-td"><%= store.aupay.client %></td>
+              <td class="out-td"><%= store.aupay.user.base %></td>
+              <td class="out-td"><%= store.aupay.user.name %></td>
+              <td class="out-td"><%= store.aupay.date %></td>
+              <td class="out-td"><%= store.aupay.status_settlement %></td>
+              <td class="out-td"><%= store.aupay.settlement_deadline %></td>
+              <td class="out-td-text"><%= store.aupay.deficiency_remarks_settlement %></td>
+              <td class="out-td-text" ><%= link_to "auPay詳細", aupay_path(store.aupay.id),class: "link" %></td>
+              <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+              <% end %>
+              </tr>
+            <% end %>
           </tbody>
         </table>
+  </div>
+  <div class="main" id="def-page">
+    <h2>不備リスト</h2>
+    <table class="out-tb">
+      <thead>
+        <tr>
+          <th class="out-th">店舗名</th>
+          <th class="out-th">商材</th>
+          <th class="out-th">商流</th>
+          <th class="out-th">拠点</th>
+          <th class="out-th">獲得者</th>
+          <th class="out-th">獲得日</th>
+          <th class="out-th-text">不備内容</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @dmers_def.each do |dmer| %>
+        <tr>
+          <th class="sticky"><%= dmer.store_prop.name %></td>
+          <td class="out-td">dメル</td>
+          <td class="out-td"><%= dmer.client %></td>
+          <td class="out-td"><%= dmer.user.base %></td>
+          <td class="out-td"><%= dmer.user.name %></td>
+          <td class="out-td"><%= dmer.date %></td>
+          <td class="out-td-text"><%= dmer.deficiency_remarks %></td>
+        </tr>
+        <% end %>
+        <% @aupays_def.each do |aupay| %>
+        <tr>
+          <th class="sticky"><%= aupay.store_prop.name %></td>
+          <td class="out-td">auPay</td>
+          <td class="out-td"><%= aupay.client %></td>
+          <td class="out-td"><%= aupay.user.base %></td>
+          <td class="out-td"><%= aupay.user.name %></td>
+          <td class="out-td"><%= aupay.date %></td>
+          <td class="out-td-text"><%= aupay.deficiency_remarks %></td>
+        </tr>
+        <% end %>
+        <% @rakuten_pays_def.each do |rakuten_pay| %>
+        <tr>
+          <th class="sticky"><%= rakuten_pay.store_prop.name %></td>
+          <td class="out-td">楽天ペイ</td>
+          <td class="out-td"><%= rakuten_pay.client %></td>
+          <td class="out-td"><%= rakuten_pay.user.base %></td>
+          <td class="out-td"><%= rakuten_pay.user.name %></td>
+          <td class="out-td"><%= rakuten_pay.date %></td>
+          <td class="out-td-text"><%= rakuten_pay.deficiency_info %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
   </div>
 </div>
 

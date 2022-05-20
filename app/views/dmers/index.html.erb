@@ -86,10 +86,30 @@
       <% else %>
       <h1>表示範囲：<%= @dmers.minimum(:date) %>（<%= days[@dmers.minimum(:date).wday] %>）〜<%= @dmers.maximum(:date) %>（<%= days[@dmers.maximum(:date).wday] %>）</h1>
 
-        <% settlement_subject = @dmers.where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "要確認").length %>
-        <% settlement_done = @dmers.where(status_settlement: '完了' ).length %>
+        <% 
+          settlement_subject = 
+            @dmers.where(status: "審査OK")
+            .where.not(industry_status: "NG")
+            .where.not(industry_status: "×")
+            .where.not(industry_status: "要確認").length 
+        %>
+        <% 
+          settlement_done = 
+            @dmers.where(status: "審査OK")
+            .where.not(industry_status: "NG")
+            .where.not(industry_status: "×")
+            .where.not(industry_status: "要確認")
+            .where(status_settlement: '完了').length 
+        %>
         <% dmer_sum = @dmers.where.not(status: "申込取消").where.not(status: "審査NG").where.not(status: "自社不備").sum(:profit_new) %>
-        <% slmt_dead = @dmers.where(status: "審査OK").where.not(status_settlement: '完了').where(settlement_deadline: @dmers.minimum(:date)..Date.today).length  %>
+        <% 
+          slmt_dead = 
+            @dmers.where(status: "審査OK")
+            .where.not(industry_status: "NG")
+            .where.not(industry_status: "×")
+            .where.not(industry_status: "要確認")
+            .where(status_settlement: "期限切れ").length
+        %>
 
         <% hubi = @dmers.where(status: '自社不備' ).length %>
         <% client_hubi = @dmers.where(status: '不備対応中' ).length %>
@@ -121,18 +141,20 @@
           <td class="search-td"><%= industry_ng + client_ng %></td>
         </tr>
         <tr>
-          <th colspan="4" class="search-th">決済内訳</th>
+          <th colspan="5" class="search-th">決済ステータス</th>
         </tr>
         <tr>
           <th class="search-th">　　　　決済対象　　　　</th>
           <th class="search-th">　　　　決済完了　　　　</th>
           <th class="search-th">　　決済期限切れ件数　　</th>
+          <th class="search-th">　　　　残り決済対象　　　　</th>
           <th class="search-th">決済完了率（決済完了÷決済対象）</th>
         </tr>
         <tr>
           <td class="search-td"><%= settlement_subject %></td>
           <td class="search-td"><%= settlement_done %></td>
           <td class="search-td"><%= slmt_dead %></td>
+          <td class="search-td"><%= settlement_subject - settlement_done - slmt_dead %></td>
           <td class="search-td"><%= number_to_percentage(settlement_done.to_f / settlement_subject.to_f * 100, precision: 1) rescue "-" %></td>
         </tr>
         <tr>

@@ -1,0 +1,412 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>決済リスト</h1>
+  <%= render "shared/header" %>
+</div>
+
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+
+  <div data-scope-path="def-respondings/index"> 
+    <%#決済の拠点別内訳%>
+      <table>
+          <tr>
+            <th class="out-th" colspan="5">決済内訳</th>
+          </tr>
+          <tr>
+            <th>拠点</th>
+            <th>dメル決済対象</th>
+            <th>auPay決済対象</th>
+            <th>累計決済対象</th>
+          </tr>
+          <tr>
+            <th>中部SS</th>
+            <td><%= dmer_chubu_len =
+                  @slmts_chubu
+                  .where.not(dmer: {industry_status: "×"})
+                  .where.not(dmer: {industry_status: "NG"})
+                  .where.not(dmer: {industry_status: "要確認"})
+                  .where(dmer: {status: "審査OK"})
+                  .where.not(dmer: {status_settlement: "完了"})
+                  .where.not(dmer: {status_settlement: "期限切れ"}).length 
+            %></td>
+            <td><%= aupay_chubu_len =
+                  @slmts_chubu
+                  .where(aupay: {status: "審査通過"})
+                  .where.not(aupay: {status_settlement: "完了"})
+                  .where.not(aupay: {status_settlement: "期限切れ"}).length 
+            %></td>
+            <td><%= sum_chubu_len = dmer_chubu_len + aupay_chubu_len %></td>
+          </tr>
+          <tr>
+            <th>関西SS</th>
+            <td><%= dmer_kansai_len =
+                  @slmts_kansai
+                  .where.not(dmer: {industry_status: "×"})
+                  .where.not(dmer: {industry_status: "NG"})
+                  .where.not(dmer: {industry_status: "要確認"})
+                  .where(dmer: {status: "審査OK"})
+                  .where.not(dmer: {status_settlement: "完了"})
+                  .where.not(dmer: {status_settlement: "期限切れ"}).length 
+            %></td>
+            <td><%= aupay_kansai_len =
+                  @slmts_kansai
+                  .where(aupay: {status: "審査通過"})
+                  .where.not(aupay: {status_settlement: "完了"})
+                  .where.not(aupay: {status_settlement: "期限切れ"}).length 
+            %></td>
+            <td><%= sum_kansai_len = dmer_kansai_len + aupay_kansai_len %></td>
+          </tr>
+          <tr>
+            <th>関西SS</th>
+            <td><%= dmer_kanto_len =
+                  @slmts_kanto
+                  .where.not(dmer: {industry_status: "×"})
+                  .where.not(dmer: {industry_status: "NG"})
+                  .where.not(dmer: {industry_status: "要確認"})
+                  .where(dmer: {status: "審査OK"})
+                  .where.not(dmer: {status_settlement: "完了"})
+                  .where.not(dmer: {status_settlement: "期限切れ"}).length 
+            %></td>
+            <td><%= aupay_kanto_len =
+                  @slmts_kanto
+                  .where(aupay: {status: "審査通過"})
+                  .where.not(aupay: {status_settlement: "完了"})
+                  .where.not(aupay: {status_settlement: "期限切れ"}).length 
+            %></td>
+            <td><%= sum_kanto_len = dmer_kanto_len + aupay_kanto_len %></td>
+          </tr>
+          <tr>
+            <th>全体</th>
+            <td><%= dmer_chubu_len + dmer_kansai_len + dmer_kanto_len %></td>
+            <td><%= aupay_chubu_len + aupay_kansai_len + aupay_kanto_len %></td>
+            <td><%= sum_chubu_len + sum_kansai_len + sum_kanto_len %></td>
+          </tr>
+      </table>
+      <div class="button-form">
+        <h2>拠点選択</h2>
+        <button id="chubu-button">中部SS</button>
+        <button id="kansai-button">関西SS</button>
+        <button id="kanto-button">関東SS</button>
+      </div>
+    <hr>
+    <%# 各拠点の決済リスト %>
+    <div class="list-none" id="chubu-page">
+      <h2>中部SS決済一覧</h2>
+      <table class="out-tb">
+        <thead>
+          <tr>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">拠点</th>
+            <th class="out-th">獲得者</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">決済ステータス</th>
+            <th class="out-th">決済期限</th>
+            <th class="out-th-text">不備内容</th>
+            <th class="out-th-text">商材詳細</th>
+            <th class="out-th-text">店舗詳細</th>
+            <th class="out-th-text">数</th>
+            <% cnt = 0 %>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          <% @slmts_chubu.each do |store| %>
+            <% if 
+              store.dmer.present? && 
+              store.dmer.status_settlement != "完了" && 
+              store.dmer.status_settlement != "期限切れ" &&
+              store.dmer.status == "審査OK" &&
+              store.dmer.industry_status != "×" &&
+              store.dmer.industry_status != "要確認" &&
+              store.dmer.industry_status != "NG"
+            %>
+            <th class="sticky"><%= store.name %></td>
+            <td class="out-td">dメル</td>
+            <td class="out-td"><%= store.dmer.client %></td>
+            <td class="out-td"><%= store.dmer.user.base %></td>
+            <td class="out-td"><%= store.dmer.user.name %></td>
+            <td class="out-td"><%= store.dmer.date %></td>
+            <td class="out-td"><%= store.dmer.status_settlement %></td>
+            <td class="out-td"><%= store.dmer.settlement_deadline %></td>
+            <td class="out-td-text"><%= store.dmer.deficiency_remarks_settlement %></td>
+            <td class="out-td-text" ><%= link_to "dメル詳細", dmer_path(store.dmer.id),class: "link" %></td>
+            <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+            <td class="out-td"><%= cnt +=1 %></td>
+            </tr>
+            <% end %>
+            <% if 
+              store.aupay.present? && 
+              store.aupay.status_settlement != "完了" && 
+              store.aupay.status_settlement != "期限切れ" &&
+              store.aupay.status == "審査通過" &&
+            %>
+            <tr>
+            <th class="sticky"><%= store.name %></td>
+            <td class="out-td">auPay</td>
+            <td class="out-td"><%= store.aupay.client %></td>
+            <td class="out-td"><%= store.aupay.user.base %></td>
+            <td class="out-td"><%= store.aupay.user.name %></td>
+            <td class="out-td"><%= store.aupay.date %></td>
+            <td class="out-td"><%= store.aupay.status_settlement %></td>
+            <td class="out-td"><%= store.aupay.settlement_deadline %></td>
+            <td class="out-td-text"><%= store.aupay.deficiency_remarks_settlement %></td>
+            <td class="out-td-text" ><%= link_to "auPay詳細", aupay_path(store.aupay.id),class: "link" %></td>
+            <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+            <td class="out-td"><%= cnt +=1 %></td>
+            <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <h2>人員一覧</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>氏名</th>
+            <th>担当商材</th>
+            <th>dメル</th>
+            <th>auPay</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% @users_chubu.each do |user| %>
+          <tr>
+            <td><%= link_to user.name, user_path(user.id), class: "link" %></td>
+            <td><%= user.base_sub %></td>
+            <td><%= 
+                  @stores
+                  .where(dmer: {user_id: user.id})
+                  .where.not(dmer: {industry_status: "×"})
+                  .where.not(dmer: {industry_status: "NG"})
+                  .where(dmer: {status: "審査OK"})
+                  .where.not(dmer: {status_settlement: "完了"})
+                  .where.not(dmer: {status_settlement: "期限切れ"}).length 
+            %></td>
+            <td><%= 
+                  @stores.where(aupay: {user_id: user.id}) 
+                  .where(aupay: {status: "審査通過"})
+                  .where.not(aupay: {status_settlement: "完了"})
+                  .where.not(aupay: {status_settlement: "期限切れ"}).length 
+            %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+    <div class="list-none" id="kansai-page">
+        <h2>関西SS決済一覧</h2>
+        <table class="out-tb">
+          <thead>
+            <tr>
+              <th class="out-th">店舗名</th>
+              <th class="out-th">商材</th>
+              <th class="out-th">商流</th>
+              <th class="out-th">拠点</th>
+              <th class="out-th">獲得者</th>
+              <th class="out-th">獲得日</th>
+              <th class="out-th">決済ステータス</th>
+              <th class="out-th">決済期限</th>
+              <th class="out-th-text">不備内容</th>
+              <th class="out-th-text">商材詳細</th>
+              <th class="out-th-text">店舗詳細</th>
+              <th class="out-th-text">数</th>
+              <% cnt = 0 %>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+            <% @slmts_kansai.each do |store| %>
+              <% if 
+                store.dmer.present? && 
+                store.dmer.status_settlement != "完了" && 
+                store.dmer.status_settlement != "期限切れ" &&
+                store.dmer.status == "審査OK" &&
+                store.dmer.industry_status != "×" &&
+                store.dmer.industry_status != "要確認" &&
+                store.dmer.industry_status != "NG"
+              %>
+              <th class="sticky"><%= store.name %></td>
+              <td class="out-td">dメル</td>
+              <td class="out-td"><%= store.dmer.client %></td>
+              <td class="out-td"><%= store.dmer.user.base %></td>
+              <td class="out-td"><%= store.dmer.user.name %></td>
+              <td class="out-td"><%= store.dmer.date %></td>
+              <td class="out-td"><%= store.dmer.status_settlement %></td>
+              <td class="out-td"><%= store.dmer.settlement_deadline %></td>
+              <td class="out-td-text"><%= store.dmer.deficiency_remarks_settlement %></td>
+              <td class="out-td-text" ><%= link_to "dメル詳細", dmer_path(store.dmer.id),class: "link" %></td>
+              <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+              <td class="out-td"><%= cnt +=1 %></td>
+              </tr>
+              <% end %>
+              <% if 
+                store.aupay.present? && 
+                store.aupay.status_settlement != "完了" && 
+                store.aupay.status_settlement != "期限切れ" &&
+                store.aupay.status == "審査通過" &&
+              %>
+              <tr>
+              <th class="sticky"><%= store.name %></td>
+              <td class="out-td">auPay</td>
+              <td class="out-td"><%= store.aupay.client %></td>
+              <td class="out-td"><%= store.aupay.user.base %></td>
+              <td class="out-td"><%= store.aupay.user.name %></td>
+              <td class="out-td"><%= store.aupay.date %></td>
+              <td class="out-td"><%= store.aupay.status_settlement %></td>
+              <td class="out-td"><%= store.aupay.settlement_deadline %></td>
+              <td class="out-td-text"><%= store.aupay.deficiency_remarks_settlement %></td>
+              <td class="out-td-text" ><%= link_to "auPay詳細", aupay_path(store.aupay.id),class: "link" %></td>
+              <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+              <td class="out-td"><%= cnt +=1 %></td>
+              <% end %>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+        <h2>人員一覧</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>氏名</th>
+              <th>担当商材</th>
+              <th>dメル</th>
+              <th>auPay</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% @users_kansai.each do |user| %>
+            <tr>
+              <td><%= link_to user.name, user_path(user.id), class: "link" %></td>
+              <td><%= user.base_sub %></td>
+              <td><%= 
+                    @stores
+                    .where(dmer: {user_id: user.id})
+                    .where.not(dmer: {industry_status: "×"})
+                    .where.not(dmer: {industry_status: "NG"})
+                    .where(dmer: {status: "審査OK"})
+                    .where.not(dmer: {status_settlement: "完了"})
+                    .where.not(dmer: {status_settlement: "期限切れ"}).length 
+              %></td>
+              <td><%= 
+                    @stores.where(aupay: {user_id: user.id}) 
+                    .where(aupay: {status: "審査通過"})
+                    .where.not(aupay: {status_settlement: "完了"})
+                    .where.not(aupay: {status_settlement: "期限切れ"}).length 
+              %></td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>
+    </div>
+    <div class="list-none" id="kanto-page">
+      <h2>関東SS決済一覧</h2>
+      <table class="out-tb">
+        <thead>
+          <tr>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">拠点</th>
+            <th class="out-th">獲得者</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">決済ステータス</th>
+            <th class="out-th">決済期限</th>
+            <th class="out-th-text">不備内容</th>
+            <th class="out-th-text">商材詳細</th>
+            <th class="out-th-text">店舗詳細</th>
+            <th class="out-th-text">数</th>
+            <% cnt = 0 %>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+          <% @slmts_kanto.each do |store| %>
+            <% if 
+              store.dmer.present? && 
+              store.dmer.status_settlement != "完了" && 
+              store.dmer.status_settlement != "期限切れ" &&
+              store.dmer.status == "審査OK" &&
+              store.dmer.industry_status != "×" &&
+              store.dmer.industry_status != "要確認" &&
+              store.dmer.industry_status != "NG"
+            %>
+            <th class="sticky"><%= store.name %></td>
+            <td class="out-td">dメル</td>
+            <td class="out-td"><%= store.dmer.client %></td>
+            <td class="out-td"><%= store.dmer.user.base %></td>
+            <td class="out-td"><%= store.dmer.user.name %></td>
+            <td class="out-td"><%= store.dmer.date %></td>
+            <td class="out-td"><%= store.dmer.status_settlement %></td>
+            <td class="out-td"><%= store.dmer.settlement_deadline %></td>
+            <td class="out-td-text"><%= store.dmer.deficiency_remarks_settlement %></td>
+            <td class="out-td-text" ><%= link_to "dメル詳細", dmer_path(store.dmer.id),class: "link" %></td>
+            <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+            <td class="out-td"><%= cnt +=1 %></td>
+            </tr>
+            <% end %>
+            <% if 
+              store.aupay.present? && 
+              store.aupay.status_settlement != "完了" && 
+              store.aupay.status_settlement != "期限切れ" &&
+              store.aupay.status == "審査通過" &&
+            %>
+            <tr>
+            <th class="sticky"><%= store.name %></td>
+            <td class="out-td">auPay</td>
+            <td class="out-td"><%= store.aupay.client %></td>
+            <td class="out-td"><%= store.aupay.user.base %></td>
+            <td class="out-td"><%= store.aupay.user.name %></td>
+            <td class="out-td"><%= store.aupay.date %></td>
+            <td class="out-td"><%= store.aupay.status_settlement %></td>
+            <td class="out-td"><%= store.aupay.settlement_deadline %></td>
+            <td class="out-td-text"><%= store.aupay.deficiency_remarks_settlement %></td>
+            <td class="out-td-text" ><%= link_to "auPay詳細", aupay_path(store.aupay.id),class: "link" %></td>
+            <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+            <td class="out-td"><%= cnt +=1 %></td>
+            <% end %>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+      <h2>人員一覧</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>氏名</th>
+            <th>担当商材</th>
+            <th>dメル</th>
+            <th>auPay</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% @users_kanto.each do |user| %>
+          <tr>
+            <td><%= link_to user.name, user_path(user.id), class: "link" %></td>
+            <td><%= user.base_sub %></td>
+            <td><%= 
+                  @stores
+                  .where(dmer: {user_id: user.id})
+                  .where.not(dmer: {industry_status: "×"})
+                  .where.not(dmer: {industry_status: "NG"})
+                  .where(dmer: {status: "審査OK"})
+                  .where.not(dmer: {status_settlement: "完了"})
+                  .where.not(dmer: {status_settlement: "期限切れ"}).length 
+            %></td>
+            <td><%= 
+                  @stores.where(aupay: {user_id: user.id}) 
+                  .where(aupay: {status: "審査通過"})
+                  .where.not(aupay: {status_settlement: "完了"})
+                  .where.not(aupay: {status_settlement: "期限切れ"}).length 
+            %></td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

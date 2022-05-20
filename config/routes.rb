@@ -133,4 +133,5 @@ Rails.application.routes.draw do
 
   resources :def_respondings, only: [:index]
   
+  resources :settlements, only: [:index]
 end
