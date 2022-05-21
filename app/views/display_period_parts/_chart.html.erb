@@ -1,6 +1,5 @@
 <div class="list-none" id="chart-page">
 <h2>SS売上早見</h2>
-<% results_data = [@cash_results, @cash_results_kansai, @cash_results_kanto] %>
 <table>
   <thead>
     <tr>
@@ -24,6 +23,7 @@
   </thead>
   <tbody>
     <tr></tr>
+  <% results_data = [@cash_results_chubu, @cash_results_kansai, @cash_results_kanto] %>
   <% results_data.each do |r| %>
     <tr>
   <%# 期間 %>

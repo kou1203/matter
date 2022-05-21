@@ -98,8 +98,10 @@
       <tr>
         <th>評価売上</th>
         <td><%= @rakuten_pay.valuation %></td>
+        <% if current_user.position == "権限①" %>
         <th>実売上</th>
         <td><%= @rakuten_pay.profit %></td>
+        <% end %>
       </tr>
       </table>
     </div>

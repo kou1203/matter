@@ -1,359 +1,4 @@
-<div data-scope-path="shared/header">
-  <h1>マイページ</h1>
-  <%= render "shared/header" %>
-</div>
-
-<div style="display:flex;">
-  <div data-scope-path="shared/side_bar">
-    <%= render "shared/sidebar" %>
-  </div>
-  <div data-scope-path="users/show">
-    <h2>
-      <%= @user.name %>
-      <%= link_to "<<",user_path(@user.id,month:@month.prev_month), class:"link" %>
-      <%= @month.year %>年<%= @month.month %>月 詳細
-      <%= link_to ">>",user_path(@user.id,month:@month.next_month), class:"link" %>
-    </h2><br>
-    <div class="btn-form">
-    <button class="display-btn" id="month-button">商材ステータス</button>
-    <button class="display-btn" id="slmt-button">決済一覧</button>
-    <button class="display-btn" id="def-button">不備一覧</button>
-    <button class="display-btn" id="result-button">利益表</button>
-    </div>
-  <div class="main" id="month-page">
-    <table>
-      <tr>
-        <th colspan="5">ステータス早見</th>
-      </tr>
-      <tr>
-        <th>商材</th>
-        <th>獲得数</th>
-        <th>審査待ち</th>
-        <th>審査通過</th>
-        <th>不備・NG</th>
-      </tr>
-      <tr>
-        <th class="product-th">dメル</th>
-        <td><%= @dmers.length %></td>
-        <td><%= 
-              @dmers.where.not(status: "審査OK")
-              .where.not(status: "審査NG")
-              .where.not(status: "申込取消")
-              .where.not(status: "申込取消（不備）").length 
-        %></td>
-        <td><%= 
-              @dmers.where(status: "審査OK")
-              .where.not(industry_status: "NG")
-              .where.not(industry_status: "×").length 
-        %></td>
-        <td><%= 
-              @dmers.where(status: "審査NG")
-              .or(@dmers.where(industry_status: "NG"))
-              .or(@dmers.where(industry_status: "×"))
-              .or(@dmers.where(status: "申込取消"))
-              .or(@dmers.where(status: "申込取消（不備）")).length 
-        %></td>
-      </tr>
-      <tr>
-        <th class="product-th">auPay</th>
-        <td><%= @aupays.length %></td>
-        <td><%= 
-          @aupays
-          .where.not(status: "審査通過")
-          .where.not(status: "不合格")
-          .where.not(status: "取消")
-          .where.not(status: "申込取消")
-          .where.not(status: "報酬対象外")
-          .where.not(status: "重複対象外").length 
-        %></td>
-        <td><%= @aupays.where(status: "審査通過").length %></td>
-        <td><%= 
-          @aupays.where(status: "不合格")
-          .or(@aupays.where(status: "取消"))
-          .or(@aupays.where(status: "報酬対象外"))
-          .or(@aupays.where(status: "重複対象外"))
-          .or(@aupays.where(status: "申込取消")).length 
-        %></td>
-      </tr>
-      <tr>
-        <th class="product-th">楽天ペイ</th>
-        <td><%= @rakuten_pays.length %></td>
-        <td><%= 
-              @rakuten_pays.where(status: "未処理")
-              .or(@rakuten_pays.where(status: "審査待ち")).length 
-        %></td>
-        <td><%=  %></td>
-        <td><%= 
-          @rakuten_pays.where(status: "自社不備")
-          .or(@rakuten_pays.where(status: "自社NG")).length 
-        %></td>
-      </tr>
-    </table>
-      <h2>dメル審査状況（<%= @dmers.length %>件）</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>詳細</th>
-            <th>商流</th>
-            <th>店舗名</th>
-            <th>獲得日</th>
-            <th>業種評価</th>
-            <th>審査ステータス</th>
-            <th>審査完了日</th>
-            <th>決済ステータス</th>
-            <th>決済完了日</th>
-            <th>決済期限</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @dmers.each do |dmer| %>
-            <% 
-              if dmer.industry_status == "×" || dmer.industry_status == "NG" ||
-                 dmer.status == "審査NG" || dmer.status == "申込取消" ||
-                 dmer.status == "申込取消（不備）"
-            %>
-            <tr style="color:red;">
-            <% elsif dmer.status == "不備対応中" %>
-            <tr style="color:purple;">
-            <% else %>
-            <tr>
-            <% end %>
-            <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
-            <td><%= dmer.client %></td>
-            <td><%= dmer.store_prop.name %></td>
-            <td><%= dmer.date %></td>
-            <td><%= dmer.industry_status %></td>
-            <td ><%= dmer.status %></td>
-            <td><%= dmer.result_point %></td>
-            <td><%= dmer.status_settlement %></td>
-            <td><%= dmer.status_update_settlement %></td>
-            <td><%= dmer.settlement_deadline %></td>
-          </tr>
-          <% end %>
-        </tbody>
-      </table>
-      <h2>auPay審査状況（<%= @aupays.length %>件）</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>詳細</th>
-            <th>商流</th>
-            <th>店舗名</th>
-            <th>獲得日</th>
-            <th>審査ステータス</th>
-            <th>審査完了日</th>
-            <th>決済ステータス</th>
-            <th>決済完了日</th>
-            <th>決済期限</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @aupays.each do |aupay| %>
-            <% if 
-              aupay.status == "不合格" || 
-              aupay.status == "申込取消" || 
-              aupay.status == "報酬対象外" || 
-              aupay.status == "重複対象外"
-            %>
-            <tr style="color:red;">
-            <% elsif aupay.status == "差し戻し" %>
-            <tr style="color:purple;">
-            <% else %>
-            <tr>
-            <% end %>
-            <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
-            <td><%= aupay.client %></td>
-            <td><%= aupay.store_prop.name %></td>
-            <td><%= aupay.date %></td>
-            <td ><%= aupay.status %></td>
-            <td><%= aupay.result_point %></td>
-            <td><%= aupay.status_settlement %></td>
-            <td><%= aupay.status_update_settlement %></td>
-            <td><%= aupay.settlement_deadline %></td>
-          </tr>
-          <% end %>
-        </tbody>
-      </table>
-      <h2>楽天ペイ審査状況（<%= @rakuten_pays.length %>件）</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>詳細</th>
-            <th>商流</th>
-            <th>店舗名</th>
-            <th>獲得日</th>
-            <th>審査ステータス</th>
-            <th>審査完了日</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @rakuten_pays.each do |rakuten_pay| %>
-            <% if rakuten_pay.status == "不合格"  %>
-            <tr style="color:red;">
-            <% elsif rakuten_pay.status == "差し戻し" %>
-            <tr style="color:purple;">
-            <% else %>
-            <tr>
-            <% end %>
-            <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id), class: "link" %></td>
-            <td><%= rakuten_pay.client %></td>
-            <td><%= rakuten_pay.store_prop.name %></td>
-            <td><%= rakuten_pay.date %></td>
-            <td ><%= rakuten_pay.status %></td>
-            <td><%= rakuten_pay.result_point %></td>
-          </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  <div class="main" id="slmt-page">
-    <h2>決済リスト</h2>
-        <table>
-          <tr>
-            <th>dメル</th>
-            <th>auPay</th>
-          </tr>
-          <tr>
-            <td><%= 
-                    @slmts.where.not(dmer: {id: nil})
-                    .where(dmer: {user_id: @user.id}) 
-                    .where.not(dmer: {industry_status: "×"}) 
-                    .where.not(dmer: {industry_status: "NG"}) 
-                    .where.not(dmer: {industry_status: "要確認"}) 
-                    .where(dmer: {status: "審査OK"}) 
-                    .where.not(dmer: {status_settlement: "完了"}) 
-                    .where.not(dmer: {status_settlement: "期限切れ"}).length 
-            %></td>
-            <td><%= 
-                    @slmts.where.not(aupay: {id: nil})
-                    .where(aupay: {user_id: @user.id})
-                    .where(aupay: {status: "審査通過"})
-                    .where.not(aupay: {status_settlement: "完了"}) 
-                    .where.not(aupay: {status_settlement: "期限切れ"}).length 
-            %></td>
-          </tr>
-        </table>
-        <table class="out-tb">
-          <thead>
-            <tr>
-              <th class="out-th">店舗名</th>
-              <th class="out-th">商材</th>
-              <th class="out-th">商流</th>
-              <th class="out-th">拠点</th>
-              <th class="out-th">獲得者</th>
-              <th class="out-th">獲得日</th>
-              <th class="out-th">決済ステータス</th>
-              <th class="out-th">決済期限</th>
-              <th class="out-th-text">不備内容</th>
-              <th class="out-th-text">商材詳細</th>
-              <th class="out-th-text">店舗詳細</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-            <% @slmts.each do |store| %>
-              <% if 
-                store.dmer.present? && 
-                store.dmer.user_id == @user.id &&
-                store.dmer.status_settlement != "完了" && 
-                store.dmer.status_settlement != "期限切れ" &&
-                store.dmer.status == "審査OK" &&
-                store.dmer.industry_status != "×" &&
-                store.dmer.industry_status != "要確認" &&
-                store.dmer.industry_status != "NG"
-              %>
-              <td class="sticky"><%= store.name %></td>
-              <td class="out-td">dメル</td>
-              <td class="out-td"><%= store.dmer.client %></td>
-              <td class="out-td"><%= store.dmer.user.base %></td>
-              <td class="out-td"><%= store.dmer.user.name %></td>
-              <td class="out-td"><%= store.dmer.date %></td>
-              <td class="out-td"><%= store.dmer.status_settlement %></td>
-              <td class="out-td"><%= store.dmer.settlement_deadline %></td>
-              <td class="out-td-text"><%= store.dmer.deficiency_remarks_settlement %></td>
-              <td class="out-td-text" ><%= link_to "dメル詳細", dmer_path(store.dmer.id),class: "link" %></td>
-              <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
-              </tr>
-              <% end %>
-              <% if 
-                store.aupay.present? && 
-                store.aupay.user_id == @user.id &&
-                store.aupay.status_settlement != "完了" && 
-                store.aupay.status_settlement != "期限切れ" &&
-                store.aupay.status == "審査通過" &&
-              %>
-              <tr>
-              <td class="sticky"><%= store.name %></td>
-              <td class="out-td">auPay</td>
-              <td class="out-td"><%= store.aupay.client %></td>
-              <td class="out-td"><%= store.aupay.user.base %></td>
-              <td class="out-td"><%= store.aupay.user.name %></td>
-              <td class="out-td"><%= store.aupay.date %></td>
-              <td class="out-td"><%= store.aupay.status_settlement %></td>
-              <td class="out-td"><%= store.aupay.settlement_deadline %></td>
-              <td class="out-td-text"><%= store.aupay.deficiency_remarks_settlement %></td>
-              <td class="out-td-text" ><%= link_to "auPay詳細", aupay_path(store.aupay.id),class: "link" %></td>
-              <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
-              <% end %>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-  </div>
-  <div class="main" id="def-page">
-    <h2>不備リスト</h2>
-    <table class="out-tb">
-      <thead>
-        <tr>
-          <th class="out-th">店舗名</th>
-          <th class="out-th">商材</th>
-          <th class="out-th">商流</th>
-          <th class="out-th">拠点</th>
-          <th class="out-th">獲得者</th>
-          <th class="out-th">獲得日</th>
-          <th class="out-th-text">不備内容</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @dmers_def.each do |dmer| %>
-        <tr>
-          <td class="sticky"><%= dmer.store_prop.name %></td>
-          <td class="out-td">dメル</td>
-          <td class="out-td"><%= dmer.client %></td>
-          <td class="out-td"><%= dmer.user.base %></td>
-          <td class="out-td"><%= dmer.user.name %></td>
-          <td class="out-td"><%= dmer.date %></td>
-          <td class="out-td-text"><%= dmer.deficiency_remarks %></td>
-        </tr>
-        <% end %>
-        <% @aupays_def.each do |aupay| %>
-        <tr>
-          <td class="sticky"><%= aupay.store_prop.name %></td>
-          <td class="out-td">auPay</td>
-          <td class="out-td"><%= aupay.client %></td>
-          <td class="out-td"><%= aupay.user.base %></td>
-          <td class="out-td"><%= aupay.user.name %></td>
-          <td class="out-td"><%= aupay.date %></td>
-          <td class="out-td-text"><%= aupay.deficiency_remarks %></td>
-        </tr>
-        <% end %>
-        <% @rakuten_pays_def.each do |rakuten_pay| %>
-        <tr>
-          <td class="sticky"><%= rakuten_pay.store_prop.name %></td>
-          <td class="out-td">楽天ペイ</td>
-          <td class="out-td"><%= rakuten_pay.client %></td>
-          <td class="out-td"><%= rakuten_pay.user.base %></td>
-          <td class="out-td"><%= rakuten_pay.user.name %></td>
-          <td class="out-td"><%= rakuten_pay.date %></td>
-          <td class="out-td-text"><%= rakuten_pay.deficiency_info %></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
-  <div class="main" id="result-page">
-  <% if @results.present? %>
-  <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
       <% shifts = @shifts.where(user_id: @results.first.user_id).where(start_time: @results.minimum(:date)..@results.minimum(:date).next_month.ago(1.days)) %>
   <%# 個別利益表 %>
     <h1>表示範囲：<%= @results.minimum(:date) %>（<%= days[@results.minimum(:date).wday] %>）〜<%= @results.maximum(:date) %>（<%= days[@results.maximum(:date).wday] %>）</h1>
@@ -1059,6 +704,131 @@
         </tbody>
       </table>
     </div>
+    <div class="base-frame">
+    <h2>店舗別基準値</h2>
+    <%# 店舗別合計変数 %>
+    <% cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit) %>
+    <% cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get) %>
+    <% other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit) %>
+    <% other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get) %>
+    <% car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit) %>
+    <% car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get) %>
+    <% other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit) %>
+    <% other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get) %>
+    <% hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit) %>
+    <% hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get) %>
+    <% manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit) %>
+    <% manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get) %>
+    <% other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit) %>
+    <% other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get) %>
+    <%# 全店舗合計変数 %>
+    <% store_visit_sum = cafe_visit_sum +  other_food_visit_sum + car_visit_sum + other_retail_visit_sum + hair_salon_visit_sum + manipulative_visit_sum + other_service_visit_sum %>
+    <% store_get_sum = cafe_get_sum +  other_food_get_sum + car_get_sum + other_retail_get_sum + hair_salon_get_sum + manipulative_get_sum + other_service_get_sum %>
+    <table class="out-tb">
+      <thead>
+        <th>項目</th>
+        <th>内訳</th>
+        <th>合計</th>
+        <th>平均</th>
+        <th>成約率</th>
+      </thead>
+      <tbody>
+
+      </tbody>
+      <tr>
+        <th rowspan="2" class="out-th">喫茶・カフェ</th>
+        <th>訪問</th>
+        <td><%= cafe_visit_sum %></td>
+        <td><%= (cafe_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= cafe_get_sum %></td>
+        <td><%= (cafe_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(cafe_get_sum.to_f / cafe_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+      <tr>
+        <th rowspan="2" class="out-th">その他飲食</th>
+        <th>訪問</th>
+        <td><%= other_food_visit_sum %></td>
+        <td><%= (other_food_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= other_food_get_sum %></td>
+        <td><%= (other_food_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(other_food_get_sum.to_f / other_food_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+      <tr>
+        <th rowspan="2" class="out-th">車屋</th>
+        <th>訪問</th>
+        <td><%= car_visit_sum %></td>
+        <td><%= (car_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= car_get_sum %></td>
+        <td><%= (car_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(car_get_sum.to_f / car_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+      <tr>
+        <th rowspan="2" class="out-th">その他小売</th>
+        <th>訪問</th>
+        <td><%= other_retail_visit_sum %></td>
+        <td><%= (other_retail_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= other_retail_get_sum %></td>
+        <td><%= (other_retail_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(other_retail_get_sum.to_f / other_retail_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+      <tr>
+        <th rowspan="2" class="out-th">理容・美容</th>
+        <th>訪問</th>
+        <td><%= hair_salon_visit_sum %></td>
+        <td><%= (hair_salon_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= hair_salon_get_sum %></td>
+        <td><%= (hair_salon_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(hair_salon_get_sum.to_f / hair_salon_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+      <tr>
+        <th rowspan="2" class="out-th">整体・鍼灸</th>
+        <th>訪問</th>
+        <td><%= manipulative_visit_sum %></td>
+        <td><%= (manipulative_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= manipulative_get_sum %></td>
+        <td><%= (manipulative_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(manipulative_get_sum.to_f / manipulative_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+      <tr>
+        <th rowspan="2" class="out-th">その他サービス</th>
+        <th>訪問</th>
+        <td><%= other_service_visit_sum %></td>
+        <td><%= (other_service_visit_sum.to_f / digestion_new).round(1) %></td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <th>成約</th>
+        <td><%= other_service_get_sum %></td>
+        <td><%= (other_service_get_sum.to_f / digestion_new).round(1) %></td>
+        <td><%= number_to_percentage(other_service_get_sum.to_f / other_service_visit_sum.to_f * 100, precision: 1) %></td>
+      </tr>
+    </table>
+    </div>
       <div>
       <h2 class="base-frame">切り返し</h2>
       <table class="out-tb">
@@ -1323,131 +1093,7 @@
         </table>
       </div>
     </div>
-    <div class="base-frame">
-    <h2>店舗別基準値</h2>
-    <%# 店舗別合計変数 %>
-    <% cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit) %>
-    <% cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get) %>
-    <% other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit) %>
-    <% other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get) %>
-    <% car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit) %>
-    <% car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get) %>
-    <% other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit) %>
-    <% other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get) %>
-    <% hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit) %>
-    <% hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get) %>
-    <% manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit) %>
-    <% manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get) %>
-    <% other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit) %>
-    <% other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get) %>
-    <%# 全店舗合計変数 %>
-    <% store_visit_sum = cafe_visit_sum +  other_food_visit_sum + car_visit_sum + other_retail_visit_sum + hair_salon_visit_sum + manipulative_visit_sum + other_service_visit_sum %>
-    <% store_get_sum = cafe_get_sum +  other_food_get_sum + car_get_sum + other_retail_get_sum + hair_salon_get_sum + manipulative_get_sum + other_service_get_sum %>
-    <table class="out-tb">
-      <thead>
-        <th>項目</th>
-        <th>内訳</th>
-        <th>合計</th>
-        <th>平均</th>
-        <th>成約率</th>
-      </thead>
-      <tbody>
 
-      </tbody>
-      <tr>
-        <th rowspan="2" class="out-th">喫茶・カフェ</th>
-        <th>訪問</th>
-        <td><%= cafe_visit_sum %></td>
-        <td><%= (cafe_visit_sum.to_f / digestion_new).round(1) %></td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <th>成約</th>
-        <td><%= cafe_get_sum %></td>
-        <td><%= (cafe_get_sum.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(cafe_get_sum.to_f / cafe_visit_sum.to_f * 100, precision: 1) %></td>
-      </tr>
-      <tr>
-        <th rowspan="2" class="out-th">その他飲食</th>
-        <th>訪問</th>
-        <td><%= other_food_visit_sum %></td>
-        <td><%= (other_food_visit_sum.to_f / digestion_new).round(1) %></td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <th>成約</th>
-        <td><%= other_food_get_sum %></td>
-        <td><%= (other_food_get_sum.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(other_food_get_sum.to_f / other_food_visit_sum.to_f * 100, precision: 1) %></td>
-      </tr>
-      <tr>
-        <th rowspan="2" class="out-th">車屋</th>
-        <th>訪問</th>
-        <td><%= car_visit_sum %></td>
-        <td><%= (car_visit_sum.to_f / digestion_new).round(1) %></td>
-        <td>-</td>
-
-      </tr>
-      <tr>
-        <th>成約</th>
-        <td><%= car_get_sum %></td>
-        <td><%= (car_get_sum.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(car_get_sum.to_f / car_visit_sum.to_f * 100, precision: 1) %></td>
-      </tr>
-      <tr>
-        <th rowspan="2" class="out-th">その他小売</th>
-        <th>訪問</th>
-        <td><%= other_retail_visit_sum %></td>
-        <td><%= (other_retail_visit_sum.to_f / digestion_new).round(1) %></td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <th>成約</th>
-        <td><%= other_retail_get_sum %></td>
-        <td><%= (other_retail_get_sum.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(other_retail_get_sum.to_f / other_retail_visit_sum.to_f * 100, precision: 1) %></td>
-      </tr>
-      <tr>
-        <th rowspan="2" class="out-th">理容・美容</th>
-        <th>訪問</th>
-        <td><%= hair_salon_visit_sum %></td>
-        <td><%= (hair_salon_visit_sum.to_f / digestion_new).round(1) %></td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <th>成約</th>
-        <td><%= hair_salon_get_sum %></td>
-        <td><%= (hair_salon_get_sum.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(hair_salon_get_sum.to_f / hair_salon_visit_sum.to_f * 100, precision: 1) %></td>
-      </tr>
-      <tr>
-        <th rowspan="2" class="out-th">整体・鍼灸</th>
-        <th>訪問</th>
-        <td><%= manipulative_visit_sum %></td>
-        <td><%= (manipulative_visit_sum.to_f / digestion_new).round(1) %></td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <th>成約</th>
-        <td><%= manipulative_get_sum %></td>
-        <td><%= (manipulative_get_sum.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(manipulative_get_sum.to_f / manipulative_visit_sum.to_f * 100, precision: 1) %></td>
-      </tr>
-      <tr>
-        <th rowspan="2" class="out-th">その他サービス</th>
-        <th>訪問</th>
-        <td><%= other_service_visit_sum %></td>
-        <td><%= (other_service_visit_sum.to_f / digestion_new).round(1) %></td>
-        <td>-</td>
-      </tr>
-      <tr>
-        <th>成約</th>
-        <td><%= other_service_get_sum %></td>
-        <td><%= (other_service_get_sum.to_f / digestion_new).round(1) %></td>
-        <td><%= number_to_percentage(other_service_get_sum.to_f / other_service_visit_sum.to_f * 100, precision: 1) %></td>
-      </tr>
-    </table>
-    </div>
     <% end %>
     <% if @results.where(shift: "楽天フェムト新規").empty? %>
     <% else %>
@@ -2063,8 +1709,268 @@
     <% end %>
     </tbody>
   </table>
-  <% else %>
-  <h1><%= @minimum_date_cash.strftime('%Y/%m/%d') %>-<%= @maximum_date_cash.strftime('%Y/%m/%d') %>の間で終着が入力されておりません</h1>
-  <% end %>
-  </div>
-</div>
+  <h1>評価対象一覧新規</h1>
+    <% 
+      dmer_new = 
+        dmer_user
+        .where(result_point: @results.maximum(:date).beginning_of_month..@results.maximum(:date).end_of_month)
+        .where(store_prop: {head_store: nil})
+        .where.not(industry_status: "×")
+        .where.not(industry_status: "NG")
+        .where(status: "審査OK")
+    %>
+    <% 
+      aupay_new = 
+        aupay_user
+        .where(result_point: @results.maximum(:date).beginning_of_month..@results.maximum(:date).end_of_month)
+        .where(status: "審査通過")
+    %>
+    <% rakuten_pay_new = 
+        rakuten_pay_user
+        .where(date: @results.minimum(:date)..@results.maximum(:date))
+        .where.not(status: "自社不備")
+        .or(rakuten_pay_user
+        .where.not(date: @results.minimum(:date)..@results.maximum(:date))
+        .where(deficiency_solution: @results.minimum(:date)..@results.maximum(:date))
+        .where.not(status: "自社不備")
+        )
+
+     
+     %>
+    <div class="result-flex">
+      <div class="base-frame">
+      <h2>dメル新規<%= dmer_new.length + dmer_db.length %>件</h2>
+        <table class="out-tb">
+          <thead>
+          <tr>
+            <th class="out-th"></th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">審査ステータス</th>
+            <th class="out-th">審査完了日（複数店は共有日）</th>
+            <th class="out-th">評価売上</th>
+          </tr>
+          </thead>
+          <tr>
+          <% dmer_new.each do |dmer| %>
+            <td class="out-tb"><%=link_to "詳細",dmer_path(dmer.id),class: "link"  %></td>
+            <td class="out-tb">dメル新規</td>
+            <td class="out-tb"><%= dmer.client %></td>
+            <td class="out-tb"><%= dmer.store_prop.name %></td>
+            <td class="out-tb"><%= dmer.date %></td>
+            <td class="out-tb"><%= dmer.status %></td>
+            <td class="out-tb"><%= dmer.result_point %></td>
+            <td class="out-tb"><%= dmer.valuation_new.to_s(:delimited) %></td>
+          </tr>
+          <% end %>
+          <% dmer_db.each do |dmer| %>
+            <td class="out-tb"><%=link_to "詳細",dmer_path(dmer.id),class: "link"  %></td>
+            <td class="out-tb">dメル複数</td>
+            <td class="out-tb"><%= dmer.client %></td>
+            <td class="out-tb"><%= dmer.store_prop.name %>（本店：<%= dmer.store_prop.head_store %>）</td>
+            <td class="out-tb"><%= dmer.date %></td>
+            <td class="out-tb"><%= dmer.status %></td>
+            <td class="out-tb"><%= dmer.share %></td>
+            <td class="out-tb"><%= dmer.valuation_new.to_s(:delimited) %></td>
+          </tr>
+          <% end %>
+          <tbody>
+        </table>
+      </div>
+      <div class="base-frame">
+      <h2>auPay新規<%= aupay_new.length + aupay_db.length %>件</h2>
+        <table class="out-tb">
+          <thead>
+          <tr>
+            <th class="out-th"></th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">審査ステータス</th>
+            <th class="out-th">審査完了日</th>
+            <th class="out-th">評価売上</th>
+          </tr>
+          </thead>
+          <tr>
+          <% aupay_new.each do |aupay| %>
+            <td class="out-tb"><%=link_to "詳細",aupay_path(aupay.id),class: "link"  %></td>
+            <td class="out-tb">auPay新規</td>
+            <td class="out-tb"><%= aupay.client %></td>
+            <td class="out-tb"><%= aupay.store_prop.name %></td>
+            <td class="out-tb"><%= aupay.date %></td>
+            <td class="out-tb"><%= aupay.status %></td>
+            <td class="out-tb"><%= aupay.result_point %></td>
+            <td class="out-tb"><%= aupay.valuation_new.to_s(:delimited) %></td>
+          </tr>
+          <% end %>
+          <% aupay_db.each do |aupay| %>
+            <td class="out-tb"><%=link_to "詳細",aupay_path(aupay.id),class: "link"  %></td>
+            <td class="out-tb">auPay複数</td>
+            <td class="out-tb"><%= aupay.client %></td>
+            <td class="out-tb"><%= aupay.store_prop.name %>（本店：<%= aupay.store_prop.head_store %>）</td>
+            <td class="out-tb"><%= aupay.date %></td>
+            <td class="out-tb"><%= aupay.status %></td>
+            <td class="out-tb"><%= aupay.result_point %></td>
+            <td class="out-tb"><%= aupay.valuation_new.to_s(:delimited) %></td>
+          </tr>
+          <% end %>
+          <tbody>
+        </table>
+      </div>
+      <div class="base-frame">
+      <h2>PayPay<%= paypay_r_len %>件</h2>
+        <table class="out-tb">
+          <thead>
+          <tr>
+            <th class="out-th"></th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">審査ステータス</th>
+            <th class="out-th">審査完了日</th>
+            <th class="out-th">評価売上</th>
+          </tr>
+          </thead>
+          <tr>
+          <% paypay_result.each do |paypay| %>
+            <td class="out-tb"><%=link_to "詳細",paypay_path(paypay.id),class: "link"  %></td>
+            <td class="out-tb">auPay新規</td>
+            <td class="out-tb"><%= paypay.client %></td>
+            <td class="out-tb"><%= paypay.store_prop.name %></td>
+            <td class="out-tb"><%= paypay.date %></td>
+            <td class="out-tb"><%= paypay.status %></td>
+            <td class="out-tb"><%= paypay.result_point %></td>
+            <td class="out-tb"><%= paypay.valuation.to_s(:delimited) %></td>
+          </tr>
+          <% end %>
+          <tbody>
+        </table>
+      </div>
+      <div class="base-frame">
+      <h2>楽天ペイ<%= rakuten_pay_new.length %>件</h2>
+        <table class="out-tb">
+          <thead>
+          <tr>
+            <th class="out-th"></th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">審査ステータス</th>
+            <th class="out-th">審査完了日</th>
+            <th class="out-th">評価売上</th>
+          </tr>
+          </thead>
+          <tr>
+          <% rakuten_pay_new.each do |rakuten_pay| %>
+            <td class="out-tb"><%=link_to "詳細",rakuten_pay_path(rakuten_pay.id),class: "link"  %></td>
+            <td class="out-tb">auPay新規</td>
+            <td class="out-tb"><%= rakuten_pay.client %></td>
+            <td class="out-tb"><%= rakuten_pay.store_prop.name %></td>
+            <td class="out-tb"><%= rakuten_pay.date %></td>
+            <td class="out-tb"><%= rakuten_pay.status %></td>
+            <td class="out-tb"><%= rakuten_pay.result_point %></td>
+            <td class="out-tb"><%= rakuten_pay.valuation.to_s(:delimited) %></td>
+          </tr>
+          <% end %>
+          <tbody>
+        </table>
+      </div>
+    </div>
+    <h1>評価対象一覧決済</h1>
+    <div class="result-flex">
+      <div class="base-frame">
+      <h2>dメル決済<%= dmer_slmt.length %>件</h2>
+        <table class="out-tb">
+          <thead>
+          <tr>
+            <th class="out-th"></th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">審査ステータス</th>
+            <th class="out-th">決済完了日</th>
+            <th class="out-th">評価売上</th>
+          </tr>
+          </thead>
+          <tr>
+          <% dmer_slmt.each do |dmer| %>
+            <td class="out-tb"><%=link_to "詳細",dmer_path(dmer.id),class: "link"  %></td>
+            <td class="out-tb">dメル決済</td>
+            <td class="out-tb"><%= dmer.client %></td>
+            <td class="out-tb"><%= dmer.store_prop.name %></td>
+            <td class="out-tb"><%= dmer.date %></td>
+            <td class="out-tb"><%= dmer.status %></td>
+            <td class="out-tb"><%= dmer.status_update_settlement %></td>
+            <td class="out-tb"><%= dmer.valuation_settlement.to_s(:delimited) %></td>
+          </tr>
+          <% end %>
+          <tbody>
+        </table>
+      </div>
+      <div class="base-frame">
+      <h2>dメル2回目決済<%= dmer_slmt2nd_len %>件</h2>
+        <table class="out-tb">
+          <thead>
+          <tr>
+            <th class="out-th"></th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">審査ステータス</th>
+            <th class="out-th">決済完了日</th>
+            <th class="out-th">評価売上</th>
+          </tr>
+          </thead>
+          <tr>
+          <% dmer_slmt2nd.each do |dmer| %>
+            <td class="out-tb"><%=link_to "詳細",dmer_path(dmer.id),class: "link"  %></td>
+            <td class="out-tb">dメル2回目決済</td>
+            <td class="out-tb"><%= dmer.client %></td>
+            <td class="out-tb"><%= dmer.store_prop.name %></td>
+            <td class="out-tb"><%= dmer.date %></td>
+            <td class="out-tb"><%= dmer.status %></td>
+            <td class="out-tb"><%= dmer.status_update_settlement %></td>
+            <td class="out-tb"><%= dmer.valuation_second_settlement.to_s(:delimited) %></td>
+          </tr>
+          <% end %>
+          <tbody>
+        </table>
+      </div>
+      <div class="base-frame">
+      <h2>auPay決済<%= aupay_slmt.length %>件</h2>
+        <table class="out-tb">
+          <thead>
+          <tr>
+            <th class="out-th"></th>
+            <th class="out-th">商材</th>
+            <th class="out-th">商流</th>
+            <th class="out-th">店舗名</th>
+            <th class="out-th">獲得日</th>
+            <th class="out-th">審査ステータス</th>
+            <th class="out-th">決済完了日</th>
+            <th class="out-th">評価売上</th>
+          </tr>
+          </thead>
+          <tr>
+          <% aupay_slmt.each do |aupay| %>
+            <td class="out-tb"><%=link_to "詳細",aupay_path(aupay.id),class: "link"  %></td>
+            <td class="out-tb">auPay決済</td>
+            <td class="out-tb"><%= aupay.client %></td>
+            <td class="out-tb"><%= aupay.store_prop.name %></td>
+            <td class="out-tb"><%= aupay.date %></td>
+            <td class="out-tb"><%= aupay.status %></td>
+            <td class="out-tb"><%= aupay.status_update_settlement %></td>
+            <td class="out-tb"><%= aupay.valuation_settlement.to_s(:delimited) %></td>
+          </tr>
+          <% end %>
+          <tbody>
+        </table>
+      </div>
+    </div>

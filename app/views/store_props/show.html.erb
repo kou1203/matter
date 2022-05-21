@@ -8,9 +8,7 @@
 </div>
 <div data-scope-path="store_props/show">
 <div class="main">
-  <table>
-    <th class="reg"><%= link_to "客対応報告", store_prop_trouble_sses_new_path(@store_prop.id), class: "reg-link" %></th>
-  </table>
+  <% if current_user.position == "権限①" %>
     <table>
       <tr >
         <th class="product-th">dメル</th>
@@ -57,6 +55,7 @@
         <% end %>
       </tr>
     </table>
+    <% end %>
     <hr>
     <h1>店舗情報</h1>
     <table >
@@ -166,51 +165,6 @@
         <td><%= link_to "編集", edit_store_prop_path, class: "link" %></td>
       </tr>
     </table>
-
-  <h1>お客様対応<%= @store_prop.trouble_sses.length %>件</h1>
-  <% trouble = 0 %>
-    <% @store_prop.trouble_sses.find_each do |t| %>
-        <h1><%= trouble += 1 %>件目</h1>
-    <table >
-      <tr>
-        <th>入電日</th>
-        <td><%= t.date %></td>
-        <th>連絡者</th>
-        <td><%= t.customer_name %></td>
-      </tr>
-      <tr >
-        <th>直入電orメール</th>
-        <td><%= t.category %></td>
-        <th>商材</th>
-        <td><%= t.product %></td>
-      </tr>
-      <tr >
-        <th>営業担当者</th>
-        <td><%= t.user.name %></td>
-        <th>入電対応者</th>
-        <td><%= t.confirmer %></td>
-      </tr>
-      <tr>
-        <th>対応種別</th>
-        <td><%= t.content_type %></td>
-        <th>対応日</th>
-        <td><%= t.contact_date %></td>
-      </tr>
-      <tr>
-        <th >対応内容</th>
-        <td colspan="3"><%= t.customer_opinion %></td>
-      </tr>
-      <tr>
-        <th>対応結果</th>
-        <td colspan="3"><%= t.result %></td>
-      </tr>
-      <tr>
-        <th>備考</th>
-        <td colspan="2"><%= t.remarks %></td>
-        <td><%= link_to "編集",  edit_trouble_ss_path(t.id), class: "link" %></td>
-      </tr>
-    <table >
-  <% end %>
   </div>
   </div>
 </div>

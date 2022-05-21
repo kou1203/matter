@@ -14,7 +14,7 @@
       <p class="text">チェックボックスにレ点をつけてから下のシフトを選択することで一括入力ができるようになっています。</p>
       <div class="slct-form">
       <input type="button" id="check-all" class="check-btn"  value="全選択">
-      <input type="button" id="uncheck-all" class="uncheck-btn" value="選択解除" >
+      <input type="button" id="uncheck-all" class="uncheck-btn" value="解除" >
       <select id="shift-select" class="shift-slct">
         <option value="">シフトを選択</option>
         <option value="キャッシュレス新規">キャッシュレス新規</option>
@@ -29,7 +29,6 @@
     </div>
 
     <%# カレンダー部分 %>
-    <div class="main">
       <% cnt = 0 %>
       <%= month_calendar do |date| %>
         <input name="shift-check" type="checkbox" , class="shiftcheckbox">
@@ -69,34 +68,32 @@
       <% end %>
       <%= submit_tag "登録",class: "submit-btn" %>
     <% end %>
-    </div>
     <div class="shift-form">
     <h2>全シフト検索</h2>
     <%= search_form_for @q do |f| %>
-      <table  class="shift-table">
+      <table >
         <tr >
           <th class="form-th">日付</th>
           <th class="form-th">日付範囲（始）</th>
           <th class="form-th">日付範囲（終）</th>
-          <th class="form-th">ユーザー名</th>
-          <th class="form-th">拠点</th>
-          <th class="form-th">担当商材</th>
         </tr>
         <tr>
         <td class="form-td"><%= f.date_field :start_time_eq, class: "input" %></td>
         <td class="form-td"><%= f.date_field :start_time_gteq, class: "input" %></td>
         <td class="form-td"><%= f.date_field :start_time_lt, class: "input" %></td>
-        <td class="form-td"><%= f.text_field :user_name_cont, class: "input" %></td>
-        <td class="form-td">
-          <%= f.select :user_base_cont,
-            { "中部": "中部","関東": "関東","関西": "関西"},
-            {include_blank: true},class: "input" %>
-        </td>
-        <td class="form-td">
-          <%= f.select :user_base_sub_cont,
-            { "キャッシュレス": "キャッシュレス","フェムト": "フェムト","サミット": "サミット"},
-            {include_blank: true},class: "input" %>
-        </td>
+
+        </tr>
+        <tr>
+          <th class="form-th">ユーザー名</th>
+          <th class="form-th">拠点</th>
+        </tr>
+        <tr>
+          <td class="form-td"><%= f.text_field :user_name_cont, class: "input" %></td>
+          <td class="form-td">
+            <%= f.select :user_base_cont,
+              { "中部": "中部","関東": "関東","関西": "関西"},
+              {include_blank: true},class: "input" %>
+          </td>
         </tr>
       </table>
     <div style="display: flex;">
@@ -132,11 +129,44 @@
           <th>合計</th>
         </tr>
     <% @shifts.group(:user_id).each do |shift| %>
+      <%# 変数 %>
+        <%# 予定シフト %>
+          <% 
+            cash_new_p = 
+              @shifts.where(user_id: shift.user.id)
+              .where(shift: "キャッシュレス新規").length
+          %>
+          <%
+            cash_slmt_p = @shifts.where(user_id: shift.user.id).where(shift: "キャッシュレス決済").length
+          %>
+        <%# 消化シフト %>
+          <%
+            cash_new_d = 
+              @results.where(user_id: shift.user.id)
+            .where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time))
+            .where(shift: "キャッシュレス新規").length 
+          %>
+          <%
+            cash_slmt_d = @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "キャッシュレス決済").length
+          %>
+          <%
+            femto_new_d = 
+              @results.where(user_id: shift.user.id)
+              .where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time))
+              .where(shift: "楽天フェムト新規").length
+          %>
         <tr>
+        <% if 
+          cash_new_p !=  cash_new_d ||
+          cash_slmt_p != cash_slmt_d 
+        %>
+          <td rowspan="2" style="vertical-align:middle; background:red; color:white;" ><%= shift.user.name %></td>
+        <% else %>
           <td rowspan="2" style="vertical-align:middle;"><%= shift.user.name %></td>
+        <% end %>
           <td><%= shift.user.base %></td>
-          <td><%= @shifts.where(user_id: shift.user.id).where(shift: "キャッシュレス新規").length %></td>
-          <td><%= @shifts.where(user_id: shift.user.id).where(shift: "キャッシュレス決済").length %></td>
+          <td><%= cash_new_p %></td>
+          <td><%= cash_slmt_p %></td>
           <td><%= @shifts.where(user_id: shift.user.id).where(shift: "楽天フェムト新規").length %></td>
           <td><%= @shifts.where(user_id: shift.user.id).where(shift: "楽天フェムト設置").length %></td>
           <td><%= @shifts.where(user_id: shift.user.id).where(shift: "サミット").length %></td>
@@ -156,8 +186,8 @@
         </tr>
         <tr>
           <td>消化シフト</td>
-          <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "キャッシュレス新規").length %></td>
-          <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "キャッシュレス決済").length %></td>
+          <td ><%= cash_new_d %></td>
+          <td ><%= cash_slmt_d %></td>
           <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "楽天フェムト新規").length %></td>
           <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "楽天フェムト設置").length %></td>
           <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "サミット").length %></td>

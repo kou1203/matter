@@ -1,6 +1,7 @@
 class ResultsController < ApplicationController
   before_action :authenticate_user!
   def index 
+    @results_data = Result.all
     @q = Result.ransack(params[:q])
     @results = 
     if params[:q].nil?
@@ -113,18 +114,6 @@ class ResultsController < ApplicationController
     else
       redirect_to results_path, alert: "インポートに失敗しました。ファイルを選択してください"
     end
-  end 
-
-  def show 
-    @result = Result.find(params[:id])
-    @q = Result.ransack(params[:q])
-    @results = 
-    if params[:q].nil? 
-      Result.none 
-    else    
-      @q.result(distinct: false)
-    end
-
   end 
 
   def edit 

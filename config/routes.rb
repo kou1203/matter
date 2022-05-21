@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
   devise_for :users
-  root to: 'store_props#index'
+  root to: 'results#index'
   resources :store_props do 
+    get 'pranesses/index'
     get 'pranesses/new'
     post 'pranesses/create'
     get 'summits/new'

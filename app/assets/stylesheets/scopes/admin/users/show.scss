@@ -15,6 +15,18 @@
     background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
   }
 
+  .display-btn {
+    border: none;
+    background: #c4c2c2;
+    color: white;
+    font-weight: bold;
+    border-radius: 5px;
+  }
+
+  .btn-form {
+    margin:0 0 15px 15px;
+  }
+
   .hubi-title {
     color: rgb(88, 88, 153);
   }
@@ -129,7 +141,6 @@
     overflow-x: scroll;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
-    max-width: 600px;
   }
   
   tr:nth-child(odd) {
@@ -196,10 +207,16 @@
   th {
     text-align: center;
     color: white;
-    background: #96C0CE;
+    background: #74828F;
     padding: 10px;
     width: 15vw;
     border-bottom: none;
+    border: 1px solid gray;
+    
+  }
+
+  .product-th {
+    background: #a9a7a7;
   }
   
   .th:nth-child(even) {
@@ -258,26 +275,62 @@
     overflow-x: scroll;
     display: none;
   }
+  // 利益表
+  .result-flex {
+    display: flex;
+    max-width: 80vw;
+    overflow-x:scroll
+  }
+
+  .sticky {
+    position: sticky;
+    left: 0;
+  }
+  .sticky:before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ccc;
+  }
+
+  .nav-text {
+    margin: 15px;
+    color: rgb(103, 101, 101);
+    font-weight: bold;
+  }
+  
+  .caution-text {
+    margin: 10px;
+    color: rgb(239, 148, 148);
+    font-weight: bold;
+  }
 
   @media screen and (max-width:599px) {
+    // 共有
     .reg {width: 30vw;}
     .product-th {font-size: 8px; font-weight: bold;}
     h1 {font-size: 100%;}
     .link {font-size: 8px;}
-    th {font-size: 10px;}
-    td {font-size: 10px;}
+    th {font-size: 10px; width: 5vw;}
+    td {font-size: 10px; width: 5vw;}
     .reset {width: 15vw;}
   
     table{
       // border-collapse: collapse;
       margin: 20px ;
       // table-layout: fixed;
-      min-width: 40vw;
       display: block;
       overflow-x: scroll;
       white-space: nowrap;
       -webkit-overflow-scrolling: touch;
-      max-width: 40vw;
+    }
+    // 利益表
+    .result-flex {
+      display: flex;
+      flex-flow: column;
     }
   }
   

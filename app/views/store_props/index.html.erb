@@ -46,9 +46,9 @@
       <% else %>
         <table>
           <tr>
-            <th class="search-th">店舗数</th>
-            <th class="search-th">法人</th>
-            <th class="search-th">個人</th>
+            <th>店舗数</th>
+            <th>法人</th>
+            <th>個人</th>
           </tr>
           <tr class="search-tr">
             <td ><%= @store_props.length %></td>
@@ -66,7 +66,9 @@
           <th class="out-th"><%= sort_link(@q, :id, "ID",{},{class: "reset-link"}) %></th>
           <th class="out-th"><%= sort_link(@q, :race, "法人/個人",{},{class: "reset-link"}) %></th>
           <th class="out-th"><%= sort_link(@q, :name, "店舗名",{},{class: "reset-link"}) %></th>
+          <% if current_user.position == "権限①" %>
           <th class="out-th">獲得商材</th>
+          <% end %>
         </tr>
         </thead>
         <tbody>
@@ -76,33 +78,34 @@
           <td ><%= store_prop.id %></td>
           <td ><%= store_prop.race %></td>
           <td ><%= store_prop.name %></td>
-
-          <td >
-          <%  if store_prop.dmer.present? %>
-            <% if store_prop.dmer.status == "不備対応中" %>
-              <%= link_to "dメル", dmer_path(store_prop.dmer.id),class:"caution-link" %>
-            <% else %>
-              <%= link_to "dメル", dmer_path(store_prop.dmer.id),class:"link" %>
+          <% if current_user.position == "権限①" %>
+            <td >
+            <%  if store_prop.dmer.present? %>
+              <% if store_prop.dmer.status == "不備対応中" %>
+                <%= link_to "dメル", dmer_path(store_prop.dmer.id),class:"caution-link" %>
+              <% else %>
+                <%= link_to "dメル", dmer_path(store_prop.dmer.id),class:"link" %>
+              <% end %>
             <% end %>
-          <% end %>
-          <%  if store_prop.aupay.present? %>
-            <% if store_prop.aupay.status == "差し戻し" %>
-              <%= link_to "auPay", aupay_path(store_prop.aupay.id),class:"caution-link" %>
-            <% else %>
-              <%= link_to "auPay", aupay_path(store_prop.aupay.id),class:"link" %>
+            <%  if store_prop.aupay.present? %>
+              <% if store_prop.aupay.status == "差し戻し" %>
+                <%= link_to "auPay", aupay_path(store_prop.aupay.id),class:"caution-link" %>
+              <% else %>
+                <%= link_to "auPay", aupay_path(store_prop.aupay.id),class:"link" %>
+              <% end %>
             <% end %>
-          <% end %>
-          <%  if store_prop.paypay.present? %>
-              <%= link_to "PayPay", paypay_path(store_prop.paypay.id),class:"link" %>
-          <% end %>
-          <%  if store_prop.rakuten_pay.present? %>
-            <% if store_prop.rakuten_pay.status == "自社不備" %>
-              <%= link_to "楽天ペイ", rakuten_pay_path(store_prop.rakuten_pay.id),class:"caution-link" %>
-            <% else %>
-              <%= link_to "楽天ペイ", rakuten_pay_path(store_prop.rakuten_pay.id),class:"link" %>
+            <%  if store_prop.paypay.present? %>
+                <%= link_to "PayPay", paypay_path(store_prop.paypay.id),class:"link" %>
             <% end %>
+            <%  if store_prop.rakuten_pay.present? %>
+              <% if store_prop.rakuten_pay.status == "自社不備" %>
+                <%= link_to "楽天ペイ", rakuten_pay_path(store_prop.rakuten_pay.id),class:"caution-link" %>
+              <% else %>
+                <%= link_to "楽天ペイ", rakuten_pay_path(store_prop.rakuten_pay.id),class:"link" %>
+              <% end %>
+            <% end %>
+            </td>
           <% end %>
-          </td>
         </tr>
         <% end %>
         </tbody>

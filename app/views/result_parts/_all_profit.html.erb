@@ -60,6 +60,9 @@
       <% base_paypay = 0 %>
       <% base_rakuten_pay = 0 %>
       <% base_st_insurace = 0 %>
+      <% base_exp_ave = 0 %>
+      <% base_exp_sum = 0 %>
+      <% base_exp_fin = 0 %>
     <% @results.group(:user_id).each do |r| %>
     <%# 変数 %>
       <% r_user = @results.where(user_id: r.user.id) %>
@@ -315,9 +318,10 @@
         <td><%= base_exp_ave.to_s(:delimited) rescue "NaN" %></td>
         <td><%= base_exp_sum.to_s(:delimited) rescue "NaN" %></td>
         <td><%= base_exp_fin.to_s(:delimited) rescue "NaN" %></td>
-        <td><%= (base_sum / base_shift_digestion).to_s(:delimited) rescue "NaN" %></td>
+        <% base_ave = (base_sum / base_shift_digestion) %>
+        <td><%= base_ave.to_s(:delimited) rescue "NaN" %></td>
         <td><%= base_sum.to_s(:delimited) rescue "NaN" %></td>
-        <td><%= base_ave * base_shift %></td>
+        <td><%= (base_ave * base_shift).round().to_s(:delimited) %></td>
         <td><%= @results.average("first_visit + latter_visit").round(1) rescue "NaN" %></td>
         <td><%= @results.average("first_interview + latter_interview").round(1) rescue "NaN" %></td>
         <td><%= @results.average("first_full_talk + latter_full_talk").round(1) rescue "NaN" %></td>
@@ -335,8 +339,4 @@
         <td><%=  %></td>
         <td><%=  %></td>
     </tr>
-  </table>
-
-  <table>
-    
   </table>
