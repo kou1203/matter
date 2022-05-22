@@ -1,15 +1,26 @@
 class ResultsController < ApplicationController
   before_action :authenticate_user!
   def index 
+    @users = User.where.not(position: "退職")
+    @users_chubu = @users.where(base: "中部SS")
+    @users_kansai = @users.where(base: "関西SS")
+    @users_kanto = @users.where(base: "関東SS")
     @results_data = Result.all
     @q = Result.ransack(params[:q])
     @results = 
     if params[:q].nil?
       Result.none 
     else    
-      @q.result(distinct: false).includes(:user).order(date: :asc)
+      @q.result(distinct: false).includes(:user).joins(:user).order(date: :asc)
     end
-    @month = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
+    if @results.present?
+      @minimum_result_cash = @results.minimum(:date).prev_month.since(25.days)
+      @maximum_result_cash = @results.minimum(:date).beginning_of_month.since(24.days)
+      @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
+      @month = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
+      @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
+      @maximum_date_cash = @month.beginning_of_month.since(24.days)
+    end
     # 日々進捗
     @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today
     # 日付が~25までは前月の26日が初日と計算するようにする

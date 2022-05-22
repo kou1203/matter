@@ -1,10 +1,16 @@
-
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+    <% if @cash_result.empty? %>
+    <p class="caution-text">指定した日付には終着がありません。</p>
+    <% else %>
     <h1>
-      <%= @results.first.user.base %>
-      （稼働訪問員<%= @results.group(:user_id).length %>人）
+      <% if @cash_result.group(:base).length > 1 %>
+      全拠点
+      <% else %>
+      <%= @cash_result.first.user.base %>
+      <% end %>
+      （稼働訪問員<%= @cash_result.group(:user_id).length %>人）
       表示範囲：
-      <%= @results.minimum(:date) %>（<%= days[@results.minimum(:date).wday] %>）〜<%= @results.maximum(:date) %>（<%= days[@results.maximum(:date).wday] %>）
+      <%= @cash_result.minimum(:date) %>（<%= days[@cash_result.minimum(:date).wday] %>）〜<%= @cash_result.maximum(:date) %>（<%= days[@cash_result.maximum(:date).wday] %>）
     </h1> 
   <table class="base-tb">
     <tr>
@@ -46,7 +52,7 @@
       <% base_shift = 0 %>
       <% 
         base_shift_digestion = 
-          @results.where.not(shift: "休み")
+          @cash_result.where.not(shift: "休み")
           .where.not(shift: "内勤")
           .where.not(shift: "帯同")
           .where.not(shift: "欠勤").length  
@@ -63,9 +69,9 @@
       <% base_exp_ave = 0 %>
       <% base_exp_sum = 0 %>
       <% base_exp_fin = 0 %>
-    <% @results.group(:user_id).each do |r| %>
+    <% @cash_result.group(:user_id).each do |r| %>
     <%# 変数 %>
-      <% r_user = @results.where(user_id: r.user.id) %>
+      <% r_user = @cash_result.where(user_id: r.user.id) %>
       <%# シフト %>
         <% 
           new_shift = r_user.where(shift: "キャッシュレス新規")
@@ -74,7 +80,7 @@
         %>
         <%
           shifts = Shift.where(user_id: r.user_id)
-          .where(start_time: @results.minimum(:date)..@results.maximum(:date))
+          .where(start_time: @cash_result.minimum(:date)..@cash_result.maximum(:date))
           .where.not(shift: "休み")
           .where.not(shift: "内勤")
           .where.not(shift: "帯同")
@@ -94,37 +100,37 @@
         <% sum_full_talk = r_user.sum("first_full_talk + latter_full_talk").to_f %>
         <% sum_get = r_user.sum("first_get + latter_get").to_f %>
       <%# 営業予想売上 %>
-        <% exp_sum = @results.where(user_id: r.user_id).sum(:profit) %>
-        <% exp_ave = exp_sum / @results.where(user_id: r.user_id).length rescue "NaN" %>
+        <% exp_sum = @cash_result.where(user_id: r.user_id).sum(:profit) %>
+        <% exp_ave = exp_sum / @cash_result.where(user_id: r.user_id).length rescue "NaN" %>
         <% exp_fin = exp_ave * shifts rescue "NaN" %>
-        <% base_exp_sum = @results.sum(:profit) %>
-        <% base_exp_ave = base_exp_sum / @results.length rescue "NaN" %>
+        <% base_exp_sum = @cash_result.sum(:profit) %>
+        <% base_exp_ave = base_exp_sum / @cash_result.length rescue "NaN" %>
         <% base_exp_fin = base_exp_ave * base_shift %>
       <%# 各商材変数（評価売） %>
         <%# dメル（新規） %>
           <% dmer_user = Dmer.includes(:store_prop).where(user_id: r.user_id) %>
           <% 
             dmer_uq = 
-              this_period(dmer_user,@results)
+              this_period(dmer_user,@cash_result)
               .where(store_prop: {head_store: nil})
           %>
           <% 
             dmer_db = 
-              share_period(dmer_user,@results)
+              share_period(dmer_user,@cash_result)
               .where.not(store_prop: {head_store: nil})
               .where.not(industry_status: "×")
               .where.not(industry_status: "NG")
               .where(status: "審査OK")
           %>
-          <% dmer_def =  dmer_def(dmer_uq,@results) %>
+          <% dmer_def =  dmer_def(dmer_uq,@cash_result) %>
           <% 
             dmer_inc = 
-              judge_inc(dmer_user,@results)
+              judge_inc(dmer_user,@cash_result)
               .where(store_prop: {head_store: nil})
               .where.not(industry_status: "NG")
               .where.not(industry_status: "×") 
           %>
-          <% dmer_dec = judge_dec(dmer_user,@results)  %>
+          <% dmer_dec = judge_dec(dmer_user,@cash_result)  %>
           <%# 合計 %>
           <% 
             dmer_valuations =
@@ -144,33 +150,33 @@
           <% dmer_slmter = Dmer.where(settlementer_id: r.user_id) %>
           <% 
             dmer_slmt = 
-              slmt_this_period(dmer_slmter ,@results)
+              slmt_this_period(dmer_slmter ,@cash_result)
               .where.not(industry_status: "×")
               .where.not(industry_status: "NG")
-              .or(slmt_this_period(dmer_slmter, @results)
+              .or(slmt_this_period(dmer_slmter, @cash_result)
               .where(industry_status: nil))
           %>
           <% dmer_slmt_valuations = dmer_slmt.sum(:valuation_settlement) %>
           <% dmer_slmt_len = dmer_slmt.length %>
-          <% dmer_slmt2nd = slmt_second(dmer_slmter,@results) %>
+          <% dmer_slmt2nd = slmt_second(dmer_slmter,@cash_result) %>
           <% dmer_slmt2nd_valuations = dmer_slmt2nd.sum(:valuation_second_settlement) %>
           <% dmer_slmt2nd_len = dmer_slmt2nd.length %>
         <%# aupay（新規） %>
           <% aupay_user = Aupay.includes(:store_prop).where(user_id: r.user_id) %>
           <% 
             aupay_uq = 
-              this_period(aupay_user,@results)
+              this_period(aupay_user,@cash_result)
               .where(store_prop: {head_store: nil})
           %>
           <% 
             aupay_db = 
-              result_period(aupay_user,@results)
+              result_period(aupay_user,@cash_result)
               .where.not(store_prop: {head_store: nil})
               .where(status: "審査通過")
           %>
-          <% aupay_def =  aupay_def(aupay_uq,@results) %>
-          <% aupay_inc = judge_inc(aupay_user,@results)  %>
-          <% aupay_judge_dec = judge_dec(aupay_user,@results)  %>
+          <% aupay_def =  aupay_def(aupay_uq,@cash_result) %>
+          <% aupay_inc = judge_inc(aupay_user,@cash_result)  %>
+          <% aupay_judge_dec = judge_dec(aupay_user,@cash_result)  %>
           <%# 合計 %>
           <% 
             aupay_valuations =
@@ -188,13 +194,13 @@
           %>
         <%# aupay（決済） %>
           <% aupay_slmt_user = Aupay.where(settlementer_id: r.user_id) %>
-          <% aupay_slmt = slmt_this_period(aupay_slmt_user ,@results) %>
+          <% aupay_slmt = slmt_this_period(aupay_slmt_user ,@cash_result) %>
           <% aupay_slmt_valuations = aupay_slmt.sum(:valuation_settlement) %>
           <% aupay_slmt_len = aupay_slmt.length %>
         <%# PayPay %>
           <% paypay_user = Paypay.where(user_id: r.user_id) %>
-          <% paypay_data = this_period(paypay_user ,@results) %>
-          <% paypay_result = result_period(paypay_user ,@results) %>
+          <% paypay_data = this_period(paypay_user ,@cash_result) %>
+          <% paypay_result = result_period(paypay_user ,@cash_result) %>
           <% paypay_valuations = paypay_result.sum(:valuation) %>
           <% paypay_len = paypay_data.length %>
           <% paypay_r_len = paypay_result.length %>
@@ -202,19 +208,19 @@
           <% rakuten_pay_user = RakutenPay.includes(:store_prop).where(user_id: r.user_id) %>
           <% 
             rakuten_pay_uq = 
-              this_period(rakuten_pay_user,@results)
+              this_period(rakuten_pay_user,@cash_result)
           %>
           <% 
             rakuten_pay_dec = 
               rakuten_pay_uq.where.not(deficiency: nil)
-              .where.not(share: @results.minimum(:date)..@results.maximum(:date))
+              .where.not(share: @cash_result.minimum(:date)..@cash_result.maximum(:date))
           %>
 
           <% 
             rakuten_pay_def =  
               rakuten_pay_uq.where(status: "自社不備")
               .or(rakuten_pay_uq.where(status: "自社NG")) %>
-          <% rakuten_pay_inc = rakuten_inc(rakuten_pay_user,@results)  %>
+          <% rakuten_pay_inc = rakuten_inc(rakuten_pay_user,@cash_result)  %>
           <%# 合計 %>
             <% 
               rakuten_pay_valuations =
@@ -232,7 +238,7 @@
             %>
         <%# 楽天ペイインセン（40件で5万, 50件で10万） %>
           <% rakuten_bonus = 0 %>
-          <% if @results.minimum(:date).day == 1 %>
+          <% if @cash_result.minimum(:date).day == 1 %>
             <% if rakuten_pay_len >= 50 %>
               <% rakuten_bonus = 100000 %>
             <% elsif rakuten_pay_len >= 40  %>
@@ -240,7 +246,7 @@
             <% else %>
               <% rakuten_bonus = 0 %>
             <% end %>
-          <% elsif @results.minimum(:date).day == 26 %>
+          <% elsif @cash_result.minimum(:date).day == 26 %>
             <% if rakuten_pay_len >= 50 %>
               <% rakuten_bonus = 100000 %>
             <% elsif rakuten_pay_len >= 40  %>
@@ -251,7 +257,7 @@
           <% end %>
         <%# 少額短期保険 %>
           <% st_insurance_user = StInsurance.includes(:store_prop).where(user_id: r.user_id) %>
-          <% st_insurance_data = this_period(st_insurance_user,@results) %>
+          <% st_insurance_data = this_period(st_insurance_user,@cash_result) %>
           <% st_insurance_valuations = st_insurance_data.sum(:valuation) %>
           <% st_insurance_len = st_insurance_data.length %>
         <%# 楽天フェムト（新規） %>
@@ -269,7 +275,7 @@
               st_insurance_valuations +
               rakuten_bonus
           %>
-          <% ave_valuations = sum_valuations / shift_digestion %>
+          <% ave_valuations = sum_valuations / shift_digestion rescue "NaN" %>
           <% base_dmer += dmer_len %>
           <% base_dmer_slmt += dmer_slmt_len %>
           <% base_aupay += aupay_len %>
@@ -322,10 +328,10 @@
         <td><%= base_ave.to_s(:delimited) rescue "NaN" %></td>
         <td><%= base_sum.to_s(:delimited) rescue "NaN" %></td>
         <td><%= (base_ave * base_shift).round().to_s(:delimited) %></td>
-        <td><%= @results.average("first_visit + latter_visit").round(1) rescue "NaN" %></td>
-        <td><%= @results.average("first_interview + latter_interview").round(1) rescue "NaN" %></td>
-        <td><%= @results.average("first_full_talk + latter_full_talk").round(1) rescue "NaN" %></td>
-        <td><%= @results.average("first_get + latter_get").round(1) rescue "NaN" %></td>
+        <td><%= @cash_result.average("first_visit + latter_visit").round(1) rescue "NaN" %></td>
+        <td><%= @cash_result.average("first_interview + latter_interview").round(1) rescue "NaN" %></td>
+        <td><%= @cash_result.average("first_full_talk + latter_full_talk").round(1) rescue "NaN" %></td>
+        <td><%= @cash_result.average("first_get + latter_get").round(1) rescue "NaN" %></td>
         <td><%= base_dmer %></td>
         <td><%= base_dmer_slmt %></td>
         <td><%= base_aupay %></td>
@@ -340,3 +346,4 @@
         <td><%=  %></td>
     </tr>
   </table>
+  <% end %>
