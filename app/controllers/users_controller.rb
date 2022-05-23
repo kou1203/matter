@@ -36,6 +36,7 @@ class UsersController < ApplicationController
   def show 
     @shifts = Shift.includes(:user).all
     @user = User.find(params[:id])
+    @shift = @shifts.where(user_id: @user.id)
     # 月間増減
     @month = params[:month] ? Date.parse(params[:month]) : Time.zone.today
     # dメル
@@ -74,6 +75,26 @@ class UsersController < ApplicationController
     @maximum_date_cash = @month.beginning_of_month.since(24.days)
     @results = Result.where(user_id: @user.id).where(date: @minimum_date_cash..@maximum_date_cash)
     if @results.present?
+      # 週毎の期間
+      days = ["日", "月", "火", "水", "木", "金", "土"]
+       if days[@results.minimum(:date).wday] == "日" 
+         week1 = (@results.minimum(:date) + 1) 
+       elsif days[@results.minimum(:date).wday] == "土" 
+         week1 = (@results.minimum(:date) - 5)
+       elsif days[@results.minimum(:date).wday] == "金" 
+         week1 = (@results.minimum(:date) - 4)
+       elsif days[@results.minimum(:date).wday] == "木" 
+         week1 = (@results.minimum(:date) - 3) 
+       elsif days[@results.minimum(:date).wday] == "水" 
+         week1 = (@results.minimum(:date) - 2) 
+       elsif days[@results.minimum(:date).wday] == "火" 
+         week1 = (@results.minimum(:date) - 1) 
+       end 
+       @results_week1 = Result.where(user_id: @user.id).where(date: week1..(week1+6))
+       @results_week2 = Result.where(user_id: @user.id).where(date: (week1+7)..(week1+13))
+       @results_week3 = Result.where(user_id: @user.id).where(date: (week1+14)..(week1+20))
+       @results_week4 = Result.where(user_id: @user.id).where(date: (week1+21)..(week1+27))
+       @results_week5 = Result.where(user_id: @user.id).where(date: (week1+28)..(week1+34))
         # paypay
         @paypays_user = Paypay.where(user_id: @results.first.user_id )
         @paypays_this_month = this_period(@paypays_user,@results)
