@@ -8,12 +8,18 @@
     <%= render "shared/sidebar" %>
   </div>
 <div data-scope-path="results/new_edit">
+    <br><h1>基本情報　拠点：<%= current_user.base + current_user.base_sub%>　<%= current_user.name %></h1>
+      <button id="memo-button">メモ</button>
+    <div class="memo-form" id="memo-page">
+      <label class="textarea-label">一時メモ</label>
+      <textarea></textarea>
+    </div>
   <%= form_with model: @result,  class: "form-frame", local: true do |f| %>
     <%= render "shared/error_messages", model: f.object %>
     <%= f.hidden_field :user_id, value: current_user.id %>
   <%# 基本情報 %>
-    <br><h1>基本情報　拠点：<%= current_user.base + current_user.base_sub%>　<%= current_user.name %></h1>
     <p class="caution-text">※基本情報(日付、地域、シフト)の入力は必須になります。</p>
+
     <table>
       <tr>
         <th><%= f.label :date, "日付", class: "form-text" %></th>
@@ -40,8 +46,7 @@
         <td><%= f.number_field :profit,class: "form-input", min: 0 %></td>
       </tr>
     </table>
-    <label class="textarea-label">一時メモ</label>
-    <textarea></textarea>
+
   <%# 大枠基準値 %>
     <h1>基準値</h1>
     <h2 >前半</h2>
