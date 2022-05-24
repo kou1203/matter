@@ -41,14 +41,34 @@ class UsersController < ApplicationController
     @month = params[:month] ? Date.parse(params[:month]) : Time.zone.today
     # dメル
     @dmers = Dmer.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id).where(store_prop: {head_store: nil})
+    @dmers_inc = 
+      Dmer.includes(:store_prop).where.not(date: @month.all_month)
+      .where(user_id: @user.id).where(store_prop: {head_store: nil})
+      .where(status: "審査OK").where.not(industry_status: "×").where.not(industry_status: "NG")
+      .where(result_point: @month.all_month)
+    @dmers_dec = 
+      Dmer.includes(:store_prop).where(date: @month.all_month)
+      .where(user_id: @user.id).where(store_prop: {head_store: nil})
+      .where(status: "審査OK").where.not(industry_status: "×").where.not(industry_status: "NG")
+      .where.not(result_point: @month.all_month)
     @dmer_db = Dmer.includes(:store_prop).where(share: @month.all_month).where(user_id: @user.id)
 
 
     @aupays = Aupay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id).where(store_prop: {head_store: nil})
-    @aupay_db = Aupay.includes(:store_prop).where(share: @month.all_month).where(user_id: @user.id)
-
+    @aupays_inc = 
+      Aupay.includes(:store_prop).where(result_point: @month.all_month).where(user_id: @user.id)
+      .where(store_prop: {head_store: nil}).where.not(date: @month.all_month).where(status: "審査通過")
+    @aupays_dec = 
+      Aupay.includes(:store_prop).where.not(result_point: @month.all_month).where(user_id: @user.id)
+      .where(store_prop: {head_store: nil}).where(date: @month.all_month).where(status: "審査通過")
 
     @rakuten_pays = RakutenPay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
+    @rakuten_pays_inc = 
+      RakutenPay.includes(:store_prop)
+      .where.not(date: @month.all_month).where(user_id: @user.id)
+      .where(share: @month.all_month).where.not(deficiency: nil)
+    @rakuten_pays_dec = RakutenPay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
+    .where.not(share: @month.all_month).where.not(deficiency: nil)
     # 決済リスト
     @slmts = StoreProp.includes(:dmer, :aupay).all.order(:id)
 

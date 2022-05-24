@@ -23,7 +23,7 @@
     <div class="main" id="month-page">
     <table>
       <tr>
-        <th colspan="5">ステータス早見</th>
+        <th colspan="7">ステータス早見</th>
       </tr>
       <tr>
         <th>商材</th>
@@ -31,6 +31,8 @@
         <th>審査待ち</th>
         <th>審査通過</th>
         <th>不備・NG</th>
+        <th>増加</th>
+        <th>減少</th>
       </tr>
       <tr>
         <th class="product-th">dメル</th>
@@ -53,6 +55,8 @@
               .or(@dmers.where(status: "申込取消"))
               .or(@dmers.where(status: "申込取消（不備）")).length 
         %></td>
+        <td><%= @dmers_inc.length %></td>
+        <td><%= @dmers_dec.length %></td>
       </tr>
       <tr>
         <th class="product-th">auPay</th>
@@ -74,6 +78,8 @@
           .or(@aupays.where(status: "重複対象外"))
           .or(@aupays.where(status: "申込取消")).length 
         %></td>
+        <td><%= @aupays_inc.length %></td>
+        <td><%= @aupays_dec.length %></td>
       </tr>
       <tr>
         <th class="product-th">楽天ペイ</th>
@@ -87,6 +93,8 @@
           @rakuten_pays.where(status: "自社不備")
           .or(@rakuten_pays.where(status: "自社NG")).length 
         %></td>
+        <td><%= @rakuten_pays_inc.length %></td>
+        <td><%= @rakuten_pays_dec.length %></td>
       </tr>
     </table>
       <h2>dメル審査状況（<%= @dmers.length %>件）</h2>
@@ -205,6 +213,102 @@
           <% end %>
         </tbody>
       </table>
+
+      <% if @dmers_inc.length != 0 || @aupays_inc.length != 0 || @rakuten_pays_inc.length != 0 %>
+      <h2>増加商材一覧</h2>
+      <table>
+      <tr>
+        <th>商材</th>
+        <th>商流</th>
+        <th>店舗名</th>
+        <th>獲得日</th>
+        <th>ステータス</th>
+        <th>審査完了日</th>
+        <th>詳細</th>
+      </tr>
+      <% @dmers_inc.each do |dmer|  %>
+      <tr>
+        <td>dメル</td>
+        <td><%= dmer.client %></td>
+        <td><%= dmer.store_prop.name %></td>
+        <td><%= dmer.date %></td>
+        <td><%= dmer.status %></td>
+        <td><%= dmer.result_point %></td>
+        <td><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% @aupays_inc.each do |aupay|  %>
+      <tr>
+        <td>auPay</td>
+        <td><%= aupay.client %></td>
+        <td><%= aupay.store_prop.name %></td>
+        <td><%= aupay.date %></td>
+        <td><%= aupay.status %></td>
+        <td><%= aupay.result_point %></td>
+        <td><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% @rakuten_pays_inc.each do |rakuten_pay|  %>
+      <tr>
+        <td>auPay</td>
+        <td><%= rakuten_pay.client %></td>
+        <td><%= rakuten_pay.store_prop.name %></td>
+        <td><%= rakuten_pay.date %></td>
+        <td><%= rakuten_pay.status %></td>
+        <td><%= rakuten_pay.share %></td>
+        <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      </table>
+      <% end %>
+
+      <% if @dmers_dec.length != 0 || @aupays_dec.length != 0 || @rakuten_pays_dec.length != 0 %>
+      <h2>減少商材一覧</h2>
+      <table>
+      <tr>
+        <th>商材</th>
+        <th>商流</th>
+        <th>店舗名</th>
+        <th>獲得日</th>
+        <th>ステータス</th>
+        <th>審査完了日</th>
+        <th>詳細</th>
+      </tr>
+      <% @dmers_dec.each do |dmer|  %>
+      <tr>
+        <td>dメル</td>
+        <td><%= dmer.client %></td>
+        <td><%= dmer.store_prop.name %></td>
+        <td><%= dmer.date %></td>
+        <td><%= dmer.status %></td>
+        <td><%= dmer.result_point %></td>
+        <td><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% @aupays_dec.each do |aupay|  %>
+      <tr>
+        <td>auPay</td>
+        <td><%= aupay.client %></td>
+        <td><%= aupay.store_prop.name %></td>
+        <td><%= aupay.date %></td>
+        <td><%= aupay.status %></td>
+        <td><%= aupay.result_point %></td>
+        <td><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% @rakuten_pays_dec.each do |rakuten_pay|  %>
+      <tr>
+        <td>auPay</td>
+        <td><%= rakuten_pay.client %></td>
+        <td><%= rakuten_pay.store_prop.name %></td>
+        <td><%= rakuten_pay.date %></td>
+        <td><%= rakuten_pay.status %></td>
+        <td><%= rakuten_pay.share %></td>
+        <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      </table>
+      <% end %>
     </div>
   <div class="main" id="slmt-page">
     <h2>決済リスト</h2>
@@ -262,7 +366,7 @@
                 store.dmer.industry_status != "要確認" &&
                 store.dmer.industry_status != "NG"
               %>
-              <td class="sticky"><%= store.name %></td>
+              <td class="out-th"><%= store.name %></td>
               <td class="out-td">dメル</td>
               <td class="out-td"><%= store.dmer.client %></td>
               <td class="out-td"><%= store.dmer.user.base %></td>
@@ -283,7 +387,7 @@
                 store.aupay.status == "審査通過" &&
               %>
               <tr>
-              <td class="sticky"><%= store.name %></td>
+              <td class="out-th"><%= store.name %></td>
               <td class="out-td">auPay</td>
               <td class="out-td"><%= store.aupay.client %></td>
               <td class="out-td"><%= store.aupay.user.base %></td>
@@ -312,40 +416,44 @@
           <th class="out-th">獲得者</th>
           <th class="out-th">獲得日</th>
           <th class="out-th-text">不備内容</th>
+          <th class="out-th">詳細</th>
         </tr>
       </thead>
       <tbody>
         <% @dmers_def.each do |dmer| %>
         <tr>
-          <td class="sticky"><%= dmer.store_prop.name %></td>
+          <td class="out-td"><%= dmer.store_prop.name %></td>
           <td class="out-td">dメル</td>
           <td class="out-td"><%= dmer.client %></td>
           <td class="out-td"><%= dmer.user.base %></td>
           <td class="out-td"><%= dmer.user.name %></td>
           <td class="out-td"><%= dmer.date %></td>
           <td class="out-td-text"><%= dmer.deficiency_remarks %></td>
+          <td class="out-td"><%= link_to "詳細" ,dmer_path(dmer.id) %></td>
         </tr>
         <% end %>
         <% @aupays_def.each do |aupay| %>
         <tr>
-          <td class="sticky"><%= aupay.store_prop.name %></td>
+          <td class="out-td"><%= aupay.store_prop.name %></td>
           <td class="out-td">auPay</td>
           <td class="out-td"><%= aupay.client %></td>
           <td class="out-td"><%= aupay.user.base %></td>
           <td class="out-td"><%= aupay.user.name %></td>
           <td class="out-td"><%= aupay.date %></td>
           <td class="out-td-text"><%= aupay.deficiency_remarks %></td>
+          <td class="out-td"><%= link_to "詳細" ,aupay_path(aupay.id) %></td>
         </tr>
         <% end %>
         <% @rakuten_pays_def.each do |rakuten_pay| %>
         <tr>
-          <td class="sticky"><%= rakuten_pay.store_prop.name %></td>
+          <td class="out-td"><%= rakuten_pay.store_prop.name %></td>
           <td class="out-td">楽天ペイ</td>
           <td class="out-td"><%= rakuten_pay.client %></td>
           <td class="out-td"><%= rakuten_pay.user.base %></td>
           <td class="out-td"><%= rakuten_pay.user.name %></td>
           <td class="out-td"><%= rakuten_pay.date %></td>
           <td class="out-td-text"><%= rakuten_pay.deficiency_info %></td>
+          <td class="out-td"><%= link_to "詳細" ,rakuten_pay_path(rakuten_pay.id) %></td>
         </tr>
         <% end %>
       </tbody>
@@ -902,18 +1010,18 @@
       <% end %>
         <%# dメル %>
           <td style="color: blue;"><%= dmer_uq.length %></td>
-          <td><%= link_to dmer_def.length,user_path(@results.first.user.id,month: @month), class: "def-link" %></td>
+          <td style="color: red;"><%= dmer_def.length %></td>
           <td style="color: blue;"><%= dmer_db.length %></td>
           <td style="color: blue;"><%= dmer_inc.length %></td>
-          <td><%= link_to dmer_dec.length,user_path(@results.first.user.id,month: @month), class: "def-link" %></td>
+          <td style="color: red;"><%= dmer_dec.length %></td>
 
           <td style="color: blue;"><%= dmer_slmt_len %></td>
         <%# aupay %>
           <td style="color: blue;"><%= aupay_uq.length %></td>
-          <td ><%= link_to aupay_def.length, user_path(@results.first.user.id,month: @month), class: "def-link" %></td>
+          <td style="color: red;"><%= aupay_def.length %></td>
           <td style="color: blue;"><%= aupay_db.length %></td>
           <td style="color: blue;"><%= aupay_inc.length %></td>
-          <td ><%= link_to aupay_dec.length, user_path(@results.first.user.id,month: @month), class: "def-link" %></td>
+          <td ><%= aupay_dec.length %></td>
 
           <td style="color: blue;"><%= aupay_slmt_len %></td>
         <%# PayPay %>
@@ -922,15 +1030,13 @@
           <td colspan="" style="color: blue;"><%= @st_insurances_this_month.length %></td>
         <%# 楽天ペイ %>
           <td style="color: blue;"><%= rakuten_pay_uq.length  %></td>
-          <td style="color: red;"><%= link_to  rakuten_pay_def.length, user_path(@results.first.user.id, month: @month), class: "def-link" %></td>
+          <td style="color: red;"><%= rakuten_pay_def.length %></td>
           <td style="color: blue;"><%= rakuten_pay_inc.length %></td>
           <td style="color: red;"><%= rakuten_pay_dec.length %></td>
         <%# 楽天フェムト新規 %>
           <td style="color: blue;"><%= @rakuten_casas_this_month.length %></td>
           <td style="color: red;"><%= @rakuten_casas_cancel.length %></td>
           <td style="color: blue;"><%= @rakuten_casas_inc.length %></td>
-      </tr>
-      <tr>
       </tr>
       <tr>
         <th rowspan="2">dメル獲得内訳</th>
@@ -1921,7 +2027,14 @@
           <td>（<%= week.minimum(:date).strftime('%m/%d') %>-<%= week.maximum(:date).strftime('%m/%d') %>）</td>
           <td><%= week_shift %></td>
           <td><%= week_valuations.to_s(:delimited) %></td>
+          <% if week_valuations / week_shift >= goal_ave %>
+          <td style="color:blue;"><%= (week_valuations / week_shift).round().to_s(:delimited) rescue "NaN" %></td>
+          <% elsif dg_ave > week_valuations / week_shift %>
+          <td style="color:red;"><%= (week_valuations / week_shift).round().to_s(:delimited) rescue "NaN" %></td>
+          <% else %>
           <td><%= (week_valuations / week_shift).round().to_s(:delimited) rescue "NaN" %></td>
+          <% end %>
+
           <% if dmer_len_week.to_f / week_shift >= goal_dmer %>
           <td style="color:blue;"><%= (dmer_len_week.to_f / week_shift).round(1) rescue "NaN" %></td>
           <% elsif dg_dmer > dmer_len_week.to_f / week_shift  %>
@@ -2004,16 +2117,86 @@
           <td colspan="2">合計</td>
           <td><%= week_sum_shift %></td>
           <td><%= week_sum_valuations.to_s(:delimited) %></td>
-          <td><%= week_sum_visit_ave.round(1) rescue "NaN" %></td>
+
+          <% if week_sum_valuations / week_sum_shift >= goal_ave %>
+          <td style="color:blue;"><%= (week_sum_valuations / week_sum_shift).round(1) rescue "NaN" %></td>
+          <% elsif dg_ave > week_sum_valuations / week_sum_shift %>
+          <td style="color:red;"><%= (week_sum_valuations / week_sum_shift).round(1) rescue "NaN" %></td>
+          <% else %>
+          <td ><%= (week_sum_valuations / week_sum_shift).round(1) rescue "NaN" %></td>
+          <% end %>
+
+          <% if dmer_sum_len_week.to_f / week_sum_shift >= goal_dmer %>
+          <td style="color:blue;"><%= (dmer_sum_len_week.to_f / week_sum_shift).round(1) rescue "NaN" %></td>
+          <% elsif dg_ave > dmer_sum_len_week.to_f / week_sum_shift %>
+          <td style="color:red;"><%= (dmer_sum_len_week.to_f / week_sum_shift).round(1) rescue "NaN" %></td>
+          <% else %>
           <td><%= (dmer_sum_len_week.to_f / week_sum_shift).round(1) rescue "NaN" %></td>
+          <% end %>
+
+          <% if aupay_sum_len_week.to_f / week_sum_shift >= goal_aupay %>
+          <td style="color: blue;"><%= (aupay_sum_len_week.to_f / week_sum_shift).round(1) rescue "NaN" %></td>
+          <% elsif dg_aupay > aupay_sum_len_week.to_f / week_sum_shift %>
+          <td style="color: red;"><%= (aupay_sum_len_week.to_f / week_sum_shift).round(1) rescue "NaN" %></td>
+          <% else %>
           <td><%= (aupay_sum_len_week.to_f / week_sum_shift).round(1) rescue "NaN" %></td>
+          <% end %>
+
+          <% if week_sum_visit_ave >= goal_visit %>
+          <td  colspan="2" style="color: blue;"><%= week_sum_visit_ave.round(1) rescue "NaN" %></td>
+          <% elsif dg_visit > week_sum_visit_ave %>
+          <td  colspan="2" style="color: red;"><%= week_sum_visit_ave.round(1) rescue "NaN" %></td>
+          <% else %>
           <td colspan="2"><%= week_sum_visit_ave.round(1) rescue "NaN" %></td>
+          <% end %>
+
+          <% if week_sum_interview_ave >= goal_interview %>
+          <td style="color: blue;"><%= week_sum_interview_ave.round(1) rescue "NaN" %></td>
+          <% elsif dg_interview > week_sum_interview_ave.round(1) %>
+          <td style="color: red;"><%= week_sum_interview_ave.round(1) rescue "NaN" %></td>
+          <% else %>
           <td><%= week_sum_interview_ave.round(1) rescue "NaN" %></td>
+          <% end %>
+
+          <% if week_sum_interview_ave / week_sum_visit_ave * 100 >= goal_interview_ratio %>
+          <td style="color:blue;"><%= number_to_percentage(week_sum_interview_ave / week_sum_visit_ave * 100, precision: 0) rescue "NaN" %></td>
+          <% elsif dg_interview_ratio > week_sum_interview_ave / week_sum_visit_ave * 100 %>
+          <td style="color:red;"><%= number_to_percentage(week_sum_interview_ave / week_sum_visit_ave * 100, precision: 0) rescue "NaN" %></td>
+          <% else %>
           <td><%= number_to_percentage(week_sum_interview_ave / week_sum_visit_ave * 100, precision: 0) rescue "NaN" %></td>
+          <% end %>
+
+          <% if week_sum_full_talk_ave >= goal_full_talk %>
+          <td style="color: blue;"><%= week_sum_full_talk_ave.round(1) rescue "NaN" %></td>
+          <% elsif dg_full_talk > week_sum_full_talk_ave %>
+          <td style="color: red;"><%= week_sum_full_talk_ave.round(1) rescue "NaN" %></td>
+          <% else %>
           <td><%= week_sum_full_talk_ave.round(1) rescue "NaN" %></td>
+          <% end %>
+
+          <% if week_sum_full_talk_ave / week_sum_interview_ave.to_f * 100 >= goal_full_talk_ratio %>        
+          <td style="color:blue;"><%= number_to_percentage((week_sum_full_talk_ave / week_sum_interview_ave).to_f * 100, precision: 0) rescue "NaN" %>%</td>
+          <% elsif dg_full_talk_ratio > week_sum_full_talk_ave / week_sum_interview_ave.to_f * 100 %>
+          <td style="color:red;"><%= number_to_percentage((week_sum_full_talk_ave / week_sum_interview_ave).to_f * 100, precision: 0) rescue "NaN" %>%</td>
+          <% else %>
           <td><%= number_to_percentage((week_sum_full_talk_ave / week_sum_interview_ave).to_f * 100, precision: 0) rescue "NaN" %>%</td>
+          <% end %> 
+
+          <% if week_sum_get_ave >= goal_get %>
+          <td style="color: blue;"><%= week_sum_get_ave.round(1) rescue "NaN" %>%</td>
+          <% elsif dg_get > week_sum_get_ave %>
+          <td style="color: red;"><%= week_sum_get_ave.round(1) rescue "NaN" %>%</td>
+          <% else %>
           <td><%= week_sum_get_ave.round(1) rescue "NaN" %>%</td>
+          <% end %>
+
+          <% if week_sum_get_ave / week_sum_full_talk_ave * 100 >= goal_get_ratio %>
+          <td style="color: blue;"><%= number_to_percentage(week_sum_get_ave / week_sum_full_talk_ave * 100, precision: 0) rescue "NaN" %>%</td>
+          <% elsif dg_get_ratio > week_sum_get_ave / week_sum_full_talk_ave * 100 %>
+          <td style="color: red;"><%= number_to_percentage(week_sum_get_ave / week_sum_full_talk_ave * 100, precision: 0) rescue "NaN" %>%</td>
+          <% else %>
           <td><%= number_to_percentage(week_sum_get_ave / week_sum_full_talk_ave * 100, precision: 0) rescue "NaN" %>%</td>
+          <% end %>
         </tr>
     </tbody>
     </table>
