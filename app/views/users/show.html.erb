@@ -2128,7 +2128,7 @@
 
           <% if dmer_sum_len_week.to_f / week_sum_shift >= goal_dmer %>
           <td style="color:blue;"><%= (dmer_sum_len_week.to_f / week_sum_shift).round(1) rescue "NaN" %></td>
-          <% elsif dg_ave > dmer_sum_len_week.to_f / week_sum_shift %>
+          <% elsif dg_dmer > dmer_sum_len_week.to_f / week_sum_shift %>
           <td style="color:red;"><%= (dmer_sum_len_week.to_f / week_sum_shift).round(1) rescue "NaN" %></td>
           <% else %>
           <td><%= (dmer_sum_len_week.to_f / week_sum_shift).round(1) rescue "NaN" %></td>
