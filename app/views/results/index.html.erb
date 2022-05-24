@@ -57,26 +57,22 @@
           <%= render "result_parts/all_profit" %>
         <% end %>
       <% end %>
-      <h1>個別利益表（マイページ）</h1>
-      <% users_data = [@users_chubu, @users_kansai, @users_kanto] %>
+      <h2>キャッシュレス</h2>
+      <% users_data = [@users_chubu_cash, @users_kansai_cash, @users_kanto_cash] %>
+        
       <div class="user-form">
-      <% users_data.each do |users| %>
         <div>
-        <h2><%= users.first.base %></h2>
-        <table>
+        <table class="user-tb">
+      <% users_data.each do |users| %>
         <tr>
-          <th>ユーザー名</th>
-          <th>担当商材</th>
-        </tr>
+          <th><%= users.first.base %></th>
         <% users.each do |user| %>
-        <tr>
           <td><%= link_to user.name, user_path(user.id), class: "link" %></td>
-          <td><%= user.base_sub %></td>
-        </tr>
         <% end %>
+        </tr>
+      <% end %>
         </table>
         </div>
-      <% end %>
       </div>
     </div>
   </div>

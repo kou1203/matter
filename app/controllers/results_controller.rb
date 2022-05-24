@@ -1,10 +1,14 @@
 class ResultsController < ApplicationController
   before_action :authenticate_user!
   def index 
-    @users = User.where.not(position: "退職")
+    @users = 
+      User.where.not(position: "退職").or(User.where(position: nil))
     @users_chubu = @users.where(base: "中部SS")
+    @users_chubu_cash = @users_chubu.where(base_sub: "キャッシュレス")
     @users_kansai = @users.where(base: "関西SS")
+    @users_kansai_cash = @users_kansai.where(base_sub: "キャッシュレス")
     @users_kanto = @users.where(base: "関東SS")
+    @users_kanto_cash = @users_kanto.where(base_sub: "キャッシュレス")
     @results_data = Result.all
     @q = Result.ransack(params[:q])
     @results = 
@@ -16,7 +20,15 @@ class ResultsController < ApplicationController
     if @results.present?
       @minimum_result_cash = @results.minimum(:date).prev_month.since(25.days)
       @maximum_result_cash = @results.minimum(:date).beginning_of_month.since(24.days)
-      @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
+      if @results.first.user.base == "中部SS"
+        @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash).where(user: {base: "中部SS"})
+      elsif @results.first.user.base == "関西SS"
+        @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash).where(user: {base: "関西SS"})
+      elsif @results.first.user.base == "関東SS"
+      @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash).where(user: {base: "関東SS"})
+      else
+      @cash_result = @results.joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
+      end
       @month = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
       @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
       @maximum_date_cash = @month.beginning_of_month.since(24.days)

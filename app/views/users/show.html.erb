@@ -495,6 +495,15 @@
           %>
         <%# 決済 %>
           <% dmer_slmter = Dmer.where(settlementer_id: @results.first.user_id ) %>
+          <%
+            dmer_slmter2nd = Dmer.where(settlementer_id: @results.first.user_id ).where(client: "マックス即時（ｄ）")
+            .or(
+              Dmer.where(settlementer_id: @results.first.user_id ).where(client: "マックス通常")
+            )
+            .or(
+              Dmer.where(settlementer_id: @results.first.user_id ).where(client: "ピアズ")
+            )
+           %>
           <% 
             dmer_slmt = 
               if @results.maximum(:date).day == 25
@@ -704,7 +713,7 @@
         </tr>
         <tr>
           <th>決済対象（dメル）</th>
-          <th>決済対象（ピアズ２回目）</th>
+          <th>2回目決済対象</th>
           <th>決済対象（aupay）</th>
           <th>楽天ペイ特別インセン</th>
           <th>終着見込(新規)</th>
@@ -922,31 +931,84 @@
           <td style="color: blue;"><%= @rakuten_casas_inc.length %></td>
       </tr>
       <tr>
-        <th colspan=5>dメル獲得 内訳</th>
-        <th colspan=4>dメル決済内訳</th>
       </tr>
       <tr>
+        <th rowspan="2">dメル獲得内訳</th>
+        <% if dmer_uq.where(client: "USEN").length != 0 %>
         <th>USEN</th>
+        <% end %>
+        <% if dmer_uq.where(client: "マックス通常").length != 0 %>
         <th>マックス通常</th>
+        <% end %>
+        <% if dmer_uq.where(client: "マックス即時（d）").length != 0 %>
         <th>マックス即時（d）</th>
+        <% end %>
+        <% if dmer_uq.where(client: "マックス即時（メル）").length != 0 %>
         <th>マックス即時（メル）</th>
+        <% end %>
+        <% if dmer_uq.where(client: "ピアズ").length != 0 %>
         <th>ピアズ</th>
+        <% end %>
+        <% if dmer_uq.where(client: "ピアズ即時").length != 0 %>
+        <th>ピアズ即時</th>
+        <% end %>
+        <th rowspan="2">dメル決済内訳</th>
+        <% if dmer_slmt.where(client: "USEN").length != 0 %>
         <th>USEN</th>
+        <% end %>
+        <% if dmer_slmt.where(client: "マックス通常").length != 0 %>
         <th>マックス通常</th>
-        <th>マックス即時</th>
+        <% end %>
+        <% if dmer_slmt.where(client: "マックス即時（d）").length != 0 %>
+        <th>マックス即時（d）</th>
+        <% end %>
+        <% if dmer_slmt.where(client: "マックス即時（メル）").length != 0 %>
+        <th>マックス即時（メル）</th>
+        <% end %>
+        <% if dmer_slmt.where(client: "ピアズ").length != 0 %>
         <th>ピアズ</th>
+        <% end %>
+        <% if dmer_slmt.where(client: "ピアズ即時").length != 0 %>
+        <th>ピアズ即時</th>
+        <% end %>
       </tr>
-      <tr></tr>
       <tr>
+        <% if dmer_uq.where(client: "USEN").length != 0 %>
         <td><%= dmer_uq.where(client: "USEN").length %></td>
+        <% end %>
+        <% if dmer_uq.where(client: "マックス通常").length != 0 %>
         <td><%= dmer_uq.where(client: "マックス通常").length %></td>
+        <% end %>
+        <% if dmer_uq.where(client: "マックス即時（d）").length != 0 %>
         <td><%= dmer_uq.where(client: "マックス即時（d）").length %></td>
+        <% end %>
+        <% if dmer_uq.where(client: "マックス即時（メル）").length != 0 %>
         <td><%= dmer_uq.where(client: "マックス即時（メル）").length %></td>
+        <% end %>
+        <% if dmer_uq.where(client: "ピアズ").length != 0 %>
         <td><%= dmer_uq.where(client: "ピアズ").length %></td>
+        <% end %>
+        <% if dmer_uq.where(client: "ピアズ即時").length != 0 %>
+        <td><%= dmer_uq.where(client: "ピアズ即時").length %></td>
+        <% end %>
+        <% if dmer_slmt.where(client: "USEN").length != 0 %>
         <td><%= dmer_slmt.where(client: "USEN").length %></td>
-        <td><%= dmer_slmt.where(client: "マックスサポート").length %></td>
-        <td><%= dmer_slmt.where(client: "マックス即時").length %></td>
+        <% end %>
+        <% if dmer_slmt.where(client: "マックス通常").length != 0 %>
+        <td><%= dmer_slmt.where(client: "マックス通常").length %></td>
+        <% end %>
+        <% if dmer_slmt.where(client: "マックス即時（d）").length != 0 %>
+        <td><%= dmer_slmt.where(client: "マックス即時（d）").length %></td>
+        <% end %>
+        <% if dmer_slmt.where(client: "マックス即時（メル）").length != 0 %>
+        <td><%= dmer_slmt.where(client: "マックス即時（メル）").length %></td>
+        <% end %>
+        <% if dmer_slmt.where(client: "ピアズ").length != 0 %>
         <td><%= dmer_slmt.where(client: "ピアズ").length %></td>
+        <% end %>
+        <% if dmer_slmt.where(client: "ピアズ即時").length != 0 %>
+        <td><%= dmer_slmt.where(client: "ピアズ即時").length %></td>
+        <% end %>
       </tr>
     </table>
   <h1>基準値</h1>
