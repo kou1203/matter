@@ -58,7 +58,13 @@
         <% end %>
       <% end %>
       <h2><%= link_to "<<",results_path(month:@month_daily.prev_week), class:"link" %>
-          <%= @month_daily.year %>年<%= @month_daily.month %>月（<%= @results_month.minimum(:date).day %>〜<%= @results_month.maximum(:date).day %>）日獲得
+          <%= @month_daily.year %>年<%= @month_daily.month %>月
+          <% if @results_month.present? %>
+          （
+          <%= @results_month.minimum(:date).day %>〜
+          <%= @results_month.maximum(:date).day %>
+          ）日獲得
+          <% end %>
           <%= link_to ">>",results_path(month:@month_daily.next_week), class:"link" %>
       </h2>
         <table class="out-tb">
