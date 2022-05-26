@@ -113,7 +113,11 @@ class ResultCashesController < ApplicationController
       :out_get_19,
       :out_interview_20,
       :out_full_talk_20,
-      :out_get_20
+      :out_get_20,
+      :dmer,
+      :aupay,
+      :paypay,
+      :rakuten_pay
     )
   end 
 end

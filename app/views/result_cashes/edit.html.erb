@@ -9,6 +9,20 @@
   <div data-scope-path="results/new_edit">
     <%= form_with model: @result_cash, local: true, class: "form-frame", local: true do |f| %>
       <%= render "shared/error_messages", model: f.object %>
+      <h2>獲得商材</h2>
+      <table>
+        <tr>
+          <th ><%= f.label :dmer, "dメル", class: "form-text" %></th>
+          <th ><%= f.label :aupay, "auPay", class: "form-text" %></th>
+          <th ><%= f.label :paypay, "PayPay", class: "form-text" %></th>
+          <th ><%= f.label :rakuten_pay, "楽天ペイ", class: "form-text" %></th>
+        <tr>
+          <td><%= f.number_field :dmer, class: "form-input-num" %></td>
+          <td ><%= f.number_field :aupay, class: "form-input-num" %></td>
+          <td ><%= f.number_field :paypay, class: "form-input-num" %></td>
+          <td ><%= f.number_field :rakuten_pay, class: "form-input-num" %></td>
+        </tr>
+      </table>
       <h2>０１：どういうこと？</h2>
       <table>
         <tr>

@@ -1,6 +1,10 @@
 class ResultsController < ApplicationController
   before_action :authenticate_user!
   def index 
+    @dmers = Dmer.select("dmers.id,dmers.user_id")
+    @aupays = Aupay.select("aupays.id,aupays.user_id")
+    @paypays = Paypay.select("paypays.id,paypays.user_id")
+    @rakuten_pays = RakutenPay.select("rakuten_pays.id,rakuten_pays.user_id")
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
     @users_chubu = @users.where(base: "中部SS")
@@ -35,6 +39,8 @@ class ResultsController < ApplicationController
     end
     # 日々進捗
     @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today
+
+    @results_month = Result.includes(:user).joins(:user).where(date: @month_daily.all_week)
     # 日付が~25までは前月の26日が初日と計算するようにする
     if 26 > @month_daily.day
       @shift_month = 

@@ -57,9 +57,105 @@
           <%= render "result_parts/all_profit" %>
         <% end %>
       <% end %>
+      <h2><%= link_to "<<",results_path(month:@month_daily.prev_week), class:"link" %>
+          <%= @month_daily.year %>年<%= @month_daily.month %>月（<%= @results_month.minimum(:date).day %>〜<%= @results_month.maximum(:date).day %>）日獲得
+          <%= link_to ">>",results_path(month:@month_daily.next_week), class:"link" %>
+      </h2>
+        <table class="out-tb">
+        <thead>
+          <tr>
+          <th>ユーザー名</th>
+          <th>内容</th>
+          <% @results_month.group(:date).order(:date).each do |r_date| %>
+          <th class="out-th"><%= r_date.date.month %>月<%= r_date.date.day %>日</th>
+          <% end %>
+            </tr>
+          </thead>
+          <tbody>
+          <tr>
+          <% @results_month.group(:user_id).order(:base).each do |r_user| %>
+            <th class="out-th" rowspan="2"><%= r_user.user.name %></th>
+            <td>営業終着内訳</td>
+            <% @results_month.group(:date).order(:date).each do |r_date| %>
+            <% dmer_len = @dmers.where(date: r_date.date).where(user_id: r_user.user.id).length %>
+            <% aupay_len = @aupays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
+            <% paypay_len = @paypays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
+            <% rakuten_pay_len = @rakuten_pays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
+              <td>
+              <% if 
+                @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).present? && 
+                @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.present? &&
+              %>
+              <% if @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.dmer.present?  %>
+              <% if dmer_len != @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.dmer %>
+              <span style="color:red;">dメル</span>
+              <% else %>
+              <span >dメル</span>
+              <% end %>
+
+              <%= @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.dmer %>
+              <% end %>
+              <% if @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.aupay.present?  %>
+              <% if aupay_len != @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.aupay %>
+              <span style="color:red;">auPay</span>
+              <% else %>
+              <span >auPay</span>
+              <% end %>
+              <%= @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.aupay %>
+              <% end %>
+              <% if @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.paypay.present?  %>
+              <% if paypay_len != @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.paypay %>
+              <span style="color:red;">PayPay</span>
+              <% else %>
+              <span >PayPay</span>
+              <% end %>
+              <%= @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.paypay %>
+              <% end %>
+              <% if @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.rakuten_pay.present?  %>
+              <% if rakuten_pay_len != @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.rakuten_pay %>
+              <span style="color:red;">楽天ペイ</span>
+              <% else %>
+              <span >楽天ペイ</span>
+              <% end %>
+              <%= @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.rakuten_pay %>
+              <% end %>
+             </td>
+            <% end %>
+          <% end %>
+          </tr>
+          <tr>
+          <td style="opacity:0.5;">管理登録内訳</td>
+            <% @results_month.group(:date).order(:date).each do |r_date| %>
+            <% product_sum = 0 %>
+            <% dmer_len = @dmers.where(date: r_date.date).where(user_id: r_user.user.id).length %>
+            <% aupay_len = @aupays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
+            <% paypay_len = @paypays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
+            <% rakuten_pay_len = @rakuten_pays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
+            <td style="opacity: 0.5;">
+            <% if dmer_len != 0 %>
+              dメル
+              <%= dmer_len %>
+            <% end %>
+            <% if aupay_len != 0 %>
+              auPay
+              <%=  aupay_len %>
+            <% end %>
+            <% if paypay_len != 0 %>
+              PayPay
+              <%=   paypay_len %>
+            <% end %>
+            <% if rakuten_pay_len != 0 %>
+              楽天ペイ
+              <%=  rakuten_pay_len %>
+            <% end %>
+            </td>
+            <% end %>
+          </tr>
+        <% end %>
+        </tbody>
+        </table>
       <h2>キャッシュレス</h2>
       <% users_data = [@users_chubu_cash, @users_kansai_cash, @users_kanto_cash] %>
-        
       <div class="user-form">
         <div>
         <table class="user-tb">

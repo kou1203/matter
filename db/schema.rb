@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_30_065908) do
+ActiveRecord::Schema.define(version: 2022_05_25_050957) do
 
   create_table "aupays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num"
@@ -642,6 +642,10 @@ ActiveRecord::Schema.define(version: 2022_04_30_065908) do
     t.integer "out_interview_20"
     t.integer "out_full_talk_20"
     t.integer "out_get_20"
+    t.integer "dmer"
+    t.integer "aupay"
+    t.integer "paypay"
+    t.integer "rakuten_pay"
     t.index ["result_id"], name: "index_result_cashes_on_result_id"
   end
 
