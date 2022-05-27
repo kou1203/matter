@@ -1843,6 +1843,7 @@
     </div>
     </div>
     <% end %>
+
     <h2>週間基準値（新規のみ）</h2>
     <p class="caution-text">※こちらの情報に増減は含まれておりません</p>
 
@@ -1933,24 +1934,14 @@
       <%# dメル %>
         <%# 新規 %>
           <% dmer_uq_week = this_period(dmer_user,week).where(store_prop: {head_store: nil}) %>
-          <% dmer_valuations_week = dmer_uq_week.sum(:valuation_new) %>
+          <% dmer_valuations_week = dmer_uq_week.sum(:valuation_new) rescue 0 %>
           <% week_valuations += dmer_valuations_week %>
           <% 
             dmer_len_week =  
               dmer_uq_week.length
           %>
           <% dmer_sum_len_week += dmer_len_week %>
-        <%# 決済 %>
-          <% dmer_slmt_week = slmt_period(dmer_slmter, week).where.not(industry_status: "×").where.not(industry_status: "NG").or(slmt_period(dmer_slmter, week).where(industry_status: nil)) %>
-          <% dmer_slmt_valuations_week = dmer_slmt_week.sum(:valuation_settlement) %>
-          <%# week_valuations += dmer_slmt_valuations %>
-          <% dmer_slmt_len_week = dmer_slmt_week.length %>
-          
-          <% dmer_slmt2nd_week = slmt_second(dmer_slmter,week) %>
-          <% dmer_slmt2nd_valuations_week = dmer_slmt2nd.sum(:valuation_second_settlement) %>
           <%# week_valuations += dmer_slmt2nd_valuations %>
-          <% dmer_slmt2nd_len =  dmer_slmt2nd.length %>
-          <% dmer_slmt2nd_target = slmt2nd_dead_line(dmer_user,week) %>
       <%# aupay %>
         <%# 新規 %>
           <% 
@@ -1961,7 +1952,7 @@
           <%# 合計 %>
           <% 
             aupay_valuations_week =
-              aupay_uq_week.sum(:valuation_new)
+              aupay_uq_week.sum(:valuation_new) rescue 0
           %>
           <% week_valuations += aupay_valuations_week %>
           <% 
@@ -1970,32 +1961,18 @@
           %>
           <% aupay_sum_len_week += aupay_len_week %>
         <%# 決済 %>
-          <% 
-            aupay_slmt_week = 
-              slmt_period(aupay_slmter,week) 
-          %>
-          <% aupay_slmt_valuations = aupay_slmt_week.sum(:valuation_settlement) %>
-          <%# week_valuations += aupay_slmt_valuations %>
-          <% aupay_slmt_len = aupay_slmt.length %>
-          <% aupay_slmt_target = slmt_dead_line(aupay_user, week)  %>
       <%# PayPay %>
-        <% paypay_user = Paypay.where(user_id: week.first.user_id) %>
         <% paypay_data_week = this_period(paypay_user ,week) %>
-        <% paypay_valuations_week = paypay_data_week.sum(:valuation) %>
+        <% paypay_valuations_week = paypay_data_week.sum(:valuation) rescue 0 %>
         <% week_valuations += paypay_valuations_week %>
       <%# 少額短期保険 %>
-        <% st_insurance_user = StInsurance.where(user_id: week.first.user_id) %>
-        <% st_insurance_data = this_period(st_insurance_user,week) %>
-        <% st_insurance_valuations = st_insurance_data.sum(:valuation) %>
-        <% st_insurance_len = st_insurance_data.length %>
       <%# 楽天ペイ %>
-        <% rakuten_pay_user = RakutenPay.includes(:store_prop).where(user_id: week.first.user_id) %>
         <% 
           rakuten_pay_uq_week =
             this_period(rakuten_pay_user,week)
         %>
           <%
-            rakuten_pay_valuations_week = rakuten_pay_uq_week.sum(:valuation)  %>
+            rakuten_pay_valuations_week = rakuten_pay_uq_week.sum(:valuation) rescue 0 %>
           <% week_valuations += rakuten_pay_valuations_week %>
           <% 
             rakuten_pay_len_week =  
@@ -2023,8 +2000,13 @@
         <tr>
         </tr>
         <tr>
+        <% if week_shift != 0 %>
           <td><%= week_cnt %>週目</td>
+          <% if week.present? %>
           <td>（<%= week.minimum(:date).strftime('%m/%d') %>-<%= week.maximum(:date).strftime('%m/%d') %>）</td>
+          <% else %>
+          <td>不明</td>
+          <% end %>
           <td><%= week_shift %></td>
           <td><%= week_valuations.to_s(:delimited) %></td>
           <% if week_valuations / week_shift >= goal_ave %>
@@ -2035,12 +2017,13 @@
           <td><%= (week_valuations / week_shift).round().to_s(:delimited) rescue "NaN" %></td>
           <% end %>
 
-          <% if dmer_len_week.to_f / week_shift >= goal_dmer %>
-          <td style="color:blue;"><%= (dmer_len_week.to_f / week_shift).round(1) rescue "NaN" %></td>
-          <% elsif dg_dmer > dmer_len_week.to_f / week_shift  %>
-          <td style="color:red;"><%= (dmer_len_week.to_f / week_shift).round(1) rescue "NaN" %></td>
+          <% dmer_len_week_ave = dmer_len_week.to_f / week_shift rescue 0 %>
+          <% if dmer_len_week_ave >= goal_dmer %>
+          <td style="color:blue;"><%= (dmer_len_week_ave).round(1) rescue "NaN" %></td>
+          <% elsif dg_dmer > dmer_len_week_ave %>
+          <td style="color:red;"><%= (dmer_len_week_ave).round(1) rescue "NaN" %></td>
           <% else %>
-          <td><%= (dmer_len_week.to_f / week_shift).round(1) rescue "NaN" %></td>
+          <td><%= (dmer_len_week_ave).round(1) rescue "NaN" %></td>
           <% end %>
 
           <% if aupay_len_week.to_f / week_shift >= goal_aupay %>
@@ -2108,6 +2091,7 @@
           <% end %>
         </tr>
         <% week_cnt += 1 %>
+      <% end %>
     <% end %>
         <% week_sum_visit_ave = week_sum_visit.to_f / week_sum_shift %>
         <% week_sum_interview_ave = week_sum_interview.to_f / week_sum_shift %>
