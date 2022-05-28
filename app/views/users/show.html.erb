@@ -587,19 +587,33 @@
           <% dmer_def.length %>
           <% 
             dmer_valuations = 
+            if @results.minimum(:date).month == @results.maximum(:date).month
+              dmer_uq.sum(:valuation_new) -
+              dmer_def.sum(:valuation_new) +
+              dmer_db.sum(:valuation_new) -
+              dmer_dec.sum(:valuation_new) 
+            else
               dmer_uq.sum(:valuation_new) -
               dmer_def.sum(:valuation_new) +
               dmer_inc.sum(:valuation_new) +
               dmer_db.sum(:valuation_new) -
               dmer_dec.sum(:valuation_new) 
+            end
           %>
           <% 
             dmer_len =  
+            if @results.minimum(:date).month == @results.maximum(:date).month
+              dmer_uq.length -
+              dmer_def.length +
+              dmer_db.length -
+              dmer_dec.length  
+            else
               dmer_uq.length -
               dmer_def.length +
               dmer_inc.length +
               dmer_db.length -
               dmer_dec.length  
+            end
           %>
         <%# 決済 %>
           <% dmer_slmter = Dmer.where(settlementer_id: @results.first.user_id ) %>
@@ -662,17 +676,29 @@
           <%# 合計 %>
           <% 
             aupay_valuations =
+            if @results.minimum(:date).month == @results.maximum(:date).month
+              aupay_uq.sum(:valuation_new) - 
+              aupay_def.sum(:valuation_new) + 
+              aupay_db.sum(:valuation_new) -
+              aupay_dec.sum(:valuation_new)
+            else 
               aupay_uq.sum(:valuation_new) - 
               aupay_def.sum(:valuation_new) + 
               aupay_inc.sum(:valuation_new) +
               aupay_db.sum(:valuation_new) -
               aupay_dec.sum(:valuation_new)
+            end
           %>
           <% 
             aupay_len = 
+            if @results.minimum(:date).month == @results.maximum(:date).month
+              aupay_uq.length - aupay_def.length + 
+               aupay_db.length - aupay_dec.length
+            else  
               aupay_uq.length - aupay_def.length + 
               aupay_inc.length + aupay_db.length -
               aupay_dec.length
+            end
           %>
         <%# 決済 %>
           <% aupay_slmter = Aupay.where(settlementer_id: @results.first.user_id ) %>
@@ -1012,7 +1038,11 @@
           <td style="color: blue;"><%= dmer_uq.length %></td>
           <td style="color: red;"><%= dmer_def.length %></td>
           <td style="color: blue;"><%= dmer_db.length %></td>
+          <% if @results.minimum(:date).month == @results.maximum(:date).month %>
+          <td style="color: blue;"><%= 0 %></td>
+          <% else %>
           <td style="color: blue;"><%= dmer_inc.length %></td>
+          <% end %>
           <td style="color: red;"><%= dmer_dec.length %></td>
 
           <td style="color: blue;"><%= dmer_slmt_len %></td>
@@ -1020,7 +1050,11 @@
           <td style="color: blue;"><%= aupay_uq.length %></td>
           <td style="color: red;"><%= aupay_def.length %></td>
           <td style="color: blue;"><%= aupay_db.length %></td>
+          <% if @results.minimum(:date).month == @results.maximum(:date).month %>
+          <td style="color: blue;"><%= 0 %></td>
+          <% else %>
           <td style="color: blue;"><%= aupay_inc.length %></td>
+          <% end %>
           <td ><%= aupay_dec.length %></td>
 
           <td style="color: blue;"><%= aupay_slmt_len %></td>

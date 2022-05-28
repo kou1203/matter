@@ -90,7 +90,7 @@
               <td>
               <% if 
                 @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).present? && 
-                @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.present? &&
+                @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.present?
               %>
               <% if @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.dmer.present?  %>
               <% if dmer_len != @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.dmer %>
@@ -98,9 +98,9 @@
               <% else %>
               <span >dメル</span>
               <% end %>
-
               <%= @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.dmer %>
               <% end %>
+              
               <% if @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.aupay.present?  %>
               <% if aupay_len != @results_month.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.aupay %>
               <span style="color:red;">auPay</span>
