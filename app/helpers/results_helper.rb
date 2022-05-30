@@ -73,7 +73,7 @@ module ResultsHelper
   # 決済
     def slmt_period(product, date)
       return product
-      .where(status_update_settlement: date.minimum(:date)..date.maximum(:date))
+      .where(picture: date.minimum(:date)..date.maximum(:date))
       .where.not(status: "不備対応中")
       .where.not(status: "審査NG")
       .where.not(status: "申込取消")
