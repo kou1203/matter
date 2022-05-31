@@ -1,0 +1,290 @@
+<table>
+  <tr>
+    <th colspan="7">ステータス早見</th>
+  </tr>
+  <tr>
+    <th>商材</th>
+    <th>獲得数</th>
+    <th>審査待ち</th>
+    <th>審査通過</th>
+    <th>不備・NG</th>
+    <th>増加</th>
+    <th>減少</th>
+  </tr>
+  <tr>
+    <th class="product-th">dメル</th>
+    <td><%= @dmers.length %></td>
+    <td><%= 
+          @dmers.where.not(status: "審査OK")
+          .where.not(status: "審査NG")
+          .where.not(status: "申込取消")
+          .where.not(status: "申込取消（不備）").length 
+    %></td>
+    <td><%= 
+          @dmers.where(status: "審査OK")
+          .where.not(industry_status: "NG")
+          .where.not(industry_status: "×").length 
+    %></td>
+    <td><%= 
+          @dmers.where(status: "審査NG")
+          .or(@dmers.where(industry_status: "NG"))
+          .or(@dmers.where(industry_status: "×"))
+          .or(@dmers.where(status: "申込取消"))
+          .or(@dmers.where(status: "申込取消（不備）")).length 
+    %></td>
+    <td><%= @dmers_inc.length %></td>
+    <td><%= @dmers_dec.length %></td>
+  </tr>
+  <tr>
+    <th class="product-th">auPay</th>
+    <td><%= @aupays.length %></td>
+    <td><%= 
+      @aupays
+      .where.not(status: "審査通過")
+      .where.not(status: "不合格")
+      .where.not(status: "取消")
+      .where.not(status: "申込取消")
+      .where.not(status: "報酬対象外")
+      .where.not(status: "重複対象外").length 
+    %></td>
+    <td><%= @aupays.where(status: "審査通過").length %></td>
+    <td><%= 
+      @aupays.where(status: "不合格")
+      .or(@aupays.where(status: "取消"))
+      .or(@aupays.where(status: "報酬対象外"))
+      .or(@aupays.where(status: "重複対象外"))
+      .or(@aupays.where(status: "申込取消")).length 
+    %></td>
+    <td><%= @aupays_inc.length %></td>
+    <td><%= @aupays_dec.length %></td>
+  </tr>
+  <tr>
+    <th class="product-th">楽天ペイ</th>
+    <td><%= @rakuten_pays.length %></td>
+    <td><%= 
+          @rakuten_pays.where(status: "未処理")
+          .or(@rakuten_pays.where(status: "審査待ち")).length 
+    %></td>
+    <td><%=  %></td>
+    <td><%= 
+      @rakuten_pays.where(status: "自社不備")
+      .or(@rakuten_pays.where(status: "自社NG")).length 
+    %></td>
+    <td><%= @rakuten_pays_inc.length %></td>
+    <td><%= @rakuten_pays_dec.length %></td>
+  </tr>
+</table>
+<h2>dメル審査状況（<%= @dmers.length %>件）</h2>
+<table>
+  <thead>
+    <tr>
+      <th>詳細</th>
+      <th>商流</th>
+      <th>店舗名</th>
+      <th>獲得日</th>
+      <th>業種評価</th>
+      <th>審査ステータス</th>
+      <th>審査完了日</th>
+      <th>決済ステータス</th>
+      <th>決済完了日</th>
+      <th>決済期限</th>
+      <th>2回目決済完了日</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @dmers.each do |dmer| %>
+      <% 
+        if dmer.industry_status == "×" || dmer.industry_status == "NG" ||
+            dmer.status == "審査NG" || dmer.status == "申込取消" ||
+            dmer.status == "申込取消（不備）"
+      %>
+      <tr style="color:red;">
+      <% elsif dmer.status == "不備対応中" %>
+      <tr style="color:purple;">
+      <% else %>
+      <tr>
+      <% end %>
+      <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
+      <td><%= dmer.client %></td>
+      <td><%= dmer.store_prop.name %></td>
+      <td><%= dmer.date %></td>
+      <td><%= dmer.industry_status %></td>
+      <td ><%= dmer.status %></td>
+      <td><%= dmer.result_point %></td>
+      <td><%= dmer.status_settlement %></td>
+      <td><%= dmer.status_update_settlement %></td>
+      <td><%= dmer.settlement_deadline %></td>
+      <td><%= dmer.settlement_second %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<h2>auPay審査状況（<%= @aupays.length %>件）</h2>
+<table>
+  <thead>
+    <tr>
+      <th>詳細</th>
+      <th>商流</th>
+      <th>店舗名</th>
+      <th>獲得日</th>
+      <th>審査ステータス</th>
+      <th>審査完了日</th>
+      <th>決済ステータス</th>
+      <th>決済完了日</th>
+      <th>決済期限</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @aupays.each do |aupay| %>
+      <% if 
+        aupay.status == "不合格" || 
+        aupay.status == "申込取消" || 
+        aupay.status == "報酬対象外" || 
+        aupay.status == "重複対象外"
+      %>
+      <tr style="color:red;">
+      <% elsif aupay.status == "差し戻し" %>
+      <tr style="color:purple;">
+      <% else %>
+      <tr>
+      <% end %>
+      <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
+      <td><%= aupay.client %></td>
+      <td><%= aupay.store_prop.name %></td>
+      <td><%= aupay.date %></td>
+      <td ><%= aupay.status %></td>
+      <td><%= aupay.result_point %></td>
+      <td><%= aupay.status_settlement %></td>
+      <td><%= aupay.status_update_settlement %></td>
+      <td><%= aupay.settlement_deadline %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<h2>楽天ペイ審査状況（<%= @rakuten_pays.length %>件）</h2>
+<table>
+  <thead>
+    <tr>
+      <th>詳細</th>
+      <th>商流</th>
+      <th>店舗名</th>
+      <th>獲得日</th>
+      <th>審査ステータス</th>
+      <th>審査完了日</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @rakuten_pays.each do |rakuten_pay| %>
+      <% if rakuten_pay.status == "不合格"  %>
+      <tr style="color:red;">
+      <% elsif rakuten_pay.status == "差し戻し" %>
+      <tr style="color:purple;">
+      <% else %>
+      <tr>
+      <% end %>
+      <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id), class: "link" %></td>
+      <td><%= rakuten_pay.client %></td>
+      <td><%= rakuten_pay.store_prop.name %></td>
+      <td><%= rakuten_pay.date %></td>
+      <td ><%= rakuten_pay.status %></td>
+      <td><%= rakuten_pay.result_point %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if @dmers_inc.length != 0 || @aupays_inc.length != 0 || @rakuten_pays_inc.length != 0 %>
+<h2>増加商材一覧</h2>
+<table>
+<tr>
+  <th>商材</th>
+  <th>商流</th>
+  <th>店舗名</th>
+  <th>獲得日</th>
+  <th>ステータス</th>
+  <th>審査完了日</th>
+  <th>詳細</th>
+</tr>
+<% @dmers_inc.each do |dmer|  %>
+<tr>
+  <td>dメル</td>
+  <td><%= dmer.client %></td>
+  <td><%= dmer.store_prop.name %></td>
+  <td><%= dmer.date %></td>
+  <td><%= dmer.status %></td>
+  <td><%= dmer.result_point %></td>
+  <td><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+</tr>
+<% end %>
+<% @aupays_inc.each do |aupay|  %>
+<tr>
+  <td>auPay</td>
+  <td><%= aupay.client %></td>
+  <td><%= aupay.store_prop.name %></td>
+  <td><%= aupay.date %></td>
+  <td><%= aupay.status %></td>
+  <td><%= aupay.result_point %></td>
+  <td><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+</tr>
+<% end %>
+<% @rakuten_pays_inc.each do |rakuten_pay|  %>
+<tr>
+  <td>楽天ペイ</td>
+  <td><%= rakuten_pay.client %></td>
+  <td><%= rakuten_pay.store_prop.name %></td>
+  <td><%= rakuten_pay.date %></td>
+  <td><%= rakuten_pay.status %></td>
+  <td><%= rakuten_pay.share %></td>
+  <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
+</tr>
+<% end %>
+</table>
+<% end %>
+
+<% if @dmers_dec.length != 0 || @aupays_dec.length != 0 || @rakuten_pays_dec.length != 0 %>
+<h2>減少商材一覧</h2>
+<table>
+<tr>
+  <th>商材</th>
+  <th>商流</th>
+  <th>店舗名</th>
+  <th>獲得日</th>
+  <th>ステータス</th>
+  <th>審査完了日</th>
+  <th>詳細</th>
+</tr>
+<% @dmers_dec.each do |dmer|  %>
+<tr>
+  <td>dメル</td>
+  <td><%= dmer.client %></td>
+  <td><%= dmer.store_prop.name %></td>
+  <td><%= dmer.date %></td>
+  <td><%= dmer.status %></td>
+  <td><%= dmer.result_point %></td>
+  <td><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+</tr>
+<% end %>
+<% @aupays_dec.each do |aupay|  %>
+<tr>
+  <td>auPay</td>
+  <td><%= aupay.client %></td>
+  <td><%= aupay.store_prop.name %></td>
+  <td><%= aupay.date %></td>
+  <td><%= aupay.status %></td>
+  <td><%= aupay.result_point %></td>
+  <td><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+</tr>
+<% end %>
+<% @rakuten_pays_dec.each do |rakuten_pay|  %>
+<tr>
+  <td>楽天ペイ</td>
+  <td><%= rakuten_pay.client %></td>
+  <td><%= rakuten_pay.store_prop.name %></td>
+  <td><%= rakuten_pay.date %></td>
+  <td><%= rakuten_pay.status %></td>
+  <td><%= rakuten_pay.share %></td>
+  <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
+</tr>
+<% end %>
+</table>
+<% end %>

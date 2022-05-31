@@ -1,0 +1,53 @@
+<h2>不備リスト</h2>
+<table class="out-tb">
+  <thead>
+    <tr>
+      <th class="out-th">店舗名</th>
+      <th class="out-th">商材</th>
+      <th class="out-th">商流</th>
+      <th class="out-th">拠点</th>
+      <th class="out-th">獲得者</th>
+      <th class="out-th">獲得日</th>
+      <th class="out-th-text">不備内容</th>
+      <th class="out-th">詳細</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @dmers_def.each do |dmer| %>
+    <tr>
+      <td class="out-td"><%= dmer.store_prop.name %></td>
+      <td class="out-td">dメル</td>
+      <td class="out-td"><%= dmer.client %></td>
+      <td class="out-td"><%= dmer.user.base %></td>
+      <td class="out-td"><%= dmer.user.name %></td>
+      <td class="out-td"><%= dmer.date %></td>
+      <td class="out-td-text"><%= dmer.deficiency_remarks %></td>
+      <td class="out-td"><%= link_to "詳細" ,dmer_path(dmer.id) %></td>
+    </tr>
+    <% end %>
+    <% @aupays_def.each do |aupay| %>
+    <tr>
+      <td class="out-td"><%= aupay.store_prop.name %></td>
+      <td class="out-td">auPay</td>
+      <td class="out-td"><%= aupay.client %></td>
+      <td class="out-td"><%= aupay.user.base %></td>
+      <td class="out-td"><%= aupay.user.name %></td>
+      <td class="out-td"><%= aupay.date %></td>
+      <td class="out-td-text"><%= aupay.deficiency_remarks %></td>
+      <td class="out-td"><%= link_to "詳細" ,aupay_path(aupay.id) %></td>
+    </tr>
+    <% end %>
+    <% @rakuten_pays_def.each do |rakuten_pay| %>
+    <tr>
+      <td class="out-td"><%= rakuten_pay.store_prop.name %></td>
+      <td class="out-td">楽天ペイ</td>
+      <td class="out-td"><%= rakuten_pay.client %></td>
+      <td class="out-td"><%= rakuten_pay.user.base %></td>
+      <td class="out-td"><%= rakuten_pay.user.name %></td>
+      <td class="out-td"><%= rakuten_pay.date %></td>
+      <td class="out-td-text"><%= rakuten_pay.deficiency_info %></td>
+      <td class="out-td"><%= link_to "詳細" ,rakuten_pay_path(rakuten_pay.id) %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>

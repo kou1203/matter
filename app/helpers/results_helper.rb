@@ -159,17 +159,23 @@ module ResultsHelper
 
 
     def slmt2nd_dead_line(product,date)
-      return product
+      return product.where(client: "ピアズ")
         .where(settlement_deadline: date.minimum(:date)
         .prev_month..date.maximum(:date).since(3.month).end_of_month)
-        .where(status: "審査OK")
+        .where.not(industry_status: "×").where.not(industry_status: "NG").where(status: "審査OK")
         .where(settlement: Date.new(2021-12-01)..date.maximum(:date).prev_month.end_of_month)
         .where(settlement_second: date.minimum(:date)..date.maximum(:date))
-        .or(product
+        .or(product.where(client: "ピアズ")
         .where(settlement_deadline: date.minimum(:date).prev_month..date.maximum(:date).since(3.month).end_of_month)
-        .where(status: "審査OK")
+        .where.not(industry_status: "×").where.not(industry_status: "NG").where(status: "審査OK")
         .where(settlement: Date.new(2021-12-01)..date.maximum(:date)
         .prev_month.end_of_month).where(settlement_second: nil))
+        .or(product.where(client: "マックス即時（d）")
+        .where(status_settlement: "完了").where.not(industry_status: "×").where.not(industry_status: "NG").where(status: "審査OK")
+        .where(settlement_second: nil))
+        .or(product.where(client: "マックス即時（d）")
+        .where(status_settlement: "完了").where.not(industry_status: "×").where.not(industry_status: "NG").where(status: "審査OK")
+        .where(settlement_second: date.minimum(:date)..date.maximum(:date)))
     end
 
 end

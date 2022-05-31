@@ -1,0 +1,92 @@
+<h2>決済リスト</h2>
+<table>
+  <tr>
+    <th>dメル</th>
+    <th>auPay</th>
+  </tr>
+  <tr>
+    <td><%= 
+            @slmts.where.not(dmer: {id: nil})
+            .where(dmer: {user_id: @user.id}) 
+            .where.not(dmer: {industry_status: "×"}) 
+            .where.not(dmer: {industry_status: "NG"}) 
+            .where.not(dmer: {industry_status: "要確認"}) 
+            .where(dmer: {status: "審査OK"}) 
+            .where.not(dmer: {status_settlement: "完了"}) 
+            .where.not(dmer: {status_settlement: "期限切れ"}).length 
+    %></td>
+    <td><%= 
+            @slmts.where.not(aupay: {id: nil})
+            .where(aupay: {user_id: @user.id})
+            .where(aupay: {status: "審査通過"})
+            .where.not(aupay: {status_settlement: "完了"}) 
+            .where.not(aupay: {status_settlement: "期限切れ"}).length 
+    %></td>
+  </tr>
+</table>
+<table class="out-tb">
+  <thead>
+    <tr>
+      <th class="out-th">店舗名</th>
+      <th class="out-th">商材</th>
+      <th class="out-th">商流</th>
+      <th class="out-th">拠点</th>
+      <th class="out-th">獲得者</th>
+      <th class="out-th">獲得日</th>
+      <th class="out-th">決済ステータス</th>
+      <th class="out-th">決済期限</th>
+      <th class="out-th-text">不備内容</th>
+      <th class="out-th-text">商材詳細</th>
+      <th class="out-th-text">店舗詳細</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <% @slmts.each do |store| %>
+      <% if 
+        store.dmer.present? && 
+        store.dmer.user_id == @user.id &&
+        store.dmer.status_settlement != "完了" && 
+        store.dmer.status_settlement != "期限切れ" &&
+        store.dmer.status == "審査OK" &&
+        store.dmer.industry_status != "×" &&
+        store.dmer.industry_status != "要確認" &&
+        store.dmer.industry_status != "NG"
+      %>
+      <td class="out-th"><%= store.name %></td>
+      <td class="out-td">dメル</td>
+      <td class="out-td"><%= store.dmer.client %></td>
+      <td class="out-td"><%= store.dmer.user.base %></td>
+      <td class="out-td"><%= store.dmer.user.name %></td>
+      <td class="out-td"><%= store.dmer.date %></td>
+      <td class="out-td"><%= store.dmer.status_settlement %></td>
+      <td class="out-td"><%= store.dmer.settlement_deadline %></td>
+      <td class="out-td-text"><%= store.dmer.deficiency_remarks_settlement %></td>
+      <td class="out-td-text" ><%= link_to "dメル詳細", dmer_path(store.dmer.id),class: "link" %></td>
+      <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% if 
+        store.aupay.present? && 
+        store.aupay.user_id == @user.id &&
+        store.aupay.status_settlement != "完了" && 
+        store.aupay.status_settlement != "期限切れ" &&
+        store.aupay.status == "審査通過" &&
+      %>
+      <tr>
+      <td class="out-th"><%= store.name %></td>
+      <td class="out-td">auPay</td>
+      <td class="out-td"><%= store.aupay.client %></td>
+      <td class="out-td"><%= store.aupay.user.base %></td>
+      <td class="out-td"><%= store.aupay.user.name %></td>
+      <td class="out-td"><%= store.aupay.date %></td>
+      <td class="out-td"><%= store.aupay.status_settlement %></td>
+      <td class="out-td"><%= store.aupay.settlement_deadline %></td>
+      <td class="out-td-text"><%= store.aupay.deficiency_remarks_settlement %></td>
+      <td class="out-td-text" ><%= link_to "auPay詳細", aupay_path(store.aupay.id),class: "link" %></td>
+      <td class="out-td-text" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+      <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
