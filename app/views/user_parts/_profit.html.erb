@@ -1799,10 +1799,11 @@
           date_profit =
             @dmer_user.where(date: result.date).sum(:valuation_new) +
             @dmer_slmter.where(status_settlement: "完了").where(settlement: result.date).sum(:valuation_settlement) +
+            @dmer_slmter.where(settlement_second: result.date).sum(:valuation_second_settlement) +
             @aupay_user.where(date: result.date).sum(:valuation_new) + 
             @aupay_slmter.where(status_settlement: "完了").where(settlement: result.date).sum(:valuation_settlement) +
             @paypay_user.where(date: result.date).sum(:valuation) +
-            @rakuten_pay_user.where(user_id: result.user_id).where(date: result.date).sum(:valuation) 
+            @rakuten_pay_user.where(user_id: result.user_id).where(date: result.date).sum(:valuation)
           %>
         <% if result.profit.present? %>
           <% if result.profit == date_profit.to_i %>
