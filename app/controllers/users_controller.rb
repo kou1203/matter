@@ -404,7 +404,9 @@ class UsersController < ApplicationController
     end
 
     def slmt_second(product,date)
-      return product.where(client: "ピアズ").where(status: "審査OK").where(status_settlement: "完了").where(settlement_second: date.minimum(:date)..date.maximum(:date))
+      return product.where(status: "審査OK")
+        .where(status_settlement: "完了")
+        .where(settlement_second: date.minimum(:date)..date.maximum(:date))
     end 
 
     def slmt2nd_dead_line(product,date)
