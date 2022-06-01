@@ -155,9 +155,12 @@ class UsersController < ApplicationController
         .or(slmt_period(@dmer_slmter, @results_date)
         .where(industry_status: nil)).select(:valuation_settlement, :industry_status, :user_id, :store_prop_id)  
         end
+        @dmer_slmt2nd_get = 
+          slmt2nd_get(@dmer_slmter,@results_date)
+          .select(:valuation_second_settlement, :industry_status, :user_id, :store_prop_id)
         @dmer_slmt2nd = 
           slmt_second(@dmer_slmter,@results_date)
-          .select(:valuation_second_settlement, :industry_status, :user_id, :store_prop_id) 
+          .select(:valuation_second_settlement, :industry_status, :user_id, :store_prop_id)
         # 決済対象 
         @dmers_slmt_target = 
           slmt_dead_line(@dmer_user,@results_date)
@@ -403,10 +406,15 @@ class UsersController < ApplicationController
       .or(product.where(settlement_deadline: date.minimum(:date)..date.maximum(:date).since(3.month).end_of_month).where(status: "審査通過").where(settlement: date.minimum(:date)..date.maximum(:date)))
     end
 
+    def slmt2nd_get(product,date)
+      return product.where(settlement_second: date.minimum(:date)..date.maximum(:date))
+    end 
     def slmt_second(product,date)
-      return product.where(status: "審査OK")
-        .where(status_settlement: "完了")
-        .where(settlement_second: date.minimum(:date)..date.maximum(:date))
+      return product.where(settlement_second: date.minimum(:date).next_month.beginning_of_month..date.minimum(:date).next_month.end_of_month)
+      .where(status: "審査OK")
+      .where.not(industry_status: "×")
+      .where.not(industry_status: "NG")
+      .where(status_settlement: "完了")
     end 
 
     def slmt2nd_dead_line(product,date)
@@ -431,7 +439,7 @@ class UsersController < ApplicationController
 
     def result_period(product, date)
       return product
-        .where(result_point: date.maximum(:date).beginning_of_month...date.maximum(:date).end_of_month)
+        .where(result_point: date.minimum(:date).next_month.beginning_of_month..date.minimum(:date).next_month.end_of_month)
     end
   # dメル,aupayメソッド
 

@@ -389,7 +389,8 @@
       </tr>
       <tr>
         <th colspan="5">dメル（新規）</th>
-        <th colspan="">dメル（決済）</th>
+        <th colspan="">dメル（初回決済）</th>
+        <th colspan="">dメル（2回目決済）</th>
         <th colspan="5">aupay（新規）</th>
         <th colspan="">aupay（決済）</th>
         <th colspan="">PayPay</th>
@@ -403,10 +404,11 @@
       <tr></tr>
       <tr>
       </tr>
-        <% 2.times do %>
         <th colspan="5" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <th colspan="" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
-        <% end %>
+        <th colspan="" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
+        <th colspan="5" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
+        <th colspan="" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <% 2.times do %>
         <th colspan="" style="border-left: 1px solid rgb(214, 219, 235);">評価対象</th>
         <% end %>
@@ -418,6 +420,7 @@
       <tr>
         <td colspan="5"><%= dmer_len %></td>
         <td colspan=""><%= dmer_slmt_len %></td>
+        <td colspan=""><%= dmer_slmt2nd_len %></td>
 
         <td colspan="5"><%= aupay_len %></td>
         <td colspan=""><%= aupay_slmt_len %></td>
@@ -430,14 +433,19 @@
         <td colspan=""><%= @rakuten_casas_put_request.length %></td>
       </tr>
       <tr>
-        <% 2.times do %>
         <th>獲得数</th>
         <th>不備・NG</th>
         <th>複数追加</th>
         <th>審査別月（増加）</th>
         <th>審査別月（減少）</th>
         <th>獲得数</th>
-        <% end %>
+        <th><%= @results_date.minimum(:date).next_month.month %>月獲得数/総獲得数</th>
+        <th>獲得数</th>
+        <th>不備・NG</th>
+        <th>複数追加</th>
+        <th>審査別月（増加）</th>
+        <th>審査別月（減少）</th>
+        <th>獲得数</th>
         
         <th>審査完了/獲得数</th>
         <th>獲得数</th>
@@ -466,6 +474,7 @@
           <td style="color: red;"><%= @dmer_dec.length %></td>
 
           <td style="color: blue;"><%= dmer_slmt_len %></td>
+          <td style="color: blue;"><%= dmer_slmt2nd_len %>/<%= @dmer_slmt2nd_get.length %></td>
         <%# aupay %>
           <td style="color: blue;"><%= @aupay_uq.length %></td>
           <td style="color: red;"><%= @aupay_def.length %></td>
