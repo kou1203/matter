@@ -79,7 +79,7 @@
           </thead>
           <tbody>
           <tr>
-          <% @results_month.group(:user_id).order(:base).each do |r_user| %>
+          <% @results_month.group(:user_id).order(:base).find_each do |r_user| %>
             <th class="out-th" rowspan="2"><%= r_user.user.name %></th>
             <td>営業終着内訳</td>
             <% @results_month.group(:date).order(:date).each do |r_date| %>

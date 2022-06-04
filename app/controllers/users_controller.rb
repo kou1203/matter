@@ -69,8 +69,11 @@ class UsersController < ApplicationController
     @rakuten_pays_dec = RakutenPay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
     .where.not(share: @month.all_month).where.not(deficiency: nil)
     # 決済リスト
-    @slmts = StoreProp.includes(:dmer, :aupay).all.order(:id)
-
+    @slmts = 
+      StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})
+      .or(
+        StoreProp.includes(:dmer, :aupay, :comments).where(dmer: {share: Date.today.ago(3.month)..Date.today})
+      ).order(:id)
     # 不備リスト
     @dmers_def = 
       Dmer.includes(:store_prop, :user)
@@ -236,8 +239,31 @@ class UsersController < ApplicationController
       @rakuten_casas_put_other = RakutenCasa.where.not(user_id: @results.first.user_id).where(putter_id: @results.first.user_id).where(put: @results.minimum(:date)..@results.maximum(:date))
       # 設置依頼
       @rakuten_casas_put_request = @rakuten_casas_put.where(user_id: @results.first.user_id).where.not(putter_id: @results.first.user_id)
+
+      @comment = Comment.new
+      session[:previous_url] = user_path(@user.id)
+      @comments = Comment.select(:id,:status, :content,:store_prop_id,:request_show,:request)
     end
+
+    def comment_new 
+        @comment = Comment.new(comment_params)
+        if @comment.save 
+          flash[:notice] = "対応結果を登録しました。"
+          redirect_to request.referer
+        else  
+          flash[:notice] = "登録できませんでした。"
+          redirect_to session[:previous_url]
+        end 
+    end 
+
+    def comment_update
+      @comment = Comment.find(comment_params[:id])
+      @comment.update(comment_params)
+      flash[:notice] = "対応結果を更新しました。"
+      redirect_to request.referer
+    end  
   end 
+
 
 
   private 
@@ -254,6 +280,21 @@ class UsersController < ApplicationController
       :password_confirmation
     )
   end
+
+  def comment_params 
+    params.permit(
+      :store_prop_id         ,
+      :product            ,
+      :content            ,
+      :status             ,
+      :ball               ,
+      :request            ,
+      :request_show       ,
+      :response           ,
+      :response_show      ,
+      :done     
+    )
+  end 
 
   # dメル,aupayメソッド
     # 新規
@@ -429,10 +470,16 @@ class UsersController < ApplicationController
         .where.not(industry_status: "×").where.not(industry_status: "NG").where(status: "審査OK")
         .where(settlement: Date.new(2021-12-01)..date.maximum(:date)
         .prev_month.end_of_month).where(settlement_second: nil))
-        .or(product.where(client: "マックス即時（d）")
+        .or(product.where(client: "マックス即時（ｄ）")
         .where(status_settlement: "完了").where.not(industry_status: "×").where.not(industry_status: "NG").where(status: "審査OK")
         .where(settlement_second: nil))
-        .or(product.where(client: "マックス即時（d）")
+        .or(product.where(client: "マックス即時（ｄ）")
+        .where(status_settlement: "完了").where.not(industry_status: "×").where.not(industry_status: "NG").where(status: "審査OK")
+        .where(settlement_second: date.minimum(:date)..date.maximum(:date)))
+        .or(product.where(client: "ピアズ即時")
+        .where(status_settlement: "完了").where.not(industry_status: "×").where.not(industry_status: "NG").where(status: "審査OK")
+        .where(settlement_second: nil))
+        .or(product.where(client: "ピアズ即時")
         .where(status_settlement: "完了").where.not(industry_status: "×").where.not(industry_status: "NG").where(status: "審査OK")
         .where(settlement_second: date.minimum(:date)..date.maximum(:date)))
     end

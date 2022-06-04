@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_05_25_050957) do
+ActiveRecord::Schema.define(version: 2022_06_02_065353) do
 
   create_table "aupays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num"
@@ -47,6 +47,22 @@ ActiveRecord::Schema.define(version: 2022_05_25_050957) do
     t.index ["settlementer_id"], name: "index_aupays_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_aupays_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_aupays_on_user_id"
+  end
+
+  create_table "comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "store_prop_id"
+    t.string "product", null: false
+    t.string "content", null: false
+    t.string "status", null: false
+    t.string "ball"
+    t.date "request"
+    t.text "request_show"
+    t.date "response"
+    t.text "response_show"
+    t.date "done"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["store_prop_id"], name: "index_comments_on_store_prop_id"
   end
 
   create_table "costs", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -933,6 +949,7 @@ ActiveRecord::Schema.define(version: 2022_05_25_050957) do
   add_foreign_key "aupays", "store_props"
   add_foreign_key "aupays", "users"
   add_foreign_key "aupays", "users", column: "settlementer_id"
+  add_foreign_key "comments", "store_props"
   add_foreign_key "dmers", "store_props"
   add_foreign_key "dmers", "users"
   add_foreign_key "dmers", "users", column: "settlementer_id"

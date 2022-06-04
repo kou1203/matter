@@ -509,8 +509,8 @@
         <% if @dmer_uq.where(client: "マックス通常").length != 0 %>
         <th>マックス通常</th>
         <% end %>
-        <% if @dmer_uq.where(client: "マックス即時（d）").length != 0 %>
-        <th>マックス即時（d）</th>
+        <% if @dmer_uq.where(client: "マックス即時（ｄ）").length != 0 %>
+        <th>マックス即時（ｄ）</th>
         <% end %>
         <% if @dmer_uq.where(client: "マックス即時（メル）").length != 0 %>
         <th>マックス即時（メル）</th>
@@ -528,8 +528,8 @@
         <% if @dmer_slmt.where(client: "マックス通常").length != 0 %>
         <th>マックス通常</th>
         <% end %>
-        <% if @dmer_slmt.where(client: "マックス即時（d）").length != 0 %>
-        <th>マックス即時（d）</th>
+        <% if @dmer_slmt.where(client: "マックス即時（ｄ）").length != 0 %>
+        <th>マックス即時（ｄ）</th>
         <% end %>
         <% if @dmer_slmt.where(client: "マックス即時（メル）").length != 0 %>
         <th>マックス即時（メル）</th>
@@ -548,8 +548,8 @@
         <% if @dmer_uq.where(client: "マックス通常").length != 0 %>
         <td><%= @dmer_uq.where(client: "マックス通常").length %></td>
         <% end %>
-        <% if @dmer_uq.where(client: "マックス即時（d）").length != 0 %>
-        <td><%= @dmer_uq.where(client: "マックス即時（d）").length %></td>
+        <% if @dmer_uq.where(client: "マックス即時（ｄ）").length != 0 %>
+        <td><%= @dmer_uq.where(client: "マックス即時（ｄ）").length %></td>
         <% end %>
         <% if @dmer_uq.where(client: "マックス即時（メル）").length != 0 %>
         <td><%= @dmer_uq.where(client: "マックス即時（メル）").length %></td>
@@ -566,8 +566,8 @@
         <% if @dmer_slmt.where(client: "マックス通常").length != 0 %>
         <td><%= @dmer_slmt.where(client: "マックス通常").length %></td>
         <% end %>
-        <% if @dmer_slmt.where(client: "マックス即時（d）").length != 0 %>
-        <td><%= @dmer_slmt.where(client: "マックス即時（d）").length %></td>
+        <% if @dmer_slmt.where(client: "マックス即時（ｄ）").length != 0 %>
+        <td><%= @dmer_slmt.where(client: "マックス即時（ｄ）").length %></td>
         <% end %>
         <% if @dmer_slmt.where(client: "マックス即時（メル）").length != 0 %>
         <td><%= @dmer_slmt.where(client: "マックス即時（メル）").length %></td>
@@ -1788,7 +1788,7 @@
       </tr>
     </thead>
     <tbody>
-    <% @results.each do |result| %>
+    <% @results.order(:date).find_each do |result| %>
       <tr>
         <td><%= result.id %></td>
         <td style="padding: 0 20px;"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></td>
@@ -1806,11 +1806,11 @@
         <%# その日の売上 %>
           <% 
           date_profit =
-            @dmer_user.where(date: result.date).sum(:valuation_new) +
-            @dmer_slmter.where(status_settlement: "完了").where(settlement: result.date).sum(:valuation_settlement) +
+            @dmer_user.where(date: result.date).where(store_prop: {head_store: nil}).sum(:valuation_new) +
+            @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).sum(:valuation_settlement) +
             @dmer_slmter.where(settlement_second: result.date).sum(:valuation_second_settlement) +
             @aupay_user.where(date: result.date).sum(:valuation_new) + 
-            @aupay_slmter.where(status_settlement: "完了").where(settlement: result.date).sum(:valuation_settlement) +
+            @aupay_slmter.where(status_settlement: "完了").where(picture: result.date).sum(:valuation_settlement) +
             @paypay_user.where(date: result.date).sum(:valuation) +
             @rakuten_pay_user.where(user_id: result.user_id).where(date: result.date).sum(:valuation)
           %>
@@ -1987,7 +1987,7 @@
       %>
       <% 
         dmax_d_date_len = 
-          dmer_uq_user.where(user_id: result.user_id).where(date: result.date).where(client: "マックス即時（d）").length 
+          dmer_uq_user.where(user_id: result.user_id).where(date: result.date).where(client: "マックス即時（ｄ）").length 
       %>
       <% 
         dpias_date_len = 
@@ -1998,17 +1998,17 @@
           dmer_uq_user.where(user_id: result.user_id).where(date: result.date).where(client: "USEN").length 
       %>
       <%# 決済 %>
-      <% dmax_mer_slmt_date_len = @dmer_slmter.where(picture: result.date).where(client: "マックス即時（メル）").length %>
-      <% dpias_slmt_date_len = @dmer_slmter.where(picture: result.date).where(client: "ピアズ").length %>
-      <% dmax_slmt_date_len = @dmer_slmter.where(picture: result.date).where(client: "マックス通常").length %>
-      <% dmax_d_slmt_date_len = @dmer_slmter.where(picture: result.date).where(client: "マックス即時（d）").length %>
-      <% dusen_slmt_date_len = @dmer_slmter.where(picture: result.date).where(client: "USEN").length %>
+      <% dmax_mer_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "マックス即時（メル）").length %>
+      <% dpias_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "ピアズ").length %>
+      <% dmax_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "マックス通常").length %>
+      <% dmax_d_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "マックス即時（ｄ）").length %>
+      <% dusen_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "USEN").length %>
       <% dmer_slmt2nd_date_len = @dmer_slmter.where(settlement_second: result.date).length %>
       <% 
         aupay_date_len = 
           @aupay_user.where(user_id: result.user_id).where(date: result.date).length 
       %>
-      <% aupay_slmt_date_len = @aupay_user.where(picture: result.date).length %>
+      <% aupay_slmt_date_len = @aupay_user.where(status_settlement: "完了").where(picture: result.date).length %>
       <% paypay_date_len = @paypay_user.where(date: result.date).length %>
       <% rakuten_pay_date_len = @rakuten_pay_user.where(date: result.date).length %>
       <td>

@@ -22,6 +22,7 @@ class StoreProp < ApplicationRecord
   has_many :pandas 
   has_one :rakuten_casa 
   has_many :trouble_sses
+  has_many :comments
   has_one :st_insurance
   has_one :rakuten_pay
 

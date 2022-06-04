@@ -65,10 +65,13 @@ Rails.application.routes.draw do
   resources :return_histories, only: [:destroy]
   
   resources :pandas, expect: [:new, :create] do 
-    collection { post :import }
+    collection {post :import}
   end 
 
-  resources :users
+  resources :users do 
+    collection {post :comment_new}
+    collection {put :comment_update}
+  end
 
   resources :shifts do 
     collection do
@@ -131,6 +134,8 @@ Rails.application.routes.draw do
   resources :result_sales, only: [:index] do 
     collection { post :import }
   end 
+
+  resources :comments
 
   resources :def_respondings, only: [:index]
   
