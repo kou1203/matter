@@ -71,14 +71,14 @@
           <tr>
           <th>ユーザー名</th>
           <th>内容</th>
-          <% @results_week.group(:date).each do |r_date| %>
+          <% @results_week.group(:date).order(:base).each do |r_date| %>
           <th class="out-th"><%= r_date.date.month %>月<%= r_date.date.day %>日</th>
           <% end %>
             </tr>
           </thead>
           <tbody>
           <tr>
-          <% @results_week.group(:user_id).each do |r_user| %>
+          <% @results_week.group(:user_id).order(:base).each do |r_user| %>
             <th class="out-th" rowspan="2"><%= r_user.user.name %></th>
             <td>営業終着内訳</td>
             <% @results_week.group(:date).each do |r_date| %>
@@ -127,7 +127,7 @@
           </tr>
           <tr>
           <td style="opacity:0.5;">管理登録内訳</td>
-            <% @results_week.group(:date).each do |r_date| %>
+            <% @results_week.group(:date).order(:base).each do |r_date| %>
             <% product_sum = 0 %>
             <% dmer_len = @dmers.where(date: r_date.date).where(user_id: r_user.user.id).length %>
             <% aupay_len = @aupays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
