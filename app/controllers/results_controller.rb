@@ -40,7 +40,7 @@ class ResultsController < ApplicationController
     # 日々進捗
     @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today
 
-    @results_week = Result.select(:user_id,:date,:id).includes(:user,:result_cash).joins(:user,:result_cash).preload(:result_cash).where(date: @month_daily.all_week)
+    @results_week = Result.select(:user_id,:date,:id).includes(:user,:result_cash).joins(:user,:result_cash).preload(:result_cash).where(date: @month_daily.all_week).order(:base)
     @result_products = ResultCash.select(:dmer, :aupay, :paypay, :rakuten_pay)
     # 日付が~25までは前月の26日が初日と計算するようにする
     if 26 > @month_daily.day
