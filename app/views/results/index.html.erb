@@ -78,48 +78,51 @@
           </thead>
           <tbody>
           <tr>
-          <% @results_week.group(:user_id).order(:date).each do |r_user| %>
+          <% @results_week.group(:user_id).order(:base).find_each do |r_user| %>
             <th class="out-th" rowspan="2"><%= r_user.user.name %></th>
             <td>営業終着内訳</td>
-            <% @results_week.group(:date).each do |r_date| %>
+            <% @results_week.group(:date).order(:date).each do |r_date| %>
             <% dmer_len = @dmers.where(date: r_date.date).where(user_id: r_user.user.id).length %>
             <% aupay_len = @aupays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
             <% paypay_len = @paypays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
             <% rakuten_pay_len = @rakuten_pays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
               <td>
-              <% if @results_week.where(user_id: r_user.user_id).exists?(date: r_date.date) %>
-              <% if @results_week.where(user_id: r_user.user_id).where.not(result_cash: {dmer: nil}).exists?(date: r_date.date)  %>
-              <% if dmer_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.dmer %>
+              <% if 
+                @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).present? && 
+                @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.present?
+              %>
+              <% if @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.dmer.present?  %>
+              <% if dmer_len != @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.dmer %>
               <span style="color:red;">dメル</span>
               <% else %>
               <span >dメル</span>
               <% end %>
-              <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.dmer %>
+              <%= @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.dmer %>
               <% end %>
               
-              <% if @results_week.where(user_id: r_user.user_id).where.not(result_cash: {aupay: nil}).exists?(date: r_date.date)  %>
-              <% if aupay_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.aupay %>
+              <% if @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.aupay.present?  %>
+              <% if aupay_len != @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.aupay %>
               <span style="color:red;">auPay</span>
               <% else %>
               <span >auPay</span>
               <% end %>
-              <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.aupay %>
+              <%= @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.aupay %>
               <% end %>
-              <% if @results_week.where(user_id: r_user.user_id).where.not(result_cash: {paypay: nil}).exists?(date: r_date.date)  %>
-              <% if paypay_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.paypay %>
+              <% if @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.paypay.present?  %>
+              <% if paypay_len != @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.paypay %>
               <span style="color:red;">PayPay</span>
               <% else %>
               <span >PayPay</span>
               <% end %>
-              <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.paypay %>
+              <%= @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.paypay %>
               <% end %>
-              <% if @results_week.where(user_id: r_user.user_id).where.not(result_cash: {rakuten_pay: nil}).exists?(date: r_date.date)  %>
-              <% if rakuten_pay_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.rakuten_pay %>
+              <% if @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.rakuten_pay.present?  %>
+              <% if rakuten_pay_len != @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.rakuten_pay %>
               <span style="color:red;">楽天ペイ</span>
               <% else %>
               <span >楽天ペイ</span>
               <% end %>
-              <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.rakuten_pay %>
+              <%= @results_week.where(user_id: r_user.user_id).find_by(date: r_date.date).result_cash.rakuten_pay %>
               <% end %>
              </td>
             <% end %>
@@ -144,7 +147,7 @@
             <% end %>
             <% if paypay_len != 0 %>
               PayPay
-              <%= paypay_len %>
+              <%=   paypay_len %>
             <% end %>
             <% if rakuten_pay_len != 0 %>
               楽天ペイ
