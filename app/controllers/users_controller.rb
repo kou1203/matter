@@ -95,7 +95,7 @@ class UsersController < ApplicationController
     # 利益表
     @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
     @maximum_date_cash = @month.beginning_of_month.since(24.days)
-    @results = Result.where(user_id: @user.id).where(date: @minimum_date_cash..@maximum_date_cash)
+    @results = Result.where(user_id: @user.id).where(date: @minimum_date_cash..@maximum_date_cash).order(:date)
     @results_date = @results.select(:date, :user_id, :shift,:profit)
     @results_out = @results.includes(:result_cash).select(:result_cash_id)
       

@@ -1788,7 +1788,7 @@
       </tr>
     </thead>
     <tbody>
-    <% @results.order(:date).find_each do |result| %>
+    <% @results.each do |result| %>
       <tr>
         <td><%= result.id %></td>
         <td style="padding: 0 20px;"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></td>
