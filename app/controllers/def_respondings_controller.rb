@@ -16,9 +16,13 @@ class DefRespondingsController < ApplicationController
     @aupays_kansai = @aupays.where(user: {base: "関西SS"})
     @aupays_kanto = @aupays.where(user: {base: "関東SS"})
 
-    @rakuten_pays = RakutenPay.includes(:store_prop, :user).where(status: "自社不備")
-    @rakuten_pays_chubu = @rakuten_pays.where(user: {base: "中部SS"})
-    @rakuten_pays_kansai = @rakuten_pays.where(user: {base: "関西SS"})
-    @rakuten_pays_kanto = @rakuten_pays.where(user: {base: "関東SS"})
+    @rakuten_pays = 
+      RakutenPay.includes(:store_prop, :user).where(status: "自社不備")
+      .or(
+        RakutenPay.includes(:store_prop, :user).where(status: "1次審査不備")
+      )
+      @rakuten_pays_chubu = @rakuten_pays.where(user: {base: "中部SS"})
+      @rakuten_pays_kansai = @rakuten_pays.where(user: {base: "関西SS"})
+      @rakuten_pays_kanto = @rakuten_pays.where(user: {base: "関東SS"})
   end 
 end

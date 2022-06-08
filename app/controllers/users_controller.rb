@@ -92,6 +92,11 @@ class UsersController < ApplicationController
       RakutenPay.includes(:store_prop, :user)
       .where(status: "自社不備")
       .where(user_id: @user.id)
+      .or(
+        RakutenPay.includes(:store_prop, :user)
+        .where(status: "1次審査不備")
+        .where(user_id: @user.id)
+      )
     # 利益表
     @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
     @maximum_date_cash = @month.beginning_of_month.since(24.days)
