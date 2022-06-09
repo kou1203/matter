@@ -172,6 +172,12 @@ class ResultsController < ApplicationController
     end
   end
 
+  def destroy 
+    @result = Result.find(params[:id])
+    @result.destroy
+    redirect_to root_path
+  end 
+
 
   private
   # dメル,aupayメソッド
