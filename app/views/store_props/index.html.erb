@@ -15,6 +15,7 @@
       <table>
         
       </table>
+    <% if current_user.position == "権限①" %>
     </div>
       <%= form_with url: import_store_props_path do |f| %>
       <table class="csv-tb">
@@ -24,6 +25,7 @@
         <td class="reset"><%= link_to "CSV出力", export_store_props_path(format: :csv), data: {confirm: "CSVを出力しますか？"}, class: "reg-link",id:'download-csv' %></td>
       </table>
       <% end %>
+    <% end %>
     <%= search_form_for @q do |f| %>
     <table>
       <tr>
