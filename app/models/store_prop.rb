@@ -14,17 +14,17 @@ class StoreProp < ApplicationRecord
     validates :address
   end 
 
-  has_one :dmer
-  has_one :praness
-  has_one :summit_customer_prop
-  has_one :aupay
-  has_one :paypay
-  has_many :pandas 
-  has_one :rakuten_casa 
-  has_many :trouble_sses
-  has_many :comments
-  has_one :st_insurance
-  has_one :rakuten_pay
+  has_one :dmer, dependent: :destroy
+  has_one :praness, dependent: :destroy
+  has_one :summit_customer_prop, dependent: :destroy
+  has_one :aupay, dependent: :destroy
+  has_one :paypay, dependent: :destroy
+  has_many :pandas , dependent: :destroy
+  has_one :rakuten_casa , dependent: :destroy
+  has_many :trouble_sses, dependent: :destroy
+  has_many :comments, dependent: :destroy
+  has_one :st_insurance, dependent: :destroy
+  has_one :rakuten_pay, dependent: :destroy
 
 
   def self.csv_check(file)

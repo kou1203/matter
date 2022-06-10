@@ -68,6 +68,12 @@ class StorePropsController < ApplicationController
     @panda = @store_prop.pandas 
   end
 
+  def destroy
+    @store_prop = StoreProp.find(params[:id])
+    @store_prop.destroy
+    redirect_to store_props_path
+  end 
+
   private 
 
   def back_retirement

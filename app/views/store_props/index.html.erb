@@ -63,6 +63,7 @@
         <thead>
         <tr>
           <th class="out-th"></th>
+          <th class="out-th"></th>
           <th class="out-th"><%= sort_link(@q, :id, "ID",{},{class: "reset-link"}) %></th>
           <th class="out-th"><%= sort_link(@q, :race, "法人/個人",{},{class: "reset-link"}) %></th>
           <th class="out-th"><%= sort_link(@q, :name, "店舗名",{},{class: "reset-link"}) %></th>
@@ -74,6 +75,9 @@
         <tbody>
         <% @store_props_data.each do |store_prop| %>
         <tr>
+        <% if current_user.position == "権限①" %>
+          <td ><%= link_to "　削除　", store_prop_path(store_prop.id),method: :delete,data: {confirm: "削除しますか？"}, class: "link" %></td>
+        <% end %>
           <td ><%= link_to "　詳細　", store_prop_path(store_prop.id), class: "link" %></td>
           <td ><%= store_prop.id %></td>
           <td ><%= store_prop.race %></td>
