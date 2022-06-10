@@ -1,8 +1,17 @@
 class ResultsController < ApplicationController
   before_action :authenticate_user!
   def index 
-    @dmers = Dmer.select("dmers.id,dmers.user_id")
-    @aupays = Aupay.select("aupays.id,aupays.user_id")
+
+    @dmers = 
+      Dmer.eager_load(:store_prop).select("dmers.id,dmers.user_id,dmers.store_prop_id")
+      .where(store_prop: {head_store: nil})
+      .where.not(status: "自社不備")
+      .where.not(status: "自社NG")
+    @aupays = 
+      Aupay.eager_load(:store_prop).select("aupays.id,aupays.user_id,aupays.store_prop_id")
+      .where(store_prop: {head_store: nil})
+      .where.not(status: "自社不備")
+      .where.not(status: "自社NG")
     @paypays = Paypay.select("paypays.id,paypays.user_id")
     @rakuten_pays = RakutenPay.select("rakuten_pays.id,rakuten_pays.user_id")
     @users = 
