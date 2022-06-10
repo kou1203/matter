@@ -8,16 +8,22 @@
   </div>
   <div data-scope-path="store_props/index">
   <div class="main">
-    <table>
-      <th class="reg"><%= link_to "店舗登録", new_store_prop_path, class: "reg-link" %></th>
-    </table>
-    <%= form_with url: import_store_props_path do |f| %>
-    <table class="csv-tb">
-      <td class="csv-label">CSV</td>
-      <td><%= f.file_field :file, accept:'.csv', class:"csv-input" %></td>
-      <td class="csv-result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"} %>
-    </table>
-    <% end %>
+    <div class="flex">
+      <table>
+        <th class="reg"><%= link_to "店舗登録", new_store_prop_path, class: "reg-link" %></th>
+      </table>
+      <table>
+        
+      </table>
+    </div>
+      <%= form_with url: import_store_props_path do |f| %>
+      <table class="csv-tb">
+        <td class="csv-label">CSV</td>
+        <td><%= f.file_field :file, accept:'.csv', class:"csv-input" %></td>
+        <td class="csv-result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"} %>
+        <td class="reset"><%= link_to "CSV出力", export_store_props_path(format: :csv), data: {confirm: "CSVを出力しますか？"}, class: "reg-link",id:'download-csv' %></td>
+      </table>
+      <% end %>
     <%= search_form_for @q do |f| %>
     <table>
       <tr>
@@ -43,6 +49,7 @@
     <hr>
     <%= alert %>
       <% if @store_props.empty? %>
+      <div class="warning"><%= alert %></div>
       <% else %>
         <table>
           <tr>
