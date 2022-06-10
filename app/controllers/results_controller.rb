@@ -132,6 +132,8 @@ class ResultsController < ApplicationController
     if @result.save 
       if @result.shift == "キャッシュレス新規"
         redirect_to  result_result_cashes_new_path(@result.id)
+      elsif @result.shift == "キャッシュレス決済"
+        redirect_to  result_result_cashes_new_path(@result.id)
       elsif @result.shift == "楽天フェムト新規"
         redirect_to  result_result_casas_new_path(@result.id)
       elsif @result.shift == "サミット"
@@ -159,6 +161,7 @@ class ResultsController < ApplicationController
 
   def edit 
     @result = Result.find(params[:id])
+    session[:previous_url] = request.referer
   end 
   
   def update 
@@ -166,7 +169,11 @@ class ResultsController < ApplicationController
     @result.update(result_params)
     if @result.shift == "キャッシュレス新規" && @result.result_cash.nil?
       redirect_to  result_result_cashes_new_path(@result.id)
+    elsif @result.shift == "キャッシュレス決済" && @result.result_cash.nil?
+      redirect_to  result_result_cashes_new_path(@result.id)
     elsif @result.shift == "キャッシュレス新規"
+      redirect_to edit_result_cash_path(@result.result_cash.id)
+    elsif @result.shift == "キャッシュレス決済"
       redirect_to edit_result_cash_path(@result.result_cash.id)
     elsif @result.shift == "楽天フェムト新規" && @result.result_cash.nil?
       redirect_to edit_result_casa_path(@result.result_casa.id)
@@ -177,14 +184,14 @@ class ResultsController < ApplicationController
     elsif @result.shift == "サミット"
       redirect_to  result_result_summits_new_path(@result.id)
     else  
-      redirect_to results_path
+      redirect_to session[:previous_url]
     end
   end
 
   def destroy 
     @result = Result.find(params[:id])
     @result.destroy
-    redirect_to root_path
+    redirect_to request.referer
   end 
 
 

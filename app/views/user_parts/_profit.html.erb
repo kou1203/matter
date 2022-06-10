@@ -1306,10 +1306,9 @@
     </div>
     </div>
     <% end %>
-
+  <% if @results.where(shift: "キャッシュレス新規").present? %>
     <h2>週間基準値（新規のみ）</h2>
     <p class="caution-text">※こちらの情報に増減は含まれておりません</p>
-
   <table>
     <thead>
       <tr>
@@ -1567,10 +1566,10 @@
           <% else %>
           <td><%= number_to_percentage(week_get_ave / week_full_talk_ave * 100, precision: 0) rescue "NaN" %>%</td>
           <% end %>
-        </tr>
-        <% week_cnt += 1 %>
-      <% end %>
-    <% end %>
+          </tr>
+            <% week_cnt += 1 %>
+          <% end %>
+        <% end %>
         <% week_sum_visit_ave = week_sum_visit.to_f / week_sum_shift %>
         <% week_sum_interview_ave = week_sum_interview.to_f / week_sum_shift %>
         <% week_sum_full_talk_ave = week_sum_full_talk.to_f / week_sum_shift %>
@@ -1662,6 +1661,7 @@
         </tr>
     </tbody>
     </table>
+  <% end %>
   <h1>日々進捗</h1>
   <table class="out-tb">
     <thead>
@@ -1792,15 +1792,15 @@
     <% @results.each do |result| %>
       <tr>
         <td><%= result.id %></td>
-        <td style="padding: 0 20px;"><%= link_to "削除", result_path(result.id),method: :delete,data: {confirm: "削除してもよろしいですか？"},class: "link" %></td>
         <td style="padding: 0 20px;"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></td>
-        <% if result.shift == "キャッシュレス新規" %>
+        <% if result.shift == "キャッシュレス新規" || result.shift == "キャッシュレス決済" %>
           <td style="padding: 0 20px;"><%= link_to "切り返し編集", edit_result_cash_path(result.result_cash.id),class: "link" rescue "error" %></td>
         <% elsif result.shift == "楽天フェムト新規" %>
         <td style="padding: 0 20px;"><%= link_to "切り返し編集", edit_result_casa_path(result.result_casa.id),class: "link" %></td>
         <% else %>
         <td></td>
         <% end %>
+        <td style="padding: 0 20px;"><%= link_to "削除", result_path(result.id),method: :delete,data: {confirm: "削除してもよろしいですか？"},class: "link" %></td>
         <td ><%= result.shift %></td>
         <th class="sticky"><%= result.date.month %>月<%= result.date.day %>日（<%= days[result.date.wday] %>）</th>
         <td ><%= result.ojt.name rescue "" %></td>
