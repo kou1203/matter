@@ -47,13 +47,17 @@
         <table>
           <tr>
             <th>店舗数</th>
-            <th>法人</th>
-            <th>個人</th>
+            <th>dメル</th>
+            <th>auPay</th>
+            <th>PayPay</th>
+            <th>楽天ペイ</th>
           </tr>
           <tr class="search-tr">
             <td ><%= @store_props.length %></td>
-            <td ><%= @store_props.where(race: '法人').length %></td>
-            <td ><%= @store_props.where(race: '個人').length %></td>
+            <td ><%= @store_props.where.not(dmer: {id: nil}).length %></td>
+            <td ><%= @store_props.where.not(aupay: {id: nil}).length %></td>
+            <td ><%= @store_props.where.not(paypay: {id: nil}).length %></td>
+            <td ><%= @store_props.where.not(rakuten_pay: {id: nil}).length %></td>
           </tr>
         </table>
 
@@ -63,21 +67,18 @@
         <thead>
         <tr>
           <th class="out-th"></th>
-          <th class="out-th"></th>
           <th class="out-th"><%= sort_link(@q, :id, "ID",{},{class: "reset-link"}) %></th>
           <th class="out-th"><%= sort_link(@q, :race, "法人/個人",{},{class: "reset-link"}) %></th>
           <th class="out-th"><%= sort_link(@q, :name, "店舗名",{},{class: "reset-link"}) %></th>
           <% if current_user.position == "権限①" %>
           <th class="out-th">獲得商材</th>
           <% end %>
+          <th class="out-th"></th>
         </tr>
         </thead>
         <tbody>
         <% @store_props_data.each do |store_prop| %>
         <tr>
-        <% if current_user.position == "権限①" %>
-          <td ><%= link_to "　削除　", store_prop_path(store_prop.id),method: :delete,data: {confirm: "削除しますか？"}, class: "link" %></td>
-        <% end %>
           <td ><%= link_to "　詳細　", store_prop_path(store_prop.id), class: "link" %></td>
           <td ><%= store_prop.id %></td>
           <td ><%= store_prop.race %></td>
@@ -109,6 +110,9 @@
               <% end %>
             <% end %>
             </td>
+              <% if current_user.position == "権限①" %>
+                <td ><%= link_to "　削除　", store_prop_path(store_prop.id),method: :delete,data: {confirm: "削除しますか？"}, class: "link" %></td>
+              <% end %>
           <% end %>
         </tr>
         <% end %>
