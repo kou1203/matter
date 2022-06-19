@@ -25,6 +25,7 @@
           <th class="search-head" rowspan="2" >検索</th>
           <th colspan="2" class="search-th">獲得日付</th>
           <th colspan="2" class="search-th">審査完了日</th>
+          <th class="search-th">管理番号</th>
           <th class="search-th">店舗名</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">審査ステータス</th>
@@ -35,6 +36,7 @@
         <td ><%= f.date_field :date_lteq, class: "input" %></td>
         <td ><%= f.date_field :result_point_gteq, class: "input" %>~</td>
         <td ><%= f.date_field :result_point_lteq, class: "input" %></td>
+          <td ><%= f.text_field :customer_num_cont, class: "input" %></td>
           <td ><%= f.text_field :store_prop_name_cont, class: "input" %></td>
           <td ><%= f.text_field :user_name_cont, class: "input" %></td>
           <td ><%= f.select :status_eq, options_from_collection_for_select(RakutenPay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
@@ -50,6 +52,7 @@
         <% if rakuten_duplicate.present? %>
         <p class="nav-text">管理番号重複</p>
         <% end %>
+        <%# PJ078772 ばんやジル %>
       <% rakuten_duplicate.each do |db| %>
         <p class="nav-text" style="color: red;"><%= db.customer_num %><%= db.store_prop.name %></p>
       <% end %>
@@ -57,7 +60,7 @@
       <tr>
         <th class="search-th">獲得数</th>
         <th class="search-th">未処理</th>
-        <th class="search-th">自社審査待ち</th>
+        <th class="search-th">審査待ち</th>
         <th class="search-th">商流審査待ち</th>
         <th class="search-th">審査中</th>
         <th class="search-th">審査完了</th>
@@ -100,8 +103,9 @@
       <tr>
         <th class="out-th"></th>
         <th class="out-th">ID</th>
-        <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+        <th class="out-th">管理番号</th>
         <th class="out-th">店舗名</th>
+        <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
         <th class="out-th">獲得者</th>
         <th class="out-th">審査ステータス</th>
         <th class="out-th">不備詳細①</th>
@@ -115,8 +119,9 @@
       <tr >
         <td class="out-td"><%= link_to "詳細",  rakuten_pay_path(rakuten_pay.id) ,class: "link" %></td>
         <td class="out-td"><%= rakuten_pay.id %></td>
-        <td class="out-td"><%= rakuten_pay.date %></td>
+        <td class="out-td"><%= rakuten_pay.customer_num %></td>
         <td class="out-td"><%= rakuten_pay.store_prop.name %></td>
+        <td class="out-td"><%= rakuten_pay.date %></td>
         <td class="out-td"><%= rakuten_pay.user.name %></td>
         <td class="out-td"><%= rakuten_pay.status %></td>
         <td class="out-td"><%= rakuten_pay.deficiency_info %></td>
