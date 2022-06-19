@@ -46,6 +46,13 @@
     <div class="warning"><%= alert %></div>
   <% else %>
       <h1>表示範囲：<%= @rakuten_pays.minimum(:date) %>（<%= days[@rakuten_pays.minimum(:date).wday] %>）〜<%= @rakuten_pays.maximum(:date) %>（<%= days[@rakuten_pays.maximum(:date).wday] %>）</h1>
+      <% rakuten_duplicate = @rakuten_pays.where.not(customer_num: nil).group(:customer_num).having('count(*) >= 2') %>
+        <% if rakuten_duplicate.present? %>
+        <p class="nav-text">管理番号重複</p>
+        <% end %>
+      <% rakuten_duplicate.each do |db| %>
+        <p class="nav-text" style="color: red;"><%= db.customer_num %><%= db.store_prop.name %></p>
+      <% end %>
     <table >
       <tr>
         <th class="search-th">獲得数</th>
