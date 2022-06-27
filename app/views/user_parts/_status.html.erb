@@ -45,6 +45,7 @@
       .where.not(status: "取消")
       .where.not(status: "申込取消")
       .where.not(status: "報酬対象外")
+      .where.not(status: "差し戻し")
       .where.not(status: "重複対象外").length 
     %></td>
     <td><%= @aupays.where(status: "審査通過").length %></td>
@@ -53,6 +54,7 @@
       .or(@aupays.where(status: "取消"))
       .or(@aupays.where(status: "報酬対象外"))
       .or(@aupays.where(status: "重複対象外"))
+      .or(@aupays.where(status: "差し戻し"))
       .or(@aupays.where(status: "申込取消")).length 
     %></td>
     <td><%= @aupays_inc.length %></td>
@@ -140,7 +142,8 @@
         aupay.status == "不合格" || 
         aupay.status == "申込取消" || 
         aupay.status == "報酬対象外" || 
-        aupay.status == "重複対象外"
+        aupay.status == "重複対象外" ||
+        aupay.deficiency_remarks == "既存auPAY加盟店の登録がすでにあるため、差し戻しさせていただきます。"
       %>
       <tr style="color:red;">
       <% elsif aupay.status == "差し戻し" %>
