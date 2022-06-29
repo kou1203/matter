@@ -1306,7 +1306,7 @@
     </div>
     </div>
     <% end %>
-  <% if @results.where(shift: "キャッシュレス新規").present? %>
+  <% if @results.where(shift: "キャッシュレス新規").present? && @results_date.minimum(:date).month == @results_date.maximum(:date).prev_month.month %>
     <h2>週間基準値（新規のみ）</h2>
     <p class="caution-text">※こちらの情報に増減は含まれておりません</p>
   <table>

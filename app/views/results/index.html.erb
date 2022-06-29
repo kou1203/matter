@@ -19,8 +19,8 @@
             <td class="result"><%= f.submit "絞込み",data: {"turbolinks" => false, disable_with: "絞込み中"} , class: "result-btn" %></td>
           </tr>
           <tr>
-            <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true,prompt: "--"},{class: "date-input"} %></td>
-            <td class="search-td"><%= f.select :user_base_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base).distinct, :base, :base), {prompt: "全拠点"},{class: "input"} %></td>
+            <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true,selected: Date.today},{class: "date-input"} %></td>
+            <td class="search-td"><%= f.select :user_base_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base).distinct, :base, :base), {},{class: "input"} %></td>
             <td class="reset"><%= link_to "絞込みリセット", results_path, class: "reset-link" %></td>
           </tr>
         </table>
@@ -28,7 +28,7 @@
       <%# /検索フォーム %>
       <hr>
       <% if @results.empty? %>
-      <% if current_user.position == "権限①" %>
+      <% if current_user.position_sub == "管理" %>
         <h2>利益表（基準値）インポート</h2>
         <%= form_with url: import_results_path do |f| %>
           <table class="csv-tb">

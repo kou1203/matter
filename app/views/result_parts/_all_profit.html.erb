@@ -104,7 +104,7 @@
         <% exp_ave = exp_sum / @cash_result.where(user_id: r.user_id).length rescue "NaN" %>
         <% exp_fin = exp_ave * shifts rescue "NaN" %>
         <% base_exp_sum = @cash_result.sum(:profit) %>
-        <% base_exp_ave = base_exp_sum / @cash_result.length rescue "NaN" %>
+        <% base_exp_ave = base_exp_sum / base_shift_digestion rescue "NaN" %>
         <% base_exp_fin = base_exp_ave * base_shift %>
       <%# 各商材変数（評価売） %>
         <%# dメル（新規） %>
