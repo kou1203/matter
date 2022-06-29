@@ -104,7 +104,7 @@ class UsersController < ApplicationController
     @results_date = @results.select(:date, :user_id, :shift,:profit)
     @results_out = @results.includes(:result_cash).select(:result_cash_id)
       
-    if @results.present?
+    if @results.present? && @results_date.minimum(:date).month == @results_date.maximum(:date).prev_month.month
       # 週毎の期間
       days = ["日", "月", "火", "水", "木", "金", "土"]
        if days[@results.minimum(:date).wday] == "日" 
