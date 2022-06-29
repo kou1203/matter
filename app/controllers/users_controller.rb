@@ -104,7 +104,7 @@ class UsersController < ApplicationController
     @results_date = @results.select(:date, :user_id, :shift,:profit)
     @results_out = @results.includes(:result_cash).select(:result_cash_id)
       
-    if @results.present? && @results_date.minimum(:date).month == @results_date.maximum(:date).prev_month.month
+    if @results.present?
       # 週毎の期間
       days = ["日", "月", "火", "水", "木", "金", "土"]
        if days[@results.minimum(:date).wday] == "日" 
@@ -120,12 +120,13 @@ class UsersController < ApplicationController
        elsif days[@results.minimum(:date).wday] == "火" 
          week1 = (@results.minimum(:date) - 1) 
        end 
-       @results_week1 = Result.where(user_id: @user.id).where(date: week1..(week1+6))
-       @results_week2 = Result.where(user_id: @user.id).where(date: (week1+7)..(week1+13))
-       @results_week3 = Result.where(user_id: @user.id).where(date: (week1+14)..(week1+20))
-       @results_week4 = Result.where(user_id: @user.id).where(date: (week1+21)..(week1+27))
-       @results_week5 = Result.where(user_id: @user.id).where(date: (week1+28)..(week1+34))
-
+       if @results_date.minimum(:date).month == @results_date.maximum(:date).prev_month.month
+        @results_week1 = Result.where(user_id: @user.id).where(date: week1..(week1+6))
+        @results_week2 = Result.where(user_id: @user.id).where(date: (week1+7)..(week1+13))
+        @results_week3 = Result.where(user_id: @user.id).where(date: (week1+14)..(week1+20))
+        @results_week4 = Result.where(user_id: @user.id).where(date: (week1+21)..(week1+27))
+        @results_week5 = Result.where(user_id: @user.id).where(date: (week1+28)..(week1+34))
+       end
       #  dメル
        @dmer_user = 
         Dmer.includes(:store_prop).where(user_id: @results.first.user_id )
@@ -218,11 +219,11 @@ class UsersController < ApplicationController
         @rakuten_pay_uq.where(status: "自社不備")
         .or(@rakuten_pay_uq.where(status: "自社NG")).select(:valuation,:store_prop_id)
       @rakuten_pay_inc = rakuten_inc(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id)
-    # 少額短期保険
+      # 少額短期保険
       @st_insurances_user = StInsurance.where(user_id: @results.first.user_id )
       @st_insurances_this_month = this_period(@st_insurances_user,@results)
       @st_insurances_def_this_month = this_period(@st_insurances_this_month,@results)
-    # 楽天フェムト新規
+      # 楽天フェムト新規
       @rakuten_casas_user = RakutenCasa.where(user_id: @results.first.user_id)
       @rakuten_casas_this_month = this_period(@rakuten_casas_user, @results)
       @rakuten_casas_cancel = casa_cancel(@rakuten_casas_user, @results )
@@ -236,7 +237,7 @@ class UsersController < ApplicationController
       @rakuten_casas_dec_net = @rakuten_casas_not_this_month.where(deficiency_net: @results.minimum(:date)..@results.maximum(:date))
       @rakuten_casas_inc_anti = @rakuten_casas_not_this_month.where(deficiency_solution_anti: @results.minimum(:date)..@results.maximum(:date))
       @rakuten_casas_dec_anti = @rakuten_casas_not_this_month.where(deficiency_anti: @results.minimum(:date)..@results.maximum(:date))
-    # 楽天フェムト設置
+      # 楽天フェムト設置
       @rakuten_casas_put = @rakuten_casas_user.where(put: @results.minimum(:date)..@results.maximum(:date))
       # 設置
       @rakuten_casas_put_self = @rakuten_casas_put.where(putter_id: @results.first.user_id).where(user_id: @results.first.user_id)
