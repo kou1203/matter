@@ -1309,7 +1309,7 @@
   <% if @results.where(shift: "キャッシュレス新規").present? && @results_date.minimum(:date).month == @results_date.maximum(:date).prev_month.month %>
     <h2>週間基準値（新規のみ）</h2>
     <p class="caution-text">※こちらの情報に増減は含まれておりません</p>
-  <table>
+    <table>
     <thead>
       <tr>
         <th colspan="2">期間</th>
@@ -1379,7 +1379,7 @@
           <td style="color:red;"><%= dg_get %></td>
           <td style="color:red;"><%= dg_get_ratio %>%</td>
         </tr>
-  <%# 商材（週間の評価売上変数） %>
+    <%# 商材（週間の評価売上変数） %>
     <% weeks = [@results_week1, @results_week2,@results_week3, @results_week4, @results_week5] %>
     <% week_cnt = 1 %>
     <% week_sum_shift = 0 %>
@@ -1661,6 +1661,8 @@
         </tr>
     </tbody>
     </table>
+  <% else %>
+    <p class="caution-text">※週間基準値は<%= @results.minimum(:date).month + 1 %>月1日以降の終着が入力されると表示されます。</p>
   <% end %>
   <h1>日々進捗</h1>
   <table class="out-tb">

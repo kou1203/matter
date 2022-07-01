@@ -107,18 +107,19 @@ class UsersController < ApplicationController
     if @results.present?
       # 週毎の期間
       days = ["日", "月", "火", "水", "木", "金", "土"]
-       if days[@results.minimum(:date).wday] == "日" 
-         week1 = (@results.minimum(:date) + 1) 
-       elsif days[@results.minimum(:date).wday] == "土" 
-         week1 = (@results.minimum(:date) - 5)
-       elsif days[@results.minimum(:date).wday] == "金" 
-         week1 = (@results.minimum(:date) - 4)
-       elsif days[@results.minimum(:date).wday] == "木" 
-         week1 = (@results.minimum(:date) - 3) 
-       elsif days[@results.minimum(:date).wday] == "水" 
-         week1 = (@results.minimum(:date) - 2) 
-       elsif days[@results.minimum(:date).wday] == "火" 
-         week1 = (@results.minimum(:date) - 1) 
+      start_date = Date.new(@results.minimum(:date).year,@results.minimum(:date).month,26)
+       if days[start_date.wday] == "日" 
+         week1 = (start_date + 1) 
+       elsif days[start_date.wday] == "土" 
+         week1 = (start_date - 5)
+       elsif days[start_date.wday] == "金" 
+         week1 = (start_date - 4)
+       elsif days[start_date.wday] == "木" 
+         week1 = (start_date - 3) 
+       elsif days[start_date.wday] == "水" 
+         week1 = (start_date - 2) 
+       elsif days[start_date.wday] == "火" 
+         week1 = (start_date - 1) 
        end 
        if @results_date.minimum(:date).month == @results_date.maximum(:date).prev_month.month
         @results_week1 = Result.where(user_id: @user.id).where(date: week1..(week1+6))
