@@ -31,10 +31,8 @@ class ResultsController < ApplicationController
       @q.result(distinct: false).includes(:user).joins(:user).order(date: :asc)
     end
     if @results.present?
-      # 期間指定
       @minimum_result_cash = @results.minimum(:date)
-      @maximum_result_cash = @results.maximum(:date)
-      # 拠点振り分け
+      @maximum_result_cash = @results.minimum(:date).beginning_of_month.since(1.month).since(24.days)
       if @results.first.user.base == "中部SS"
         @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash).where(user: {base: "中部SS"})
       elsif @results.first.user.base == "関西SS"
