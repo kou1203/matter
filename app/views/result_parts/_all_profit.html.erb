@@ -80,7 +80,7 @@
         %>
         <%
           shifts = Shift.where(user_id: r.user_id)
-          .where(start_time: @cash_result.minimum(:date)..@cash_result.maximum(:date))
+          .where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days))
           .where.not(shift: "休み")
           .where.not(shift: "内勤")
           .where.not(shift: "帯同")
