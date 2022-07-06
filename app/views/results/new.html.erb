@@ -7,167 +7,266 @@
   <div data-scope-path="shared/side_bar">
     <%= render "shared/sidebar" %>
   </div>
-<div data-scope-path="results/new_edit">
-    <br><h1>基本情報　拠点：<%= current_user.base + current_user.base_sub%>　<%= current_user.name %></h1>
+  <div data-scope-path="shared/form">
+  <div class="form-main">
+    <div class="form-title">
+      <h1><%= current_user.name %>終着入力</h1>
+    </div>
       <button id="memo-button">メモ</button>
     <div class="memo-form" id="memo-page">
-      <label class="textarea-label">一時メモ</label>
       <textarea></textarea>
     </div>
-  <%= form_with model: @result,  class: "form-frame", local: true do |f| %>
-    <%= render "shared/error_messages", model: f.object %>
+  <%= form_with(model: @result, date: {remote: false}) do |f| %>
+  <%# render "shared/error_messages", model: f.object %>
+  <h1>基本情報</h1>
     <%= f.hidden_field :user_id, value: current_user.id %>
-  <%# 基本情報 %>
-    <p class="caution-text">※基本情報(日付、地域、シフト)の入力は必須になります。</p>
-
-    <table>
-      <tr>
-        <th><%= f.label :date, "日付", class: "form-text" %></th>
-        <th><%= f.label :area, "地域", class: "form-text" %></th>
-      </tr>
-      <tr>
-          <td><%= f.date_field :date , value: Date.today, class: "form-input" %></td>
-          <td><%= f.text_field :area , class: "form-input" %></td>
-      </tr>
-      <tr>
-        <th> <%= f.label :shift, "シフト", class: "form-text" %></th>
-        <th><%= f.label :ojt_id, "帯同者", class: "form-text" %></th>
-        <th>
-        </th>
-      </tr>
-      <tr>
-          <td><%= f.select :shift, {"キャッシュレス新規": "キャッシュレス新規", "キャッシュレス決済": "キャッシュレス決済","楽天フェムト新規": "楽天フェムト新規", "楽天フェムト設置": "楽天フェムト設置", "パンダ": "パンダ", "サミット": "サミット","帯同": "帯同","内勤": "内勤", "休み": "休み","欠勤": "欠勤"},{include_blank: true}, {class: "form-input", id: "selectbox"} %></td>
-          <td><%= f.collection_select(:ojt_id, User.includes(:shifts).where(shifts: {shift: "帯同"}), :id, :name,{include_blank: true}, {class: "form-input"})%></td>
-      </tr>
-      <tr>
-        <th><%= f.label :ojt_id, "暫定売上", class: "form-text" %></th>
-      </tr>
-      <tr>
-        <td><%= f.number_field :profit,class: "form-input", min: 0 %></td>
-      </tr>
-    </table>
-
-  <%# 大枠基準値 %>
-    <h1>基準値</h1>
-    <h2 >前半</h2>
-    <table>
-      <tr>
-        <th><%= f.label :first_visit, "訪問", class: "form-text" %></th>
-        <th><%= f.label :first_interview, "対面", class: "form-text" %></th>
-        <th><%= f.label :first_full_talk, "フル", class: "form-text" %></th>
-        <th><%= f.label :first_get, "獲得", class: "form-text" %></th>
-      </tr>
-      <tr>
-          <td><%= f.number_field :first_visit,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :first_interview ,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :first_full_talk,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :first_get ,class: "form-input-num", min: 0 %></td>
-      </tr>
-    </table>
-    <h2 >後半</h2>
-    <table>
-      <tr>
-          <th><%= f.label :latter_visit, "訪問", class: "form-text" %></th>
-          <th><%= f.label :latter_interview, "対面", class: "form-text" %></th>
-          <th><%= f.label :latter_full_talk, "フル", class: "form-text" %></th>
-          <th><%= f.label :latter_get, "後半獲得", class: "form-text" %></th>
-      </tr>
-          <td><%= f.number_field :latter_visit , class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :latter_interview ,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :latter_full_talk ,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :latter_get ,class: "form-input-num", min: 0 %></td>
-      </tr>
-    </table>
-  <%# 店舗別基準値 %>
-    <h1>業種別基準値（訪問-獲得）</h1>
-    <div style="display: flex;">
-      <div><h2 >喫茶・カフェ</h2>
-      <table>
-        <tr>
-          <th><%= f.label :cafe_visit, "訪問", class: "form-text" %></th>
-          <th><%= f.label :cafe_get, "獲得", class: "form-text" %></th>
-        </tr>
-        <tr>
-          <td><%= f.number_field :cafe_visit,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :cafe_get , class: "form-input-num", min: 0 %></td>
-        </tr>
-      </table></div>
-      <div><h2 >その他・飲食</h2>
-      <table>
-        <tr>
-          <th><%= f.label :other_food_visit, "訪問", class: "form-text" %></th>
-          <th><%= f.label :other_food_get, "獲得", class: "form-text" %></th>
-        </tr>
-        <tr>
-          <td><%= f.number_field :other_food_visit ,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :other_food_get ,class: "form-input-num", min: 0 %></td>
-        </tr>
-      </table></div>
-    </div>
-    <div style="display: flex;">
-      <div><h2>車屋</h2>
-      <table>
-        <tr>
-          <th><%= f.label :car_visit, "訪問", class: "form-text" %></th>
-          <th><%= f.label :car_get, "獲得", class: "form-text" %></th>
-        </tr>
-        <tr>
-          <td><%= f.number_field :car_visit,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :car_get ,class: "form-input-num", min: 0 %></td>
-        </tr>
-      </table></div>
-      <div><h2 >その他・小売</h2>
-      <table>
-        <tr>
-          <th><%= f.label :other_retail_visit, "訪問", class: "form-text" %></th>
-          <th><%= f.label :other_retail_get, "獲得", class: "form-text" %></th>
-        </tr>
-        <tr>
-          <td><%= f.number_field :other_retail_visit,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :other_retail_get ,class: "form-input-num", min: 0 %></td>
-          </th>
-        </tr>
-      </table></div>
-    </div>
-    <div style="display: flex;">
-      <div>
-      <h2 >理容・美容</h2>
-      <table>
-        <tr>
-          <th><%= f.label :hair_salon_visit, "訪問", class: "form-text" %></th>
-          <th><%= f.label :hair_salon_get, "獲得", class: "form-text" %></th>
-        </tr>
-        <tr>
-          <td><%= f.number_field :hair_salon_visit,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :hair_salon_get ,class: "form-input-num", min: 0 %></td>
-        </tr>
-      </table></div>
-      <div><h2>整体・鍼灸</h2>
-      <table>
-        <tr>
-          <th><%= f.label :manipulative_visit, "訪問", class: "form-text" %></th>
-          <th><%= f.label :manipulative_get, "獲得", class: "form-text" %></th>
-        </tr>
-        <tr>
-          <td><%= f.number_field :manipulative_visit,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :manipulative_get ,class: "form-input-num", min: 0 %></td>
-        </tr>
-        <tr>
-      </table></div>
-    </div>
-    <h2>その他・サービス</h2>
-      <table>
-        <tr>
-          <th><%= f.label :other_service_visit, "訪問", class: "form-text" %></th>
-          <th><%= f.label :other_service_get, "獲得", class: "form-text" %></th>
-        </tr>
-        <tr>
-          <td><%= f.number_field :other_service_visit,class: "form-input-num", min: 0 %></td>
-          <td><%= f.number_field :other_service_get ,class: "form-input-num", min: 0 %></td>
-        </tr>
-      </table>
-
-  <%= f.submit "登録",data: { confirm: "登録してもよろしいですか？" }, class: "submit-btn" %>
+  <div class="form">
+      <p><%= f.label :request, "日付", class: "form-text" %></p>
+      <p><%= f.date_field :date , value: Date.today, class: "date-input" %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :status, "地域", class: "form-text" %></p>
+      <p><%= f.text_field :area , class: "input" %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :ball, "シフト", class: "form-text" %></p>
+      <p><%= f.select :shift, {"キャッシュレス新規": "キャッシュレス新規", "キャッシュレス決済": "キャッシュレス決済","楽天フェムト新規": "楽天フェムト新規", "楽天フェムト設置": "楽天フェムト設置", "パンダ": "パンダ", "サミット": "サミット","帯同": "帯同","内勤": "内勤", "休み": "休み","欠勤": "欠勤"},{include_blank: true}, {class: "slct-input", id: "selectbox"} %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :request_show, "帯同者", class: "form-text" %></p>
+      <p><%= f.collection_select(:ojt_id, User.includes(:shifts).where(shifts: {shift: "帯同"}), :id, :name,{include_blank: true}, {class: "slct-input"})%></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :response, "売上", class: "form-text" %></p>
+      <p><%= f.number_field :profit,class: "input", min: 0 %></p>
+  </div>
+  <h1>基準値</h1>
+  <div class="form">
+      <p class="form-head">前半</p>
+      <p>
+        <%= f.label :first_total_visit, "訪問", class: "form-text" %>-
+        <%= f.label :first_visit, "応答", class: "form-text" %>-
+        <%= f.label :first_interview, "対面", class: "form-text" %>-
+        <%= f.label :first_full_talk, "フル", class: "form-text" %>-
+        <%= f.label :first_get, "成約", class: "form-text" %>
+        </p>
+      <p>
+        <%= f.number_field :first_total_visit, class: "num-input" %>
+        <%= f.number_field :first_visit, class: "num-input" %>
+        <%= f.number_field :first_interview, class: "num-input" %>
+        <%= f.number_field :first_full_talk, class: "num-input" %>
+        <%= f.number_field :first_get, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">後半</p>
+      <p>
+        <%= f.label :latter_total_visit, "訪問", class: "form-text" %>-
+        <%= f.label :latter_visit, "応答", class: "form-text" %>-
+        <%= f.label :latter_interview, "対面", class: "form-text" %>-
+        <%= f.label :latter_full_talk, "フル", class: "form-text" %>-
+        <%= f.label :latter_get, "成約", class: "form-text" %>
+        </p>
+      <p>
+        <%= f.number_field :latter_total_visit, class: "num-input" %>
+        <%= f.number_field :latter_visit, class: "num-input" %>
+        <%= f.number_field :latter_interview, class: "num-input" %>
+        <%= f.number_field :latter_full_talk, class: "num-input" %>
+        <%= f.number_field :latter_get, class: "num-input" %>
+  </div>
+    <h1>店舗別基準値</h1>
+  <div class="form">
+      <p class="form-head">喫茶・カフェ</p>
+      <p>
+          <%= f.label :cafe_visit, "訪問", class: "form-text" %>-
+          <%= f.label :cafe_get, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :cafe_visit,class: "num-input", min: 0 %>
+          <%= f.number_field :cafe_get , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">その他・飲食</p>
+      <p>
+          <%= f.label :other_food_visit, "訪問", class: "form-text" %>-
+          <%= f.label :other_food_get, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :other_food_visit,class: "num-input", min: 0 %>
+          <%= f.number_field :other_food_get , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">車屋</p>
+      <p>
+          <%= f.label :car_visit, "訪問", class: "form-text" %>-
+          <%= f.label :car_get, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :car_visit,class: "num-input", min: 0 %>
+          <%= f.number_field :car_get , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">その他・小売</p>
+      <p>
+          <%= f.label :other_retail_visit, "訪問", class: "form-text" %>-
+          <%= f.label :other_retail_get, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :other_retail_visit,class: "num-input", min: 0 %>
+          <%= f.number_field :other_retail_get , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">理容・美容</p>
+      <p>
+          <%= f.label :hair_salon_visit, "訪問", class: "form-text" %>-
+          <%= f.label :hair_salon_get, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :hair_salon_visit,class: "num-input", min: 0 %>
+          <%= f.number_field :hair_salon_get , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">整体・鍼灸</p>
+      <p>
+          <%= f.label :manipulative_visit, "訪問", class: "form-text" %>-
+          <%= f.label :manipulative_get, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :manipulative_visit,class: "num-input", min: 0 %>
+          <%= f.number_field :manipulative_get , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">その他・サービス</p>
+      <p>
+          <%= f.label :other_service_visit, "訪問", class: "form-text" %>-
+          <%= f.label :other_service_get, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :other_service_visit,class: "num-input", min: 0 %>
+          <%= f.number_field :other_service_get , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <h1>時間帯別基準値</h1>
+  <div class="form">
+      <p class="form-head">10時</p>
+      <p>
+          <%= f.label :visit10, "訪問", class: "form-text" %>-
+          <%= f.label :get10, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :visit10,class: "num-input", min: 0 %>
+          <%= f.number_field :get10 , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">11時</p>
+      <p>
+          <%= f.label :visit11, "訪問", class: "form-text" %>-
+          <%= f.label :get11, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :visit11,class: "num-input", min: 0 %>
+          <%= f.number_field :get11 , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">12時</p>
+      <p>
+          <%= f.label :visit12, "訪問", class: "form-text" %>-
+          <%= f.label :get12, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :visit12,class: "num-input", min: 0 %>
+          <%= f.number_field :get12 , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">13時</p>
+      <p>
+          <%= f.label :visit13, "訪問", class: "form-text" %>-
+          <%= f.label :get13, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :visit13,class: "num-input", min: 0 %>
+          <%= f.number_field :get13 , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">14時</p>
+      <p>
+          <%= f.label :visit14, "訪問", class: "form-text" %>-
+          <%= f.label :get14, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :visit14,class: "num-input", min: 0 %>
+          <%= f.number_field :get14 , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">15時</p>
+      <p>
+          <%= f.label :visit15, "訪問", class: "form-text" %>-
+          <%= f.label :get15, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :visit15,class: "num-input", min: 0 %>
+          <%= f.number_field :get15 , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">16時</p>
+      <p>
+          <%= f.label :visit16, "訪問", class: "form-text" %>-
+          <%= f.label :get16, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :visit16,class: "num-input", min: 0 %>
+          <%= f.number_field :get16 , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">17時</p>
+      <p>
+          <%= f.label :visit17, "訪問", class: "form-text" %>-
+          <%= f.label :get17, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :visit17,class: "num-input", min: 0 %>
+          <%= f.number_field :get17 , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">18時</p>
+      <p>
+          <%= f.label :visit18, "訪問", class: "form-text" %>-
+          <%= f.label :get18, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :visit18,class: "num-input", min: 0 %>
+          <%= f.number_field :get18 , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  <div class="form">
+      <p class="form-head">19時以降</p>
+      <p>
+          <%= f.label :visit19, "訪問", class: "form-text" %>-
+          <%= f.label :get19, "獲得", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :visit19,class: "num-input", min: 0 %>
+          <%= f.number_field :get19 , class: "num-input", min: 0 %>
+      </p>
+  </div>
+  
+  <div class="form-submit">
+    <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+  </div>
   <% end %>
+  </div>
   </div>
 </div>

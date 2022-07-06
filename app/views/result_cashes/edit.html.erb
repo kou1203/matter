@@ -6,192 +6,193 @@
   <div data-scope-path="shared/side_bar">
     <%= render "shared/sidebar" %>
   </div>
-  <div data-scope-path="results/new_edit">
-    <%= form_with model: @result_cash, local: true, class: "form-frame", local: true do |f| %>
-      <%= render "shared/error_messages", model: f.object %>
-      <h2>獲得商材</h2>
-      <table>
-        <tr>
-          <th ><%= f.label :dmer, "dメル", class: "form-text" %></th>
-          <th ><%= f.label :aupay, "auPay", class: "form-text" %></th>
-          <th ><%= f.label :paypay, "PayPay", class: "form-text" %></th>
-          <th ><%= f.label :rakuten_pay, "楽天ペイ", class: "form-text" %></th>
-        <tr>
-          <td><%= f.number_field :dmer, class: "form-input-num" %></td>
-          <td ><%= f.number_field :aupay, class: "form-input-num" %></td>
-          <td ><%= f.number_field :paypay, class: "form-input-num" %></td>
-          <td ><%= f.number_field :rakuten_pay, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>０１：どういうこと？</h2>
-      <table>
-        <tr>
-          <th ><%= f.label :out_interview_01, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_01, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_01, "成約", class: "form-text" %></th>
-        <tr>
-          <td><%= f.number_field :out_interview_01, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_01, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_01, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>０２：君は誰？</h2>
-      <table>
-        <tr >
-          <th ><%= f.label :out_interview_02, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_02, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_02, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_02, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_02, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_02, class: "form-input-num" %></td>
-        </tr>
-        </table>
-      <h2>０３：もらうだけ？</h2>
-      <table>
-        <tr >
-          <th ><%= f.label :out_interview_03, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_03, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_03, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_03, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_03, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_03, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>０４：PayPayのみ</h2>
-      <table>
-        <tr >
-          <th ><%= f.label :out_interview_04, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_04, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_04, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_04, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_04, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_04, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>０５：エアペイのみ</h2>
-      <table>
-        <tr >
-          <th ><%= f.label :out_interview_05, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_05, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_05, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_05, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_05, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_05, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>０６：カードのみ</h2>
-      <table>
-        <tr >
-          <th ><%= f.label :out_interview_06, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_06, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_06, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_06, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_06, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_06, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>０７：先延ばし</h2>
-      <table>
-        <tr >
-          <th ><%= f.label :out_interview_07, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_07, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_07, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_07, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_07, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_07, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>０８：現金のみ</h2>
-      <table>
-        <tr>
-          <th ><%= f.label :out_interview_08, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_08, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_08, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_08, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_08, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_08, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>０９：忙しい</h2>
-      <table>
-        <tr>
-          <th ><%= f.label :out_interview_09, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_09, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_09, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_09, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_09, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_09, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>１０：面倒くさい</h2>
-      <table>
-        <tr>
-          <th ><%= f.label :out_interview_10, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_10, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_10, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_10, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_10, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_10, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>１１：情報不足</h2>
-      <table>
-        <tr>
-          <th ><%= f.label :out_interview_11, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_11, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_11, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_11, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_11, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_11, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>１２：ペロ</h2>
-      <table>
-        <tr>
-          <th ><%= f.label :out_interview_12, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_12, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_12, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_12, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_12, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_12, class: "form-input-num" %></td>
-        </tr>
-      </table>
-      <h2>１３：その他</h2>
-      <table>
-        <tr>
-          <th ><%= f.label :out_interview_13, "決済者面会", class: "form-text" %></th>
-          <th ><%= f.label :out_full_talk_13, "フルトーク", class: "form-text" %></th>
-          <th ><%= f.label :out_get_13, "成約", class: "form-text" %></th>
-        </tr>
-        <tr >
-          <td ><%= f.number_field :out_interview_13, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_full_talk_13, class: "form-input-num" %></td>
-          <td ><%= f.number_field :out_get_13, class: "form-input-num" %></td>
-        </tr>
-      </table>
-    <%= f.submit "登録",data: { confirm: "登録してもよろしいですか？" }, class: "submit-btn" %>
-    <% end %>
+  <div data-scope-path="shared/form">
+  <div class="form-main">
+    <div class="form-title">
+      <h1><%= current_user.name %>終着入力</h1>
+    </div>
+      <button id="memo-button">メモ</button>
+    <div class="memo-form" id="memo-page">
+      <textarea></textarea>
+    </div>
+<%= form_with model: @result_cash, local: true, class: "form-frame", local: true do |f| %>
+  <%= render "shared/error_messages", model: f.object %>
+  <h1>獲得商材</h1>
+    <div class="form">
+      <p>
+        <%= f.label :dmer, "dメル", class: "form-text" %>-
+        <%= f.label :aupay, "auPay", class: "form-text" %>-
+        <%= f.label :paypay, "PayPay", class: "form-text" %>-
+        <%= f.label :rakuten_pay, "楽天ペイ", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :dmer, class: "num-input" %>
+        <%= f.number_field :aupay, class: "num-input" %>
+        <%= f.number_field :paypay, class: "num-input" %>
+        <%= f.number_field :rakuten_pay, class: "num-input" %>
+      </p>
+    </div>
+  <h1>切り返し</h1>
+  <div class="form">
+      <p class="form-head">０１：どういうこと？</p>
+      <p>
+        <%= f.label :out_interview_01, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_01, "フル", class: "form-text" %>-
+        <%= f.label :out_get_01, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_01, class: "num-input" %>
+        <%= f.number_field :out_full_talk_01, class: "num-input" %>
+        <%= f.number_field :out_get_01, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">０２：君は誰？</p>
+      <p>
+        <%= f.label :out_interview_02, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_02, "フル", class: "form-text" %>-
+        <%= f.label :out_get_02, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_02, class: "num-input" %>
+        <%= f.number_field :out_full_talk_02, class: "num-input" %>
+        <%= f.number_field :out_get_02, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">０３：もらうだけ？</p>
+      <p>
+        <%= f.label :out_interview_03, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_03, "フル", class: "form-text" %>-
+        <%= f.label :out_get_03, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_03, class: "num-input" %>
+        <%= f.number_field :out_full_talk_03, class: "num-input" %>
+        <%= f.number_field :out_get_03, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">０４：PayPayのみ</p>
+      <p>
+        <%= f.label :out_interview_04, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_04, "フル", class: "form-text" %>-
+        <%= f.label :out_get_04, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_04, class: "num-input" %>
+        <%= f.number_field :out_full_talk_04, class: "num-input" %>
+        <%= f.number_field :out_get_04, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">０５：エアペイのみ</p>
+      <p>
+        <%= f.label :out_interview_05, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_05, "フル", class: "form-text" %>-
+        <%= f.label :out_get_05, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_05, class: "num-input" %>
+        <%= f.number_field :out_full_talk_05, class: "num-input" %>
+        <%= f.number_field :out_get_05, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">０６：カードのみ</p>
+      <p>
+        <%= f.label :out_interview_06, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_06, "フル", class: "form-text" %>-
+        <%= f.label :out_get_06, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_06, class: "num-input" %>
+        <%= f.number_field :out_full_talk_06, class: "num-input" %>
+        <%= f.number_field :out_get_06, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">０７：先延ばし</p>
+      <p>
+        <%= f.label :out_interview_07, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_07, "フル", class: "form-text" %>-
+        <%= f.label :out_get_07, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_07, class: "num-input" %>
+        <%= f.number_field :out_full_talk_07, class: "num-input" %>
+        <%= f.number_field :out_get_07, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">０８：現金のみ</p>
+      <p>
+        <%= f.label :out_interview_08, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_08, "フル", class: "form-text" %>-
+        <%= f.label :out_get_08, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_08, class: "num-input" %>
+        <%= f.number_field :out_full_talk_08, class: "num-input" %>
+        <%= f.number_field :out_get_08, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">０９：忙しい</p>
+      <p>
+        <%= f.label :out_interview_09, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_09, "フル", class: "form-text" %>-
+        <%= f.label :out_get_09, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_09, class: "num-input" %>
+        <%= f.number_field :out_full_talk_09, class: "num-input" %>
+        <%= f.number_field :out_get_09, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">１０：面倒くさい</p>
+      <p>
+        <%= f.label :out_interview_10, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_10, "フル", class: "form-text" %>-
+        <%= f.label :out_get_10, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_10, class: "num-input" %>
+        <%= f.number_field :out_full_talk_10, class: "num-input" %>
+        <%= f.number_field :out_get_10, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">１１：情報不足</p>
+      <p>
+        <%= f.label :out_interview_11, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_11, "フル", class: "form-text" %>-
+        <%= f.label :out_get_11, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_11, class: "num-input" %>
+        <%= f.number_field :out_full_talk_11, class: "num-input" %>
+        <%= f.number_field :out_get_11, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">１２：ペロ</p>
+      <p>
+        <%= f.label :out_interview_12, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_12, "フル", class: "form-text" %>-
+        <%= f.label :out_get_12, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_12, class: "num-input" %>
+        <%= f.number_field :out_full_talk_12, class: "num-input" %>
+        <%= f.number_field :out_get_12, class: "num-input" %>
+  </div>
+  <div class="form">
+      <p class="form-head">１３：その他</p>
+      <p>
+        <%= f.label :out_interview_13, "対面", class: "form-text" %>-
+        <%= f.label :out_full_talk_13, "フル", class: "form-text" %>-
+        <%= f.label :out_get_13, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_interview_13, class: "num-input" %>
+        <%= f.number_field :out_full_talk_13, class: "num-input" %>
+        <%= f.number_field :out_get_13, class: "num-input" %>
+  </div>
+ 
+  <div class="form-submit">
+    <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+  </div>
+  <% end %>
   </div>
 </div>

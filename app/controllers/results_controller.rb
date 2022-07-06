@@ -329,11 +329,13 @@ class ResultsController < ApplicationController
       :product,
     # 基準値
       # 前半
+      :first_total_visit,
       :first_visit,
       :first_interview,
       :first_full_talk, 
       :first_get,       
       # 後半 
+      :latter_total_visit,
       :latter_visit,     
       :latter_interview, 
       :latter_full_talk, 
@@ -360,6 +362,29 @@ class ResultsController < ApplicationController
       # その他・サービス
       :other_service_visit          ,
       :other_service_get    ,
+      # 時間別訪問
+      :visit10,
+      :visit11,
+      :visit12,
+      :visit13,
+      :visit14,
+      :visit15,
+      :visit16,
+      :visit17,
+      :visit18,
+      :visit19,
+      :visit20,
+      :get10,
+      :get11,
+      :get12,
+      :get13,
+      :get14,
+      :get15,
+      :get16,
+      :get17,
+      :get18,
+      :get19,
+      :get20,
     )
   end 
 end

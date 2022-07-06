@@ -29,6 +29,8 @@
       <%# /検索フォーム %>
       <hr>
       <% if @results.empty? %>
+
+
       <% if current_user.position_sub == "管理" %>
         <h2>利益表（基準値）インポート</h2>
         <%= form_with url: import_results_path do |f| %>
