@@ -181,6 +181,7 @@
   .date-tb {
     -ms-writing-mode : tb-lr;
     writing-mode : vertical-lr;
+    display: block;
   }
 
   .head-th {
@@ -200,7 +201,7 @@
   .date-td,.date-th{
     -ms-writing-mode : lr-tb;
     writing-mode : horizontal-tb;
-    white-space : nowrap;
+    // white-space : nowrap;
   }
 
   .total-td {
@@ -390,8 +391,9 @@
     .product-th {font-size: 8px; font-weight: bold;}
     h1 {font-size: 100%;}
     .link {font-size: 3px;}
-    // .date-th {font-size: 1px; padding: 10px;}
-    // .date-td {font-size: 1px; padding: 10px;}
+    .date-th,.date-td {font-size: 8px; padding: 10px; min-height: 3.6em;}
+    .total-th,.total-td {font-size: 8px; padding: 10px;}
+    
     .reset {width: 15vw;}
   
     table{
