@@ -92,34 +92,34 @@
         <tr>
         <%# カラム %>
           <th class="date-th" colspan="9" ><span class="date-span">日々結果</span></th>
-          <th class="date-th" colspan="5" >合計</th>
-          <th class="date-th" colspan="5" >前半</th>
-          <th class="date-th" colspan="5">後半</th>
-          <th class="date-th head-th" rowspan="2" >店舗別</th>
-          <th class="date-th" colspan="2" >喫茶・カフェ</th>
-          <th class="date-th" colspan="2" >その他飲食</th>
-          <th class="date-th" colspan="2" >車屋</th>
-          <th class="date-th" colspan="2" >その他小売</th>
-          <th class="date-th" colspan="2" >理容・美容</th>
-          <th class="date-th" colspan="2" >整体・鍼灸</th>
-          <th class="date-th" colspan="2" >その他サービス</th>
+          <th class="date-th" colspan="5" ><span class="date-span">合計</span></th>
+          <th class="date-th" colspan="5" ><span class="date-span">前半</span></th>
+          <th class="date-th" colspan="5"><span class="date-span">後半</span></th>
+          <th class="date-th head-th" rowspan="2" ><span class="date-span">店舗別</span></th>
+          <th class="date-th" colspan="2" ><span class="date-span">喫茶・カフェ</span></th>
+          <th class="date-th" colspan="2" ><span class="date-span">その他飲食</span></th>
+          <th class="date-th" colspan="2" ><span class="date-span">車屋</span></th>
+          <th class="date-th" colspan="2" ><span class="date-span">その他小売</span></th>
+          <th class="date-th" colspan="2" ><span class="date-span">理容・美容</span></th>
+          <th class="date-th" colspan="2" ><span class="date-span">整体・鍼灸</span></th>
+          <th class="date-th" colspan="2" ><span class="date-span">その他サービス</span></th>
         <%# キャッシュレス切り返し %>
           <% if @results.where(shift: "キャッシュレス新規").empty? %>
           <% else %>
-          <th class="date-th head-th" rowspan="2">キャッシュ切り返し</th>
-          <th class="date-th" colspan="3">どういうこと？</th>
-          <th class="date-th" colspan="3">君は誰？協会？</th>
-          <th class="date-th" colspan="3">もらうだけでいいの？</th>
-          <th class="date-th" colspan="3">PayPayのみ</th>
-          <th class="date-th" colspan="3">AirPayのみ</th>
-          <th class="date-th" colspan="3">カードのみ</th>
-          <th class="date-th" colspan="3">先延ばし</th>
-          <th class="date-th" colspan="3">忙しい</th>
-          <th class="date-th" colspan="3">現金のみ</th>
-          <th class="date-th" colspan="3">面倒くさい</th>
-          <th class="date-th" colspan="3">情報不足</th>
-          <th class="date-th" colspan="3">ペロ</th>
-          <th class="date-th" colspan="3">その他</th>
+          <th class="date-th head-th" rowspan="2"><span class="date-span">キャッシュ切り返し</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">どういうこと？</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">君は誰？協会？</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">もらうだけでいいの？</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">PayPayのみ</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">AirPayのみ</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">カードのみ</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">先延ばし</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">忙しい</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">現金のみ</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">面倒くさい</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">情報不足</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">ペロ</span></th>
+          <th class="date-th" colspan="3"><span class="date-span">その他</span></th>
           <% end %>
         <%# サミット切り返し %>
           <% if @results.where(shift: "サミット").empty? %>
@@ -154,42 +154,42 @@
         </tr>
         <tr >
         <%# 大枠基準値（見出し） %>
-            <th class="date-th">ID</th>
-            <th class="date-th">日付</th>
-            <th class="date-th">曜日</th>
-            <th class="date-th">予定シフト</th>
-            <th class="date-th">消化シフト</th>
-            <th class="date-th">帯同</th>
-            <th class="date-th">エリア</th>
-            <th class="date-th">営業予想売上</th>
-            <th class="date-th">売上</th>
-            <th class="date-th">訪問</th>
-            <th class="date-th">対応</th>
-            <th class="date-th">対面</th>
-            <th class="date-th">フル</th>
-            <th class="date-th">成約</th>
-            <th class="date-th">訪問</th>
-            <th class="date-th">対応</th>
-            <th class="date-th">対面</th>
-            <th class="date-th">フル</th>
-            <th class="date-th">成約</th>
-            <th class="date-th">訪問</th>
-            <th class="date-th">対応</th>
-            <th class="date-th">対面</th>
-            <th class="date-th">フル</th>
-            <th class="date-th">成約</th>
+            <th class="date-th"><span class="date-span">ID</span></th>
+            <th class="date-th"><span class="date-span">日付</span></th>
+            <th class="date-th"><span class="date-span">曜日</span></th>
+            <th class="date-th"><span class="date-span">予定シフト</span></th>
+            <th class="date-th"><span class="date-span">消化シフト</span></th>
+            <th class="date-th"><span class="date-span">帯同</span></th>
+            <th class="date-th"><span class="date-span">エリア</span></th>
+            <th class="date-th"><span class="date-span">営業予想売上</span></th>
+            <th class="date-th"><span class="date-span">売上</span></th>
+            <th class="date-th"><span class="date-span">訪問</span></th>
+            <th class="date-th"><span class="date-span">対応</span></th>
+            <th class="date-th"><span class="date-span">対面</span></th>
+            <th class="date-th"><span class="date-span">フル</span></th>
+            <th class="date-th"><span class="date-span">成約</span></th>
+            <th class="date-th"><span class="date-span">訪問</span></th>
+            <th class="date-th"><span class="date-span">対応</span></th>
+            <th class="date-th"><span class="date-span">対面</span></th>
+            <th class="date-th"><span class="date-span">フル</span></th>
+            <th class="date-th"><span class="date-span">成約</span></th>
+            <th class="date-th"><span class="date-span">訪問</span></th>
+            <th class="date-th"><span class="date-span">対応</span></th>
+            <th class="date-th"><span class="date-span">対面</span></th>
+            <th class="date-th"><span class="date-span">フル</span></th>
+            <th class="date-th"><span class="date-span">成約</span></th>
         <%# 店舗別基準値（見出し） %>
           <% 7.times do %>
-          <th class="date-th">訪問数</th>
-          <th class="date-th">獲得数</th>
+          <th class="date-th"><span class="date-span">訪問数</span></th>
+          <th class="date-th"><span class="date-span">獲得数</span></th>
           <% end %>
         <%# キャッシュレス切り返し（見出し） %>
           <% if @results.where(shift: "キャッシュレス新規").empty? %>
           <% else %>
             <% 13.times do %>
             <th class="date-th" style="border-left: 1px solid rgb(214, 219, 235);">対面数</th>
-            <th class="date-th">フル数</th>
-            <th class="date-th">成約数</th>
+            <th class="date-th"><span class="date-span">フル数</span></th>
+            <th class="date-th"><span class="date-span">成約数</span></th>
             <% end %>
           <% end %>
         <%# サミット切り返し（見出し） %>
@@ -219,21 +219,21 @@
         <tr>
           <th class="date-th"><%= result.id %></th>
           <%#日付%>
-          <th class="date-th"><%= result.date.month %>月<%= result.date.day %>日</th>
-          <th class="date-th"><%= days[result.date.wday] %></th>
+          <th class="date-th"><span class="date-span"><%= result.date.month %>月<%= result.date.day %>日</span></th>
+          <th class="date-th"><span class="date-span"><%= days[result.date.wday] %></span></th>
           <%# その日の予定シフト %>
           <% 
             shift_date_plan = 
               Shift.where(user_id: result.user_id).where(start_time: result.date).first.shift rescue "未申請"
           %>
-          <td class="date-td"><%= shift_date_plan  %></td>
+          <td class="date-td"><span class="date-span"><%= shift_date_plan  %></span></td>
           <% if shift_date_plan == result.shift %>
-          <td class="date-td" style="color:blue;"><%= result.shift %></td>
+          <td class="date-td" style="color:blue;"><span class="date-span"><%= result.shift %></span></td>
           <% else %>
-          <td class="date-td" style="color:red;"><%= result.shift %></td>
+          <td class="date-td" style="color:red;"><span class="date-span"><%= result.shift %></span></td>
           <% end %>
-          <td class="date-td"><%= result.ojt.name rescue "" %></td>
-          <td class="date-td"><%= result.area %></td>
+          <td class="date-td"><span class="date-span"><%= result.ojt.name rescue "" %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.area %></span></td>
           <%# その日の売上 %>
             <% 
             date_profit =
@@ -247,55 +247,55 @@
             %>
           <% if result.profit.present? %>
             <% if result.profit == date_profit.to_i %>
-            <td class="date-td" style="color:blue;"><%= result.profit.to_s(:delimited) %></td>
+            <td class="date-td" style="color:blue;"><span class="date-span"><%= result.profit.to_s(:delimited) %></span></td>
             <% else %>
-            <td class="date-td" style="color:red;"><%= result.profit.to_s(:delimited) %></td>
+            <td class="date-td" style="color:red;"><span class="date-span"><%= result.profit.to_s(:delimited) %></span></td>
             <% end %>
           <% else %>
-            <td class="date-td"><%= result.profit.to_s(:delimited) rescue "未入力" %></td>
+            <td class="date-td"><span class="date-span"><%= result.profit.to_s(:delimited) rescue "未入力" %></span></td>
           <% end %>
           
-          <td class="date-td"><%= date_profit.round().to_s(:delimited) %></td>
-          <td class="date-td"><%= result.first_total_visit + result.latter_total_visit rescue "NaN" %></td>
-          <td class="date-td"><%= result.first_visit + result.latter_visit rescue "NaN" %></td>
-          <td class="date-td"><%= result.first_interview + result.latter_interview rescue "NaN" %></td>
-          <td class="date-td"><%= result.first_full_talk + result.latter_full_talk rescue "NaN" %></td>
-          <td class="date-td"><%= result.first_get + result.latter_get rescue "NaN" %></td>
+          <td class="date-td"><span class="date-span"><%= date_profit.round().to_s(:delimited) %></td>
+          <td class="date-td"><span class="date-span"><%= result.first_total_visit + result.latter_total_visit rescue "NaN" %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.first_visit + result.latter_visit rescue "NaN" %></td>
+          <td class="date-td"><span class="date-span"><%= result.first_interview + result.latter_interview rescue "NaN" %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.first_full_talk + result.latter_full_talk rescue "NaN" %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.first_get + result.latter_get rescue "NaN" %></td>
         <%#前半%>
-          <td class="date-td"><%= result.first_total_visit rescue "NaN" %></td>
-          <td class="date-td"><%= result.first_visit rescue "NaN" %></td>
-          <td class="date-td"><%= result.first_interview rescue "NaN" %></td>
-          <td class="date-td"><%= result.first_full_talk rescue "NaN" %></td>
-          <td class="date-td"><%= result.first_get rescue "NaN" %></td>
+          <td class="date-td"><span class="date-span"><%= result.first_total_visit rescue "NaN" %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.first_visit rescue "NaN" %></td>
+          <td class="date-td"><span class="date-span"><%= result.first_interview rescue "NaN" %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.first_full_talk rescue "NaN" %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.first_get rescue "NaN" %></td>
         <%# 後半 %>
-          <td class="date-td"><%= result.latter_total_visit rescue "NaN" %></td>
-          <td class="date-td"><%= result.latter_visit rescue "NaN" %></td>
-          <td class="date-td"><%= result.latter_interview rescue "NaN" %></td>
-          <td class="date-td"><%= result.latter_full_talk rescue "NaN" %></td>
-          <td class="date-td"><%= result.latter_get rescue "NaN" %></td>
+          <td class="date-td"><span class="date-span"><%= result.latter_total_visit rescue "NaN" %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.latter_visit rescue "NaN" %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.latter_interview rescue "NaN" %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.latter_full_talk rescue "NaN" %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.latter_get rescue "NaN" %></span></td>
         <%# 店舗別基準値(値) %>
           <th class="th-blank"></th>
           <%# 喫茶・カフェ %>
-          <td class="date-td"><%= result.cafe_visit %></td>
-          <td class="date-td"><%= result.cafe_get %></td>
+          <td class="date-td"><span class="date-span"><%= result.cafe_visit %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.cafe_get %></span></td>
           <%#その他飲食%>
-          <td class="date-td"><%= result.other_food_visit %></td>
-          <td class="date-td"><%= result.other_food_get %></td>
+          <td class="date-td"><span class="date-span"><%= result.other_food_visit %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.other_food_get %></span></td>
           <%#車屋%>
-          <td class="date-td"><%= result.car_visit %></td>
-          <td class="date-td"><%= result.car_get %></td>
+          <td class="date-td"><span class="date-span"><%= result.car_visit %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.car_get %></span></td>
           <%#その他小売%>
-          <td class="date-td"><%= result.other_retail_visit %></td>
-          <td class="date-td"><%= result.other_retail_get %></td>
+          <td class="date-td"><span class="date-span"><%= result.other_retail_visit %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.other_retail_get %></span></td>
           <%#理容・美容%>
-          <td class="date-td"><%= result.hair_salon_visit %></td>
-          <td class="date-td"><%= result.hair_salon_get %></td>
+          <td class="date-td"><span class="date-span"><%= result.hair_salon_visit %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.hair_salon_get %></span></td>
           <%#整体・鍼灸%>
-          <td class="date-td"><%= result.manipulative_visit %></td>
-          <td class="date-td"><%= result.manipulative_get %></td>
+          <td class="date-td"><span class="date-span"><%= result.manipulative_visit %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.manipulative_get %></span></td>
           <%#その他・サービス%>
-          <td class="date-td"><%= result.other_service_visit %></td>
-          <td class="date-td"><%= result.other_service_get %></td>
+          <td class="date-td"><span class="date-span"><%= result.other_service_visit %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.other_service_get %></span></td>
       <%# キャッシュレス切り返し %>
         <% if @results.where(shift: "キャッシュレス新規").empty? %>
         <% else %>
@@ -307,57 +307,57 @@
           <% else %>
           <th class="th-blank"></th>
           <%#どういうこと？%>
-          <td class="date-td"><%= result.result_cash.out_interview_01 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_01 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_01 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_01 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_01 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_01 %></span></td>
           <%#君は誰？%>
-          <td class="date-td"><%= result.result_cash.out_interview_02 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_02 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_02 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_02 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_02 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_02 %></span></td>
           <%#もうらだけでいいの？%>
-          <td class="date-td"><%= result.result_cash.out_interview_03 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_03 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_03 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_03 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_03 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_03 %></span></td>
           <%#PayPayのみ%>
-          <td class="date-td"><%= result.result_cash.out_interview_04 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_04 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_04 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_04 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_04 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_04 %></span></td>
           <%#AirPayのみ%>
-          <td class="date-td"><%= result.result_cash.out_interview_05 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_05 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_05 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_05 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_05 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_05 %></span></td>
           <%#カードのみ%>
-          <td class="date-td"><%= result.result_cash.out_interview_06 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_06 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_06 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_06 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_06 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_06 %></span></td>
           <%#先延ばし%>
-          <td class="date-td"><%= result.result_cash.out_interview_07 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_07 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_07 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_07 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_07 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_07 %></span></td>
           <%#現金のみ%>
-          <td class="date-td"><%= result.result_cash.out_interview_08 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_08 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_08 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_08 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_08 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_08 %></span></td>
           <%#忙しい%>
-          <td class="date-td"><%= result.result_cash.out_interview_09 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_09 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_09 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_09 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_09 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_09 %></span></td>
           <%#面倒くさい%>
-          <td class="date-td"><%= result.result_cash.out_interview_10 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_10 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_10 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_10 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_10 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_10 %></span></td>
           <%#情報不足%>
-          <td class="date-td"><%= result.result_cash.out_interview_11 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_11 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_11 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_11 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_11 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_11 %></span></td>
           <%#ペロ%>
-          <td class="date-td"><%= result.result_cash.out_interview_12 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_12 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_12 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_12 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_12 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_12 %></span></td>
           <%#その他%>
-          <td class="date-td"><%= result.result_cash.out_interview_13 %></td>
-          <td class="date-td"><%= result.result_cash.out_full_talk_13 %></td>
-          <td class="date-td"><%= result.result_cash.out_get_13 %></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_13 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_13 %></span></td>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_get_13 %></td>
           <% end %>
         <% end %>
       <%# 楽天フェムト切り返し %>
@@ -492,15 +492,15 @@
             auPay決済<%= aupay_slmt_date_len %><br>
           <% end %>
         </td>
-        <td class="date-td"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></td>
+        <td class="date-td"><span class="date-span"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></span></td>
         <% if result.shift == "キャッシュレス新規" || result.shift == "キャッシュレス決済" %>
-          <td class="date-td" ><%= link_to "切り返し編集", edit_result_cash_path(result.result_cash.id),class: "link" rescue "error" %></td>
+          <td class="date-td" ><span class="date-span"><%= link_to "切り返し編集", edit_result_cash_path(result.result_cash.id),class: "link" rescue "error" %></span></td>
         <% elsif result.shift == "楽天フェムト新規" %>
-        <td ><%= link_to "切り返し編集", edit_result_casa_path(result.result_casa.id),class: "link" %></td>
+        <td ><span class="date-span"><%= link_to "切り返し編集", edit_result_casa_path(result.result_casa.id),class: "link" %></span></td>
         <% else %>
         <td class="total-td"></td>
         <% end %>
-        <td class="date-td"><%= link_to "削除", result_path(result.id),method: :delete,data: {confirm: "削除してもよろしいですか？"},class: "link" %></td>
+        <td class="date-td"><span class="date-span"><%= link_to "削除", result_path(result.id),method: :delete,data: {confirm: "削除してもよろしいですか？"},class: "link" %></span></td>
         </tr>
       <% end %>
       </tbody>
