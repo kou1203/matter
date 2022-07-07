@@ -1,0 +1,7 @@
+<script>
+  window.users=<%= @users.to_json.html_safe %>;
+  window.shift=<%= @shift.to_json.html_safe %>;
+  window.results=<%= @results.to_json.html_safe %>;
+</script>
+<%= javascript_pack_tag 'person_profit_vue' %>
+<%= stylesheet_pack_tag 'person_profit_vue' %>

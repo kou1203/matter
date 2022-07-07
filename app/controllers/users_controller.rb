@@ -98,12 +98,68 @@ class UsersController < ApplicationController
         .where(user_id: @user.id)
       )
     # 利益表
+
     @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
     @maximum_date_cash = @month.beginning_of_month.since(24.days)
     @results = Result.where(user_id: @user.id).where(date: @minimum_date_cash..@maximum_date_cash).order(:date)
     @results_date = @results.select(:date, :user_id, :shift,:profit)
+    @results_date_min = @results_date.minimum(:date)
+    @results_date_max = @results_date.maximum(:date)
     @results_out = @results.includes(:result_cash).select(:result_cash_id)
-      
+    # 予定シフト変数 
+      @result_shift = 
+        @shift.where(start_time: @results_date_min..@results_date_min.next_month.ago(1.days))
+      @result_shift_min = @result_shift.minimum(:start_time)
+      @result_shift_max = @result_shift.maximum(:start_time)
+
+      @new_shift = @result_shift.where(shift: "キャッシュレス新規").length 
+      @settlement_shift = @result_shift.where(shift: "キャッシュレス決済").length 
+      @summit_shift = @result_shift.where(shift: "サミット").length 
+      @casa_shift = @result_shift.where(shift: "楽天フェムト新規").length 
+      @casa_put_shift= @result_shift.where(shift: "楽天フェムト設置").length 
+      @ojt_shift = @result_shift.where(shift: "帯同").length 
+      @house_work_shift = @result_shift.where(shift: "内勤").length
+      # 消化シフト変数
+      @digestion_new = @results_date.where(shift: "キャッシュレス新規").length
+      @digestion_settlement = @results_date.where(shift: "キャッシュレス決済").length
+      @digestion_summit = @results_date.where(shift: "サミット").length
+      @digestion_casa = @results_date.where(shift: "楽天フェムト新規").length
+      @digestion_casa_put = @results_date.where(shift: "楽天フェムト設置").length
+      @digestion_ojt = @results_date.where(shift: "帯同").length
+      @digestion_house_work = @results_date.where(shift: "内勤").length
+      #  合計変数 
+       @sum_visit = @results.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit") 
+       @sum_interview = @results.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview") 
+       @sum_full_talk = @results.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") 
+       @sum_get = @results.where(shift: "キャッシュレス新規").sum("first_get + latter_get") 
+      #  前半変数 
+       @sum_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_visit) 
+       @sum_interview_f = @results.where(shift: "キャッシュレス新規").sum(:first_interview) 
+       @sum_full_talk_f = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk) 
+       @sum_get_f = @results.where(shift: "キャッシュレス新規").sum(:first_get) 
+      # 後半変数 
+       @sum_visit_l = @results.where(shift: "キャッシュレス新規").sum(:latter_visit) 
+       @sum_interview_l = @results.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+       @sum_full_talk_l = @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+       @sum_get_l = @results.where(shift: "キャッシュレス新規").sum(:latter_get) 
+       # 店舗別合計変数 
+        @cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit) 
+        @cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get) 
+        @other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit) 
+        @other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get) 
+        @car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit) 
+        @car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get) 
+        @other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit) 
+        @other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get) 
+        @hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit) 
+        @hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get) 
+        @manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit) 
+        @manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get) 
+        @other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit) 
+        @other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get) 
+       # 全店舗合計変数 
+        @store_visit_sum = @cafe_visit_sum +  @other_food_visit_sum + @car_visit_sum + @other_retail_visit_sum + @hair_salon_visit_sum + @manipulative_visit_sum + @other_service_visit_sum 
+        @store_get_sum = @cafe_get_sum +  @other_food_get_sum + @car_get_sum + @other_retail_get_sum + @hair_salon_get_sum + @manipulative_get_sum + @other_service_get_sum 
     if @results.present?
       # 週毎の期間
       days = ["日", "月", "火", "水", "木", "金", "土"]

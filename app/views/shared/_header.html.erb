@@ -1,6 +1,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <header>
     <div class="sign-bar">
+    <% if current_user.name == "管理用" %>
+      <%= link_to "製品テストページ", product_tests_path, class: "sign-text" %>
+    <% end %>
       <%= link_to "< Home >", root_path, class: "sign-text" %>
     <% if user_signed_in? %>
       <%= link_to current_user.name, user_path(current_user.id), class: "sign-text" %><span class="sign-text">/</span>

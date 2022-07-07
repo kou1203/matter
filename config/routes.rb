@@ -131,6 +131,7 @@ Rails.application.routes.draw do
   resources :costs 
 
   resources :product_checkers, only: [:index]
+  resources :product_tests, only: [:index]
   
   resources :result_sales, only: [:index] do 
     collection { post :import }
