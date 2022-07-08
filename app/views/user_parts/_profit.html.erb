@@ -313,7 +313,7 @@
         <% if @results.where(shift: "キャッシュレス新規").empty? %>
         <% else %>
           <% if result.result_cash.nil? %>
-            <td class="td-blank"></td>
+            <th class="th-blank"></th>
             <% 39.times do %>
             <td class="td-blank"></td>
             <% end %>
@@ -1667,7 +1667,7 @@
         <th class="total-th">不備・NG</th>
         <th class="total-th">複数追加</th>
         <th class="total-th">獲得数</th>
-        <th class="total-th"><%= @results_date.minimum(:date).next_month.month %>月獲得数/総獲得数</th>
+        <th class="total-th">獲得数</th>
         <th class="total-th">獲得数</th>
         <th class="total-th">不備・NG</th>
         <th class="total-th">複数追加</th>
