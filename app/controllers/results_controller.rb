@@ -1,7 +1,7 @@
 class ResultsController < ApplicationController
   before_action :authenticate_user!
   def index 
-
+    
     @dmers = 
       Dmer.eager_load(:store_prop).select("dmers.id,dmers.user_id,dmers.store_prop_id")
       .where(store_prop: {head_store: nil})

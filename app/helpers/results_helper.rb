@@ -67,7 +67,7 @@ module ResultsHelper
 
     def share_period(product, date)
       return product
-        .where(share: date.maximum(:date).beginning_of_month...date.maximum(:date).end_of_month)
+        .where(share: date.minimum(:date)...date.maximum(:date))
     end
 
   # 決済

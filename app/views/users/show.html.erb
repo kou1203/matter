@@ -26,6 +26,10 @@
       <%= render "user_parts/deficiency" %>
     </div>
     <div class="main" id="result-page">
+      <% if @result_shift.present? && @results_date.present? %>
       <%= render "user_parts/profit" %>
+      <% else %>
+      <p class="caution-text">予定シフト、もしくは終着が入力されておりません</p>
+      <% end %>
     </div>
   </div><%# users/showスコープ末尾 %>

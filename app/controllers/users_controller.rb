@@ -108,9 +108,11 @@ class UsersController < ApplicationController
     @results_out = @results.includes(:result_cash).select(:result_cash_id)
     # 予定シフト変数 
       @result_shift = 
-        @shift.where(start_time: @results_date_min..@results_date_min.next_month.ago(1.days))
+        @shift.where(start_time: @results_date_min..@results_date_min.next_month.ago(1.days)) rescue nil
+      if @result_shift.blank?
+      else
       @result_shift_min = @result_shift.minimum(:start_time)
-      @result_shift_max = @result_shift.maximum(:start_time)
+      @result_shift_max = @result_shift.maximum(:start_time) 
 
       @new_shift = @result_shift.where(shift: "キャッシュレス新規").length 
       @settlement_shift = @result_shift.where(shift: "キャッシュレス決済").length 
@@ -119,6 +121,7 @@ class UsersController < ApplicationController
       @casa_put_shift= @result_shift.where(shift: "楽天フェムト設置").length 
       @ojt_shift = @result_shift.where(shift: "帯同").length 
       @house_work_shift = @result_shift.where(shift: "内勤").length
+      end
       # 消化シフト変数
       @digestion_new = @results_date.where(shift: "キャッシュレス新規").length
       @digestion_settlement = @results_date.where(shift: "キャッシュレス決済").length
@@ -242,12 +245,12 @@ class UsersController < ApplicationController
       #  営業打ち込み売上
        @sales_new_profit_sum = @results.where(shift: "キャッシュレス新規").sum(:profit)
        @sales_new_profit_ave = @results.where(shift: "キャッシュレス新規").average(:profit)
-       @sales_new_profit_fin = @sales_new_profit_ave * @new_shift
+       @sales_new_profit_fin = @sales_new_profit_ave * @new_shift rescue 0
        @sales_slmt_profit_sum = @results.where(shift: "キャッシュレス決済").sum(:profit)
        @sales_slmt_profit_ave = @results.where(shift: "キャッシュレス決済").average(:profit)
-       @sales_slmt_profit_fin = @sales_slmt_profit_sum * @settlement_shift
+       @sales_slmt_profit_fin = @sales_slmt_profit_sum * @settlement_shift rescue 0
        @sales_profit_fin = @sales_new_profit_fin + @sales_slmt_profit_fin
-       @sales_profit_ave = @sales_profit_fin / (@new_shift + @settlement_shift)
+       @sales_profit_ave = @sales_profit_fin / (@new_shift + @settlement_shift) rescue 0
       #  dメル
        @dmer_user = 
         Dmer.includes(:store_prop).where(user_id: @results.first.user_id )
@@ -255,9 +258,9 @@ class UsersController < ApplicationController
         @dmer_uq = 
         this_period(@dmer_user,@results_date)
         .where(store_prop: {head_store: nil}).select(:valuation_new, :industry_status, :user_id, :store_prop_id)
-        @dmer_db = 
+        @dmer_db_data = 
         share_period(@dmer_user,@results_date).where.not(store_prop: {head_store: nil})
-        .where.not(industry_status: "×").where.not(industry_status: "NG")
+        .where.not(industry_status: "×").where.not(industry_status: "NG").where.not(industry_status: "要確認")
         .where(status: "審査OK").select(:valuation_new, :industry_status, :user_id, :store_prop_id)
         @dmer_def = dmer_def(@dmer_uq, @results_date).select(:valuation_new, :industry_status, :user_id, :store_prop_id)
         @dmer_inc = 
@@ -272,19 +275,23 @@ class UsersController < ApplicationController
         @dmer_slmter = 
           Dmer.where(settlementer_id: @results.first.user_id)
         @dmer_slmt = 
-          if @results_date.maximum(:date).day == 25
-          slmt_this_period(@dmer_slmter, @results_date)
-          .where.not(industry_status: "×")
-          .where.not(industry_status: "NG")
-          .or(slmt_this_period(@dmer_slmter, @results_date)
-          .where(industry_status: nil)).select(:valuation_settlement, :industry_status, :user_id, :store_prop_id)  
-        else
         slmt_period(@dmer_slmter, @results_date)
         .where.not(industry_status: "×")
         .where.not(industry_status: "NG")
-        .or(slmt_period(@dmer_slmter, @results_date)
-        .where(industry_status: nil)).select(:valuation_settlement, :industry_status, :user_id, :store_prop_id)  
-        end
+        .where.not(industry_status: "要確認")
+        .select(:valuation_settlement, :industry_status, :user_id, :store_prop_id)
+        @dmer_ok =
+          @dmer_slmter.where(status: "審査OK")
+          .where.not(industry_status: "×")
+          .where.not(industry_status: "NG")
+          .where.not(industry_status: "要確認")
+          .or(
+            @dmer_slmter.where(industry_status: nil)
+          )
+        @dmer_slmt_def = @dmer_ok.where(picture: @results_date_min..@results_date_max).where(settlement: nil).where("settlement_deadline > ?",Date.today)
+        @dmer_pic_def = @dmer_ok.where(settlement: @results_date_min..@results_date_max).where(picture: nil).where("settlement_deadline > ?",Date.today)
+
+        @dmer_pic_def = @dmer_slmt.where(picture: nil)
         @dmer_slmt2nd_get = 
           slmt2nd_get(@dmer_slmter,@results_date)
           .select(:valuation_second_settlement, :industry_status, :user_id, :store_prop_id)
@@ -294,7 +301,7 @@ class UsersController < ApplicationController
         # 決済対象 
         @dmers_slmt_target = 
           slmt_dead_line(@dmer_user,@results_date)
-          .where.not(industry_status: "NG").where.not(industry_status: "×")
+          .where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認")
           .or(slmt_dead_line(@dmer_slmter, @results_date)
           .where(industry_status: nil)).select(:valuation_settlement)
         @dmer_slmt2nd_target = slmt2nd_dead_line(@dmer_user,@results_date).select(:valuation_second_settlement)
@@ -315,12 +322,10 @@ class UsersController < ApplicationController
       @aupay_slmter = 
         Aupay.where(settlementer_id: @results.first.user_id)
         .select(:settlementer_id, :valuation_settlement)
-      @aupay_slmt = 
-        if @results_date.maximum(:date).day == 25
-        slmt_this_period(@aupay_slmter,@results_date) 
-        else
-        slmt_period(@aupay_slmter,@results_date) 
-        end
+      @aupay_ok = @aupay_slmter.where(status: "審査通過")
+      @aupay_slmt = slmt_period(@aupay_slmter,@results_date) 
+      @aupay_slmt_def = @aupay_ok.where(picture: @results_date_min..@results_date_max).where(settlement: nil).where("settlement_deadline > ?",Date.today)
+      @aupay_pic_def = @aupay_ok.where(settlement: @results_date_min..@results_date_max).where(picture: nil).where("settlement_deadline > ?",Date.today)
       @aupay_slmt_target = slmt_dead_line(@aupay_user, @results_date).select(:valuation_settlement)
       # paypay
       @paypay_user = 
