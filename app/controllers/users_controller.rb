@@ -160,6 +160,61 @@ class UsersController < ApplicationController
        # 全店舗合計変数 
         @store_visit_sum = @cafe_visit_sum +  @other_food_visit_sum + @car_visit_sum + @other_retail_visit_sum + @hair_salon_visit_sum + @manipulative_visit_sum + @other_service_visit_sum 
         @store_get_sum = @cafe_get_sum +  @other_food_get_sum + @car_get_sum + @other_retail_get_sum + @hair_salon_get_sum + @manipulative_get_sum + @other_service_get_sum 
+      # 時間別基準値合計
+        @visit10_sum = @results.sum(:visit10)
+        @visit10_ave = @results.average(:visit10)
+        @get10_sum = @results.sum(:get10)
+        @get10_ave = @results.average(:get10)
+
+        @visit11_sum = @results.sum(:visit11)
+        @visit11_ave = @results.average(:visit11)
+        @get11_sum = @results.sum(:get11)
+        @get11_ave = @results.average(:get11)
+
+        @visit12_sum = @results.sum(:visit12)
+        @visit12_ave = @results.average(:visit12)
+        @get12_sum = @results.sum(:get12)
+        @get12_ave = @results.average(:get12)
+
+        @visit13_sum = @results.sum(:visit13)
+        @visit13_ave = @results.average(:visit13)
+        @get13_sum = @results.sum(:get13)
+        @get13_ave = @results.average(:get13)
+
+        @visit14_sum = @results.sum(:visit14)
+        @visit14_ave = @results.average(:visit14)
+        @get14_sum = @results.sum(:get14)
+        @get14_ave = @results.average(:get14)
+
+        @visit15_sum = @results.sum(:visit15)
+        @visit15_ave = @results.average(:visit15)
+        @get15_sum = @results.sum(:get15)
+        @get15_ave = @results.average(:get15)
+
+        @visit16_sum = @results.sum(:visit16)
+        @visit16_ave = @results.average(:visit16)
+        @get16_sum = @results.sum(:get16)
+        @get16_ave = @results.average(:get16)
+
+        @visit17_sum = @results.sum(:visit17)
+        @visit17_ave = @results.average(:visit17)
+        @get17_sum = @results.sum(:get17)
+        @get17_ave = @results.average(:get17)
+
+        @visit18_sum = @results.sum(:visit18)
+        @visit18_ave = @results.average(:visit18)
+        @get18_sum = @results.sum(:get18)
+        @get18_ave = @results.average(:get18)
+
+        @visit19_sum = @results.sum(:visit19)
+        @visit19_ave = @results.average(:visit19)
+        @get19_sum = @results.sum(:get19)
+        @get19_ave = @results.average(:get19)
+
+        @time_visit_sum = [@visit10_sum,@visit11_sum,@visit12_sum,@visit13_sum,@visit14_sum,@visit15_sum,@visit16_sum,@visit17_sum,@visit18_sum,@visit19_sum]
+        @time_visit_ave = [@visit10_ave,@visit11_ave,@visit12_ave,@visit13_ave,@visit14_ave,@visit15_ave,@visit16_ave,@visit17_ave,@visit18_ave,@visit19_ave]
+        @time_get_sum = [@get10_sum,@get11_sum,@get12_sum,@get13_sum,@get14_sum,@get15_sum,@get16_sum,@get17_sum,@get18_sum,@get19_sum]
+        @time_get_ave = [@get10_ave,@get11_ave,@get12_ave,@get13_ave,@get14_ave,@get15_ave,@get16_ave,@get17_ave,@get18_ave,@get19_ave]
     if @results.present?
       # 週毎の期間
       days = ["日", "月", "火", "水", "木", "金", "土"]
@@ -184,6 +239,11 @@ class UsersController < ApplicationController
         @results_week4 = Result.where(user_id: @user.id).where(date: (week1+21)..(week1+27))
         @results_week5 = Result.where(user_id: @user.id).where(date: (week1+28)..(week1+34))
        end
+      #  営業打ち込み売上
+       @sales_new_profit_sum = @results.where(shift: "キャッシュレス新規").sum(:profit)
+       @sales_new_profit_ave = @results.where(shift: "キャッシュレス新規").average(:profit)
+       @sales_slmt_profit_sum = @results.where(shift: "キャッシュレス決済").sum(:profit)
+       @sales_slmt_profit_ave = @results.where(shift: "キャッシュレス決済").average(:profit)
       #  dメル
        @dmer_user = 
         Dmer.includes(:store_prop).where(user_id: @results.first.user_id )

@@ -148,6 +148,17 @@
           <th colspan="3">０８：ペロ</th>
           <th colspan="3">０９：その他</th>
           <% end %>
+          <th class="date-th head-th" rowspan="2"><span class="date-span">時間別基準値</span></th>
+          <th class="date-th " colspan="2"><span class="date-span">10時</span></th>
+          <th class="date-th " colspan="2"><span class="date-span">11時</span></th>
+          <th class="date-th " colspan="2"><span class="date-span">12時</span></th>
+          <th class="date-th " colspan="2"><span class="date-span">13時</span></th>
+          <th class="date-th " colspan="2"><span class="date-span">14時</span></th>
+          <th class="date-th " colspan="2"><span class="date-span">15時</span></th>
+          <th class="date-th " colspan="2"><span class="date-span">16時</span></th>
+          <th class="date-th " colspan="2"><span class="date-span">17時</span></th>
+          <th class="date-th " colspan="2"><span class="date-span">18時</span></th>
+          <th class="date-th " colspan="2"><span class="date-span">19時以降</span></th>
           <th class="date-th" rowspan="2"><span class="date-span">獲得商材</span></th>
           <th class="date-th" colspan="2" rowspan="2"><span class="date-span">編集</span></th>
           <th class="date-th" rowspan="2"><span class="date-span">削除</span></th>
@@ -187,10 +198,14 @@
           <% if @results.where(shift: "キャッシュレス新規").empty? %>
           <% else %>
             <% 13.times do %>
-            <th class="date-th" style="border-left: 1px solid rgb(214, 219, 235);">対面数</th>
+            <th class="date-th" style="border-left: 1px solid rgb(214, 219, 235);"><span class="date-span">対面数<span class="date-span"></th>
             <th class="date-th"><span class="date-span">フル数</span></th>
             <th class="date-th"><span class="date-span">成約数</span></th>
             <% end %>
+          <% end %>
+          <% 10.times do %><%# 時間別基準値 %>
+            <th class="date-th"><span class="date-span">訪問</span></th>
+            <th class="date-th"><span class="date-span">成約</span></th>
           <% end %>
         <%# サミット切り返し（見出し） %>
           <% if @results.where(shift: "サミット").empty? %>
@@ -409,6 +424,69 @@
           <td ><%= casa_out.out_get_09 %></td>
           <% end %>
         <% end %>
+      <%# 時間別基準値 %>
+        <th class="blank-th"></th>
+        <td class="date-td"><span class="date-span">
+          <%= result.visit10 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.get10 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.visit11 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.get11 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.visit12 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.get12 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.visit13 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.get13 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.visit14 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.get14 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.visit15 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.get15 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.visit16 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.get16 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.visit17 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.get17 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.visit18 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.get18 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.visit19 %>
+        </span></td>
+        <td class="date-td"><span class="date-span">
+          <%= result.get19 %>
+        </span></td>
+      <%# 時間別基準値 %>
       <%# 獲得商材 %>
         <% dmer_uq_user = @dmer_user.where(store_prop: {head_store: nil}) %>
         <% 
@@ -515,6 +593,7 @@
     <% else %>
     <h2 class="shift-h2">予定シフト：<%= @result_shift_min.strftime('%Y-%m-%d') %>（<%= days[@result_shift_min.wday] %>）〜<%= @result_shift_max.strftime('%Y-%m-%d') %>（<%= days[@result_shift_max.wday] %>）</h2>
     <% end %>
+    <p class="caution-text">※売上は営業予想売上を参照しています。</p>
     <table>
       <tr>
         <th class="date-th">シフト（内訳）</th>
@@ -530,18 +609,18 @@
         <td class="date-td"><%= @new_shift %></td>
         <td class="date-td"><%= @digestion_new %></td>
         <td class="date-td"><%= @new_shift - @digestion_new %></td>
-        <td class="date-td"><%= sum_profit_new.to_s(:delimited) %></td>
-        <td class="date-td"><%= ave_profit_new.round().to_s(:delimited) rescue "測定不可" %></td>
-        <td class="date-td"><%= (ave_profit_new * @new_shift).to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= @sales_new_profit_sum.to_s(:delimited) %></td>
+        <td class="date-td"><%= @sales_new_profit_ave.round().to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= (@sales_new_profit_ave * @new_shift).round().to_s(:delimited) rescue "測定不可" %></td>
       </tr>
       <tr>
         <td class="date-td">キャッシュレス決済</td>
         <td class="date-td"><%= @settlement_shift %></td>
         <td class="date-td"><%= @digestion_settlement %></td>
         <td class="date-td"><%= @settlement_shift - @digestion_settlement %></td>
-        <td class="date-td"><%= sum_profit_slmt.to_s(:delimited) %></td>
-        <td class="date-td"><%= ave_profit_slmt.round().to_s(:delimited) rescue "測定不可" %></td>
-        <td class="date-td"><%= (ave_profit_slmt * @settlement_shift).to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= @sales_slmt_profit_sum.to_s(:delimited) %></td>
+        <td class="date-td"><%= @sales_slmt_profit_ave.round().to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= (@sales_slmt_profit_sum * @settlement_shift).to_s(:delimited) rescue "測定不可" %></td>
       </tr>
       <tr>
         <td class="date-td">サミット</td>
@@ -593,8 +672,8 @@
         <td class="date-td"><%= shift_sum = @new_shift + @settlement_shift + @summit_shift + @casa_shift + @casa_put_shift + @ojt_shift + @house_work_shift %></td>
             <td class="date-td"><%= digestion_sum = @digestion_new + @digestion_settlement + @digestion_summit + @digestion_casa + @digestion_casa_put + @digestion_ojt + @digestion_house_work %></td>
         <td class="date-td"><%= shift_sum - digestion_sum %></td>
-        <td class="date-td"><%= (sum_profit_new + sum_profit_slmt).to_s(:delimited) %></td>
-        <td class="date-td"><%= (ave_profit_new + ave_profit_slmt).round().to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= (@sales_new_profit_sum + @sales_slmt_profit_sum).to_s(:delimited) %></td>
+        <td class="date-td"><%= (@sales_new_profit_ave + @sales_slmt_profit_ave).round().to_s(:delimited) rescue "測定不可" %></td>
         <td class="date-td"><%= 
           ((ave_profit_new * @new_shift) + (ave_profit_slmt * @settlement_shift)).to_s(:delimited) rescue "測定不可" %>
         </td>
@@ -1062,6 +1141,39 @@
         </tbody>
       </table>
   <%# /切り返し区切り %>
+  <%# 時間別基準値 %>
+  <h2>時間別基準値</h2>
+    <table class="out-tb">
+      <thead>
+        <th class="total-th">訪問時間</th>
+        <th class="total-th">内訳</th>
+        <th class="total-th">合計</th>
+        <th class="total-th">平均</th>
+        <th class="total-th">成約率</th>
+      </thead>
+      <tbody>
+      <% time = 10 %>
+      <% cnt = 0 %>
+      <% 10.times do %>
+      <tr>
+        <th rowspan="2" class="total-th"><%= time %>時</th>
+        <th class="total-th">訪問</th>
+        <td class="total-td"><%= @time_visit_sum[cnt] %></td>
+        <td class="total-td"><%= @time_visit_ave[cnt] %></td>
+        <td class="total-td">-</td>
+      </tr>
+      <tr>
+        <th class="total-th">成約</th>
+        <td class="total-td"><%= @time_get_sum[cnt] %></td>
+        <td class="total-td"><%= @time_get_ave[cnt] %></td>
+        <td class="total-td"><%= number_to_percentage(@time_get_sum[cnt].to_f / @time_visit_sum[cnt].to_f * 100, precision: 1) %></td>
+      </tr>
+      <% time += 1 %>
+      <% cnt += 1 %>
+      <% end %>
+      </tbody>
+    </table>
+  <%# /時間別基準値 %>
   </div>
 </div>
 <div class="result-flex">
@@ -1447,6 +1559,7 @@
         <th class="total-th">aupay（決済）</th>
         <th class="total-th">PayPay</th>
         <th class="total-th">楽天ペイ</th>
+        <th class="total-th">全商材</th>
       </tr>
       <tr>
         <th class="total-th">獲得数</th>
@@ -1457,6 +1570,7 @@
         <td class="total-td"><%= aupay_slmt_len %></td>
         <td class="total-td"><%= paypay_r_len %></td>
         <td class="total-td"><%= rakuten_pay_len %></td>
+        <td class="total-td"><%=  %></td>
       </tr>
       <tr>
         <th class="total-th">生産性</th>
@@ -1467,6 +1581,7 @@
         <td class="total-td"><%= aupay_slmt_len_ave = (aupay_slmt_len.to_f / @digestion_settlement).round(1) rescue "NaN" %></td>
         <td class="total-td"><%= paypay_len_ave = (paypay_r_len.to_f / @digestion_new).round(1) rescue "NaN" %></td>
         <td class="total-td"><%= rakuten_pay_len_ave = (rakuten_pay_len.to_f / @digestion_new).round(1) rescue "NaN" %></td>
+        <td class="total-td"><%=  %></td>
       </tr>
       <tr>
         <th class="total-th">終着獲得見込</th>
@@ -1477,6 +1592,7 @@
         <td class="total-td"><%= (aupay_slmt_len_ave * @settlement_shift).round(0) rescue "NaN" %></td>
         <td class="total-td"><%= (paypay_len_ave * @new_shift).round(0) rescue "NaN" %></td>
         <td class="total-td"><%= (rakuten_pay_len_ave * @new_shift).round(0) rescue "NaN" %></td>
+        <td class="total-td"><%=  %></td>
       </tr>
       <tr>
         <th class="total-th">平均売上</th>
@@ -1487,6 +1603,7 @@
         <td class="total-td"><%= (aupay_slmt_valuations.to_f / @digestion_settlement).round().to_s(:delimited) rescue "NaN" %></td>
         <td class="total-td"><%= (paypay_valuations.to_f / @digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
         <td class="total-td"><%= (rakuten_pay_valuations.to_f / @digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%=  %></td>
       </tr>
       <tr>
         <th class="total-th">合計売上</th>
@@ -1497,6 +1614,7 @@
         <td class="total-td"><%= aupay_slmt_valuations.to_s(:delimited) %></td>
         <td class="total-td"><%= paypay_valuations.to_s(:delimited) %></td>
         <td class="total-td"><%= rakuten_pay_valuations.to_s(:delimited) %></td>
+        <td class="total-td"><%= sum_profit.to_s(:delimited) %></td>
       </tr>
       <tr>
         <th class="total-th">終着見込売上</th>
@@ -1507,6 +1625,7 @@
         <td class="total-td"><%= (aupay_slmt_valuations.to_f / @digestion_settlement * @settlement_shift).round().to_s(:delimited) rescue "NaN" %></td>
         <td class="total-td"><%= (paypay_valuations.to_f / @digestion_new * @new_shift).round().to_s(:delimited) rescue "NaN" %></td>
         <td class="total-td"><%= (rakuten_pay_valuations.to_f / @digestion_new * @new_shift).round().to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%=  %></td>
       </tr>
     </table>
   <%# /商材別売上/生産性 %>
