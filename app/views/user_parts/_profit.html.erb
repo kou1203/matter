@@ -611,7 +611,7 @@
         <td class="date-td"><%= @new_shift - @digestion_new %></td>
         <td class="date-td"><%= @sales_new_profit_sum.to_s(:delimited) %></td>
         <td class="date-td"><%= @sales_new_profit_ave.round().to_s(:delimited) rescue "測定不可" %></td>
-        <td class="date-td"><%= (@sales_new_profit_ave * @new_shift).round().to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= @sales_new_profit_fin.round().to_s(:delimited) rescue "測定不可" %></td>
       </tr>
       <tr>
         <td class="date-td">キャッシュレス決済</td>
@@ -620,7 +620,7 @@
         <td class="date-td"><%= @settlement_shift - @digestion_settlement %></td>
         <td class="date-td"><%= @sales_slmt_profit_sum.to_s(:delimited) %></td>
         <td class="date-td"><%= @sales_slmt_profit_ave.round().to_s(:delimited) rescue "測定不可" %></td>
-        <td class="date-td"><%= (@sales_slmt_profit_sum * @settlement_shift).to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= @sales_slmt_profit_fin.to_s(:delimited) rescue "測定不可" %></td>
       </tr>
       <tr>
         <td class="date-td">サミット</td>
@@ -673,10 +673,8 @@
             <td class="date-td"><%= digestion_sum = @digestion_new + @digestion_settlement + @digestion_summit + @digestion_casa + @digestion_casa_put + @digestion_ojt + @digestion_house_work %></td>
         <td class="date-td"><%= shift_sum - digestion_sum %></td>
         <td class="date-td"><%= (@sales_new_profit_sum + @sales_slmt_profit_sum).to_s(:delimited) %></td>
-        <td class="date-td"><%= (@sales_new_profit_ave + @sales_slmt_profit_ave).round().to_s(:delimited) rescue "測定不可" %></td>
-        <td class="date-td"><%= 
-          ((ave_profit_new * @new_shift) + (ave_profit_slmt * @settlement_shift)).to_s(:delimited) rescue "測定不可" %>
-        </td>
+        <td class="date-td"><%= @sales_profit_ave.round().to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= @sales_profit_fin.round().to_s(:delimited) rescue "測定不可" %></td>
       </tr>
     </table>
   <%#/シフト/売上の区切り%>

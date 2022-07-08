@@ -242,8 +242,12 @@ class UsersController < ApplicationController
       #  営業打ち込み売上
        @sales_new_profit_sum = @results.where(shift: "キャッシュレス新規").sum(:profit)
        @sales_new_profit_ave = @results.where(shift: "キャッシュレス新規").average(:profit)
+       @sales_new_profit_fin = @sales_new_profit_ave * @new_shift
        @sales_slmt_profit_sum = @results.where(shift: "キャッシュレス決済").sum(:profit)
        @sales_slmt_profit_ave = @results.where(shift: "キャッシュレス決済").average(:profit)
+       @sales_slmt_profit_fin = @sales_slmt_profit_sum * @settlement_shift
+       @sales_profit_fin = @sales_new_profit_fin + @sales_slmt_profit_fin
+       @sales_profit_ave = @sales_profit_fin / (@new_shift + @settlement_shift)
       #  dメル
        @dmer_user = 
         Dmer.includes(:store_prop).where(user_id: @results.first.user_id )
