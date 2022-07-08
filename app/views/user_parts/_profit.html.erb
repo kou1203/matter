@@ -84,14 +84,14 @@
             <% end %>
           <% end %>
 <div class="result-flex">
-  <div><%#日々進捗の区切り%>
+  <div class="right-frame"><%#日々進捗の区切り%>
     <h2>日々進捗</h2>
     <table class="date-tb">
       <thead>
         <tr></tr>
         <tr>
         <%# カラム %>
-          <th class="date-th" colspan="9" ><span class="date-span">日々結果</span></th>
+          <th class="date-th" colspan="8" ><span class="date-span">日々結果</span></th>
           <th class="date-th" colspan="5" ><span class="date-span">合計</span></th>
           <th class="date-th" colspan="5" ><span class="date-span">前半</span></th>
           <th class="date-th" colspan="5"><span class="date-span">後半</span></th>
@@ -165,7 +165,6 @@
         </tr>
         <tr >
         <%# 大枠基準値（見出し） %>
-            <th class="date-th"><span class="date-span">ID</span></th>
             <th class="date-th"><span class="date-span">日付</span></th>
             <th class="date-th"><span class="date-span">曜日</span></th>
             <th class="date-th"><span class="date-span">予定シフト</span></th>
@@ -232,7 +231,6 @@
       <tbody>
       <% @results.each do |result| %>
         <tr>
-          <th class="date-th"><span class="date-span"><%= result.id %></span></th>
           <%#日付%>
           <th class="date-th"><span class="date-span"><%= result.date.month %>月<%= result.date.day %>日</span></th>
           <th class="date-th"><span class="date-span"><%= days[result.date.wday] %></span></th>
@@ -586,7 +584,7 @@
       </tbody>
     </table>
   </div><%#/日々進捗の区切り%>
-  <div>
+  <div class="left-frame">
   <%#シフト/売上の区切り%>
     <% if @result_shift.blank? %>
       <p class="caution-text">予定シフトがありません。シフト申請を行ってください</p>
