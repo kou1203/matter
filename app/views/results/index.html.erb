@@ -67,6 +67,13 @@
               <td class=""><%= @result_today_data.where(user: {base: base}).sum(:profit).to_s(:delimited) %></td>
               <td class=""><%= @result_today_data.where(user: {base: base}).average(:profit).round().to_s(:delimited) rescue "測定不可" %></td>
             </tr>
+            <% if current_user.name == "管理用" %>
+            <p>
+              <% @shift_today_data.where(user: {base: base}).each do |u| %>
+              <%= u.user.name %>
+              <% end %>
+            </p>
+            <% end %>
           <% end %>
             <tr>
               <th class="">合計</th>
