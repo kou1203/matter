@@ -46,13 +46,41 @@ class ResultsController < ApplicationController
       @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
       @maximum_date_cash = @month.beginning_of_month.since(24.days)
     end
-    # 日々進捗
-    @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today
-
-    @results_week = 
-      Result.preload(:user).eager_load(:result_cash).where(date: @month_daily.ago(2.days)..@month_daily)
-      .select(:user_id,:date,:id)
-    @result_products = ResultCash.select(:dmer, :aupay, :paypay, :rakuten_pay)
+    # 日々獲得進捗
+      @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today #当日日付
+      # 日々獲得進捗
+        @dmer_monthly = 
+            Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+        @aupay_monthly = 
+            Aupay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+        @paypay_monthly = 
+            Paypay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+        @rakuten_pay_monthly = 
+            Paypay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+        # 現状売上
+        @result_monthly = 
+          if @month_daily.day >= 26
+            Result.where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+            .or(
+              Result.where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+            )
+          else  
+            Result.where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+            .or(
+              Result.where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+            )
+          end
+      # 当日獲得数・売上
+        @dmer_today_data = Dmer.where(date: @month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+        @aupay_today_data = Aupay.where(date: @month_daily).includes(:user).includes(:user).select(:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+        @paypay_today_data = Paypay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+        @rakuten_pay_today_data = RakutenPay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+        @result_today_data = Result.where(date: @month_daily).includes(:user).select(:profit, :user_id,:date,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"})
+        @shift_today_data = 
+          Shift.where(start_time: @month_daily).includes(:user).select(:user_id,:start_time,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+          .or(
+            Shift.where(start_time: @month_daily).includes(:user).select(:user_id,:start_time,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+          )
     # 日付が~25までは前月の26日が初日と計算するようにする
     if 26 > @month_daily.day
       @shift_month = 
@@ -192,6 +220,27 @@ class ResultsController < ApplicationController
     @result = Result.find(params[:id])
     @result.destroy
     redirect_to request.referer
+  end 
+
+  def date_progress
+    # 日々進捗
+    @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today
+    @results_week = 
+      Result.preload(:user).eager_load(:result_cash).where(date: @month_daily.ago(2.days)..@month_daily)
+      @dmers = 
+      Dmer.eager_load(:store_prop).select("dmers.id,dmers.user_id,dmers.store_prop_id")
+      .where(store_prop: {head_store: nil})
+      .where.not(status: "自社不備")
+      .where.not(status: "自社NG")
+    @aupays = 
+      Aupay.eager_load(:store_prop).select("aupays.id,aupays.user_id,aupays.store_prop_id")
+      .where(store_prop: {head_store: nil})
+      .where.not(status: "自社不備")
+      .where.not(status: "自社NG")
+    @paypays = Paypay.select("paypays.id,paypays.user_id")
+    @rakuten_pays = RakutenPay.select("rakuten_pays.id,rakuten_pays.user_id")
+    @users = 
+      User.where.not(position: "退職").or(User.where(position: nil))
   end 
 
 

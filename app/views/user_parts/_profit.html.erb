@@ -521,9 +521,6 @@
               @dmer_def.length +
               @dmer_db_data.length
           %>
-          <% @dmer_db_data.each do |d| %>
-          <%= d.store_prop.name %>
-          <% end %>
         <%# 決済 %>
           <% dmer_slmt_valuations = @dmer_slmt.sum(:valuation_settlement) %>
           <% dmer_slmt_len = @dmer_slmt.length %>
@@ -594,7 +591,7 @@
             <% end %>
           <% end %>
 
-    <h2 class="shift-h2">予定シフト：<%= @result_shift_min.strftime('%Y-%m-%d') %>（<%= days[@result_shift_min.wday] %>）〜<%= @result_shift_max.strftime('%Y-%m-%d') %>（<%= days[@result_shift_max.wday] %>）</h2>
+    <h2 class="shift-h2"><%= @result_shift_min.strftime('%Y-%m-%d') %>（<%= days[@result_shift_min.wday] %>）〜<%= @result_shift_max.strftime('%Y-%m-%d') %>（<%= days[@result_shift_max.wday] %>）</h2>
     <% end %>
     <p class="caution-text">※売上は営業予想売上を参照しています。</p>
     <table>

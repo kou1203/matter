@@ -89,7 +89,10 @@ Rails.application.routes.draw do
     post 'result_casas/create'
     get 'result_summits/new'
     post 'result_summits/create'
-    collection { post :import }
+    collection { 
+      post :import 
+      get :date_progress
+    }
   end  
 
   resources :result_cashes do 

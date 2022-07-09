@@ -19,18 +19,17 @@
       <th class="search-th" rowspan="2" >予定シフト</th>
       <th class="search-th" rowspan="2" >消化シフト</th>
       <th class="search-th" colspan="3" >営業予想</th>
-      <th class="search-th" colspan="3" >案件ベース</th>
-      <th class="search-th" colspan="4">基準値</th>
+      <th class="search-th" colspan="" >案件ベース</th>
+      <th class="search-th" colspan="5">基準値</th>
       <th class="search-th" colspan="7">商材別獲得数</th>
     </tr>
     <tr>
       <th class="search-th">平均売上</th>
       <th class="search-th" >現状売上</th>
       <th class="search-th" >見込終着</th>
-      <th class="search-th">平均売上</th>
       <th class="search-th" >現状売上</th>
-      <th class="search-th" >見込終着</th>
       <th class="search-th">訪問</th>
+      <th class="search-th">応答</th>
       <th class="search-th">対面</th>
       <th class="search-th">フル</th>
       <th class="search-th">獲得</th>
@@ -91,6 +90,7 @@
           .where.not(shift: "欠勤").length 
         %>
       <%# 基準値 %>
+        <% sum_total_visit = r_user.sum("first_total_visit + latter_total_visit").to_f %>
         <% sum_visit = r_user.sum("first_visit + latter_visit").to_f %>
         <% sum_interview = r_user.sum("first_interview + latter_interview").to_f %>
         <% sum_full_talk = r_user.sum("first_full_talk + latter_full_talk").to_f %>
@@ -280,10 +280,9 @@
       <td ><%= exp_ave.to_s(:delimited) %></td>
       <td ><%= exp_sum.to_s(:delimited) %></td>
       <td ><%= exp_fin.to_s(:delimited) %></td>
-      <td ><%= ave_valuations.to_s(:delimited) rescue "NaN" %></td>
       <td ><%= sum_valuations.to_s(:delimited) rescue "NaN" %></td>
-      <td ><%= (ave_valuations * shifts).to_s(:delimited) rescue "NaN" %></td>
       <%# 基準値 %>
+      <td><%= (sum_total_visit / new_shift).round(1) rescue "NaN" %></td>
       <td><%= (sum_visit / new_shift).round(1) rescue "NaN" %></td>
       <td><%= (sum_interview / new_shift).round(1) rescue "NaN" %></td>
       <td><%= (sum_full_talk / new_shift).round(1) rescue "NaN" %></td>
@@ -307,9 +306,8 @@
         <td><%= base_exp_sum.to_s(:delimited) rescue "NaN" %></td>
         <td><%= base_exp_fin.to_s(:delimited) rescue "NaN" %></td>
         <% base_ave = (base_sum / base_shift_digestion) %>
-        <td><%= base_ave.to_s(:delimited) rescue "NaN" %></td>
         <td><%= base_sum.to_s(:delimited) rescue "NaN" %></td>
-        <td><%= (base_ave * base_shift).round().to_s(:delimited) %></td>
+        <td><%= @cash_result.average("first_total_visit + latter_total_visit").round(1) rescue "NaN" %></td>
         <td><%= @cash_result.average("first_visit + latter_visit").round(1) rescue "NaN" %></td>
         <td><%= @cash_result.average("first_interview + latter_interview").round(1) rescue "NaN" %></td>
         <td><%= @cash_result.average("first_full_talk + latter_full_talk").round(1) rescue "NaN" %></td>
