@@ -44,6 +44,7 @@
             <tr>
               <th class="">拠点</th>
               <th class="">人員</th>
+              <th class="">消化シフト</th>
               <th class="">dメル</th>
               <th class="">auPay</th>
               <th class="">PayPay</th>
@@ -58,6 +59,7 @@
             <tr>
               <th class=""><%= base %></th>
               <td class=""><%= @shift_today_data.where(user: {base: base}).length %></td>
+              <td class=""><%= @result_today_data.where(user: {base: base}).length %></td>
               <td class=""><%= @dmer_today_data.where(user: {base: base}).length %></td>
               <td class=""><%= @aupay_today_data.where(user: {base: base}).length %></td>
               <td class=""><%= @paypay_today_data.where(user: {base: base}).length %></td>
@@ -119,6 +121,7 @@
             </tr>
           </tbody>
         </table>
+        <p class="caution-text">※獲得数は<%= @month_daily.beginning_of_month %>〜<%= @month_daily.end_of_month %>の範囲で計算されています。</p>
         <p class="caution-text">※売上は<%= @result_monthly.minimum(:date) %>〜<%= @result_monthly.maximum(:date) %>の範囲で計算されています。</p>
       <%# /現状獲得早見 %>
 
