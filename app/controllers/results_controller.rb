@@ -56,7 +56,7 @@ class ResultsController < ApplicationController
         @paypay_monthly = 
             Paypay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
         @rakuten_pay_monthly = 
-            Paypay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+            RakutenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
         # 現状売上
         @result_monthly = 
           if @month_daily.day >= 26
