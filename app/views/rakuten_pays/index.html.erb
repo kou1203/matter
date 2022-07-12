@@ -24,6 +24,7 @@
         <tr >
           <th class="search-head" rowspan="2" >検索</th>
           <th colspan="2" class="search-th">獲得日付</th>
+          <th colspan="2" class="search-th">上位店共有日</th>
           <th colspan="2" class="search-th">審査完了日</th>
           <th class="search-th">管理番号</th>
           <th class="search-th">店舗名</th>
@@ -34,6 +35,8 @@
         <tr >
         <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
         <td ><%= f.date_field :date_lteq, class: "input" %></td>
+        <td ><%= f.date_field :share_gteq, class: "input" %>~</td>
+        <td ><%= f.date_field :share_lteq, class: "input" %></td>
         <td ><%= f.date_field :result_point_gteq, class: "input" %>~</td>
         <td ><%= f.date_field :result_point_lteq, class: "input" %></td>
           <td ><%= f.text_field :customer_num_cont, class: "input" %></td>
