@@ -16,17 +16,24 @@
     <tr>
       <th class="sticky" rowspan="2" >名前</th>
       <th class="search-th" rowspan="2" >担当商材</th>
-      <th class="search-th" rowspan="2" >予定シフト</th>
-      <th class="search-th" rowspan="2" >消化シフト</th>
-      <th class="search-th" colspan="3" >営業予想</th>
+      <th class="search-th" rowspan="2" >新規予定シフト</th>
+      <th class="search-th" rowspan="2" >決済予定シフト</th>
+      <th class="search-th" rowspan="2" >新規消化シフト</th>
+      <th class="search-th" rowspan="2" >決済消化シフト</th>
+      <th class="search-th" colspan="6" >営業予想</th>
       <th class="search-th" colspan="" >案件ベース</th>
       <th class="search-th" colspan="5">基準値</th>
       <th class="search-th" colspan="7">商材別獲得数</th>
+      <th class="search-th" colspan="4">商材別平均獲得数</th>
+      <th class="search-th" colspan="4">商材別獲得終着見込</th>
     </tr>
     <tr>
-      <th class="search-th">平均売上</th>
-      <th class="search-th" >現状売上</th>
-      <th class="search-th" >見込終着</th>
+      <th class="search-th">新規平均売上</th>
+      <th class="search-th">決済平均売上</th>
+      <th class="search-th" >新規現状売上</th>
+      <th class="search-th" >決済現状売上</th>
+      <th class="search-th" >新規見込終着</th>
+      <th class="search-th" >決済見込終着</th>
       <th class="search-th" >現状売上</th>
       <th class="search-th">訪問</th>
       <th class="search-th">応答</th>
@@ -40,10 +47,18 @@
       <th class="search-th">aupay（決済）</th>
       <th class="search-th">PayPay</th>
       <th class="search-th">楽天ペイ</th>
+      <% 2.times do %>
+      <th class="search-th">dメル（新規）</th>
+      <th class="search-th">aupay（新規）</th>
+      <th class="search-th">PayPay</th>
+      <th class="search-th">楽天ペイ</th>
+      <% end %>
     </tr>
     <tr></tr>
     <%# 合計値 %>
       <% base_shift = 0 %>
+      <% base_new_shift = 0 %>
+      <% base_slmt_shift = 0 %>
       <% 
         base_shift_digestion = 
           @cash_result.where.not(shift: "休み")
@@ -51,28 +66,62 @@
           .where.not(shift: "帯同")
           .where.not(shift: "欠勤").length  
       %>
+      <% 
+        base_new_shift_digestion = 
+        @cash_result.where(shift: "キャッシュレス新規")
+        .or(
+          @cash_result.where(shift: "フェムト新規")
+        )
+        .or(
+          @cash_result.where(shift: "サミット")
+        ).length  
+      %>
+            <% 
+        base_slmt_shift_digestion = 
+          @cash_result.where(shift: "キャッシュレス決済").length  
+      %>
       <% base_ave = 0 %>
       <% base_sum = 0 %>
       <% base_dmer = 0 %>
+      <% base_dmer_ave = 0 %>
+      <% base_dmer_fin = 0 %>
       <% base_dmer_slmt = 0 %>
       <% base_dmer_slmt2nd = 0 %>
       <% base_aupay = 0 %>
+      <% base_aupay_ave = 0 %>
+      <% base_aupay_fin = 0 %>
       <% base_aupay_slmt = 0 %>
       <% base_paypay = 0 %>
+      <% base_paypay_ave = 0 %>
+      <% base_paypay_fin = 0 %>
       <% base_rakuten_pay = 0 %>
+      <% base_rakuten_pay_ave = 0 %>
+      <% base_rakuten_pay_fin = 0 %>
       <% base_st_insurace = 0 %>
       <% base_exp_ave = 0 %>
+      <% base_exp_new_ave = 0 %>
+      <% base_exp_slmt_ave = 0 %>
       <% base_exp_sum = 0 %>
+      <% base_exp_new_sum = 0 %>
+      <% base_exp_slmt_sum = 0 %>
       <% base_exp_fin = 0 %>
+      <% base_exp_new_fin = 0 %>
+      <% base_exp_slmt_fin = 0 %>
     <% @cash_result.group(:user_id).each do |r| %>
     <%# 変数 %>
       <% r_user = @cash_result.where(user_id: r.user.id) %>
       <%# シフト %>
         <% 
-          new_shift = r_user.where(shift: "キャッシュレス新規")
-          .or(r_user.where(shift: "フェムト新規"))
-          .or(r_user.where(shift: "サミット")).length
+          new_shift = 
+          Shift.where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days)).where(user_id: r.user_id).where(shift: "キャッシュレス新規")
+          .or(
+            Shift.where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days)).where(user_id: r.user_id).where(shift: "フェムト新規")
+            )
+          .or(
+            Shift.where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days)).where(user_id: r.user_id).where(shift: "サミット")
+            ).length
         %>
+        <% slmt_shift = Shift.where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days)).where(user_id: r.user_id).where(shift: "キャッシュレス決済").length %>
         <%
           shifts = Shift.where(user_id: r.user_id)
           .where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days))
@@ -81,6 +130,7 @@
           .where.not(shift: "帯同")
           .where.not(shift: "欠勤").length
         %>
+        <% base_new_shift += new_shift %>
         <% base_shift += shifts %><%# 予定シフトの合計を取得 %>
         <% 
           shift_digestion = r_user
@@ -89,6 +139,13 @@
           .where.not(shift: "帯同")
           .where.not(shift: "欠勤").length 
         %>
+        <% 
+          new_shift_digestion = 
+            r_user.where(shift: "キャッシュレス新規")
+            .or(r_user.where(shift: "フェムト新規"))
+            .or(r_user.where(shift: "サミット")).length
+        %>
+        <% slmt_shift_digestion = r_user.where(shift: "キャッシュレス決済").length %>
       <%# 基準値 %>
         <% sum_total_visit = r_user.sum("first_total_visit + latter_total_visit").to_f %>
         <% sum_visit = r_user.sum("first_visit + latter_visit").to_f %>
@@ -97,11 +154,31 @@
         <% sum_get = r_user.sum("first_get + latter_get").to_f %>
       <%# 営業予想売上 %>
         <% exp_sum = @cash_result.where(user_id: r.user_id).sum(:profit) %>
-        <% exp_ave = exp_sum / @cash_result.where(user_id: r.user_id).length rescue "NaN" %>
-        <% exp_fin = exp_ave * shifts rescue "NaN" %>
-        <% base_exp_sum = @cash_result.sum(:profit) %>
-        <% base_exp_ave = base_exp_sum / base_shift_digestion rescue "NaN" %>
-        <% base_exp_fin = base_exp_ave * base_shift %>
+        <% 
+          exp_new_sum = 
+            @cash_result.where(user_id: r.user_id)
+            .where(shift: "キャッシュレス新規").sum(:profit) 
+        %>
+        <% 
+          exp_slmt_sum = 
+            @cash_result.where(user_id: r.user_id)
+            .where(shift: "キャッシュレス決済").sum(:profit) 
+        %>
+        <% exp_ave = exp_sum / @cash_result.where(user_id: r.user_id).length rescue 0 %>
+        <% exp_new_ave = exp_new_sum / new_shift_digestion rescue 0 %>
+        <% exp_slmt_ave = exp_slmt_sum / slmt_shift_digestion rescue 0 %>
+        <% exp_fin = exp_ave * shifts rescue 0 %>
+        <% exp_new_fin = exp_new_ave * new_shift rescue 0 %>
+        <% exp_slmt_fin = exp_slmt_ave * slmt_shift rescue 0 %>
+        <% base_exp_sum = @cash_result.sum(:profit)  %>
+        <% base_exp_new_sum = @cash_result.where(shift: "キャッシュレス新規").sum(:profit)  %>
+        <% base_exp_slmt_sum = @cash_result.where(shift: "キャッシュレス決済").sum(:profit)  %>
+        <% base_exp_ave = base_exp_sum / base_shift_digestion rescue 0 %>
+        <% base_exp_new_ave = base_exp_new_sum / base_new_shift_digestion rescue 0 %>
+        <% base_exp_slmt_ave = base_exp_slmt_sum / base_slmt_shift_digestion rescue 0 %>
+        <% base_exp_fin = base_exp_ave * base_shift rescue 0 %>
+        <% base_exp_new_fin = base_exp_new_ave * base_new_shift rescue 0 %>
+        <% base_exp_slmt_fin = base_exp_slmt_ave * base_slmt_shift rescue 0 %>
       <%# 各商材変数（評価売） %>
         <%# dメル（新規） %>
           <% dmer_user = Dmer.includes(:store_prop).where(user_id: r.user_id) %>
@@ -139,6 +216,9 @@
             dmer_len = 
               dmer_uq.length  - dmer_def.length + dmer_db.length
           %>
+          <% dmer_len_ave = (dmer_len.to_f / new_shift_digestion).round(1) rescue 0 %>
+          <% dmer_len_fin = (dmer_len_ave * new_shift).round() rescue 0 %>
+
         <%# dメル（決済） %>
           <% dmer_slmter = Dmer.where(settlementer_id: r.user_id) %>
           <% 
@@ -168,6 +248,7 @@
               .where.not(store_prop: {head_store: nil})
               .where(status: "審査通過")
           %>
+
           <% aupay_def =  aupay_def(aupay_uq,@cash_result) %>
           <% aupay_inc = judge_inc(aupay_user,@cash_result)  %>
           <% aupay_judge_dec = judge_dec(aupay_user,@cash_result)  %>
@@ -182,6 +263,8 @@
             aupay_len = 
               aupay_uq.length - aupay_def.length + aupay_db.length
           %>
+          <% aupay_len_ave = (aupay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
+          <% aupay_len_fin = (aupay_len_ave * new_shift).round() rescue 0 %>
         <%# aupay（決済） %>
           <% aupay_slmt_user = Aupay.where(settlementer_id: r.user_id) %>
           <% aupay_slmt = slmt_period(aupay_slmt_user ,@cash_result) %>
@@ -193,7 +276,8 @@
           <% paypay_result = result_period(paypay_user ,@cash_result) %>
           <% paypay_valuations = paypay_result.sum(:valuation) %>
           <% paypay_len = paypay_data.length %>
-          <% paypay_r_len = paypay_result.length %>
+          <% paypay_len_ave = (paypay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
+          <% paypay_len_fin = (paypay_len_ave * new_shift).round() rescue 0 %>
         <%# 楽天ペイ %>
           <% rakuten_pay_user = RakutenPay.includes(:store_prop).where(user_id: r.user_id) %>
           <% 
@@ -222,6 +306,8 @@
                 rakuten_pay_uq.length - 
                 rakuten_pay_def.length
             %>
+          <% rakuten_pay_len_ave = (rakuten_pay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
+          <% rakuten_pay_len_fin = (rakuten_pay_len_ave * new_shift).round() rescue 0 %>
         <%# 楽天ペイインセン（40件で5万, 50件で10万） %>
           <% rakuten_bonus = 0 %>
           <% if @cash_result.minimum(:date).day == 1 %>
@@ -261,57 +347,86 @@
               st_insurance_valuations +
               rakuten_bonus
           %>
-          <% ave_valuations = sum_valuations / shift_digestion rescue "NaN" %>
+          <% ave_valuations = sum_valuations / shift_digestion rescue 0 %>
           <% base_dmer += dmer_len %>
+          <% base_dmer_ave = base_dmer / shift_digestion %>
+          <% base_dmer_fin += dmer_len_fin %>
           <% base_dmer_slmt += dmer_slmt_len %>
           <% base_dmer_slmt2nd += dmer_slmt2nd_len %>
           <% base_aupay += aupay_len %>
+          <% base_aupay_ave = base_aupay / shift_digestion %>
+          <% base_aupay_fin += aupay_len_fin %>
           <% base_aupay_slmt += aupay_slmt_len %>
-          <% base_paypay += paypay_r_len %>
+          <% base_paypay += paypay_len %>
+          <% base_paypay_ave = base_paypay / shift_digestion %>
+          <% base_paypay_fin += paypay_len_fin %>
           <% base_rakuten_pay += rakuten_pay_len %>
+          <% base_rakuten_pay_ave = base_rakuten_pay / shift_digestion %>
+          <% base_rakuten_pay_fin += rakuten_pay_len_fin %>
           <% base_st_insurace += st_insurance_len %>
           <% base_sum += sum_valuations %>
     <tr>
       <th class="sticky"><%= r.user.name %></th>
       <td ><%= r.user.base_sub  %></td>
-      <td ><%= shifts %></td>
-      <td ><%= shift_digestion %></td>
+      <td ><%= new_shift %></td>
+      <td ><%= slmt_shift %></td>
+      <td ><%= new_shift_digestion %></td>
+      <td ><%= slmt_shift_digestion %></td>
       <%# 売上 %>
-      <td ><%= exp_ave.to_s(:delimited) %></td>
-      <td ><%= exp_sum.to_s(:delimited) %></td>
-      <td ><%= exp_fin.to_s(:delimited) %></td>
-      <td ><%= sum_valuations.to_s(:delimited) rescue "NaN" %></td>
+      <td ><%= exp_new_ave.to_s(:delimited) %></td>
+      <td ><%= exp_slmt_ave.to_s(:delimited) %></td>
+      <td ><%= exp_new_sum.to_s(:delimited) %></td>
+      <td ><%= exp_slmt_sum.to_s(:delimited) %></td>
+      <td ><%= exp_new_fin.to_s(:delimited) %></td>
+      <td ><%= exp_slmt_fin.to_s(:delimited) %></td>
+      <td ><%= sum_valuations.to_s(:delimited) rescue 0 %></td>
       <%# 基準値 %>
-      <td><%= (sum_total_visit / new_shift).round(1) rescue "NaN" %></td>
-      <td><%= (sum_visit / new_shift).round(1) rescue "NaN" %></td>
-      <td><%= (sum_interview / new_shift).round(1) rescue "NaN" %></td>
-      <td><%= (sum_full_talk / new_shift).round(1) rescue "NaN" %></td>
-      <td><%= (sum_get / new_shift).round(1) rescue "NaN" %></td>
+      <td><%= (sum_total_visit / new_shift_digestion).round(1) rescue 0 %></td>
+      <td><%= (sum_visit / new_shift_digestion).round(1) rescue 0 %></td>
+      <td><%= (sum_interview / new_shift_digestion).round(1) rescue 0 %></td>
+      <td><%= (sum_full_talk / new_shift_digestion).round(1) rescue 0 %></td>
+      <td><%= (sum_get / new_shift_digestion).round(1) rescue 0 %></td>
       <%# 獲得数 %>
       <td ><%= dmer_len %></td>
       <td ><%= dmer_slmt_len %></td>
       <td ><%= dmer_slmt2nd_len %></td>
       <td ><%= aupay_len %></td>
       <td ><%= aupay_slmt_len %></td>
-      <td ><%= paypay_r_len %></td>
+      <td ><%= paypay_len %></td>
       <td ><%= rakuten_pay_len %></td>
+      <%# 平均獲得数 %>
+      <td ><%= dmer_len_ave %></td>
+      <td ><%= aupay_len_ave %></td>
+      <td ><%= paypay_len_ave %></td>
+      <td ><%= rakuten_pay_len_ave %></td>
+      <%# 獲得終着 %>
+      <td ><%= dmer_len_fin %></td>
+      <td ><%= aupay_len_fin %></td>
+      <td ><%= paypay_len_fin %></td>
+      <td ><%= rakuten_pay_len_fin %></td>
     </tr>
       <% end %>
     <tr>
         <th class="sticky">全体</th>
         <td ></td>
-        <td><%= base_shift %></td>
-        <td><%= base_shift_digestion %></td>
-        <td><%= base_exp_ave.to_s(:delimited) rescue "NaN" %></td>
-        <td><%= base_exp_sum.to_s(:delimited) rescue "NaN" %></td>
-        <td><%= base_exp_fin.to_s(:delimited) rescue "NaN" %></td>
-        <% base_ave = (base_sum / base_shift_digestion) %>
-        <td><%= base_sum.to_s(:delimited) rescue "NaN" %></td>
-        <td><%= @cash_result.average("first_total_visit + latter_total_visit").round(1) rescue "NaN" %></td>
-        <td><%= @cash_result.average("first_visit + latter_visit").round(1) rescue "NaN" %></td>
-        <td><%= @cash_result.average("first_interview + latter_interview").round(1) rescue "NaN" %></td>
-        <td><%= @cash_result.average("first_full_talk + latter_full_talk").round(1) rescue "NaN" %></td>
-        <td><%= @cash_result.average("first_get + latter_get").round(1) rescue "NaN" %></td>
+        <td><%= base_new_shift %></td>
+        <td><%= base_slmt_shift %></td>
+        <td><%= base_new_shift_digestion %></td>
+        <td><%= base_slmt_shift_digestion %></td>
+        <%# 営業予想売上 %>
+        <td><%= base_exp_new_ave.to_s(:delimited) rescue 0 %></td>
+        <td><%= base_exp_slmt_ave.to_s(:delimited) rescue 0 %></td>
+        <td><%= base_exp_new_sum.to_s(:delimited) rescue 0 %></td>
+        <td><%= base_exp_slmt_sum.to_s(:delimited) rescue 0 %></td>
+        <td><%= base_exp_new_fin.to_s(:delimited) rescue 0 %></td>
+        <td><%= base_exp_slmt_fin.to_s(:delimited) rescue 0 %></td>
+        <td><%= base_sum.to_s(:delimited) rescue 0 %></td>
+        <td><%= @cash_result.average("first_total_visit + latter_total_visit").round(1) rescue 0 %></td>
+        <td><%= @cash_result.average("first_visit + latter_visit").round(1) rescue 0 %></td>
+        <td><%= @cash_result.average("first_interview + latter_interview").round(1) rescue 0 %></td>
+        <td><%= @cash_result.average("first_full_talk + latter_full_talk").round(1) rescue 0 %></td>
+        <td><%= @cash_result.average("first_get + latter_get").round(1) rescue 0 %></td>
+        <%# 全体獲得数 %>
         <td><%= base_dmer %></td>
         <td><%= base_dmer_slmt %></td>
         <td><%= base_dmer_slmt2nd %></td>
@@ -319,6 +434,16 @@
         <td><%= base_aupay_slmt %></td>
         <td><%= base_paypay %></td>
         <td><%= base_rakuten_pay %></td>
+        <%# 全体平均獲得数 %>
+        <td><%= base_dmer_ave %></td>
+        <td><%= base_aupay_ave %></td>
+        <td><%= base_paypay_ave %></td>
+        <td><%= base_rakuten_pay_ave %></td>
+        <%# 全体終着獲得数 %>
+        <td><%= base_dmer_fin %></td>
+        <td><%= base_aupay_fin %></td>
+        <td><%= base_paypay_fin %></td>
+        <td><%= base_rakuten_pay_fin %></td>
     </tr>
   </table>
   <% end %>
