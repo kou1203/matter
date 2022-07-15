@@ -10,7 +10,30 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_06_02_065353) do
+ActiveRecord::Schema.define(version: 2022_07_15_112932) do
+
+  create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "store_name", null: false
+    t.bigint "user_id"
+    t.string "race"
+    t.string "corporate_name"
+    t.date "date", null: false
+    t.string "status", null: false
+    t.string "terminal_status"
+    t.string "customer_num", null: false
+    t.string "kr_code", null: false
+    t.integer "result_point"
+    t.integer "payment"
+    t.integer "ipad_flag", null: false
+    t.integer "vm_status", null: false
+    t.integer "vm_status_name", null: false
+    t.integer "doc_follow"
+    t.string "delivery_status"
+    t.date "activate"
+    t.integer "valuation", null: false
+    t.integer "profit", null: false
+    t.index ["user_id"], name: "index_airpays_on_user_id"
+  end
 
   create_table "aupays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num"
@@ -970,6 +993,7 @@ ActiveRecord::Schema.define(version: 2022_06_02_065353) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "airpays", "users"
   add_foreign_key "aupays", "store_props"
   add_foreign_key "aupays", "users"
   add_foreign_key "aupays", "users", column: "settlementer_id"

@@ -61,6 +61,10 @@ Rails.application.routes.draw do
   resources :paypays, expect: [:new, :create] do 
     collection { post :import }
   end 
+
+  resources :airpays do
+    collection { post :import }
+  end
   
   resources :stock_histories, only: [:destroy]
   resources :return_histories, only: [:destroy]

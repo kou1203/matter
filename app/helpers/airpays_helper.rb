@@ -1,0 +1,2 @@
+module AirpaysHelper
+end

@@ -248,7 +248,7 @@ class UsersController < ApplicationController
        @sales_new_profit_fin = @sales_new_profit_ave * @new_shift rescue 0
        @sales_slmt_profit_sum = @results.where(shift: "キャッシュレス決済").sum(:profit)
        @sales_slmt_profit_ave = @results.where(shift: "キャッシュレス決済").average(:profit)
-       @sales_slmt_profit_fin = @sales_slmt_profit_sum * @settlement_shift rescue 0
+       @sales_slmt_profit_fin = @sales_slmt_profit_ave * @settlement_shift rescue 0
        @sales_profit_fin = @sales_new_profit_fin + @sales_slmt_profit_fin
        @sales_profit_ave = @sales_profit_fin / (@new_shift + @settlement_shift) rescue 0
       #  dメル
