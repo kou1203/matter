@@ -583,7 +583,7 @@ class UsersController < ApplicationController
       return product.where(settlement_second: date.minimum(:date)..date.maximum(:date))
     end 
     def slmt_second(product,date)
-      return product.where(settlement_second: date.minimum(:date).next_month.beginning_of_month..date.minimum(:date).next_month.end_of_month)
+      return product.where(settlement_second: date.minimum(:date)..date.maximum(:date))
       .where(status: "審査OK")
       .where.not(industry_status: "×")
       .where.not(industry_status: "NG")

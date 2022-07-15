@@ -672,9 +672,9 @@
         <td class="date-td"><%= shift_sum = @new_shift + @settlement_shift + @summit_shift + @casa_shift + @casa_put_shift + @ojt_shift + @house_work_shift %></td>
             <td class="date-td"><%= digestion_sum = @digestion_new + @digestion_settlement + @digestion_summit + @digestion_casa + @digestion_casa_put + @digestion_ojt + @digestion_house_work %></td>
         <td class="date-td"><%= shift_sum - digestion_sum %></td>
-        <td class="date-td"><%= (@sales_new_profit_sum + @sales_slmt_profit_sum + rakuten_bonus).to_s(:delimited) %></td>
+        <td class="date-td"><%= (@sales_new_profit_sum + @sales_slmt_profit_sum).to_s(:delimited) %></td>
         <td class="date-td"><%= @sales_profit_ave.round().to_s(:delimited) rescue "測定不可" %></td>
-        <td class="date-td"><%= (@sales_profit_fin + rakuten_bonus).round().to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= @sales_profit_fin.round().to_s(:delimited) rescue "測定不可" %></td>
       </tr>
     </table>
   <%#/シフト/売上の区切り%>
