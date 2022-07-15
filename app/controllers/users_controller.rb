@@ -108,7 +108,7 @@ class UsersController < ApplicationController
     @results_out = @results.includes(:result_cash).select(:result_cash_id)
     # 予定シフト変数 
       @result_shift = 
-        @shift.where(start_time: @results_date_min..@results_date_min.next_month.ago(1.days)) rescue nil
+        @shift.where(start_time: @minimum_date_cash..@maximum_date_cash) rescue nil
       if @result_shift.blank?
       else
       @result_shift_min = @result_shift.minimum(:start_time)
