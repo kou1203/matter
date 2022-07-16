@@ -1,6 +1,6 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <div data-scope-path="shared/header">
-  <h1 class="sub-title">楽天ペイ一覧</h1>
+  <h1 class="sub-title">AirPay一覧</h1>
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;">
@@ -25,7 +25,7 @@
           <th class="search-head" rowspan="2" >検索</th>
           <th colspan="2" class="search-th">獲得日付</th>
           <th colspan="2" class="search-th">審査完了日</th>
-          <th class="search-th">管理番号</th>
+          <th class="search-th">店舗番号</th>
           <th class="search-th">店舗名</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">審査ステータス</th>
@@ -50,77 +50,65 @@
       <h1>表示範囲：<%= @airpays.minimum(:date) %>（<%= days[@airpays.minimum(:date).wday] %>）〜<%= @airpays.maximum(:date) %>（<%= days[@airpays.maximum(:date).wday] %>）</h1>
     <table >
       <tr>
-        <th class="search-th">獲得数</th>
-        <th class="search-th">未処理</th>
-        <th class="search-th">審査待ち</th>
-        <th class="search-th">商流審査待ち</th>
+        <th class="search-th">書類提出待ち</th>
         <th class="search-th">審査中</th>
         <th class="search-th">審査完了</th>
-        <th class="search-th">複数店舗</th>
       </tr>
       <tr>
-        <td><%= @airpays.length %></td>
-        <td><%= @airpays.where(status: "未処理").length %></td>
-        <td><%= @airpays.where(status: "審査待ち").length %></td>
-        <td><%= 
-          @airpays.where(status: "２次審査待ち").length +
-          @airpays.where(status: "未着手").length 
-        %></td>
-        <td><%= 
-          @airpays.where(status: "2次審査中").length +
-          @airpays.where(status: "審査中").length 
-        %></td>
-        <td><%= @airpays.where(status: "OK").length %></td>
-        <td><%= @airpays.where.not(store_props: {head_store: nil}).length %></td>
-      </tr>
-      <tr>
-        <th class="search-th">自社不備</th>
-        <th class="search-th">自社NG</th>
-        <th class="search-th">上位店不備</th>
-        <th class="search-th">上位店NG</th>
-      </tr>
-      <tr>
-        <td><%= @airpays.where(status: "自社不備").length %></td>
-        <td><%= @airpays.where(status: "自社NG").length %></td>
-        <td><%= @airpays.where(status: "１次審査不備").length %></td>
-        <td><%= 
-          @airpays.where(status: "NG").length +
-          @airpays.where(status: "CANCEL").length +
-          @airpays.where(status: "申込取消").length
-        %></td>
+        <td><%= @airpays.where(status: "書類提出待ち").length %></td>
+        <td><%= @airpays.where(status: "審査中").length %></td>
+        <td><%= @airpays.where(status: "審査完了").length %></td>
       </tr>
     </table>
     <table class="out-tb">
       <thead>
       <tr>
-        <th class="out-th"></th>
         <th class="out-th">ID</th>
-        <th class="out-th">管理番号</th>
         <th class="out-th">店舗名</th>
+        <th class="out-th">店舗番号</th>
         <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
         <th class="out-th">獲得者</th>
         <th class="out-th">審査ステータス</th>
-        <th class="out-th">不備詳細①</th>
-        <th class="out-th">不備詳細②</th>
-        <th class="out-th">上位店共有日</th>
+        <th class="out-th">VM審査ステータス</th>
         <th class="out-th">審査完了日</th>
+        <th class="out-th">iPad申込区分</th>
+        <th class="out-th">KRコード</th>
+        <th class="out-th">書類フォロー</th>
+        <th class="out-th">配送ステータス</th>
+        <th class="out-th">アクティベート日</th>
+        <th class="out-th">評価売</th>
+        <% if current_user.position == "権限①" %>
+        <th class="out-th">実売</th>
+        <% end %>
       </tr>
       </thead>
       <tbody>
       <% @airpays_data.each do |airpay| %>
       <tr >
-        <td class="out-td"><%= link_to "詳細",  airpay_path(airpay.id) ,class: "link" %></td>
         <td class="out-td"><%= airpay.id %></td>
         <td class="out-td"><%= airpay.customer_num %></td>
-        <td class="out-td"><%= airpay.store_prop.name %></td>
+        <td class="out-td"><%= airpay.store_name %></td>
         <td class="out-td"><%= airpay.date %></td>
         <td class="out-td"><%= airpay.user.name %></td>
         <td class="out-td"><%= airpay.status %></td>
-        <td class="out-td"><%= airpay.deficiency_info %></td>
-        <td class="out-td"><%= airpay.deficiency_consent %></td>
-        <td class="out-td"><%= airpay.share %></td>
+        <td class="out-td"><%= airpay.vm_status_name %></td>
         <td class="out-td"><%= airpay.result_point %></td>
-      </tr>
+        <td class="out-td">
+          <%= airpay.ipad_flag %>
+          <% if airpay.ipad_flag == 1 %>
+          （有）
+          <% else %>
+          （無）
+          <% end %>
+        </td>
+        <td class="out-td"><%= airpay.kr_code %></td>
+        <td class="out-td"><%= airpay.doc_follow %></td>
+        <td class="out-td"><%= airpay.delivery_status %></td>
+        <td class="out-td"><%= airpay.activate %></td>
+        <td class="out-td"><%= airpay.valuation %></td>
+        <% if current_user.position == "権限①" %>
+        <td class="out-td"><%= airpay.profit %></td>
+        <% end %>
       <% end %>
       </tbody>
     </table>

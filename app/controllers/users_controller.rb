@@ -264,13 +264,26 @@ class UsersController < ApplicationController
         .where(status: "審査OK").select(:valuation_new, :industry_status, :user_id, :store_prop_id)
         @dmer_def = dmer_def(@dmer_uq, @results_date).select(:valuation_new, :industry_status, :user_id, :store_prop_id)
         @dmer_inc = 
-        judge_inc(@dmer_user,@results_date).where(store_prop: {head_store: nil})
-        .where.not(industry_status: "NG").where.not(industry_status: "×")
-        .where(status: "審査OK").select(:valuation_new, :industry_status, :user_id, :store_prop_id)
+        judge_inc(@dmer_user,@results_date)
+        .where(store_prop: {head_store: nil})
+        .where.not(industry_status: "NG")
+        .where.not(industry_status: "×")
+        .where.not(industry_status: "要確認")
+        .where(status: "審査OK")
+        .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
         @dmer_dec = 
         judge_dec(@dmer_user,@results_date)
         .where.not(industry_status: "NG").where.not(industry_status: "×")
-        .select(:valuation_new, :industry_status, :user_id, :store_prop_id)  
+        .select(:valuation_new, :industry_status, :user_id, :store_prop_id) 
+        @dmer_done = 
+          @dmer_user.where(result_point: @month.beginning_of_month..@month.end_of_month)
+          .where.not(industry_status: "NG")
+          .where.not(industry_status: "×")
+          .where.not(industry_status: "要確認")
+          .where(status: "審査OK")
+          .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
+
+
         # 決済
         @dmer_slmter = 
           Dmer.where(settlementer_id: @results.first.user_id)
@@ -291,12 +304,28 @@ class UsersController < ApplicationController
         @dmer_slmt_def = @dmer_ok.where(picture: @results_date_min..@results_date_max).where(settlement: nil).where("settlement_deadline > ?",Date.today)
         @dmer_pic_def = @dmer_ok.where(settlement: @results_date_min..@results_date_max).where(picture: nil).where("settlement_deadline > ?",Date.today)
 
+        @dmer_slmt_done = 
+          @dmer_slmter.where(status_update_settlement: @month.beginning_of_month..@month.end_of_month)
+          .where.not(industry_status: "NG")
+          .where.not(industry_status: "×")
+          .where.not(industry_status: "要確認")
+          .where(status: "審査OK")
+          .where(status_settlement: "完了")
+          .select(:valuation_settlement, :industry_status, :user_id, :store_prop_id)
         @dmer_pic_def = @dmer_slmt.where(picture: nil)
         @dmer_slmt2nd_get = 
           slmt2nd_get(@dmer_slmter,@results_date)
           .select(:valuation_second_settlement, :industry_status, :user_id, :store_prop_id)
         @dmer_slmt2nd = 
           slmt_second(@dmer_slmter,@results_date)
+          .select(:valuation_second_settlement, :industry_status, :user_id, :store_prop_id)
+          @dmer_slmt2nd_done = 
+          @dmer_slmter.where(settlement_second: @month.beginning_of_month..@month.end_of_month)
+          .where.not(industry_status: "NG")
+          .where.not(industry_status: "×")
+          .where.not(industry_status: "要確認")
+          .where(status: "審査OK")
+          .where(status_settlement: "完了")
           .select(:valuation_second_settlement, :industry_status, :user_id, :store_prop_id)
         # 決済対象 
         @dmers_slmt_target = 
@@ -327,12 +356,19 @@ class UsersController < ApplicationController
       @aupay_slmt_def = @aupay_ok.where(picture: @results_date_min..@results_date_max).where(settlement: nil).where("settlement_deadline > ?",Date.today)
       @aupay_pic_def = @aupay_ok.where(settlement: @results_date_min..@results_date_max).where(picture: nil).where("settlement_deadline > ?",Date.today)
       @aupay_slmt_target = slmt_dead_line(@aupay_user, @results_date).select(:valuation_settlement)
+      @aupay_slmt_done = 
+        @aupay_slmter.where(status_update_settlement: @month.beginning_of_month..@month.end_of_month)
+        .where(status: "審査通過")
+        .where(status_settlement: "完了")
       # paypay
       @paypay_user = 
         Paypay.where(user_id: @results.first.user_id)
         .select(:valuation)
       @paypay_data = this_period(@paypay_user ,@results_date).select(:valuation)
       @paypay_result = result_period(@paypay_user ,@results_date)
+      @paypay_done = 
+        @paypay_user.where(result_point: @month.beginning_of_month..@month.end_of_month)
+        .where(status: "60審査可決")
       # 楽天ペイ
       @rakuten_pay_user = 
         RakutenPay.includes(:store_prop).where(user_id: @results.first.user_id).select(:valuation,:store_prop_id)
@@ -345,10 +381,31 @@ class UsersController < ApplicationController
         @rakuten_pay_uq.where(status: "自社不備")
         .or(@rakuten_pay_uq.where(status: "自社NG")).select(:valuation,:store_prop_id)
       @rakuten_pay_inc = rakuten_inc(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id)
+      @rakuten_pay_done_val = 
+        @rakuten_pay_uq.sum(:valuation) - 
+        @rakuten_pay_def.sum(:valuation) - 
+        @rakuten_pay_dec.sum(:valuation) + 
+        @rakuten_pay_inc.sum(:valuation)
+      @rakuten_pay_done_len = 
+        @rakuten_pay_uq.length - 
+        @rakuten_pay_def.length - 
+        @rakuten_pay_dec.length + 
+        @rakuten_pay_inc.length
       # 少額短期保険
       @st_insurances_user = StInsurance.where(user_id: @results.first.user_id )
       @st_insurances_this_month = this_period(@st_insurances_user,@results)
       @st_insurances_def_this_month = this_period(@st_insurances_this_month,@results)
+      @airpay_user = Airpay.where(user_id: @results.first.user_id)
+      @airpay_result = 
+        this_period(@airpay_user,@results)
+        .where(status: "審査完了")
+        .or(
+          this_period(@airpay_user,@results)
+          .where(status: "審査中")
+        )
+      @airpay_done = 
+        @airpay_user.where(status: "審査完了")
+        .where(result_point: @month.beginning_of_month..@month.end_of_month)
       # 楽天フェムト新規
       @rakuten_casas_user = RakutenCasa.where(user_id: @results.first.user_id)
       @rakuten_casas_this_month = this_period(@rakuten_casas_user, @results)

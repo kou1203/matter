@@ -48,6 +48,7 @@ class ResultsController < ApplicationController
     end
     # 日々獲得進捗
       @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today #当日日付
+      @month_daily = @month_daily.yesterday
       # 日々獲得進捗
         @dmer_monthly = 
             Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
@@ -57,6 +58,8 @@ class ResultsController < ApplicationController
             Paypay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
         @rakuten_pay_monthly = 
             RakutenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+        @airpay_monthly = 
+            Airpay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
         # 現状売上
         @result_monthly = 
           if @month_daily.day >= 26
@@ -75,6 +78,7 @@ class ResultsController < ApplicationController
         @aupay_today_data = Aupay.where(date: @month_daily).includes(:user).includes(:user).select(:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
         @paypay_today_data = Paypay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
         @rakuten_pay_today_data = RakutenPay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+        @airpay_today_data = Airpay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
         @result_today_data = Result.where(date: @month_daily).includes(:user).select(:profit, :user_id,:date,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"})
         @shift_today_data = 
           Shift.where(start_time: @month_daily).includes(:user).select(:user_id,:start_time,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")

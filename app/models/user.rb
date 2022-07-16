@@ -8,6 +8,7 @@ class User < ApplicationRecord
   has_many :summits
   has_many :aupays
   has_many :paypays 
+  has_many :airpays 
   has_many :pandas 
   has_many :shifts
   has_many :results

@@ -10,12 +10,13 @@ class CreateAirpays < ActiveRecord::Migration[6.1]
       t.string :terminal_status
       t.string :customer_num            ,null: false 
       t.string :kr_code                 ,null: false 
-      t.integer :result_point
+      t.date :result_point
       t.integer :payment
       t.integer :ipad_flag              ,null: false 
       t.integer :vm_status              ,null: false 
       t.integer :vm_status_name         ,null: false 
       t.integer :doc_follow
+      t.date :shipping
       t.string :delivery_status
       t.date :activate
       t.integer :valuation              ,null: false 

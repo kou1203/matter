@@ -43,6 +43,7 @@ class AirpaysController < ApplicationController
        :vm_status_name         ,
        :doc_follow             ,
        :delivery_status        ,
+       :shipping               ,
        :activate               ,
        :valuation              ,
        :profit                 

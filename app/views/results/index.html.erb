@@ -49,6 +49,7 @@
               <th class="">auPay</th>
               <th class="">PayPay</th>
               <th class="">楽天ペイ</th>
+              <th class="">AirPay</th>
               <th class="">当日売上</th>
               <th class="">当日Ave</th>
             </tr>
@@ -64,6 +65,7 @@
               <td class=""><%= @aupay_today_data.where(user: {base: base}).length %></td>
               <td class=""><%= @paypay_today_data.where(user: {base: base}).length %></td>
               <td class=""><%= @rakuten_pay_today_data.where(user: {base: base}).length %></td>
+              <td class=""><%= @airpay_today_data.where(user: {base: base}).length %></td>
               <td class=""><%= @result_today_data.where(user: {base: base}).sum(:profit).to_s(:delimited) %></td>
               <td class=""><%= @result_today_data.where(user: {base: base}).average(:profit).round().to_s(:delimited) rescue "測定不可" %></td>
             </tr>
@@ -76,6 +78,7 @@
               <td class=""><%= @aupay_today_data.length %></td>
               <td class=""><%= @paypay_today_data.length %></td>
               <td class=""><%= @rakuten_pay_today_data.length %></td>
+              <td class=""><%= @airpay_today_data.length %></td>
               <td class=""><%= @result_today_data.sum(:profit).to_s(:delimited) %></td>
               <td class=""><%= @result_today_data.average(:profit).round().to_s(:delimited) rescue "測定不可" %></td>
             </tr>
@@ -92,6 +95,7 @@
               <th class="">auPay</th>
               <th class="">PayPay</th>
               <th class="">楽天ペイ</th>
+              <th class="">AirPay</th>
               <th class="">消化シフト</th>
               <th class="">現状売上</th>
               <th class="">現状Ave</th>
@@ -105,6 +109,7 @@
               <td class=""><%= @aupay_monthly.where(user: {base: base}).length %></td>
               <td class=""><%= @paypay_monthly.where(user: {base: base}).length %></td>
               <td class=""><%= @rakuten_pay_monthly.where(user: {base: base}).length %></td>
+              <td class=""><%= @airpay_monthly.where(user: {base: base}).length %></td>
               <td class=""><%= @result_monthly.where(user: {base: base}).length %></td>
               <td class=""><%= @result_monthly.where(user: {base: base}).sum(:profit).to_s(:delimited) rescue "測定不可" %></td>
               <td class=""><%= (@result_monthly.where(user: {base: base}).sum(:profit) / @result_monthly.where(user: {base: base}).length).round().to_s(:delimited) rescue "測定不可" %></td>
@@ -116,6 +121,7 @@
               <td class=""><%= @aupay_monthly.length %></td>
               <td class=""><%= @paypay_monthly.length %></td>
               <td class=""><%= @rakuten_pay_monthly.length %></td>
+              <td class=""><%= @airpay_monthly.length %></td>
               <td class=""><%= @result_monthly.length %></td>
               <td class=""><%= @result_monthly.sum(:profit).to_s(:delimited) rescue "測定不可" %></td>
               <td class=""><%= (@result_monthly.sum(:profit) / @result_monthly.length).round().to_s(:delimited) rescue "測定不可" %></td>
