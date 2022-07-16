@@ -1841,67 +1841,7 @@
       </tr>
     </table>
   <%# /商材別売上/生産性 %>
-  <%# /成果件数 %>
-    <div>
-  <%# 商材別売上/生産性 %>
-    <h2>成果件数</h2>
-    <p class="caution-text">審査通過した案件になります。</p>
-    <p class="caution-text">※楽天ペイのみ獲得ベースになります。</p>
-    <table>
-      <tr>
-        <th class="total-th">商材</th>
-        <th class="total-th">dメル（新規）</th>
-        <th class="total-th">dメル（決済）</th>
-        <th class="total-th">dメル（2回目決済）</th>
-        <th class="total-th">aupay（決済）</th>
-        <th class="total-th">PayPay</th>
-        <th class="total-th">楽天ペイ</th>
-        <th class="total-th">AirPay</th>
-        <th class="total-th">全商材</th>
-      </tr>
-      <tr>
-        <th class="total-th">審査通過数</th>
-        <td class="total-td"><%= @dmer_done.length %></td>
-        <td class="total-td"><%= @dmer_slmt_done.length %></td>
-        <td class="total-td"><%= @dmer_slmt2nd_done.length %></td>
-        <td class="total-td"><%= @aupay_slmt_done.length %></td>
-        <td class="total-td"><%= @paypay_done.length %></td>
-        <td class="total-td"><%= @rakuten_pay_done_len %></td>
-        <td class="total-td"><%= @airpay_done.length %></td>
-        <td class="total-td"><%=  %></td>
-      </tr>
-      <tr>
-        <th class="total-th">現状売上</th>
-        <td class="total-td"><%= @dmer_done.sum(:valuation_new).to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= @dmer_slmt_done.sum(:valuation_settlement).to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= @dmer_slmt2nd_done.sum(:valuation_second_settlement).to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= @aupay_slmt_done.sum(:valuation_settlement).to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= @paypay_done.sum(:valuation).to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= @rakuten_pay_done_val.to_s(:delimited) rescue "NaN" %></td>
-        <%# aipayの審査通過が10件以上の場合売上加算 %>
-          <% 
-            airpay_bonus =
-              if airpay_len >= 10
-                @airpay_done.length * 2000
-              else  
-                0
-              end 
-          %>
-        <td class="total-td"><%= (@airpay_done.sum(:valuation)+ airpay_bonus).to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= (
-          @dmer_done.sum(:valuation_new) +
-          @dmer_slmt_done.sum(:valuation_settlement) +
-          @dmer_slmt2nd_done.sum(:valuation_second_settlement) +
-          @aupay_slmt_done.sum(:valuation_settlement) +
-          @paypay_done.sum(:valuation) +
-          @rakuten_pay_done_val +
-          @airpay_done.sum(:valuation)+ airpay_bonus
-        ).to_s(:delimited) rescue "NaN" %></td>
 
-      </tr>
-    </table>
-    </div>
-  <%# /成果件数 %>
 
   </div>
 </div>
