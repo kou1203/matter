@@ -1805,15 +1805,15 @@
       </tr>
       <tr>
         <th class="total-th">合計売上</th>
-        <td class="total-td"><%= dmer_valuations.to_s(:delimited) %></td>
-        <td class="total-td"><%= dmer_slmt_valuations.to_s(:delimited) %></td>
-        <td class="total-td"><%= dmer_slmt2nd_valuations.to_s(:delimited) %></td>
-        <td class="total-td"><%= aupay_valuations.to_s(:delimited) %></td>
-        <td class="total-td"><%= aupay_slmt_valuations.to_s(:delimited) %></td>
-        <td class="total-td"><%= paypay_valuations.to_s(:delimited) %></td>
-        <td class="total-td"><%= rakuten_pay_valuations.to_s(:delimited) %></td>
-        <td class="total-td"><%= airpay_valuations.to_s(:delimited) %></td>
-        <td class="total-td"><%= sum_profit.to_s(:delimited) %></td>
+        <td class="total-td"><%= dmer_valuations.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= dmer_slmt_valuations.to_s(:delimited) rescue "NaN"  %></td>
+        <td class="total-td"><%= dmer_slmt2nd_valuations.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= aupay_valuations.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= aupay_slmt_valuations.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= paypay_valuations.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= rakuten_pay_valuations.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= airpay_valuations.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= sum_profit.to_s(:delimited) rescue "NaN" %></td>
       </tr>
       <tr>
         <th class="total-th">終着見込売上</th>
