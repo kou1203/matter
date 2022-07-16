@@ -47,8 +47,7 @@ class ResultsController < ApplicationController
       @maximum_date_cash = @month.beginning_of_month.since(24.days)
     end
     # 日々獲得進捗
-      @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today #当日日付
-      @month_daily = @month_daily.yesterday
+      @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today.yesterday #当日日付
       # 日々獲得進捗
         @dmer_monthly = 
             Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
