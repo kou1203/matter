@@ -187,49 +187,19 @@
           
           <td class="date-td"><span class="date-span"><%= date_profit.round().to_s(:delimited) %></td>
           <td class="date-td"><span class="date-span"><%= 
-            if result.first_total_visit.nil?
-              result.latter_total_visit rescue "NaN" 
-            elsif latter_total_visit.nil?
-              result.first_total_visit rescue "NaN" 
-            else  
               result.first_total_visit + result.latter_total_visit rescue "NaN" 
-            end
           %></span></td>
           <td class="date-td"><span class="date-span"><%= 
-            if result.first_visit.nil?
-              result.latter_visit rescue "NaN" 
-            elsif  result.latter_visit.nil?
-              result.first_visit rescue "NaN" 
-            else
               result.first_visit + result.latter_visit rescue "NaN" 
-            end
           %></td>
           <td class="date-td"><span class="date-span"><%= 
-            if result.first_interview.nil?
-              result.latter_interview rescue "NaN" 
-            elsif result.latter_interview.nil?
-              result.first_interview rescue "NaN" 
-            else  
               result.first_interview + result.latter_interview rescue "NaN" 
-            end
           %></span></td>
           <td class="date-td"><span class="date-span"><%=
-            if result.first_full_talk.nil?  
-              result.latter_full_talk rescue "NaN" 
-            elsif result.latter_full_talk.nil?  
-              result.first_full_talk rescue "NaN" 
-            else  
               result.first_full_talk + result.latter_full_talk rescue "NaN"
-            end
           %></span></td>
           <td class="date-td"><span class="date-span"><%= 
-            if result.first_get.nil? 
-              result.latter_get rescue "NaN" 
-            elsif result.latter_get.nil?
-              result.first_get rescue "NaN" 
-            else
               result.first_get + result.latter_get rescue "NaN" 
-            end
           %></td>
         <%#前半%>
           <td class="date-td"><span class="date-span"><%= result.first_total_visit rescue "NaN" %></span></td>
