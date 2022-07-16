@@ -1793,7 +1793,7 @@
         <% aupay_slmt_val_fin = (aupay_slmt_valuations.to_f / @digestion_settlement) * @settlement_shift rescue 0 %>
         <% paypay_val_fin = (paypay_valuations.to_f / @digestion_new) * @new_shift rescue 0 %>
         <% rakuten_pay_val_fin = (rakuten_pay_valuations.to_f / @digestion_new) * @new_shift rescue 0 %>
-        <% airpaypay_val_fin = (airpaypay_valuations.to_f / @digestion_new) * @new_shift rescue 0 %>
+        <% airpaypay_val_fin = (airpay_valuations.to_f / @digestion_new) * @new_shift rescue 0 %>
 
 
         <td class="total-td"><%= dmer_val_fin.round().to_s(:delimited) rescue "NaN" %></td>
