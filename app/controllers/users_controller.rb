@@ -277,15 +277,27 @@ class UsersController < ApplicationController
         judge_dec(@dmer_user,@results_date)
         .where.not(industry_status: "NG").where.not(industry_status: "×")
         .select(:valuation_new, :industry_status, :user_id, :store_prop_id) 
-        @dmer_done = 
+        # dメル第一成果, 期間月初〜月末
+        # ①月内に審査完了＆決済が月末より前に完了している
+        # ②審査完了は過去月＆決済は月内に完了している
+        @dmer_done =  
           @dmer_user.where(result_point: @month.beginning_of_month..@month.end_of_month)
           .where.not(industry_status: "NG")
           .where.not(industry_status: "×")
           .where.not(industry_status: "要確認")
           .where(status: "審査OK")
+          .where("? >= settlement", @month.end_of_month)
           .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
-
-
+          .or(
+            @dmer_user.where(settlement: @month.beginning_of_month..@month.end_of_month)
+            .where.not(industry_status: "NG")
+            .where.not(industry_status: "×")
+            .where.not(industry_status: "要確認")
+            .where(status: "審査OK")
+            .where("? >= result_point", @month.end_of_month)
+            .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
+          )
+          
         # 決済
         @dmer_slmter = 
           Dmer.where(settlementer_id: @results.first.user_id)
