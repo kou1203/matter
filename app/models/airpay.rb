@@ -79,7 +79,6 @@ class Airpay < ApplicationRecord
       )
       if airpay.has_changes_to_save? 
         airpay.save!
-        airpay.assign_attributes(status_update: Date.today)
         update_cnt += 1
       else  
         nochange_cnt += 1

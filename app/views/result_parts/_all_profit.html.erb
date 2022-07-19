@@ -214,9 +214,22 @@
           <%# 合計 %>
           <% 
             dmer_valuations =
-              dmer_uq.sum(:valuation_new) - 
-              dmer_def.sum(:valuation_new) + 
-              dmer_db.sum(:valuation_new)
+              dmer_user.where(result_point: @month.next_month.beginning_of_month..@month.end_of_month)
+              .where.not(industry_status: "NG")
+              .where.not(industry_status: "×")
+              .where.not(industry_status: "要確認")
+              .where(status: "審査OK")
+              .where("? >= settlement", @month.end_of_month)
+              .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
+              .or(
+                dmer_user.where(settlement: @month.beginning_of_month..@month.end_of_month)
+                .where.not(industry_status: "NG")
+                .where.not(industry_status: "×")
+                .where.not(industry_status: "要確認")
+                .where(status: "審査OK")
+                .where("? >= result_point", @month.end_of_month)
+                .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
+              ).sum(:valuation_new)
           %>
           <% 
             dmer_len = 
@@ -236,10 +249,23 @@
               .or(slmt_period(dmer_slmter, @cash_result)
               .where(industry_status: ""))
           %>
-          <% dmer_slmt_valuations = dmer_slmt.sum(:valuation_settlement) %>
+          <% dmer_slmt_valuations =               
+              dmer_slmter.where(status_update_settlement: @month.next_month.beginning_of_month..@month.end_of_month)
+              .where.not(industry_status: "NG")
+              .where.not(industry_status: "×")
+              .where.not(industry_status: "要確認")
+              .where(status: "審査OK")
+              .where(status_settlement: "完了").sum(:valuation_settlement)
+          %>
           <% dmer_slmt_len = dmer_slmt.length %>
           <% dmer_slmt2nd = slmt_second(dmer_slmter,@cash_result) %>
-          <% dmer_slmt2nd_valuations = dmer_slmt2nd.sum(:valuation_second_settlement) %>
+          <% dmer_slmt2nd_valuations = 
+              dmer_slmter.where(settlement_second: @month.next_month.beginning_of_month..@month.end_of_month)
+              .where.not(industry_status: "NG")
+              .where.not(industry_status: "×")
+              .where.not(industry_status: "要確認")
+              .where(status: "審査OK").sum(:valuation_second_settlement)
+          %>
           <% dmer_slmt2nd_len = dmer_slmt2nd.length %>
         <%# aupay（新規） %>
           <% aupay_user = Aupay.includes(:store_prop).where(user_id: r.user_id) %>
@@ -260,10 +286,7 @@
           <% aupay_judge_dec = judge_dec(aupay_user,@cash_result)  %>
           <%# 合計 %>
           <% 
-            aupay_valuations =
-              aupay_uq.sum(:valuation_new) - 
-              aupay_def.sum(:valuation_new) + 
-              aupay_db.sum(:valuation_new)
+            aupay_valuations = 0
           %>
           <% 
             aupay_len = 
@@ -274,13 +297,21 @@
         <%# aupay（決済） %>
           <% aupay_slmt_user = Aupay.where(settlementer_id: r.user_id) %>
           <% aupay_slmt = slmt_period(aupay_slmt_user ,@cash_result) %>
-          <% aupay_slmt_valuations = aupay_slmt.sum(:valuation_settlement) %>
+          <% 
+            aupay_slmt_valuations = 
+              aupay_slmt.where(status_update_settlement: @month.next_month.beginning_of_month..@month.end_of_month)
+              .where(status: "審査通過")
+              .where(status_settlement: "完了").sum(:valuation_settlement)
+          %>
           <% aupay_slmt_len = aupay_slmt.length %>
         <%# PayPay %>
           <% paypay_user = Paypay.where(user_id: r.user_id) %>
           <% paypay_data = this_period(paypay_user ,@cash_result) %>
           <% paypay_result = result_period(paypay_user ,@cash_result) %>
-          <% paypay_valuations = paypay_result.sum(:valuation) %>
+          <% 
+            paypay_valuations = 
+              paypay_user.where(result_point: @month.next_month.beginning_of_month..@month.end_of_month).sum(:valuation)
+          %>
           <% paypay_len = paypay_data.length %>
           <% paypay_len_ave = (paypay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
           <% paypay_len_fin = (paypay_len_ave * new_shift).round() rescue 0 %>
@@ -328,9 +359,10 @@
           <% 
             airpay_valuations = 
               if airpay_len >= 10
-                airpay_data.sum(:valuation) + (airpay_len * 2000)
+                airpay_user
+                .where(result_point: @month.next_month.beginning_of_month..@month.end_of_month).sum(:valuation) + (airpay_len * 2000)
               else  
-                airpay_data.sum(:valuation)
+                airpay_user.where(result_point: @month.next_month.beginning_of_month..@month.end_of_month).sum(:valuation)
               end
           %>
 
