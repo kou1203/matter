@@ -20,12 +20,12 @@
       <th class="search-th" rowspan="2" >決済予定シフト</th>
       <th class="search-th" rowspan="2" >新規消化シフト</th>
       <th class="search-th" rowspan="2" >決済消化シフト</th>
-      <th class="search-th" colspan="6" >営業予想</th>
+      <th class="search-th" colspan="7" >営業予想</th>
       <th class="search-th" colspan="" >案件ベース</th>
       <th class="search-th" colspan="5">基準値</th>
-      <th class="search-th" colspan="7">商材別獲得数</th>
-      <th class="search-th" colspan="4">商材別平均獲得数</th>
-      <th class="search-th" colspan="4">商材別獲得終着見込</th>
+      <th class="search-th" colspan="8">商材別獲得数</th>
+      <th class="search-th" colspan="5">商材別平均獲得数</th>
+      <th class="search-th" colspan="5">商材別獲得終着見込</th>
     </tr>
     <tr>
       <th class="search-th">新規平均売上</th>
@@ -34,6 +34,7 @@
       <th class="search-th" >決済現状売上</th>
       <th class="search-th" >新規見込終着</th>
       <th class="search-th" >決済見込終着</th>
+      <th class="search-th" >合計見込終着</th>
       <th class="search-th" >現状売上</th>
       <th class="search-th">訪問</th>
       <th class="search-th">応答</th>
@@ -47,11 +48,13 @@
       <th class="search-th">aupay（決済）</th>
       <th class="search-th">PayPay</th>
       <th class="search-th">楽天ペイ</th>
+      <th class="search-th">AirPay</th>
       <% 2.times do %>
       <th class="search-th">dメル（新規）</th>
       <th class="search-th">aupay（新規）</th>
       <th class="search-th">PayPay</th>
       <th class="search-th">楽天ペイ</th>
+      <th class="search-th">AirPay</th>
       <% end %>
     </tr>
     <tr></tr>
@@ -97,6 +100,9 @@
       <% base_rakuten_pay = 0 %>
       <% base_rakuten_pay_ave = 0 %>
       <% base_rakuten_pay_fin = 0 %>
+      <% base_airpay = 0 %>
+      <% base_airpay_ave = 0 %>
+      <% base_airpay_fin = 0 %>
       <% base_st_insurace = 0 %>
       <% base_exp_ave = 0 %>
       <% base_exp_new_ave = 0 %>
@@ -308,25 +314,26 @@
             %>
           <% rakuten_pay_len_ave = (rakuten_pay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
           <% rakuten_pay_len_fin = (rakuten_pay_len_ave * new_shift).round() rescue 0 %>
-        <%# 楽天ペイインセン（40件で5万, 50件で10万） %>
-          <% rakuten_bonus = 0 %>
-          <% if @cash_result.minimum(:date).day == 1 %>
-            <% if rakuten_pay_len >= 50 %>
-              <% rakuten_bonus = 100000 %>
-            <% elsif rakuten_pay_len >= 40  %>
-              <% rakuten_bonus = 50000 %>
-            <% else %>
-              <% rakuten_bonus = 0 %>
-            <% end %>
-          <% elsif @cash_result.minimum(:date).day == 26 %>
-            <% if rakuten_pay_len >= 50 %>
-              <% rakuten_bonus = 100000 %>
-            <% elsif rakuten_pay_len >= 40  %>
-              <% rakuten_bonus = 50000 %>
-            <% else %>
-              <% rakuten_bonus = 0 %>
-            <% end %>
-          <% end %>
+        <%# AirPay %>
+          <% airpay_user = Airpay.where(user_id: r.user_id) %>
+          <% 
+            airpay_data = this_period(airpay_user ,@cash_result)
+          %>
+          <% airpay_len = airpay_data.length %>
+          <% 
+            airpay_len_ave = 
+              (airpay_len.to_f / new_shift_digestion).round(1) rescue 0 
+          %>
+          <% airpay_len_fin = (airpay_len_ave * new_shift).round() rescue 0 %>
+          <% 
+            airpay_valuations = 
+              if airpay_len >= 10
+                airpay_data.sum(:valuation) + (airpay_len * 2000)
+              else  
+                airpay_data.sum(:valuation)
+              end
+          %>
+
         <%# 少額短期保険 %>
           <% st_insurance_user = StInsurance.includes(:store_prop).where(user_id: r.user_id) %>
           <% st_insurance_data = this_period(st_insurance_user,@cash_result) %>
@@ -345,7 +352,7 @@
               paypay_valuations +
               rakuten_pay_valuations + 
               st_insurance_valuations +
-              rakuten_bonus
+              airpay_valuations
           %>
           <% ave_valuations = sum_valuations / shift_digestion rescue 0 %>
           <% base_dmer += dmer_len %>
@@ -363,6 +370,9 @@
           <% base_rakuten_pay += rakuten_pay_len %>
           <% base_rakuten_pay_ave = base_rakuten_pay / shift_digestion %>
           <% base_rakuten_pay_fin += rakuten_pay_len_fin %>
+          <% base_airpay += airpay_len %>
+          <% base_airpay_ave = base_airpay / shift_digestion %>
+          <% base_airpay_fin += airpay_len_fin %>
           <% base_st_insurace += st_insurance_len %>
           <% base_sum += sum_valuations %>
     <tr>
@@ -379,6 +389,7 @@
       <td ><%= exp_slmt_sum.to_s(:delimited) %></td>
       <td ><%= exp_new_fin.to_s(:delimited) %></td>
       <td ><%= exp_slmt_fin.to_s(:delimited) %></td>
+      <td ><%= (exp_new_fin + exp_slmt_fin).to_s(:delimited) %></td>
       <td ><%= sum_valuations.to_s(:delimited) rescue 0 %></td>
       <%# 基準値 %>
       <td><%= (sum_total_visit / new_shift_digestion).round(1) rescue 0 %></td>
@@ -394,16 +405,19 @@
       <td ><%= aupay_slmt_len %></td>
       <td ><%= paypay_len %></td>
       <td ><%= rakuten_pay_len %></td>
+      <td ><%= airpay_len %></td>
       <%# 平均獲得数 %>
       <td ><%= dmer_len_ave %></td>
       <td ><%= aupay_len_ave %></td>
       <td ><%= paypay_len_ave %></td>
       <td ><%= rakuten_pay_len_ave %></td>
+      <td ><%= airpay_len_ave %></td>
       <%# 獲得終着 %>
       <td ><%= dmer_len_fin %></td>
       <td ><%= aupay_len_fin %></td>
       <td ><%= paypay_len_fin %></td>
       <td ><%= rakuten_pay_len_fin %></td>
+      <td ><%= airpay_len_fin %></td>
     </tr>
       <% end %>
     <tr>
@@ -420,6 +434,7 @@
         <td><%= base_exp_slmt_sum.to_s(:delimited) rescue 0 %></td>
         <td><%= base_exp_new_fin.to_s(:delimited) rescue 0 %></td>
         <td><%= base_exp_slmt_fin.to_s(:delimited) rescue 0 %></td>
+        <td><%= (base_exp_new_fin + base_exp_slmt_fin).to_s(:delimited) rescue 0 %></td>
         <td><%= base_sum.to_s(:delimited) rescue 0 %></td>
         <td><%= @cash_result.average("first_total_visit + latter_total_visit").round(1) rescue 0 %></td>
         <td><%= @cash_result.average("first_visit + latter_visit").round(1) rescue 0 %></td>
@@ -434,16 +449,19 @@
         <td><%= base_aupay_slmt %></td>
         <td><%= base_paypay %></td>
         <td><%= base_rakuten_pay %></td>
+        <td><%= base_airpay %></td>
         <%# 全体平均獲得数 %>
         <td><%= base_dmer_ave %></td>
         <td><%= base_aupay_ave %></td>
         <td><%= base_paypay_ave %></td>
         <td><%= base_rakuten_pay_ave %></td>
+        <td><%= base_airpay_ave %></td>
         <%# 全体終着獲得数 %>
         <td><%= base_dmer_fin %></td>
         <td><%= base_aupay_fin %></td>
         <td><%= base_paypay_fin %></td>
         <td><%= base_rakuten_pay_fin %></td>
+        <td><%= base_airpay_fin %></td>
     </tr>
   </table>
   <% end %>

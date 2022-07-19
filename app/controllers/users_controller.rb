@@ -251,6 +251,8 @@ class UsersController < ApplicationController
        @sales_slmt_profit_fin = @sales_slmt_profit_ave * @settlement_shift rescue 0
        @sales_profit_fin = @sales_new_profit_fin + @sales_slmt_profit_fin
        @sales_profit_ave = @sales_profit_fin / (@new_shift + @settlement_shift) rescue 0
+       @sales_profit_ojt_ave = (@sales_new_profit_sum + @sales_slmt_profit_sum) / (@new_shift + @settlement_shift) rescue 0
+       @sales_profit_ojt_sum = @sales_profit_ojt_ave * @digestion_ojt rescue 0
       #  dメル
        @dmer_user = 
         Dmer.includes(:store_prop).where(user_id: @results.first.user_id )

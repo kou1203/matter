@@ -602,6 +602,7 @@
         <th class="date-th">現状売上</th>
         <th class="date-th">Ave</th>
         <th class="date-th">予測終着</th>
+        <th class="date-th">帯同加味</th>
       </tr>
       <tr>
         <td class="date-td">キャッシュレス新規</td><%# 欠勤 %>
@@ -611,6 +612,7 @@
         <td class="date-td"><%= @sales_new_profit_sum.to_s(:delimited) rescue "測定不可" %></td>
         <td class="date-td"><%= @sales_new_profit_ave.round().to_s(:delimited) rescue "測定不可" %></td>
         <td class="date-td"><%= @sales_new_profit_fin.round().to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"></td>
       </tr>
       <tr>
         <td class="date-td">キャッシュレス決済</td>
@@ -620,12 +622,14 @@
         <td class="date-td"><%= @sales_slmt_profit_sum.to_s(:delimited) rescue "測定不可" %></td>
         <td class="date-td"><%= @sales_slmt_profit_ave.round().to_s(:delimited) rescue "測定不可" %></td>
         <td class="date-td"><%= @sales_slmt_profit_fin.to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"></td>
       </tr>
       <tr>
         <td class="date-td">サミット</td>
         <td class="date-td"><%= @summit_shift %></td>
         <td class="date-td"><%= @digestion_summit %></td>
         <td class="date-td"><%= @summit_shift - @digestion_summit %></td>
+        <td class="date-td"></td>
         <td class="date-td"></td>
         <td class="date-td"></td>
         <td class="date-td"></td>
@@ -638,6 +642,7 @@
         <td class="date-td"></td>
         <td class="date-td"></td>
         <td class="date-td"></td>
+        <td class="date-td"></td>
       </tr>
       <tr>
         <td class="date-td">楽天フェムト設置</td>
@@ -647,13 +652,15 @@
         <td class="date-td"></td>
         <td class="date-td"></td>
         <td class="date-td"></td>
+        <td class="date-td"></td>
       </tr>
       <tr>
         <td class="date-td">帯同</td>
         <td class="date-td"><%= @ojt_shift %></td>
         <td class="date-td"><%= @digestion_ojt %></td>
         <td class="date-td"><%= @ojt_shift - @digestion_ojt %></td>
-        <td class="date-td"></td>
+        <td class="date-td"><%= @sales_profit_ojt_sum %></td>
+        <td class="date-td"><%=  %></td>
         <td class="date-td"></td>
         <td class="date-td"></td>
       </tr>
@@ -662,6 +669,7 @@
         <td class="date-td"><%= @house_work_shift %></td>
         <td class="date-td"><%= @digestion_house_work %></td>
         <td class="date-td"><%= @house_work_shift - @digestion_house_work %></td>
+        <td class="date-td"></td>
         <td class="date-td"></td>
         <td class="date-td"></td>
         <td class="date-td"></td>
@@ -674,6 +682,7 @@
         <td class="date-td"><%= (@sales_new_profit_sum + @sales_slmt_profit_sum).to_s(:delimited) %></td>
         <td class="date-td"><%= @sales_profit_ave.round().to_s(:delimited) rescue "測定不可" %></td>
         <td class="date-td"><%= @sales_profit_fin.round().to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= (@sales_profit_fin + @sales_profit_ojt_sum).round().to_s(:delimited) rescue "測定不可" %></td>
       </tr>
     </table>
   <%#/シフト/売上の区切り%>
@@ -1708,9 +1717,8 @@
   </div>
   <div>
   <%# 商材別売上/生産性 %>
-    <h2>商材別売上/生産性</h2>
-    <p class="caution-text">※案件を元にした現状売上と終着になります。</p>
-    <p class="caution-text"></p>
+    <h2>商材別売上/生産性（給与に関わる評価売上）</h2>
+    <p class="big-caution-text">※給与にかかわる評価売上 現状ステータスから反映</p>
     <table>
       <tr>
         <th class="total-th">商材</th>
