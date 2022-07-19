@@ -22,6 +22,8 @@ class ResultsController < ApplicationController
     @users_kansai_cash = @users_kansai.where(base_sub: "キャッシュレス")
     @users_kanto = @users.where(base: "関東SS")
     @users_kanto_cash = @users_kanto.where(base_sub: "キャッシュレス")
+    @users_partner = @users.where(base: "パートナー")
+    @user_partner_cash = @users_partner.where(base_sub: "キャッシュレス")
     @results_data = Result.all
     @q = Result.ransack(params[:q])
     @results = 
