@@ -214,20 +214,20 @@
           <%# 合計 %>
           <% 
             dmer_valuations =
-              dmer_user.where(result_point: @month.next_month.beginning_of_month..@month.end_of_month)
+              dmer_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
               .where.not(industry_status: "NG")
               .where.not(industry_status: "×")
               .where.not(industry_status: "要確認")
               .where(status: "審査OK")
-              .where("? >= settlement", @month.end_of_month)
+              .where("? >= settlement", @month.next_month.end_of_month)
               .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
               .or(
-                dmer_user.where(settlement: @month.beginning_of_month..@month.end_of_month)
+                dmer_user.where(settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
                 .where.not(industry_status: "NG")
                 .where.not(industry_status: "×")
                 .where.not(industry_status: "要確認")
                 .where(status: "審査OK")
-                .where("? >= result_point", @month.end_of_month)
+                .where("? >= result_point", @month.next_month.end_of_month)
                 .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
               ).sum(:valuation_new)
           %>
@@ -250,7 +250,7 @@
               .where(industry_status: ""))
           %>
           <% dmer_slmt_valuations =               
-              dmer_slmter.where(status_update_settlement: @month.next_month.beginning_of_month..@month.end_of_month)
+              dmer_slmter.where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
               .where.not(industry_status: "NG")
               .where.not(industry_status: "×")
               .where.not(industry_status: "要確認")
@@ -260,11 +260,12 @@
           <% dmer_slmt_len = dmer_slmt.length %>
           <% dmer_slmt2nd = slmt_second(dmer_slmter,@cash_result) %>
           <% dmer_slmt2nd_valuations = 
-              dmer_slmter.where(settlement_second: @month.next_month.beginning_of_month..@month.end_of_month)
+              dmer_slmter.where(settlement_second: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
               .where.not(industry_status: "NG")
               .where.not(industry_status: "×")
               .where.not(industry_status: "要確認")
-              .where(status: "審査OK").sum(:valuation_second_settlement)
+              .where(status: "審査OK")
+              .where(status_settlement: "完了").sum(:valuation_second_settlement)
           %>
           <% dmer_slmt2nd_len = dmer_slmt2nd.length %>
         <%# aupay（新規） %>
@@ -299,7 +300,7 @@
           <% aupay_slmt = slmt_period(aupay_slmt_user ,@cash_result) %>
           <% 
             aupay_slmt_valuations = 
-              aupay_slmt.where(status_update_settlement: @month.next_month.beginning_of_month..@month.end_of_month)
+              aupay_slmt_user.where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
               .where(status: "審査通過")
               .where(status_settlement: "完了").sum(:valuation_settlement)
           %>
@@ -310,7 +311,7 @@
           <% paypay_result = result_period(paypay_user ,@cash_result) %>
           <% 
             paypay_valuations = 
-              paypay_user.where(result_point: @month.next_month.beginning_of_month..@month.end_of_month).sum(:valuation)
+              paypay_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month).sum(:valuation)
           %>
           <% paypay_len = paypay_data.length %>
           <% paypay_len_ave = (paypay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
@@ -336,12 +337,9 @@
             <% 
               rakuten_pay_valuations =
                 rakuten_pay_uq.sum(:valuation) - 
-                rakuten_pay_def.sum(:valuation)
-            %>
-            <% 
-              rakuten_pay_len = 
-                rakuten_pay_uq.length - 
-                rakuten_pay_def.length
+                rakuten_pay_def.sum(:valuation) -
+                rakuten_pay_dec.sum(:valuation) +
+                rakuten_pay_inc.sum(:valuation)
             %>
           <% rakuten_pay_len_ave = (rakuten_pay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
           <% rakuten_pay_len_fin = (rakuten_pay_len_ave * new_shift).round() rescue 0 %>
