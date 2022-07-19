@@ -341,6 +341,13 @@
                 rakuten_pay_dec.sum(:valuation) +
                 rakuten_pay_inc.sum(:valuation)
             %>
+            <% 
+              rakuten_pay_len = 
+                rakuten_pay_uq.length - 
+                rakuten_pay_def.length -
+                rakuten_pay_dec.length +
+                rakuten_pay_inc.length
+            %>
           <% rakuten_pay_len_ave = (rakuten_pay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
           <% rakuten_pay_len_fin = (rakuten_pay_len_ave * new_shift).round() rescue 0 %>
         <%# AirPay %>
