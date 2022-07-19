@@ -1,63 +1,34 @@
-<div data-scope-path="shifts/edit">
-  <h1>シフト入力：<%= current_user.name %></h1>
+<div data-scope-path="shared/header">
+  <h1>シフト編集</h1>
   <%= render "shared/header" %>
-  <%= form_with model: @shift, class: "form-frame", local: true do |f| %>
-  <table>
-  <%# 一列目 %>
-    <tr>
-      <th class="date-th">日</th>
-      <th class="date-th">付</th>
-      <td class="date-td"><%= f.number_field :year, class: "input" %></td>
-      <th class="date-th">年</th>
-      <td class="date-td"><%= f.number_field :month, class: "input" %></td>
-      <th class="date-th">月</th>
-    </tr>
-  </table>
-  <table>
-  <%# 2列目ラベル %>
-    <tr>
-      <th><%= f.label :house_work, "内勤日数", class: "form-text" %></th>
-      <th><%= f.label :ojt, "OJT日数", class: "form-text" %></th>
-      <th><%= f.label :cashless_new, "キャッシュレス新規日数", class: "form-text" %></th>
-      <th><%= f.label :cashless_settlement, "キャッシュレス決済日数", class: "form-text" %></th>
-    </tr>
-  <%# 2列目値 %>
-    <tr>
-      <td><%= f.number_field :house_work,class: "form-input" %></td>
-      <td><%= f.number_field :ojt,class: "form-input" %></td>
-      <td><%= f.number_field :cashless_new,class: "form-input" %></td>
-      <td><%= f.number_field :cashless_settlement,class: "form-input" %></td>
-    </tr>
-  <%# 3列目ラベル %>
-    <tr>
-      <th><%= f.label :praness, "ぷらねす日数", class: "form-text" %></th>
-      <th><%= f.label :summit, "サミットエナジー日数", class: "form-text" %></th>
-      <th><%= f.label :panda, "フードパンダ日数", class: "form-text" %></th>
-      <th><%= f.label :goal, "目標売上日数", class: "form-text" %></th>
-    </tr>
-  <%# 3列目値 %>
-    <tr>
-      <td><%= f.number_field :praness,class: "form-input"  %></td>
-      <td><%= f.number_field :summit,class: "form-input"  %></td>
-      <td><%= f.number_field :panda,class: "form-input"  %></td>
-      <td><%= f.number_field :goal,class: "form-input"  %></td>
-    </tr>
-  <%# 4列目ラベル %>
-    <tr>
-      <th><%= f.label :n, "N対策日数", class: "form-text" %></th>
-      <th><%= f.label :rakuten_casa, "楽天カーサ日数", class: "form-text" %></th>
-      <th></th>
-      <th></th>
-    </tr>
-  <%# 4列目値 %>
-    <tr>
-      <td><%= f.number_field :n,class: "form-input"  %></td>
-      <td><%= f.number_field :rakuten_casa,class: "form-input"  %></td>
-      <td></td>
-      <td></td>
-    </tr>
-  </table>
-    <%= f.submit "登録", class: "submit-btn" %>
-  <% end %>
-  </main>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form">
+    <div class="form-main">
+      <div class="form-title">
+      </div>
+    <%= form_with(model: @shift, date: {remote: false}) do |f| %>
+    <%= render "shared/error_messages", model: f.object %>
+    <h1>基本情報</h1>
+    <div class="form">
+        <p><%= f.label :request, "日付", class: "form-text" %></p>
+        <p><%= f.date_field :start_time , class: "date-input" %></p>
+    </div>
+    <div class="form">
+        <p><%= f.text_field :area , class: "input" %></p>
+    </div>
+    <div class="form">
+        <p><%= f.label :ball, "シフト", class: "form-text" %></p>
+        <p><%= f.select :shift, {"キャッシュレス新規": "キャッシュレス新規", "キャッシュレス決済": "キャッシュレス決済","楽天フェムト新規": "楽天フェムト新規", "楽天フェムト設置": "楽天フェムト設置",  "サミット": "サミット","帯同": "帯同","内勤": "内勤", "休み": "休み","欠勤": "欠勤"},{include_blank: true}, {class: "slct-input", id: "selectbox"} %></p>
+    </div>
+   
+    
+    <div class="form-submit">
+      <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+    </div>
+    <% end %>
+  </div>
 </div>

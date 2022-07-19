@@ -127,6 +127,7 @@
           <th>休み</th>
           <th>欠勤</th>
           <th>合計</th>
+          <th>シフト変更</th>
         </tr>
     <% @shifts.group(:user_id).each do |shift| %>
       <%# 変数 %>
@@ -174,15 +175,23 @@
           <td><%= @shifts.where(user_id: shift.user.id).where(shift: "内勤").length %></td>
           <td><%= @shifts.where(user_id: shift.user.id).where(shift: "休み").length %></td>
           <td><%= @shifts.where(user_id: shift.user.id).where(shift: "欠勤").length %></td>
-          <td><%= @shifts.where(user_id: shift.user.id).where(shift: "キャッシュレス新規").length +
-                  @shifts.where(user_id: shift.user.id).where(shift: "キャッシュレス決済").length +
-                  @shifts.where(user_id: shift.user.id).where(shift: "楽天フェムト新規").length +
-                  @shifts.where(user_id: shift.user.id).where(shift: "楽天フェムト設置").length +
-                  @shifts.where(user_id: shift.user.id).where(shift: "サミット").length +
-                  @shifts.where(user_id: shift.user.id).where(shift: "帯同").length +
-                  @shifts.where(user_id: shift.user.id).where(shift: "内勤").length +
-                  @shifts.where(user_id: shift.user.id).where(shift: "休み").length +
-                  @shifts.where(user_id: shift.user.id).where(shift: "欠勤").length %></td>
+          <td><%= 
+            shift_sum =
+              @shifts.where(user_id: shift.user.id).where(shift: "キャッシュレス新規").length +
+              @shifts.where(user_id: shift.user.id).where(shift: "キャッシュレス決済").length +
+              @shifts.where(user_id: shift.user.id).where(shift: "楽天フェムト新規").length +
+              @shifts.where(user_id: shift.user.id).where(shift: "楽天フェムト設置").length +
+              @shifts.where(user_id: shift.user.id).where(shift: "サミット").length +
+              @shifts.where(user_id: shift.user.id).where(shift: "帯同").length +
+              @shifts.where(user_id: shift.user.id).where(shift: "内勤").length +
+              @shifts.where(user_id: shift.user.id).where(shift: "休み").length +
+              @shifts.where(user_id: shift.user.id).where(shift: "欠勤").length 
+          %></td>
+          <% if shift_sum == 1 %>
+          <td rowspan="2" style="vertical-align: middle;"><%= link_to "編集",edit_shift_path(shift.id),class: "link" %></td>
+          <% else %>
+          <td rowspan="2"></td>
+          <% end %>
         </tr>
         <tr>
           <td>消化シフト</td>
@@ -195,15 +204,17 @@
           <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "内勤").length %></td>
           <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "休み").length %></td>
           <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "欠勤").length %></td>
-          <td><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "キャッシュレス新規").length +
-                  @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "キャッシュレス決済").length +
-                  @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "楽天フェムト新規").length +
-                  @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "楽天フェムト設置").length +
-                  @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "サミット").length +
-                  @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "帯同").length +
-                  @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "内勤").length +
-                  @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "休み").length +
-                  @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "欠勤").length %></td>
+          <td><%=  
+              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "キャッシュレス新規").length +
+              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "キャッシュレス決済").length +
+              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "楽天フェムト新規").length +
+              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "楽天フェムト設置").length +
+              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "サミット").length +
+              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "帯同").length +
+              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "内勤").length +
+              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "休み").length +
+              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "欠勤").length 
+            %></td>
         </tr>
     <% end %>
       </table>
