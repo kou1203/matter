@@ -281,7 +281,8 @@
       <% end %>
     </tbody>
   </table>
-  
+<% end %>
+<% if @airpay_done.present? %>
 <h2>AirPay第一成果（審査通過）</h2>
   <% num = 1 %>
   <table>
@@ -295,19 +296,19 @@
       <th class="valuation-th"></th>
     </thead>
     <tbody>
-      <% @airpay_done.each do |rakuten_pay| %>
+      <% @airpay_done.each do |airpay| %>
       <tr>
       <td class="valuation-td "><%= num %></td>
-      <td class="valuation-td "><%= rakuten_pay.store_prop.name %></td>
-      <td class="valuation-td "><%= rakuten_pay.date %></td>
-      <td class="valuation-td "><%= rakuten_pay.status %></td>
-      <td class="valuation-td "><%= rakuten_pay.result_point %></td>
-      <% if @airpay_done.length >= 10 %>
-      <td class="valuation-td "><%= rakuten_pay.valuation + 2000 %></td>
+      <td class="valuation-td "><%= airpay.store_prop.name %></td>
+      <td class="valuation-td "><%= airpay.date %></td>
+      <td class="valuation-td "><%= airpay.status %></td>
+      <td class="valuation-td "><%= airpay.result_point %></td>
+      <% if @airpay_done.present? && @airpay_done.length >= 10 %>
+      <td class="valuation-td "><%= airpay.valuation + 2000 %></td>
       <% else %>
-      <td class="valuation-td "><%= rakuten_pay.valuation %></td>
+      <td class="valuation-td "><%= airpay.valuation %></td>
       <% end %>
-      <td class="valuation-td "><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
+      <td class="valuation-td "><%= link_to "詳細", airpay_path(airpay.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
       <% end %>
