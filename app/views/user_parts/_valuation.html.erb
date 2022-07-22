@@ -42,6 +42,7 @@
       <th class="valuation-th"></th>
     </thead>
     <tbody>
+      <% if @dmer_def.present? %>
       <% @dmer_def.each do |dmer| %>
       <tr>
       <td class="valuation-td red">dメル</td>
@@ -54,6 +55,8 @@
       <td class="valuation-td red"><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
       </tr>
       <% end %>
+      <% end %>
+      <% if @aupay_def.present? %>
       <% @aupay_def.each do |aupay| %>
       <tr>
       <td class="valuation-td red">auPay</td>
@@ -66,6 +69,8 @@
       <td class="valuation-td red"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
       </tr>
       <% end %>
+      <% end %>
+      <% if @rakuten_pay_def.present? %>
       <% @rakuten_pay_def.each do |rakuten_pay| %>
       <tr>
       <td class="valuation-td red">楽天ペイ</td>
@@ -77,6 +82,7 @@
       <td class="valuation-td red"><%= rakuten_pay.valuation %></td>
       <td class="valuation-td red"><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
       </tr>
+      <% end %>
       <% end %>
     </tbody>
   </table>
@@ -96,6 +102,7 @@
       <th class="valuation-th"></th>
     </thead>
     <tbody>
+      <% if @dmer_dec.present? %>
       <% @dmer_dec.each do |dmer| %>
       <tr>
       <td class="valuation-td red">dメル</td>
@@ -108,6 +115,8 @@
       <td class="valuation-td red"><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
       </tr>
       <% end %>
+      <% end %>
+      <% if @aupay_dec.present? %>
       <% @aupay_dec.each do |aupay| %>
       <tr>
       <td class="valuation-td red">auPay</td>
@@ -119,6 +128,7 @@
       <td class="valuation-td red"><%= aupay.valuation_new %></td>
       <td class="valuation-td red"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
       </tr>
+      <% end %>
       <% end %>
     </tbody>
   </table>
@@ -138,6 +148,7 @@
       <th class="valuation-th"></th>
     </thead>
     <tbody>
+      <% if @dmer_inc.present? %>
       <% @dmer_inc.each do |dmer| %>
       <tr>
       <td class="valuation-td blue">dメル</td>
@@ -150,6 +161,8 @@
       <td class="valuation-td blue"><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
       </tr>
       <% end %>
+      <% end %>
+      <% if @aupay_inc.present? %>
       <% @aupay_inc.each do |aupay| %>
       <tr>
       <td class="valuation-td blue">auPay</td>
@@ -162,6 +175,8 @@
       <td class="valuation-td blue"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
       </tr>
       <% end %>
+      <% end %>
+      <% if @rakuten_pay_inc.present? %>
       <% @rakuten_pay_inc.each do |rakuten_pay| %>
       <tr>
       <td class="valuation-td blue">楽天ペイ</td>
@@ -173,6 +188,7 @@
       <td class="valuation-td blue"><%= rakuten_pay.valuation %></td>
       <td class="valuation-td blue"><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
       </tr>
+      <% end %>
       <% end %>
     </tbody>
   </table>
@@ -193,6 +209,7 @@
       <th class="valuation-th"></th>
     </thead>
     <tbody>
+      <% if @dmer_db_data.present? %>
       <% @dmer_db_data.each do |dmer| %>
       <tr>
       <td class="valuation-td blue">dメル</td>
@@ -206,6 +223,8 @@
       <td class="valuation-td blue"><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
       </tr>
       <% end %>
+      <% end %>
+      <% if @aupay_db.present? %>
       <% @aupay_db.each do |aupay| %>
       <tr>
       <td class="valuation-td blue">auPay</td>
@@ -218,6 +237,7 @@
       <td class="valuation-td blue"><%= aupay.valuation_new %></td>
       <td class="valuation-td blue"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
       </tr>
+      <% end %>
       <% end %>
     </tbody>
   </table>
