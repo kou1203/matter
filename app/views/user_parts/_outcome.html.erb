@@ -7,6 +7,7 @@
       @dmer_slmt_done.sum(:valuation_settlement) +
       @dmer_slmt2nd_done.sum(:valuation_second_settlement) +
       @aupay_slmt_done.sum(:valuation_settlement) +
+      @paypay_done.sum(:valuation) +
       @rakuten_pay_done_val +
       @airpay_done.sum(:valuation) +
       (@airpay_done.length * 2000)
@@ -15,12 +16,12 @@
       @dmer_slmt_done.sum(:valuation_settlement) +
       @dmer_slmt2nd_done.sum(:valuation_second_settlement) +
       @aupay_slmt_done.sum(:valuation_settlement) +
+      @paypay_done.sum(:valuation) +
       @rakuten_pay_done_val +
       @airpay_done.sum(:valuation)
       end
     ).to_s(:delimited) rescue 0
-  %>
-</h2>
+  %></h2>
   <table>
   <tr>
     <th class="valuation-th">商材</th>
@@ -48,6 +49,13 @@
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @aupay_slmt_done.sum(:valuation_settlement).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <tr>
+    <td class="valuation-td">PayPay</td>
+    <td class="valuation-td"><%= @paypay_done.length rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @paypay_done.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
   <tr>
     <td class="valuation-td">楽天ペイ</td>
@@ -187,6 +195,33 @@
       <td class="valuation-td "><%= aupay.status_update_settlement %></td>
       <td class="valuation-td "><%= aupay.valuation_settlement %></td>
       <td class="valuation-td "><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<h2>PayPay第一成果（審査完了）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @paypay_done.each do |paypay| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= paypay.store_prop.name %></td>
+      <td class="valuation-td "><%= paypay.date %></td>
+      <td class="valuation-td "><%= paypay.status %></td>
+      <td class="valuation-td "><%= paypay.result_point %></td>
+      <td class="valuation-td "><%= paypay.valuation %></td>
+      <td class="valuation-td "><%= link_to "詳細", paypay_path(paypay.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
       <% end %>

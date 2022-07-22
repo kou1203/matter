@@ -362,7 +362,7 @@ class UsersController < ApplicationController
       @aupay_dec = judge_dec(@aupay_user,@results_date).select(:id,:valuation_new, :user_id, :store_prop_id,:status,:date,:result_point,:status)
       @aupay_slmter = 
         Aupay.where(settlementer_id: @results.first.user_id).includes(:store_prop)
-        .select(:settlementer_id, :valuation_settlement,:id,:status,:result_point,:store_prop_id,:date,:status_update_settlement,:status_settlement)
+        .select(:settlementer_id, :valuation_settlement,:id,:status,:result_point,:store_prop_id,:date,:status_update_settlement,:status,:status_settlement)
       @aupay_ok = @aupay_slmter.where(status: "審査通過")
       @aupay_slmt = slmt_period(@aupay_slmter,@results_date) 
       @aupay_slmt_def = @aupay_ok.where(picture: @results_date_min..@results_date_max).where(settlement: nil).where("settlement_deadline > ?",Date.today)
@@ -374,8 +374,8 @@ class UsersController < ApplicationController
         .where(status_settlement: "完了")
       # paypay
       @paypay_user = 
-        Paypay.where(user_id: @results.first.user_id)
-        .select(:valuation)
+        Paypay.where(user_id: @results.first.user_id).includes(:store_prop)
+        .select(:valuation,:date,:result_point,:status,:store_prop_id,:id)
       @paypay_data = this_period(@paypay_user ,@results_date).select(:valuation)
       @paypay_result = result_period(@paypay_user ,@results_date)
       @paypay_done = 
