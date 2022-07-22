@@ -2,7 +2,7 @@
 <h2 class="red">成果売上：
   <%=   
     (
-      if @airpay_done.length >= 10
+      if @airpay_done.present? && @airpay_done.length >= 10
       @dmer_done.sum(:valuation_new) +
       @dmer_slmt_done.sum(:valuation_settlement) +
       @dmer_slmt2nd_done.sum(:valuation_second_settlement) +
@@ -69,13 +69,14 @@
     <td class="valuation-td"><%= @airpay_done.length rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
-    <% if @airpay_done.length >= 10 %>
+    <% if @airpay_done.present? && @airpay_done.length >= 10 %>
     <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + 2000 * @airpay_done.length).to_s(:delimited) rescue 0 %></td>
     <% else %>
     <td class="valuation-td"><%= @airpay_done.sum(:valuation).to_s(:delimited) rescue 0 %></td>
     <% end %>
   </tr>
   </table>
+<% if @dmer_done.present? %>
 <h2>dメル第一成果（審査完了+決済）</h2>
   <table>
     <thead>
@@ -106,6 +107,8 @@
       <% end %>
     </tbody>
   </table>
+<% end %>
+<% if @dmer_slmt_done.present? %>
 <h2>dメル第二成果（第一成果+アクセプタンス）</h2>
   <% num = 1 %>
   <table>
@@ -137,6 +140,8 @@
       <% end %>
     </tbody>
   </table>
+<% end %>
+<% if @dmer_slmt2nd_done.present? %>
 <h2>dメル第三成果（第二成果+2回目決済）</h2>
   <% num = 1 %>
   <table>
@@ -169,6 +174,8 @@
       <% end %>
     </tbody>
   </table>
+<% end %>
+<% if @aupay_slmt_done.present? %>
 <h2>auPay第一成果（審査完了+決済+アクセプタンス）</h2>
   <% num = 1 %>
   <table>
@@ -200,6 +207,8 @@
       <% end %>
     </tbody>
   </table>
+<% end %>
+<% if @paypay_done.present? %>
 <h2>PayPay第一成果（審査完了）</h2>
   <% num = 1 %>
   <table>
@@ -227,6 +236,8 @@
       <% end %>
     </tbody>
   </table>
+<% end %>
+<% if @rakuten_pay_uq.present? || @rakuten_pay_inc.present? %>
 <h2>楽天ペイ第一成果（獲得数+自社不備解消数）</h2>
   <% num = 1 %>
   <table>
@@ -240,6 +251,7 @@
       <th class="valuation-th"></th>
     </thead>
     <tbody>
+      <% if @rakuten_pay_uq.present? %>
       <% @rakuten_pay_uq.each do |rakuten_pay| %>
       <tr>
       <td class="valuation-td "><%= num %></td>
@@ -252,6 +264,8 @@
       </tr>
       <% num += 1 %>
       <% end %>
+      <% end %>
+      <% if @rakuten_pay_inc.present? %>
       <% @rakuten_pay_inc.each do |rakuten_pay| %>
       <tr>
       <td class="valuation-td "><%= num %></td>
@@ -263,6 +277,7 @@
       <td class="valuation-td "><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
+      <% end %>
       <% end %>
     </tbody>
   </table>
@@ -298,3 +313,4 @@
       <% end %>
     </tbody>
   </table>
+<% end %>
