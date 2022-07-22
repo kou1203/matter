@@ -16,6 +16,16 @@
     background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
   }
 
+  // 色付け
+  .red {
+    color: red;
+  }
+
+  .blue {
+    color: blue;
+  }
+  // 色付け
+
   .display-btn {
     border: none;
     background: #c4c2c2;
@@ -182,6 +192,7 @@
     // padding: 4px 0;
 
   }
+
   
   tr:nth-child(odd) {
     background: #ede5e5;
@@ -192,8 +203,34 @@
     -ms-writing-mode : tb-lr;
     writing-mode : vertical-lr;
     display: block;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    /* tbody内のセルより手前に表示する */
+    z-index: 1;
+  }
+  
+
+  .date-tb .date-th {
+    /* 横スクロール時に固定する */
+    left: 0;
   }
 
+  .date-tb .date-thead tr:nth-child(1) .date-th {
+    /* ヘッダー行内の他のセルより手前に表示する */
+    position: sticky;
+    position: -webkit-sticky;
+    z-index: 1;
+    // top: 0;
+  }
+  .date-tb .date-thead tr:nth-child(2) .date-th {
+    /* ヘッダー行内の他のセルより手前に表示する */
+    position: sticky;
+    position: -webkit-sticky;
+    z-index: 2;
+    // top: 5rem;
+  }
+  
   .head-th {
     border: none;
   }
@@ -371,6 +408,17 @@
     max-width: 100vw;
 
   }
+  
+  // 増減表
+
+  .valuation-th {
+    padding: 5px;
+  }
+  .valuation-td {
+    padding: 5px;
+  }
+
+
 
   .sticky {
     position: sticky;

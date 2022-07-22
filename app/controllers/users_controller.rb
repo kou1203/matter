@@ -263,8 +263,8 @@ class UsersController < ApplicationController
         @dmer_db_data = 
         share_period(@dmer_user,@results_date).where.not(store_prop: {head_store: nil})
         .where.not(industry_status: "×").where.not(industry_status: "NG").where.not(industry_status: "要確認")
-        .where(status: "審査OK").select(:valuation_new, :industry_status, :user_id, :store_prop_id)
-        @dmer_def = dmer_def(@dmer_uq, @results_date).select(:valuation_new, :industry_status, :user_id, :store_prop_id)
+        .where(status: "審査OK").select(:valuation_new, :industry_status, :user_id, :store_prop_id,:date,:result_point,:status,:industry_status,:share)
+        @dmer_def = dmer_def(@dmer_uq, @results_date).select(:valuation_new, :industry_status, :user_id, :date,:status,:result_point,:store_prop_id)
         @dmer_inc = 
         judge_inc(@dmer_user,@results_date)
         .where(store_prop: {head_store: nil})
@@ -272,11 +272,11 @@ class UsersController < ApplicationController
         .where.not(industry_status: "×")
         .where.not(industry_status: "要確認")
         .where(status: "審査OK")
-        .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
+        .select(:valuation_new, :industry_status, :user_id, :store_prop_id,:date,:result_point,:status)
         @dmer_dec = 
         judge_dec(@dmer_user,@results_date)
         .where.not(industry_status: "NG").where.not(industry_status: "×")
-        .select(:valuation_new, :industry_status, :user_id, :store_prop_id) 
+        .select(:id,:valuation_new, :industry_status, :user_id, :store_prop_id,:date,:result_point, :status) 
         # dメル第一成果, 期間月初〜月末
         # ①月内に審査完了＆決済が月末より前に完了している
         # ②審査完了は過去月＆決済は月内に完了している
@@ -287,7 +287,6 @@ class UsersController < ApplicationController
           .where.not(industry_status: "要確認")
           .where(status: "審査OK")
           .where("? >= settlement", @month.end_of_month)
-          .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
           .or(
             @dmer_user.where(settlement: @month.beginning_of_month..@month.end_of_month)
             .where.not(industry_status: "NG")
@@ -295,8 +294,7 @@ class UsersController < ApplicationController
             .where.not(industry_status: "要確認")
             .where(status: "審査OK")
             .where("? >= result_point", @month.end_of_month)
-            .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
-          )
+          ).select(:valuation_settlement, :industry_status, :user_id, :store_prop_id,:date,:result_point,:status,:id,:status_update_settlement,:settlement_second)
           
         # 決済
         @dmer_slmter = 
@@ -325,7 +323,7 @@ class UsersController < ApplicationController
           .where.not(industry_status: "要確認")
           .where(status: "審査OK")
           .where(status_settlement: "完了")
-          .select(:valuation_settlement, :industry_status, :user_id, :store_prop_id)
+          .select(:valuation_settlement, :industry_status, :user_id, :store_prop_id,:date,:result_point,:status,:id,:status_update_settlement,:settlement_second)
         @dmer_pic_def = @dmer_slmt.where(picture: nil)
         @dmer_slmt2nd_get = 
           slmt2nd_get(@dmer_slmter,@results_date)
@@ -340,7 +338,7 @@ class UsersController < ApplicationController
           .where.not(industry_status: "要確認")
           .where(status: "審査OK")
           .where(status_settlement: "完了")
-          .select(:valuation_second_settlement, :industry_status, :user_id, :store_prop_id)
+          .select(:valuation_second_settlement, :industry_status, :user_id, :store_prop_id,:date,:result_point,:status,:id,:status_update_settlement,:settlement_second)
         # 決済対象 
         @dmers_slmt_target = 
           slmt_dead_line(@dmer_user,@results_date)
@@ -358,13 +356,13 @@ class UsersController < ApplicationController
       @aupay_db = 
         result_period(@aupay_user,@results_date)
         .where.not(store_prop: {head_store: nil})
-        .where(status: "審査通過").select(:valuation_new, :user_id, :store_prop_id)
-      @aupay_def =  aupay_def(@aupay_uq,@results_date).select(:valuation_new, :user_id, :store_prop_id)
-      @aupay_inc = judge_inc(@aupay_user,@results_date).select(:valuation_new, :user_id, :store_prop_id)
-      @aupay_dec = judge_dec(@aupay_user,@results_date).select(:valuation_new, :user_id, :store_prop_id)
+        .where(status: "審査通過").select(:valuation_new, :user_id, :store_prop_id,:date,:status,:result_point,:share)
+      @aupay_def =  aupay_def(@aupay_uq,@results_date).select(:valuation_new, :date,:result_point,:status,:user_id, :store_prop_id)
+      @aupay_inc = judge_inc(@aupay_user,@results_date).select(:valuation_new, :user_id, :store_prop_id,:date, :result_point, :status)
+      @aupay_dec = judge_dec(@aupay_user,@results_date).select(:id,:valuation_new, :user_id, :store_prop_id,:status,:date,:result_point,:status)
       @aupay_slmter = 
-        Aupay.where(settlementer_id: @results.first.user_id)
-        .select(:settlementer_id, :valuation_settlement)
+        Aupay.where(settlementer_id: @results.first.user_id).includes(:store_prop)
+        .select(:settlementer_id, :valuation_settlement,:id,:status,:result_point,:store_prop_id,:date,:status_update_settlement,:status_settlement)
       @aupay_ok = @aupay_slmter.where(status: "審査通過")
       @aupay_slmt = slmt_period(@aupay_slmter,@results_date) 
       @aupay_slmt_def = @aupay_ok.where(picture: @results_date_min..@results_date_max).where(settlement: nil).where("settlement_deadline > ?",Date.today)
@@ -387,14 +385,15 @@ class UsersController < ApplicationController
       @rakuten_pay_user = 
         RakutenPay.includes(:store_prop).where(user_id: @results.first.user_id).select(:valuation,:store_prop_id)
       @rakuten_pay_uq =
-        this_period(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id)
+        this_period(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id,:date,:id,:result_point,:status)
       @rakuten_pay_dec = 
         @rakuten_pay_uq.where.not(deficiency: nil)
         .where.not(share: @results_date.minimum(:date)..@results_date.maximum(:date)).select(:valuation,:store_prop_id)
       @rakuten_pay_def =  
         @rakuten_pay_uq.where(status: "自社不備")
-        .or(@rakuten_pay_uq.where(status: "自社NG")).select(:valuation,:store_prop_id)
-      @rakuten_pay_inc = rakuten_inc(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id)
+        .or(@rakuten_pay_uq.where(status: "自社NG"))
+        .select(:valuation,:store_prop_id,:date,:status,:result_point,:id)
+      @rakuten_pay_inc = rakuten_inc(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id,:date,:status,:result_point,:id)
       @rakuten_pay_done_val = 
         @rakuten_pay_uq.sum(:valuation) - 
         @rakuten_pay_def.sum(:valuation) - 
@@ -512,6 +511,9 @@ class UsersController < ApplicationController
           .or(product.where(status: "不備対応中"))
           .or(product.where(status: "申込取消"))
           .or(product.where(status: "申込取消（不備）"))
+          .or(product.where(industry_status: "NG"))
+          .or(product.where(industry_status: "×"))
+          .or(product.where(industry_status: "要確認"))
           # .or(product.where(status: "審査OK")
           # .where.not(result_point: date.minimum(:date)..date.maximum(:date).end_of_month))
       end

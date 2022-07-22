@@ -14,6 +14,8 @@
       <button class="display-btn" id="slmt-button">決済一覧</button>
       <button class="display-btn" id="def-button">不備一覧</button>
       <button class="display-btn" id="result-button">利益表</button>
+      <button class="display-btn" id="valuation-button">増減表</button>
+      <button class="display-btn" id="outcome-button">成果一覧</button>
     </div>
     <p class="alert"><%= notice %></p><%# 登録した時のアラート %>
     <div class="main" id="month-page">
@@ -31,5 +33,11 @@
       <% else %>
       <p class="caution-text">予定シフト、もしくは終着が入力されておりません</p>
       <% end %>
+    </div>
+    <div class="main" id="valuation-page">
+      <%= render "user_parts/valuation" %>
+    </div>
+    <div class="main" id="outcome-page">
+      <%= render "user_parts/outcome" %>
     </div>
   </div><%# users/showスコープ末尾 %>

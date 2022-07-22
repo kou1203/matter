@@ -10,6 +10,10 @@ window.addEventListener('turbolinks:load', function(){
   const monthPage = document.getElementById("month-page")
   const resultPageButton = document.getElementById("result-button")
   const resultPage = document.getElementById("result-page")
+  const valuationPageButton = document.getElementById("valuation-button")
+  const valuationPage = document.getElementById("valuation-page")
+  const outcomePageButton = document.getElementById("outcome-button")
+  const outcomePage = document.getElementById("outcome-page")
 
 
   // 拠点別絞り込み関数
@@ -22,10 +26,14 @@ window.addEventListener('turbolinks:load', function(){
       defPage.removeAttribute("style", "display:block;")
       monthPage.removeAttribute("style", "display:block;")
       resultPage.removeAttribute("style", "display:block;")
+      valuationPage.removeAttribute("style", "display:block;")
+      outcomePage.removeAttribute("style", "display:block;")
       slmtPageButton.setAttribute("style", "background: #74828F;")
       defPageButton.removeAttribute("style", "background: #74828F;")
       monthPageButton.removeAttribute("style", "background: #74828F;")
       resultPageButton.removeAttribute("style", "background: #74828F;")
+      valuationPageButton.removeAttribute("style", "background: #74828F;")
+      outcomePageButton.removeAttribute("style", "background: #74828F;")
     }
   })
   defPageButton.addEventListener('click', function(){
@@ -34,13 +42,17 @@ window.addEventListener('turbolinks:load', function(){
       defPageButton.removeAttribute("style", "background: #74828F;")
     } else {
       defPage.setAttribute("style", "display:block;")
-      slmtPage.removeAttribute("style", "display:block;")
       monthPage.removeAttribute("style", "display:block;")
+      slmtPage.removeAttribute("style", "display:block;")
       resultPage.removeAttribute("style", "display:block;")
+      valuationPage.removeAttribute("style", "display:block;")
+      outcomePage.removeAttribute("style", "display:block;")
       defPageButton.setAttribute("style", "background: #74828F;")
-      slmtPageButton.removeAttribute("style", "background: #74828F;")
       monthPageButton.removeAttribute("style", "background: #74828F;")
+      slmtPageButton.removeAttribute("style", "background: #74828F;")
       resultPageButton.removeAttribute("style", "background: #74828F;")
+      valuationPageButton.removeAttribute("style", "background: #74828F;")
+      outcomePageButton.removeAttribute("style", "background: #74828F;")
     }
   })
   monthPageButton.addEventListener('click', function(){
@@ -52,10 +64,14 @@ window.addEventListener('turbolinks:load', function(){
       slmtPage.removeAttribute("style", "display:block;")
       defPage.removeAttribute("style", "display:block;")
       resultPage.removeAttribute("style", "display:block;")
+      valuationPage.removeAttribute("style", "display:block;")
+      outcomePage.removeAttribute("style", "display:block;")
       monthPageButton.setAttribute("style", "background: #74828F;")
       slmtPageButton.removeAttribute("style", "background: #74828F;")
       defPageButton.removeAttribute("style", "background: #74828F;")
       resultPageButton.removeAttribute("style", "background: #74828F;")
+      valuationPageButton.removeAttribute("style", "background: #74828F;")
+      outcomePageButton.removeAttribute("style", "background: #74828F;")
     }
   })
   resultPageButton.addEventListener('click', function(){
@@ -66,9 +82,53 @@ window.addEventListener('turbolinks:load', function(){
       resultPage.setAttribute("style", "display:block;")
       slmtPage.removeAttribute("style", "display:block;")
       defPage.removeAttribute("style", "display:block;")
+      valuationPage.removeAttribute("style", "display:block;")
+      outcomePage.removeAttribute("style", "display:block;")
+      monthPage.removeAttribute("style", "display:block;")
       resultPageButton.setAttribute("style", "background: #74828F;")
+      valuationPageButton.removeAttribute("style", "background: #74828F;")
       slmtPageButton.removeAttribute("style", "background: #74828F;")
       defPageButton.removeAttribute("style", "background: #74828F;")
+      outcomePageButton.removeAttribute("style", "background: #74828F;")
+    }
+  })
+  valuationPageButton.addEventListener('click', function(){
+    if (valuationPage.getAttribute("style") == "display:block;") {
+      valuationPage.removeAttribute("style", "display:block;")
+      valuationPageButton.removeAttribute("style", "background: #74828F;")
+    } else {
+      valuationPage.setAttribute("style", "display:block;")
+      monthPage.removeAttribute("style", "display:block;")
+      slmtPage.removeAttribute("style", "display:block;")
+      resultPage.removeAttribute("style", "display:block;")
+      defPage.removeAttribute("style", "display:block;")
+      outcomePage.removeAttribute("style", "display:block;")
+      valuationPageButton.setAttribute("style", "background: #74828F;")
+      outcomePageButton.setAttribute("style", "background: #74828F;")
+      monthPageButton.removeAttribute("style", "background: #74828F;")
+      slmtPageButton.removeAttribute("style", "background: #74828F;")
+      resultPageButton.removeAttribute("style", "background: #74828F;")
+      defPageButton.removeAttribute("style", "background: #74828F;")
+      outcomePageButton.removeAttribute("style", "background: #74828F;")
+    }
+  })
+  outcomePageButton.addEventListener('click', function(){
+    if (outcomePage.getAttribute("style") == "display:block;") {
+      outcomePage.removeAttribute("style", "display:block;")
+      outcomePageButton.removeAttribute("style", "background: #74828F;")
+    } else {
+      outcomePage.setAttribute("style", "display:block;")
+      monthPage.removeAttribute("style", "display:block;")
+      slmtPage.removeAttribute("style", "display:block;")
+      resultPage.removeAttribute("style", "display:block;")
+      defPage.removeAttribute("style", "display:block;")
+      valuationPage.removeAttribute("style", "display:block;")
+      outcomePageButton.setAttribute("style", "background: #74828F;")
+      monthPageButton.removeAttribute("style", "background: #74828F;")
+      slmtPageButton.removeAttribute("style", "background: #74828F;")
+      resultPageButton.removeAttribute("style", "background: #74828F;")
+      defPageButton.removeAttribute("style", "background: #74828F;")
+      valuationPageButton.removeAttribute("style", "background: #74828F;")
     }
   })
 

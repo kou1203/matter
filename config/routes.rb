@@ -129,7 +129,7 @@ Rails.application.routes.draw do
     collection { post :import }
   end 
 
-  resources :rakuten_pays ,expect: [:new, :create] do 
+  resources :rakuten_pays do 
     collection { post :import }
   end 
 

@@ -4,7 +4,7 @@
   <div class="right-frame"><%#日々進捗の区切り%>
     <h2>日々進捗</h2>
     <table class="date-tb">
-      <thead>
+      <thead class="date-thead">
         <tr></tr>
         <tr>
         <%# カラム %>
@@ -173,7 +173,7 @@
               @aupay_user.where(date: result.date).sum(:valuation_new) + 
               @aupay_slmter.where(status_settlement: "完了").where(picture: result.date).sum(:valuation_settlement) +
               @paypay_user.where(date: result.date).sum(:valuation) +
-              @rakuten_pay_user.where(user_id: result.user_id).where(date: result.date).sum(:valuation)
+              @rakuten_pay_user.where(user_id: result.user_id).where(date: result.date).sum(:valuation) + @airpay_user.where(date: result.date).sum(:valuation)
             %>
           <% if result.profit.present? %>
             <% if result.profit == date_profit.to_i %>
@@ -447,6 +447,8 @@
         <% aupay_slmt_date_len = @aupay_user.where(status_settlement: "完了").where(picture: result.date).length %>
         <% paypay_date_len = @paypay_user.where(date: result.date).length %>
         <% rakuten_pay_date_len = @rakuten_pay_user.where(date: result.date).length %>
+        <% airpay_date_len = @airpay_user.where(date: result.date).length %>
+
         <td class="date-td">
         <span class="date-span">
           <% if dmax_date_len != 0 %>
@@ -472,6 +474,9 @@
           <% end %>
           <% if rakuten_pay_date_len != 0 %>
             楽天ペイ<%= rakuten_pay_date_len %><br>
+          <% end %>
+          <% if airpay_date_len != 0 %>
+            AirPay<%= airpay_date_len %><br>
           <% end %>
           <% if dmax_slmt_date_len != 0 %>
             dマックス通常決済<%= dmax_slmt_date_len %><br>
@@ -572,6 +577,7 @@
               @rakuten_pay_uq.length - 
               @rakuten_pay_def.length 
           %>
+      <%# AirPay %>
           <% airpay_len = @airpay_result.length  %>
           <%
              airpay_valuations = 
@@ -1791,30 +1797,6 @@
         <td class="total-td"><%= rakuten_pay_valuations.to_s(:delimited) rescue "NaN" %></td>
         <td class="total-td"><%= airpay_valuations.to_s(:delimited) rescue "NaN" %></td>
         <td class="total-td"><%= sum_profit.to_s(:delimited) rescue "NaN" %></td>
-      </tr>
-      <tr>
-        <th class="total-th">終着見込売上</th>
-        <%# 終着の変数 %>
-        <% dmer_val_fin = (dmer_valuations.to_f / @digestion_new) * @new_shift rescue 0 %>
-        <% dmer_slmt_val_fin = (dmer_slmt_valuations.to_f / @digestion_settlement) * @settlement_shift rescue 0 %>
-        <% dmer_slmt2nd_val_fin = (dmer_slmt2nd_valuations.to_f / @digestion_settlement) * @settlement_shift rescue 0 %>
-        <% aupay_slmt_val_fin = (aupay_slmt_valuations.to_f / @digestion_settlement) * @settlement_shift rescue 0 %>
-        <% paypay_val_fin = (paypay_valuations.to_f / @digestion_new) * @new_shift rescue 0 %>
-        <% rakuten_pay_val_fin = (rakuten_pay_valuations.to_f / @digestion_new) * @new_shift rescue 0 %>
-        <% airpaypay_val_fin = (airpay_valuations.to_f / @digestion_new) * @new_shift rescue 0 %>
-
-
-        <td class="total-td"><%= dmer_val_fin.round().to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= dmer_slmt_val_fin.round().to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= dmer_slmt2nd_val_fin.round().to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%=  %></td>
-        <td class="total-td"><%= aupay_slmt_val_fin.round().to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= paypay_val_fin.round().to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= rakuten_pay_val_fin.round().to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= airpaypay_val_fin.round().to_s(:delimited) rescue "NaN" %></td>
-        <td class="total-td"><%= 
-          (dmer_val_fin + dmer_slmt_val_fin + dmer_slmt2nd_val_fin + aupay_slmt_val_fin + rakuten_pay_val_fin + airpaypay_val_fin).round().to_s(:delimited) rescue "NaN"
-         %></td>
       </tr>
     </table>
   <%# /商材別売上/生産性 %>
