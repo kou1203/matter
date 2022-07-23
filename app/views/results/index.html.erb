@@ -71,7 +71,7 @@
             </tr>
           <% end %>
             <tr>
-              <th class="">合計</th>
+              <th class="">全拠点</th>
               <td class=""><%= @shift_today_data.length %></td>
               <td class=""><%= @result_today_data.length %></td>
               <td class=""><%= @dmer_today_data.length %></td>
@@ -86,17 +86,118 @@
         </table>
       <%# /日々売上 %>
       <%# 現状獲得早見 %>
-        <p class="nav-text"><%= @month_daily.month %>月獲得数・現状売上</p>
+        <p class="nav-text"><%= @month_daily.month %>月獲得数</p>
         <table>
           <thead>
             <tr>
+              <th class="" colspan="9">現状獲得数</th>
+              <th class="" colspan="5">終着獲得数</th>
+            </tr>
+            <tr>
               <th class="">拠点</th>
+              <th class="">予定シフト</th>
+              <th class="">消化シフト</th>
+              <th class="">残シフト</th>
+              <% 2.times do %>
               <th class="">dメル</th>
               <th class="">auPay</th>
               <th class="">PayPay</th>
               <th class="">楽天ペイ</th>
               <th class="">AirPay</th>
+              <% end %>
+            </tr>
+          </thead>
+          <tbody>
+          <% bases.each do |base| %>
+            <%# 拠点別平均獲得数の変数 %>
+              <% 
+                dmer_base_monthly_ave = 
+                  (@dmer_monthly.where(user: {base: base}).length.to_f / 
+                  @shift_monthly_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                aupay_base_monthly_ave = 
+                  (@aupay_monthly.where(user: {base: base}).length.to_f / 
+                  @shift_monthly_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                paypay_base_monthly_ave = 
+                  (@paypay_monthly.where(user: {base: base}).length.to_f / 
+                  @shift_monthly_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                rakuten_pay_base_monthly_ave = 
+                  (@rakuten_pay_monthly.where(user: {base: base}).length.to_f / 
+                  @shift_monthly_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                airpay_base_monthly_ave = 
+                  (@airpay_monthly.where(user: {base: base}).length.to_f / 
+                  @shift_monthly_digestion.where(user: {base: base}).length)
+              %>
+            <%# /拠点別平均獲得数の変数 %>
+            <tr>
+              <th class=""><%= base %></th>
+              <%# シフト %>
+              <td class=""><%= @shift_monthly_plan.where(user: {base: base}).length %></td>
+              <td class=""><%= @shift_monthly_digestion.where(user: {base: base}).length %></td>
+              <td class=""><%= 
+                @shift_monthly_plan.where(user: {base: base}).length -
+                @shift_monthly_digestion.where(user: {base: base}).length
+              %></td>
+              <%# 現状獲得 %>
+              <td class=""><%= @dmer_monthly.where(user: {base: base}).length %></td>
+              <td class=""><%= @aupay_monthly.where(user: {base: base}).length %></td>
+              <td class=""><%= @paypay_monthly.where(user: {base: base}).length %></td>
+              <td class=""><%= @rakuten_pay_monthly.where(user: {base: base}).length %></td>
+              <td class=""><%= @airpay_monthly.where(user: {base: base}).length %></td>
+              <%# 終着 %>
+              <td class=""><%= (dmer_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= (aupay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= (paypay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= (rakuten_pay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= (airpay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+            </tr>
+          <% end %>
+              <%# 平均獲得数の変数 %>
+                <% dmer_monthly_ave = @dmer_monthly.length.to_f / @shift_monthly_digestion.length %>
+                <% aupay_monthly_ave = @aupay_monthly.length.to_f / @shift_monthly_digestion.length %>
+                <% paypay_monthly_ave = @paypay_monthly.length.to_f / @shift_monthly_digestion.length %>
+                <% rakuten_pay_monthly_ave = @rakuten_pay_monthly.length.to_f / @shift_monthly_digestion.length %>
+                <% airpay_monthly_ave = @airpay_monthly.length.to_f / @shift_monthly_digestion.length %>
+              <%# /平均獲得数の変数 %>
+            <tr>
+              <th class="">全拠点</th>
+              <td class=""><%= @shift_monthly_plan.length %></td>
+              <td class=""><%= @shift_monthly_digestion.length %></td>
+              <td class=""><%= 
+                @shift_monthly_plan.length -
+                @shift_monthly_digestion.length 
+              %></td>
+              <td class=""><%= @dmer_monthly.length %></td>
+              <td class=""><%= @aupay_monthly.length %></td>
+              <td class=""><%= @paypay_monthly.length %></td>
+              <td class=""><%= @rakuten_pay_monthly.length %></td>
+              <td class=""><%= @airpay_monthly.length %></td>
+              <td class=""><%= dmer_monthly_ave.round(1) rescue "測定不可" %></td>
+              <td class=""><%= aupay_monthly_ave.round(1) rescue "測定不可" %></td>
+              <td class=""><%= paypay_monthly_ave.round(1) rescue "測定不可" %></td>
+              <td class=""><%= rakuten_pay_monthly_ave.round(1) rescue "測定不可" %></td>
+              <td class=""><%= airpay_monthly_ave.round(1) rescue "測定不可" %></td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="caution-text">※獲得数は<%= @month_daily.beginning_of_month %>〜<%= @month_daily.end_of_month %>の範囲で計算されています。</p>
+      <%# /現状獲得早見 %>
+      <%# 現状売上早見 %>
+        <p class="nav-text"><%= @month_daily.month %>現状売上</p>
+        <table>
+          <thead>
+            <tr>
+              <th class="">拠点</th>
+              <th class="">予定シフト</th>
               <th class="">消化シフト</th>
+              <th class="">残シフト</th>
               <th class="">現状評価売上</th>
               <th class="">現状評価Ave</th>
             </tr>
@@ -105,32 +206,31 @@
           <% bases.each do |base| %>
             <tr>
               <th class=""><%= base %></th>
-              <td class=""><%= @dmer_monthly.where(user: {base: base}).length %></td>
-              <td class=""><%= @aupay_monthly.where(user: {base: base}).length %></td>
-              <td class=""><%= @paypay_monthly.where(user: {base: base}).length %></td>
-              <td class=""><%= @rakuten_pay_monthly.where(user: {base: base}).length %></td>
-              <td class=""><%= @airpay_monthly.where(user: {base: base}).length %></td>
+              <td class=""><%= @shift_monthly.where(user: {base: base}).length %></td>
               <td class=""><%= @result_monthly.where(user: {base: base}).length %></td>
+              <td class=""><%= 
+                @shift_monthly.where(user: {base: base}).length -
+                @result_monthly.where(user: {base: base}).length 
+              %></td>
               <td class=""><%= @result_monthly.where(user: {base: base}).sum(:profit).to_s(:delimited) rescue "測定不可" %></td>
               <td class=""><%= (@result_monthly.where(user: {base: base}).sum(:profit) / @result_monthly.where(user: {base: base}).length).round().to_s(:delimited) rescue "測定不可" %></td>
             </tr>
           <% end %>
             <tr>
-              <th class="">合計</th>
-              <td class=""><%= @dmer_monthly.length %></td>
-              <td class=""><%= @aupay_monthly.length %></td>
-              <td class=""><%= @paypay_monthly.length %></td>
-              <td class=""><%= @rakuten_pay_monthly.length %></td>
-              <td class=""><%= @airpay_monthly.length %></td>
+              <th class="">全拠点</th>
+              <td class=""><%= @shift_monthly.length %></td>
               <td class=""><%= @result_monthly.length %></td>
+              <td class=""><%= 
+                @shift_monthly.length -
+                @result_monthly.length 
+              %></td>
               <td class=""><%= @result_monthly.sum(:profit).to_s(:delimited) rescue "測定不可" %></td>
               <td class=""><%= (@result_monthly.sum(:profit) / @result_monthly.length).round().to_s(:delimited) rescue "測定不可" %></td>
             </tr>
           </tbody>
         </table>
-        <p class="caution-text">※獲得数は<%= @month_daily.beginning_of_month %>〜<%= @month_daily.end_of_month %>の範囲で計算されています。</p>
         <p class="caution-text">※売上は<%= @result_monthly.minimum(:date) %>〜<%= @result_monthly.maximum(:date) %>の範囲で計算されています。</p>
-      <%# /現状獲得早見 %>
+      <%# /現状売上早見 %>
 
       <div class="nav-text"><%= alert %></div>
       <% else %>

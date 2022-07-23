@@ -1,4 +1,31 @@
 window.addEventListener('turbolinks:load', function(){
+
+  
+  const standardValChange = document.getElementById('standard-val-change');
+  const chubuStandardForm = document.getElementById('chubu-standard-form');
+  const kansaiStandardForm = document.getElementById('kansai-standard-form');
+  const kantoStandardForm = document.getElementById('kanto-standard-form');
+  standardValChange.addEventListener("change", function(){
+    // console.log(this.value);
+    if(this.value == 'chubu-slct'){
+      console.log(this.value);
+      chubuStandardForm.style.display = "block";
+      kansaiStandardForm.style.display = "none";
+      kantoStandardForm.style.display = "none";
+  }else if(this.value == 'kansai-slct'){
+      console.log(this.value);
+      chubuStandardForm.style.display = "none";
+      kansaiStandardForm.style.display = "block";
+      kantoStandardForm.style.display = "none";
+  }else if(this.value == 'kanto-slct'){
+      console.log(this.value);
+      chubuStandardForm.style.display = "none";
+      kansaiStandardForm.style.display = "none";
+      kantoStandardForm.style.display = "block";
+  }
+
+  });
+  // standardValChange
   // 決済
   const slmtPageButton = document.getElementById("slmt-button")
   const slmtPage = document.getElementById("slmt-page")
@@ -14,9 +41,7 @@ window.addEventListener('turbolinks:load', function(){
   const valuationPage = document.getElementById("valuation-page")
   const outcomePageButton = document.getElementById("outcome-button")
   const outcomePage = document.getElementById("outcome-page")
-
-
-  // 拠点別絞り込み関数
+  // マイページボタンの切り替え
   slmtPageButton.addEventListener('click', function(){
     if (slmtPage.getAttribute("style") == "display:block;") {
       slmtPage.removeAttribute("style", "display:block;")
@@ -130,6 +155,14 @@ window.addEventListener('turbolinks:load', function(){
       defPageButton.removeAttribute("style", "background: #74828F;")
       valuationPageButton.removeAttribute("style", "background: #74828F;")
     }
+
+
+    standard.onchange = function() {
+      console.log(this.value);
+
+    }
+
+    
   })
 
   // 決済率（％）を取得

@@ -106,6 +106,285 @@ class UsersController < ApplicationController
     @results_date_min = @results_date.minimum(:date)
     @results_date_max = @results_date.maximum(:date)
     @results_out = @results.includes(:result_cash).select(:result_cash_id)
+    # 中部基準値
+      @chubu_shift = 
+        Shift.includes(:user).where(user: {base: "中部SS"})
+        .where(start_time: @minimum_date_cash..@maximum_date_cash)
+        .where(shift: "キャッシュレス新規").length
+      @chubu_result = 
+        Result.includes(:user).where(user: {base: "中部SS"})
+        .where(date: @minimum_date_cash..@maximum_date_cash)
+        .where(shift: "キャッシュレス新規")
+      #  合計変数 
+      @sum_visit_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit") 
+      @sum_interview_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview") 
+      @sum_full_talk_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") 
+      @sum_get_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum("first_get + latter_get") 
+     #  前半変数 
+      @sum_visit_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_visit) 
+      @sum_interview_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_interview) 
+      @sum_full_talk_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_full_talk) 
+      @sum_get_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_get) 
+     # 後半変数 
+      @sum_visit_l_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_visit) 
+      @sum_interview_l_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+      @sum_full_talk_l_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+      @sum_get_l_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_get) 
+      # 店舗別合計変数 
+       @cafe_visit_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:cafe_visit) 
+       @cafe_get_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:cafe_get) 
+       @other_food_visit_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:other_food_visit) 
+       @other_food_get_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:other_food_get) 
+       @car_visit_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:car_visit) 
+       @car_get_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:car_get) 
+       @other_retail_visit_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:other_retail_visit) 
+       @other_retail_get_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:other_retail_get) 
+       @hair_salon_visit_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:hair_salon_visit) 
+       @hair_salon_get_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:hair_salon_get) 
+       @manipulative_visit_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:manipulative_visit) 
+       @manipulative_get_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:manipulative_get) 
+       @other_service_visit_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:other_service_visit) 
+       @other_service_get_sum_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:other_service_get) 
+      # 全店舗合計変数 
+       @store_visit_sum_chubu = @cafe_visit_sum_chubu +  @other_food_visit_sum_chubu + @car_visit_sum_chubu + @other_retail_visit_sum_chubu + @hair_salon_visit_sum_chubu + @manipulative_visit_sum_chubu + @other_service_visit_sum_chubu 
+       @store_get_sum_chubu = @cafe_get_sum_chubu +  @other_food_get_sum_chubu + @car_get_sum_chubu + @other_retail_get_sum_chubu + @hair_salon_get_sum_chubu + @manipulative_get_sum_chubu + @other_service_get_sum_chubu 
+     # 時間別基準値合計
+       @visit10_sum_chubu = @chubu_result.sum(:visit10)
+       @visit10_ave_chubu = @chubu_result.average(:visit10)
+       @get10_sum_chubu = @chubu_result.sum(:get10)
+       @get10_ave_chubu = @chubu_result.average(:get10)
+
+       @visit11_sum_chubu = @chubu_result.sum(:visit11)
+       @visit11_ave_chubu = @chubu_result.average(:visit11)
+       @get11_sum_chubu = @chubu_result.sum(:get11)
+       @get11_ave_chubu = @chubu_result.average(:get11)
+
+       @visit12_sum_chubu = @chubu_result.sum(:visit12)
+       @visit12_ave_chubu = @chubu_result.average(:visit12)
+       @get12_sum_chubu = @chubu_result.sum(:get12)
+       @get12_ave_chubu = @chubu_result.average(:get12)
+
+       @visit13_sum_chubu = @chubu_result.sum(:visit13)
+       @visit13_ave_chubu = @chubu_result.average(:visit13)
+       @get13_sum_chubu = @chubu_result.sum(:get13)
+       @get13_ave_chubu = @chubu_result.average(:get13)
+
+       @visit14_sum_chubu = @chubu_result.sum(:visit14)
+       @visit14_ave_chubu = @chubu_result.average(:visit14)
+       @get14_sum_chubu = @chubu_result.sum(:get14)
+       @get14_ave_chubu = @chubu_result.average(:get14)
+
+       @visit15_sum_chubu = @chubu_result.sum(:visit15)
+       @visit15_ave_chubu = @chubu_result.average(:visit15)
+       @get15_sum_chubu = @chubu_result.sum(:get15)
+       @get15_ave_chubu = @chubu_result.average(:get15)
+
+       @visit16_sum_chubu = @chubu_result.sum(:visit16)
+       @visit16_ave_chubu = @chubu_result.average(:visit16)
+       @get16_sum_chubu = @chubu_result.sum(:get16)
+       @get16_ave_chubu = @chubu_result.average(:get16)
+
+       @visit17_sum_chubu = @chubu_result.sum(:visit17)
+       @visit17_ave_chubu = @chubu_result.average(:visit17)
+       @get17_sum_chubu = @chubu_result.sum(:get17)
+       @get17_ave_chubu = @chubu_result.average(:get17)
+
+       @visit18_sum_chubu = @chubu_result.sum(:visit18)
+       @visit18_ave_chubu = @chubu_result.average(:visit18)
+       @get18_sum_chubu = @chubu_result.sum(:get18)
+       @get18_ave_chubu = @chubu_result.average(:get18)
+
+       @visit19_sum_chubu = @chubu_result.sum(:visit19)
+       @visit19_ave_chubu = @chubu_result.average(:visit19)
+       @get19_sum_chubu = @chubu_result.sum(:get19)
+       @get19_ave_chubu = @chubu_result.average(:get19)
+    # /中部基準値
+    # 関西基準値
+      @kansai_shift = 
+        Shift.includes(:user).where(user: {base: "関西SS"})
+        .where(start_time: @minimum_date_cash..@maximum_date_cash)
+        .where(shift: "キャッシュレス新規").length
+      @kansai_result = 
+        Result.includes(:user).where(user: {base: "関西SS"})
+        .where(date: @minimum_date_cash..@maximum_date_cash)
+        .where(shift: "キャッシュレス新規")
+      #  合計変数 
+      @sum_visit_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit") 
+      @sum_interview_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview") 
+      @sum_full_talk_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") 
+      @sum_get_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum("first_get + latter_get") 
+     #  前半変数 
+      @sum_visit_f_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:first_visit) 
+      @sum_interview_f_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:first_interview) 
+      @sum_full_talk_f_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:first_full_talk) 
+      @sum_get_f_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:first_get) 
+     # 後半変数 
+      @sum_visit_l_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:latter_visit) 
+      @sum_interview_l_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+      @sum_full_talk_l_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+      @sum_get_l_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:latter_get) 
+      # 店舗別合計変数 
+       @cafe_visit_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:cafe_visit) 
+       @cafe_get_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:cafe_get) 
+       @other_food_visit_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:other_food_visit) 
+       @other_food_get_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:other_food_get) 
+       @car_visit_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:car_visit) 
+       @car_get_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:car_get) 
+       @other_retail_visit_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:other_retail_visit) 
+       @other_retail_get_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:other_retail_get) 
+       @hair_salon_visit_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:hair_salon_visit) 
+       @hair_salon_get_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:hair_salon_get) 
+       @manipulative_visit_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:manipulative_visit) 
+       @manipulative_get_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:manipulative_get) 
+       @other_service_visit_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:other_service_visit) 
+       @other_service_get_sum_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:other_service_get) 
+      # 全店舗合計変数 
+       @store_visit_sum_kansai = @cafe_visit_sum_kansai +  @other_food_visit_sum_kansai + @car_visit_sum_kansai + @other_retail_visit_sum_kansai + @hair_salon_visit_sum_kansai + @manipulative_visit_sum_kansai + @other_service_visit_sum_kansai 
+       @store_get_sum_kansai = @cafe_get_sum_kansai +  @other_food_get_sum_kansai + @car_get_sum_kansai + @other_retail_get_sum_kansai + @hair_salon_get_sum_kansai + @manipulative_get_sum_kansai + @other_service_get_sum_kansai 
+     # 時間別基準値合計
+       @visit10_sum_kansai = @kansai_result.sum(:visit10)
+       @visit10_ave_kansai = @kansai_result.average(:visit10)
+       @get10_sum_kansai = @kansai_result.sum(:get10)
+       @get10_ave_kansai = @kansai_result.average(:get10)
+
+       @visit11_sum_kansai = @kansai_result.sum(:visit11)
+       @visit11_ave_kansai = @kansai_result.average(:visit11)
+       @get11_sum_kansai = @kansai_result.sum(:get11)
+       @get11_ave_kansai = @kansai_result.average(:get11)
+
+       @visit12_sum_kansai = @kansai_result.sum(:visit12)
+       @visit12_ave_kansai = @kansai_result.average(:visit12)
+       @get12_sum_kansai = @kansai_result.sum(:get12)
+       @get12_ave_kansai = @kansai_result.average(:get12)
+
+       @visit13_sum_kansai = @kansai_result.sum(:visit13)
+       @visit13_ave_kansai = @kansai_result.average(:visit13)
+       @get13_sum_kansai = @kansai_result.sum(:get13)
+       @get13_ave_kansai = @kansai_result.average(:get13)
+
+       @visit14_sum_kansai = @kansai_result.sum(:visit14)
+       @visit14_ave_kansai = @kansai_result.average(:visit14)
+       @get14_sum_kansai = @kansai_result.sum(:get14)
+       @get14_ave_kansai = @kansai_result.average(:get14)
+
+       @visit15_sum_kansai = @kansai_result.sum(:visit15)
+       @visit15_ave_kansai = @kansai_result.average(:visit15)
+       @get15_sum_kansai = @kansai_result.sum(:get15)
+       @get15_ave_kansai = @kansai_result.average(:get15)
+
+       @visit16_sum_kansai = @kansai_result.sum(:visit16)
+       @visit16_ave_kansai = @kansai_result.average(:visit16)
+       @get16_sum_kansai = @kansai_result.sum(:get16)
+       @get16_ave_kansai = @kansai_result.average(:get16)
+
+       @visit17_sum_kansai = @kansai_result.sum(:visit17)
+       @visit17_ave_kansai = @kansai_result.average(:visit17)
+       @get17_sum_kansai = @kansai_result.sum(:get17)
+       @get17_ave_kansai = @kansai_result.average(:get17)
+
+       @visit18_sum_kansai = @kansai_result.sum(:visit18)
+       @visit18_ave_kansai = @kansai_result.average(:visit18)
+       @get18_sum_kansai = @kansai_result.sum(:get18)
+       @get18_ave_kansai = @kansai_result.average(:get18)
+
+       @visit19_sum_kansai = @kansai_result.sum(:visit19)
+       @visit19_ave_kansai = @kansai_result.average(:visit19)
+       @get19_sum_kansai = @kansai_result.sum(:get19)
+       @get19_ave_kansai = @kansai_result.average(:get19)
+    # /関西基準値
+    # 関東基準値
+      @kanto_shift = 
+        Shift.includes(:user).where(user: {base: "関東SS"})
+        .where(start_time: @minimum_date_cash..@maximum_date_cash)
+        .where(shift: "キャッシュレス新規").length
+      @kanto_result = 
+        Result.includes(:user).where(user: {base: "関東SS"})
+        .where(date: @minimum_date_cash..@maximum_date_cash)
+        .where(shift: "キャッシュレス新規")
+      #  合計変数 
+      @sum_visit_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit") 
+      @sum_interview_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview") 
+      @sum_full_talk_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") 
+      @sum_get_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum("first_get + latter_get") 
+     #  前半変数 
+      @sum_visit_f_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:first_visit) 
+      @sum_interview_f_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:first_interview) 
+      @sum_full_talk_f_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:first_full_talk) 
+      @sum_get_f_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:first_get) 
+     # 後半変数 
+      @sum_visit_l_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:latter_visit) 
+      @sum_interview_l_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+      @sum_full_talk_l_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+      @sum_get_l_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:latter_get) 
+      # 店舗別合計変数 
+       @cafe_visit_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:cafe_visit) 
+       @cafe_get_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:cafe_get) 
+       @other_food_visit_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:other_food_visit) 
+       @other_food_get_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:other_food_get) 
+       @car_visit_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:car_visit) 
+       @car_get_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:car_get) 
+       @other_retail_visit_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:other_retail_visit) 
+       @other_retail_get_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:other_retail_get) 
+       @hair_salon_visit_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:hair_salon_visit) 
+       @hair_salon_get_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:hair_salon_get) 
+       @manipulative_visit_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:manipulative_visit) 
+       @manipulative_get_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:manipulative_get) 
+       @other_service_visit_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:other_service_visit) 
+       @other_service_get_sum_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:other_service_get) 
+      # 全店舗合計変数 
+       @store_visit_sum_kanto = @cafe_visit_sum_kanto +  @other_food_visit_sum_kanto + @car_visit_sum_kanto + @other_retail_visit_sum_kanto + @hair_salon_visit_sum_kanto + @manipulative_visit_sum_kanto + @other_service_visit_sum_kanto 
+       @store_get_sum_kanto = @cafe_get_sum_kanto +  @other_food_get_sum_kanto + @car_get_sum_kanto + @other_retail_get_sum_kanto + @hair_salon_get_sum_kanto + @manipulative_get_sum_kanto + @other_service_get_sum_kanto 
+     # 時間別基準値合計
+       @visit10_sum_kanto = @kanto_result.sum(:visit10)
+       @visit10_ave_kanto = @kanto_result.average(:visit10)
+       @get10_sum_kanto = @kanto_result.sum(:get10)
+       @get10_ave_kanto = @kanto_result.average(:get10)
+
+       @visit11_sum_kanto = @kanto_result.sum(:visit11)
+       @visit11_ave_kanto = @kanto_result.average(:visit11)
+       @get11_sum_kanto = @kanto_result.sum(:get11)
+       @get11_ave_kanto = @kanto_result.average(:get11)
+
+       @visit12_sum_kanto = @kanto_result.sum(:visit12)
+       @visit12_ave_kanto = @kanto_result.average(:visit12)
+       @get12_sum_kanto = @kanto_result.sum(:get12)
+       @get12_ave_kanto = @kanto_result.average(:get12)
+
+       @visit13_sum_kanto = @kanto_result.sum(:visit13)
+       @visit13_ave_kanto = @kanto_result.average(:visit13)
+       @get13_sum_kanto = @kanto_result.sum(:get13)
+       @get13_ave_kanto = @kanto_result.average(:get13)
+
+       @visit14_sum_kanto = @kanto_result.sum(:visit14)
+       @visit14_ave_kanto = @kanto_result.average(:visit14)
+       @get14_sum_kanto = @kanto_result.sum(:get14)
+       @get14_ave_kanto = @kanto_result.average(:get14)
+
+       @visit15_sum_kanto = @kanto_result.sum(:visit15)
+       @visit15_ave_kanto = @kanto_result.average(:visit15)
+       @get15_sum_kanto = @kanto_result.sum(:get15)
+       @get15_ave_kanto = @kanto_result.average(:get15)
+
+       @visit16_sum_kanto = @kanto_result.sum(:visit16)
+       @visit16_ave_kanto = @kanto_result.average(:visit16)
+       @get16_sum_kanto = @kanto_result.sum(:get16)
+       @get16_ave_kanto = @kanto_result.average(:get16)
+
+       @visit17_sum_kanto = @kanto_result.sum(:visit17)
+       @visit17_ave_kanto = @kanto_result.average(:visit17)
+       @get17_sum_kanto = @kanto_result.sum(:get17)
+       @get17_ave_kanto = @kanto_result.average(:get17)
+
+       @visit18_sum_kanto = @kanto_result.sum(:visit18)
+       @visit18_ave_kanto = @kanto_result.average(:visit18)
+       @get18_sum_kanto = @kanto_result.sum(:get18)
+       @get18_ave_kanto = @kanto_result.average(:get18)
+
+       @visit19_sum_kanto = @kanto_result.sum(:visit19)
+       @visit19_ave_kanto = @kanto_result.average(:visit19)
+       @get19_sum_kanto = @kanto_result.sum(:get19)
+       @get19_ave_kanto = @kanto_result.average(:get19)
+    # 関東基準値
     # 予定シフト変数 
       @result_shift = 
         @shift.where(start_time: @minimum_date_cash..@maximum_date_cash) rescue nil
