@@ -173,7 +173,7 @@
       <% end %>
       <% end %>
       <% if @aupay_inc.present? %>
-      <% @aupay_inc.where(store_prop: {head_store: nil}).each do |aupay| %>
+      <% @aupay_inc.each do |aupay| %>
       <tr>
       <td class="valuation-td blue">auPay</td>
       <td class="valuation-td blue"><%= aupay.store_prop.name %></td>
