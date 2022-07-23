@@ -179,11 +179,11 @@
               <td class=""><%= @paypay_monthly.length %></td>
               <td class=""><%= @rakuten_pay_monthly.length %></td>
               <td class=""><%= @airpay_monthly.length %></td>
-              <td class=""><%= (dmer_monthly_ave * @shift_monthly_plan.length).round(1) rescue "測定不可" %></td>
-              <td class=""><%= (aupay_monthly_ave * @shift_monthly_plan.length).round(1) rescue "測定不可" %></td>
-              <td class=""><%= (paypay_monthly_ave * @shift_monthly_plan.length).round(1) rescue "測定不可" %></td>
-              <td class=""><%= (rakuten_pay_monthly_ave * @shift_monthly_plan.length).round(1) rescue "測定不可" %></td>
-              <td class=""><%= airpay_monthly_ave.round(1) rescue "測定不可" %></td>
+              <td class=""><%= (dmer_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
+              <td class=""><%= (aupay_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
+              <td class=""><%= (paypay_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
+              <td class=""><%= (rakuten_pay_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
+              <td class=""><%= (airpay_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
             </tr>
           </tbody>
         </table>
