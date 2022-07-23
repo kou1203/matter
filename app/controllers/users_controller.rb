@@ -272,7 +272,7 @@ class UsersController < ApplicationController
         .where.not(industry_status: "×")
         .where.not(industry_status: "要確認")
         .where(status: "審査OK")
-        .select(:valuation_new, :industry_status, :user_id, :store_prop_id,:date,:result_point,:status)
+        .select(:valuation_new, :industry_status, :user_id, :store_prop_id,:date,:result_point,:status,:deficiency_remarks)
         @dmer_dec = 
         judge_dec(@dmer_user,@results_date)
         .where.not(industry_status: "NG").where.not(industry_status: "×")
@@ -358,7 +358,7 @@ class UsersController < ApplicationController
         .where.not(store_prop: {head_store: nil})
         .where(status: "審査通過").select(:valuation_new, :user_id, :store_prop_id,:date,:status,:result_point,:share)
       @aupay_def =  aupay_def(@aupay_uq,@results_date).select(:valuation_new, :date,:result_point,:status,:user_id, :store_prop_id)
-      @aupay_inc = judge_inc(@aupay_user,@results_date).select(:valuation_new, :user_id, :store_prop_id,:date, :result_point, :status,:id)
+      @aupay_inc = judge_inc(@aupay_user,@results_date).select(:valuation_new, :user_id, :store_prop_id,:date, :result_point, :status,:id,:deficiency_remarks)
       @aupay_dec = judge_dec(@aupay_user,@results_date).select(:id,:valuation_new, :user_id, :store_prop_id,:status,:date,:result_point,:status)
       @aupay_slmter = 
         Aupay.where(settlementer_id: @results.first.user_id).includes(:store_prop)

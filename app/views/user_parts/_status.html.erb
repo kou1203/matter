@@ -1,44 +1,44 @@
 <table>
   <tr>
-    <th colspan="7">ステータス早見</th>
+    <th class="valuation-th" colspan="7">ステータス早見</th>
   </tr>
   <tr>
-    <th>商材</th>
-    <th>獲得数</th>
-    <th>審査待ち</th>
-    <th>審査通過</th>
-    <th>不備・NG</th>
-    <th>増加</th>
-    <th>減少</th>
+    <th class="valuation-th">商材</th>
+    <th class="valuation-th">獲得数</th>
+    <th class="valuation-th">審査待ち</th>
+    <th class="valuation-th">審査通過</th>
+    <th class="valuation-th">不備・NG</th>
+    <th class="valuation-th">増加</th>
+    <th class="valuation-th">減少</th>
   </tr>
   <tr>
     <th class="product-th">dメル</th>
-    <td><%= @dmers.length %></td>
-    <td><%= 
+    <td class="valuation-td"><%= @dmers.length %></td>
+    <td class="valuation-td"><%= 
           @dmers.where.not(status: "審査OK")
           .where.not(status: "審査NG")
           .where.not(status: "申込取消")
           .where.not(status: "申込取消（不備）").length 
     %></td>
-    <td><%= 
+    <td class="valuation-td"><%= 
           @dmers.where(status: "審査OK")
           .where.not(industry_status: "NG")
           .where.not(industry_status: "×").length 
     %></td>
-    <td><%= 
+    <td class="valuation-td"><%= 
           @dmers.where(status: "審査NG")
           .or(@dmers.where(industry_status: "NG"))
           .or(@dmers.where(industry_status: "×"))
           .or(@dmers.where(status: "申込取消"))
           .or(@dmers.where(status: "申込取消（不備）")).length 
     %></td>
-    <td><%= @dmers_inc.length %></td>
-    <td><%= @dmers_dec.length %></td>
+    <td class="valuation-td"><%= @dmers_inc.length %></td>
+    <td class="valuation-td"><%= @dmers_dec.length %></td>
   </tr>
   <tr>
     <th class="product-th">auPay</th>
-    <td><%= @aupays.length %></td>
-    <td><%= 
+    <td class="valuation-td"><%= @aupays.length %></td>
+    <td class="valuation-td"><%= 
       @aupays
       .where.not(status: "審査通過")
       .where.not(status: "不合格")
@@ -48,8 +48,8 @@
       .where.not(status: "差し戻し")
       .where.not(status: "重複対象外").length 
     %></td>
-    <td><%= @aupays.where(status: "審査通過").length %></td>
-    <td><%= 
+    <td class="valuation-td"><%= @aupays.where(status: "審査通過").length %></td>
+    <td class="valuation-td"><%= 
       @aupays.where(status: "不合格")
       .or(@aupays.where(status: "取消"))
       .or(@aupays.where(status: "報酬対象外"))
@@ -57,40 +57,41 @@
       .or(@aupays.where(status: "差し戻し"))
       .or(@aupays.where(status: "申込取消")).length 
     %></td>
-    <td><%= @aupays_inc.length %></td>
-    <td><%= @aupays_dec.length %></td>
+    <td class="valuation-td"><%= @aupays_inc.length %></td>
+    <td class="valuation-td"><%= @aupays_dec.length %></td>
   </tr>
   <tr>
     <th class="product-th">楽天ペイ</th>
-    <td><%= @rakuten_pays.length %></td>
-    <td><%= 
+    <td class="valuation-td"><%= @rakuten_pays.length %></td>
+    <td class="valuation-td"><%= 
           @rakuten_pays.where(status: "未処理")
           .or(@rakuten_pays.where(status: "審査待ち")).length 
     %></td>
-    <td><%=  %></td>
-    <td><%= 
+    <td class="valuation-td"><%=  %></td>
+    <td class="valuation-td"><%= 
       @rakuten_pays.where(status: "自社不備")
       .or(@rakuten_pays.where(status: "自社NG")).length 
     %></td>
-    <td><%= @rakuten_pays_inc.length %></td>
-    <td><%= @rakuten_pays_dec.length %></td>
+    <td class="valuation-td"><%= @rakuten_pays_inc.length %></td>
+    <td class="valuation-td"><%= @rakuten_pays_dec.length %></td>
   </tr>
 </table>
 <h2>dメル審査状況（<%= @dmers.length %>件）</h2>
 <table>
   <thead>
     <tr>
-      <th>詳細</th>
-      <th>商流</th>
-      <th>店舗名</th>
-      <th>獲得日</th>
-      <th>業種評価</th>
-      <th>審査ステータス</th>
-      <th>審査完了日</th>
-      <th>決済ステータス</th>
-      <th>決済完了日</th>
-      <th>決済期限</th>
-      <th>2回目決済完了日</th>
+      <th class="valuation-th">詳細</th>
+      <th class="valuation-th">商流</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">業種評価</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">キット発送日</th>
+      <th class="valuation-th">決済ステータス</th>
+      <th class="valuation-th">決済完了日</th>
+      <th class="valuation-th">決済期限</th>
+      <th class="valuation-th">2回目決済完了日</th>
     </tr>
   </thead>
   <tbody>
@@ -106,17 +107,18 @@
       <% else %>
       <tr>
       <% end %>
-      <td><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
-      <td><%= dmer.client %></td>
-      <td><%= dmer.store_prop.name %></td>
-      <td><%= dmer.date %></td>
-      <td><%= dmer.industry_status %></td>
-      <td ><%= dmer.status %></td>
-      <td><%= dmer.result_point %></td>
-      <td><%= dmer.status_settlement %></td>
-      <td><%= dmer.status_update_settlement %></td>
-      <td><%= dmer.settlement_deadline %></td>
-      <td><%= dmer.settlement_second %></td>
+      <td class="valuation-td"><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
+      <td class="valuation-td"><%= dmer.client %></td>
+      <td class="valuation-td"><%= dmer.store_prop.name %></td>
+      <td class="valuation-td"><%= dmer.date %></td>
+      <td class="valuation-td"><%= dmer.industry_status %></td>
+      <td class="valuation-td"><%= dmer.status %></td>
+      <td class="valuation-td"><%= dmer.result_point %></td>
+      <td class="valuation-td"><%= dmer.shipment %></td>
+      <td class="valuation-td"><%= dmer.status_settlement %></td>
+      <td class="valuation-td"><%= dmer.status_update_settlement %></td>
+      <td class="valuation-td"><%= dmer.settlement_deadline %></td>
+      <td class="valuation-td"><%= dmer.settlement_second %></td>
     </tr>
     <% end %>
   </tbody>
@@ -125,15 +127,16 @@
 <table>
   <thead>
     <tr>
-      <th>詳細</th>
-      <th>商流</th>
-      <th>店舗名</th>
-      <th>獲得日</th>
-      <th>審査ステータス</th>
-      <th>審査完了日</th>
-      <th>決済ステータス</th>
-      <th>決済完了日</th>
-      <th>決済期限</th>
+      <th class="valuation-th">詳細</th>
+      <th class="valuation-th">商流</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">キット発送日</th>
+      <th class="valuation-th">決済ステータス</th>
+      <th class="valuation-th">決済完了日</th>
+      <th class="valuation-th">決済期限</th>
     </tr>
   </thead>
   <tbody>
@@ -151,15 +154,16 @@
       <% else %>
       <tr>
       <% end %>
-      <td><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
-      <td><%= aupay.client %></td>
-      <td><%= aupay.store_prop.name %></td>
-      <td><%= aupay.date %></td>
-      <td ><%= aupay.status %></td>
-      <td><%= aupay.result_point %></td>
-      <td><%= aupay.status_settlement %></td>
-      <td><%= aupay.status_update_settlement %></td>
-      <td><%= aupay.settlement_deadline %></td>
+      <td class="valuation-td"><%= link_to "詳細", aupay_path(aupay.id), class: "link" %></td>
+      <td class="valuation-td"><%= aupay.client %></td>
+      <td class="valuation-td"><%= aupay.store_prop.name %></td>
+      <td class="valuation-td"><%= aupay.date %></td>
+      <td class="valuation-td"><%= aupay.status %></td>
+      <td class="valuation-td"><%= aupay.result_point %></td>
+      <td class="valuation-td"><%= aupay.shipment %></td>
+      <td class="valuation-td"><%= aupay.status_settlement %></td>
+      <td class="valuation-td"><%= aupay.status_update_settlement %></td>
+      <td class="valuation-td"><%= aupay.settlement_deadline %></td>
     </tr>
     <% end %>
   </tbody>
@@ -168,12 +172,12 @@
 <table>
   <thead>
     <tr>
-      <th>詳細</th>
-      <th>商流</th>
-      <th>店舗名</th>
-      <th>獲得日</th>
-      <th>審査ステータス</th>
-      <th>審査完了日</th>
+      <th class="valuation-th">詳細</th>
+      <th class="valuation-th">商流</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
     </tr>
   </thead>
   <tbody>
@@ -185,12 +189,12 @@
       <% else %>
       <tr>
       <% end %>
-      <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id), class: "link" %></td>
-      <td><%= rakuten_pay.client %></td>
-      <td><%= rakuten_pay.store_prop.name %></td>
-      <td><%= rakuten_pay.date %></td>
-      <td ><%= rakuten_pay.status %></td>
-      <td><%= rakuten_pay.result_point %></td>
+      <td class="valuation-td"><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id), class: "link" %></td>
+      <td class="valuation-td"><%= rakuten_pay.client %></td>
+      <td class="valuation-td"><%= rakuten_pay.store_prop.name %></td>
+      <td class="valuation-td"><%= rakuten_pay.date %></td>
+      <td class="valuation-td"><%= rakuten_pay.status %></td>
+      <td class="valuation-td"><%= rakuten_pay.result_point %></td>
     </tr>
     <% end %>
   </tbody>
@@ -200,45 +204,45 @@
 <h2>増加商材一覧</h2>
 <table>
 <tr>
-  <th>商材</th>
-  <th>商流</th>
-  <th>店舗名</th>
-  <th>獲得日</th>
-  <th>ステータス</th>
-  <th>審査完了日</th>
-  <th>詳細</th>
+  <th class="valuation-th">商材</th>
+  <th class="valuation-th">商流</th>
+  <th class="valuation-th">店舗名</th>
+  <th class="valuation-th">獲得日</th>
+  <th class="valuation-th">ステータス</th>
+  <th class="valuation-th">審査完了日</th>
+  <th class="valuation-th">詳細</th>
 </tr>
 <% @dmers_inc.each do |dmer|  %>
 <tr>
-  <td>dメル</td>
-  <td><%= dmer.client %></td>
-  <td><%= dmer.store_prop.name %></td>
-  <td><%= dmer.date %></td>
-  <td><%= dmer.status %></td>
-  <td><%= dmer.result_point %></td>
-  <td><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+  <td class="valuation-td">dメル</td>
+  <td class="valuation-td"><%= dmer.client %></td>
+  <td class="valuation-td"><%= dmer.store_prop.name %></td>
+  <td class="valuation-td"><%= dmer.date %></td>
+  <td class="valuation-td"><%= dmer.status %></td>
+  <td class="valuation-td"><%= dmer.result_point %></td>
+  <td class="valuation-td"><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
 </tr>
 <% end %>
 <% @aupays_inc.each do |aupay|  %>
 <tr>
-  <td>auPay</td>
-  <td><%= aupay.client %></td>
-  <td><%= aupay.store_prop.name %></td>
-  <td><%= aupay.date %></td>
-  <td><%= aupay.status %></td>
-  <td><%= aupay.result_point %></td>
-  <td><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+  <td class="valuation-td">auPay</td>
+  <td class="valuation-td"><%= aupay.client %></td>
+  <td class="valuation-td"><%= aupay.store_prop.name %></td>
+  <td class="valuation-td"><%= aupay.date %></td>
+  <td class="valuation-td"><%= aupay.status %></td>
+  <td class="valuation-td"><%= aupay.result_point %></td>
+  <td class="valuation-td"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
 </tr>
 <% end %>
 <% @rakuten_pays_inc.each do |rakuten_pay|  %>
 <tr>
-  <td>楽天ペイ</td>
-  <td><%= rakuten_pay.client %></td>
-  <td><%= rakuten_pay.store_prop.name %></td>
-  <td><%= rakuten_pay.date %></td>
-  <td><%= rakuten_pay.status %></td>
-  <td><%= rakuten_pay.share %></td>
-  <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
+  <td class="valuation-td">楽天ペイ</td>
+  <td class="valuation-td"><%= rakuten_pay.client %></td>
+  <td class="valuation-td"><%= rakuten_pay.store_prop.name %></td>
+  <td class="valuation-td"><%= rakuten_pay.date %></td>
+  <td class="valuation-td"><%= rakuten_pay.status %></td>
+  <td class="valuation-td"><%= rakuten_pay.share %></td>
+  <td class="valuation-td"><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
 </tr>
 <% end %>
 </table>
@@ -248,45 +252,45 @@
 <h2>減少商材一覧</h2>
 <table>
 <tr>
-  <th>商材</th>
-  <th>商流</th>
-  <th>店舗名</th>
-  <th>獲得日</th>
-  <th>ステータス</th>
-  <th>審査完了日</th>
-  <th>詳細</th>
+  <th class="valuation-td">商材</th>
+  <th class="valuation-td">商流</th>
+  <th class="valuation-td">店舗名</th>
+  <th class="valuation-td">獲得日</th>
+  <th class="valuation-td">ステータス</th>
+  <th class="valuation-td">審査完了日</th>
+  <th class="valuation-td">詳細</th>
 </tr>
 <% @dmers_dec.each do |dmer|  %>
 <tr>
-  <td>dメル</td>
-  <td><%= dmer.client %></td>
-  <td><%= dmer.store_prop.name %></td>
-  <td><%= dmer.date %></td>
-  <td><%= dmer.status %></td>
-  <td><%= dmer.result_point %></td>
-  <td><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+  <td class="valuation-td">dメル</td>
+  <td class="valuation-td"><%= dmer.client %></td>
+  <td class="valuation-td"><%= dmer.store_prop.name %></td>
+  <td class="valuation-td"><%= dmer.date %></td>
+  <td class="valuation-td"><%= dmer.status %></td>
+  <td class="valuation-td"><%= dmer.result_point %></td>
+  <td class="valuation-td"><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
 </tr>
 <% end %>
 <% @aupays_dec.each do |aupay|  %>
 <tr>
-  <td>auPay</td>
-  <td><%= aupay.client %></td>
-  <td><%= aupay.store_prop.name %></td>
-  <td><%= aupay.date %></td>
-  <td><%= aupay.status %></td>
-  <td><%= aupay.result_point %></td>
-  <td><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+  <td class="valuation-td">auPay</td>
+  <td class="valuation-td"><%= aupay.client %></td>
+  <td class="valuation-td"><%= aupay.store_prop.name %></td>
+  <td class="valuation-td"><%= aupay.date %></td>
+  <td class="valuation-td"><%= aupay.status %></td>
+  <td class="valuation-td"><%= aupay.result_point %></td>
+  <td class="valuation-td"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
 </tr>
 <% end %>
 <% @rakuten_pays_dec.each do |rakuten_pay|  %>
 <tr>
-  <td>楽天ペイ</td>
-  <td><%= rakuten_pay.client %></td>
-  <td><%= rakuten_pay.store_prop.name %></td>
-  <td><%= rakuten_pay.date %></td>
-  <td><%= rakuten_pay.status %></td>
-  <td><%= rakuten_pay.share %></td>
-  <td><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
+  <td class="valuation-td">楽天ペイ</td>
+  <td class="valuation-td"><%= rakuten_pay.client %></td>
+  <td class="valuation-td"><%= rakuten_pay.store_prop.name %></td>
+  <td class="valuation-td"><%= rakuten_pay.date %></td>
+  <td class="valuation-td"><%= rakuten_pay.status %></td>
+  <td class="valuation-td"><%= rakuten_pay.share %></td>
+  <td class="valuation-td"><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
 </tr>
 <% end %>
 </table>
