@@ -122,13 +122,13 @@ class UsersController < ApplicationController
       @sum_full_talk_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") 
       @sum_get_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum("first_get + latter_get") 
      #  前半変数 
-      @sum_visit_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_total_visit) 
+      @sum_total_visit_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_total_visit) 
       @sum_visit_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_visit) 
       @sum_interview_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_interview) 
       @sum_full_talk_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_full_talk) 
       @sum_get_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_get) 
      # 後半変数 
-     @sum_visit_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
+     @sum_total_visit_l_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
       @sum_visit_l_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_visit) 
       @sum_interview_l_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_interview) 
       @sum_full_talk_l_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
