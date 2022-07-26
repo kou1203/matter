@@ -801,7 +801,7 @@
               <th rowspan="5" class="total-th">合計</th>
               <th class="total-th">訪問</th>
               <td class="total-td"><%= @sum_total_visit_chubu %></td>
-              <td class="total-td"><%= @sum_total_visit_chubu.average("first_total_visit + latter_total_visit").to_f().round(1) rescue "-" %></td>
+              <td class="total-td"><%= (@sum_total_visit_chubu / @chubu_result.length).to_f().round(1) rescue "-" %></td>
               <td class="total-td">-</td>
             </tr>
             <tr>
@@ -909,7 +909,7 @@
               <th rowspan="5" class="total-th">合計</th>
               <th class="total-th">訪問</th>
               <td class="total-td"><%= @sum_total_visit_kansai %></td>
-              <td class="total-td"><%= @sum_total_visit_kansai.average("first_total_visit + latter_total_visit").to_f().round(1) rescue "-" %></td>
+              <td class="total-td"><%= (@sum_total_visit_kansai / @kansai_result.length).to_f().round(1) rescue "-" %></td>
               <td class="total-td">-</td>
             </tr>
             <tr>
@@ -1017,7 +1017,7 @@
               <th rowspan="5" class="total-th">合計</th>
               <th class="total-th">訪問</th>
               <td class="total-td"><%= @sum_total_visit_kanto %></td>
-              <td class="total-td"><%= @sum_total_visit_kanto.average("first_total_visit + latter_total_visit").to_f().round(1) rescue "-" %></td>
+              <td class="total-td"><%= (@sum_total_visit_kanto / @kanto_result.length).to_f().round(1) rescue "-" %></td>
               <td class="total-td">-</td>
             </tr>
             <tr>
