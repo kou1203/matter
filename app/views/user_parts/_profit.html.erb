@@ -5,81 +5,6 @@
     <h2>日々進捗</h2>
     <table class="date-tb">
       <thead class="date-thead">
-        <tr></tr>
-        <tr>
-        <%# カラム %>
-          <th class="date-th" colspan="8" ><span class="date-span">日々結果</span></th>
-          <th class="date-th" colspan="5" ><span class="date-span">合計</span></th>
-          <th class="date-th" colspan="5" ><span class="date-span">前半</span></th>
-          <th class="date-th" colspan="5"><span class="date-span">後半</span></th>
-          <th class="date-th head-th" rowspan="2" ><span class="date-span">店舗別</span></th>
-          <th class="date-th" colspan="2" ><span class="date-span">喫茶・カフェ</span></th>
-          <th class="date-th" colspan="2" ><span class="date-span">その他飲食</span></th>
-          <th class="date-th" colspan="2" ><span class="date-span">車屋</span></th>
-          <th class="date-th" colspan="2" ><span class="date-span">その他小売</span></th>
-          <th class="date-th" colspan="2" ><span class="date-span">理容・美容</span></th>
-          <th class="date-th" colspan="2" ><span class="date-span">整体・鍼灸</span></th>
-          <th class="date-th" colspan="2" ><span class="date-span">その他サービス</span></th>
-        <%# キャッシュレス切り返し %>
-          <% if @results.where(shift: "キャッシュレス新規").empty? %>
-          <% else %>
-          <th class="date-th head-th" rowspan="2"><span class="date-span">キャッシュ切り返し</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">どういうこと？</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">君は誰？協会？</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">もらうだけでいいの？</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">PayPayのみ</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">AirPayのみ</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">カードのみ</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">先延ばし</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">忙しい</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">現金のみ</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">面倒くさい</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">情報不足</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">ペロ</span></th>
-          <th class="date-th" colspan="3"><span class="date-span">その他</span></th>
-          <% end %>
-        <%# サミット切り返し %>
-          <% if @results.where(shift: "サミット").empty? %>
-          <% else %>
-          <th rowspan="2">　サミット切り返し　</th>
-          <th colspan="2">NG理由</th>
-          <th colspan="3">引き落とし拒否</th>
-          <th colspan="3">忙しい</th>
-          <th colspan="3">怪しい</th>
-          <th colspan="3">検討したい</th>
-          <th colspan="3">変えたくない</th>
-          <th colspan="3">ペロ</th>
-          <th colspan="3">その他</th>
-          <% end %>
-        <%# フェムト切り返し %>
-          <% if @results.where(shift: "楽天フェムト新規").empty? %>
-          <% else %>
-          <th rowspan="2">　フェムト切り返し　</th>
-          <th colspan="3">０１：楽天使ってない</th>
-          <th colspan="3">０２：面倒くさい</th>
-          <th colspan="3">０３：置く場所がない</th>
-          <th colspan="3">０４：メリットがない</th>
-          <th colspan="3">０５：前断った</th>
-          <th colspan="3">０６：必要ない</th>
-          <th colspan="3">０７：忙しい</th>
-          <th colspan="3">０８：ペロ</th>
-          <th colspan="3">０９：その他</th>
-          <% end %>
-          <th class="date-th head-th" rowspan="2"><span class="date-span">時間別基準値</span></th>
-          <th class="date-th " colspan="2"><span class="date-span">10時</span></th>
-          <th class="date-th " colspan="2"><span class="date-span">11時</span></th>
-          <th class="date-th " colspan="2"><span class="date-span">12時</span></th>
-          <th class="date-th " colspan="2"><span class="date-span">13時</span></th>
-          <th class="date-th " colspan="2"><span class="date-span">14時</span></th>
-          <th class="date-th " colspan="2"><span class="date-span">15時</span></th>
-          <th class="date-th " colspan="2"><span class="date-span">16時</span></th>
-          <th class="date-th " colspan="2"><span class="date-span">17時</span></th>
-          <th class="date-th " colspan="2"><span class="date-span">18時</span></th>
-          <th class="date-th " colspan="2"><span class="date-span">19時以降</span></th>
-          <th class="date-th" rowspan="2"><span class="date-span">獲得商材</span></th>
-          <th class="date-th" colspan="2" rowspan="2"><span class="date-span">編集</span></th>
-          <th class="date-th" rowspan="2"><span class="date-span">削除</span></th>
-        </tr>
         <tr >
         <%# 大枠基準値（見出し） %>
             <th class="date-th"><span class="date-span">日付</span></th>
@@ -90,59 +15,105 @@
             <th class="date-th"><span class="date-span">エリア</span></th>
             <th class="date-th"><span class="date-span">営業予想売上</span></th>
             <th class="date-th"><span class="date-span">売上</span></th>
-            <th class="date-th"><span class="date-span">訪問</span></th>
-            <th class="date-th"><span class="date-span">対応</span></th>
-            <th class="date-th"><span class="date-span">対面</span></th>
-            <th class="date-th"><span class="date-span">フル</span></th>
-            <th class="date-th"><span class="date-span">成約</span></th>
-            <th class="date-th"><span class="date-span">訪問</span></th>
-            <th class="date-th"><span class="date-span">対応</span></th>
-            <th class="date-th"><span class="date-span">対面</span></th>
-            <th class="date-th"><span class="date-span">フル</span></th>
-            <th class="date-th"><span class="date-span">成約</span></th>
-            <th class="date-th"><span class="date-span">訪問</span></th>
-            <th class="date-th"><span class="date-span">対応</span></th>
-            <th class="date-th"><span class="date-span">対面</span></th>
-            <th class="date-th"><span class="date-span">フル</span></th>
-            <th class="date-th"><span class="date-span">成約</span></th>
+            <th class="date-th"><span class="date-span">合計訪問</span></th>
+            <th class="date-th"><span class="date-span">合計対応</span></th>
+            <th class="date-th"><span class="date-span">合計対面</span></th>
+            <th class="date-th"><span class="date-span">合計フル</span></th>
+            <th class="date-th"><span class="date-span">合計成約</span></th>
+            <th class="date-th"><span class="date-span">前半訪問</span></th>
+            <th class="date-th"><span class="date-span">前半対応</span></th>
+            <th class="date-th"><span class="date-span">前半対面</span></th>
+            <th class="date-th"><span class="date-span">前半フル</span></th>
+            <th class="date-th"><span class="date-span">前半成約</span></th>
+            <th class="date-th"><span class="date-span">後半訪問</span></th>
+            <th class="date-th"><span class="date-span">後半対応</span></th>
+            <th class="date-th"><span class="date-span">後半対面</span></th>
+            <th class="date-th"><span class="date-span">後半フル</span></th>
+            <th class="date-th"><span class="date-span">後半成約</span></th>
         <%# 店舗別基準値（見出し） %>
-          <% 7.times do %>
-          <th class="date-th"><span class="date-span">訪問数</span></th>
-          <th class="date-th"><span class="date-span">獲得数</span></th>
-          <% end %>
+          <th class="date-th head-th"><span class="date-span">店舗別基準値</span></th>
+          <th class="date-th"><span class="date-span">喫茶・カフェ訪問数</span></th>
+          <th class="date-th"><span class="date-span">喫茶・カフェ獲得数</span></th>
+          <th class="date-th"><span class="date-span">その他飲食訪問数</span></th>
+          <th class="date-th"><span class="date-span">その他飲食獲得数</span></th>
+          <th class="date-th"><span class="date-span">車屋訪問数</span></th>
+          <th class="date-th"><span class="date-span">車屋獲得数</span></th>
+          <th class="date-th"><span class="date-span">その他小売訪問数</span></th>
+          <th class="date-th"><span class="date-span">その他小売獲得数</span></th>
+          <th class="date-th"><span class="date-span">理容・美容訪問数</span></th>
+          <th class="date-th"><span class="date-span">理容・美容獲得数</span></th>
+          <th class="date-th"><span class="date-span">整体・鍼灸訪問数</span></th>
+          <th class="date-th"><span class="date-span">整体・鍼灸獲得数</span></th>
+          <th class="date-th"><span class="date-span">その他サービス訪問数</span></th>
+          <th class="date-th"><span class="date-span">その他サービス獲得数</span></th>
         <%# キャッシュレス切り返し（見出し） %>
           <% if @results.where(shift: "キャッシュレス新規").empty? %>
           <% else %>
-            <% 13.times do %>
-            <th class="date-th" style="border-left: 1px solid rgb(214, 219, 235);"><span class="date-span">対面数<span class="date-span"></th>
-            <th class="date-th"><span class="date-span">フル数</span></th>
-            <th class="date-th"><span class="date-span">成約数</span></th>
-            <% end %>
+            <th class="head-th date-th"><span class="date-span">切り返し<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">０１：どういうこと？対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">０１：どういうこと？フル数</span></th>
+            <th class="date-th"><span class="date-span">０１：どういうこと？成約数</span></th>
+            <th class="date-th"><span class="date-span">０２：君は誰？協会？対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">０２：君は誰？協会？フル数</span></th>
+            <th class="date-th"><span class="date-span">０２：君は誰？協会？成約数</span></th>
+            <th class="date-th"><span class="date-span">０３：もらうだけでいいの？対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">０３：もらうだけでいいの？フル数</span></th>
+            <th class="date-th"><span class="date-span">０３：もらうだけでいいの？成約数</span></th>
+            <th class="date-th"><span class="date-span">０４：PayPayのみ対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">０４：PayPayのみフル数</span></th>
+            <th class="date-th"><span class="date-span">０４：PayPayのみ成約数</span></th>
+            <th class="date-th"><span class="date-span">０５：AirPayのみ対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">０５：AirPayのみフル数</span></th>
+            <th class="date-th"><span class="date-span">０５：AirPayのみ成約数</span></th>
+            <th class="date-th"><span class="date-span">０６：カードのみ対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">０６：カードのみフル数</span></th>
+            <th class="date-th"><span class="date-span">０６：カードのみ成約数</span></th>
+            <th class="date-th"><span class="date-span">０７：先延ばし対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">０７：先延ばしフル数</span></th>
+            <th class="date-th"><span class="date-span">０７：先延ばし成約数</span></th>
+            <th class="date-th"><span class="date-span">０８：忙しい対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">０８：忙しいフル数</span></th>
+            <th class="date-th"><span class="date-span">０８：忙しい成約数</span></th>
+            <th class="date-th"><span class="date-span">０９：現金のみ対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">０９：現金のみフル数</span></th>
+            <th class="date-th"><span class="date-span">０９：現金のみ成約数</span></th>
+            <th class="date-th"><span class="date-span">１０：面倒くさい対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">１０：面倒くさいフル数</span></th>
+            <th class="date-th"><span class="date-span">１０：面倒くさい成約数</span></th>
+            <th class="date-th"><span class="date-span">１１：情報不足対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">１１：情報不足フル数</span></th>
+            <th class="date-th"><span class="date-span">１１：情報不足成約数</span></th>
+            <th class="date-th"><span class="date-span">１２：ペロ対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">１２：ペロフル数</span></th>
+            <th class="date-th"><span class="date-span">１２：ペロ成約数</span></th>
+            <th class="date-th"><span class="date-span">１３：その他対面数<span class="date-span"></th>
+            <th class="date-th"><span class="date-span">１３：その他フル数</span></th>
+            <th class="date-th"><span class="date-span">１３：その他成約数</span></th>
           <% end %>
-          <% 10.times do %><%# 時間別基準値 %>
-            <th class="date-th"><span class="date-span">訪問</span></th>
-            <th class="date-th"><span class="date-span">成約</span></th>
-          <% end %>
-        <%# サミット切り返し（見出し） %>
-          <% if @results.where(shift: "サミット").empty? %>
-          <% else %>
-            <th class="date-th">明細なし</th>
-            <th class="date-th">明細NG</th>
-            <% 7.times do %>
-            <th style="border-left: 1px solid rgb(214, 219, 235);">対面数</th>
-            <th class="date-th">フル数</th>
-            <th class="date-th">成約数</th>
-            <% end %>
-          <% end %>
-        <%# フェムト切り返し（見出し） %>
-          <% if @results.where(shift: "楽天フェムト新規").empty? %>
-          <% else %>
-            <% 9.times do %>
-              <th style="border-left: 1px solid rgb(214, 219, 235);">対面数</th>
-              <th class="date-th">フル数</th>
-              <th class="date-th">成約数</th>
-            <% end %>
-          <% end %>
+            <th class="head-th date-th"><span class="date-span">時間別基準値</span></th>
+            <th class="date-th"><span class="date-span">10時訪問</span></th>
+            <th class="date-th"><span class="date-span">10時成約</span></th>
+            <th class="date-th"><span class="date-span">11時訪問</span></th>
+            <th class="date-th"><span class="date-span">11時成約</span></th>
+            <th class="date-th"><span class="date-span">12時訪問</span></th>
+            <th class="date-th"><span class="date-span">12時成約</span></th>
+            <th class="date-th"><span class="date-span">13時訪問</span></th>
+            <th class="date-th"><span class="date-span">13時成約</span></th>
+            <th class="date-th"><span class="date-span">14時訪問</span></th>
+            <th class="date-th"><span class="date-span">14時成約</span></th>
+            <th class="date-th"><span class="date-span">15時訪問</span></th>
+            <th class="date-th"><span class="date-span">15時成約</span></th>
+            <th class="date-th"><span class="date-span">16時訪問</span></th>
+            <th class="date-th"><span class="date-span">16時成約</span></th>
+            <th class="date-th"><span class="date-span">17時訪問</span></th>
+            <th class="date-th"><span class="date-span">17時成約</span></th>
+            <th class="date-th"><span class="date-span">18時訪問</span></th>
+            <th class="date-th"><span class="date-span">18時成約</span></th>
+            <th class="date-th"><span class="date-span">19時訪問</span></th>
+            <th class="date-th"><span class="date-span">19時成約</span></th>
+            <th class="date-th"><span class="date-span">獲得商材</span></th>
+            <th class="date-th" colspan="2"><span class="date-span">編集</span></th>
+            <th class="date-th"><span class="date-span">削除</span></th>
         </tr>
       </thead>
       <tbody>
