@@ -63,7 +63,7 @@ class ResultsController < ApplicationController
             Airpay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
         @shift_monthly_plan = 
           Shift.includes(:user)
-          .where(start_time: @month_daily.beginning_of_month..@month_daily)
+          .where(start_time: @month_daily.beginning_of_month..@month_daily.beginning_of_month)
           .where(user: {base_sub: "キャッシュレス"})
         @shift_monthly_digestion = 
           Result.includes(:user)
@@ -172,6 +172,8 @@ class ResultsController < ApplicationController
       else
       # 全体売上
         @shift_sum = this_period(@shifts,@results)
+
+        
       end
   end 
 
