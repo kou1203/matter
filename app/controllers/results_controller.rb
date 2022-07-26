@@ -64,7 +64,7 @@ class ResultsController < ApplicationController
         @shift_monthly_plan = 
           Shift.includes(:user)
           .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
-          .where(user: {base_sub: "キャッシュレス"})
+          .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
         @shift_monthly_digestion = 
           Result.includes(:user)
           .where(date: @month_daily.beginning_of_month..@month_daily)
