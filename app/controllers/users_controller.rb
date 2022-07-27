@@ -569,7 +569,7 @@ class UsersController < ApplicationController
         .where.not(industry_status: "NG").where.not(industry_status: "×")
         .select(:id,:valuation_new, :industry_status, :user_id, :store_prop_id,:date,:result_point, :status) 
         # dメル第一成果, 期間月初〜月末
-        # ①月内に審査完了＆決済が月末より前に完了している
+        # ①月内に審査完了＆決済が月末より前に完了している or
         # ②審査完了は過去月＆決済は月内に完了している
         @dmer_done =  
           @dmer_user.where(result_point: @month.beginning_of_month..@month.end_of_month)
@@ -619,6 +619,8 @@ class UsersController < ApplicationController
         @dmer_slmt2nd_get = 
           slmt2nd_get(@dmer_slmter,@results_date)
           .select(:valuation_second_settlement, :industry_status, :user_id, :store_prop_id)
+        # dメル第三成果 = 審査完了 + (決済ステータス == 完了) 2回目決済が月内に完了 or
+        # 2回目決済過去に完了 + 決済完了日が期間内
         @dmer_slmt2nd = 
           slmt_second(@dmer_slmter,@results_date)
           .select(:valuation_second_settlement, :industry_status, :user_id, :store_prop_id)

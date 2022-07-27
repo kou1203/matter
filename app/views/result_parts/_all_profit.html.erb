@@ -252,6 +252,16 @@
               .where.not(industry_status: "要確認")
               .where(status: "審査OK")
               .where(status_settlement: "完了")
+              .where("status_update_settlement >= ?", Date.today)
+              .or(
+                dmer_slmter.where.not(settlement_second: nil)
+                .where.not(industry_status: "NG")
+                .where.not(industry_status: "×")
+                .where.not(industry_status: "要確認")
+                .where(status: "審査OK")
+                .where(status_settlement: "完了")
+                .where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+              )
           %>
           <% dmer_slmt2nd_valuations = dmer_result3 .sum(:valuation_second_settlement) %>
           <% dmer_result3_len = dmer_result3.length %>
