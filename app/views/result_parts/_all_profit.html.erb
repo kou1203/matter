@@ -263,7 +263,7 @@
                 .where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
               )
           %>
-          <% dmer_slmt2nd_valuations = dmer_result3 .sum(:valuation_second_settlement) %>
+          <% dmer_slmt2nd_valuations = dmer_result3.sum(:valuation_second_settlement) %>
           <% dmer_result3_len = dmer_result3.length %>
           <% dmer_slmt2nd_len = dmer_slmt2nd.length %>
         <%# dメル終着見込 %>
@@ -372,12 +372,12 @@
             airpay_valuations = 
               if airpay_len >= 10
                 airpay_user
-                .where(result_point: @month.next_month.beginning_of_month..@month.end_of_month).where(status: "審査完了").sum(:valuation) + (airpay_len * 2000)
+                .where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month).where(status: "審査完了").sum(:valuation) + (airpay_len * 2000)
               else  
-                airpay_user.where(result_point: @month.next_month.beginning_of_month..@month.end_of_month).where(status: "審査完了").sum(:valuation)
+                airpay_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month).where(status: "審査完了").sum(:valuation)
               end
           %>
-          <% airpay_result1_len = airpay_user.where(result_point: @month.next_month.beginning_of_month..@month.end_of_month).where(status: "審査完了").length %>
+          <% airpay_result1_len = airpay_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month).where(status: "審査完了").length %>
 
         <%# 少額短期保険 %>
           <% st_insurance_user = StInsurance.includes(:store_prop).where(user_id: r.user_id) %>
