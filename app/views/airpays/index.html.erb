@@ -28,6 +28,7 @@
           <th class="search-th">店舗番号</th>
           <th class="search-th">店舗名</th>
           <th class="search-th">獲得者</th>
+          <th class="search-th">拠点</th>
           <th class="search-th">審査ステータス</th>
           <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
         </tr>
@@ -39,6 +40,7 @@
           <td ><%= f.text_field :customer_num_cont, class: "input" %></td>
           <td ><%= f.text_field :store_name_cont, class: "input" %></td>
           <td ><%= f.text_field :user_name_cont, class: "input" %></td>
+          <td ><%= f.text_field :user_base_cont, class: "input" %></td>
           <td ><%= f.select :status_eq, options_from_collection_for_select(Airpay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
           <td class="reset"><%= link_to "絞込みリセット", airpays_path, class: "reset-link" %></td>
         </tr>
@@ -72,10 +74,8 @@
         <th class="out-th">VM審査ステータス</th>
         <th class="out-th">審査完了日</th>
         <th class="out-th">iPad申込区分</th>
-        <th class="out-th">KRコード</th>
         <th class="out-th">書類フォロー</th>
         <th class="out-th">配送ステータス</th>
-        <th class="out-th">アクティベート日</th>
         <th class="out-th">評価売</th>
         <% if current_user.position == "権限①" %>
         <th class="out-th">実売</th>
@@ -101,10 +101,8 @@
           （無）
           <% end %>
         </td>
-        <td class="out-td"><%= airpay.kr_code %></td>
         <td class="out-td"><%= airpay.doc_follow %></td>
         <td class="out-td"><%= airpay.delivery_status %></td>
-        <td class="out-td"><%= airpay.activate %></td>
         <td class="out-td"><%= airpay.valuation %></td>
         <% if current_user.position == "権限①" %>
         <td class="out-td"><%= airpay.profit %></td>

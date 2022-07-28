@@ -571,22 +571,28 @@ class UsersController < ApplicationController
         # dメル第一成果, 期間月初〜月末
         # ①月内に審査完了＆決済が月末より前に完了している or
         # ②審査完了は過去月＆決済は月内に完了している
-        @dmer_done =  
+        # @dmer_done =  
+        #   @dmer_user.where(result_point: @month.beginning_of_month..@month.end_of_month)
+        #   .where.not(industry_status: "NG")
+        #   .where.not(industry_status: "×")
+        #   .where.not(industry_status: "要確認")
+        #   .where(status: "審査OK")
+        #   .where("? >= settlement", @month.end_of_month)
+        #   .or(
+        #     @dmer_user.where(settlement: @month.beginning_of_month..@month.end_of_month)
+        #     .where.not(industry_status: "NG")
+        #     .where.not(industry_status: "×")
+        #     .where.not(industry_status: "要確認")
+        #     .where(status: "審査OK")
+        #     .where("? >= result_point", @month.end_of_month)
+        #   ).select(:valuation_settlement, :industry_status, :user_id, :store_prop_id,:date,:result_point,:status,:id,:status_update_settlement,:settlement_second)
+        @dmer_done = 
           @dmer_user.where(result_point: @month.beginning_of_month..@month.end_of_month)
           .where.not(industry_status: "NG")
           .where.not(industry_status: "×")
           .where.not(industry_status: "要確認")
           .where(status: "審査OK")
-          .where("? >= settlement", @month.end_of_month)
-          .or(
-            @dmer_user.where(settlement: @month.beginning_of_month..@month.end_of_month)
-            .where.not(industry_status: "NG")
-            .where.not(industry_status: "×")
-            .where.not(industry_status: "要確認")
-            .where(status: "審査OK")
-            .where("? >= result_point", @month.end_of_month)
-          ).select(:valuation_settlement, :industry_status, :user_id, :store_prop_id,:date,:result_point,:status,:id,:status_update_settlement,:settlement_second)
-          
+          .select(:valuation_settlement, :industry_status, :user_id, :store_prop_id,:date,:result_point,:status,:id,:status_update_settlement,:settlement_second)
         # 決済
         @dmer_slmter = 
           Dmer.where(settlementer_id: @results.first.user_id)

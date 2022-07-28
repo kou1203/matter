@@ -1,11 +1,10 @@
 <template>
   <div id="app">
-    <button >商材ステータス</button>
+    <!-- <button v-on:click="productStatus">商材ステータス</button> -->
     <button>決済一覧</button>
     <button>不備一覧</button>
-    <p>{{ message }}</p>
-    <p>{{ users.length }}</p>
-    <my-component></my-component>
+    <!-- <p>{{ message }}</p> -->
+    <!-- <p>{{ users.length }}</p> -->
   </div>
 </template>
 
@@ -19,7 +18,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style scoped>

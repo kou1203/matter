@@ -32,18 +32,18 @@ document.addEventListener('DOMContentLoaded', () => {
 // </div>
 
 
-// import Vue from 'vue/dist/vue.esm'
-// import App from '../app.vue'
-//
-// document.addEventListener('DOMContentLoaded', () => {
-//   const app = new Vue({
-//     el: '#hello',
-//     data: {
-//       message: "Can you say hello?"
-//     },
-//     components: { App }
-//   })
-// })
+import Vue from 'vue/dist/vue.esm'
+import App from '../app.vue'
+
+document.addEventListener('DOMContentLoaded', () => {
+  const app = new Vue({
+    el: '#hello',
+    data: {
+      message: "Can you say hello?"
+    },
+    components: { App }
+  })
+})
 //
 //
 //
@@ -56,9 +56,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // import TurbolinksAdapter from 'vue-turbolinks'
 // import Vue from 'vue/dist/vue.esm'
 // import App from '../app.vue'
-//
+
 // Vue.use(TurbolinksAdapter)
-//
+
 // document.addEventListener('turbolinks:load', () => {
 //   const app = new Vue({
 //     el: '#hello',

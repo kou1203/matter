@@ -35,7 +35,6 @@ class AirpaysController < ApplicationController
        :status                 , 
        :terminal_status        ,
        :customer_num           , 
-       :kr_code                , 
        :result_point           ,
        :payment                ,
        :ipad_flag              ,

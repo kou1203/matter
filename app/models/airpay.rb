@@ -8,7 +8,6 @@ class Airpay < ApplicationRecord
     validates :date 
     validates :status
     validates :customer_num
-    validates :kr_code
     validates :ipad_flag
     validates :vm_status
     validates :vm_status_name
@@ -23,22 +22,20 @@ class Airpay < ApplicationRecord
       user = User.find_by(name: row["獲得者"])
       errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
         airpay = new(
-          status: row["審査ステータス"],
+          status: row["審査状況"],
           terminal_status: row["端末ステータス"],
           user_id: user.id,
           date: row["申込日"],
           corporate_name: row["法人名"],
           store_name: row["店舗名"],
           customer_num: row["店舗番号"],
-          result_point: row["V/M契約完了日"],
-          vm_status: row["VM審査ステータス"],
-          vm_status_name: row["VM審査ステータス_名称"],
-          ipad_flag: row["iPad申込区分"],
-          kr_code: row["KRコード"],
+          result_point: row["審査通過日"],
+          vm_status: row["審査ステータス"],
+          vm_status_name: row["審査ステータス読替"],
+          ipad_flag: row["iPadCPN申込有無"],
           doc_follow: row["書類フォロー"],
-          shipping: row["出荷処理日"],
-          delivery_status: row["配送ST"],
-          activate: row["アクティベート日"],
+          shipping: row["端末受取日"],
+          delivery_status: row["端末受取状態"],
           profit: 3000,
           valuation: 3000,
         )
@@ -58,22 +55,20 @@ class Airpay < ApplicationRecord
     airpay = find_by(customer_num: row["店舗番号"])
     if airpay.present? 
       airpay.assign_attributes(
-        status: row["審査ステータス"],
+        status: row["審査状況"],
         terminal_status: row["端末ステータス"],
         user_id: user.id,
         date: row["申込日"],
         corporate_name: row["法人名"],
         store_name: row["店舗名"],
         customer_num: row["店舗番号"],
-        result_point: row["V/M契約完了日"],
-        vm_status: row["VM審査ステータス"],
-        vm_status_name: row["VM審査ステータス_名称"],
-        ipad_flag: row["iPad申込区分"],
-        kr_code: row["KRコード"],
+        result_point: row["審査通過日"],
+        vm_status: row["審査ステータス"],
+        vm_status_name: row["審査ステータス読替"],
+        ipad_flag: row["iPadCPN申込有無"],
         doc_follow: row["書類フォロー"],
-        shipping: row["出荷処理日"],
-        delivery_status: row["配送ST"],
-        activate: row["アクティベート日"],
+        shipping: row["端末受取日"],
+        delivery_status: row["端末受取状態"],
         profit: 3000,
         valuation: 3000,
       )
@@ -85,22 +80,20 @@ class Airpay < ApplicationRecord
       end 
     else  
       airpay = new(
-        status: row["審査ステータス"],
+        status: row["審査状況"],
         terminal_status: row["端末ステータス"],
         user_id: user.id,
         date: row["申込日"],
         corporate_name: row["法人名"],
         store_name: row["店舗名"],
         customer_num: row["店舗番号"],
-        result_point: row["V/M契約完了日"],
-        vm_status: row["VM審査ステータス"],
-        vm_status_name: row["VM審査ステータス_名称"],
-        ipad_flag: row["iPad申込区分"],
-        kr_code: row["KRコード"],
+        result_point: row["審査通過日"],
+        vm_status: row["審査ステータス"],
+        vm_status_name: row["審査ステータス読替"],
+        ipad_flag: row["iPadCPN申込有無"],
         doc_follow: row["書類フォロー"],
-        shipping: row["出荷処理日"],
-        delivery_status: row["配送ST"],
-        activate: row["アクティベート日"],
+        shipping: row["端末受取日"],
+        delivery_status: row["端末受取状態"],
         profit: 3000,
         valuation: 3000,
         )
