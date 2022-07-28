@@ -469,6 +469,9 @@
               rakuten_pay_result1_fin +
               airpay_result1_fin).round()
            %>
+           <% if sum_valuations >= sum_valuations_fin %>
+            <% sum_valuations_fin = sum_valuations %>
+           <% end %>
           <% sum_valuations_ave = (sum_valuations_fin / shifts).round() %>
           <% base_dmer += dmer_len %>
           <% base_dmer_ave = base_dmer / shift_digestion %>
