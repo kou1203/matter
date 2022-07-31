@@ -68,7 +68,7 @@ class ResultsController < ApplicationController
         @shift_monthly_digestion = 
           Result.includes(:user)
           .where(date: @month_daily.beginning_of_month..@month_daily)
-          .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+          .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
         # 現状売上
         @result_monthly = 
           if @month_daily.day >= 26
@@ -84,15 +84,15 @@ class ResultsController < ApplicationController
           end
         @shift_monthly = 
           if @month_daily.day >= 26
-            Shift.where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily).includes(:user)
+            Shift.where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.next_month.since(24.days)).includes(:user)
             .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
             .or(
-              Shift.where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+              Shift.where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.next_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
             )
           else  
-            Shift.where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+            Shift.where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
             .or(
-              Shift.where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+              Shift.where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
             )
           end
       # 当日獲得数・売上

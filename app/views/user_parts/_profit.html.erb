@@ -1,5 +1,18 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
-
+<%# 成果売上の変数 %>
+  <%# エアペイのボーナスインセン %>
+  <% airpay_len = @airpay_result.length  %>
+          <% 
+            airpay_bonus =
+              if airpay_len >= 10
+                @airpay_done.length * 2000
+              else  
+                0
+              end 
+          %>
+  <% airpay_valuations = @airpay_done.sum(:valuation) + airpay_bonus %>
+  <%# 合計成果売上 %>
+      <% valuation_sum = @dmer_done.sum(:valuation_new) + @dmer_slmt_done.sum(:valuation_settlement) + @dmer_slmt2nd_done.sum(:valuation_second_settlement) + @aupay_slmt_done.sum(:valuation_settlement) + @paypay_done.sum(:valuation) + @rakuten_pay_done_val + @airpay_done.sum(:valuation) + airpay_bonus %>
 <div class="result-flex">
   <div class="right-frame"><%#日々進捗の区切り%>
     <h2>日々進捗</h2>
@@ -486,6 +499,177 @@
       </tbody>
     </table>
   </div><%#/日々進捗の区切り%>
+  <% if current_user.name == "管理用" %>
+  <div>
+  <%#シフト/売上の区切り%>
+    <% if @result_shift.blank? %>
+      <p class="caution-text">予定シフトがありません。シフト申請を行ってください</p>
+    <% else %>
+    <%# 商材（評価売上変数） %>
+      <%# dメル %>
+        <%# 新規 %>
+          <% 
+            dmer_valuations = 
+              @dmer_uq.sum(:valuation_new) -
+              @dmer_def.sum(:valuation_new) +
+              @dmer_db_data.sum(:valuation_new)
+          %>
+          <% 
+            dmer_len =  
+              @dmer_uq.length -
+              @dmer_def.length +
+              @dmer_db_data.length
+          %>
+        <%# 決済 %>
+          <% dmer_slmt_valuations = @dmer_slmt.sum(:valuation_settlement) %>
+          <% dmer_slmt_len = @dmer_slmt.length %>
+          <% dmer_slmt2nd_valuations = @dmer_slmt2nd.sum(:valuation_second_settlement) %>
+          <% dmer_slmt2nd_len =  @dmer_slmt2nd.length %>
+      <%# aupay %>
+        <%# 新規 %>
+          <%# 合計 %>
+          <% 
+            aupay_valuations =
+              @aupay_uq.sum(:valuation_new) - 
+              @aupay_def.sum(:valuation_new) + 
+              @aupay_db.sum(:valuation_new)
+          %>
+          <% 
+            aupay_len = 
+              @aupay_uq.length - @aupay_def.length + 
+               @aupay_db.length
+          %>
+        <%# 決済 %>
+          <% aupay_slmt_valuations = @aupay_slmt.sum(:valuation_settlement) %>
+          <% aupay_slmt_len = @aupay_slmt.length %>
+      <%# PayPay %>
+        <% paypay_valuations = @paypay_result.sum(:valuation) %>
+        <% paypay_len = @paypay_data.length %>
+        <% paypay_r_len = @paypay_result.length %>
+      <%# 少額短期保険 %>
+        <% st_insurance_user = StInsurance.where(user_id: @results_date.first.user_id) %>
+        <% st_insurance_data = this_period(st_insurance_user,@results_date) %>
+        <% st_insurance_valuations = st_insurance_data.sum(:valuation) %>
+        <% st_insurance_len = st_insurance_data.length %>
+      <%# 楽天ペイ %>
+          <%
+            rakuten_pay_valuations =
+              @rakuten_pay_uq.sum(:valuation) - 
+              @rakuten_pay_def.sum(:valuation)
+          %>
+          <% 
+            rakuten_pay_len =  
+              @rakuten_pay_uq.length - 
+              @rakuten_pay_def.length 
+          %>
+
+      <%# 合計売上 %>
+        <% sum_profit_new = dmer_valuations + aupay_valuations + paypay_valuations + st_insurance_valuations + rakuten_pay_valuations + airpay_valuations %>
+        <% sum_profit_slmt = dmer_slmt_valuations + dmer_slmt2nd_valuations + aupay_slmt_valuations %>
+        <% sum_profit = sum_profit_new + sum_profit_slmt %>
+      <%# 平均売上 %>
+        <% ave_profit_new = sum_profit_new.to_f / @digestion_new %>
+        <% ave_profit_slmt = sum_profit_slmt.to_f / @digestion_settlement %>
+        <% ave_profit = (sum_profit.to_f / @results_date.where.not(shift: "休み").where.not(shift: "帯同").where.not(shift: "内勤").where.not(shift: "欠勤").length) %>
+
+    <h2 class="shift-h2"><%= @minimum_date_cash.strftime('%Y-%m-%d') %>（<%= days[@minimum_date_cash.wday] %>）〜<%= @maximum_date_cash.strftime('%Y-%m-%d') %>（<%= days[@maximum_date_cash.wday] %>）</h2>
+    <% end %>
+    <p class="caution-text">※売上は営業が入力した売上から計算しています。</p>
+    <table>
+      <tr>
+        <th class="date-th">シフト（内訳）</th>
+        <th class="date-th">予定</th>
+        <th class="date-th">消化</th>
+        <th class="date-th">残シフト</th>
+        <th class="date-th">現状売上</th>
+        <th class="date-th">Ave</th>
+        <th class="date-th">予測終着</th>
+        <th class="date-th">帯同加味</th>
+      </tr>
+      <tr>
+        <td class="date-td">キャッシュレス新規</td><%# 欠勤 %>
+        <td class="date-td"><%= @new_shift %></td>
+        <td class="date-td"><%= @digestion_new %></td>
+        <td class="date-td"><%= @new_shift - @digestion_new %></td>
+        <td class="date-td"><%=  %></td>
+        <td class="date-td"><%=  %></td>
+        <td class="date-td"><%=  %></td>
+        <td class="date-td"></td>
+      </tr>
+      <tr>
+        <td class="date-td">キャッシュレス決済</td>
+        <td class="date-td"><%= @settlement_shift %></td>
+        <td class="date-td"><%= @digestion_settlement %></td>
+        <td class="date-td"><%= @settlement_shift - @digestion_settlement %></td>
+        <td class="date-td"><%=  %></td>
+        <td class="date-td"><%=  %></td>
+        <td class="date-td"><%=  %></td>
+        <td class="date-td"></td>
+      </tr>
+      <tr>
+        <td class="date-td">サミット</td>
+        <td class="date-td"><%= @summit_shift %></td>
+        <td class="date-td"><%= @digestion_summit %></td>
+        <td class="date-td"><%= @summit_shift - @digestion_summit %></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+      </tr>
+      <tr>
+        <td class="date-td">楽天フェムト新規</td>
+        <td class="date-td"><%= @casa_shift %></td>
+        <td class="date-td"><%= @digestion_casa %></td>
+        <td class="date-td"><%= @casa_shift - @digestion_casa %></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+      </tr>
+      <tr>
+        <td class="date-td">楽天フェムト設置</td>
+        <td class="date-td"><%= @casa_put_shift %></td>
+        <td class="date-td"><%= @digestion_casa_put %></td>
+        <td class="date-td"><%= @casa_put_shift - @digestion_casa_put %></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+      </tr>
+      <tr>
+        <td class="date-td">帯同</td>
+        <td class="date-td"><%= @ojt_shift %></td>
+        <td class="date-td"><%= @digestion_ojt %></td>
+        <td class="date-td"><%= @ojt_shift - @digestion_ojt %></td>
+        <td class="date-td"><%= @sales_profit_ojt_sum.to_s(:delimited) %></td>
+        <td class="date-td"><%=  %></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+      </tr>
+      <tr>
+        <td class="date-td">内勤</td>
+        <td class="date-td"><%= @house_work_shift %></td>
+        <td class="date-td"><%= @digestion_house_work %></td>
+        <td class="date-td"><%= @house_work_shift - @digestion_house_work %></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+        <td class="date-td"></td>
+      </tr>
+      <tr>
+        <td class="date-td">合計</td>
+        <td class="date-td"><%= shift_sum = @new_shift + @settlement_shift + @summit_shift + @casa_shift + @casa_put_shift + @ojt_shift + @house_work_shift %></td>
+            <td class="date-td"><%= digestion_sum = @digestion_new + @digestion_settlement + @digestion_summit + @digestion_casa + @digestion_casa_put + @digestion_ojt + @digestion_house_work %></td>
+        <td class="date-td"><%= shift_sum - digestion_sum %></td>
+        <td class="date-td"><%= (@sales_new_profit_sum + @sales_slmt_profit_sum).to_s(:delimited) %></td>
+        <td class="date-td"><%= @sales_profit_ave.round().to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= @sales_profit_fin.round().to_s(:delimited) rescue "測定不可" %></td>
+        <td class="date-td"><%= (@sales_profit_fin + @sales_profit_ojt_sum).round().to_s(:delimited) rescue "測定不可" %></td>
+      </tr>
+    </table> 
+  </div>
+  <%#/シフト/売上の区切り%>
+  <% end %>
   <div class="left-frame">
   <%#シフト/売上の区切り%>
     <% if @result_shift.blank? %>
@@ -2140,7 +2324,7 @@
     <table>
       <tr>
         <th class="total-th">商材</th>
-        <th class="total-th">dメル（決済）</th>
+        <th class="total-th">dメル（審査完了）</th>
         <th class="total-th">dメル（写真）</th>
         <th class="total-th">dメル（2回目決済）</th>
         <th class="total-th">aupay（決済）</th>
@@ -2160,6 +2344,7 @@
         <td class="total-td"><%= @airpay_done.length %></td>
         <td class="total-td"><%=  %></td>
       </tr>
+
       <tr>
         <th class="total-th">現状売上</th>
         <td class="total-td"><%= @dmer_done.sum(:valuation_new).to_s(:delimited) rescue "NaN" %></td>
@@ -2185,7 +2370,7 @@
           @aupay_slmt_done.sum(:valuation_settlement) +
           @paypay_done.sum(:valuation) +
           @rakuten_pay_done_val +
-          @airpay_done.sum(:valuation)+ airpay_bonus
+          @airpay_done.sum(:valuation) + airpay_bonus
         ).to_s(:delimited) rescue "NaN" %></td>
 
       </tr>

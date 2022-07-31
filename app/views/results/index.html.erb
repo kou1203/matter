@@ -37,7 +37,6 @@
           <%= link_to ">>",results_path(month:@month_daily.since(1.days)), class:"link" %>
         </h2>
 
-
         <p class="nav-text">当日獲得数・評価売上</p>
         <table>
           <thead>
@@ -55,7 +54,7 @@
             </tr>
           </thead>
           <tbody>
-          <% bases = ["中部SS", "関東SS", "関西SS"] %>
+          <% bases = ["中部SS", "関東SS", "関西SS", "2次店"] %>
           <% bases.each do |base| %>
             <tr>
               <th class=""><%= base %></th>
@@ -160,11 +159,11 @@
             </tr>
           <% end %>
               <%# 平均獲得数の変数 %>
-                <% dmer_monthly_ave = @dmer_monthly.length.to_f / @shift_monthly_digestion.length %>
-                <% aupay_monthly_ave = @aupay_monthly.length.to_f / @shift_monthly_digestion.length %>
-                <% paypay_monthly_ave = @paypay_monthly.length.to_f / @shift_monthly_digestion.length %>
-                <% rakuten_pay_monthly_ave = @rakuten_pay_monthly.length.to_f / @shift_monthly_digestion.length %>
-                <% airpay_monthly_ave = @airpay_monthly.length.to_f / @shift_monthly_digestion.length %>
+                <% dmer_monthly_ave = (@dmer_monthly.length.to_f / @shift_monthly_digestion.length) %>
+                <% aupay_monthly_ave = (@aupay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+                <% paypay_monthly_ave = (@paypay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+                <% rakuten_pay_monthly_ave = (@rakuten_pay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+                <% airpay_monthly_ave = (@airpay_monthly.length.to_f / @shift_monthly_digestion.length) %>
               <%# /平均獲得数の変数 %>
             <tr>
               <th class="">全拠点</th>
