@@ -234,7 +234,11 @@
           <% dmer_valuations = dmer_result1.sum(:valuation_new) %>
           <% dmer_result1_len = dmer_result1.length %>
           <% dmer_len = dmer_uq.length  - dmer_def.length %>
+          <% if dmer_len == 0 %>
+          <% dmer_len_ave = 0  %>
+          <% else %>
           <% dmer_len_ave = (dmer_len.to_f / new_shift_digestion).round(1) rescue 0 %>
+          <% end %>
           <% dmer_len_fin = (dmer_len_ave * new_shift).round() rescue 0 %>
           <%# 過去月決済対象の数 %>
             <% 
@@ -259,9 +263,9 @@
           <%# 第一成果終着 %>
             <% dmer_result1_fin_this_month = dmer_new_price * dmer_len_ave * new_shift * dmer_this_month_slmt_per rescue 0 %>
             <% dmer_result1_fin_prev_month = dmer_new_price * dmer_slmt_tgt_prev.length * dmer_prev_month_slmt_per rescue 0 %>
-            <% dmer_result1_fin = dmer_result1_fin_this_month + dmer_result1_fin_prev_month %>
+            <% dmer_result1_fin = dmer_result1_fin_this_month + dmer_result1_fin_prev_month rescue 0 %>
             <% if dmer_valuations > dmer_result1_fin %>
-            <% dmer_result1_fin = dmer_valuations %>
+            <% dmer_result1_fin = dmer_valuations  %>
             <% end %>
         <%# dメル（決済） %>
           <% dmer_slmter = Dmer.where(settlementer_id: r.user_id) %>
@@ -315,8 +319,8 @@
           <% dmer_result3_len = dmer_result3.length %>
           <% dmer_slmt2nd_len = dmer_slmt2nd.length %>
           <%# 第三成果終着 %>
-            <% dmer_result3_fin_prev_month = dmer_2ndslmt_price * dmer_slmt_tgt_prev.length * dmer_prev_month_slmt_per %>
-            <% dmer_result3_fin_this_month = dmer_2ndslmt_price * dmer_len_ave * new_shift * dmer_this_month_slmt_per %>
+            <% dmer_result3_fin_prev_month = dmer_2ndslmt_price * dmer_slmt_tgt_prev.length * dmer_prev_month_slmt_per rescue 0 %>
+            <% dmer_result3_fin_this_month = dmer_2ndslmt_price * dmer_len_ave * new_shift * dmer_this_month_slmt_per rescue 0 %>
             <% 
               dmer_result3_fin = dmer_result3_fin_prev_month + dmer_result3_fin_this_month
             %>
@@ -345,7 +349,11 @@
             aupay_len = 
               aupay_uq.length - aupay_def.length
           %>
+          <% if aupay_len == 0 %>
+          <% aupay_len_ave = 0 %>
+          <% else %>
           <% aupay_len_ave = (aupay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
+          <% end %>
           <% aupay_len_fin = (aupay_len_ave * new_shift).round() rescue 0 %>
 
         <%# aupay（決済） %>
@@ -392,7 +400,11 @@
           <% paypay_valuations = paypay_result1.sum(:valuation) %>
           <% paypay_result1_len = paypay_result1.length %>
           <% paypay_len = paypay_data.length %>
+          <% if paypay_len == 0 %>
+          <% paypay_len_ave = 0 %>
+          <% else %>
           <% paypay_len_ave = (paypay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
+          <% end %>
           <% paypay_len_fin = (paypay_len_ave * new_shift).round() rescue 0 %>
         <%# 第一成果終着 %>
           <% paypay_result1_fin = (paypay_price * paypay_len_ave * new_shift).round() rescue 0 %>
@@ -431,10 +443,14 @@
                 rakuten_pay_dec.length +
                 rakuten_pay_inc.length
             %>
+          <% if rakuten_pay_len == 0 %>
+          <% rakuten_pay_len_ave = 0 %>
+          <% else %>
           <% rakuten_pay_len_ave = (rakuten_pay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
+          <% end %>
           <% rakuten_pay_len_fin = (rakuten_pay_len_ave * new_shift).round() rescue 0 %>
           <%# 第一成果 %>
-          <% rakuten_pay_result1_fin = rakuten_pay_price * rakuten_pay_len_ave * new_shift * 0.9 %>
+          <% rakuten_pay_result1_fin = rakuten_pay_price * rakuten_pay_len_ave * new_shift * 0.9 rescue 0 %>
           <% rakuten_pay_result1_fin %>
           <% if rakuten_pay_valuations > rakuten_pay_result1_fin  %>
           <% rakuten_pay_result1_fin = rakuten_pay_valuations %>
@@ -445,10 +461,14 @@
             airpay_data = this_period(airpay_user ,@cash_result)
           %>
           <% airpay_len = airpay_data.length %>
+          <% if airpay_len == 0 %>
+          <% airpay_len_ave = 0 %>
+          <% else %>
           <% 
             airpay_len_ave = 
               (airpay_len.to_f / new_shift_digestion).round(1) rescue 0 
           %>
+          <% end %>
           <% airpay_len_fin = (airpay_len_ave * new_shift).round() rescue 0 %>
           <% 
             airpay_valuations = 
@@ -465,7 +485,7 @@
           <% else %>
             <% airpay_price = 3000 %>
           <% end %>
-          <% airpay_result1_fin = airpay_price * airpay_len_ave * new_shift * 0.85 %>
+          <% airpay_result1_fin = airpay_price * airpay_len_ave * new_shift * 0.85 rescue 0 %>
           <% if airpay_valuations > airpay_result1_fin  %>
           <% airpay_result1_fin = airpay_valuations %>
           <% end %>
@@ -500,9 +520,11 @@
               airpay_result1_fin).round()
            %>
            <% if (sum_valuations >= sum_valuations_fin) || (Date.today > shift_data.maximum(:start_time)) %>
-            <% sum_valuations_fin = sum_valuations %>
+            <% sum_valuations_fin = sum_valuations rescue 0 %>
            <% end %>
-          <% sum_valuations_ave = (sum_valuations_fin / shifts).round() rescue 0 %>
+          <% if  sum_valuations_fin.present? %>
+          <% sum_valuations_ave = sum_valuations_fin / shifts rescue 0 %>
+          <% end %>
           <% base_dmer += dmer_len %>
           <% base_dmer_ave = base_dmer / shift_digestion rescue 0 %>
           <% base_dmer_fin += dmer_len_fin %>
