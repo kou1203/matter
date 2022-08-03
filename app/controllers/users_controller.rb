@@ -937,12 +937,12 @@ class UsersController < ApplicationController
         # 成果終着
         @result_fin = 
           (
-            # @dmer_result1_fin +
-            # @dmer_result2_fin +
-            # @dmer_result3_fin +
-            # @aupay_result1_fin +
-            # @paypay_result1_fin +
-            # @rakuten_pay_result1_fin +
+            @dmer_result1_fin +
+            @dmer_result2_fin +
+            @dmer_result3_fin +
+            @aupay_result1_fin +
+            @paypay_result1_fin +
+            @rakuten_pay_result1_fin +
             @airpay_result1_fin
           ).to_i
         if (@valuation_sum > @result_fin) || (Date.today > @minimum_date_cash.next_month.end_of_month)
