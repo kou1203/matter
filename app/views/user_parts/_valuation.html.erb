@@ -101,6 +101,7 @@
       <th class="valuation-th">獲得日</th>
       <th class="valuation-th">業種ステータス</th>
       <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
       <th class="valuation-th">内訳</th>
       <th class="valuation-th">評価売上</th>
       <th class="valuation-th"></th>
@@ -114,6 +115,7 @@
       <td class="valuation-td red"><%= dmer.date %></td>
       <td class="valuation-td red"><%= dmer.industry_status %></td>
       <td class="valuation-td red"><%= dmer.status %></td>
+      <td class="valuation-td red"><%= dmer.result_point %></td>
       <td class="valuation-td red"><%= dmer.date.month %>月評価売</td>
       <td class="valuation-td red"><%= dmer.valuation_new %></td>
       <td class="valuation-td red"><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
@@ -128,6 +130,7 @@
       <td class="valuation-td red"><%= aupay.date %></td>
       <td class="valuation-td red"></td>
       <td class="valuation-td red"><%= aupay.status %></td>
+      <td class="valuation-td red"><%= aupay.result_point %></td>
       <td class="valuation-td red"><%= aupay.date.month %>月評価売</td>
       <td class="valuation-td red"><%= aupay.valuation_new %></td>
       <td class="valuation-td red"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
