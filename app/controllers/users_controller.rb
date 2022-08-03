@@ -765,6 +765,7 @@ class UsersController < ApplicationController
       else  
         @airpay_result_len_ave = (@airpay_result.length.to_f / @digestion_new).round(1) rescue 0
       end
+      @airpay_result_len_fin = @airpay_result_len_ave * @new_shift rescue 0
       @airpay_done = 
         @airpay_user.where(status: "審査完了")
         .where(result_point: @month.beginning_of_month..@month.end_of_month)
@@ -922,28 +923,26 @@ class UsersController < ApplicationController
               end
         # AirPay
             # 単価
-            if @airpay_done.length >= 10
+            if @airpay_result_len_fin >= 10
               airpay_price = 5000
             else  
               airpay_price = 3000
             end
             airpay_per = 0.85
-            @airpay_result1_fin = 
-              if @airpay_done_val > (airpay_price * @airpay_result_len_ave * @new_shift * airpay_per)
+            @airpay_result1_fin = airpay_price * @airpay_result_len_ave * @new_shift * airpay_per rescue 0
+              if @airpay_done_val > @airpay_result1_fin
                 @airpay_done_val rescue 0
-              else
-                airpay_price * @airpay_result_len_ave * @new_shift * airpay_per rescue 0
               end
         
         # 成果終着
         @result_fin = 
           (
-            @dmer_result1_fin +
-            @dmer_result2_fin +
-            @dmer_result3_fin +
-            @aupay_result1_fin +
-            @paypay_result1_fin +
-            @rakuten_pay_result1_fin +
+            # @dmer_result1_fin +
+            # @dmer_result2_fin +
+            # @dmer_result3_fin +
+            # @aupay_result1_fin +
+            # @paypay_result1_fin +
+            # @rakuten_pay_result1_fin +
             @airpay_result1_fin
           ).to_i
         if (@valuation_sum > @result_fin) || (Date.today > @minimum_date_cash.next_month.end_of_month)

@@ -532,20 +532,21 @@
           <% 
             sum_valuations_fin = 
               (
-                dmer_result1_fin + 
-                dmer_result2_fin + 
-                dmer_result3_fin +
-                aupay_result1_fin +
-                paypay_result1_fin +
-                rakuten_pay_result1_fin +
+                # dmer_result1_fin + 
+                # dmer_result2_fin + 
+                # dmer_result3_fin +
+                # aupay_result1_fin +
+                # paypay_result1_fin +
+                # rakuten_pay_result1_fin +
                 airpay_result1_fin
               ).to_i
            %>
-           <% if (sum_valuations >= sum_valuations_fin) || (Date.today > shift_data.maximum(:start_time)) %>
+           <% if (sum_valuations >= sum_valuations_fin) || (shift_data.maximum(:start_time).present? && Date.today > shift_data.maximum(:start_time) ) %>
             <% sum_valuations_fin = sum_valuations rescue 0 %>
            <% end %>
-          <% if  sum_valuations_fin.present? %>
-          <% sum_valuations_ave = sum_valuations_fin / shifts rescue 0 %>
+           <% sum_valuations_ave = 0 %>
+          <% if  (sum_valuations_fin.present?) && (shifts != 0) %>
+            <% sum_valuations_ave = sum_valuations_fin / shifts rescue 0 %>
           <% end %>
           <% base_dmer += dmer_len %>
           <% base_dmer_ave = base_dmer / shift_digestion rescue 0 %>
