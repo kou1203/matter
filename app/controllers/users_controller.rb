@@ -577,7 +577,7 @@ class UsersController < ApplicationController
           if (@dmer_len == 0) || (@digestion_new == 0)
             @dmer_len_ave = 0
           else  
-            @dmer_len_ave = @dmer_len.to_f / @digestion_new
+            @dmer_len_ave = (@dmer_len.to_f / @digestion_new).round(1)
           end
         # dメル第一成果, 期間月初〜月末
         # ①月内に審査完了＆決済が月末より前に完了している or
@@ -690,7 +690,7 @@ class UsersController < ApplicationController
       if (@aupay_len == 0) || (@digestion_new == 0)
         @aupay_len_ave = 0
       else
-        @aupay_len_ave = @aupay_len.to_f / @digestion_new
+        @aupay_len_ave = (@aupay_len.to_f / @digestion_new).round(1)
       end
       @aupay_slmter = 
         Aupay.where(settlementer_id: @results.first.user_id).includes(:store_prop)
@@ -713,7 +713,7 @@ class UsersController < ApplicationController
       if (@paypay_data.length == 0) || (@digestion_new == 0)
         @paypay_len_ave = 0
       else  
-        @paypay_len_ave = @paypay_data.length.to_f / @digestion_new
+        @paypay_len_ave = (@paypay_data.length.to_f / @digestion_new).round(1)
       end
       @paypay_done = 
         @paypay_user.where(result_point: @month.beginning_of_month..@month.end_of_month)
@@ -746,7 +746,7 @@ class UsersController < ApplicationController
         if (@rakuten_pay_done_len == 0) || (@digestion_new == 0)
           @rakuten_pay_len_ave = 0
         else  
-          @rakuten_pay_len_ave = @rakuten_pay_done_len.to_f / @digestion_new
+          @rakuten_pay_len_ave = (@rakuten_pay_done_len.to_f / @digestion_new).round(1)
         end
       # 少額短期保険
       @st_insurances_user = StInsurance.where(user_id: @results.first.user_id )
@@ -763,7 +763,7 @@ class UsersController < ApplicationController
       if (@airpay_result.length == 0) || (@digestion_new == 0)
         @airpay_result_len_ave = 0
       else  
-        @airpay_result_len_ave = @airpay_result.length.to_f / @digestion_new rescue 0
+        @airpay_result_len_ave = (@airpay_result.length.to_f / @digestion_new).round(1) rescue 0
       end
       @airpay_done = 
         @airpay_user.where(status: "審査完了")
@@ -916,11 +916,9 @@ class UsersController < ApplicationController
             rakuten_pay_price = 4000
             rakuten_pay_per = 0.9
             # 第一成果終着
-            @rakuten_pay_result1_fin =
-              if @rakuten_pay_done_val > (rakuten_pay_price * @rakuten_pay_len_ave * @new_shift * rakuten_pay_per)
-                @rakuten_pay_done_val
-              else
-                rakuten_pay_price * @rakuten_pay_len_ave * @new_shift * rakuten_pay_per rescue 0
+            @rakuten_pay_result1_fin = rakuten_pay_price * @rakuten_pay_len_ave * @new_shift * rakuten_pay_per rescue 0
+              if @rakuten_pay_done_val > @rakuten_pay_result1_fin
+                @rakuten_pay_result1_fin = @rakuten_pay_done_val
               end
         # AirPay
             # 単価
