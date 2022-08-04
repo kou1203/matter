@@ -1,12 +1,24 @@
 window.addEventListener('turbolinks:load', function(){
 
   
+  // 基準値
   const standardValChange = document.getElementById('standard-val-change');
   const chubuStandardForm = document.getElementById('chubu-standard-form');
   const kansaiStandardForm = document.getElementById('kansai-standard-form');
   const kantoStandardForm = document.getElementById('kanto-standard-form');
+  // 店舗別基準値
+  const storeValChange = document.getElementById('store-val-change');
+  const chubuStoreForm = document.getElementById('chubu-store-form');
+  const kansaiStoreForm = document.getElementById('kansai-store-form');
+  const kantoStoreForm = document.getElementById('kanto-store-form');
+  // 切り返し
+  const outValChange = document.getElementById('out-val-change');
+  const chubuOutForm = document.getElementById('chubu-out-form');
+  const kansaiOutForm = document.getElementById('kansai-out-form');
+  const kantoOutForm = document.getElementById('kanto-out-form');
+
+  // 基準値
   standardValChange.addEventListener("change", function(){
-    // console.log(this.value);
     if(this.value == 'chubu-slct'){
       console.log(this.value);
       chubuStandardForm.style.display = "block";
@@ -23,8 +35,48 @@ window.addEventListener('turbolinks:load', function(){
       kansaiStandardForm.style.display = "none";
       kantoStandardForm.style.display = "block";
   }
-
   });
+
+  // 店舗別基準値
+  storeValChange.addEventListener("change", function(){
+    if(this.value == 'store-chubu-slct'){
+      console.log(this.value);
+      chubuStoreForm.style.display = "block";
+      kansaiStoreForm.style.display = "none";
+      kantoStoreForm.style.display = "none";
+  }else if(this.value == 'store-kansai-slct'){
+      console.log(this.value);
+      chubuStoreForm.style.display = "none";
+      kansaiStoreForm.style.display = "block";
+      kantoStoreForm.style.display = "none";
+  }else if(this.value == 'store-kanto-slct'){
+      console.log(this.value);
+      chubuStoreForm.style.display = "none";
+      kansaiStoreForm.style.display = "none";
+      kantoStoreForm.style.display = "block";
+  }
+  });
+
+  // 店舗別基準値
+  outValChange.addEventListener("change", function(){
+    if(this.value == 'out-chubu-slct'){
+      console.log(this.value);
+      chubuOutForm.style.display = "block";
+      kansaiOutForm.style.display = "none";
+      kantoOutForm.style.display = "none";
+  }else if(this.value == 'out-kansai-slct'){
+      console.log(this.value);
+      chubuOutForm.style.display = "none";
+      kansaiOutForm.style.display = "block";
+      kantoOutForm.style.display = "none";
+  }else if(this.value == 'out-kanto-slct'){
+      console.log(this.value);
+      chubuOutForm.style.display = "none";
+      kansaiOutForm.style.display = "none";
+      kantoOutForm.style.display = "block";
+  }
+  });
+
   // standardValChange
   // 決済
   const slmtPageButton = document.getElementById("slmt-button")

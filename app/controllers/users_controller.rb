@@ -103,6 +103,26 @@ class UsersController < ApplicationController
     @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
     @maximum_date_cash = @month.beginning_of_month.since(24.days)
     @results = Result.where(user_id: @user.id).where(date: @minimum_date_cash..@maximum_date_cash).order(:date)
+    # 拠点別resultデータ
+    @results_chubu = 
+      Result.includes(:user,:result_cash)
+      .where(user: {base: "中部SS"})
+      .where(user: {base_sub: "キャッシュレス"})
+      .where(date: @minimum_date_cash..@maximum_date_cash).order(:date)
+    @results_kanto = 
+      Result.includes(:user, :result_cash)
+      .where(user: {base: "関東SS"})
+      .where(user: {base_sub: "キャッシュレス"})
+      .where(date: @minimum_date_cash..@maximum_date_cash).order(:date)
+    @results_kansai = 
+      Result.includes(:user, :result_cash)
+      .where(user: {base: "関西SS"})
+      .where(user: {base_sub: "キャッシュレス"})
+      .where(date: @minimum_date_cash..@maximum_date_cash).order(:date)
+    # 拠点別新規消化シフト
+    @shift_digestion_chubu = @results_chubu.where(shift: "キャッシュレス新規").length
+    @shift_digestion_kansai = @results_kansai.where(shift: "キャッシュレス新規").length
+    @shift_digestion_kanto = @results_kanto.where(shift: "キャッシュレス新規").length
     @results_date = @results.select(:date, :user_id, :shift,:profit)
     @results_date_min = @results_date.minimum(:date)
     @results_date_max = @results_date.maximum(:date)
@@ -113,7 +133,7 @@ class UsersController < ApplicationController
         .where(start_time: @minimum_date_cash..@maximum_date_cash)
         .where(shift: "キャッシュレス新規").length
       @chubu_result = 
-        Result.includes(:user).where(user: {base: "中部SS"})
+        Result.includes(:user, :result_cash).where(user: {base: "中部SS"})
         .where(date: @minimum_date_cash..@maximum_date_cash)
         .where(shift: "キャッシュレス新規")
       #  合計変数 
@@ -202,6 +222,11 @@ class UsersController < ApplicationController
        @visit19_ave_chubu = @chubu_result.average(:visit19)
        @get19_sum_chubu = @chubu_result.sum(:get19)
        @get19_ave_chubu = @chubu_result.average(:get19)
+
+       @time_visit_sum_chubu = [@visit10_sum_chubu,@visit11_sum_chubu,@visit12_sum_chubu,@visit13_sum_chubu,@visit14_sum_chubu,@visit15_sum_chubu,@visit16_sum_chubu,@visit17_sum_chubu,@visit18_sum_chubu,@visit19_sum_chubu]
+       @time_visit_ave_chubu = [@visit10_ave_chubu,@visit11_ave_chubu,@visit12_ave_chubu,@visit13_ave_chubu,@visit14_ave_chubu,@visit15_ave_chubu,@visit16_ave_chubu,@visit17_ave_chubu,@visit18_ave_chubu,@visit19_ave_chubu]
+       @time_get_sum_chubu = [@get10_sum_chubu,@get11_sum_chubu,@get12_sum_chubu,@get13_sum_chubu,@get14_sum_chubu,@get15_sum_chubu,@get16_sum_chubu,@get17_sum_chubu,@get18_sum_chubu,@get19_sum_chubu]
+       @time_get_ave_chubu = [@get10_ave_chubu,@get11_ave_chubu,@get12_ave_chubu,@get13_ave_chubu,@get14_ave_chubu,@get15_ave_chubu,@get16_ave_chubu,@get17_ave_chubu,@get18_ave_chubu,@get19_ave_chubu]
     # /中部基準値
     # 関西基準値
       @kansai_shift = 
@@ -209,7 +234,7 @@ class UsersController < ApplicationController
         .where(start_time: @minimum_date_cash..@maximum_date_cash)
         .where(shift: "キャッシュレス新規").length
       @kansai_result = 
-        Result.includes(:user).where(user: {base: "関西SS"})
+        Result.includes(:user, :result_cash).where(user: {base: "関西SS"})
         .where(date: @minimum_date_cash..@maximum_date_cash)
         .where(shift: "キャッシュレス新規")
       #  合計変数 
@@ -298,6 +323,11 @@ class UsersController < ApplicationController
        @visit19_ave_kansai = @kansai_result.average(:visit19)
        @get19_sum_kansai = @kansai_result.sum(:get19)
        @get19_ave_kansai = @kansai_result.average(:get19)
+
+       @time_visit_sum_kansai = [@visit10_sum_kansai,@visit11_sum_kansai,@visit12_sum_kansai,@visit13_sum_kansai,@visit14_sum_kansai,@visit15_sum_kansai,@visit16_sum_kansai,@visit17_sum_kansai,@visit18_sum_kansai,@visit19_sum_kansai]
+       @time_visit_ave_kansai = [@visit10_ave_kansai,@visit11_ave_kansai,@visit12_ave_kansai,@visit13_ave_kansai,@visit14_ave_kansai,@visit15_ave_kansai,@visit16_ave_kansai,@visit17_ave_kansai,@visit18_ave_kansai,@visit19_ave_kansai]
+       @time_get_sum_kansai = [@get10_sum_kansai,@get11_sum_kansai,@get12_sum_kansai,@get13_sum_kansai,@get14_sum_kansai,@get15_sum_kansai,@get16_sum_kansai,@get17_sum_kansai,@get18_sum_kansai,@get19_sum_kansai]
+       @time_get_ave_kansai = [@get10_ave_kansai,@get11_ave_kansai,@get12_ave_kansai,@get13_ave_kansai,@get14_ave_kansai,@get15_ave_kansai,@get16_ave_kansai,@get17_ave_kansai,@get18_ave_kansai,@get19_ave_kansai]
     # /関西基準値
     # 関東基準値
       @kanto_shift = 
@@ -305,7 +335,7 @@ class UsersController < ApplicationController
         .where(start_time: @minimum_date_cash..@maximum_date_cash)
         .where(shift: "キャッシュレス新規").length
       @kanto_result = 
-        Result.includes(:user).where(user: {base: "関東SS"})
+        Result.includes(:user,:result_cash).where(user: {base: "関東SS"})
         .where(date: @minimum_date_cash..@maximum_date_cash)
         .where(shift: "キャッシュレス新規")
       #  合計変数 
@@ -394,6 +424,11 @@ class UsersController < ApplicationController
        @visit19_ave_kanto = @kanto_result.average(:visit19)
        @get19_sum_kanto = @kanto_result.sum(:get19)
        @get19_ave_kanto = @kanto_result.average(:get19)
+
+       @time_visit_sum_kanto = [@visit10_sum_kanto,@visit11_sum_kanto,@visit12_sum_kanto,@visit13_sum_kanto,@visit14_sum_kanto,@visit15_sum_kanto,@visit16_sum_kanto,@visit17_sum_kanto,@visit18_sum_kanto,@visit19_sum_kanto]
+       @time_visit_ave_kanto = [@visit10_ave_kanto,@visit11_ave_kanto,@visit12_ave_kanto,@visit13_ave_kanto,@visit14_ave_kanto,@visit15_ave_kanto,@visit16_ave_kanto,@visit17_ave_kanto,@visit18_ave_kanto,@visit19_ave_kanto]
+       @time_get_sum_kanto = [@get10_sum_kanto,@get11_sum_kanto,@get12_sum_kanto,@get13_sum_kanto,@get14_sum_kanto,@get15_sum_kanto,@get16_sum_kanto,@get17_sum_kanto,@get18_sum_kanto,@get19_sum_kanto]
+       @time_get_ave_kanto = [@get10_ave_kanto,@get11_ave_kanto,@get12_ave_kanto,@get13_ave_kanto,@get14_ave_kanto,@get15_ave_kanto,@get16_ave_kanto,@get17_ave_kanto,@get18_ave_kanto,@get19_ave_kanto]
     # 関東基準値
     # 予定シフト変数 
       @result_shift = 

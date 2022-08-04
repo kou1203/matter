@@ -5,8 +5,18 @@
   window.visit_items_chubu=<%= @visit_items_chubu.to_json.html_safe %>;
   window.visit_items_kansai=<%= @visit_items_kansai.to_json.html_safe %>;
   window.visit_items_kanto=<%= @visit_items_kanto.to_json.html_safe %>;
+  // 拠点別利益表データ
+  window.results_chubu=<%= @results_chubu.to_json.html_safe %>;
+  window.results_kansai=<%= @results_kansai.to_json.html_safe %>;
+  window.results_kanto=<%= @results_kanto.to_json.html_safe %>;
+  // 消化シフト
+  window.shift_digestion_chubu=<%= @shift_digestion_chubu.to_json.html_safe %>;
+  window.shift_digestion_kansai=<%= @shift_digestion_kansai.to_json.html_safe %>;
+  window.shift_digestion_kanto=<%= @shift_digestion_kanto.to_json.html_safe %>;
 </script>
 <%# @maximum_date_cash %>
 <%# javascript_pack_tag 'hello_vue' %>
-<%= javascript_pack_tag 'visit_items' %>
-<%= stylesheet_pack_tag 'visit_items' %>
+<%# javascript_pack_tag 'visit_items' %>
+<%# stylesheet_pack_tag 'visit_items' %>
+<%= javascript_pack_tag 'store_items' %>
+<%= stylesheet_pack_tag 'store_items' %>
