@@ -13,7 +13,6 @@
           %>
   <% airpay_valuations = @airpay_done.sum(:valuation) + airpay_bonus %>
   <%# 合計成果売上 %>
-
 <div class="result-flex"><%# 大枠 %>
   <div class="right-frame"><%#日々進捗の区切り%>
     <h2>日々進捗</h2>
@@ -812,330 +811,330 @@
             <option value="kanto-slct">関東SS</option>
           </select>
         </h2>
-          <div class="chubu-standard-form" id="chubu-standard-form"><%# 中部 %>
-            <table class="total-tb">
-              <thead>
-                <tr>
-                  <th class="total-th">項目</th>
-                  <th class="total-th">内訳</th>
-                  <th class="total-th">合計</th>
-                  <th class="total-th">平均</th>
-                  <th class="total-th">比率</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th rowspan="5" class="total-th">合計</th>
-                  <th class="total-th">訪問</th>
-                  <td class="total-td"><%= @sum_total_visit_chubu %></td>
-                  <td class="total-td"><%= (@sum_total_visit_chubu / @chubu_result.length).to_f().round(1) rescue "-" %></td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">応答</th>
-                  <td class="total-td"><%= @sum_visit_chubu %></td>
-                  <td class="total-td"><%= (@sum_visit_chubu.to_f / @chubu_result.length).to_f().round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_visit_chubu.to_f / @sum_total_visit_chubu.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">面会</th>
-                  <td class="total-td"><%= @sum_interview_chubu %></td>
-                  <td class="total-td"><%= (@sum_interview_chubu.to_f / @chubu_result.length).to_f().round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_interview_chubu.to_f / @sum_visit_chubu.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td"><%= @sum_full_talk_chubu %></td>
-                  <td class="total-td"><%= (@sum_full_talk_chubu.to_f / @chubu_result.length).to_f.round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_full_talk_chubu.to_f / @sum_interview_chubu.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td"><%= @sum_get_chubu %></td>
-                  <td class="total-td"><%= (@sum_get_chubu.to_f / @chubu_result.length).to_f.round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_get_chubu.to_f / @sum_full_talk_chubu.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th rowspan="5" class="total-th">前半</th>
-                  <th class="total-th">訪問</th>
-                  <td class="total-td"><%= @sum_total_visit_f_chubu %></td>
-                  <td class="total-td"><%= (@sum_total_visit_f_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">応答</th>
-                  <td class="total-td"><%= @sum_visit_f_chubu %></td>
-                  <td class="total-td"><%= (@sum_visit_f_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_visit_f_chubu.to_f / @sum_total_visit_f_chubu.to_f * 100, precision: 1)  %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">面会</th>
-                  <td class="total-td"><%= @sum_interview_f_chubu %></td>
-                  <td class="total-td"><%= (@sum_interview_f_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_interview_f_chubu.to_f / @sum_visit_f_chubu.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td"><%= @sum_full_talk_f_chubu %></td>
-                  <td class="total-td"><%= (@sum_full_talk_f_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_full_talk_f_chubu.to_f / @sum_interview_f_chubu.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td"><%= @sum_get_f_chubu %></td>
-                  <td class="total-td"><%= (@sum_get_f_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_get_f_chubu.to_f / @sum_full_talk_f_chubu.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th rowspan="5" class="total-th">後半</th>
-                  <th class="total-th">訪問</th>
-                  <td class="total-td"><%= @sum_total_visit_l_chubu %></td>
-                  <td class="total-td"><%= (@sum_total_visit_l_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">応答</th>
-                  <td class="total-td"><%= @sum_visit_l_chubu %></td>
-                  <td class="total-td"><%= (@sum_visit_l_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_visit_l_chubu.to_f / @sum_total_visit_l_chubu.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">面会</th>
-                  <td class="total-td"><%= @sum_interview_l_chubu %></td>
-                  <td class="total-td"><%= (@sum_interview_l_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_interview_l_chubu.to_f / @sum_visit_l_chubu.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td"><%= @sum_full_talk_l_chubu %></td>
-                  <td class="total-td"><%= (@sum_full_talk_l_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_full_talk_l_chubu.to_f / @sum_interview_l_chubu.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td"><%= @sum_get_l_chubu %></td>
-                  <td class="total-td"><%= (@sum_get_l_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_get_l_chubu.to_f / @sum_full_talk_l_chubu.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-              </tbody>
-            </table>
-          </div><%# /中部 %>
-          <div class="kansai-standard-form" id="kansai-standard-form"><%# 関西 %>
-            <table class="total-tb">
-              <thead>
-                <tr>
-                  <th class="total-th">項目</th>
-                  <th class="total-th">内訳</th>
-                  <th class="total-th">合計</th>
-                  <th class="total-th">平均</th>
-                  <th class="total-th">比率</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th rowspan="5" class="total-th">合計</th>
-                  <th class="total-th">訪問</th>
-                  <td class="total-td"><%= @sum_total_visit_kansai %></td>
-                  <td class="total-td"><%= (@sum_total_visit_kansai / @kansai_result.length).to_f().round(1) rescue "-" %></td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">応答</th>
-                  <td class="total-td"><%= @sum_visit_kansai %></td>
-                  <td class="total-td"><%= (@sum_visit_kansai.to_f / @kansai_result.length).to_f().round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_visit_kansai.to_f / @sum_total_visit_kansai.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">面会</th>
-                  <td class="total-td"><%= @sum_interview_kansai %></td>
-                  <td class="total-td"><%= (@sum_interview_kansai.to_f / @kansai_result.length).to_f().round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_interview_kansai.to_f / @sum_visit_kansai.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td"><%= @sum_full_talk_kansai %></td>
-                  <td class="total-td"><%= (@sum_full_talk_kansai.to_f / @kansai_result.length).to_f.round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_full_talk_kansai.to_f / @sum_interview_kansai.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td"><%= @sum_get_kansai %></td>
-                  <td class="total-td"><%= (@sum_get_kansai.to_f / @kansai_result.length).to_f.round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_get_kansai.to_f / @sum_full_talk_kansai.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th rowspan="5" class="total-th">前半</th>
-                  <th class="total-th">訪問</th>
-                  <td class="total-td"><%= @sum_total_visit_f_kansai %></td>
-                  <td class="total-td"><%= (@sum_total_visit_f_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">応答</th>
-                  <td class="total-td"><%= @sum_visit_f_kansai %></td>
-                  <td class="total-td"><%= (@sum_visit_f_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_visit_f_kansai.to_f / @sum_total_visit_f_kansai.to_f * 100, precision: 1)  %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">面会</th>
-                  <td class="total-td"><%= @sum_interview_f_kansai %></td>
-                  <td class="total-td"><%= (@sum_interview_f_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_interview_f_kansai.to_f / @sum_visit_f_kansai.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td"><%= @sum_full_talk_f_kansai %></td>
-                  <td class="total-td"><%= (@sum_full_talk_f_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_full_talk_f_kansai.to_f / @sum_interview_f_kansai.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td"><%= @sum_get_f_kansai %></td>
-                  <td class="total-td"><%= (@sum_get_f_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_get_f_kansai.to_f / @sum_full_talk_f_kansai.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th rowspan="5" class="total-th">後半</th>
-                  <th class="total-th">訪問</th>
-                  <td class="total-td"><%= @sum_total_visit_l_kansai %></td>
-                  <td class="total-td"><%= (@sum_total_visit_l_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">応答</th>
-                  <td class="total-td"><%= @sum_visit_l_kansai %></td>
-                  <td class="total-td"><%= (@sum_visit_l_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_visit_l_kansai.to_f / @sum_total_visit_l_kansai.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">面会</th>
-                  <td class="total-td"><%= @sum_interview_l_kansai %></td>
-                  <td class="total-td"><%= (@sum_interview_l_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_interview_l_kansai.to_f / @sum_visit_l_kansai.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td"><%= @sum_full_talk_l_kansai %></td>
-                  <td class="total-td"><%= (@sum_full_talk_l_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_full_talk_l_kansai.to_f / @sum_interview_l_kansai.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td"><%= @sum_get_l_kansai %></td>
-                  <td class="total-td"><%= (@sum_get_l_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_get_l_kansai.to_f / @sum_full_talk_l_kansai.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-              </tbody>
-            </table>
-          </div><%# /関西 %>
-          <div class="kanto-standard-form" id="kanto-standard-form"><%# 関東 %>
-            <table class="total-tb">
-              <thead>
-                <tr>
-                  <th class="total-th">項目</th>
-                  <th class="total-th">内訳</th>
-                  <th class="total-th">合計</th>
-                  <th class="total-th">平均</th>
-                  <th class="total-th">比率</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <th rowspan="5" class="total-th">合計</th>
-                  <th class="total-th">訪問</th>
-                  <td class="total-td"><%= @sum_total_visit_kanto %></td>
-                  <td class="total-td"><%= (@sum_total_visit_kanto / @kanto_result.length).to_f().round(1) rescue "-" %></td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">応答</th>
-                  <td class="total-td"><%= @sum_visit_kanto %></td>
-                  <td class="total-td"><%= (@sum_visit_kanto.to_f / @kanto_result.length).to_f().round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_visit_kanto.to_f / @sum_total_visit_kanto.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">面会</th>
-                  <td class="total-td"><%= @sum_interview_kanto %></td>
-                  <td class="total-td"><%= (@sum_interview_kanto.to_f / @kanto_result.length).to_f().round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_interview_kanto.to_f / @sum_visit_kanto.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td"><%= @sum_full_talk_kanto %></td>
-                  <td class="total-td"><%= (@sum_full_talk_kanto.to_f / @kanto_result.length).to_f.round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_full_talk_kanto.to_f / @sum_interview_kanto.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td"><%= @sum_get_kanto %></td>
-                  <td class="total-td"><%= (@sum_get_kanto.to_f / @kanto_result.length).to_f.round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_get_kanto.to_f / @sum_full_talk_kanto.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th rowspan="5" class="total-th">前半</th>
-                  <th class="total-th">訪問</th>
-                  <td class="total-td"><%= @sum_total_visit_f_kanto %></td>
-                  <td class="total-td"><%= (@sum_total_visit_f_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">応答</th>
-                  <td class="total-td"><%= @sum_visit_f_kanto %></td>
-                  <td class="total-td"><%= (@sum_visit_f_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_visit_f_kanto.to_f / @sum_total_visit_f_kanto.to_f * 100, precision: 1)  %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">面会</th>
-                  <td class="total-td"><%= @sum_interview_f_kanto %></td>
-                  <td class="total-td"><%= (@sum_interview_f_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_interview_f_kanto.to_f / @sum_visit_f_kanto.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td"><%= @sum_full_talk_f_kanto %></td>
-                  <td class="total-td"><%= (@sum_full_talk_f_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_full_talk_f_kanto.to_f / @sum_interview_f_kanto.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td"><%= @sum_get_f_kanto %></td>
-                  <td class="total-td"><%= (@sum_get_f_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_get_f_kanto.to_f / @sum_full_talk_f_kanto.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th rowspan="5" class="total-th">後半</th>
-                  <th class="total-th">訪問</th>
-                  <td class="total-td"><%= @sum_total_visit_l_kanto %></td>
-                  <td class="total-td"><%= (@sum_total_visit_l_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">応答</th>
-                  <td class="total-td"><%= @sum_visit_l_kanto %></td>
-                  <td class="total-td"><%= (@sum_visit_l_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_visit_l_kanto.to_f / @sum_total_visit_l_kanto.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">面会</th>
-                  <td class="total-td"><%= @sum_interview_l_kanto %></td>
-                  <td class="total-td"><%= (@sum_interview_l_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_interview_l_kanto.to_f / @sum_visit_l_kanto.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td"><%= @sum_full_talk_l_kanto %></td>
-                  <td class="total-td"><%= (@sum_full_talk_l_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_full_talk_l_kanto.to_f / @sum_interview_l_kanto.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td"><%= @sum_get_l_kanto %></td>
-                  <td class="total-td"><%= (@sum_get_l_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
-                  <td class="total-td"><%= number_to_percentage(@sum_get_l_kanto.to_f / @sum_full_talk_l_kanto.to_f * 100, precision: 1) rescue "-" %></td>
-                </tr>
-              </tbody>
-            </table>
-          </div><%# /関東 %>
+        <div class="chubu-standard-form" id="chubu-standard-form"><%# 中部 %>
+          <table class="total-tb">
+            <thead>
+              <tr>
+                <th class="total-th">項目</th>
+                <th class="total-th">内訳</th>
+                <th class="total-th">合計</th>
+                <th class="total-th">平均</th>
+                <th class="total-th">比率</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th rowspan="5" class="total-th">合計</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit_chubu %></td>
+                <td class="total-td"><%= (@sum_total_visit_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit_chubu %></td>
+                <td class="total-td"><%= (@sum_visit_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_chubu.to_f / @sum_total_visit_chubu.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview_chubu %></td>
+                <td class="total-td"><%= (@sum_interview_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview_chubu.to_f / @sum_visit_chubu.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk_chubu %></td>
+                <td class="total-td"><%= (@sum_full_talk_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk_chubu.to_f / @sum_interview_chubu.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get_chubu %></td>
+                <td class="total-td"><%= (@sum_get_chubu.to_f / @chubu_result.length).to_f.round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_chubu.to_f / @sum_full_talk_chubu.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th rowspan="5" class="total-th">前半</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit_f_chubu %></td>
+                <td class="total-td"><%= (@sum_total_visit_f_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit_f_chubu %></td>
+                <td class="total-td"><%= (@sum_visit_f_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_f_chubu.to_f / @sum_total_visit_f_chubu.to_f * 100, precision: 1)  %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview_f_chubu %></td>
+                <td class="total-td"><%= (@sum_interview_f_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview_f_chubu.to_f / @sum_visit_f_chubu.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk_f_chubu %></td>
+                <td class="total-td"><%= (@sum_full_talk_f_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk_f_chubu.to_f / @sum_interview_f_chubu.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get_f_chubu %></td>
+                <td class="total-td"><%= (@sum_get_f_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_f_chubu.to_f / @sum_full_talk_f_chubu.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th rowspan="5" class="total-th">後半</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit_l_chubu %></td>
+                <td class="total-td"><%= (@sum_total_visit_l_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit_l_chubu %></td>
+                <td class="total-td"><%= (@sum_visit_l_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_l_chubu.to_f / @sum_total_visit_l_chubu.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview_l_chubu %></td>
+                <td class="total-td"><%= (@sum_interview_l_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview_l_chubu.to_f / @sum_visit_l_chubu.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk_l_chubu %></td>
+                <td class="total-td"><%= (@sum_full_talk_l_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk_l_chubu.to_f / @sum_interview_l_chubu.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get_l_chubu %></td>
+                <td class="total-td"><%= (@sum_get_l_chubu.to_f / @chubu_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_l_chubu.to_f / @sum_full_talk_l_chubu.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div><%# /中部 %>
+        <div class="kansai-standard-form" id="kansai-standard-form"><%# 関西 %>
+          <table class="total-tb">
+            <thead>
+              <tr>
+                <th class="total-th">項目</th>
+                <th class="total-th">内訳</th>
+                <th class="total-th">合計</th>
+                <th class="total-th">平均</th>
+                <th class="total-th">比率</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th rowspan="5" class="total-th">合計</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit_kansai %></td>
+                <td class="total-td"><%= (@sum_total_visit_kansai / @kansai_result.length).to_f().round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit_kansai %></td>
+                <td class="total-td"><%= (@sum_visit_kansai.to_f / @kansai_result.length).to_f().round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_kansai.to_f / @sum_total_visit_kansai.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview_kansai %></td>
+                <td class="total-td"><%= (@sum_interview_kansai.to_f / @kansai_result.length).to_f().round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview_kansai.to_f / @sum_visit_kansai.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk_kansai %></td>
+                <td class="total-td"><%= (@sum_full_talk_kansai.to_f / @kansai_result.length).to_f.round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk_kansai.to_f / @sum_interview_kansai.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get_kansai %></td>
+                <td class="total-td"><%= (@sum_get_kansai.to_f / @kansai_result.length).to_f.round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_kansai.to_f / @sum_full_talk_kansai.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th rowspan="5" class="total-th">前半</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit_f_kansai %></td>
+                <td class="total-td"><%= (@sum_total_visit_f_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit_f_kansai %></td>
+                <td class="total-td"><%= (@sum_visit_f_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_f_kansai.to_f / @sum_total_visit_f_kansai.to_f * 100, precision: 1)  %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview_f_kansai %></td>
+                <td class="total-td"><%= (@sum_interview_f_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview_f_kansai.to_f / @sum_visit_f_kansai.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk_f_kansai %></td>
+                <td class="total-td"><%= (@sum_full_talk_f_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk_f_kansai.to_f / @sum_interview_f_kansai.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get_f_kansai %></td>
+                <td class="total-td"><%= (@sum_get_f_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_f_kansai.to_f / @sum_full_talk_f_kansai.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th rowspan="5" class="total-th">後半</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit_l_kansai %></td>
+                <td class="total-td"><%= (@sum_total_visit_l_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit_l_kansai %></td>
+                <td class="total-td"><%= (@sum_visit_l_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_l_kansai.to_f / @sum_total_visit_l_kansai.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview_l_kansai %></td>
+                <td class="total-td"><%= (@sum_interview_l_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview_l_kansai.to_f / @sum_visit_l_kansai.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk_l_kansai %></td>
+                <td class="total-td"><%= (@sum_full_talk_l_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk_l_kansai.to_f / @sum_interview_l_kansai.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get_l_kansai %></td>
+                <td class="total-td"><%= (@sum_get_l_kansai.to_f / @kansai_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_l_kansai.to_f / @sum_full_talk_l_kansai.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div><%# /関西 %>
+        <div class="kanto-standard-form" id="kanto-standard-form"><%# 関東 %>
+          <table class="total-tb">
+            <thead>
+              <tr>
+                <th class="total-th">項目</th>
+                <th class="total-th">内訳</th>
+                <th class="total-th">合計</th>
+                <th class="total-th">平均</th>
+                <th class="total-th">比率</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th rowspan="5" class="total-th">合計</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit_kanto %></td>
+                <td class="total-td"><%= (@sum_total_visit_kanto / @kanto_result.length).to_f().round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit_kanto %></td>
+                <td class="total-td"><%= (@sum_visit_kanto.to_f / @kanto_result.length).to_f().round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_kanto.to_f / @sum_total_visit_kanto.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview_kanto %></td>
+                <td class="total-td"><%= (@sum_interview_kanto.to_f / @kanto_result.length).to_f().round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview_kanto.to_f / @sum_visit_kanto.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk_kanto %></td>
+                <td class="total-td"><%= (@sum_full_talk_kanto.to_f / @kanto_result.length).to_f.round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk_kanto.to_f / @sum_interview_kanto.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get_kanto %></td>
+                <td class="total-td"><%= (@sum_get_kanto.to_f / @kanto_result.length).to_f.round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_kanto.to_f / @sum_full_talk_kanto.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th rowspan="5" class="total-th">前半</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit_f_kanto %></td>
+                <td class="total-td"><%= (@sum_total_visit_f_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit_f_kanto %></td>
+                <td class="total-td"><%= (@sum_visit_f_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_f_kanto.to_f / @sum_total_visit_f_kanto.to_f * 100, precision: 1)  %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview_f_kanto %></td>
+                <td class="total-td"><%= (@sum_interview_f_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview_f_kanto.to_f / @sum_visit_f_kanto.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk_f_kanto %></td>
+                <td class="total-td"><%= (@sum_full_talk_f_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk_f_kanto.to_f / @sum_interview_f_kanto.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get_f_kanto %></td>
+                <td class="total-td"><%= (@sum_get_f_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_f_kanto.to_f / @sum_full_talk_f_kanto.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th rowspan="5" class="total-th">後半</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit_l_kanto %></td>
+                <td class="total-td"><%= (@sum_total_visit_l_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit_l_kanto %></td>
+                <td class="total-td"><%= (@sum_visit_l_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_l_kanto.to_f / @sum_total_visit_l_kanto.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview_l_kanto %></td>
+                <td class="total-td"><%= (@sum_interview_l_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview_l_kanto.to_f / @sum_visit_l_kanto.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk_l_kanto %></td>
+                <td class="total-td"><%= (@sum_full_talk_l_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk_l_kanto.to_f / @sum_interview_l_kanto.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get_l_kanto %></td>
+                <td class="total-td"><%= (@sum_get_l_kanto.to_f / @kanto_result.length).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_l_kanto.to_f / @sum_full_talk_l_kanto.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div><%# /関東 %>
       </div><%# /拠点基準値 %>
     </div><%#/基準値区切り%>
     <div class="result-flex"><%# 店舗別基準値 %>
@@ -1839,7 +1838,7 @@
       </div><%# /個人 %>
       <div><%# 拠点別切り返し %>
         <h2>
-          拠点店舗基準値
+          拠点切り返し基準値
           <select class="standard-val" id="out-val-change" >
             <option value="out-chubu-slct">中部SS</option>
             <option value="out-kansai-slct">関西SS</option>
@@ -1862,252 +1861,252 @@
               <th rowspan="3" class="total-th">０１：どういうこと？</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_01) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_01).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_01).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_01) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_01).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_01).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_01).to_f / @chubu_result.sum(:out_interview_01).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_01) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_01).to_f.round(1)%></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_01).to_f / @chubu_result.length).round(1)%></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_01).to_f / @chubu_result.sum(:out_full_talk_01).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０２：君は誰？協会？</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_02) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_02).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_02).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_02) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_02).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_02).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_02).to_f / @chubu_result.sum(:out_interview_02).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_02) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_02).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_02).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_02).to_f / @chubu_result.sum(:out_full_talk_02).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０３：もらうだけでいいの？</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_03) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_03).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_03).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_03) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_03).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_03).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_03).to_f / @chubu_result.sum(:out_interview_03).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_03) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_03).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_03).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_03).to_f / @chubu_result.sum(:out_full_talk_03).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０４：PayPayのみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_04) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_04).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_04).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_04) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_04).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_04).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_04).to_f / @chubu_result.sum(:out_interview_04).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_04) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_04).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_04).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_04).to_f / @chubu_result.sum(:out_full_talk_04).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０５：AirPayのみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_05) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_05).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_05).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_05) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_05).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_05).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_05).to_f / @chubu_result.sum(:out_interview_05).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_05) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_05).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_05).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_05).to_f / @chubu_result.sum(:out_full_talk_05).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０６：カードのみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_06) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_06).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_06).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_06) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_06).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_06).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_06).to_f / @chubu_result.sum(:out_interview_06).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_06) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_06).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_06).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_06).to_f / @chubu_result.sum(:out_full_talk_06).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０７：先延ばし</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_07) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_07).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_07).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_07) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_07).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_07).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_07).to_f / @chubu_result.sum(:out_interview_07).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_07) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_07).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_07).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_07).to_f / @chubu_result.sum(:out_full_talk_07).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０８：現金のみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_08) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_08).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_08).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_08) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_08).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_08).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_08).to_f / @chubu_result.sum(:out_interview_08).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_08) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_08).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_08).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_08).to_f / @chubu_result.sum(:out_full_talk_08).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０９：忙しい</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_09) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_09).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_09).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_09) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_09).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_09).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_09).to_f / @chubu_result.sum(:out_interview_09).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_09) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_09).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_09).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_09).to_f / @chubu_result.sum(:out_full_talk_09).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１０：面倒くさい</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_10) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_10).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_10).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_10) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_10).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_10).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_10).to_f / @chubu_result.sum(:out_interview_10).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_10) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_10).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_10).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_10).to_f / @chubu_result.sum(:out_full_talk_10).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１１：情報不足</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_11) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_11).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_11).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_11) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_11).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_11).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_11).to_f / @chubu_result.sum(:out_interview_11).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_11) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_11).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_11).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_11).to_f / @chubu_result.sum(:out_full_talk_11).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１２：ペロ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_12) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_12).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_12).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_12) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_12).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_12).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_12).to_f / @chubu_result.sum(:out_interview_12).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_12) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_12).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_12).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_12).to_f / @chubu_result.sum(:out_full_talk_12).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１３：その他</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @chubu_result.sum(:out_interview_13) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_interview_13).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_interview_13).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_full_talk_13) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_full_talk_13).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_full_talk_13).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_full_talk_13).to_f / @chubu_result.sum(:out_interview_13).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @chubu_result.sum(:out_get_13) %></td>
-              <td class="total-td"><%= @chubu_result.average(:out_get_13).to_f.round(1) %></td>
+              <td class="total-td"><%= (@chubu_result.sum(:out_get_13).to_f / @chubu_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@chubu_result.sum(:out_get_13).to_f / @chubu_result.sum(:out_full_talk_13).to_f * 100,precision: 1)  %></td>
             </tr>
             </tbody>
           </table>
-        </div><%# 中部 %>
+        </div><%# /中部 %>
         <div class="kansai-standard-form" id="kansai-out-form"><%# 関西 %>
           <table class="total-tb">
             <thead>
@@ -2124,252 +2123,252 @@
               <th rowspan="3" class="total-th">０１：どういうこと？</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_01) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_01).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_01).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_01) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_01).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_01).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_01).to_f / @kansai_result.sum(:out_interview_01).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_01) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_01).to_f.round(1)%></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_01).to_f / @kansai_result.length).round(1)%></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_01).to_f / @kansai_result.sum(:out_full_talk_01).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０２：君は誰？協会？</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_02) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_02).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_02).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_02) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_02).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_02).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_02).to_f / @kansai_result.sum(:out_interview_02).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_02) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_02).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_02).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_02).to_f / @kansai_result.sum(:out_full_talk_02).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０３：もらうだけでいいの？</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_03) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_03).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_03).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_03) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_03).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_03).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_03).to_f / @kansai_result.sum(:out_interview_03).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_03) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_03).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_03).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_03).to_f / @kansai_result.sum(:out_full_talk_03).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０４：PayPayのみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_04) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_04).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_04).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_04) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_04).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_04).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_04).to_f / @kansai_result.sum(:out_interview_04).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_04) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_04).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_04).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_04).to_f / @kansai_result.sum(:out_full_talk_04).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０５：AirPayのみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_05) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_05).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_05).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_05) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_05).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_05).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_05).to_f / @kansai_result.sum(:out_interview_05).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_05) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_05).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_05).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_05).to_f / @kansai_result.sum(:out_full_talk_05).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０６：カードのみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_06) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_06).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_06).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_06) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_06).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_06).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_06).to_f / @kansai_result.sum(:out_interview_06).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_06) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_06).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_06).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_06).to_f / @kansai_result.sum(:out_full_talk_06).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０７：先延ばし</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_07) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_07).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_07).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_07) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_07).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_07).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_07).to_f / @kansai_result.sum(:out_interview_07).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_07) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_07).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_07).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_07).to_f / @kansai_result.sum(:out_full_talk_07).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０８：現金のみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_08) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_08).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_08).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_08) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_08).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_08).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_08).to_f / @kansai_result.sum(:out_interview_08).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_08) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_08).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_08).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_08).to_f / @kansai_result.sum(:out_full_talk_08).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０９：忙しい</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_09) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_09).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_09).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_09) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_09).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_09).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_09).to_f / @kansai_result.sum(:out_interview_09).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_09) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_09).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_09).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_09).to_f / @kansai_result.sum(:out_full_talk_09).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１０：面倒くさい</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_10) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_10).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_10).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_10) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_10).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_10).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_10).to_f / @kansai_result.sum(:out_interview_10).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_10) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_10).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_10).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_10).to_f / @kansai_result.sum(:out_full_talk_10).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１１：情報不足</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_11) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_11).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_11).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_11) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_11).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_11).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_11).to_f / @kansai_result.sum(:out_interview_11).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_11) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_11).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_11).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_11).to_f / @kansai_result.sum(:out_full_talk_11).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１２：ペロ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_12) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_12).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_12).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_12) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_12).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_12).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_12).to_f / @kansai_result.sum(:out_interview_12).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_12) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_12).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_12).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_12).to_f / @kansai_result.sum(:out_full_talk_12).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１３：その他</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kansai_result.sum(:out_interview_13) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_interview_13).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_interview_13).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_full_talk_13) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_full_talk_13).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_full_talk_13).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_full_talk_13).to_f / @kansai_result.sum(:out_interview_13).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kansai_result.sum(:out_get_13) %></td>
-              <td class="total-td"><%= @kansai_result.average(:out_get_13).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kansai_result.sum(:out_get_13).to_f / @kansai_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kansai_result.sum(:out_get_13).to_f / @kansai_result.sum(:out_full_talk_13).to_f * 100,precision: 1)  %></td>
             </tr>
             </tbody>
           </table>
-        </div><%# 関西 %>
+        </div><%# /関西 %>
         <div class="kanto-standard-form" id="kanto-out-form"><%# 関東 %>
           <table class="total-tb">
             <thead>
@@ -2386,252 +2385,252 @@
               <th rowspan="3" class="total-th">０１：どういうこと？</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_01) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_01).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_01).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_01) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_01).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_01).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_01).to_f / @kanto_result.sum(:out_interview_01).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_01) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_01).to_f.round(1)%></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_01).to_f / @kanto_result.length).round(1)%></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_01).to_f / @kanto_result.sum(:out_full_talk_01).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０２：君は誰？協会？</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_02) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_02).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_02).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_02) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_02).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_02).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_02).to_f / @kanto_result.sum(:out_interview_02).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_02) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_02).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_02).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_02).to_f / @kanto_result.sum(:out_full_talk_02).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０３：もらうだけでいいの？</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_03) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_03).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_03).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_03) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_03).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_03).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_03).to_f / @kanto_result.sum(:out_interview_03).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_03) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_03).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_03).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_03).to_f / @kanto_result.sum(:out_full_talk_03).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０４：PayPayのみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_04) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_04).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_04).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_04) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_04).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_04).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_04).to_f / @kanto_result.sum(:out_interview_04).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_04) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_04).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_04).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_04).to_f / @kanto_result.sum(:out_full_talk_04).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０５：AirPayのみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_05) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_05).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_05).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_05) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_05).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_05).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_05).to_f / @kanto_result.sum(:out_interview_05).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_05) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_05).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_05).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_05).to_f / @kanto_result.sum(:out_full_talk_05).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０６：カードのみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_06) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_06).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_06).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_06) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_06).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_06).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_06).to_f / @kanto_result.sum(:out_interview_06).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_06) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_06).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_06).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_06).to_f / @kanto_result.sum(:out_full_talk_06).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０７：先延ばし</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_07) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_07).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_07).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_07) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_07).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_07).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_07).to_f / @kanto_result.sum(:out_interview_07).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_07) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_07).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_07).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_07).to_f / @kanto_result.sum(:out_full_talk_07).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０８：現金のみ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_08) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_08).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_08).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_08) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_08).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_08).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_08).to_f / @kanto_result.sum(:out_interview_08).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_08) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_08).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_08).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_08).to_f / @kanto_result.sum(:out_full_talk_08).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">０９：忙しい</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_09) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_09).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_09).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_09) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_09).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_09).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_09).to_f / @kanto_result.sum(:out_interview_09).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_09) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_09).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_09).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_09).to_f / @kanto_result.sum(:out_full_talk_09).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１０：面倒くさい</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_10) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_10).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_10).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_10) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_10).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_10).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_10).to_f / @kanto_result.sum(:out_interview_10).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_10) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_10).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_10).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_10).to_f / @kanto_result.sum(:out_full_talk_10).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１１：情報不足</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_11) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_11).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_11).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_11) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_11).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_11).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_11).to_f / @kanto_result.sum(:out_interview_11).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_11) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_11).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_11).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_11).to_f / @kanto_result.sum(:out_full_talk_11).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１２：ペロ</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_12) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_12).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_12).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_12) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_12).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_12).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_12).to_f / @kanto_result.sum(:out_interview_12).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_12) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_12).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_12).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_12).to_f / @kanto_result.sum(:out_full_talk_12).to_f * 100,precision: 1)  %></td>
             </tr>
             <tr>
             <th rowspan="3" class="total-th">１３：その他</th>
               <th class="total-th">決済者面会</th>
               <td class="total-td"><%= @kanto_result.sum(:out_interview_13) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_interview_13).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_interview_13).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"></td>
             </tr>
             <tr>
               <th class="total-th">フル数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_full_talk_13) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_full_talk_13).to_f.round(1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_full_talk_13).to_f / @kanto_result.length).round(1) %></td>
               <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_full_talk_13).to_f / @kanto_result.sum(:out_interview_13).to_f * 100,precision: 1) %></td>
             </tr>
             <tr>
               <th class="total-th">成約数</th>
               <td class="total-td"><%= @kanto_result.sum(:out_get_13) %></td>
-              <td class="total-td"><%= @kanto_result.average(:out_get_13).to_f.round(1) %></td>
-              <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_13).to_f / @kanto_result.sum(:out_full_talk_13).to_f * 100,precision: 1) %></td>
+              <td class="total-td"><%= (@kanto_result.sum(:out_get_13).to_f / @kanto_result.length).round(1) %></td>
+              <td class="total-td"><%= number_to_percentage(@kanto_result.sum(:out_get_13).to_f / @kanto_result.sum(:out_full_talk_13).to_f * 100,precision: 1)  %></td>
             </tr>
             </tbody>
           </table>
-        </div><%# 関東 %>
+        </div><%# /関東 %>
       </div><%# /拠点別切り返し %>
     </div><%# /切り返し区切り %>
     <div class="result-flex"><%# 時間別基準値 %>
@@ -2669,18 +2668,110 @@
         </table>
       </div><%# /個人 %>
       <div><%# 拠点別 %>
-      <% if current_user.name == "管理用" %>
         <h2>
           拠点時間別基準値
-          <select class="standard-val" id="out-val-change" >
-            <option value="out-chubu-slct">中部SS</option>
-            <option value="out-kansai-slct">関西SS</option>
-            <option value="out-kanto-slct">関東SS</option>
+          <select class="standard-val" id="times-val-change" >
+            <option value="times-chubu-slct">中部SS</option>
+            <option value="times-kansai-slct">関西SS</option>
+            <option value="times-kanto-slct">関東SS</option>
           </select>
         </h2>
-        <div class="chubu-standard-form" id="chubu-out-form"><%# 中部 %>
+        <div class="chubu-standard-form" id="chubu-times-form"><%# 中部 %>
+          <table class="out-tb">
+            <thead>
+              <th class="total-th">訪問時間</th>
+              <th class="total-th">内訳</th>
+              <th class="total-th">合計</th>
+              <th class="total-th">平均</th>
+              <th class="total-th">成約率</th>
+            </thead>
+            <tbody>
+            <% time = 10 %>
+            <% cnt = 0 %>
+            <% 10.times do %>
+            <tr>
+              <th rowspan="2" class="total-th"><%= time %>時</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= @time_visit_sum_chubu[cnt] %></td>
+              <td class="total-td"><%= @time_visit_ave_chubu[cnt] %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= @time_get_sum_chubu[cnt] %></td>
+              <td class="total-td"><%= @time_get_ave_chubu[cnt] %></td>
+              <td class="total-td"><%= number_to_percentage(@time_get_sum_chubu[cnt].to_f / @time_visit_sum_chubu[cnt].to_f * 100, precision: 1) %></td>
+            </tr>
+            <% time += 1 %>
+            <% cnt += 1 %>
+            <% end %>
+            </tbody>
+          </table>
         </div><%# /中部 %>
-      <% end %>
+        <div class="kansai-standard-form" id="kansai-times-form"><%# 関西 %>
+          <table class="out-tb">
+            <thead>
+              <th class="total-th">訪問時間</th>
+              <th class="total-th">内訳</th>
+              <th class="total-th">合計</th>
+              <th class="total-th">平均</th>
+              <th class="total-th">成約率</th>
+            </thead>
+            <tbody>
+            <% time = 10 %>
+            <% cnt = 0 %>
+            <% 10.times do %>
+            <tr>
+              <th rowspan="2" class="total-th"><%= time %>時</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= @time_visit_sum_kansai[cnt] %></td>
+              <td class="total-td"><%= @time_visit_ave_kansai[cnt] %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= @time_get_sum_kansai[cnt] %></td>
+              <td class="total-td"><%= @time_get_ave_kansai[cnt] %></td>
+              <td class="total-td"><%= number_to_percentage(@time_get_sum_kansai[cnt].to_f / @time_visit_sum_kansai[cnt].to_f * 100, precision: 1) %></td>
+            </tr>
+            <% time += 1 %>
+            <% cnt += 1 %>
+            <% end %>
+            </tbody>
+          </table>
+        </div><%# /関西 %>
+        <div class="kanto-standard-form" id="kanto-times-form"><%# 関東 %>
+          <table class="out-tb">
+            <thead>
+              <th class="total-th">訪問時間</th>
+              <th class="total-th">内訳</th>
+              <th class="total-th">合計</th>
+              <th class="total-th">平均</th>
+              <th class="total-th">成約率</th>
+            </thead>
+            <tbody>
+            <% time = 10 %>
+            <% cnt = 0 %>
+            <% 10.times do %>
+            <tr>
+              <th rowspan="2" class="total-th"><%= time %>時</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= @time_visit_sum_kanto[cnt] %></td>
+              <td class="total-td"><%= @time_visit_ave_kanto[cnt] %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= @time_get_sum_kanto[cnt] %></td>
+              <td class="total-td"><%= @time_get_ave_kanto[cnt] %></td>
+              <td class="total-td"><%= number_to_percentage(@time_get_sum_kanto[cnt].to_f / @time_visit_sum_kanto[cnt].to_f * 100, precision: 1) %></td>
+            </tr>
+            <% time += 1 %>
+            <% cnt += 1 %>
+            <% end %>
+            </tbody>
+          </table>
+        </div><%# /関東 %>
       </div>
     </div><%# /時間別基準値 %>
   </div><%# left-frame %>
@@ -2705,7 +2796,7 @@
             <th class="total-th">平均</th>
             <th class="total-th">dメル生産性</th>
             <th class="total-th">auPay生産性</th>
-            <th class="total-th" colspan="2">　訪問　</th>
+            <th class="total-th" colspan="2">　応答　</th>
             <th class="total-th" colspan="2">面会</th>
             <th class="total-th" colspan="2">フル</th>
             <th class="total-th" colspan="2">成約</th>
@@ -3055,8 +3146,7 @@
         ※週間基準値は<%= @results_date_min.month + 1 %>月1日以降の終着が入力されると表示されます。
       </p>
       <% end %>
-    </div>
-    <%# /週間基準値 %>
+    </div><%# /週間基準値 %>
     <div style="display: flex;"><%# 獲得内訳・決済内訳 %>
       <div><%# 獲得内訳 %>
         <h2>獲得内訳</h2>
@@ -3218,7 +3308,7 @@
       </div><%# /決済内訳 %>
     </div><%# /獲得内訳・決済内訳 %>
   </div><%# /週間基準値と獲得内訳の括り %>
-    <div><%# 生産性と成果件数の括り %>
+  <div><%# 生産性と成果件数の括り %>
     <div><%# 商材別売上/生産性 %>
       <h2>商材別売上/生産性</h2>
       <p class="caution-text">ステータス上すでに成果となった案件 + 審査待ちも見込んだ現状売上</p>

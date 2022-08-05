@@ -173,60 +173,60 @@ class UsersController < ApplicationController
        @store_visit_sum_chubu = @cafe_visit_sum_chubu +  @other_food_visit_sum_chubu + @car_visit_sum_chubu + @other_retail_visit_sum_chubu + @hair_salon_visit_sum_chubu + @manipulative_visit_sum_chubu + @other_service_visit_sum_chubu 
        @store_get_sum_chubu = @cafe_get_sum_chubu +  @other_food_get_sum_chubu + @car_get_sum_chubu + @other_retail_get_sum_chubu + @hair_salon_get_sum_chubu + @manipulative_get_sum_chubu + @other_service_get_sum_chubu 
      # 時間別基準値合計
-       @visit10_sum_chubu = @chubu_result.sum(:visit10)
-       @visit10_ave_chubu = @chubu_result.average(:visit10)
-       @get10_sum_chubu = @chubu_result.sum(:get10)
-       @get10_ave_chubu = @chubu_result.average(:get10)
+        @visit10_sum_chubu = @chubu_result.sum(:visit10)
+        @visit10_ave_chubu = (@visit10_sum_chubu.to_f / @chubu_result.length).round(1)
+        @get10_sum_chubu = @chubu_result.sum(:get10)
+        @get10_ave_chubu = (@get10_sum_chubu.to_f / @chubu_result.length).round(1)
 
-       @visit11_sum_chubu = @chubu_result.sum(:visit11)
-       @visit11_ave_chubu = @chubu_result.average(:visit11)
-       @get11_sum_chubu = @chubu_result.sum(:get11)
-       @get11_ave_chubu = @chubu_result.average(:get11)
+        @visit11_sum_chubu = @chubu_result.sum(:visit11)
+        @visit11_ave_chubu = (@visit11_sum_chubu.to_f / @chubu_result.length).round(1)
+        @get11_sum_chubu = @chubu_result.sum(:get11)
+        @get11_ave_chubu = (@get11_sum_chubu.to_f / @chubu_result.length).round(1)
 
-       @visit12_sum_chubu = @chubu_result.sum(:visit12)
-       @visit12_ave_chubu = @chubu_result.average(:visit12)
-       @get12_sum_chubu = @chubu_result.sum(:get12)
-       @get12_ave_chubu = @chubu_result.average(:get12)
+        @visit12_sum_chubu = @chubu_result.sum(:visit12)
+        @visit12_ave_chubu = (@visit12_sum_chubu.to_f / @chubu_result.length).round(1)
+        @get12_sum_chubu = @chubu_result.sum(:get12)
+        @get12_ave_chubu = (@get12_sum_chubu.to_f / @chubu_result.length).round(1)
 
-       @visit13_sum_chubu = @chubu_result.sum(:visit13)
-       @visit13_ave_chubu = @chubu_result.average(:visit13)
-       @get13_sum_chubu = @chubu_result.sum(:get13)
-       @get13_ave_chubu = @chubu_result.average(:get13)
+        @visit13_sum_chubu = @chubu_result.sum(:visit13)
+        @visit13_ave_chubu = (@visit13_sum_chubu.to_f / @chubu_result.length).round(1)
+        @get13_sum_chubu = @chubu_result.sum(:get13)
+        @get13_ave_chubu = (@get13_sum_chubu.to_f / @chubu_result.length).round(1)
 
-       @visit14_sum_chubu = @chubu_result.sum(:visit14)
-       @visit14_ave_chubu = @chubu_result.average(:visit14)
-       @get14_sum_chubu = @chubu_result.sum(:get14)
-       @get14_ave_chubu = @chubu_result.average(:get14)
+        @visit14_sum_chubu = @chubu_result.sum(:visit14)
+        @visit14_ave_chubu = (@visit14_sum_chubu.to_f / @chubu_result.length).round(1)
+        @get14_sum_chubu = @chubu_result.sum(:get14)
+        @get14_ave_chubu = (@get14_sum_chubu.to_f / @chubu_result.length).round(1)
 
-       @visit15_sum_chubu = @chubu_result.sum(:visit15)
-       @visit15_ave_chubu = @chubu_result.average(:visit15)
-       @get15_sum_chubu = @chubu_result.sum(:get15)
-       @get15_ave_chubu = @chubu_result.average(:get15)
+        @visit15_sum_chubu = @chubu_result.sum(:visit15)
+        @visit15_ave_chubu = (@visit15_sum_chubu.to_f / @chubu_result.length).round(1)
+        @get15_sum_chubu = @chubu_result.sum(:get15)
+        @get15_ave_chubu = (@get15_sum_chubu.to_f / @chubu_result.length).round(1)
 
-       @visit16_sum_chubu = @chubu_result.sum(:visit16)
-       @visit16_ave_chubu = @chubu_result.average(:visit16)
-       @get16_sum_chubu = @chubu_result.sum(:get16)
-       @get16_ave_chubu = @chubu_result.average(:get16)
+        @visit16_sum_chubu = @chubu_result.sum(:visit16)
+        @visit16_ave_chubu = (@visit16_sum_chubu.to_f / @chubu_result.length).round(1)
+        @get16_sum_chubu = @chubu_result.sum(:get16)
+        @get16_ave_chubu = (@get16_sum_chubu.to_f / @chubu_result.length).round(1)
 
-       @visit17_sum_chubu = @chubu_result.sum(:visit17)
-       @visit17_ave_chubu = @chubu_result.average(:visit17)
-       @get17_sum_chubu = @chubu_result.sum(:get17)
-       @get17_ave_chubu = @chubu_result.average(:get17)
+        @visit17_sum_chubu = @chubu_result.sum(:visit17)
+        @visit17_ave_chubu = (@visit17_sum_chubu.to_f / @chubu_result.length).round(1)
+        @get17_sum_chubu = @chubu_result.sum(:get17)
+        @get17_ave_chubu = (@get17_sum_chubu.to_f / @chubu_result.length).round(1)
 
-       @visit18_sum_chubu = @chubu_result.sum(:visit18)
-       @visit18_ave_chubu = @chubu_result.average(:visit18)
-       @get18_sum_chubu = @chubu_result.sum(:get18)
-       @get18_ave_chubu = @chubu_result.average(:get18)
+        @visit18_sum_chubu = @chubu_result.sum(:visit18)
+        @visit18_ave_chubu = (@visit18_sum_chubu.to_f / @chubu_result.length).round(1)
+        @get18_sum_chubu = @chubu_result.sum(:get18)
+        @get18_ave_chubu = (@get18_sum_chubu.to_f / @chubu_result.length).round(1)
 
-       @visit19_sum_chubu = @chubu_result.sum(:visit19)
-       @visit19_ave_chubu = @chubu_result.average(:visit19)
-       @get19_sum_chubu = @chubu_result.sum(:get19)
-       @get19_ave_chubu = @chubu_result.average(:get19)
+        @visit19_sum_chubu = @chubu_result.sum(:visit19)
+        @visit19_ave_chubu = (@visit19_sum_chubu.to_f / @chubu_result.length).round(1)
+        @get19_sum_chubu = @chubu_result.sum(:get19)
+        @get19_ave_chubu = (@get19_sum_chubu.to_f / @chubu_result.length).round(1)
 
-       @time_visit_sum_chubu = [@visit10_sum_chubu,@visit11_sum_chubu,@visit12_sum_chubu,@visit13_sum_chubu,@visit14_sum_chubu,@visit15_sum_chubu,@visit16_sum_chubu,@visit17_sum_chubu,@visit18_sum_chubu,@visit19_sum_chubu]
-       @time_visit_ave_chubu = [@visit10_ave_chubu,@visit11_ave_chubu,@visit12_ave_chubu,@visit13_ave_chubu,@visit14_ave_chubu,@visit15_ave_chubu,@visit16_ave_chubu,@visit17_ave_chubu,@visit18_ave_chubu,@visit19_ave_chubu]
-       @time_get_sum_chubu = [@get10_sum_chubu,@get11_sum_chubu,@get12_sum_chubu,@get13_sum_chubu,@get14_sum_chubu,@get15_sum_chubu,@get16_sum_chubu,@get17_sum_chubu,@get18_sum_chubu,@get19_sum_chubu]
-       @time_get_ave_chubu = [@get10_ave_chubu,@get11_ave_chubu,@get12_ave_chubu,@get13_ave_chubu,@get14_ave_chubu,@get15_ave_chubu,@get16_ave_chubu,@get17_ave_chubu,@get18_ave_chubu,@get19_ave_chubu]
+        @time_visit_sum_chubu = [@visit10_sum_chubu,@visit11_sum_chubu,@visit12_sum_chubu,@visit13_sum_chubu,@visit14_sum_chubu,@visit15_sum_chubu,@visit16_sum_chubu,@visit17_sum_chubu,@visit18_sum_chubu,@visit19_sum_chubu]
+        @time_visit_ave_chubu = [@visit10_ave_chubu,@visit11_ave_chubu,@visit12_ave_chubu,@visit13_ave_chubu,@visit14_ave_chubu,@visit15_ave_chubu,@visit16_ave_chubu,@visit17_ave_chubu,@visit18_ave_chubu,@visit19_ave_chubu]
+        @time_get_sum_chubu = [@get10_sum_chubu,@get11_sum_chubu,@get12_sum_chubu,@get13_sum_chubu,@get14_sum_chubu,@get15_sum_chubu,@get16_sum_chubu,@get17_sum_chubu,@get18_sum_chubu,@get19_sum_chubu]
+        @time_get_ave_chubu = [@get10_ave_chubu,@get11_ave_chubu,@get12_ave_chubu,@get13_ave_chubu,@get14_ave_chubu,@get15_ave_chubu,@get16_ave_chubu,@get17_ave_chubu,@get18_ave_chubu,@get19_ave_chubu]
     # /中部基準値
     # 関西基準値
       @kansai_shift = 
@@ -274,60 +274,60 @@ class UsersController < ApplicationController
        @store_visit_sum_kansai = @cafe_visit_sum_kansai +  @other_food_visit_sum_kansai + @car_visit_sum_kansai + @other_retail_visit_sum_kansai + @hair_salon_visit_sum_kansai + @manipulative_visit_sum_kansai + @other_service_visit_sum_kansai 
        @store_get_sum_kansai = @cafe_get_sum_kansai +  @other_food_get_sum_kansai + @car_get_sum_kansai + @other_retail_get_sum_kansai + @hair_salon_get_sum_kansai + @manipulative_get_sum_kansai + @other_service_get_sum_kansai 
      # 時間別基準値合計
-       @visit10_sum_kansai = @kansai_result.sum(:visit10)
-       @visit10_ave_kansai = @kansai_result.average(:visit10)
-       @get10_sum_kansai = @kansai_result.sum(:get10)
-       @get10_ave_kansai = @kansai_result.average(:get10)
+      @visit10_sum_kansai = @kansai_result.sum(:visit10)
+      @visit10_ave_kansai = (@visit10_sum_kansai.to_f / @kansai_result.length).round(1)
+      @get10_sum_kansai = @kansai_result.sum(:get10)
+      @get10_ave_kansai = (@get10_sum_kansai.to_f / @kansai_result.length).round(1)
 
-       @visit11_sum_kansai = @kansai_result.sum(:visit11)
-       @visit11_ave_kansai = @kansai_result.average(:visit11)
-       @get11_sum_kansai = @kansai_result.sum(:get11)
-       @get11_ave_kansai = @kansai_result.average(:get11)
+      @visit11_sum_kansai = @kansai_result.sum(:visit11)
+      @visit11_ave_kansai = (@visit11_sum_kansai.to_f / @kansai_result.length).round(1)
+      @get11_sum_kansai = @kansai_result.sum(:get11)
+      @get11_ave_kansai = (@get11_sum_kansai.to_f / @kansai_result.length).round(1)
 
-       @visit12_sum_kansai = @kansai_result.sum(:visit12)
-       @visit12_ave_kansai = @kansai_result.average(:visit12)
-       @get12_sum_kansai = @kansai_result.sum(:get12)
-       @get12_ave_kansai = @kansai_result.average(:get12)
+      @visit12_sum_kansai = @kansai_result.sum(:visit12)
+      @visit12_ave_kansai = (@visit12_sum_kansai.to_f / @kansai_result.length).round(1)
+      @get12_sum_kansai = @kansai_result.sum(:get12)
+      @get12_ave_kansai = (@get12_sum_kansai.to_f / @kansai_result.length).round(1)
 
-       @visit13_sum_kansai = @kansai_result.sum(:visit13)
-       @visit13_ave_kansai = @kansai_result.average(:visit13)
-       @get13_sum_kansai = @kansai_result.sum(:get13)
-       @get13_ave_kansai = @kansai_result.average(:get13)
+      @visit13_sum_kansai = @kansai_result.sum(:visit13)
+      @visit13_ave_kansai = (@visit13_sum_kansai.to_f / @kansai_result.length).round(1)
+      @get13_sum_kansai = @kansai_result.sum(:get13)
+      @get13_ave_kansai = (@get13_sum_kansai.to_f / @kansai_result.length).round(1)
 
-       @visit14_sum_kansai = @kansai_result.sum(:visit14)
-       @visit14_ave_kansai = @kansai_result.average(:visit14)
-       @get14_sum_kansai = @kansai_result.sum(:get14)
-       @get14_ave_kansai = @kansai_result.average(:get14)
+      @visit14_sum_kansai = @kansai_result.sum(:visit14)
+      @visit14_ave_kansai = (@visit14_sum_kansai.to_f / @kansai_result.length).round(1)
+      @get14_sum_kansai = @kansai_result.sum(:get14)
+      @get14_ave_kansai = (@get14_sum_kansai.to_f / @kansai_result.length).round(1)
 
-       @visit15_sum_kansai = @kansai_result.sum(:visit15)
-       @visit15_ave_kansai = @kansai_result.average(:visit15)
-       @get15_sum_kansai = @kansai_result.sum(:get15)
-       @get15_ave_kansai = @kansai_result.average(:get15)
+      @visit15_sum_kansai = @kansai_result.sum(:visit15)
+      @visit15_ave_kansai = (@visit15_sum_kansai.to_f / @kansai_result.length).round(1)
+      @get15_sum_kansai = @kansai_result.sum(:get15)
+      @get15_ave_kansai = (@get15_sum_kansai.to_f / @kansai_result.length).round(1)
 
-       @visit16_sum_kansai = @kansai_result.sum(:visit16)
-       @visit16_ave_kansai = @kansai_result.average(:visit16)
-       @get16_sum_kansai = @kansai_result.sum(:get16)
-       @get16_ave_kansai = @kansai_result.average(:get16)
+      @visit16_sum_kansai = @kansai_result.sum(:visit16)
+      @visit16_ave_kansai = (@visit16_sum_kansai.to_f / @kansai_result.length).round(1)
+      @get16_sum_kansai = @kansai_result.sum(:get16)
+      @get16_ave_kansai = (@get16_sum_kansai.to_f / @kansai_result.length).round(1)
 
-       @visit17_sum_kansai = @kansai_result.sum(:visit17)
-       @visit17_ave_kansai = @kansai_result.average(:visit17)
-       @get17_sum_kansai = @kansai_result.sum(:get17)
-       @get17_ave_kansai = @kansai_result.average(:get17)
+      @visit17_sum_kansai = @kansai_result.sum(:visit17)
+      @visit17_ave_kansai = (@visit17_sum_kansai.to_f / @kansai_result.length).round(1)
+      @get17_sum_kansai = @kansai_result.sum(:get17)
+      @get17_ave_kansai = (@get17_sum_kansai.to_f / @kansai_result.length).round(1)
 
-       @visit18_sum_kansai = @kansai_result.sum(:visit18)
-       @visit18_ave_kansai = @kansai_result.average(:visit18)
-       @get18_sum_kansai = @kansai_result.sum(:get18)
-       @get18_ave_kansai = @kansai_result.average(:get18)
+      @visit18_sum_kansai = @kansai_result.sum(:visit18)
+      @visit18_ave_kansai = (@visit18_sum_kansai.to_f / @kansai_result.length).round(1)
+      @get18_sum_kansai = @kansai_result.sum(:get18)
+      @get18_ave_kansai = (@get18_sum_kansai.to_f / @kansai_result.length).round(1)
 
-       @visit19_sum_kansai = @kansai_result.sum(:visit19)
-       @visit19_ave_kansai = @kansai_result.average(:visit19)
-       @get19_sum_kansai = @kansai_result.sum(:get19)
-       @get19_ave_kansai = @kansai_result.average(:get19)
+      @visit19_sum_kansai = @kansai_result.sum(:visit19)
+      @visit19_ave_kansai = (@visit19_sum_kansai.to_f / @kansai_result.length).round(1)
+      @get19_sum_kansai = @kansai_result.sum(:get19)
+      @get19_ave_kansai = (@get19_sum_kansai.to_f / @kansai_result.length).round(1)
 
-       @time_visit_sum_kansai = [@visit10_sum_kansai,@visit11_sum_kansai,@visit12_sum_kansai,@visit13_sum_kansai,@visit14_sum_kansai,@visit15_sum_kansai,@visit16_sum_kansai,@visit17_sum_kansai,@visit18_sum_kansai,@visit19_sum_kansai]
-       @time_visit_ave_kansai = [@visit10_ave_kansai,@visit11_ave_kansai,@visit12_ave_kansai,@visit13_ave_kansai,@visit14_ave_kansai,@visit15_ave_kansai,@visit16_ave_kansai,@visit17_ave_kansai,@visit18_ave_kansai,@visit19_ave_kansai]
-       @time_get_sum_kansai = [@get10_sum_kansai,@get11_sum_kansai,@get12_sum_kansai,@get13_sum_kansai,@get14_sum_kansai,@get15_sum_kansai,@get16_sum_kansai,@get17_sum_kansai,@get18_sum_kansai,@get19_sum_kansai]
-       @time_get_ave_kansai = [@get10_ave_kansai,@get11_ave_kansai,@get12_ave_kansai,@get13_ave_kansai,@get14_ave_kansai,@get15_ave_kansai,@get16_ave_kansai,@get17_ave_kansai,@get18_ave_kansai,@get19_ave_kansai]
+      @time_visit_sum_kansai = [@visit10_sum_kansai,@visit11_sum_kansai,@visit12_sum_kansai,@visit13_sum_kansai,@visit14_sum_kansai,@visit15_sum_kansai,@visit16_sum_kansai,@visit17_sum_kansai,@visit18_sum_kansai,@visit19_sum_kansai]
+      @time_visit_ave_kansai = [@visit10_ave_kansai,@visit11_ave_kansai,@visit12_ave_kansai,@visit13_ave_kansai,@visit14_ave_kansai,@visit15_ave_kansai,@visit16_ave_kansai,@visit17_ave_kansai,@visit18_ave_kansai,@visit19_ave_kansai]
+      @time_get_sum_kansai = [@get10_sum_kansai,@get11_sum_kansai,@get12_sum_kansai,@get13_sum_kansai,@get14_sum_kansai,@get15_sum_kansai,@get16_sum_kansai,@get17_sum_kansai,@get18_sum_kansai,@get19_sum_kansai]
+      @time_get_ave_kansai = [@get10_ave_kansai,@get11_ave_kansai,@get12_ave_kansai,@get13_ave_kansai,@get14_ave_kansai,@get15_ave_kansai,@get16_ave_kansai,@get17_ave_kansai,@get18_ave_kansai,@get19_ave_kansai]
     # /関西基準値
     # 関東基準値
       @kanto_shift = 
@@ -375,60 +375,60 @@ class UsersController < ApplicationController
        @store_visit_sum_kanto = @cafe_visit_sum_kanto +  @other_food_visit_sum_kanto + @car_visit_sum_kanto + @other_retail_visit_sum_kanto + @hair_salon_visit_sum_kanto + @manipulative_visit_sum_kanto + @other_service_visit_sum_kanto 
        @store_get_sum_kanto = @cafe_get_sum_kanto +  @other_food_get_sum_kanto + @car_get_sum_kanto + @other_retail_get_sum_kanto + @hair_salon_get_sum_kanto + @manipulative_get_sum_kanto + @other_service_get_sum_kanto 
      # 時間別基準値合計
-       @visit10_sum_kanto = @kanto_result.sum(:visit10)
-       @visit10_ave_kanto = @kanto_result.average(:visit10)
-       @get10_sum_kanto = @kanto_result.sum(:get10)
-       @get10_ave_kanto = @kanto_result.average(:get10)
+     @visit10_sum_kanto = @kanto_result.sum(:visit10)
+     @visit10_ave_kanto = (@visit10_sum_kanto.to_f / @kanto_result.length).round(1)
+     @get10_sum_kanto = @kanto_result.sum(:get10)
+     @get10_ave_kanto = (@get10_sum_kanto.to_f / @kanto_result.length).round(1)
 
-       @visit11_sum_kanto = @kanto_result.sum(:visit11)
-       @visit11_ave_kanto = @kanto_result.average(:visit11)
-       @get11_sum_kanto = @kanto_result.sum(:get11)
-       @get11_ave_kanto = @kanto_result.average(:get11)
+     @visit11_sum_kanto = @kanto_result.sum(:visit11)
+     @visit11_ave_kanto = (@visit11_sum_kanto.to_f / @kanto_result.length).round(1)
+     @get11_sum_kanto = @kanto_result.sum(:get11)
+     @get11_ave_kanto = (@get11_sum_kanto.to_f / @kanto_result.length).round(1)
 
-       @visit12_sum_kanto = @kanto_result.sum(:visit12)
-       @visit12_ave_kanto = @kanto_result.average(:visit12)
-       @get12_sum_kanto = @kanto_result.sum(:get12)
-       @get12_ave_kanto = @kanto_result.average(:get12)
+     @visit12_sum_kanto = @kanto_result.sum(:visit12)
+     @visit12_ave_kanto = (@visit12_sum_kanto.to_f / @kanto_result.length).round(1)
+     @get12_sum_kanto = @kanto_result.sum(:get12)
+     @get12_ave_kanto = (@get12_sum_kanto.to_f / @kanto_result.length).round(1)
 
-       @visit13_sum_kanto = @kanto_result.sum(:visit13)
-       @visit13_ave_kanto = @kanto_result.average(:visit13)
-       @get13_sum_kanto = @kanto_result.sum(:get13)
-       @get13_ave_kanto = @kanto_result.average(:get13)
+     @visit13_sum_kanto = @kanto_result.sum(:visit13)
+     @visit13_ave_kanto = (@visit13_sum_kanto.to_f / @kanto_result.length).round(1)
+     @get13_sum_kanto = @kanto_result.sum(:get13)
+     @get13_ave_kanto = (@get13_sum_kanto.to_f / @kanto_result.length).round(1)
 
-       @visit14_sum_kanto = @kanto_result.sum(:visit14)
-       @visit14_ave_kanto = @kanto_result.average(:visit14)
-       @get14_sum_kanto = @kanto_result.sum(:get14)
-       @get14_ave_kanto = @kanto_result.average(:get14)
+     @visit14_sum_kanto = @kanto_result.sum(:visit14)
+     @visit14_ave_kanto = (@visit14_sum_kanto.to_f / @kanto_result.length).round(1)
+     @get14_sum_kanto = @kanto_result.sum(:get14)
+     @get14_ave_kanto = (@get14_sum_kanto.to_f / @kanto_result.length).round(1)
 
-       @visit15_sum_kanto = @kanto_result.sum(:visit15)
-       @visit15_ave_kanto = @kanto_result.average(:visit15)
-       @get15_sum_kanto = @kanto_result.sum(:get15)
-       @get15_ave_kanto = @kanto_result.average(:get15)
+     @visit15_sum_kanto = @kanto_result.sum(:visit15)
+     @visit15_ave_kanto = (@visit15_sum_kanto.to_f / @kanto_result.length).round(1)
+     @get15_sum_kanto = @kanto_result.sum(:get15)
+     @get15_ave_kanto = (@get15_sum_kanto.to_f / @kanto_result.length).round(1)
 
-       @visit16_sum_kanto = @kanto_result.sum(:visit16)
-       @visit16_ave_kanto = @kanto_result.average(:visit16)
-       @get16_sum_kanto = @kanto_result.sum(:get16)
-       @get16_ave_kanto = @kanto_result.average(:get16)
+     @visit16_sum_kanto = @kanto_result.sum(:visit16)
+     @visit16_ave_kanto = (@visit16_sum_kanto.to_f / @kanto_result.length).round(1)
+     @get16_sum_kanto = @kanto_result.sum(:get16)
+     @get16_ave_kanto = (@get16_sum_kanto.to_f / @kanto_result.length).round(1)
 
-       @visit17_sum_kanto = @kanto_result.sum(:visit17)
-       @visit17_ave_kanto = @kanto_result.average(:visit17)
-       @get17_sum_kanto = @kanto_result.sum(:get17)
-       @get17_ave_kanto = @kanto_result.average(:get17)
+     @visit17_sum_kanto = @kanto_result.sum(:visit17)
+     @visit17_ave_kanto = (@visit17_sum_kanto.to_f / @kanto_result.length).round(1)
+     @get17_sum_kanto = @kanto_result.sum(:get17)
+     @get17_ave_kanto = (@get17_sum_kanto.to_f / @kanto_result.length).round(1)
 
-       @visit18_sum_kanto = @kanto_result.sum(:visit18)
-       @visit18_ave_kanto = @kanto_result.average(:visit18)
-       @get18_sum_kanto = @kanto_result.sum(:get18)
-       @get18_ave_kanto = @kanto_result.average(:get18)
+     @visit18_sum_kanto = @kanto_result.sum(:visit18)
+     @visit18_ave_kanto = (@visit18_sum_kanto.to_f / @kanto_result.length).round(1)
+     @get18_sum_kanto = @kanto_result.sum(:get18)
+     @get18_ave_kanto = (@get18_sum_kanto.to_f / @kanto_result.length).round(1)
 
-       @visit19_sum_kanto = @kanto_result.sum(:visit19)
-       @visit19_ave_kanto = @kanto_result.average(:visit19)
-       @get19_sum_kanto = @kanto_result.sum(:get19)
-       @get19_ave_kanto = @kanto_result.average(:get19)
+     @visit19_sum_kanto = @kanto_result.sum(:visit19)
+     @visit19_ave_kanto = (@visit19_sum_kanto.to_f / @kanto_result.length).round(1)
+     @get19_sum_kanto = @kanto_result.sum(:get19)
+     @get19_ave_kanto = (@get19_sum_kanto.to_f / @kanto_result.length).round(1)
 
-       @time_visit_sum_kanto = [@visit10_sum_kanto,@visit11_sum_kanto,@visit12_sum_kanto,@visit13_sum_kanto,@visit14_sum_kanto,@visit15_sum_kanto,@visit16_sum_kanto,@visit17_sum_kanto,@visit18_sum_kanto,@visit19_sum_kanto]
-       @time_visit_ave_kanto = [@visit10_ave_kanto,@visit11_ave_kanto,@visit12_ave_kanto,@visit13_ave_kanto,@visit14_ave_kanto,@visit15_ave_kanto,@visit16_ave_kanto,@visit17_ave_kanto,@visit18_ave_kanto,@visit19_ave_kanto]
-       @time_get_sum_kanto = [@get10_sum_kanto,@get11_sum_kanto,@get12_sum_kanto,@get13_sum_kanto,@get14_sum_kanto,@get15_sum_kanto,@get16_sum_kanto,@get17_sum_kanto,@get18_sum_kanto,@get19_sum_kanto]
-       @time_get_ave_kanto = [@get10_ave_kanto,@get11_ave_kanto,@get12_ave_kanto,@get13_ave_kanto,@get14_ave_kanto,@get15_ave_kanto,@get16_ave_kanto,@get17_ave_kanto,@get18_ave_kanto,@get19_ave_kanto]
+     @time_visit_sum_kanto = [@visit10_sum_kanto,@visit11_sum_kanto,@visit12_sum_kanto,@visit13_sum_kanto,@visit14_sum_kanto,@visit15_sum_kanto,@visit16_sum_kanto,@visit17_sum_kanto,@visit18_sum_kanto,@visit19_sum_kanto]
+     @time_visit_ave_kanto = [@visit10_ave_kanto,@visit11_ave_kanto,@visit12_ave_kanto,@visit13_ave_kanto,@visit14_ave_kanto,@visit15_ave_kanto,@visit16_ave_kanto,@visit17_ave_kanto,@visit18_ave_kanto,@visit19_ave_kanto]
+     @time_get_sum_kanto = [@get10_sum_kanto,@get11_sum_kanto,@get12_sum_kanto,@get13_sum_kanto,@get14_sum_kanto,@get15_sum_kanto,@get16_sum_kanto,@get17_sum_kanto,@get18_sum_kanto,@get19_sum_kanto]
+     @time_get_ave_kanto = [@get10_ave_kanto,@get11_ave_kanto,@get12_ave_kanto,@get13_ave_kanto,@get14_ave_kanto,@get15_ave_kanto,@get16_ave_kanto,@get17_ave_kanto,@get18_ave_kanto,@get19_ave_kanto]
     # 関東基準値
     # 予定シフト変数 
       @result_shift = 

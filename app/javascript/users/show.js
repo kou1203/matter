@@ -16,6 +16,12 @@ window.addEventListener('turbolinks:load', function(){
   const chubuOutForm = document.getElementById('chubu-out-form');
   const kansaiOutForm = document.getElementById('kansai-out-form');
   const kantoOutForm = document.getElementById('kanto-out-form');
+  // 時間別基準値
+  const timesValChange = document.getElementById('times-val-change');
+  const chubuTimesForm = document.getElementById('chubu-times-form');
+  const kansaiTimesForm = document.getElementById('kansai-times-form');
+  const kantoTimesForm = document.getElementById('kanto-times-form');
+
 
   // 基準値
   standardValChange.addEventListener("change", function(){
@@ -57,7 +63,7 @@ window.addEventListener('turbolinks:load', function(){
   }
   });
 
-  // 店舗別基準値
+  // 切り返し基準値
   outValChange.addEventListener("change", function(){
     if(this.value == 'out-chubu-slct'){
       console.log(this.value);
@@ -74,6 +80,26 @@ window.addEventListener('turbolinks:load', function(){
       chubuOutForm.style.display = "none";
       kansaiOutForm.style.display = "none";
       kantoOutForm.style.display = "block";
+  }
+  });
+
+  // 時間別基準値
+  timesValChange.addEventListener("change", function(){
+    if(this.value == 'times-chubu-slct'){
+      console.log(this.value);
+      chubuTimesForm.style.display = "block";
+      kansaiTimesForm.style.display = "none";
+      kantoTimesForm.style.display = "none";
+  }else if(this.value == 'times-kansai-slct'){
+      console.log(this.value);
+      chubuTimesForm.style.display = "none";
+      kansaiTimesForm.style.display = "block";
+      kantoTimesForm.style.display = "none";
+  }else if(this.value == 'times-kanto-slct'){
+      console.log(this.value);
+      chubuTimesForm.style.display = "none";
+      kansaiTimesForm.style.display = "none";
+      kantoTimesForm.style.display = "block";
   }
   });
 
