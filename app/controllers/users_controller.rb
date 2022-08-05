@@ -764,18 +764,20 @@ class UsersController < ApplicationController
       @rakuten_pay_def =  
         @rakuten_pay_uq.where(status: "自社不備")
         .or(@rakuten_pay_uq.where(status: "自社NG"))
+        .or(
+          @rakuten_pay_uq.where(deficiency: @results_date.minimum(:date)..@results_date.maximum(:date))
+          .where.not(deficiency_solution: @results_date.minimum(:date)..@results_date.maximum(:date))
+        )
         .select(:valuation,:store_prop_id,:date,:status,:result_point,:id)
       @rakuten_pay_inc = rakuten_inc(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id,:date,:status,:result_point,:id)
         
       @rakuten_pay_done_val = 
         @rakuten_pay_uq.sum(:valuation) - 
-        @rakuten_pay_def.sum(:valuation) - 
-        @rakuten_pay_dec.sum(:valuation) + 
+        @rakuten_pay_def.sum(:valuation) + 
         @rakuten_pay_inc.sum(:valuation)
       @rakuten_pay_done_len = 
         @rakuten_pay_uq.length - 
-        @rakuten_pay_def.length - 
-        @rakuten_pay_dec.length + 
+        @rakuten_pay_def.length +
         @rakuten_pay_inc.length
  
         if (@rakuten_pay_done_len == 0) || (@digestion_new == 0)

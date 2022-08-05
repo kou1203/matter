@@ -35,6 +35,7 @@
         <th class="search-th">連絡先</th>
         <th class="search-th">都道府県</th>
         <th class="search-th">市区</th>
+        <th class="search-th">建物名</th>
         <td class="result"><%= f.submit "絞込", data: {disable_with: '絞込中'}, class: "result-btn" %></td>
       </tr>
       <tr>
@@ -43,6 +44,7 @@
         <td ><%= f.search_field :phone_number_1_or_phone_number_2_cont, class: "input" %></td>
         <td ><%= f.text_field :prefecture_cont, class: "input" %></td>
         <td ><%= f.text_field :city_cont, class: "input" %></td>
+        <td ><%= f.text_field :building_name_cont, class: "input" %></td>
         <td  class="reset"><%= link_to "リセット", store_props_path ,class: "reset-link" %></td>
       </tr>
     </table>
