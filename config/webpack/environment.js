@@ -5,10 +5,6 @@ const vue = require('./loaders/vue')
 
 environment.plugins.prepend('VueLoaderPlugin', new VueLoaderPlugin())
 environment.loaders.prepend('vue', vue)
-
-// 追加
-const customConfig = require('./custom')
-environment.config.merge(customConfig)
-// 追加
-
+// Vue.js フル版（Compiler入り）追加
+environment.config.resolve.alias = { 'vue$': 'vue/dist/vue.esm.js' }
 module.exports = environment

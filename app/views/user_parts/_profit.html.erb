@@ -13,6 +13,8 @@
           %>
   <% airpay_valuations = @airpay_done.sum(:valuation) + airpay_bonus %>
   <%# 合計成果売上 %>
+
+
 <div class="result-flex"><%# 大枠 %>
   <div class="right-frame"><%#日々進捗の区切り%>
     <h2>日々進捗</h2>
@@ -1572,6 +1574,8 @@
         </div><%# /関東 %>
       </div><%# /拠点別店舗基準値 %>
     </div><%# /店舗別基準値 %>
+    <% if @digestion_new == 0 %>
+    <% else %>
     <div class="result-flex"><%# 切り返し区切り %>
       <div><%# 個人 %>
         <h2>切り返し</h2>
@@ -1590,7 +1594,7 @@
             <th rowspan="3" class="total-th">０１：どういうこと？</th>
             <th class="total-th">決済者面会</th>
             <td class="total-td"><%= @results_out.sum(:out_interview_01) %></td>
-            <td class="total-td"><%=  (@results_out.sum(:out_interview_01).to_f / @digestion_new).round(1) %></td>
+            <td class="total-td"><%= (@results_out.sum(:out_interview_01).to_f / @digestion_new).round(1) rescue 0 %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
@@ -1692,32 +1696,32 @@
             <th class="total-th">フル数</th>
             <td class="total-td"><%= @results_out.sum(:out_full_talk_06) %></td>
             <td class="total-td"><%= (@results_out.sum(:out_full_talk_06).to_f / @digestion_new).round(1) %></td>
-            <td class="total-td"><%= number_to_percentage(@results_out.sum(:out_full_talk_06).to_f / @results_out.sum(:out_interview_06).to_f * 100,precision: 1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results_out.sum(:out_full_talk_06).to_f / @results_out.sum(:out_interview_06).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
             <th class="total-th">成約数</th>
             <td class="total-td"><%= @results_out.sum(:out_get_06) %></td>
-            <td class="total-td"><%= (@results_out.sum(:out_get_06).to_f / @digestion_new).round(1) %></td>
-            <td class="total-td"><%= number_to_percentage(@results_out.sum(:out_get_06).to_f / @results_out.sum(:out_full_talk_06).to_f * 100,precision: 1)  %></td>
+            <td class="total-td"><%= (@results_out.sum(:out_get_06).to_f / @digestion_new).round(1) rescue 0 %></td>
+            <td class="total-td"><%= number_to_percentage(@results_out.sum(:out_get_06).to_f / @results_out.sum(:out_full_talk_06).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">０７：先延ばし</th>
             <th class="total-th">決済者面会</th>
             <td class="total-td"><%= @results_out.sum(:out_interview_07) %></td>
-            <td class="total-td"><%= (@results_out.sum(:out_interview_07).to_f / @digestion_new).round(1) %></td>
+            <td class="total-td"><%= (@results_out.sum(:out_interview_07).to_f / @digestion_new).round(1) rescue 0 %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル数</th>
             <td class="total-td"><%= @results_out.sum(:out_full_talk_07) %></td>
-            <td class="total-td"><%= (@results_out.sum(:out_full_talk_07) / @digestion_new).to_f.round(1) %></td>
-            <td class="total-td"><%= number_to_percentage(@results_out.sum(:out_full_talk_07).to_f / @results_out.sum(:out_interview_07).to_f * 100,precision: 1) %></td>
+            <td class="total-td"><%= (@results_out.sum(:out_full_talk_07) / @digestion_new).to_f.round(1) rescue 0 %></td>
+            <td class="total-td"><%= number_to_percentage(@results_out.sum(:out_full_talk_07).to_f / @results_out.sum(:out_interview_07).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
             <th class="total-th">成約数</th>
-            <td class="total-td"><%= @results_out.sum(:out_get_07) %></td>
-            <td class="total-td"><%= (@results_out.sum(:out_get_07).to_f / @digestion_new).round(1) %></td>
-            <td class="total-td"><%= number_to_percentage(@results_out.sum(:out_get_07).to_f / @results_out.sum(:out_full_talk_07).to_f * 100,precision: 1)  %></td>
+            <td class="total-td"><%= @results_out.sum(:out_get_07) rescue 0 %></td>
+            <td class="total-td"><%= (@results_out.sum(:out_get_07).to_f / @digestion_new).round(1) rescue 0 %></td>
+            <td class="total-td"><%= number_to_percentage(@results_out.sum(:out_get_07).to_f / @results_out.sum(:out_full_talk_07).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">０８：現金のみ</th>
@@ -2633,6 +2637,7 @@
         </div><%# /関東 %>
       </div><%# /拠点別切り返し %>
     </div><%# /切り返し区切り %>
+    <% end %>
     <div class="result-flex"><%# 時間別基準値 %>
       <div><%# 個人 %>
         <h2>時間別基準値</h2>
@@ -3340,8 +3345,8 @@
         <tr>
           <th class="total-th">生産性</th>
           <td class="total-td"><%= @dmer_len_ave.round(1) rescue "NaN" %></td>
-          <td class="total-td"><%= dmer_slmt_len_ave = (dmer_slmt_len.to_f / @digestion_settlement).round(1) rescue "NaN" %></td>
-          <td class="total-td"><%= dmer_2ndslmt_len_ave = (dmer_slmt2nd_len.to_f / @digestion_settlement).round(1) rescue "NaN" %></td>
+          <td class="total-td"><%= dmer_slmt_len_ave = (dmer_slmt_len.to_f / @digestion_new).round(1) rescue "NaN" %></td>
+          <td class="total-td"><%= dmer_2ndslmt_len_ave = (dmer_slmt2nd_len.to_f / @digestion_new).round(1) rescue "NaN" %></td>
           <td class="total-td"><%= @aupay_len_ave.round(1) rescue "NaN" %></td>
           <td class="total-td"><%= aupay_slmt_len_ave = (aupay_slmt_len.to_f / @digestion_settlement).round(1) rescue "NaN" %></td>
           <td class="total-td"><%= paypay_len_ave = (paypay_len.to_f / @digestion_new).round(1) rescue "NaN" %></td>
@@ -3353,11 +3358,11 @@
         <tr>
           <th class="total-th">終着獲得見込</th>
           <td class="total-td"><%= (@dmer_len_ave * @new_shift).round(0) rescue "NaN" %></td>
-          <td class="total-td"><%= (dmer_slmt_len_ave * @settlement_shift).round(0) rescue "NaN" %></td>
-          <td class="total-td"><%= (dmer_2ndslmt_len_ave * @settlement_shift).round(0) rescue "NaN" %></td>
-          <td class="total-td"><%= (aupay_len_ave * @new_shift).round(0) rescue "NaN" %></td>
+          <td class="total-td"><%= (dmer_slmt_len_ave * @new_shift).round(0) rescue "NaN" %></td>
+          <td class="total-td"><%= (dmer_2ndslmt_len_ave * @new_shift).round(0) rescue "NaN" %></td>
+          <td class="total-td"><%= (@aupay_len_ave * @new_shift).round(0) rescue "NaN" %></td>
           <td class="total-td"><%= (aupay_slmt_len_ave * @settlement_shift).round(0) rescue "NaN" %></td>
-          <td class="total-td"><%= (paypay_len_ave * @new_shift).round(0) rescue "NaN" %></td>
+          <td class="total-td"><%= (@paypay_len_ave * @new_shift).round(0) rescue "NaN" %></td>
           <td class="total-td"><%= (@rakuten_pay_len_ave * @new_shift).round(0) rescue "NaN" %></td>
           <td class="total-td"><%= (airpay_ave * @new_shift).round(0) rescue "NaN" %></td>
           <td class="total-td"><%=  %></td>
@@ -3365,8 +3370,8 @@
         <tr>
           <th class="total-th">平均売上</th>
           <td class="total-td"><%= (dmer_valuations.to_f / @digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
-          <td class="total-td"><%= (dmer_slmt_valuations.to_f / @digestion_settlement).round().to_s(:delimited) rescue "NaN" %></td>
-          <td class="total-td"><%= (dmer_slmt2nd_valuations.to_f / @digestion_settlement).round().to_s(:delimited) rescue "NaN" %></td>
+          <td class="total-td"><%= (dmer_slmt_valuations.to_f / @digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
+          <td class="total-td"><%= (dmer_slmt2nd_valuations.to_f / @digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= (aupay_valuations.to_f / @digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= (aupay_slmt_valuations.to_f / @digestion_settlement).round().to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= (paypay_valuations.to_f / @digestion_new).round().to_s(:delimited) rescue "NaN" %></td>

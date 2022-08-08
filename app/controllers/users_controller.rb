@@ -126,7 +126,7 @@ class UsersController < ApplicationController
     @results_date = @results.select(:date, :user_id, :shift,:profit)
     @results_date_min = @results_date.minimum(:date)
     @results_date_max = @results_date.maximum(:date)
-    @results_out = @results.includes(:result_cash).select(:result_cash_id)
+    @results_out = @results.includes(:result_cash).select(:result_cash_id,:user_id) rescue "NaN"
     # 中部基準値
       @chubu_shift = 
         Shift.includes(:user).where(user: {base: "中部SS"})
@@ -942,12 +942,16 @@ class UsersController < ApplicationController
           # 単価
           paypay_price = 1000
           # 第一成果終着
+          if @new_shift.present?
           @paypay_result1_fin = 
             if @paypay_done.sum(:valuation) > (paypay_price * @paypay_len_ave * @new_shift)
               @paypay_done.sum(:valuation)
             else
               paypay_price * @paypay_len_ave * @new_shift rescue 0
             end
+          else  
+            @paypay_result1_fin = 0
+          end
 
         # 楽天ペイ
             # 単価
@@ -986,7 +990,11 @@ class UsersController < ApplicationController
           @result_fin = @valuation_sum
         end
         # 成果平均
-        @result_ave = @result_fin / (@new_shift + @settlement_shift)
+        if @new_shift.present?
+          @result_ave = @result_fin / (@new_shift + @settlement_shift)
+        else  
+          @result_ave = 0
+        end
           
 
       @comment = Comment.new
