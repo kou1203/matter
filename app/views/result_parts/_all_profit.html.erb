@@ -339,16 +339,18 @@
           <% aupay_def =  aupay_def(aupay_uq,r_user) %>
           <% aupay_inc = judge_inc(aupay_user,r_user)  %>
           <% aupay_judge_dec = judge_dec(aupay_user,r_user)  %>
-          <% aupay_db = result_period(aupay_user,r_user)
-        .where.not(store_prop: {head_store: nil})
-        .where(status: "審査通過") %>
+          <% aupay_db = 
+            result_period(aupay_user,r_user)
+            .where.not(store_prop: {head_store: nil})
+            .where(status: "審査通過") 
+          %>
           <%# 合計 %>
           <% 
             aupay_valuations = 0
           %>
           <% 
             aupay_len = 
-              aupay_uq.length - aupay_def.length 
+              aupay_uq.length - aupay_def.length + aupay_db.length
           %>
           <% if aupay_len == 0 %>
           <% aupay_len_ave = 0 %>

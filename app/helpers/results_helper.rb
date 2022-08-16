@@ -37,13 +37,13 @@ module ResultsHelper
 
     def aupay_def(product, date)
       return product.where(status: "自社不備")
-        .or(product.where(status: "不合格"))
-        .or(product.where(status: "差し戻し"))
-        .or(product.where(status: "解約"))
-        .or(product.where(status: "報酬対象外"))
-        .or(product.where(status: "重複対象外"))
-        # .or(product.where(status: "審査通過")
-        # .where.not(result_point: date.minimum(:date)..date.maximum(:date).end_of_month))
+      .or(product.where(status: "不合格"))
+      .or(product.where(status: "差し戻し"))
+      .or(product.where(status: "解約"))
+      .or(product.where(status: "報酬対象外"))
+      .or(product.where(status: "重複対象外"))
+      # .or(product.where(status: "審査通過")
+      # .where.not(result_point: date.minimum(:date)..date.maximum(:date).end_of_month))
     end
 
     def rakuten_inc(product, date)

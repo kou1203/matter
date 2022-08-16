@@ -78,7 +78,9 @@
     <td class="valuation-td"><%= @airpay_done.length rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
-    <% if @airpay_done.present? && @airpay_done.length >= 10 %>
+    <% if @airpay_done.present? && @airpay_done.length >= 20 %>
+    <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + 3000 * @airpay_done.length).to_s(:delimited) rescue 0 %></td>
+    <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
     <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + 2000 * @airpay_done.length).to_s(:delimited) rescue 0 %></td>
     <% else %>
     <td class="valuation-td"><%= @airpay_done.sum(:valuation).to_s(:delimited) rescue 0 %></td>
@@ -312,7 +314,9 @@
       <td class="valuation-td "><%= airpay.date %></td>
       <td class="valuation-td "><%= airpay.status %></td>
       <td class="valuation-td "><%= airpay.result_point %></td>
-      <% if @airpay_done.present? && @airpay_done.length >= 10 %>
+      <% if @airpay_done.present? && @airpay_done.length >= 20 %>
+      <td class="valuation-td "><%= airpay.valuation + 3000 %></td>
+      <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
       <td class="valuation-td "><%= airpay.valuation + 2000 %></td>
       <% else %>
       <td class="valuation-td "><%= airpay.valuation %></td>
