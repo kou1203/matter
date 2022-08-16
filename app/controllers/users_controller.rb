@@ -966,9 +966,9 @@ class UsersController < ApplicationController
               end
         # AirPay
             # 単価
-            if @airpay_result_len_fin >= 20
+            if @airpay_result_len_fin.round() >= 20
               airpay_price = 6000
-            elsif @airpay_result_len_fin >= 10
+            elsif @airpay_result_len_fin.round() >= 10
               airpay_price = 5000
             else  
               airpay_price = 3000
