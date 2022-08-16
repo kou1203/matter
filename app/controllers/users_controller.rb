@@ -615,23 +615,6 @@ class UsersController < ApplicationController
             @dmer_len_ave = (@dmer_len.to_f / @digestion_new).round(1)
           end
         # dメル第一成果, 期間月初〜月末
-        # ①月内に審査完了＆決済が月末より前に完了している or
-        # ②審査完了は過去月＆決済は月内に完了している
-        # @dmer_done =  
-        #   @dmer_user.where(result_point: @month.beginning_of_month..@month.end_of_month)
-        #   .where.not(industry_status: "NG")
-        #   .where.not(industry_status: "×")
-        #   .where.not(industry_status: "要確認")
-        #   .where(status: "審査OK")
-        #   .where("? >= settlement", @month.end_of_month)
-        #   .or(
-        #     @dmer_user.where(settlement: @month.beginning_of_month..@month.end_of_month)
-        #     .where.not(industry_status: "NG")
-        #     .where.not(industry_status: "×")
-        #     .where.not(industry_status: "要確認")
-        #     .where(status: "審査OK")
-        #     .where("? >= result_point", @month.end_of_month)
-        #   ).select(:valuation_settlement, :industry_status, :user_id, :store_prop_id,:date,:result_point,:status,:id,:status_update_settlement,:settlement_second)
         @dmer_done = 
           @dmer_user.where(result_point: @month.beginning_of_month..@month.end_of_month)
           .where.not(industry_status: "NG")
@@ -802,7 +785,7 @@ class UsersController < ApplicationController
       else  
         @airpay_result_len_ave = (@airpay_result.length.to_f / @digestion_new).round(1) rescue 0
       end
-      @airpay_result_len_fin = @airpay_result_len_ave * @new_shift rescue 0
+      
       @airpay_done = 
         @airpay_user.where(status: "審査完了")
         .where(result_point: @month.beginning_of_month..@month.end_of_month)
@@ -879,10 +862,13 @@ class UsersController < ApplicationController
             .where(status_update_settlement: @minimum_date_cash.next_month.beginning_of_month..@minimum_date_cash.next_month.end_of_month)
           )
         # 第一成果終着
+        # 終着獲得数
+        @dmer_result1_fin_len = (@dmer_len_ave * @new_shift * dmer_this_month_slmt_per).round()
+        @dmer_slmt_tgt_prev = (@dmer_slmt_tgt_prev.length * dmer_prev_month_slmt_per).round()
         @dmer_result1_fin_this_month = 
-          dmer_price_1 * @dmer_len_ave * @new_shift * dmer_this_month_slmt_per rescue 0
+          dmer_price_1 * @dmer_result1_fin_len rescue 0
         @dmer_result1_fin_prev_month =
-          dmer_price_1 * @dmer_slmt_tgt_prev.length * dmer_prev_month_slmt_per rescue 0
+          dmer_price_1 * @dmer_slmt_tgt_prev rescue 0
         @dmer_result1_fin = 
           if @dmer_done.sum(:valuation_new) >= (@dmer_result1_fin_this_month + @dmer_result1_fin_prev_month)
             @dmer_done.sum(:valuation_new)
@@ -891,9 +877,9 @@ class UsersController < ApplicationController
           end
         # 第二成果終着
         @dmer_result2_fin_this_month =
-          dmer_price_2 * @dmer_len_ave * @new_shift * dmer_this_month_slmt_per rescue 0
+          dmer_price_2 * @dmer_result1_fin_len rescue 0
         @dmer_result2_fin_prev_month = 
-          dmer_price_2 * @dmer_slmt_tgt_prev.length * dmer_prev_month_slmt_per rescue 0
+          dmer_price_2 * @dmer_slmt_tgt_prev rescue 0
         @dmer_result2_fin = 
           if @dmer_slmt_done.sum(:valuation_settlement) >= (@dmer_result2_fin_this_month + @dmer_result2_fin_prev_month)
             @dmer_slmt_done.sum(:valuation_settlement)
@@ -901,23 +887,25 @@ class UsersController < ApplicationController
             @dmer_result2_fin_this_month + @dmer_result2_fin_prev_month
           end
         # 第三成果終着
-        @dmer_result3_fin_prev_month =
-          dmer_price_3 * @dmer_slmt_tgt_prev.length * dmer_prev_month_slmt_per * dmer_prev_month_slmt_per rescue 0
         @dmer_result3_fin_this_month =
-          dmer_price_3 * @dmer_len_ave * @new_shift * dmer_this_month_slmt_per * dmer_prev_month_slmt_per rescue 0
+          dmer_price_3 * (@dmer_result1_fin_len * dmer_prev_month_slmt_per).round() rescue 0
+        @dmer_result3_fin_prev_month =
+          dmer_price_3 * (@dmer_slmt_tgt_prev * dmer_prev_month_slmt_per).round() rescue 0
+
         @dmer_result3_fin = 
           if @dmer_slmt2nd_done.sum(:valuation_second_settlement) > (@dmer_result3_fin_this_month + @dmer_result3_fin_prev_month)
             @dmer_slmt2nd_done.sum(:valuation_second_settlement)
+            
           else
             @dmer_result3_fin_this_month + @dmer_result3_fin_prev_month
           end
       # auPay
         # 単価
         aupay_price = 8000
-        aupay_this_month_slmt_per = 0.22
-        aupay_prev_month_slmt_per = 0.8
+        aupay_slmt_per = 0.22
+        aupay_slmt_per_prev = 0.8
         # 過去の決済対象
-        aupay_slmt_tgt_prev = 
+        @aupay_slmt_tgt_prev = 
         @aupay_user.where("settlement_deadline >= ?", @minimum_date_cash)
         .where("? > date", @minimum_date_cash)
         .where(status: "審査通過")
@@ -928,11 +916,12 @@ class UsersController < ApplicationController
           .where(status: "審査通過")
           .where(status_update_settlement: @minimum_date_cash.next_month.beginning_of_month..@minimum_date_cash.next_month.end_of_month)
         )
+        @aupay_slmt_tgt_prev = (@aupay_slmt_tgt_prev.length * aupay_slmt_per_prev).round()
         # 第一成果終着
-        @aupay_result1_fin_this_month = 
-          aupay_price * @aupay_len_ave * @new_shift * aupay_this_month_slmt_per rescue 0
+        @aupay_result1_fin_len = (@aupay_len_ave * @new_shift * aupay_slmt_per).round() 
+        @aupay_result1_fin_this_month = aupay_price * @aupay_result1_fin_len rescue 0
         @aupay_result1_fin_prev_month = 
-          aupay_price * aupay_slmt_tgt_prev.length * aupay_prev_month_slmt_per rescue 0
+          aupay_price * @aupay_slmt_tgt_prev rescue 0
         @aupay_result1_fin = 
           if @aupay_slmt_done.sum(:valuation_settlement) > (@aupay_result1_fin_this_month + @aupay_result1_fin_prev_month)
             @aupay_slmt_done.sum(:valuation_settlement)
@@ -944,12 +933,13 @@ class UsersController < ApplicationController
           # 単価
           paypay_price = 1000
           # 第一成果終着
+          @paypay_fin_len = @paypay_len_ave * @new_shift
           if @new_shift.present?
           @paypay_result1_fin = 
-            if @paypay_done.sum(:valuation) > (paypay_price * @paypay_len_ave * @new_shift)
+            if @paypay_done.sum(:valuation) > (paypay_price * @paypay_fin_len)
               @paypay_done.sum(:valuation)
             else
-              paypay_price * @paypay_len_ave * @new_shift rescue 0
+              paypay_price * @paypay_fin_len rescue 0
             end
           else  
             @paypay_result1_fin = 0
@@ -960,23 +950,25 @@ class UsersController < ApplicationController
             rakuten_pay_price = 4000
             rakuten_pay_per = 0.9
             # 第一成果終着
-            @rakuten_pay_result1_fin = rakuten_pay_price * @rakuten_pay_len_ave * @new_shift * rakuten_pay_per rescue 0
+            @rakuten_pay_result1_fin_len = (@rakuten_pay_len_ave * @new_shift * rakuten_pay_per).round()
+            @rakuten_pay_result1_fin = rakuten_pay_price * @rakuten_pay_result1_fin_len rescue 0
               if @rakuten_pay_done_val > @rakuten_pay_result1_fin
                 @rakuten_pay_result1_fin = @rakuten_pay_done_val
               end
         # AirPay
             # 単価
-            if @airpay_result_len_fin.round() >= 20
+            airpay_per = 0.85
+            @airpay_result_len_fin = (@airpay_result_len_ave * @new_shift * airpay_per).round() rescue 0
+            if @airpay_result_len_fin >= 20
               airpay_price = 6000
-            elsif @airpay_result_len_fin.round() >= 10
+            elsif @airpay_result_len_fin >= 10
               airpay_price = 5000
             else  
               airpay_price = 3000
             end
-            airpay_per = 0.85
-            @airpay_result1_fin = airpay_price * @airpay_result_len_ave * @new_shift * airpay_per rescue 0
+            @airpay_result1_fin = airpay_price * @airpay_result_len_fin rescue 0
               if @airpay_done_val > @airpay_result1_fin
-                @airpay_done_val rescue 0
+                @airpay_result1_fin = @airpay_done_val rescue 0
               end
         
         # 成果終着
