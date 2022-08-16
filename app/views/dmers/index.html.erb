@@ -38,11 +38,14 @@
 
         </tr>
         <tr>
+          <th class="search-th" colspan="2">初回決済</th>
           <th class="search-th" colspan="2">決済完了日</th>
           <th class="search-th" colspan="2">決済期限</th>
           <th class="search-th" colspan="2">2回目決済</th>
         </tr>
         <tr>
+          <td ><%= f.date_field :settlement_gteq, class: "input" %>~</td>
+          <td ><%= f.date_field :settlement_lteq, class: "input" %></td>
           <td ><%= f.date_field :status_update_settlement_gteq, class: "input" %>~</td>
           <td ><%= f.date_field :status_update_settlement_lteq, class: "input" %></td>
           <td ><%= f.date_field :settlement_deadline_gteq, class: "input"%>~</td>

@@ -807,7 +807,9 @@ class UsersController < ApplicationController
         @airpay_user.where(status: "審査完了")
         .where(result_point: @month.beginning_of_month..@month.end_of_month)
         airpay_bonus =
-        if @airpay_done.length >= 10
+        if @airpay_done.length >= 20
+          @airpay_done.length * 3000
+        elsif @airpay_done.length >= 10
           @airpay_done.length * 2000
         else  
           0
@@ -844,7 +846,7 @@ class UsersController < ApplicationController
         @aupay_slmt_done.sum(:valuation_settlement) + 
         @paypay_done.sum(:valuation) + 
         @rakuten_pay_done_val + 
-        @airpay_done.sum(:valuation) + airpay_bonus
+        @airpay_done_val
       
       # 帯同Ave
       @ojt_val_ave = @valuation_sum / (@digestion_new + @digestion_settlement) rescue 0
@@ -964,7 +966,9 @@ class UsersController < ApplicationController
               end
         # AirPay
             # 単価
-            if @airpay_result_len_fin >= 10
+            if @airpay_result_len_fin >= 20
+              airpay_price = 6000
+            elsif @airpay_result_len_fin >= 10
               airpay_price = 5000
             else  
               airpay_price = 3000

@@ -52,14 +52,20 @@
       <h1>表示範囲：<%= @airpays.minimum(:date) %>（<%= days[@airpays.minimum(:date).wday] %>）〜<%= @airpays.maximum(:date) %>（<%= days[@airpays.maximum(:date).wday] %>）</h1>
     <table >
       <tr>
+        <th class="search-th">獲得数</th>
         <th class="search-th">書類提出待ち</th>
         <th class="search-th">審査中</th>
         <th class="search-th">審査完了</th>
+        <th class="search-th">審査NG</th>
+        <th class="search-th">キャンセル</th>
       </tr>
       <tr>
+        <td><%= @airpays.length %></td>
         <td><%= @airpays.where(status: "書類提出待ち").length %></td>
         <td><%= @airpays.where(status: "審査中").length %></td>
         <td><%= @airpays.where(status: "審査完了").length %></td>
+        <td><%= @airpays.where(status: "審査NG").length %></td>
+        <td><%= @airpays.where(status: "キャンセル").length %></td>
       </tr>
     </table>
     <table class="out-tb">

@@ -5,7 +5,9 @@
   <% airpay_len = @airpay_result.length  %>
           <% 
             airpay_bonus =
-              if @airpay_done.length >= 10
+              if @airpay_done.length >= 20
+                @airpay_done.length * 3000
+              elsif @airpay_done.length >= 10
                 @airpay_done.length * 2000
               else
                 0
@@ -3317,6 +3319,7 @@
     <div><%# 商材別売上/生産性 %>
       <h2>商材別売上/生産性</h2>
       <p class="caution-text">ステータス上すでに成果となった案件 + 審査待ちも見込んだ現状売上</p>
+      <p class="caution-text">評価売上の終着見込と合計売上は成果になった件数を参照しているため終着獲得数や現状獲得数とリンクしません。</p>
       <table>
         <tr>
           <th class="total-th">商材</th>
@@ -3390,6 +3393,18 @@
           <td class="total-td"><%= @rakuten_pay_done_val.to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= airpay_valuations.to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= sum_profit.to_s(:delimited) rescue "NaN" %></td>
+        </tr>
+        <tr>
+        <th class="total-th">終着見込</th>
+        <td class="total-td"><%= @dmer_result1_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= @dmer_result2_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= @dmer_result3_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= 0 %></td>
+        <td class="total-td"><%= @aupay_result1_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= @paypay_result1_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= @rakuten_pay_result1_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= @airpay_result1_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%= @result_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
         </tr>
       </table>
     </div><%# /商材別売上/生産性 %> 

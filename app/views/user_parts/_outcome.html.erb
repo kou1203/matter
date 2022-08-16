@@ -2,7 +2,16 @@
 <h2 class="red">成果売上：
   <%=   
     (
-      if @airpay_done.present? && @airpay_done.length >= 10
+      if @airpay_done.present? && @airpay_done.length >= 20
+      @dmer_done.sum(:valuation_new) +
+      @dmer_slmt_done.sum(:valuation_settlement) +
+      @dmer_slmt2nd_done.sum(:valuation_second_settlement) +
+      @aupay_slmt_done.sum(:valuation_settlement) +
+      @paypay_done.sum(:valuation) +
+      @rakuten_pay_done_val +
+      @airpay_done.sum(:valuation) +
+      (@airpay_done.length * 3000)
+      elsif @airpay_done.present? && @airpay_done.length >= 10
       @dmer_done.sum(:valuation_new) +
       @dmer_slmt_done.sum(:valuation_settlement) +
       @dmer_slmt2nd_done.sum(:valuation_second_settlement) +

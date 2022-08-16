@@ -181,12 +181,12 @@
         %>
         <% slmt_shift_digestion = r_user.where(shift: "キャッシュレス決済").length %>
       <%# 基準値 %>
-        <% sum_total_visit = r_user.sum("first_total_visit + latter_total_visit").to_f %>
-        <% sum_visit = r_user.sum("first_visit + latter_visit").to_f %>
-        <% sum_interview = r_user.sum("first_interview + latter_interview").to_f %>
-        <% sum_full_talk = r_user.sum("first_full_talk + latter_full_talk").to_f %>
-        <% sum_get = r_user.sum("first_get + latter_get").to_f %>
-
+      
+        <% sum_total_visit = r_user.where(shift: "キャッシュレス新規").sum("first_total_visit + latter_total_visit").to_f %>
+        <% sum_visit = r_user.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit").to_f %>
+        <% sum_interview = r_user.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview").to_f %>
+        <% sum_full_talk = r_user.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk").to_f %>
+        <% sum_get = r_user.where(shift: "キャッシュレス新規").sum("first_get + latter_get").to_f %>
       <%# 各商材変数（評価売） %>
         <%# dメル（新規） %>
           <% dmer_user = Dmer.includes(:store_prop).where(user_id: r.user_id) %>
@@ -273,7 +273,6 @@
             <% if dmer_valuations > dmer_result1_fin %>
             <% dmer_result1_fin = dmer_valuations  %>
             <% end %>
-            
         <%# dメル（決済） %>
           <% dmer_slmter = Dmer.where(settlementer_id: r.user_id) %>
           <% 
@@ -491,7 +490,10 @@
           <% airpay_result1_len = airpay_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month).where(status: "審査完了").length %>
           <% 
             airpay_valuations = 
-              if airpay_result1_len >= 10
+              if airpay_result1_len >= 20
+                airpay_user
+                .where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month).where(status: "審査完了").sum(:valuation) + (airpay_result1_len * 3000)
+              elsif airpay_result1_len >= 10
                 airpay_user
                 .where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month).where(status: "審査完了").sum(:valuation) + (airpay_result1_len * 2000)
               else  
@@ -499,7 +501,9 @@
               end
           %>
 
-          <% if airpay_len_fin > 10 %>
+          <% if airpay_len_fin >= 20 %>
+            <% airpay_price = 6000 %>
+          <% elsif airpay_len_fin >= 10 %>
             <% airpay_price = 5000 %>
           <% else %>
             <% airpay_price = 3000 %>
@@ -593,7 +597,7 @@
       <td><%= (sum_visit / new_shift_digestion).round(1) rescue 0 %></td>
       <td><%= (sum_interview / new_shift_digestion).round(1) rescue 0 %></td>
       <td><%= (sum_full_talk / new_shift_digestion).round(1) rescue 0 %></td>
-      <td><%= (sum_get / new_shift_digestion).round(1) rescue 0 %></td>
+      <td><%= (sum_get / new_shift_digestion / 4).round(1) rescue 0 %></td>
       <%# 獲得数 %>
       <td ><%= dmer_len %></td>
       <td ><%= dmer_slmt_len %></td>
@@ -641,7 +645,7 @@
         <td><%= (@cash_result.sum("first_visit + latter_visit").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
         <td><%= (@cash_result.sum("first_interview + latter_interview").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
         <td><%= (@cash_result.sum("first_full_talk + latter_full_talk").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
-        <td><%= (@cash_result.sum("first_get + latter_get").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (@cash_result.sum("first_get + latter_get").to_f / base_new_shift_digestion / 4).round(1) rescue 0 %></td>
         <%# 全体獲得数 %>
         <td><%= base_dmer %></td>
         <td><%= base_dmer_slmt %></td>
