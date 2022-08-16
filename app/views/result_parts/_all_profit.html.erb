@@ -208,26 +208,6 @@
               .where.not(industry_status: "×").where.not(industry_status: "NG").where.not(industry_status: "要確認")
               .where(status: "審査OK")
           %>
-        <%# dメル第一成果 %>
-          <%# 
-            dmer_result1 =
-              dmer_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
-              .where.not(industry_status: "NG")
-              .where.not(industry_status: "×")
-              .where.not(industry_status: "要確認")
-              .where(status: "審査OK")
-              .where("? >= settlement", @month.next_month.end_of_month)
-              .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
-              .or(
-                dmer_user.where(settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
-                .where.not(industry_status: "NG")
-                .where.not(industry_status: "×")
-                .where.not(industry_status: "要確認")
-                .where(status: "審査OK")
-                .where("? >= result_point", @month.next_month.end_of_month)
-                .select(:valuation_new, :industry_status, :user_id, :store_prop_id)
-              )
-          %>
           <% 
             dmer_result1 =  
               dmer_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month)

@@ -870,7 +870,7 @@ class UsersController < ApplicationController
         @dmer_result1_fin_prev_month =
           dmer_price_1 * @dmer_slmt_tgt_prev rescue 0
         @dmer_result1_fin = 
-          if @dmer_done.sum(:valuation_new) >= (@dmer_result1_fin_this_month + @dmer_result1_fin_prev_month)
+          if (@dmer_done.sum(:valuation_new) >= (@dmer_result1_fin_this_month + @dmer_result1_fin_prev_month)) | (@digestion_new >= @new_shift)
             @dmer_done.sum(:valuation_new)
           else
             @dmer_result1_fin_this_month + @dmer_result1_fin_prev_month rescue 0
@@ -881,7 +881,7 @@ class UsersController < ApplicationController
         @dmer_result2_fin_prev_month = 
           dmer_price_2 * @dmer_slmt_tgt_prev rescue 0
         @dmer_result2_fin = 
-          if @dmer_slmt_done.sum(:valuation_settlement) >= (@dmer_result2_fin_this_month + @dmer_result2_fin_prev_month)
+          if (@dmer_slmt_done.sum(:valuation_settlement) >= (@dmer_result2_fin_this_month + @dmer_result2_fin_prev_month)) | (@digestion_new >= @new_shift)
             @dmer_slmt_done.sum(:valuation_settlement)
           else
             @dmer_result2_fin_this_month + @dmer_result2_fin_prev_month
@@ -893,7 +893,7 @@ class UsersController < ApplicationController
           dmer_price_3 * (@dmer_slmt_tgt_prev * dmer_prev_month_slmt_per).round() rescue 0
 
         @dmer_result3_fin = 
-          if @dmer_slmt2nd_done.sum(:valuation_second_settlement) > (@dmer_result3_fin_this_month + @dmer_result3_fin_prev_month)
+          if (@dmer_slmt2nd_done.sum(:valuation_second_settlement) > (@dmer_result3_fin_this_month + @dmer_result3_fin_prev_month)) | (@digestion_new >= @new_shift)
             @dmer_slmt2nd_done.sum(:valuation_second_settlement)
             
           else
@@ -923,7 +923,7 @@ class UsersController < ApplicationController
         @aupay_result1_fin_prev_month = 
           aupay_price * @aupay_slmt_tgt_prev rescue 0
         @aupay_result1_fin = 
-          if @aupay_slmt_done.sum(:valuation_settlement) > (@aupay_result1_fin_this_month + @aupay_result1_fin_prev_month)
+          if (@aupay_slmt_done.sum(:valuation_settlement) > (@aupay_result1_fin_this_month + @aupay_result1_fin_prev_month)) | (@digestion_settlement >= @settlement_shift)
             @aupay_slmt_done.sum(:valuation_settlement)
           else  
             @aupay_result1_fin_this_month + @aupay_result1_fin_prev_month
@@ -936,7 +936,7 @@ class UsersController < ApplicationController
           @paypay_fin_len = @paypay_len_ave * @new_shift
           if @new_shift.present?
           @paypay_result1_fin = 
-            if @paypay_done.sum(:valuation) > (paypay_price * @paypay_fin_len)
+            if (@paypay_done.sum(:valuation) > (paypay_price * @paypay_fin_len)) | (@digestion_new >= @new_shift)
               @paypay_done.sum(:valuation)
             else
               paypay_price * @paypay_fin_len rescue 0
@@ -952,7 +952,7 @@ class UsersController < ApplicationController
             # 第一成果終着
             @rakuten_pay_result1_fin_len = (@rakuten_pay_len_ave * @new_shift * rakuten_pay_per).round()
             @rakuten_pay_result1_fin = rakuten_pay_price * @rakuten_pay_result1_fin_len rescue 0
-              if @rakuten_pay_done_val > @rakuten_pay_result1_fin
+              if (@rakuten_pay_done_val > @rakuten_pay_result1_fin) | (@digestion_new >= @new_shift)
                 @rakuten_pay_result1_fin = @rakuten_pay_done_val
               end
         # AirPay
@@ -967,7 +967,7 @@ class UsersController < ApplicationController
               airpay_price = 3000
             end
             @airpay_result1_fin = airpay_price * @airpay_result_len_fin rescue 0
-              if @airpay_done_val > @airpay_result1_fin
+              if (@airpay_done_val > @airpay_result1_fin) | (@digestion_new >= @new_shift)
                 @airpay_result1_fin = @airpay_done_val rescue 0
               end
         
@@ -1065,8 +1065,7 @@ class UsersController < ApplicationController
           .or(product.where(industry_status: "NG"))
           .or(product.where(industry_status: "×"))
           .or(product.where(industry_status: "要確認"))
-          # .or(product.where(status: "審査OK")
-          # .where.not(result_point: date.minimum(:date)..date.maximum(:date).end_of_month))
+          # .where(result_point: date.minimum(:date)..date.maximum(:date).end_of_month))
       end
 
       
