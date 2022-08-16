@@ -38,7 +38,7 @@
       <th class="search-th" colspan="3" >評価売上</th>
       <th class="search-th" colspan="5">基準値</th>
       <th class="search-th" colspan="8">商材別獲得数</th>
-      <th class="search-th" colspan="8">商材別成果数</th>
+      <th class="search-th" colspan="6">商材別成果数</th>
       <th class="search-th" colspan="5">商材別平均獲得数</th>
       <th class="search-th" colspan="5">商材別獲得終着見込</th>
     </tr>
@@ -107,6 +107,7 @@
       <% base_fin = 0 %>
       <% base_sum = 0 %>
       <%# 拠点獲得数 %>
+      <% base_sum_product = 0 %>
       <% base_dmer = 0 %>
       <% base_dmer_ave = 0 %>
       <% base_dmer_fin = 0 %>
@@ -542,6 +543,7 @@
                 airpay_result1_fin
               ).to_i
            %>
+           
            <% if (sum_valuations >= sum_valuations_fin) || (shift_data.maximum(:start_time).present? && Date.today > shift_data.maximum(:start_time) ) %>
             <% sum_valuations_fin = sum_valuations rescue 0 %>
            <% end %>
@@ -549,6 +551,10 @@
           <% if  (sum_valuations_fin.present?) && (shifts != 0) %>
             <% sum_valuations_ave = sum_valuations_fin / shifts rescue 0 %>
           <% end %>
+          <%# 合計獲得数 %>
+          <% sum_product = (dmer_uq.length + aupay_uq.length + rakuten_pay_uq.length + airpay_data.length).to_f %>
+
+          <% base_sum_product += sum_product %>
           <% base_dmer += dmer_len %>
           <% base_dmer_ave = base_dmer / shift_digestion rescue 0 %>
           <% base_dmer_fin += dmer_len_fin %>
@@ -594,7 +600,7 @@
       <td><%= (sum_visit / new_shift_digestion).round(1) rescue 0 %></td>
       <td><%= (sum_interview / new_shift_digestion).round(1) rescue 0 %></td>
       <td><%= (sum_full_talk / new_shift_digestion).round(1) rescue 0 %></td>
-      <td><%= (sum_get / new_shift_digestion / 4).round(1) rescue 0 %></td>
+      <td><%= (sum_product / 4 / new_shift_digestion).round(1) rescue 0 %></td>
       <%# 獲得数 %>
       <td ><%= dmer_len %></td>
       <td ><%= dmer_slmt_len %></td>
@@ -642,7 +648,7 @@
         <td><%= (@cash_result.sum("first_visit + latter_visit").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
         <td><%= (@cash_result.sum("first_interview + latter_interview").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
         <td><%= (@cash_result.sum("first_full_talk + latter_full_talk").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
-        <td><%= (@cash_result.sum("first_get + latter_get").to_f / base_new_shift_digestion / 4).round(1) rescue 0 %></td>
+        <td><%= (base_sum_product / base_new_shift_digestion / 4).round(1) rescue 0 %></td>
         <%# 全体獲得数 %>
         <td><%= base_dmer %></td>
         <td><%= base_dmer_slmt %></td>
@@ -661,11 +667,11 @@
         <td><%= base_airpay_result1_len %></td>
         
         <%# 全体平均獲得数 %>
-        <td><%= base_dmer_ave %></td>
-        <td><%= base_aupay_ave %></td>
-        <td><%= base_paypay_ave %></td>
-        <td><%= base_rakuten_pay_ave %></td>
-        <td><%= base_airpay_ave %></td>
+        <td><%= (base_dmer.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (base_aupay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (base_paypay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (base_rakuten_pay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (base_airpay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
         <%# 全体終着獲得数 %>
         <td><%= base_dmer_fin %></td>
         <td><%= base_aupay_fin %></td>
