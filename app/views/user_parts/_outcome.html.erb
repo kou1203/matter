@@ -263,7 +263,7 @@
     </thead>
     <tbody>
       <% if @rakuten_pay_uq.present? %>
-      <% @rakuten_pay_uq.each do |rakuten_pay| %>
+      <% @rakuten_pay_uq.where.not(status: "自社NG").where.not(status: "自社不備").each do |rakuten_pay| %>
       <tr>
       <td class="valuation-td "><%= num %></td>
       <td class="valuation-td "><%= rakuten_pay.store_prop.name %></td>
