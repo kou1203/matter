@@ -27,6 +27,7 @@
         </table>
       <% end %>
       <%# /検索フォーム %>
+      <div class="nav-text" style="color: red;"><%= alert %></div>
       <hr>
       <% if @results.empty? %>
       <%# 日々売上 %>
@@ -230,8 +231,6 @@
         </table>
         <p class="caution-text">※売上は<%= @result_monthly.minimum(:date) %>〜<%= @result_monthly.maximum(:date) %>の範囲で計算されています。</p>
       <%# /現状売上早見 %>
-
-      <div class="nav-text"><%= alert %></div>
       <% else %>
         <% if @results.group(:user_id).length == 1 %>
           <%= render "result_parts/profit_table_copiedata" %>

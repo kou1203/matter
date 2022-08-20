@@ -685,6 +685,9 @@ class UsersController < ApplicationController
           .where(industry_status: nil)).select(:valuation_settlement)
         @dmer_slmt2nd_target = slmt2nd_dead_line(@dmer_user,@results_date).select(:valuation_second_settlement)
       # auPay
+      @aupay_pic = OtherProduct.where(product_name: "auPay写真").where(user_id: @user.id)
+      @aupay_pic_len = @aupay_pic.sum(:product_len)
+      @aupay_pic_val = @aupay_pic.sum(:valuation)
       @aupay_user = 
         Aupay.includes(:store_prop).where(user_id: @results.first.user_id)
         .select(:valuation_new, :user_id, :store_prop_id)

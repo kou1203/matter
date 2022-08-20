@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_07_15_112932) do
+ActiveRecord::Schema.define(version: 2022_08_20_034236) do
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "store_name", null: false
@@ -333,6 +333,16 @@ ActiveRecord::Schema.define(version: 2022_07_15_112932) do
     t.integer "breaking_tv_excavation"
     t.integer "breaking_tv_excavation_ng"
     t.index ["user_id"], name: "index_n_results_on_user_id"
+  end
+
+  create_table "other_products", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "product_name", null: false
+    t.date "date"
+    t.integer "product_len"
+    t.integer "profit", null: false
+    t.integer "valuation", null: false
+    t.index ["user_id"], name: "index_other_products_on_user_id"
   end
 
   create_table "pandas", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1001,6 +1011,7 @@ ActiveRecord::Schema.define(version: 2022_07_15_112932) do
   add_foreign_key "dmers", "users"
   add_foreign_key "dmers", "users", column: "settlementer_id"
   add_foreign_key "n_results", "users"
+  add_foreign_key "other_products", "users"
   add_foreign_key "pandas", "store_props"
   add_foreign_key "pandas", "users"
   add_foreign_key "paypays", "store_props"
