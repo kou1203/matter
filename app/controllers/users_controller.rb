@@ -984,7 +984,8 @@ class UsersController < ApplicationController
             @aupay_result1_fin +
             @paypay_result1_fin +
             @rakuten_pay_result1_fin +
-            @airpay_result1_fin 
+            @airpay_result1_fin +
+            @aupay_pic_val
           ).to_i
         if (@valuation_sum > @result_fin) || (Date.today > @minimum_date_cash.next_month.end_of_month)
           @result_fin = @valuation_sum
