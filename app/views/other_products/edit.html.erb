@@ -1,0 +1,38 @@
+<div data-scope-path="shared/header">
+  <h1>その他獲得情報編集</h1>
+  <%= render "shared/header" %>
+</div>
+
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form">
+  <div class="form-main">
+    <div class="form-title">
+      <h1><%= @other_product.user.name %>獲得商材</h1>
+    </div>
+  <%= form_with(model: @other_product, date: {remote: false}) do |f| %>
+  <%= render "shared/error_messages", model: f.object %>
+  <h1>商材情報</h1>
+  <div class="form">
+      <p><%= f.label :request, "日付", class: "form-text" %></p>
+      <p><%= f.date_field :date , class: "date-input" %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :product_name, "商材名", class: "form-text" %></p>
+      <p><%= f.select :product_name, {"auPay写真": "auPay写真"},{include_blank: true}, {class: "slct-input", id: "selectbox"} %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :product_len, "獲得数", class: "form-text" %></p>
+      <p><%= f.number_field :product_len ,class: "input", min: 0 %></p>
+  </div>
+  <%= f.hidden_field :valuation, value: 0 %>
+  <%= f.hidden_field :profit, value: 0 %>
+  <div class="form-submit">
+    <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+  </div>
+  <% end %>
+  </div>
+  </div>
+</div>

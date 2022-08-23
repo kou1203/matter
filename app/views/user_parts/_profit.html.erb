@@ -592,7 +592,7 @@
         <%# 楽天ペイ %>
 
         <%# 合計売上 %>
-          <% sum_profit_new = dmer_valuations + aupay_valuations + paypay_valuations + st_insurance_valuations + @rakuten_pay_done_val + airpay_valuations %>
+          <% sum_profit_new = dmer_valuations + aupay_valuations + paypay_valuations + st_insurance_valuations + @rakuten_pay_done_val + airpay_valuations + @aupay_pic_val %>
           <% sum_profit_slmt = dmer_slmt_valuations + dmer_slmt2nd_valuations + aupay_slmt_valuations %>
           <% sum_profit = sum_profit_new + sum_profit_slmt %>
         <%# 平均売上 %>
@@ -3331,6 +3331,7 @@
           <th class="total-th">PayPay</th>
           <th class="total-th">楽天ペイ</th>
           <th class="total-th">AirPay</th>
+          <th class="total-th">その他商材</th>
           <th class="total-th">全商材</th>
         </tr>
         <tr>
@@ -3344,6 +3345,7 @@
           <td class="total-td"><%= @rakuten_pay_done_len %></td>
           <td class="total-td"><%= airpay_len %></td>
           <td class="total-td"><%=  %></td>
+          <td class="total-td"><%=  %></td>
         </tr>
         <tr>
           <th class="total-th">生産性</th>
@@ -3355,6 +3357,7 @@
           <td class="total-td"><%= paypay_len_ave = (paypay_len.to_f / @digestion_new).round(1) rescue "NaN" %></td>
           <td class="total-td"><%= @rakuten_pay_len_ave.round(1) rescue "NaN" %></td>
           <td class="total-td"><%= airpay_ave = (airpay_len.to_f / @digestion_new).round(1) rescue "NaN" %></td>
+          <td class="total-td"><%=  %></td>
           <td class="total-td"><%=  %></td>
         </tr>
         
@@ -3369,6 +3372,7 @@
           <td class="total-td"><%= (@rakuten_pay_len_ave * @new_shift).round(0) rescue "NaN" %></td>
           <td class="total-td"><%= (airpay_ave * @new_shift).round(0) rescue "NaN" %></td>
           <td class="total-td"><%=  %></td>
+          <td class="total-td"><%=  %></td>
         </tr>
         <tr>
           <th class="total-th">平均売上</th>
@@ -3381,6 +3385,7 @@
           <td class="total-td"><%= (@rakuten_pay_done_val.to_f / @digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= (airpay_valuations.to_f / @digestion_new).round().to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%=  %></td>
+          <td class="total-td"><%=  %></td>
         </tr>
         <tr>
           <th class="total-th">合計売上</th>
@@ -3392,6 +3397,7 @@
           <td class="total-td"><%= paypay_valuations.to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= @rakuten_pay_done_val.to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= airpay_valuations.to_s(:delimited) rescue "NaN" %></td>
+          <td class="total-td"><%= @aupay_pic_val.to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= sum_profit.to_s(:delimited) rescue "NaN" %></td>
         </tr>
         <tr>
@@ -3404,6 +3410,7 @@
         <td class="total-td"><%= @paypay_result1_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
         <td class="total-td"><%= @rakuten_pay_result1_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
         <td class="total-td"><%= @airpay_result1_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
+        <td class="total-td"><%=  %></td>
         <td class="total-td"><%= @result_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
         </tr>
       </table>
@@ -3422,6 +3429,7 @@
           <th class="total-th">PayPay</th>
           <th class="total-th">楽天ペイ</th>
           <th class="total-th">AirPay</th>
+          <th class="total-th">その他商材</th>
           <th class="total-th">全商材</th>
         </tr>
         <tr>
@@ -3434,6 +3442,7 @@
           <td class="total-td"><%= @rakuten_pay_done_len %></td>
           <td class="total-td"><%= @airpay_done.length %></td>
           <td class="total-td"><%=  %></td>
+          <td class="total-td"><%=  %></td>
         </tr>
 
         <tr>
@@ -3445,6 +3454,7 @@
           <td class="total-td"><%= @paypay_done.sum(:valuation).to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= @rakuten_pay_done_val.to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= @airpay_done_val.to_s(:delimited) rescue 0 %></td>
+          <td class="total-td"><%= @aupay_pic_val.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @valuation_sum.to_s(:delimited) rescue 0 %></td>
 
         </tr>

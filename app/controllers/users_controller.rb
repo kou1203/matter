@@ -685,7 +685,7 @@ class UsersController < ApplicationController
           .where(industry_status: nil)).select(:valuation_settlement)
         @dmer_slmt2nd_target = slmt2nd_dead_line(@dmer_user,@results_date).select(:valuation_second_settlement)
       # auPay
-      @aupay_pic = OtherProduct.where(product_name: "auPay写真").where(user_id: @user.id)
+      @aupay_pic = OtherProduct.where(product_name: "auPay写真").where(user_id: @user.id).where(date: @minimum_date_cash..@maximum_date_cash)
       @aupay_pic_len = @aupay_pic.sum(:product_len)
       @aupay_pic_val = @aupay_pic.sum(:valuation)
       @aupay_user = 
@@ -832,7 +832,8 @@ class UsersController < ApplicationController
         @aupay_slmt_done.sum(:valuation_settlement) + 
         @paypay_done.sum(:valuation) + 
         @rakuten_pay_done_val + 
-        @airpay_done_val
+        @airpay_done_val +
+        @aupay_pic_val
       
       # 帯同Ave
       @ojt_val_ave = @valuation_sum / (@digestion_new + @digestion_settlement) rescue 0
@@ -983,7 +984,7 @@ class UsersController < ApplicationController
             @aupay_result1_fin +
             @paypay_result1_fin +
             @rakuten_pay_result1_fin +
-            @airpay_result1_fin
+            @airpay_result1_fin 
           ).to_i
         if (@valuation_sum > @result_fin) || (Date.today > @minimum_date_cash.next_month.end_of_month)
           @result_fin = @valuation_sum
