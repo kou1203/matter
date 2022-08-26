@@ -602,7 +602,7 @@
         <%# 第一成果終着 %>
           <% paypay_result1_fin = paypay_price * paypay_fin_len rescue 0 %>
           <% if (paypay_valuations > paypay_result1_fin) || (Date.today >=@month.next_month.end_of_month) %>
-          <% aupay_result1_fin = aupay_slmt_valuations %>
+          <% paypay_result1_fin = paypay_valuations %>
           <% end %>
         <%# 楽天ペイ %>
           <% rakuten_pay_user = RakutenPay.includes(:store_prop).where(user_id: r.user_id) %>
@@ -725,7 +725,7 @@
                 aupay_pic_val
               ).to_i
            %>
-           <% if (sum_valuations >= sum_valuations_fin) %>
+           <% if (sum_valuations > sum_valuations_fin) %>
             <% sum_valuations_fin = sum_valuations rescue 0 %>
            <% end %>
            <% sum_valuations_ave = 0 %>
