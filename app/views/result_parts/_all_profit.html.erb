@@ -653,13 +653,10 @@
           <% 
             airpay_data = this_period(airpay_user ,r_user)
           %>
-          <% airpay_result = 
-            this_period(airpay_user,r_user)
-            .where(status: "審査完了")
-            .or(
-              this_period(airpay_user,r_user).where(status: "審査中")
-            )
+          <% airpay_result = airpay_data.where(status: "審査完了").or(airpay_data.where(status: "審査中"))
           %>
+          <%= r.user.name %>
+          <%= airpay_result.length %>
           <% airpay_len = airpay_result.length %>
           <% if airpay_len == 0 %>
           <% airpay_len_ave = 0 %>

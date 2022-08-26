@@ -777,11 +777,9 @@ class UsersController < ApplicationController
       @st_insurances_def_this_month = this_period(@st_insurances_this_month,@results)
       @airpay_user = Airpay.where(user_id: @results.first.user_id)
       @airpay_result = 
-        this_period(@airpay_user,@results_date)
-        .where(status: "審査完了")
+        @airpay_user.where(date: @minimum_date_cash..@maximum_date_cash).where(status: "審査完了")
         .or(
-          this_period(@airpay_user,@results_date)
-          .where(status: "審査中")
+          @airpay_user.where(date: @minimum_date_cash..@maximum_date_cash).where(status: "審査中")
         )
       if (@airpay_result.length == 0) || (@digestion_new == 0)
         @airpay_result_len_ave = 0
@@ -911,7 +909,7 @@ class UsersController < ApplicationController
         @dmer_slmt_dead_len = @dmer_slmt_dead.length
         # 過去の決済対象で今月成果になったもの
         @dmer_slmt_prev_val = 
-          @dmer_slmt_tgt_prev.where(status_update_settlement: @minimum_date_cash.next_month.beginning_of_month..@minimum_date_cash.next_month.end_of_month)
+          @dmer_slmt_tgt_prev.where(status_update_settlement: @minimum_date_cash..@maximum_date_cash)
         @dmer_2ndslmt_prev_val = @dmer_slmt_prev_val.where("? >= settlement_second", @minimum_date_cash.next_month.end_of_month)
         @dmer_slmt_prev_val_len = @dmer_slmt_prev_val.length
         @dmer_2ndslmt_prev_val_len = @dmer_2ndslmt_prev_val.length
