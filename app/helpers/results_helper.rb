@@ -29,6 +29,7 @@ module ResultsHelper
         .or(product.where(status: "不備対応中"))
         .or(product.where(status: "申込取消"))
         .or(product.where(status: "申込取消（不備）"))
+        .or(product.where(status: "社内確認中"))
         .or(product.where(industry_status: "NG"))
         .or(product.where(industry_status: "×"))
         .or(product.where(industry_status: "要確認"))
