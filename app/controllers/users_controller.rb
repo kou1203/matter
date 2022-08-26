@@ -916,10 +916,11 @@ class UsersController < ApplicationController
         # 第一成果終着
         # 終着獲得数
         @dmer_val1_period = 
-          @dmer_uq.where(status: "審査OK")
+          @dmer_user.where(status: "審査OK")
           .where.not(industry_status: "×")
           .where.not(industry_status: "NG")
           .where.not(industry_status: "要確認")
+          .where(date: @minimum_date_cash..@maximum_date_cash)
           @dmer_val2_period = @dmer_val1_period.where.not(status_update_settlement: nil).where(status_settlement: "完了")
           @dmer_val3_period = @dmer_val2_period.where.not(settlement_second: nil)
           @dmer_val1_period_len = @dmer_val1_period.length
@@ -927,7 +928,7 @@ class UsersController < ApplicationController
           @dmer_val3_period_len = @dmer_val3_period.length
         @dmer_result1_fin_len = (@dmer_len_ave * @new_shift).round()
         # 期間内終着
-        @dmer_result1_fin_this_month_len = ((@dmer_len - @dmer_val1_period_len - @dmer_db_data.length).to_f / @digestion_new * @new_shift * @dmer_result1_per).round() rescue 0
+        @dmer_result1_fin_this_month_len = ((@dmer_len - @dmer_val1_period_len).to_f / @digestion_new * @new_shift * @dmer_result1_per).round() rescue 0
         @dmer_result1_fin_this_month = 
           (dmer_price_1 * @dmer_result1_fin_this_month_len) + 
           @dmer_done.where(date: @minimum_date_cash..@maximum_date_cash).sum(:valuation_new)

@@ -321,10 +321,11 @@
             <%# 終着獲得数 %>
             <% 
               dmer_val1_period =  
-                dmer_uq.where(status: "審査OK")
+                dmer_user.where(status: "審査OK")
                 .where.not(industry_status: "×")
                 .where.not(industry_status: "NG")
                 .where.not(industry_status: "要確認")
+                .where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date))
             %>
             <%
               dmer_val2_period = 
