@@ -243,19 +243,19 @@
           <% dmer_user = Dmer.includes(:store_prop).where(user_id: r.user_id) %>
           <% 
             dmer_uq = 
-              this_period(dmer_user,r_user).where(store_prop: {head_store: nil})
+              this_period(dmer_user,@cash_result).where(store_prop: {head_store: nil})
           %><%# dメル期間内獲得数 %>
-          <% dmer_def =  dmer_def(dmer_uq,r_user) %><%# dメル不備 %>
+          <% dmer_def =  dmer_def(dmer_uq,@cash_result) %><%# dメル不備 %>
           <% 
             dmer_inc = 
-              judge_inc(dmer_user,r_user)
+              judge_inc(dmer_user,@cash_result)
               .where(store_prop: {head_store: nil})
               .where.not(industry_status: "NG")
               .where.not(industry_status: "×") 
           %>
           <% 
             dmer_db = 
-              share_period(dmer_user,r_user).where.not(store_prop: {head_store: nil})
+              share_period(dmer_user,@cash_result).where.not(store_prop: {head_store: nil})
               .where.not(industry_status: "×").where.not(industry_status: "NG").where.not(industry_status: "要確認")
               .where(status: "審査OK")
           %>
@@ -279,16 +279,16 @@
           <%# 過去月決済対象の数 %>
             <% 
               dmer_slmt_tgt_prev = 
-                dmer_user.where("settlement_deadline >= ?", r_user.minimum(:date))
-                .where("? > date", r_user.minimum(:date))
+                dmer_user.where("settlement_deadline >= ?", @cash_result.minimum(:date))
+                .where("? > date", @cash_result.minimum(:date))
                 .where(status: "審査OK")
                 .where.not(industry_status: "×")
                 .where.not(industry_status: "NG")
                 .where.not(industry_status: "要確認")
                 .where(status_update_settlement: nil)
                 .or(
-                  dmer_user.where("settlement_deadline >= ?", r_user.minimum(:date))
-                  .where("? > date", r_user.minimum(:date))
+                  dmer_user.where("settlement_deadline >= ?", @cash_result.minimum(:date))
+                  .where("? > date", @cash_result.minimum(:date))
                   .where(status: "審査OK")
                   .where(status_settlement: "完了")
                   .where.not(industry_status: "×")
@@ -349,7 +349,7 @@
             <%
               dmer_result1_fin_this_month =
                 (dmer_price_1 * dmer_result1_fin_this_month_len) + 
-                dmer_result1.where(date: r_user.minimum(:date)..r_user.maximum(:date)).sum(:valuation_new)
+                dmer_result1.where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date)).sum(:valuation_new)
             %>
             <%# 過去月終着 %>
             <%
@@ -361,18 +361,18 @@
             <%
               dmer_result1_fin_prev_month = 
                 (dmer_price_1 * dmer_result1_fin_prev_month_len) + 
-                dmer_result1.where("? > date",r_user.minimum(:date)).sum(:valuation_new)
+                dmer_result1.where("? > date",@cash_result.minimum(:date)).sum(:valuation_new)
             %>
             <% dmer_result1_fin = dmer_result1_fin_this_month + dmer_result1_fin_prev_month %>
         <%# dメル（決済） %>
           <% dmer_slmter = Dmer.where(settlementer_id: r.user_id) %>
           <% 
             dmer_slmt = 
-              slmt_period(dmer_slmter ,r_user)
+              slmt_period(dmer_slmter ,@cash_result)
               .where.not(industry_status: "×")
               .where.not(industry_status: "NG")
               .where.not(industry_status: "要確認")
-              .or(slmt_period(dmer_slmter, r_user)
+              .or(slmt_period(dmer_slmter, @cash_result)
               .where(industry_status: ""))
           %>
           <% dmer_result2 =               
@@ -399,13 +399,13 @@
             <%
               dmer_result2_fin_this_month = 
                 (dmer_price_2 * dmer_result2_fin_this_month_len) + 
-                dmer_result2.where(date: r_user.minimum(:date)..r_user.maximum(:date)).sum(:valuation_settlement)
+                dmer_result2.where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date)).sum(:valuation_settlement)
             %>
             <%# 過去月 %>
             <%
               dmer_result2_fin_prev_month = 
                 (dmer_price_2 * dmer_result1_fin_prev_month_len) + 
-                dmer_result2.where("? > date",r_user.minimum(:date)).sum(:valuation_settlement)
+                dmer_result2.where("? > date",@cash_result.minimum(:date)).sum(:valuation_settlement)
             %>
             <% dmer_result2_fin = dmer_result2_fin_this_month + dmer_result2_fin_prev_month %>
           <% dmer_result3 = 
@@ -442,7 +442,7 @@
             <% 
               dmer_result3_fin_this_month = 
               (dmer_price_3 * dmer_result3_fin_this_month_len) + 
-              dmer_result3.where(date: r_user.minimum(:date)..r_user.maximum(:date))
+              dmer_result3.where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date))
               .sum(:valuation_second_settlement)  
             %>
             <%# 過去月 %>
@@ -450,7 +450,7 @@
               dmer_result3_fin_prev_month = 
               (
                 dmer_price_3 * (dmer_slmt_tgt_prev_len - dmer_2ndslmt_prev_val_len - dmer_slmt_dead_len)
-              ) + (dmer_result3.where("? > date",r_user.minimum(:date)).sum(:valuation_second_settlement))
+              ) + (dmer_result3.where("? > date",@cash_result.minimum(:date)).sum(:valuation_second_settlement))
             %>
             <% dmer_result3_fin = dmer_result3_fin_this_month + dmer_result3_fin_prev_month %>
         <%# dメル終着見込獲得数 %>
@@ -464,11 +464,11 @@
             aupay_uq = 
               this_period(aupay_user,@cash_result).where(store_prop: {head_store: nil})
           %>
-          <% aupay_def =  aupay_def(aupay_uq,r_user) %>
-          <% aupay_inc = judge_inc(aupay_user,r_user)  %>
-          <% aupay_judge_dec = judge_dec(aupay_user,r_user)  %>
+          <% aupay_def =  aupay_def(aupay_uq,@cash_result) %>
+          <% aupay_inc = judge_inc(aupay_user,@cash_result)  %>
+          <% aupay_judge_dec = judge_dec(aupay_user,@cash_result)  %>
           <% aupay_db = 
-            result_period(aupay_user,r_user)
+            result_period(aupay_user,@cash_result)
             .where.not(store_prop: {head_store: nil})
             .where(status: "審査通過") 
           %>
@@ -502,13 +502,13 @@
           <%# 過去月決済対象の数 %>
             <% 
               aupay_slmt_tgt_prev = 
-                aupay_user.where("settlement_deadline >= ?", r_user.minimum(:date))
-                .where("? > date", r_user.minimum(:date))
+                aupay_user.where("settlement_deadline >= ?", @cash_result.minimum(:date))
+                .where("? > date", @cash_result.minimum(:date))
                 .where(status: "審査通過")
                 .where(status_update_settlement: nil)
                 .or(
-                  aupay_user.where("settlement_deadline >= ?", r_user.minimum(:date))
-                  .where("? > date", r_user.minimum(:date))
+                  aupay_user.where("settlement_deadline >= ?", @cash_result.minimum(:date))
+                  .where("? > date", @cash_result.minimum(:date))
                   .where(status: "審査通過")
                   .where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
                 )
@@ -521,7 +521,7 @@
             <% 
               aupay_uq_26_10 = 
                 Aupay.where(user_id: r.user_id)
-                .where(date: r_user.minimum(:date)..@month.next_month.beginning_of_month.since(9.days)) 
+                .where(date: @cash_result.minimum(:date)..@month.next_month.beginning_of_month.since(9.days)) 
             %>
             <%
               aupay_val_26_10 = 
@@ -556,7 +556,7 @@
           <%
             aupay_result1_fin_this_month = 
               (aupay_price * aupay_result1_fin_len) + 
-              aupay_result1.where(date: r_user.minimum(:date)..r_user.maximum(:date))
+              aupay_result1.where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date))
               .sum(:valuation_settlement) rescue 0
           %>
           <%# 過去月 %>
@@ -569,7 +569,7 @@
           <%
             aupay_result1_fin_prev_month = 
               (aupay_price * aupay_result1_fin_prev_month_len) + 
-              aupay_result1.where("? > date",r_user.minimum(:date))
+              aupay_result1.where("? > date",@cash_result.minimum(:date))
               .sum(:valuation_settlement) rescue 0
           %>
           <% aupay_result1_fin = aupay_result1_fin_this_month + aupay_result1_fin_prev_month %>
@@ -584,8 +584,8 @@
         <%# /auPay写真 %>
         <%# PayPay %>
           <% paypay_user = Paypay.where(user_id: r.user_id) %>
-          <% paypay_data = this_period(paypay_user ,r_user) %>
-          <% paypay_result = result_period(paypay_user ,r_user) %>
+          <% paypay_data = this_period(paypay_user ,@cash_result) %>
+          <% paypay_result = result_period(paypay_user ,@cash_result) %>
           <% 
             paypay_result1 = 
               paypay_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
@@ -608,18 +608,18 @@
           <% rakuten_pay_user = RakutenPay.includes(:store_prop).where(user_id: r.user_id) %>
           <% 
             rakuten_pay_uq = 
-              this_period(rakuten_pay_user,r_user)
+              this_period(rakuten_pay_user,@cash_result)
           %>
           <% 
             rakuten_pay_dec = 
               rakuten_pay_uq.where.not(deficiency: nil)
-              .where.not(share: r_user.minimum(:date)..r_user.maximum(:date))
+              .where.not(share: @cash_result.minimum(:date)..@cash_result.maximum(:date))
           %>
           <% 
             rakuten_pay_def =  
               rakuten_pay_uq.where(status: "自社不備")
               .or(rakuten_pay_uq.where(status: "自社NG")) %>
-          <% rakuten_pay_inc = rakuten_inc(rakuten_pay_user,r_user)  %>
+          <% rakuten_pay_inc = rakuten_inc(rakuten_pay_user,@cash_result)  %>
           
           <%# 合計 %>
             <% 
@@ -651,12 +651,10 @@
         <%# AirPay %>
           <% airpay_user = Airpay.where(user_id: r.user_id) %>
           <% 
-            airpay_data = this_period(airpay_user ,r_user)
+            airpay_data = this_period(airpay_user ,@cash_result)
           %>
           <% airpay_result = airpay_data.where(status: "審査完了").or(airpay_data.where(status: "審査中"))
           %>
-          <%= r.user.name %>
-          <%= airpay_result.length %>
           <% airpay_len = airpay_result.length %>
           <% if airpay_len == 0 %>
           <% airpay_len_ave = 0 %>
