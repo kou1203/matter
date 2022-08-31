@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_20_034236) do
+ActiveRecord::Schema.define(version: 2022_08_30_085929) do
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "store_name", null: false
@@ -118,6 +118,13 @@ ActiveRecord::Schema.define(version: 2022_08_20_034236) do
     t.date "end_period_04"
     t.date "start_period_05"
     t.date "end_period_05"
+  end
+
+  create_table "dmer_stocks", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "client", null: false
+    t.date "date", null: false
+    t.string "base", null: false
+    t.integer "stock_len", null: false
   end
 
   create_table "dmers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|

@@ -1,4 +1,30 @@
 window.addEventListener('load', () => {
+
+  const valChange = document.getElementById('base-val-change');
+  const chubuForm = document.getElementById('chubu-form');
+  const kansaiForm = document.getElementById('kansai-form');
+  const kantoForm = document.getElementById('kanto-form');
+
+  // 基準値
+  valChange.addEventListener("change", function(){
+    if(this.value == 'chubu-slct'){
+      console.log(this.value);
+      chubuForm.style.display = "block";
+      kansaiForm.style.display = "none";
+      kantoForm.style.display = "none";
+  }else if(this.value == 'kansai-slct'){
+      console.log(this.value);
+      chubuForm.style.display = "none";
+      kansaiForm.style.display = "block";
+      kantoForm.style.display = "none";
+  }else if(this.value == 'kanto-slct'){
+      console.log(this.value);
+      chubuForm.style.display = "none";
+      kansaiForm.style.display = "none";
+      kantoForm.style.display = "block";
+  }
+  });
+
   // 決済率（％）を取得
     const priceDmerInput = document.getElementById('slmt-dmer');
     const priceDmer2ndInput = document.getElementById('slmt-dmer2nd');

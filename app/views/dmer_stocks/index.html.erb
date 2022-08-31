@@ -1,0 +1,49 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>dメル在庫</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/index">
+<div class="main">
+  <table>
+    <th class="reg"><%= link_to "在庫数追加", new_dmer_stock_path, class: "reg-link" %></th>
+  </table>
+
+  <table  class="out-tb">
+    <tr>
+    <th>拠点</th>
+    </tr>
+  </table>
+
+    <table  class="out-tb">
+    <thead>
+    <tr class="table-row">
+      <th class="out-th">拠点</th>
+      <th class="out-th">商流</th>
+      <th class="out-th">日付</th>
+      <th class="out-th">在庫数</th>
+      <th class="out-th"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @dmer_stocks.find_each do |stock| %>
+    <tr class="index-tr">
+      <td class="index-td"><%= stock.base %></td>
+      <td class="index-td"><%= stock.client %></td>
+      <td class="index-td"><%= stock.date %></td>
+      <td class="index-td"><%= stock.stock_len %></td>
+      <td class="index-td"><%= link_to "編集",  edit_dmer_stock_path(stock.id) ,class: "link" %></td>
+    </tr>
+    <% end %>
+    </tbody>
+    </table>
+  <div class="kaminari-page">
+    <%= paginate @dmer_stocks %>
+  </div>
+  </div>
+  </div>
+</div>

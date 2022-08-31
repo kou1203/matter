@@ -52,7 +52,7 @@ class ResultsController < ApplicationController
       @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today.yesterday #当日日付
       # 日々獲得進捗
         @dmer_monthly = 
-            Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+            Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id,:status_settlement,:status,:industry_status).where(user: {base_sub: "キャッシュレス"})
         @aupay_monthly = 
             Aupay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
         @paypay_monthly = 
@@ -65,10 +65,47 @@ class ResultsController < ApplicationController
           Shift.includes(:user)
           .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
           .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+        @shift_monthly_slmt_plan = 
+          Shift.includes(:user)
+          .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
+          .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
         @shift_monthly_digestion = 
           Result.includes(:user)
           .where(date: @month_daily.beginning_of_month..@month_daily)
           .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+        @shift_monthly_slmt_digestion = 
+          Result.includes(:user)
+          .where(date: @month_daily.beginning_of_month..@month_daily)
+          .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+        # 月間決済率
+        # 当月
+        @dmer_slmt_this_month = 
+          @dmer_monthly.where(status: "審査OK")
+          .where.not(industry_status: "NG")
+          .where.not(industry_status: "×")
+          .where.not(industry_status: "要確認")
+          @aupay_slmt_this_month =
+          @aupay_monthly.where(status: "審査通過")
+        # 過去月
+        @dmer_slmt_prev_month = 
+          Dmer.where("? > date",@month_daily.beginning_of_month)
+          .where("settlement_deadline > ?",@month_daily.beginning_of_month)
+          .where(status: "審査OK")
+          .where.not(industry_status: "NG")
+          .where.not(industry_status: "×")
+          .where.not(industry_status: "要確認")
+        @aupay_slmt_prev_month = 
+          Aupay.where("? > date",@month_daily.beginning_of_month)
+          .where("settlement_deadline > ?",@month_daily.beginning_of_month)
+          .where(status_update_settlement: nil)
+          .where(status: "審査通過")
+          .or(
+            Aupay.where("? > date",@month_daily.beginning_of_month)
+            .where("settlement_deadline > ?",@month_daily.beginning_of_month)
+            .where(status_update_settlement: @month_daily.beginning_of_month..@month_daily.end_of_month)
+            .where(status: "審査通過")
+          )
+        
         # 現状売上
         @result_monthly = 
           if @month_daily.day >= 26
@@ -169,6 +206,9 @@ class ResultsController < ApplicationController
           @rakuten_casas_put_other = RakutenCasa.where.not(user_id: @results.first.user_id).where(putter_id: @results.first.user_id).where(put: @results.minimum(:date)..@results.maximum(:date))
           # 設置依頼
           @rakuten_casas_put_request = @rakuten_casas_put.where(user_id: @results.first.user_id).where.not(putter_id: @results.first.user_id)
+
+
+
       else
       # 全体売上
         @shift_sum = this_period(@shifts,@results)

@@ -1,0 +1,39 @@
+<div data-scope-path="shared/header">
+  <h1>在庫数入力</h1>
+  <%= render "shared/header" %>
+</div>
+
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form">
+  <div class="form-main">
+    <div class="form-title">
+      <h1>在庫</h1>
+    </div>
+  <%= form_with(model: @dmer_stock, date: {remote: false}) do |f| %>
+  <%= render "shared/error_messages", model: f.object %>
+  <div class="form">
+      <p><%= f.label :date, "日付", class: "form-text" %></p>
+      <p><%= f.date_field :date , value: Date.today, class: "date-input" %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :base, "拠点", class: "form-text" %></p>
+      <p><%= f.select :base, {"中部SS": "中部SS","関西SS": "関西SS","関東SS": "関東SS"},{include_blank: true}, {class: "slct-input", id: "selectbox"} %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :client, "商流", class: "form-text" %></p>
+      <p><%= f.select :client, {"マックス（d）": "マックス（d）","ピアズ（d）": "ピアズ（d）"},{include_blank: true}, {class: "slct-input", id: "selectbox"} %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :stock_len, "在庫追加数", class: "form-text" %></p>
+      <p><%= f.number_field :stock_len ,class: "input", min: 0 %></p>
+  </div>
+  <div class="form-submit">
+    <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+  </div>
+  <% end %>
+  </div>
+  </div>
+</div>
