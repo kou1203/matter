@@ -77,6 +77,8 @@ class ResultsController < ApplicationController
           Result.includes(:user)
           .where(date: @month_daily.beginning_of_month..@month_daily)
           .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+        # 即時在庫
+        @dmer_stock = DmerStock.where(date:@month_daily.all_month)
         # 月間決済率
         # 当月
         @dmer_slmt_this_month = 

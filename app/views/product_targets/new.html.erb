@@ -1,0 +1,72 @@
+<div data-scope-path="shared/header">
+  <h1>目標獲得数入力</h1>
+  <%= render "shared/header" %>
+</div>
+
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form">
+  <div class="form-main">
+  <%= form_with model: @form, url: product_targets_path, method: :post, local: true do |form|%>
+  <%= alert %>
+    <% cnt = 0 %>
+    <div class="form-title">  
+    <h1>一括変換</h1>
+    <div class="form">
+      <p>拠点<span class="form-caution">※こちらを変更すると一括で他の商材の拠点も変更されます。</span></p>
+      <select id="base-target-change" class="slct-input" >
+        <option value="中部SS">中部SS</option>
+        <option value="関西SS">関西SS</option>
+        <option value="関東SS">関東SS</option>
+      </select>
+    </div>
+    </div>
+    <%= form.fields_for :product_targets do |f| %>
+        <% if cnt == 0 %>
+          <h1>dメル</h1>
+        <% elsif cnt == 1 %>
+          <h1>auPay</h1>
+        <% elsif cnt == 2 %>
+          <h1>楽天ペイ</h1>
+        <% else %>
+          <h1>AirPay</h1>
+        <% end %>
+    <%= render "shared/error_messages", model: f.object %>
+    <div class="form-title">
+    <div class="form">
+        <p><%= f.label :date, "日付", class: "form-text" %><span class="form-caution">※日付は月初を指定してください</span></p>
+        <p><%= f.date_field :date , value: Date.today,class: "date-input",id: "select-date#{cnt}" %></p>
+    </div>
+    <div class="form">
+        <p><%= f.label :base, "拠点", class: "form-text" %></p>
+        <p><%= f.select :base, {"中部SS": "中部SS","関西SS": "関西SS", "関東SS": "関東SS"},{include_blank: true}, {class: "slct-input", id: "select-base#{cnt}"} %></p>
+    </div>
+    <div class="form">
+        <p><%= f.label :product, "商材", class: "form-text" %></p>
+        <% if cnt == 0 %>
+          <p><%= f.select :product, {"dメル": "dメル"},{}, {class: "slct-input", id: "selectbox"} %></p>
+        <% elsif cnt == 1 %>
+          <p><%= f.select :product, {"auPay": "auPay"},{}, {class: "slct-input", id: "selectbox"} %></p>
+        <% elsif cnt == 2 %>
+          <p><%= f.select :product, {"楽天ペイ": "楽天ペイ"},{}, {class: "slct-input", id: "selectbox"} %></p>
+        <% else %>
+          <p><%= f.select :product, {"AirPay": "AirPay"},{}, {class: "slct-input", id: "selectbox"} %></p>
+        <% end %>
+    </div>
+    <div class="form">
+        <p><%= f.label :product_len, "目標獲得数", class: "form-text" %></p>
+        <p><%= f.number_field :product_len ,class: "input", min: 0 %></p>
+    </div>
+    <% cnt += 1 %>
+    </div>
+    <% end %>
+  <div class="form-submit">
+    <%= form.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+  </div>
+
+  <% end %>
+  </div>
+  </div>
+</div>

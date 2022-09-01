@@ -151,4 +151,5 @@ Rails.application.routes.draw do
   resources :settlements, only: [:index]
   resources :other_products
   resources :dmer_stocks
+  resources :product_targets
 end

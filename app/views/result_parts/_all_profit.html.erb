@@ -726,7 +726,7 @@
                 aupay_pic_val
               ).to_i
            %>
-           <% if (sum_valuations > sum_valuations_fin) %>
+           <% if (sum_valuations > sum_valuations_fin) || Date.today > @month.next_month.end_of_month %>
             <% sum_valuations_fin = sum_valuations rescue 0 %>
            <% end %>
            <% sum_valuations_ave = 0 %>

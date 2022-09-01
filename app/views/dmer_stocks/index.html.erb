@@ -12,10 +12,30 @@
   <table>
     <th class="reg"><%= link_to "在庫数追加", new_dmer_stock_path, class: "reg-link" %></th>
   </table>
-
+  <h2><%= link_to "<<",dmer_stocks_path(month:@month.prev_month), class:"link" %>
+      <%= @month.year %>年<%= @month.month %>月設置状況
+      <%= link_to ">>",dmer_stocks_path(month:@month.next_month), class:"link" %>
+  </h2>
   <table  class="out-tb">
     <tr>
     <th>拠点</th>
+    <th>マックス（d）</th>
+    <th>ピアズ（d）</th>
+    </tr>
+    <tr>
+    <td>中部SS</td>
+    <td><%= @dmer_stocks.where(client: "マックス（d）").where(base: "中部SS").sum(:stock_len) %></td>
+    <td><%= @dmer_stocks.where(client: "ピアズ（d）").where(base: "中部SS").sum(:stock_len) %></td>
+    </tr>
+    <tr>
+    <td>関西SS</td>
+    <td><%= @dmer_stocks.where(client: "マックス（d）").where(base: "関西SS").sum(:stock_len) %></td>
+    <td><%= @dmer_stocks.where(client: "ピアズ（d）").where(base: "関西SS").sum(:stock_len) %></td>
+    </tr>
+    <tr>
+    <td>関東SS</td>
+    <td><%= @dmer_stocks.where(client: "マックス（d）").where(base: "関東SS").sum(:stock_len) %></td>
+    <td><%= @dmer_stocks.where(client: "ピアズ（d）").where(base: "関東SS").sum(:stock_len) %></td>
     </tr>
   </table>
 
@@ -25,7 +45,7 @@
       <th class="out-th">拠点</th>
       <th class="out-th">商流</th>
       <th class="out-th">日付</th>
-      <th class="out-th">在庫数</th>
+      <th class="out-th">在庫追加数</th>
       <th class="out-th"></th>
     </tr>
     </thead>

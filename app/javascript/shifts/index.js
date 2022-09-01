@@ -9,6 +9,7 @@ window.addEventListener('turbolinks:load', ()=>{
     target[i] = document.getElementById(set);
     // console.log(target[i])
   }
+  
   checkAll.onclick = function() {
     for(i = 0; i < shiftCheck.length; i++) {
       shiftCheck[i].checked = true

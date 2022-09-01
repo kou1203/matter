@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_30_085929) do
+ActiveRecord::Schema.define(version: 2022_08_31_092156) do
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "store_name", null: false
@@ -443,6 +443,14 @@ ActiveRecord::Schema.define(version: 2022_08_30_085929) do
     t.string "product8"
     t.string "product9"
     t.string "product10"
+  end
+
+  create_table "product_targets", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.date "date", null: false
+    t.string "product", null: false
+    t.string "base", null: false
+    t.integer "product_len", null: false
+    t.integer "product_valuations"
   end
 
   create_table "rakuten_casas", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|

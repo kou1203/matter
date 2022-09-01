@@ -1,7 +1,8 @@
 class DmerStocksController < ApplicationController
 
   def index 
-    @dmer_stocks = DmerStock.all.page(params[:page]).per(100)
+    @month = params[:month] ? Date.parse(params[:month]) : Time.zone.today
+    @dmer_stocks = DmerStock.where(date: @month.all_month).page(params[:page]).per(100)
   end 
 
   def new
