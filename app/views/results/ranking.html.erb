@@ -10,6 +10,7 @@
   <div class="main">
     <div data-scope-path="results/ranking">
 <% ranking = {} %>
+<% ranking_ave = {} %>
 <%# 各商材の%を選択 %>
 <h2>
   <%= link_to "<<",ranking_results_path(month:@month.prev_month), class:"link" %>
@@ -693,6 +694,7 @@
           <% end %>
           <%# 各訪問員のデータをハッシュに格納 %>
           <% ranking.store(r.user.name,[sum_valuations_fin]) %>
+          <% ranking_ave.store(r.user.name,[sum_valuations_ave]) %>
           <%# 合計獲得数 %>
           <% sum_product = (dmer_uq.length + aupay_uq.length + rakuten_pay_uq.length + airpay_data.length).to_f %>
           <% base_sum_product += sum_product %>
@@ -728,27 +730,53 @@
   <% end %>
 <% end %>
     <% ranking = ranking.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h %>
-    <p class="sub-title">終着</p>
-    <table>
-      <thead>
-        <tr>
-          <th class="rank-th">順位</th>
-          <th class="rank-th">氏名</th>
-          <th class="rank-th">終着売上</th>
-        </tr>
-      </thead>
-      <tbody>
-      <% ranking.each_with_index do |rank,i| %>
-        <tr>
-          <td class="rank-td"><%= i + 1 %>位</td>
-          <td class="rank-td"><%= rank[0] %></td>
-          <td class="rank-td"><%= (rank[1][0]).to_s(:delimited) %></td>
-        </tr>
-      <% break if i == 4 %>
-      <% end %>
-      </tbody>
-    </table>
-
+    <% ranking_ave = ranking_ave.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h %>
+    <div style="display: flex;">
+      <div><%# 終着 %>
+        <p class="sub-title">終着</p>
+        <table>
+          <thead>
+            <tr>
+              <th class="rank-th">順位</th>
+              <th class="rank-th">氏名</th>
+              <th class="rank-th">終着売上</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% ranking.each_with_index do |rank,i| %>
+            <tr>
+              <td class="rank-td"><%= i + 1 %>位</td>
+              <td class="rank-td"><%= rank[0] %></td>
+              <td class="rank-td"><%= (rank[1][0]).to_s(:delimited) %></td>
+            </tr>
+          <% break if i == 4 %>
+          <% end %>
+          </tbody>
+        </table>
+      </div><%# /終着 %>
+      <div><%# Ave %>
+        <p class="sub-title">平均</p>
+        <table>
+          <thead>
+            <tr>
+              <th class="rank-th">順位</th>
+              <th class="rank-th">氏名</th>
+              <th class="rank-th">終着売上</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% ranking_ave.each_with_index do |rank,i| %>
+            <tr>
+              <td class="rank-td"><%= i + 1 %>位</td>
+              <td class="rank-td"><%= rank[0] %></td>
+              <td class="rank-td"><%= (rank[1][0]).to_s(:delimited) %></td>
+            </tr>
+          <% break if i == 4 %>
+          <% end %>
+          </tbody>
+        </table>
+      </div><%# /終着 %>
+    </div>
     <h2>商材別獲得数</h2>
     <div style="display: flex;">
       <div><%# dメル %>
