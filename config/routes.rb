@@ -96,6 +96,7 @@ Rails.application.routes.draw do
     collection { 
       post :import 
       get :date_progress
+      get :ranking
     }
   end  
 

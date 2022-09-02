@@ -79,6 +79,13 @@ class ResultsController < ApplicationController
           .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
         # 即時在庫
         @dmer_stock = DmerStock.where(date:@month_daily.all_month)
+        # 目標獲得数
+        @product_targets = ProductTarget.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
+        @dmer_target = @product_targets.where(product: "dメル")
+        @aupay_target = @product_targets.where(product: "auPay")
+        @rakuten_pay_target = @product_targets.where(product: "楽天ペイ")
+        @airpay_target = @product_targets.where(product: "AirPay")
+
         # 月間決済率
         # 当月
         @dmer_slmt_this_month = 
@@ -146,6 +153,26 @@ class ResultsController < ApplicationController
           .or(
             Shift.where(start_time: @month_daily).includes(:user).select(:user_id,:start_time,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
           )
+          # 当月不備
+          @dmer_def = Dmer.includes(:store_prop,:user).where(store_prop: {head_store: nil}).where(status: "不備対応中")
+          @dmer_def_this_month = 
+            @dmer_def.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
+          @dmer_def_prev_month = 
+            @dmer_def.where(date: @month_daily.beginning_of_month.prev_month..@month_daily.end_of_month.prev_month)
+          @aupay_def = 
+            Aupay.includes(:store_prop,:user)
+            .where(status: "差し戻し")
+            .where.not(deficiency_remarks: "既存auPAY加盟店の登録がすでにあるため、差し戻しさせていただきます。")
+            .where(store_prop: {head_store: nil})
+          @aupay_def_this_month = 
+            @aupay_def.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
+          @aupay_def_prev_month = 
+            @aupay_def.where(date: @month_daily.prev_month.beginning_of_month..@month_daily.prev_month.end_of_month)
+          @rakuten_pay_def = RakutenPay.includes(:user).where(status: "自社不備")
+          @rakuten_pay_def_this_month = 
+            @rakuten_pay_def.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
+          @rakuten_pay_def_prev_month = 
+            @rakuten_pay_def.where(date: @month_daily.prev_month.beginning_of_month..@month_daily.prev_month.end_of_month)
     # 日付が~25までは前月の26日が初日と計算するようにする
     if 26 > @month_daily.day
       @shift_month = 
@@ -208,9 +235,8 @@ class ResultsController < ApplicationController
           @rakuten_casas_put_other = RakutenCasa.where.not(user_id: @results.first.user_id).where(putter_id: @results.first.user_id).where(put: @results.minimum(:date)..@results.maximum(:date))
           # 設置依頼
           @rakuten_casas_put_request = @rakuten_casas_put.where(user_id: @results.first.user_id).where.not(putter_id: @results.first.user_id)
-
-
-
+          @result_monthly
+          
       else
       # 全体売上
         @shift_sum = this_period(@shifts,@results)
@@ -311,6 +337,40 @@ class ResultsController < ApplicationController
     @rakuten_pays = RakutenPay.select("rakuten_pays.id,rakuten_pays.user_id")
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
+  end 
+
+  def ranking
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @results = Result.where(date: @month.prev_month.beginning_of_month.since(25.days)..@month.beginning_of_month.since(24.days))
+    @minimum_result_cash = @results.minimum(:date)
+    @maximum_result_cash = @results.maximum(:date)
+    @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
+    @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
+    @maximum_date_cash = @month.beginning_of_month.since(24.days)
+    @dmers = Dmer.where(date: @minimum_date_cash..@maximum_date_cash)
+    @aupays = Aupay.where(date: @minimum_date_cash..@maximum_date_cash)
+    @rakuten_pays = RakutenPay.where(date: @minimum_date_cash..@maximum_date_cash)
+    @airpays = Airpay.where(date: @minimum_date_cash..@maximum_date_cash)
+    @dmers_rank = {}
+    @dmers.group(:user_id).each do |dmer| 
+      @dmers_rank.store(dmer.user.name,@dmers.where(user_id: dmer.user_id).length)
+    end 
+    @dmers_rank = @dmers_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    @aupays_rank = {}
+    @aupays.group(:user_id).each do |aupay| 
+      @aupays_rank.store(aupay.user.name,@aupays.where(user_id: aupay.user_id).length)
+    end 
+    @aupays_rank = @aupays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    @rakuten_pays_rank = {}
+    @rakuten_pays.group(:user_id).each do |rakuten_pay| 
+      @rakuten_pays_rank.store(rakuten_pay.user.name,@rakuten_pays.where(user_id: rakuten_pay.user_id).length)
+    end 
+    @rakuten_pays_rank = @rakuten_pays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    @airpays_rank = {}
+    @airpays.group(:user_id).each do |airpay| 
+      @airpays_rank.store(airpay.user.name,@airpays.where(user_id: airpay.user_id).length)
+    end 
+    @airpays_rank = @airpays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
   end 
 
 
