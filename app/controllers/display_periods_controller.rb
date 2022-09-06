@@ -1,26 +1,37 @@
 class DisplayPeriodsController < ApplicationController
   before_action :authenticate_user!
   def index 
-    @display_period = DisplayPeriod.new
-    @display_period_1 = DisplayPeriod.first if DisplayPeriod.first.present?
-    if @display_period_1.present?
-      @cash_results = 
-        Result.includes(:user).where(user: {base_sub: "キャッシュレス"})
-        .where(date: @display_period_1.start_period_01..@display_period_1.end_period_01)
-      @cash_results_chubu = @cash_results.where(user: {base: "中部SS"})
-      @cash_results_kansai = @cash_results.where(user: {base: "関西SS"})
-      @cash_results_kanto = @cash_results.where(user: {base: "関東SS"})
-      @cash_shifts = 
-        Shift.includes(:user).where(user: {base_sub: "キャッシュレス"})
-        .where(start_time: @display_period_1.start_period_01..@display_period_1.start_period_01.beginning_of_month.since(1.month).since(24.days))
-      @cost = Cost.new
-      @cost_all = 
-        Cost.where(year: @display_period_1.end_period_01.year)
-        .where(month: @display_period_1.end_period_01.month)
-      @cost_chubu = @cost_all.where(base: "中部キャッシュレス")
-      @cost_kansai = @cost_all.where(base: "関西キャッシュレス")
-      @cost_kanto = @cost_all.where(base: "関東キャッシュレス")
-    end
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @results = Result.where(date: @month.prev_month.beginning_of_month.since(25.days)..@month.beginning_of_month.since(24.days))
+    @minimum_result_cash = @results.minimum(:date)
+    @maximum_result_cash = @results.maximum(:date)
+    @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
+    @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
+    @maximum_date_cash = @month.beginning_of_month.since(24.days)
+    @dmers = Dmer.where(date: @minimum_date_cash..@maximum_date_cash)
+    @aupays = Aupay.where(date: @minimum_date_cash..@maximum_date_cash)
+    @rakuten_pays = RakutenPay.where(date: @minimum_date_cash..@maximum_date_cash)
+    @airpays = Airpay.where(date: @minimum_date_cash..@maximum_date_cash)
+    @dmers_rank = {}
+    @dmers.group(:user_id).each do |dmer| 
+      @dmers_rank.store(dmer.user.name,@dmers.where(user_id: dmer.user_id).length)
+    end 
+    @dmers_rank = @dmers_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    @aupays_rank = {}
+    @aupays.group(:user_id).each do |aupay| 
+      @aupays_rank.store(aupay.user.name,@aupays.where(user_id: aupay.user_id).length)
+    end 
+    @aupays_rank = @aupays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    @rakuten_pays_rank = {}
+    @rakuten_pays.group(:user_id).each do |rakuten_pay| 
+      @rakuten_pays_rank.store(rakuten_pay.user.name,@rakuten_pays.where(user_id: rakuten_pay.user_id).length)
+    end 
+    @rakuten_pays_rank = @rakuten_pays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    @airpays_rank = {}
+    @airpays.group(:user_id).each do |airpay| 
+      @airpays_rank.store(airpay.user.name,@airpays.where(user_id: airpay.user_id).length)
+    end 
+    @airpays_rank = @airpays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
   end 
   
   def create 

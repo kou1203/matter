@@ -371,7 +371,7 @@ class ResultsController < ApplicationController
       @airpays_rank.store(airpay.user.name,@airpays.where(user_id: airpay.user_id).length)
     end 
     @airpays_rank = @airpays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
-  end 
+  end
 
 
   private

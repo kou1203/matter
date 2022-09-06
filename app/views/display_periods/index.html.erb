@@ -8,40 +8,19 @@
   <%= render "shared/sidebar" %>
 </div>
   <div data-scope-path="display_periods/index">
-    <%= render "display_period_parts/period_operation" %>
     <h2>表示フィルター</h2>
     <div class="btn-form">
       <button id="chart-button">早見</button>
       <button id="cash-button">キャッシュ実売/経費</button>
       <button id="show-button">個別実売詳細</button>
     </div>
-  <% if DisplayPeriod.all.length == 0 %>
-    <h1 class="warning">期間を入力してください</h1>
-  <% elsif @display_period_1.start_period_01 > @display_period_1.end_period_01 %>
-  <h1 class="warning">01：キャッシュの期間設定がおかしいので設定し直してください</h1>
-  <% elsif @display_period_1.start_period_02 > @display_period_1.end_period_02 %>
-  <h1 class="warning">02：フェムトの期間設定がおかしいので設定し直してください</h1>
-  <% elsif @display_period_1.start_period_03 > @display_period_1.end_period_03 %>
-  <h1 class="warning">03：サミットの期間設定がおかしいので設定し直してください</h1>
-  <% else %>
-  <div style="display:flex;">
-  <div>
-  <%= render "display_period_parts/chart" %>
-  <%= render "display_period_parts/cash_meeting_data" %>
-  <%= render "display_period_parts/cash_cost" %>
-  <%= render "display_period_parts/cash_meeting_show" %>
+    <h2>
+      <%= link_to "<<",display_periods_path(month:@month.prev_month), class:"link" %>
+      <%= @month.month %>月 (<%= @minimum_date_cash.strftime("%m月%d日") %>〜<%= @maximum_date_cash.strftime("%m月%d日") %>)
+      <%= link_to ">>",display_periods_path(month:@month.next_month), class:"link" %>
+    </h2>
+    <div style="display:flex;">
+      <div><%= render "display_period_parts/cash_meeting_show" %></div>
+    </div>
   </div>
-  <div>
-    <%# render "display_period_parts/cash_product" %>
-  </div>
-</div>
-  <div style="display:flex;">
-  <div>
-    <%# render "display_period_parts/casa_meeting_data" %>
-  </div>
-  <div>
-    <%# render "display_period_parts/casa_product" %>
-  </div>
-</div>
-<% end %>
 </div>

@@ -2,486 +2,887 @@
 <% if current_user.position == "権限①" %>
   <div class="list-none" id="show-page">
     <h2>キャッシュ個別詳細</h2>
-    <table>
-      <thead>
-        <tr></tr>
-        <tr>
-          <th colspan="4">項目</th>
-          <th colspan="3">シフト数</th>
-          <th colspan="7">基準値</th>
-          <th colspan="7">実売</th>
-          <th colspan="3">dメル</th>
-          <th colspan="2">auPay</th>
-          <th rowspan="2">PayPay</th>
-          <th rowspan="2">楽天ペイ</th>
-        </tr>
-        <tr>
-          <%# 項目 %>
-          <th>部署</th>
-          <th>担当商材</th>
-          <th>人員</th>
-          <th>役職</th>
-          <%# シフト数 %>
-          <th>予定</th>
-          <th>消化</th>
-          <th>残</th>
-          <%# 基準値 %>
-          <th>訪問</th>
-          <th>面会</th>
-          <th>面会率</th>
-          <th>フル</th>
-          <th>フル率</th>
-          <th>成約</th>
-          <th>成約率</th>
-          <%# 実売項目 %>
-          <th>実売Ave</th>
-          <th>先週比</th>
-          <th>先週Ave</th>
-          <th>前月比</th>
-          <th>前月Ave</th>
-          <th>現状売上</th>
-          <th>終着売上</th>
-          <%# 商材内訳 %>
-          <th>dメル新規</th>
-          <th>dメル初回決済</th>
-          <th>dメル2回目決済</th>
-          <th>auPay新規</th>
-          <th>auPay決済</th>
-        </tr>
-        <% cash_results_data = [@cash_results_chubu,@cash_results_kansai,@cash_results_kanto] %>
-        <% cash_results_data.each do |cash_data| %>
-          <% if cash_data.maximum(:date).ago(7.days) >= cash_data.minimum(:date) %>
-          <% cash_data_prev_week = Result.includes(:user).where(user: {base: cash_data.first.user.base}).where(date: cash_data.minimum(:date)..cash_data.maximum(:date).ago(7.days)) %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<%# 各商材の%を選択 %>
+<% max_date = @month.next_month.beginning_of_month.since(24.days) %>
+<% if (Date.today > max_date) && (Date.today.month == max_date.month) %>
+  <% dec_per = (Date.today.day - max_date.day).to_i * 0.1 %>
+<% else %>   
+  <% dec_per = 0 %>
+<% end %>
+<% dmer_result1_per = 0.64 %>
+<% dmer_result2_per = 0.58 %>
+<% dmer_result3_per = 0.52 %>
+<% dmer_result1_per_prev = 0.9 %>
+<% dmer_result2_per_prev = 0.9 %>
+<% dmer_result2_per_prev = 1 %>
+<% aupay_slmt_per = 0.75 %>
+<% aupay_slmt_per_prev = 0.71 %>
+<%# dメル %>
+<% if dec_per > dmer_result1_per %>
+  <% dmer_result1_per = 0 %>
+<% else %>
+  <% dmer_result1_per = dmer_result1_per - dec_per %>
+<% end %>
+
+<% if dec_per > dmer_result2_per %>
+  <% dmer_result2_per = 0 %>
+<% else %>
+  <% dmer_result2_per = dmer_result2_per - dec_per %>
+<% end %>
+
+<% if dec_per > dmer_result3_per %>
+  <% dmer_result3_per = 0 %>
+<% else %>
+  <% dmer_result3_per = dmer_result3_per - dec_per %>
+<% end %>
+
+<% if dec_per > dmer_result1_per_prev %>
+  <% dmer_result1_per_prev = 0 %>
+<% else %>
+  <% dmer_result1_per_prev = dmer_result1_per_prev - dec_per %>
+<% end %>
+
+<% if dec_per > dmer_result2_per_prev %>
+  <% dmer_result2_per_prev = 0 %>
+<% else %>
+  <% dmer_result2_per_prev = dmer_result2_per_prev - dec_per %>
+<% end %>
+<%# auPay %>
+<% if dec_per > aupay_slmt_per %>
+  <% aupay_slmt_per = 0 %>
+<% else %>
+  <% aupay_slmt_per = aupay_slmt_per - dec_per %>
+<% end %>
+
+<% if dec_per > aupay_slmt_per_prev %>
+  <% aupay_slmt_per_prev = 0 %>
+<% else %>
+  <% aupay_slmt_per_prev = aupay_slmt_per_prev - dec_per %>
+<% end %>
+
+<%# 単価 %>
+<% dmer_price_1 = 8000 %>
+<% dmer_price_2 = 4000 %>
+<% dmer_price_3 = 5000 %>
+<% aupay_price = 8000 %>
+<% paypay_price = 1000 %>
+<% rakuten_pay_price = 4000 %>
+    <% if @cash_result.empty? %>
+    <p class="caution-text">指定した日付には終着がありません。</p>
+    <% else %>
+    <h1>
+      <% if @cash_result.group(:base).length > 1 %>
+      全拠点
+      <% else %>
+      <%= @cash_result.first.user.base %>
+      <% end %>
+      （稼働訪問員<%= @cash_result.group(:user_id).length %>人）
+      表示範囲：
+      <%= @cash_result.minimum(:date) %>（<%= days[@cash_result.minimum(:date).wday] %>）〜<%= @cash_result.maximum(:date) %>（<%= days[@cash_result.maximum(:date).wday] %>）
+    </h1> 
+  <table class="base-tb">
+    <tr>
+      <th class="sticky" colspan="2" >項目</th>
+      <th class="sticky" colspan="4" >現状実売</th>
+      <th class="sticky" colspan="3" >終着実売</th>
+      <th class="sticky" colspan="3" >予定シフト数</th>
+      <th class="sticky" colspan="3" >消化シフト数</th>
+      <th class="sticky" colspan="5" >基準値</th>
+      <th class="sticky" colspan="8" >成果になった商材</th>
+    </tr>
+    <tr>
+      <th class="search-th" >名前</th>
+      <th class="search-th" >役職</th>
+      <%# 現状実売 %>
+      <th class="search-th" >キャッシュ1日Ave</th>
+      <% 4.times do %>
+      <th class="search-th" >新規</th>
+      <th class="search-th" >決済</th>
+      <th class="search-th" >合計</th>
+      <% end %>
+      <%# 基準値 %>
+      <th class="search-th">訪問</th>
+      <th class="search-th">応答</th>
+      <th class="search-th">対面</th>
+      <th class="search-th">フル</th>
+      <th class="search-th">獲得</th>
+      <%# 獲得商材 %>
+      <th class="search-th">dメル（新規）</th>
+      <th class="search-th">dメル（決済+写真）</th>
+      <th class="search-th">dメル（2回目決済）</th>
+      <th class="search-th">aupay（新規）</th>
+      <th class="search-th">aupay（決済）</th>
+      <th class="search-th">PayPay</th>
+      <th class="search-th">楽天ペイ</th>
+      <th class="search-th">AirPay</th>
+      <%# 成果件数 %>
+      <th class="search-th">dメル（審査通過）</th>
+      <th class="search-th">dメル（決済+写真）</th>
+      <th class="search-th">dメル（2回目決済）</th>
+      <th class="search-th">auPay（決済+写真）</th>
+      <th class="search-th">PayPay（審査通過）</th>
+      <th class="search-th">AirPay（審査通過）</th>
+      <%# 平均・終着 %>
+      <% 2.times do %>
+      <th class="search-th">dメル（新規）</th>
+      <th class="search-th">aupay（新規）</th>
+      <th class="search-th">PayPay</th>
+      <th class="search-th">楽天ペイ</th>
+      <th class="search-th">AirPay</th>
+      <% end %>
+    </tr>
+    <tr></tr>
+    <%# 合計値 %>
+      <% base_shift = 0 %>
+      <% base_new_shift = 0 %>
+      <% base_slmt_shift = 0 %>
+      <% 
+        base_shift_digestion = 
+          @cash_result.where.not(shift: "休み")
+          .where.not(shift: "内勤")
+          .where.not(shift: "帯同")
+          .where.not(shift: "欠勤").length  
+      %>
+      <% 
+        base_new_shift_digestion = 
+        @cash_result.where(shift: "キャッシュレス新規")
+        .or(
+          @cash_result.where(shift: "フェムト新規")
+        )
+        .or(
+          @cash_result.where(shift: "サミット")
+        ).length  
+      %>
+            <% 
+        base_slmt_shift_digestion = 
+          @cash_result.where(shift: "キャッシュレス決済").length  
+      %>
+      <%# 拠点評価売上 %>
+      <% base_ave = 0 %>
+      <% base_fin = 0 %>
+      <% base_sum = 0 %>
+      <%# 拠点獲得数 %>
+      <% base_sum_product = 0 %>
+      <% base_dmer = 0 %>
+      <% base_dmer_ave = 0 %>
+      <% base_dmer_fin = 0 %>
+      <% base_dmer_slmt = 0 %>
+      <% base_dmer_slmt2nd = 0 %>
+      <% base_aupay = 0 %>
+      <%# 拠点成果件数 %>
+      <% base_dmer_result1_len = 0 %>
+      <% base_dmer_result2_len = 0 %>
+      <% base_dmer_result3_len = 0 %>
+      <% base_aupay_result1_len = 0 %>
+      <% base_paypay_result1_len = 0 %>
+      <% base_airpay_result1_len = 0 %>
+
+      <% base_aupay_ave = 0 %>
+      <% base_aupay_fin = 0 %>
+      <% base_aupay_slmt = 0 %>
+      <% base_paypay = 0 %>
+      <% base_paypay_ave = 0 %>
+      <% base_paypay_fin = 0 %>
+      <% base_rakuten_pay = 0 %>
+      <% base_rakuten_pay_ave = 0 %>
+      <% base_rakuten_pay_fin = 0 %>
+      <% base_airpay = 0 %>
+      <% base_airpay_ave = 0 %>
+      <% base_airpay_fin = 0 %>
+      <% base_st_insurace = 0 %>
+    <% @cash_result.group(:user_id).each do |r| %>
+    <%# 変数 %>
+      <% r_user = @cash_result.where(user_id: r.user.id) %>
+      <%# シフト %>
+        <% 
+          new_shift = 
+          Shift.where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days)).where(user_id: r.user_id).where(shift: "キャッシュレス新規")
+          .or(
+            Shift.where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days)).where(user_id: r.user_id).where(shift: "フェムト新規")
+            )
+          .or(
+            Shift.where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days)).where(user_id: r.user_id).where(shift: "サミット")
+            ).length
+        %>
+        <% slmt_shift = Shift.where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days)).where(user_id: r.user_id).where(shift: "キャッシュレス決済").length %>
+        <% base_slmt_shift += slmt_shift %>
+        <%
+          shifts = Shift.where(user_id: r.user_id)
+          .where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days))
+          .where.not(shift: "休み")
+          .where.not(shift: "内勤")
+          .where.not(shift: "帯同")
+          .where.not(shift: "欠勤").length
+        %>
+        <% shift_data = Shift.where(user_id: r.user_id)
+          .where(start_time: @cash_result.minimum(:date)..@results.minimum(:date).beginning_of_month.since(1.month).since(24.days))
+          .where.not(shift: "休み")
+          .where.not(shift: "内勤")
+          .where.not(shift: "帯同")
+          .where.not(shift: "欠勤") %>
+        <% base_new_shift += new_shift %>
+        <% base_shift += shifts %><%# 予定シフトの合計を取得 %>
+        <% 
+          shift_digestion = r_user
+          .where.not(shift: "休み")
+          .where.not(shift: "内勤")
+          .where.not(shift: "帯同")
+          .where.not(shift: "欠勤").length 
+        %>
+        <% 
+          new_shift_digestion = 
+            r_user.where(shift: "キャッシュレス新規")
+            .or(r_user.where(shift: "フェムト新規"))
+            .or(r_user.where(shift: "サミット")).length
+        %>
+        <% slmt_shift_digestion = r_user.where(shift: "キャッシュレス決済").length %>
+      <%# 基準値 %>
+      
+        <% sum_total_visit = r_user.where(shift: "キャッシュレス新規").sum("first_total_visit + latter_total_visit").to_f %>
+        <% sum_visit = r_user.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit").to_f %>
+        <% sum_interview = r_user.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview").to_f %>
+        <% sum_full_talk = r_user.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk").to_f %>
+        <% sum_get = r_user.where(shift: "キャッシュレス新規").sum("first_get + latter_get").to_f %>
+      <%# 各商材変数（評価売） %>
+        <%# dメル（新規） %>
+          <% dmer_user = Dmer.includes(:store_prop).where(user_id: r.user_id) %>
+          <% 
+            dmer_uq = 
+              this_period(dmer_user,@cash_result).where(store_prop: {head_store: nil})
+          %><%# dメル期間内獲得数 %>
+          <% dmer_def =  dmer_def(dmer_uq,@cash_result) %><%# dメル不備 %>
+          <% 
+            dmer_inc = 
+              judge_inc(dmer_user,@cash_result)
+              .where(store_prop: {head_store: nil})
+              .where.not(industry_status: "NG")
+              .where.not(industry_status: "×") 
+          %>
+          <% 
+            dmer_db = 
+              share_period(dmer_user,@cash_result).where.not(store_prop: {head_store: nil})
+              .where.not(industry_status: "×").where.not(industry_status: "NG").where.not(industry_status: "要確認")
+              .where(status: "審査OK")
+          %>
+          <% 
+            dmer_result1 =  
+              dmer_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+              .where.not(industry_status: "NG")
+              .where.not(industry_status: "×")
+              .where.not(industry_status: "要確認")
+              .where(status: "審査OK")
+          %>
+          <% dmer_valuations = dmer_result1.sum(:valuation_new) %>
+          <% dmer_result1_len = dmer_result1.length %>
+          <% dmer_len = dmer_uq.length  - dmer_def.length + dmer_db.length %>
+          <% if dmer_len == 0 %>
+          <% dmer_len_ave = 0  %>
           <% else %>
-          <% cash_data_prev_week = Result.includes(:user).where(user: {base: cash_data.first.user.base}).where(date: cash_data.minimum(:date).prev_month..cash_data.maximum(:date).prev_month) %>
+          <% dmer_len_ave = (dmer_len.to_f / new_shift_digestion).round(1) rescue 0 %>
           <% end %>
-          <% cash_data_prev_month = Result.includes(:user).where(user: {base: cash_data.first.user.base}).where(date: cash_data.minimum(:date).prev_month..cash_data.maximum(:date).prev_month) %>
-          <% cash_data.group(:user_id).each do |person| %>
+          <% dmer_len_fin = (dmer_len_ave * new_shift).round() rescue 0 %>
+          <%# 過去月決済対象の数 %>
+            <% 
+              dmer_slmt_tgt_prev = 
+                dmer_user.where("settlement_deadline >= ?", @cash_result.minimum(:date))
+                .where("? > date", @cash_result.minimum(:date))
+                .where(status: "審査OK")
+                .where.not(industry_status: "×")
+                .where.not(industry_status: "NG")
+                .where.not(industry_status: "要確認")
+                .where(status_update_settlement: nil)
+                .or(
+                  dmer_user.where("settlement_deadline >= ?", @cash_result.minimum(:date))
+                  .where("? > date", @cash_result.minimum(:date))
+                  .where(status: "審査OK")
+                  .where(status_settlement: "完了")
+                  .where.not(industry_status: "×")
+                  .where.not(industry_status: "NG")
+                  .where.not(industry_status: "要確認")
+                  .where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+                )
+                dmer_slmt_tgt_prev_len = dmer_slmt_tgt_prev.length rescue 0
+
+            %>
+            <%# 決済期限切れ %>
+            <% 
+              dmer_slmt_dead = 
+                dmer_slmt_tgt_prev.where(status_settlement: "期限切れ")
+                .where(status_update_settlement: nil) 
+            %>
+            <% dmer_slmt_dead_len = dmer_slmt_dead.length %>
+            <%# 過去の決済対象で今月成果になったもの %>
+            <% 
+              dmer_slmt_prev_val =  
+                dmer_slmt_tgt_prev.where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+            %>
+            <%
+              dmer_2ndslmt_prev_val = 
+                dmer_slmt_prev_val.where("? >= settlement_second", @month.next_month.end_of_month)
+            %>
+            <% dmer_slmt_prev_val_len = dmer_slmt_prev_val.length %>
+            <% dmer_2ndslmt_prev_val_len = dmer_2ndslmt_prev_val.length %>
+          <%# 第一成果終着 %>
+            <%# 終着獲得数 %>
+            <% 
+              dmer_val1_period =  
+                dmer_user.where(status: "審査OK")
+                .where.not(industry_status: "×")
+                .where.not(industry_status: "NG")
+                .where.not(industry_status: "要確認")
+                .where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date))
+            %>
+            <%
+              dmer_val2_period = 
+                dmer_val1_period.where.not(status_update_settlement: nil).where(status_settlement: "完了")
+            %>
+            <%
+              dmer_val3_period = dmer_val2_period.where.not(settlement_second: nil)
+            %>
+            <% dmer_val1_period_len = dmer_val1_period.length %>
+            <% dmer_val2_period_len = dmer_val2_period.length %>
+            <% dmer_val3_period_len = dmer_val3_period.length %>
+            <% dmer_result1_fin_len = (dmer_len_ave * new_shift).round() %>
+            <%# 期間内終着 %>
+
+
+            <%
+              dmer_result1_fin_this_month_len = 
+                (
+                  (dmer_len - dmer_val1_period_len).to_f / new_shift_digestion * new_shift * dmer_result1_per
+                ).round() rescue 0 
+            %>
+            <%
+              dmer_result1_fin_this_month =
+                (dmer_price_1 * dmer_result1_fin_this_month_len) + 
+                dmer_result1.where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date)).sum(:valuation_new)
+            %>
+            <%# 過去月終着 %>
+            <%
+              dmer_result1_fin_prev_month_len =
+                (
+                  (dmer_slmt_tgt_prev.length - dmer_slmt_prev_val_len).to_f * dmer_result1_per_prev
+                ).round()
+            %>
+            <%
+              dmer_result1_fin_prev_month = 
+                (dmer_price_1 * dmer_result1_fin_prev_month_len) + 
+                dmer_result1.where("? > date",@cash_result.minimum(:date)).sum(:valuation_new)
+            %>
+            <% dmer_result1_fin = dmer_result1_fin_this_month + dmer_result1_fin_prev_month %>
+        <%# dメル（決済） %>
+          <% dmer_slmter = Dmer.where(settlementer_id: r.user_id) %>
+          <% 
+            dmer_slmt = 
+              slmt_period(dmer_slmter ,@cash_result)
+              .where.not(industry_status: "×")
+              .where.not(industry_status: "NG")
+              .where.not(industry_status: "要確認")
+              .or(slmt_period(dmer_slmter, @cash_result)
+              .where(industry_status: ""))
+          %>
+          <% dmer_result2 =               
+              dmer_slmter.where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+              .where.not(industry_status: "NG")
+              .where.not(industry_status: "×")
+              .where.not(industry_status: "要確認")
+              .where(status: "審査OK")
+              .where(status_settlement: "完了")
+          %>
+
+          <% dmer_slmt_valuations = dmer_result2.sum(:valuation_settlement) %>
+          <% dmer_result2_len = dmer_result2.length %>
+          <% dmer_slmt_len = dmer_slmt.length %>
+          <% dmer_slmt2nd = slmt_second(dmer_slmter,@cash_result) %>
+          <%# 第二成果終着 %>
+            <%# 期間内 %>
+            <% 
+              dmer_result2_fin_this_month_len =
+                (
+                  (dmer_len - dmer_val2_period_len).to_f / new_shift_digestion * new_shift * dmer_result2_per
+                ).round() rescue 0
+            %>
+            <%
+              dmer_result2_fin_this_month = 
+                (dmer_price_2 * dmer_result2_fin_this_month_len) + 
+                dmer_result2.where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date)).sum(:valuation_settlement)
+            %>
+            <%# 過去月 %>
+            <%
+              dmer_result2_fin_prev_month = 
+                (dmer_price_2 * dmer_result1_fin_prev_month_len) + 
+                dmer_result2.where("? > date",@cash_result.minimum(:date)).sum(:valuation_settlement)
+            %>
+            <% dmer_result2_fin = dmer_result2_fin_this_month + dmer_result2_fin_prev_month %>
+          <% dmer_result3 = 
+              dmer_slmter.where(settlement_second: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+              .where.not(industry_status: "NG")
+              .where.not(industry_status: "×")
+              .where.not(industry_status: "要確認")
+              .where(status: "審査OK")
+              .where(status_settlement: "完了")
+              .where("? >= status_update_settlement", @month.next_month.end_of_month)
+              .or(
+                dmer_slmter
+                .where.not(industry_status: "NG")
+                .where.not(industry_status: "×")
+                .where.not(industry_status: "要確認")
+                .where(status: "審査OK")
+                .where(status_settlement: "完了")
+                .where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+                .where("? >= settlement_second", @month.next_month.end_of_month)
+              )
+          %>
+          <% dmer_slmt2nd_valuations = dmer_result3.sum(:valuation_second_settlement) %>
+          <% dmer_result3_len = dmer_result3.length %>
+          <% dmer_slmt2nd_len = dmer_slmt2nd.length %>
+          <%# 第三成果終着 %>
+            <%# 期間内 %>
+            <% 
+              dmer_result3_fin_this_month_len = 
+                (
+                  (dmer_len - dmer_val3_period_len).to_f / 
+                  new_shift_digestion * new_shift * dmer_result3_per
+                ).round() rescue 0 
+            %>
+            <% 
+              dmer_result3_fin_this_month = 
+              (dmer_price_3 * dmer_result3_fin_this_month_len) + 
+              dmer_result3.where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date))
+              .sum(:valuation_second_settlement)  
+            %>
+            <%# 過去月 %>
+            <% 
+              dmer_result3_fin_prev_month = 
+              (
+                dmer_price_3 * (dmer_slmt_tgt_prev_len - dmer_2ndslmt_prev_val_len - dmer_slmt_dead_len)
+              ) + (dmer_result3.where("? > date",@cash_result.minimum(:date)).sum(:valuation_second_settlement))
+            %>
+            <% dmer_result3_fin = dmer_result3_fin_this_month + dmer_result3_fin_prev_month %>
+        <%# dメル終着見込獲得数 %>
+          <% dmer_val_len = dmer_uq.length - dmer_def.length %><%# 成果件数 %>
+          <% dmer_val_len_ave = (dmer_val_len.to_f / new_shift_digestion).round(1) rescue 0 %><%# 生産性 %>
+          <% dmer_val_len_fin = dmer_val_len_ave * new_shift %><%# 獲得終着見込 %>
+          <% dmer_result1_this_month_fin = dmer_val_len_fin %>
+        <%# aupay（新規） %>
+          <% aupay_user = Aupay.includes(:store_prop).where(user_id: r.user_id) %>
+          <% 
+            aupay_uq = 
+              this_period(aupay_user,@cash_result).where(store_prop: {head_store: nil})
+          %>
+          <% aupay_def =  aupay_def(aupay_uq,@cash_result) %>
+          <% aupay_inc = judge_inc(aupay_user,@cash_result)  %>
+          <% aupay_judge_dec = judge_dec(aupay_user,@cash_result)  %>
+          <% aupay_db = 
+            result_period(aupay_user,@cash_result)
+            .where.not(store_prop: {head_store: nil})
+            .where(status: "審査通過") 
+          %>
+          <%# 合計 %>
+          <% 
+            aupay_valuations = 0
+          %>
+          <% 
+            aupay_len = 
+              aupay_uq.length - aupay_def.length + aupay_db.length
+          %>
+          <% if aupay_len == 0 %>
+          <% aupay_len_ave = 0 %>
+          <% else %>
+          <% aupay_len_ave = (aupay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
+          <% end %>
+          <% aupay_len_fin = (aupay_len_ave * new_shift).round() rescue 0 %>
+
+        <%# aupay（決済） %>
+          <% aupay_slmt_user = Aupay.where(settlementer_id: r.user_id) %>
+          <% aupay_slmt = slmt_period(aupay_slmt_user ,@cash_result) %>
+          <% 
+            aupay_result1 = 
+              aupay_slmt_user.where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+              .where(status: "審査通過")
+              .where(status_settlement: "完了")
+          %>
+          <% aupay_slmt_valuations = aupay_result1.sum(:valuation_settlement) %>
+          <% aupay_result1_len = aupay_result1.length %>
+          <% aupay_slmt_len = aupay_slmt.length %>
+          <%# 過去月決済対象の数 %>
+            <% 
+              aupay_slmt_tgt_prev = 
+                aupay_user.where("settlement_deadline >= ?", @cash_result.minimum(:date))
+                .where("? > date", @cash_result.minimum(:date))
+                .where(status: "審査通過")
+                .where(status_update_settlement: nil)
+                .or(
+                  aupay_user.where("settlement_deadline >= ?", @cash_result.minimum(:date))
+                  .where("? > date", @cash_result.minimum(:date))
+                  .where(status: "審査通過")
+                  .where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+                )
+            %>
+            <%
+              aupay_slmt_prev_val = 
+              aupay_slmt_tgt_prev.where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+            %>
+            <% aupay_slmt_prev_val_len = aupay_slmt_prev_val.length %>
+            <% 
+              aupay_uq_26_10 = 
+                Aupay.where(user_id: r.user_id)
+                .where(date: @cash_result.minimum(:date)..@month.next_month.beginning_of_month.since(9.days)) 
+            %>
+            <%
+              aupay_val_26_10 = 
+                aupay_uq_26_10.where(status: "審査通過")
+                .where(status_settlement: "完了")
+                .where(status_update_settlement: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+            %>
+            <%
+              aupay_def_26_10 = 
+                aupay_uq_26_10.where(status: "不合格")
+                .or(aupay_uq_26_10.where(status: "申込取消"))
+                .or(aupay_uq_26_10.where(status: "差し戻し"))
+                .or(aupay_uq_26_10.where(status: "報酬対象外"))
+                .or(aupay_uq_26_10.where(status: "重複対象外"))
+                .or(aupay_uq_26_10.where(status: "本店審査待ち"))
+                .or(aupay_uq_26_10.where(status: "自社NG"))
+                .or(aupay_uq_26_10.where(status: "自社不備"))
+            %>
+            <% aupay_slmt_tgt_prev_len = aupay_slmt_tgt_prev.length %>
+            <% aupay_uq_26_10_len = aupay_uq_26_10.length %>
+            <% aupay_val_26_10_len = aupay_val_26_10.length %>
+            <% aupay_def_26_10_len = aupay_def_26_10.length %>
+        <%# 第一成果終着 %>
+          <%# 期間内 %>
+          <% 
+            aupay_result1_fin_len = 
+              (
+                (aupay_uq_26_10_len - aupay_def_26_10_len - aupay_val_26_10_len).to_f / 
+                new_shift_digestion * new_shift * aupay_slmt_per
+              ).round() rescue 0 
+          %>
+          <%
+            aupay_result1_fin_this_month = 
+              (aupay_price * aupay_result1_fin_len) + 
+              aupay_result1.where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date))
+              .sum(:valuation_settlement) rescue 0
+          %>
+          <%# 過去月 %>
+          <%
+            aupay_result1_fin_prev_month_len = 
+              (
+                (aupay_slmt_tgt_prev_len - aupay_slmt_prev_val_len) * aupay_slmt_per_prev
+              ).round() rescue 0
+          %>
+          <%
+            aupay_result1_fin_prev_month = 
+              (aupay_price * aupay_result1_fin_prev_month_len) + 
+              aupay_result1.where("? > date",@cash_result.minimum(:date))
+              .sum(:valuation_settlement) rescue 0
+          %>
+          <% aupay_result1_fin = aupay_result1_fin_this_month + aupay_result1_fin_prev_month %>
+        <%# auPay写真 %>
+          <% 
+            aupay_pic = 
+              OtherProduct.where(user_id: r.user_id)
+              .where(product_name: "auPay写真")
+              .where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date))
+          %>
+          <% aupay_pic_val = aupay_pic.sum(:valuation) %>
+        <%# /auPay写真 %>
+        <%# PayPay %>
+          <% paypay_user = Paypay.where(user_id: r.user_id) %>
+          <% paypay_data = this_period(paypay_user ,@cash_result) %>
+          <% paypay_result = result_period(paypay_user ,@cash_result) %>
+          <% 
+            paypay_result1 = 
+              paypay_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+          %>
+          <% paypay_valuations = paypay_result1.sum(:valuation) %>
+          <% paypay_result1_len = paypay_result1.length %>
+          <% paypay_len = paypay_data.length %>
+          <% if paypay_len == 0 %>
+          <% paypay_len_ave = 0 %>
+          <% else %>
+          <% paypay_len_ave = (paypay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
+          <% end %>
+          <% paypay_fin_len = (paypay_len_ave * new_shift).round() rescue 0 %>
+        <%# 第一成果終着 %>
+          <% paypay_result1_fin = paypay_price * paypay_fin_len rescue 0 %>
+          <% if (paypay_valuations > paypay_result1_fin) || (Date.today >=@month.next_month.end_of_month) %>
+          <% paypay_result1_fin = paypay_valuations %>
+          <% end %>
+        <%# 楽天ペイ %>
+          <% rakuten_pay_user = RakutenPay.includes(:store_prop).where(user_id: r.user_id) %>
+          <% 
+            rakuten_pay_uq = 
+              this_period(rakuten_pay_user,@cash_result)
+          %>
+          <% 
+            rakuten_pay_dec = 
+              rakuten_pay_uq.where.not(deficiency: nil)
+              .where.not(share: @cash_result.minimum(:date)..@cash_result.maximum(:date))
+          %>
+          <% 
+            rakuten_pay_def =  
+              rakuten_pay_uq.where(status: "自社不備")
+              .or(rakuten_pay_uq.where(status: "自社NG")) %>
+          <% rakuten_pay_inc = rakuten_inc(rakuten_pay_user,@cash_result)  %>
           
-          <% person_val_sum = 0 %>
-          <% person_prof_sum = 0 %>
-          <% person_val_sum_prev_week = 0 %>
-          <% person_prof_sum_prev_week = 0 %>
-          <% person_val_sum_prev_month = 0 %>
-          <% person_prof_sum_prev_month = 0 %>
-          <% cash_person = cash_data.where(user_id: person.user_id) %>
-          <% cash_person_prev_week = cash_data_prev_week.where(user_id: person.user_id) %>
-          <% cash_person_prev_month = cash_data_prev_month.where(user_id: person.user_id) %>
-          <tr>
-            <%# シフト %>
-              <% 
-                person_shift_d = 
-                  cash_person.where(shift: "キャッシュレス新規").length + 
-                  cash_person.where(shift: "キャッシュレス決済").length
-              %>
-              <% 
-                person_shift_d_prev_week = 
-                  cash_person_prev_week.where(shift: "キャッシュレス新規").length + 
-                  cash_person_prev_week.where(shift: "キャッシュレス決済").length
-              %>
-              <% 
-                person_shift_d_prev_month = 
-                  cash_person_prev_month.where(shift: "キャッシュレス新規").length + 
-                  cash_person_prev_month.where(shift: "キャッシュレス決済").length
-              %>
-              <% 
-                person_shift_p = 
-                  @cash_shifts.where(user_id: person.user_id)
-                  .where(shift: "キャッシュレス新規").length +  
-                  @cash_shifts.where(user_id: person.user_id)
-                  .where(shift: "キャッシュレス決済").length
-              %>
-            <%# 商材変数 %>
-            <%# dメル新規 %>
-              <% dmer_person = Dmer.includes(:store_prop).where(user_id: person.user_id) %>
-              <%# 指定期間 %>
-                <% 
-                  dmer_uq_person = 
-                    this_period(dmer_person,cash_data)
-                    .where(store_prop: {head_store: nil}) 
-                %>
-                <% 
-                  dmer_def_person = 
-                    dmer_def(dmer_uq_person,person)
-                    .where(store_prop: {head_store: nil}) 
-                %>
-                <% 
-                  dmer_db_person = 
-                    share_period(dmer_person,cash_data)
-                    .where.not(store_prop: {head_store: nil})
-                    .where.not(industry_status: "×")
-                    .where.not(industry_status: "NG")
-                    .where(status: "審査OK")
-                %>
-                <% 
-                  dmer_prof_person = 
-                    dmer_uq_person.sum(:profit_new) +
-                    dmer_db_person.sum(:profit_new) -
-                    dmer_def_person.sum(:profit_new)
-                %>
-                <% person_prof_sum += dmer_prof_person %>
-                <% 
-                  dmer_len_person =
-                    dmer_uq_person.length +
-                    dmer_db_person.length -
-                    dmer_def_person.length
-                %>
-              <%# 先週 %>
-                <% 
-                  dmer_uq_person_prev_week = 
-                    this_period(dmer_person,cash_data_prev_week)
-                    .where(store_prop: {head_store: nil}) 
-                %>
-                <% 
-                  dmer_def_person_prev_week = 
-                    dmer_def(dmer_uq_person_prev_week,cash_data_prev_week)
-                    .where(store_prop: {head_store: nil}) 
-                %>
-                <% 
-                  dmer_db_person_prev_week = 
-                    share_period(dmer_person,cash_data_prev_week)
-                    .where.not(store_prop: {head_store: nil})
-                    .where.not(industry_status: "×")
-                    .where.not(industry_status: "NG")
-                    .where(status: "審査OK")
-                %>
-                <% 
-                  dmer_prof_person_prev_week = 
-                    dmer_uq_person_prev_week.sum(:profit_new) +
-                    dmer_db_person_prev_week.sum(:profit_new) -
-                    dmer_def_person_prev_week.sum(:profit_new)
-                %>
-                <% person_prof_sum_prev_week += dmer_prof_person_prev_week %>
-              <%# 前月 %>
-                <% 
-                  dmer_uq_person_prev_month = 
-                    this_period(dmer_person,cash_data_prev_month)
-                    .where(store_prop: {head_store: nil}) 
-                %>
-                <% 
-                  dmer_def_person_prev_month = 
-                    dmer_def(dmer_uq_person_prev_month,cash_data_prev_month)
-                    .where(store_prop: {head_store: nil}) 
-                %>
-                <% 
-                  dmer_db_person_prev_month = 
-                    share_period(dmer_person,cash_data_prev_month)
-                    .where.not(store_prop: {head_store: nil})
-                    .where.not(industry_status: "×")
-                    .where.not(industry_status: "NG")
-                    .where(status: "審査OK") rescue nil
-                %>
-                <% 
-                  dmer_prof_person_prev_month = 
-                    dmer_uq_person_prev_month.sum(:profit_new) +
-                    dmer_db_person_prev_month.sum(:profit_new) -
-                    dmer_def_person_prev_month.sum(:profit_new)
-                %>
-                <% person_prof_sum_prev_month += dmer_prof_person_prev_month %>
-            <%# dメル決済 %>
-              <%         
-                dmer_slmter_person = 
-                  Dmer.includes(:store_prop)
-                  .where(settlementer_id: person.user_id)
-              %>
-              <%# 期間指定 %>
-                <% 
-                  dmer_slmt_person =
-                    slmt_period(dmer_slmter_person,cash_data)
-                %>
-                <%
-                  dmer_slmt_prof_person = 
-                    dmer_slmt_person.sum(:profit_settlement)
-                %>
-                <% person_prof_sum += dmer_slmt_prof_person %>
-                <%# 2回目決済 %>
-                <%
-                  dmer_2ndslmt_person =
-                    slmt_second(dmer_slmter_person,cash_data)
-                %>
-                <%
-                  dmer_2ndslmt_val_person =
-                    dmer_2ndslmt_person.sum(:valuation_second_settlement)
-                %>
-                <%
-                  dmer_2ndslmt_prof_person =
-                    dmer_2ndslmt_person.sum(:profit_second_settlement)
-                %>
-                <% person_val_sum += dmer_2ndslmt_val_person %>
-                <% person_prof_sum += dmer_2ndslmt_prof_person %>
-              <%# 先週 %>
-                <% 
-                  dmer_slmt_person_prev_week =
-                    slmt_period(dmer_slmter_person,cash_data_prev_week)
-                %>
-                <%
-                  dmer_slmt_val_person_prev_week = 
-                    dmer_slmt_person_prev_week.sum(:valuation_settlement)
-                %>
-                <% person_val_sum_prev_week += dmer_slmt_val_person_prev_week %>
-                <%
-                  dmer_slmt_prof_person_prev_week = 
-                    dmer_slmt_person_prev_week.sum(:profit_settlement)
-                %>
-                <% person_prof_sum_prev_week += dmer_slmt_prof_person_prev_week %>
-                <%# 2回目決済 %>
-                <%
-                  dmer_2ndslmt_person_prev_week =
-                    slmt_second(dmer_slmter_person,cash_data_prev_week)
-                %>
-                <%
-                  dmer_2ndslmt_prof_person_prev_week =
-                    dmer_2ndslmt_person_prev_week.sum(:profit_second_settlement)
-                %>
-                <% person_prof_sum_prev_week += dmer_2ndslmt_prof_person_prev_week %>
-              <%# 前月 %>
-                <% 
-                  dmer_slmt_person_prev_month =
-                    slmt_period(dmer_slmter_person,cash_data_prev_month)
-                %>
-                <%
-                  dmer_slmt_val_person_prev_month = 
-                    dmer_slmt_person_prev_month.sum(:valuation_settlement)
-                %>
-                <% person_val_sum_prev_month += dmer_slmt_val_person_prev_month %>
-                <%
-                  dmer_slmt_prof_person_prev_month = 
-                    dmer_slmt_person_prev_month.sum(:profit_settlement)
-                %>
-                <% person_prof_sum_prev_month += dmer_slmt_prof_person_prev_month %>
-                <%# 2回目決済 %>
-                <%
-                  dmer_2ndslmt_person_prev_month =
-                    slmt_second(dmer_slmter_person,cash_data_prev_month)
-                %>
-                <%
-                  dmer_2ndslmt_val_person_prev_month =
-                    dmer_2ndslmt_person_prev_month.sum(:valuation_second_settlement)
-                %>
-                <%
-                  dmer_2ndslmt_prof_person_prev_month =
-                    dmer_2ndslmt_person_prev_month.sum(:profit_second_settlement)
-                %>
-                <% person_val_sum_prev_month += dmer_2ndslmt_val_person_prev_month %>
-                <% person_prof_sum_prev_month += dmer_2ndslmt_prof_person_prev_month %>
-            <%# auPay新規 %>
-              <% aupay_person = Aupay.includes(:store_prop).where(user_id: person.user_id) %>
-              <% 
-                aupay_uq_person = 
-                  this_period(aupay_person,cash_data)
-                  .where(store_prop: {head_store: nil}) 
-              %>
-              <% 
-                aupay_def_person = 
-                  aupay_def(aupay_uq_person,person)
-                  .where(store_prop: {head_store: nil}) 
-              %>
-              <% 
-                aupay_db_person = 
-                  share_period(aupay_person,cash_data)
-                  .where.not(store_prop: {head_store: nil})
-              %>
-              <% 
-                aupay_prof_person = 
-                  aupay_uq_person.sum(:profit_new) +
-                  aupay_db_person.sum(:profit_new) -
-                  aupay_def_person.sum(:profit_new)
-              %>
-              <% person_prof_sum += aupay_prof_person %>
-              <% 
-                aupay_len_person =
-                  aupay_uq_person.length +
-                  aupay_db_person.length -
-                  aupay_def_person.length
-              %>
-            <%# auPay決済 %>
-              <%         
-                aupay_slmter_person = 
-                  Aupay.includes(:store_prop)
-                  .where(settlementer_id: person.user_id)
-              %>
-              <%# 指定期間 %>
-                <% 
-                  aupay_slmt_person =
-                    slmt_period(aupay_slmter_person,cash_data)
-                %>
-                <%
-                  aupay_slmt_prof_person = 
-                    aupay_slmt_person.sum(:profit_settlement)
-                %>
-                <% person_prof_sum += aupay_slmt_prof_person %>
-              <%# 先週 %>
-                <% 
-                  aupay_slmt_person_prev_week =
-                    slmt_period(aupay_slmter_person,cash_data_prev_week)
-                %>
-                <%
-                  aupay_slmt_prof_person_prev_week = 
-                    aupay_slmt_person_prev_week.sum(:profit_settlement)
-                %>
-                <% person_prof_sum_prev_week += aupay_slmt_prof_person_prev_week %>
-              <%# 前月 %>
-                <% 
-                  aupay_slmt_person_prev_month =
-                    slmt_period(aupay_slmter_person,cash_data_prev_month)
-                %>
-                <%
-                  aupay_slmt_prof_person_prev_month = 
-                    aupay_slmt_person_prev_month.sum(:profit_settlement)
-                %>
-                <% person_prof_sum_prev_month += aupay_slmt_prof_person_prev_month %>
-            <%# PayPay %>
-              <%# 指定期間 %>
-                <%
-                  paypay_person = 
-                    Paypay.where(user_id: person.user_id)
-                %>
-                <% 
-                  paypay_data_person = 
-                    this_period(paypay_person, cash_data)
-                %>
-                <% person_prof_sum += paypay_data_person.sum(:profit) %>
-              <%# 先週 %>
-                <% 
-                  paypay_data_person_prev_week = 
-                    this_period(paypay_person, cash_data_prev_week)
-                %>
-                <% person_prof_sum_prev_week += paypay_data_person_prev_week.sum(:profit) %>
-              <%# 先月 %>
-                <% 
-                  paypay_data_person_prev_month = 
-                    this_period(paypay_person, cash_data_prev_month)
-                %>
-                <% person_prof_sum_prev_month += paypay_data_person_prev_month.sum(:profit) %>
-            <%# 楽天ペイ %>
-                <%
-                  rakuten_pay_person = 
-                    RakutenPay.where(user_id: person.user_id)
-                %>
-              <%# 期間指定 %>
-                <% rakuten_pay_data_person = this_period(rakuten_pay_person, cash_data) %>
-                <% 
-                  rakuten_pay_def_person = 
-                    rakuten_pay_data_person.where(status: "自社不備")
-                    .or(rakuten_pay_data_person.where(status: "自社NG"))
-                %>
-                <% 
-                  rakuten_pay_len_person = 
-                    rakuten_pay_data_person.length -
-                    rakuten_pay_def_person.length
-                %>
-                <% 
-                  rakuten_pay_val_person = 
-                    rakuten_pay_data_person.sum(:valuation) -
-                    rakuten_pay_def_person.sum(:valuation)
-                %>
-                <% 
-                  rakuten_pay_prof_person = 
-                    rakuten_pay_data_person.sum(:profit) -
-                    rakuten_pay_def_person.sum(:profit)
-                %>
-                <% person_val_sum += rakuten_pay_val_person %>
-                <% person_prof_sum += rakuten_pay_prof_person %>
-              <%# 先週 %>
-                <% rakuten_pay_data_person_prev_week = this_period(rakuten_pay_person, cash_data_prev_week) %>
-                <% 
-                  rakuten_pay_def_person_prev_week = 
-                    rakuten_pay_data_person_prev_week.where(status: "自社不備")
-                    .or(rakuten_pay_data_person_prev_week.where(status: "自社NG"))
-                %>
-                <% 
-                  rakuten_pay_val_person_prev_week = 
-                    rakuten_pay_data_person_prev_week.sum(:valuation) -
-                    rakuten_pay_def_person_prev_week.sum(:valuation)
-                %>
-                <% 
-                  rakuten_pay_prof_person_prev_week = 
-                    rakuten_pay_data_person_prev_week.sum(:profit) -
-                    rakuten_pay_def_person_prev_week.sum(:profit)
-                %>
-                <% person_val_sum_prev_week += rakuten_pay_val_person_prev_week %>
-                <% person_prof_sum_prev_week += rakuten_pay_prof_person_prev_week %>
-              <%# 前月 %>
-                <% rakuten_pay_data_person_prev_month = this_period(rakuten_pay_person, cash_data_prev_month) %>
-                <% 
-                  rakuten_pay_def_person_prev_month = 
-                    rakuten_pay_data_person_prev_month.where(status: "自社不備")
-                    .or(rakuten_pay_data_person_prev_month.where(status: "自社NG"))
-                %>
-                <% 
-                  rakuten_pay_val_person_prev_month = 
-                    rakuten_pay_data_person_prev_month.sum(:valuation) -
-                    rakuten_pay_def_person_prev_month.sum(:valuation)
-                %>
-                <% 
-                  rakuten_pay_prof_person_prev_month = 
-                    rakuten_pay_data_person_prev_month.sum(:profit) -
-                    rakuten_pay_def_person_prev_month.sum(:profit)
-                %>
-                <% person_val_sum_prev_month += rakuten_pay_val_person_prev_month %>
-                <% person_prof_sum_prev_month += rakuten_pay_prof_person_prev_month %>
-
-            <%# 平均売上 %>
-            <%# 期間指定 %>
-            <% person_prof_ave = person_prof_sum / person_shift_d rescue "NaN" %>
-            <%# 先週 %>
-            <% person_prof_ave_prev_week = person_prof_sum_prev_week / person_shift_d_prev_week rescue "NaN" %>
-            <%# 先月 %>
-            <% person_prof_ave_prev_month = person_prof_sum_prev_month / person_shift_d_prev_month rescue "NaN" %>
-
-            <%# 基準値 %>
-            <% visit_ave = cash_person.average("first_visit + latter_visit") %>
-            <% interview_ave = cash_person.average("first_interview + latter_interview") %>
-            <% full_talk_ave = cash_person.average("first_full_talk + latter_full_talk") %>
-            <% get_ave = cash_person.average("first_get + latter_get") %>
-
-
-            <%# 項目 %>
-            <td><%= person.user.base %></td>
-            <td><%= person.user.base_sub %></td>
-            <td><%= person.user.name %></td>
-            <td><%= person.user.position_sub %></td>
-            <%# シフト %>
-            <td><%= person_shift_p %></td>
-            <td><%= person_shift_d %></td>
-            <td><%= person_shift_p - person_shift_d %></td>
-            <%# 基準値 %>
-            <td><%= visit_ave.round(1) %></td>
-            <td><%= interview_ave.round(1) %></td>
-            <td><%= (interview_ave / visit_ave).round(1) %></td>
-            <td><%= full_talk_ave.round(1) %></td>
-            <td><%= (full_talk_ave / interview_ave).round(1) %></td>
-            <td><%= get_ave.round(1) %></td>
-            <td><%= (get_ave / full_talk_ave).round(1) %></td>
-            <%# 実売 %>
-            <td><%= person_prof_ave.to_s(:delimited) rescue "NaN" %></td>
-            <% if person_prof_ave_prev_week != "NaN" && person_prof_ave != "NaN" && person_prof_ave > person_prof_ave_prev_week %>
-            <td style="color:blue;"><%= (person_prof_ave - person_prof_ave_prev_week).to_s(:delimited)  %></td>
-            <% else %>
-            <td style="color:red;"><%= (person_prof_ave - person_prof_ave_prev_week).to_s(:delimited) rescue "NaN" %></td>
-            <% end %>
-            <td><%= person_prof_ave_prev_week.to_s(:delimited) rescue "NaN" %></td>
-            <% if person_prof_ave_prev_month != "NaN" && person_prof_ave != "NaN" && person_prof_ave > person_prof_ave_prev_month %>
-            <td style="color:blue;"><%= (person_prof_ave - person_prof_ave_prev_month).to_s(:delimited) rescue "NaN" %></td>
-            <% else %>
-            <td style="color:red;"><%= (person_prof_ave - person_prof_ave_prev_month).to_s(:delimited) rescue "NaN" %></td>
-            <% end %>
-            <td><%= person_prof_ave_prev_month.to_s(:delimited) rescue "NaN" %></td>
-            <td><%= person_prof_sum.to_s(:delimited) %></td>
-            <td><%= (person_prof_ave * person_shift_p).to_s(:delimited) rescue "NaN" %></td>
-            <%# 商材別獲得数 %>
-            <td><%= dmer_len_person %></td>
-            <td><%= dmer_slmt_person.length %></td>
-            <td><%= dmer_2ndslmt_person.length %></td>
-            <td><%= aupay_len_person %></td>
-            <td><%= aupay_slmt_person.length %></td>
-            <td><%= paypay_data_person.length %></td>
-            <td><%= rakuten_pay_len_person %></td>
-          </tr>
+          <%# 合計 %>
+            <% 
+              rakuten_pay_valuations =
+                rakuten_pay_uq.sum(:valuation) - 
+                rakuten_pay_def.sum(:valuation) -
+                rakuten_pay_dec.sum(:valuation) +
+                rakuten_pay_inc.sum(:valuation)
+            %>
+            <% 
+              rakuten_pay_len = 
+                rakuten_pay_uq.length - 
+                rakuten_pay_def.length -
+                rakuten_pay_dec.length +
+                rakuten_pay_inc.length
+            %>
+          <% if rakuten_pay_len == 0 %>
+          <% rakuten_pay_len_ave = 0 %>
+          <% else %>
+          <% rakuten_pay_len_ave = (rakuten_pay_len.to_f / new_shift_digestion).round(1) rescue 0 %>
           <% end %>
-          </tr>
-        <% end %>
-      </thead>
-    </table>
+          <% rakuten_pay_len_fin = (rakuten_pay_len_ave * new_shift).round() rescue 0 %>
+          <%# 第一成果 %>
+          <% rakuten_pay_result1_fin_len = (rakuten_pay_len_ave * new_shift * 0.9).round() %>
+          <% rakuten_pay_result1_fin = rakuten_pay_price * rakuten_pay_result1_fin_len rescue 0 %>
+          <% if (rakuten_pay_valuations > rakuten_pay_result1_fin) || (Date.today >= @month.next_month.end_of_month) %>
+          <% rakuten_pay_result1_fin = rakuten_pay_valuations %>
+          <% end %>
+        <%# AirPay %>
+          <% airpay_user = Airpay.where(user_id: r.user_id) %>
+          <% 
+            airpay_data = this_period(airpay_user ,@cash_result)
+          %>
+          <% airpay_result = airpay_data.where(status: "審査完了").or(airpay_data.where(status: "審査中"))
+          %>
+          <% airpay_len = airpay_result.length %>
+          <% if airpay_len == 0 %>
+          <% airpay_len_ave = 0 %>
+          <% else %>
+          <% 
+            airpay_len_ave = 
+              (airpay_len.to_f / new_shift_digestion).round(1) rescue 0 
+          %>
+          <% end %>
+          <% airpay_len_fin = (airpay_len_ave * new_shift).round() rescue 0 %>
+          <% airpay_result1_len = airpay_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month).where(status: "審査完了").length %>
+          <% 
+            airpay_valuations = 
+              if airpay_result1_len >= 20
+                airpay_user
+                .where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month).where(status: "審査完了").sum(:valuation) + (airpay_result1_len * 3000)
+              elsif airpay_result1_len >= 10
+                airpay_user
+                .where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month).where(status: "審査完了").sum(:valuation) + (airpay_result1_len * 2000)
+              else  
+                airpay_user.where(result_point: @month.next_month.beginning_of_month..@month.next_month.end_of_month).where(status: "審査完了").sum(:valuation)
+              end
+          %>
+          <% airpay_result_len_fin = (airpay_len_ave * new_shift * 0.85).round() rescue 0 %>
+          <% if airpay_result_len_fin >= 20 %>
+            <% airpay_price = 6000 %>
+          <% elsif airpay_result_len_fin >= 10 %>
+            <% airpay_price = 5000 %>
+          <% else %>
+            <% airpay_price = 3000 %>
+          <% end %>
+          <%# 第一成果終着 %>
+          <% airpay_result1_fin = airpay_price * airpay_result_len_fin rescue 0 %>
+          <% if (airpay_valuations > airpay_result1_fin) || (Date.today >= @month.next_month.end_of_month) %>
+          <% airpay_result1_fin = airpay_valuations %>
+          <% end %>
+        <%# 少額短期保険 %>
+          <% st_insurance_user = StInsurance.includes(:store_prop).where(user_id: r.user_id) %>
+          <% st_insurance_data = this_period(st_insurance_user,@cash_result) %>
+          <% st_insurance_valuations = st_insurance_data.sum(:valuation) %>
+          <% st_insurance_len = st_insurance_data.length %>
+        <%# 楽天フェムト（新規） %>
+        <%# 楽天フェムト（設置） %>
+        <%# 現状売上 %>
+          <% 
+            valuations_new = 
+              dmer_valuations + 
+              aupay_valuations + 
+              paypay_valuations +
+              rakuten_pay_valuations + 
+              st_insurance_valuations +
+              airpay_valuations + 
+              aupay_pic_val
+          %>
+          <%
+            valuations_slmt = 
+              dmer_slmt_valuations +
+              dmer_slmt2nd_valuations +
+              aupay_slmt_valuations
+          %>
+          <% 
+            valuations_sum = valuations_new + valuations_slmt
+          %>
+          <%
+            valuations_fin_new = 
+              dmer_result1_fin +
+              aupay_pic_val +
+              paypay_result1_fin +
+              rakuten_pay_result1_fin +
+              airpay_result1_fin
+          %>
+
+          <% 
+            valuations_fin_slmt =
+                dmer_result2_fin  +
+                dmer_result3_fin +
+                aupay_result1_fin
+          %>
+
+          <% valuations_fin = valuations_fin_new + valuations_fin_slmt %>
+           <% if (valuations_sum > valuations_fin) || Date.today > @month.next_month.end_of_month %>
+            <% valuations_fin = valuations_sum rescue 0 %>
+           <% end %>
+           <% valuations_ave = 0 %>
+          <% if  (valuations_fin.present?) && (shifts != 0) %>
+            <% valuations_ave = valuations_fin / shifts rescue 0 %>
+          <% end %>
+          <%# 合計獲得数 %>
+          <% sum_product = (dmer_uq.length + aupay_uq.length + rakuten_pay_uq.length + airpay_data.length).to_f %>
+          <% base_sum_product += sum_product %>
+          <% base_dmer += dmer_len %>
+          <% base_dmer_ave = base_dmer / shift_digestion rescue 0 %>
+          <% base_dmer_fin += dmer_len_fin %>
+          <% base_dmer_slmt += dmer_slmt_len %>
+          <% base_dmer_slmt2nd += dmer_slmt2nd_len %>
+          <% base_aupay += aupay_len %>
+          <% base_aupay_ave = base_aupay / shift_digestion rescue 0 %>
+          <% base_aupay_fin += aupay_len_fin %>
+          <% base_aupay_slmt += aupay_slmt_len %>
+          <% base_paypay += paypay_len %>
+          <% base_paypay_ave = base_paypay / shift_digestion rescue 0 %>
+          <% base_paypay_fin += paypay_fin_len %>
+          <% base_rakuten_pay += rakuten_pay_len %>
+          <% base_rakuten_pay_ave = base_rakuten_pay / shift_digestion rescue 0 %>
+          <% base_rakuten_pay_fin += rakuten_pay_len_fin %>
+          <% base_airpay += airpay_len %>
+          <% base_airpay_ave = base_airpay / shift_digestion rescue 0 %>
+          <% base_airpay_fin += airpay_len_fin %>
+          <% base_st_insurace += st_insurance_len %>
+          <% base_sum += valuations_sum %>
+          <% base_fin += valuations_fin %>
+          <%# 成果件数 %>
+          <% base_dmer_result1_len += dmer_result1_len %>
+          <% base_dmer_result2_len += dmer_result2_len %>
+          <% base_dmer_result3_len += dmer_result3_len %>
+          <% base_aupay_result1_len += aupay_result1_len %>
+          <% base_paypay_result1_len += paypay_result1_len %>
+          <% base_airpay_result1_len += airpay_result1_len %>
+    <tr>
+      <td class="sticky"><%= r.user.name %></td>
+      <td ><%= r.user.position_sub  %></td>
+      <%# 現状実売 %>
+      <td ><%= valuations_ave.to_s(:delimited) rescue 0 %></td>
+      <td ><%= valuations_new.to_s(:delimited) rescue 0 %></td>
+      <td ><%= valuations_slmt.to_s(:delimited) rescue 0 %></td>
+      <td ><%= valuations_sum.to_s(:delimited) rescue 0 %></td>
+      <%# 終着実売 %>
+      <td ><%= valuations_fin_new.to_s(:delimited) rescue 0 %></td>
+      <td ><%= valuations_fin_slmt.to_s(:delimited) rescue 0 %></td>
+      <td ><%= valuations_fin.to_s(:delimited) rescue 0 %></td>
+      <%# シフト数 %>
+      <td ><%= new_shift %></td>
+      <td ><%= slmt_shift %></td>
+      <td ><%= new_shift + slmt_shift %></td>
+      <td ><%= new_shift_digestion %></td>
+      <td ><%= slmt_shift_digestion %></td>
+      <td ><%= new_shift_digestion + slmt_shift_digestion %></td>
+      <%# 基準値 %>
+      <td><%= (sum_total_visit / new_shift_digestion).round(1) rescue 0 %></td>
+      <td><%= (sum_visit / new_shift_digestion).round(1) rescue 0 %></td>
+      <td><%= (sum_interview / new_shift_digestion).round(1) rescue 0 %></td>
+      <td><%= (sum_full_talk / new_shift_digestion).round(1) rescue 0 %></td>
+      <td><%= (sum_product / 4 / new_shift_digestion).round(1) rescue 0 %></td>
+      <%# 獲得数 %>
+      <td ><%= dmer_len %></td>
+      <td ><%= dmer_slmt_len %></td>
+      <td ><%= dmer_slmt2nd_len %></td>
+      <td ><%= aupay_len %></td>
+      <td ><%= aupay_slmt_len %></td>
+      <td ><%= paypay_len %></td>
+      <td ><%= rakuten_pay_len %></td>
+      <td ><%= airpay_len %></td>
+      <%# 成果件数 %>
+      <td ><%= dmer_result1_len %></td>
+      <td ><%= dmer_result2_len %></td>
+      <td ><%= dmer_result3_len %></td>
+      <td ><%= aupay_result1_len %></td>
+      <td ><%= paypay_result1_len %></td>
+      <td ><%= airpay_result1_len %></td>
+
+      <%# 平均獲得数 %>
+      <td ><%= dmer_len_ave %></td>
+      <td ><%= aupay_len_ave %></td>
+      <td ><%= paypay_len_ave %></td>
+      <td ><%= rakuten_pay_len_ave %></td>
+      <td ><%= airpay_len_ave %></td>
+      <%# 獲得終着 %>
+      <td ><%= dmer_len_fin %></td>
+      <td ><%= aupay_len_fin %></td>
+      <td ><%= paypay_fin_len %></td>
+      <td ><%= rakuten_pay_len_fin %></td>
+      <td ><%= airpay_len_fin %></td>
+    </tr>
+      <% end %>
+    <tr>
+        <th class="sticky">全体</th>
+        <td ></td>
+        <td><%= base_new_shift %></td>
+        <td><%= base_slmt_shift %></td>
+        <td><%= base_new_shift_digestion %></td>
+        <td><%= base_slmt_shift_digestion %></td>
+        <%# 全体評価売上 %>
+        <td><%= (base_fin / (base_new_shift + base_slmt_shift)).round().to_s(:delimited) rescue 0 %></td>
+        <td><%= base_sum.to_s(:delimited) rescue 0 %></td>
+        <td><%= base_fin.to_s(:delimited) rescue 0 %></td>
+        <%# 基準値 %>
+        <td><%= (@cash_result.sum("first_total_visit + latter_total_visit") / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (@cash_result.sum("first_visit + latter_visit").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (@cash_result.sum("first_interview + latter_interview").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (@cash_result.sum("first_full_talk + latter_full_talk").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (base_sum_product / base_new_shift_digestion / 4).round(1) rescue 0 %></td>
+        <%# 全体獲得数 %>
+        <td><%= base_dmer %></td>
+        <td><%= base_dmer_slmt %></td>
+        <td><%= base_dmer_slmt2nd %></td>
+        <td><%= base_aupay %></td>
+        <td><%= base_aupay_slmt %></td>
+        <td><%= base_paypay %></td>
+        <td><%= base_rakuten_pay %></td>
+        <td><%= base_airpay %></td>
+        <%# 全体成果件数 %>
+        <td><%= base_dmer_result1_len %></td>
+        <td><%= base_dmer_result2_len %></td>
+        <td><%= base_dmer_result3_len %></td>
+        <td><%= base_aupay_result1_len %></td>
+        <td><%= base_paypay_result1_len %></td>
+        <td><%= base_airpay_result1_len %></td>
+        <%# 全体平均獲得数 %>
+        <td><%= (base_dmer.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (base_aupay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (base_paypay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (base_rakuten_pay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td><%= (base_airpay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <%# 全体終着獲得数 %>
+        <td><%= base_dmer_fin %></td>
+        <td><%= base_aupay_fin %></td>
+        <td><%= base_paypay_fin %></td>
+        <td><%= base_rakuten_pay_fin %></td>
+        <td><%= base_airpay_fin %></td>
+    </tr>
+  </table>
+  <% end %>
   </div>
 <% end %>

@@ -8,7 +8,7 @@
 <div data-scope-path="shared/side_bar">
   <%= render "shared/sidebar" %>
 </div>
-<div data-scope-path="paypays/index">
+<div data-scope-path="shares/index">
 <div class="main">
   <%= form_with url: import_paypays_path do |f| %>
     <table class="csv-tb">
@@ -47,7 +47,7 @@
   <% if @paypays.empty? %>
     <div class="warning"><%= alert %></div>
   <% else %>
-      <h1>表示範囲：<%= @paypays.minimum(:date) %>（<%= days[@paypays.minimum(:date).wday] %>）〜<%= @paypays.maximum(:date) %>（<%= days[@paypays.maximum(:date).wday] %>）</h1>
+      <h1>獲得日：<%= @paypays.minimum(:date) %>（<%= days[@paypays.minimum(:date).wday] %>）〜<%= @paypays.maximum(:date) %>（<%= days[@paypays.maximum(:date).wday] %>）</h1>
     <table>
       <tr>
         <th class="search-th">獲得数</th>

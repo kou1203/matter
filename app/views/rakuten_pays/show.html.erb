@@ -84,7 +84,9 @@
         <th colspan="">謄本取得</th>
         <td><%= @rakuten_pay.transcript %></td>
         <th colspan=""></th>
+        <% if current_user.position == "権限①" %>
         <td><%= link_to "編集", edit_rakuten_pay_path, class: "link" %></td>
+        <% end %>
       </tr>
     </table>
     <h1>売上/評価地点</h1>

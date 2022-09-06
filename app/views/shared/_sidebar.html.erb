@@ -18,7 +18,7 @@
       <label class="header-label" id="lists1">店舗情報/商材</label>
         <ul class="dropdown" id="pull-down1" >
           <li id="lists1"><%= link_to "店舗一覧", store_props_path , class: "side-link" %></li>
-          <li id="lists1"><%= link_to "dメル一覧", dmers_path, class: "side-link" %></li>
+          <li id="lists1"><%= link_to "dメル一覧", dmers_path, class: "side-link","data-turbolinks": false %></li>
           <li id="lists1"><%= link_to "aupay一覧", aupays_path, class: "side-link" ,"data-turbolinks": false %></li>
           <li id="lists1"><%= link_to "PayPay一覧", paypays_path, class: "side-link" %></li>
           <li id="lists1"><%= link_to "楽天ペイ一覧", rakuten_pays_path, class: "side-link" %></li>
@@ -32,7 +32,7 @@
       <label class="header-label" id="lists2">利益表</label>
         <ul class="dropdown" id="pull-down2">
           <li id="lists2"><%= link_to "利益表", results_path,class: "side-link"%></li>
-          <% if current_user.position == "権限①" %>
+          <% if current_user.name == "管理用" %>
           <li id="lists2"><%= link_to "会議資料", display_periods_path,class: "side-link"%></li>
           <% end %>
           <li id="lists2"><%= link_to "評価売上結果一覧", result_sales_path,class: "side-link"%></li>

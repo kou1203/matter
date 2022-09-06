@@ -141,7 +141,9 @@
     <tr>
       <th >不備詳細</th>
       <td colspan="2"><%= @aupay.deficiency_remarks_settlement %></td>
+      <% if current_user.position == "権限①" %>
       <td ><%= link_to "aupay情報編集", edit_aupay_path, class: "link" %></td>
+      <% end %>
     </tr>
   </table>
   <h1>入金日/利益</h1>

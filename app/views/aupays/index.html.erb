@@ -22,7 +22,6 @@
   <% end %>
     <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
       <%= javascript_pack_tag 'search' %>
-    <% if current_user.name == "管理用" %>
       <article id='search'><%# 検索フォーム %>
         <button @click="active" v-if="!isActive" class="active-btn">詳細検索表示</button>
         <button @click="active" v-if="isActive" class="active-btn">詳細検索表示中</button>
@@ -39,13 +38,13 @@
               <p class="s-text-field"><%= f.text_field :settlementer_name_cont, class: "s-text-input" %></p>
               <p class="s-label">拠点</p>
               <p class="s-slct-field"><%= f.select :user_base_cont,{"中部SS": "中部SS","関東SS": "関東SS","関西SS": "関西SS","2次店": "2次店"},{include_blank: true},{ class: "s-slct-input"} %></p>
-              <p class="s-label">獲得不備内容</p>
+              <p class="s-label">獲得不備内容（含む）</p>
               <p class="s-text-field"><%= f.text_field :deficiency_remarks_cont, class: "s-text-input" %></p>
               <p class="s-label">獲得不備内容（頭文字一致）</p>
               <p class="s-text-field"><%= f.text_field :deficiency_remarks_start, class: "s-text-input" %></p>
               <p class="s-label">獲得不備内容（頭文字不一致）</p>
               <p class="s-text-field"><%= f.text_field :deficiency_remarks_not_start, class: "s-text-input" %></p>
-              <p class="s-label">決済不備内容</p>
+              <p class="s-label">決済不備内容（含む）</p>
               <p class="s-text-field"><%= f.text_field :deficiency_remarks_settlement_cont, class: "s-text-input" %></p>
             </div><%# ユーザー情報 %>
             <div class="product-form"><%# 商材情報 %>
@@ -58,7 +57,19 @@
                 </thead>
                 <tbody>
                   <tr class="s-tr">
+                    <td class="s-td">店舗</td>
+                    <td class="s-td">
+                      <%= f.select :store_prop_head_store_null,{"本店": true,"複数店": false},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
                     <td class="s-td">獲得日</td>
+                    <td class="s-td">
+                      <%= f.date_field :date_eq, class: "t-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">獲得日（範囲））</td>
                     <td class="s-td">
                       <%= f.date_field :date_gteq, class: "s-input" %>〜
                       <%= f.date_field :date_lteq, class: "s-input" %>
@@ -132,68 +143,20 @@
           <button class="s-reset-btn"><%= link_to "解除", aupays_path, class: "reset-link" %></button>
           <% end %>
         </div><%# /検索フォームの外枠 %>
-        <div v-else></div>
+        <div v-else>
+          <%= search_form_for @q do |f| %>
+              <%= f.text_field :store_prop_name_or_customer_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
+              <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "search-btn" %>
+          <% end %>
+        </div>
       </article><%# /検索フォーム %>
-    <% end %>
-    <%= search_form_for @q do |f| %>
-      <table>
-        <tr >
-          <th class="search-th" colspan="2">獲得日付</th>
-          <th class="search-th" colspan="2">審査完了日</th>
-        </tr>
-        <tr>
-          <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
-          <td ><%= f.date_field :date_lteq, class: "input" %></td>
-          <td ><%= f.date_field :result_point_gteq, class: "input" %>~</td>
-          <td ><%= f.date_field :result_point_lteq, class: "input" %></td>
-        </tr>
-        <tr>
-          <th class="search-th" colspan="2">決済完了日</th>
-          <th class="search-th" colspan="2">決済期限</th>
-        </tr>
-        <tr>
 
-          <td ><%= f.date_field :status_update_settlement_gteq, class: "input" %>~</td>
-          <td ><%= f.date_field :status_update_settlement_lteq, class: "input" %></td>
-          <td ><%= f.date_field :settlement_deadline_gteq, class: "input" %>~</td>
-          <td ><%= f.date_field :settlement_deadline_lteq, class: "input" %></td>
-        </tr>
-      </table>
-
-      <table >
-        <tr >
-          <th class="search-head" rowspan="4" >検索</th>
-          <th class="search-th">申込番号</th>
-          <th class="search-th">拠点</th>
-          <th class="search-th">店舗名</th>
-          <th class="search-th">獲得者</th>
-          <th class="search-th">決済者</th>
-          <th class="search-th">審査ステータス</th>
-          <th class="search-th">決済ステータス</th>
-          <th class="search-th">商流</th>
-          <td class="result"><%= f.submit "絞込み",data: {disable_with: "絞り込み中"} ,class: "result-btn" %></td>
-        </tr>
-        <tr >
-          <td><%= f.text_field :customer_num_eq, class: "input" %></td>
-          <td><%= f.select :user_base_cont,{"中部SS": "中部SS","関東SS": "関東SS","関西SS": "関西SS"},{include_blank: true},{ class: "input"} %></td>
-          <td><%= f.text_field :store_prop_name_cont, class: "input" %></td>
-          <td><%= f.text_field :user_name_cont, class: "input" %></td>
-          <td><%= f.text_field :settlementer_name_cont, class: "input" %></td>
-          <td><%= f.select :status_eq, options_from_collection_for_select(Aupay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
-          <td><%= f.select :status_settlement_eq, options_from_collection_for_select(Aupay.select(:status_settlement).distinct,:status_settlement, :status_settlement),{include_blank: true}, {class: "input"} %></td>
-          <td ><%= f.select :client_eq, options_from_collection_for_select(Aupay.select(:client).distinct, :client, :client), {include_blank: true}, {class: "input"} %></td>
-          <td class="reset"><%= link_to "絞込みリセット", aupays_path, class: "reset-link" %></td>
-        </tr>
-      </table>
-    <% end %>
     <%= alert %>
     <hr>
     <% if @aupays.empty? %>
     
-
-    
     <% else %>
-      <h1>表示範囲：<%= @aupays.minimum(:date) %>（<%= days[@aupays.minimum(:date).wday] %>〜<%= @aupays.maximum(:date) %>（<%= days[@aupays.maximum(:date).wday] %>）</h1>
+      <h1>獲得日：<%= @aupays.minimum(:date) %>（<%= days[@aupays.minimum(:date).wday] %>〜<%= @aupays.maximum(:date) %>（<%= days[@aupays.maximum(:date).wday] %>）</h1>
 
         <% settlement_subject = @aupays.where(status: "審査通過").length %>
         <% settlement_done = @aupays.where.not(settlement: nil).length %>

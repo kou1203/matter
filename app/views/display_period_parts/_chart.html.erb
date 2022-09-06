@@ -24,6 +24,7 @@
   <tbody>
     <tr></tr>
   <% results_data = [@cash_results_chubu, @cash_results_kansai, @cash_results_kanto] %>
+  <% if @cash_results_chubu.present? && @cash_results_kansai.present? && @cash_results_kanto.present? %>
   <% results_data.each do |r| %>
     <tr>
   <%# 期間 %>
@@ -245,6 +246,7 @@
       <% end %>
       <td><%= profit_prev_month_ave.to_s(:delimited) %></td>
     </tr>
+  <% end %>
   <% end %>
   </tbody>
 </table>

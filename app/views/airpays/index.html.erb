@@ -49,7 +49,7 @@
   <% if @airpays.empty? %>
     <div class="warning"><%= alert %></div>
   <% else %>
-      <h1>表示範囲：<%= @airpays.minimum(:date) %>（<%= days[@airpays.minimum(:date).wday] %>）〜<%= @airpays.maximum(:date) %>（<%= days[@airpays.maximum(:date).wday] %>）</h1>
+      <h1>獲得日：<%= @airpays.minimum(:date) %>（<%= days[@airpays.minimum(:date).wday] %>）〜<%= @airpays.maximum(:date) %>（<%= days[@airpays.maximum(:date).wday] %>）</h1>
     <table >
       <tr>
         <th class="search-th">獲得数</th>
