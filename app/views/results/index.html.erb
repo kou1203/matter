@@ -393,18 +393,18 @@
           <tr>
             <td>中部SS</td>
             <td>全体</td>
-            <td><%= @dmer_slmt_this_month.length %></td>
-            <td><%= @dmer_slmt_this_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage(@dmer_slmt_this_month.where(status_settlement: "完了").length.to_f / @dmer_slmt_this_month.length.to_f * 100,precision: 0) rescue 0  %></td>
-            <td><%= @dmer_slmt_prev_month.length %></td>
-            <td><%= @dmer_slmt_prev_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage((@dmer_slmt_prev_month.where(status_settlement: "完了").length).to_f / @dmer_slmt_prev_month.length.to_f * 100,precision: 0) rescue 0  %></td>
-            <td><%= @aupay_slmt_this_month.length %></td>
-            <td><%= @aupay_slmt_this_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage(@aupay_slmt_this_month.where(status_settlement: "完了").length.to_f / @aupay_slmt_this_month.length.to_f * 100,precision: 0) rescue 0  %></td>
-            <td><%= @aupay_slmt_prev_month.length %></td>
-            <td><%= @aupay_slmt_prev_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage((@aupay_slmt_prev_month.where(status_settlement: "完了").length).to_f / @aupay_slmt_prev_month.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @dmer_slmt_this_month_chubu.length %></td>
+            <td><%= @dmer_slmt_this_month_chubu.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage(@dmer_slmt_this_month_chubu.where(status_settlement: "完了").length.to_f / @dmer_slmt_this_month_chubu.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @dmer_slmt_prev_month_chubu.length %></td>
+            <td><%= @dmer_slmt_prev_month_chubu.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage((@dmer_slmt_prev_month_chubu.where(status_settlement: "完了").length).to_f / @dmer_slmt_prev_month_chubu.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @aupay_slmt_this_month_chubu.length %></td>
+            <td><%= @aupay_slmt_this_month_chubu.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage(@aupay_slmt_this_month_chubu.where(status_settlement: "完了").length.to_f / @aupay_slmt_this_month_chubu.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @aupay_slmt_prev_month_chubu.length %></td>
+            <td><%= @aupay_slmt_prev_month_chubu.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage((@aupay_slmt_prev_month_chubu.where(status_settlement: "完了").length).to_f / @aupay_slmt_prev_month_chubu.length.to_f * 100,precision: 0) rescue 0  %></td>
           </tr>
         </table>
       </div><%# /中部決済率 %>
@@ -457,18 +457,18 @@
           <tr>
             <td>関西SS</td>
             <td>全体</td>
-            <td><%= @dmer_slmt_this_month.length %></td>
-            <td><%= @dmer_slmt_this_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage(@dmer_slmt_this_month.where(status_settlement: "完了").length.to_f / @dmer_slmt_this_month.length.to_f * 100,precision: 0) rescue 0  %></td>
-            <td><%= @dmer_slmt_prev_month.length %></td>
-            <td><%= @dmer_slmt_prev_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage((@dmer_slmt_prev_month.where(status_settlement: "完了").length).to_f / @dmer_slmt_prev_month.length.to_f * 100,precision: 0) rescue 0  %></td>
-            <td><%= @aupay_slmt_this_month.length %></td>
-            <td><%= @aupay_slmt_this_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage(@aupay_slmt_this_month.where(status_settlement: "完了").length.to_f / @aupay_slmt_this_month.length.to_f * 100,precision: 0) rescue 0  %></td>
-            <td><%= @aupay_slmt_prev_month.length %></td>
-            <td><%= @aupay_slmt_prev_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage((@aupay_slmt_prev_month.where(status_settlement: "完了").length).to_f / @aupay_slmt_prev_month.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @dmer_slmt_this_month_kansai.length %></td>
+            <td><%= @dmer_slmt_this_month_kansai.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage(@dmer_slmt_this_month_kansai.where(status_settlement: "完了").length.to_f / @dmer_slmt_this_month_kansai.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @dmer_slmt_prev_month_kansai.length %></td>
+            <td><%= @dmer_slmt_prev_month_kansai.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage((@dmer_slmt_prev_month_kansai.where(status_settlement: "完了").length).to_f / @dmer_slmt_prev_month_kansai.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @aupay_slmt_this_month_kansai.length %></td>
+            <td><%= @aupay_slmt_this_month_kansai.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage(@aupay_slmt_this_month_kansai.where(status_settlement: "完了").length.to_f / @aupay_slmt_this_month_kansai.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @aupay_slmt_prev_month_kansai.length %></td>
+            <td><%= @aupay_slmt_prev_month_kansai.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage((@aupay_slmt_prev_month_kansai.where(status_settlement: "完了").length).to_f / @aupay_slmt_prev_month_kansai.length.to_f * 100,precision: 0) rescue 0  %></td>
           </tr>
         </table>
       </div><%# /関西決済率 %>
@@ -521,18 +521,18 @@
           <tr>
             <td>関東SS</td>
             <td>全体</td>
-            <td><%= @dmer_slmt_this_month.length %></td>
-            <td><%= @dmer_slmt_this_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage(@dmer_slmt_this_month.where(status_settlement: "完了").length.to_f / @dmer_slmt_this_month.length.to_f * 100,precision: 0) rescue 0  %></td>
-            <td><%= @dmer_slmt_prev_month.length %></td>
-            <td><%= @dmer_slmt_prev_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage((@dmer_slmt_prev_month.where(status_settlement: "完了").length).to_f / @dmer_slmt_prev_month.length.to_f * 100,precision: 0) rescue 0  %></td>
-            <td><%= @aupay_slmt_this_month.length %></td>
-            <td><%= @aupay_slmt_this_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage(@aupay_slmt_this_month.where(status_settlement: "完了").length.to_f / @aupay_slmt_this_month.length.to_f * 100,precision: 0) rescue 0  %></td>
-            <td><%= @aupay_slmt_prev_month.length %></td>
-            <td><%= @aupay_slmt_prev_month.where(status_settlement: "完了").length %></td>
-            <td><%= number_to_percentage((@aupay_slmt_prev_month.where(status_settlement: "完了").length).to_f / @aupay_slmt_prev_month.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @dmer_slmt_this_month_kanto.length %></td>
+            <td><%= @dmer_slmt_this_month_kanto.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage(@dmer_slmt_this_month_kanto.where(status_settlement: "完了").length.to_f / @dmer_slmt_this_month_kanto.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @dmer_slmt_prev_month_kanto.length %></td>
+            <td><%= @dmer_slmt_prev_month_kanto.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage((@dmer_slmt_prev_month_kanto.where(status_settlement: "完了").length).to_f / @dmer_slmt_prev_month_kanto.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @aupay_slmt_this_month_kanto.length %></td>
+            <td><%= @aupay_slmt_this_month_kanto.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage(@aupay_slmt_this_month_kanto.where(status_settlement: "完了").length.to_f / @aupay_slmt_this_month_kanto.length.to_f * 100,precision: 0) rescue 0  %></td>
+            <td><%= @aupay_slmt_prev_month_kanto.length %></td>
+            <td><%= @aupay_slmt_prev_month_kanto.where(status_settlement: "完了").length %></td>
+            <td><%= number_to_percentage((@aupay_slmt_prev_month_kanto.where(status_settlement: "完了").length).to_f / @aupay_slmt_prev_month_kanto.length.to_f * 100,precision: 0) rescue 0  %></td>
           </tr>
         </table>
       </div><%# /関東決済率 %>

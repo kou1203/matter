@@ -1,0 +1,118 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title"></h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/index">
+<div class="main">
+  <%= form_with url: import_demaekans_path do |f| %>
+    <table class="csv-tb">
+      <tr>
+        <td class="csv-label" >CSV</td>
+        <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
+        </tr>
+      </table>
+    <% end %>
+    <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
+    <%= search_form_for @q do |f| %>
+      <table >
+        <tr >
+          <th class="search-head" rowspan="2" >検索</th>
+          <th colspan="2" class="search-th">獲得日付</th>
+          <th colspan="2" class="search-th">審査完了日</th>
+          <th class="search-th">店舗番号</th>
+          <th class="search-th">店舗名</th>
+          <th class="search-th">獲得者</th>
+          <th class="search-th">拠点</th>
+          <th class="search-th">審査ステータス</th>
+          <td class="result"><%= f.submit "絞込み", class: "result-btn" %></td>
+        </tr>
+        <tr >
+        <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
+        <td ><%= f.date_field :date_lteq, class: "input" %></td>
+        <td ><%= f.date_field :result_point_gteq, class: "input" %>~</td>
+        <td ><%= f.date_field :result_point_lteq, class: "input" %></td>
+          <td ><%= f.text_field :customer_num_cont, class: "input" %></td>
+          <td ><%= f.text_field :store_name_cont, class: "input" %></td>
+          <td ><%= f.text_field :user_name_cont, class: "input" %></td>
+          <td ><%= f.text_field :user_base_cont, class: "input" %></td>
+          <td ><%= f.select :status_eq, options_from_collection_for_select(Airpay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
+          <td class="reset"><%= link_to "絞込みリセット", airpays_path, class: "reset-link" %></td>
+        </tr>
+    </table>
+    <% end %>
+  <% if @airpays.empty? %>
+    <div class="warning"><%= alert %></div>
+  <% else %>
+      <h1>獲得日：<%= @airpays.minimum(:date) %>（<%= days[@airpays.minimum(:date).wday] %>）〜<%= @airpays.maximum(:date) %>（<%= days[@airpays.maximum(:date).wday] %>）</h1>
+    <table >
+      <tr>
+        <th class="search-th">獲得数</th>
+        <th class="search-th">書類提出待ち</th>
+        <th class="search-th">審査中</th>
+        <th class="search-th">審査完了</th>
+        <th class="search-th">審査NG</th>
+        <th class="search-th">キャンセル</th>
+      </tr>
+      <tr>
+        <td><%= @airpays.length %></td>
+        <td><%= @airpays.where(status: "書類提出待ち").length %></td>
+        <td><%= @airpays.where(status: "審査中").length %></td>
+        <td><%= @airpays.where(status: "審査完了").length %></td>
+        <td><%= @airpays.where(status: "審査NG").length %></td>
+        <td><%= @airpays.where(status: "キャンセル").length %></td>
+      </tr>
+    </table>
+    <table class="out-tb">
+      <thead>
+      <tr>
+        <th class="out-th">ID</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">店舗番号</th>
+        <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+        <th class="out-th">獲得者</th>
+        <th class="out-th">審査ステータス</th>
+        <th class="out-th">VM審査ステータス</th>
+        <th class="out-th">審査完了日</th>
+        <th class="out-th">iPad申込区分</th>
+        <th class="out-th">書類フォロー</th>
+        <th class="out-th">配送ステータス</th>
+        <th class="out-th">評価売</th>
+        <% if current_user.position == "権限①" %>
+        <th class="out-th">実売</th>
+        <% end %>
+      </tr>
+      </thead>
+      <tbody>
+      <% @airpays_data.each do |airpay| %>
+      <tr >
+        <td class="out-td"><%= airpay.id %></td>
+        <td class="out-td"><%= airpay.customer_num %></td>
+        <td class="out-td"><%= airpay.store_name %></td>
+        <td class="out-td"><%= airpay.date %></td>
+        <td class="out-td"><%= airpay.user.name %></td>
+        <td class="out-td"><%= airpay.status %></td>
+        <td class="out-td"><%= airpay.vm_status_name %></td>
+        <td class="out-td"><%= airpay.result_point %></td>
+        <td class="out-td"><%= airpay.ipad_flag %></td>
+        <td class="out-td"><%= airpay.doc_follow %></td>
+        <td class="out-td"><%= airpay.delivery_status %></td>
+        <td class="out-td"><%= airpay.valuation %></td>
+        <% if current_user.position == "権限①" %>
+        <td class="out-td"><%= airpay.profit %></td>
+        <% end %>
+      <% end %>
+      </tbody>
+    </table>
+  <div class="kaminari-page">
+    <%= paginate @airpays_data %>
+  </div>
+  <% end %>
+  </div>
+  </div>
+</div>

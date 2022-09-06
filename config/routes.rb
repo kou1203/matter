@@ -153,4 +153,7 @@ Rails.application.routes.draw do
   resources :other_products
   resources :dmer_stocks
   resources :product_targets
+  resources :demaekans, only: [:index] do 
+    collection {post :import}
+  end 
 end

@@ -95,16 +95,22 @@ class ResultsController < ApplicationController
           .where.not(industry_status: "要確認")
           @aupay_slmt_this_month =
           @aupay_monthly.where(status: "審査通過")
+          @dmer_slmt_this_month_chubu = @dmer_slmt_this_month.where(user: {base: "中部SS"})
+          @dmer_slmt_this_month_kansai = @dmer_slmt_this_month.where(user: {base: "関西SS"})
+          @dmer_slmt_this_month_kanto = @dmer_slmt_this_month.where(user: {base: "関東SS"})
+          @aupay_slmt_this_month_chubu = @aupay_slmt_this_month.where(user: {base: "中部SS"})
+          @aupay_slmt_this_month_kansai = @aupay_slmt_this_month.where(user: {base: "関西SS"})
+          @aupay_slmt_this_month_kanto = @aupay_slmt_this_month.where(user: {base: "関東SS"})
         # 過去月
         @dmer_slmt_prev_month = 
-          Dmer.where("? > date",@month_daily.beginning_of_month)
+          Dmer.includes(:user).where("? > date",@month_daily.beginning_of_month)
           .where("settlement_deadline > ?",@month_daily.beginning_of_month)
           .where(status: "審査OK")
           .where.not(industry_status: "NG")
           .where.not(industry_status: "×")
           .where.not(industry_status: "要確認")
         @aupay_slmt_prev_month = 
-          Aupay.where("? > date",@month_daily.beginning_of_month)
+          Aupay.includes(:user).where("? > date",@month_daily.beginning_of_month)
           .where("settlement_deadline > ?",@month_daily.beginning_of_month)
           .where(status_update_settlement: nil)
           .where(status: "審査通過")
@@ -114,7 +120,12 @@ class ResultsController < ApplicationController
             .where(status_update_settlement: @month_daily.beginning_of_month..@month_daily.end_of_month)
             .where(status: "審査通過")
           )
-        
+          @dmer_slmt_prev_month_chubu = @dmer_slmt_prev_month.where(user: {base: "中部SS"})
+          @dmer_slmt_prev_month_kansai = @dmer_slmt_prev_month.where(user: {base: "関西SS"})
+          @dmer_slmt_prev_month_kanto = @dmer_slmt_prev_month.where(user: {base: "関東SS"})
+          @aupay_slmt_prev_month_chubu = @aupay_slmt_prev_month.where(user: {base: "中部SS"})
+          @aupay_slmt_prev_month_kansai = @aupay_slmt_prev_month.where(user: {base: "関西SS"})
+          @aupay_slmt_prev_month_kanto = @aupay_slmt_prev_month.where(user: {base: "関東SS"})
         # 現状売上
         @result_monthly = 
           if @month_daily.day >= 26

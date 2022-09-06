@@ -1,0 +1,2 @@
+class Demaekan < ApplicationRecord
+end

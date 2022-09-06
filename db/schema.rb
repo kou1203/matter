@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_31_092156) do
+ActiveRecord::Schema.define(version: 2022_09_06_075202) do
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "store_name", null: false
@@ -105,6 +105,18 @@ ActiveRecord::Schema.define(version: 2022_08_31_092156) do
     t.integer "travel_stock", null: false
     t.integer "other", null: false
     t.date "update_date"
+  end
+
+  create_table "demaekans", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "status", null: false
+    t.date "date", null: false
+    t.bigint "user_id"
+    t.bigint "store_prop_id"
+    t.date "cs_send"
+    t.date "datedeadline"
+    t.date "first_cs_contract"
+    t.index ["store_prop_id"], name: "index_demaekans_on_store_prop_id"
+    t.index ["user_id"], name: "index_demaekans_on_user_id"
   end
 
   create_table "display_periods", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1022,6 +1034,8 @@ ActiveRecord::Schema.define(version: 2022_08_31_092156) do
   add_foreign_key "aupays", "users"
   add_foreign_key "aupays", "users", column: "settlementer_id"
   add_foreign_key "comments", "store_props"
+  add_foreign_key "demaekans", "store_props"
+  add_foreign_key "demaekans", "users"
   add_foreign_key "dmers", "store_props"
   add_foreign_key "dmers", "users"
   add_foreign_key "dmers", "users", column: "settlementer_id"
