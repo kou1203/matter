@@ -20,4 +20,5 @@ class User < ApplicationRecord
   has_many :rakuten_pays
   has_many :result_sales
   has_many :other_products
+  has_many :demaekans
 end

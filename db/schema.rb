@@ -109,12 +109,15 @@ ActiveRecord::Schema.define(version: 2022_09_06_075202) do
 
   create_table "demaekans", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "status", null: false
+    t.string "customer_num", null: false
     t.date "date", null: false
     t.bigint "user_id"
     t.bigint "store_prop_id"
     t.date "cs_send"
     t.date "datedeadline"
     t.date "first_cs_contract"
+    t.integer "profit", null: false
+    t.integer "valuation", null: false
     t.index ["store_prop_id"], name: "index_demaekans_on_store_prop_id"
     t.index ["user_id"], name: "index_demaekans_on_user_id"
   end

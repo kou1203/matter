@@ -86,7 +86,7 @@
       <th class="search-th" rowspan="2" >新規消化シフト</th>
       <th class="search-th" rowspan="2" >決済消化シフト</th>
       <th class="search-th" colspan="3" >評価売上</th>
-      <th class="search-th" colspan="5">基準値</th>
+      <th class="search-th" colspan="9">基準値</th>
       <th class="search-th" colspan="8">商材別獲得数</th>
       <th class="search-th" colspan="6">商材別成果数</th>
       <th class="search-th" colspan="5">商材別平均獲得数</th>
@@ -98,9 +98,13 @@
       <th class="search-th" >終着売上</th>
       <th class="search-th">訪問</th>
       <th class="search-th">応答</th>
+      <th class="search-th">応答率</th>
       <th class="search-th">対面</th>
+      <th class="search-th">対面率</th>
       <th class="search-th">フル</th>
-      <th class="search-th">獲得</th>
+      <th class="search-th">フル率</th>
+      <th class="search-th">成約</th>
+      <th class="search-th">獲得成約率</th>
       <%# 獲得商材 %>
       <th class="search-th">dメル（新規）</th>
       <th class="search-th">dメル（決済+写真）</th>
@@ -776,11 +780,20 @@
       <td ><%= sum_valuations.to_s(:delimited) rescue 0 %></td>
       <td ><%= sum_valuations_fin.to_s(:delimited) rescue 0 %></td>
       <%# 基準値 %>
-      <td><%= (sum_total_visit / new_shift_digestion).round(1) rescue 0 %></td>
-      <td><%= (sum_visit / new_shift_digestion).round(1) rescue 0 %></td>
-      <td><%= (sum_interview / new_shift_digestion).round(1) rescue 0 %></td>
-      <td><%= (sum_full_talk / new_shift_digestion).round(1) rescue 0 %></td>
-      <td><%= (sum_product / 4 / new_shift_digestion).round(1) rescue 0 %></td>
+      <% total_visit_ave = (sum_total_visit / new_shift_digestion).round(1) rescue 0 %>
+      <% visit_ave = (sum_visit / new_shift_digestion).round(1) rescue 0 %>
+      <% interview_ave = (sum_interview / new_shift_digestion).round(1) rescue 0 %>
+      <% full_talk_ave = (sum_full_talk / new_shift_digestion).round(1) rescue 0 %>
+      <% sum_product_ave = (sum_product / 4 / new_shift_digestion).round(1) rescue 0 %>
+      <td><%= total_visit_ave rescue 0 %></td>
+      <td><%= visit_ave rescue 0 %></td>
+      <td><%= number_to_percentage(visit_ave / total_visit_ave * 100,precision:0) rescue 0 %></td>
+      <td><%= interview_ave rescue 0 %></td>
+      <td><%= number_to_percentage(interview_ave / visit_ave * 100,precision:0) rescue 0 %></td>
+      <td><%= full_talk_ave rescue 0 %></td>
+      <td><%= number_to_percentage(full_talk_ave / interview_ave * 100,precision:0) rescue 0 %></td>
+      <td><%= sum_product_ave %></td>
+      <td><%= number_to_percentage(sum_product_ave / full_talk_ave * 100,precision:0) rescue 0 %></td>
       <%# 獲得数 %>
       <td ><%= dmer_len %></td>
       <td ><%= dmer_slmt_len %></td>
@@ -824,11 +837,21 @@
         <td><%= base_sum.to_s(:delimited) rescue 0 %></td>
         <td><%= base_fin.to_s(:delimited) rescue 0 %></td>
         <%# 基準値 %>
-        <td><%= (@cash_result.sum("first_total_visit + latter_total_visit") / base_new_shift_digestion).round(1) rescue 0 %></td>
-        <td><%= (@cash_result.sum("first_visit + latter_visit").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
-        <td><%= (@cash_result.sum("first_interview + latter_interview").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
-        <td><%= (@cash_result.sum("first_full_talk + latter_full_talk").to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
-        <td><%= (base_sum_product / base_new_shift_digestion / 4).round(1) rescue 0 %></td>
+      <% total_visit_ave_base = (@cash_result.sum("first_total_visit + latter_total_visit") / base_new_shift_digestion).round(1) rescue 0 %>
+      <% visit_ave_base = (@cash_result.sum("first_visit + latter_visit").to_f / base_new_shift_digestion).round(1) rescue 0 %>
+      <% interview_ave_base = (@cash_result.sum("first_interview + latter_interview").to_f / base_new_shift_digestion).round(1) rescue 0 %>
+      <% full_talk_ave_base = (@cash_result.sum("first_full_talk + latter_full_talk").to_f / base_new_shift_digestion).round(1) rescue 0 %>
+      
+      <% sum_product_ave_base = (base_sum_product / base_new_shift_digestion / 4).round(1) rescue 0 %>
+        <td><%= total_visit_ave_base rescue 0 %></td>
+        <td><%= visit_ave_base rescue 0 %></td>
+        <td><%= number_to_percentage(visit_ave_base / total_visit_ave_base * 100,precision:0) rescue 0 %></td>
+        <td><%= interview_ave_base rescue 0 %></td>
+        <td><%= number_to_percentage(interview_ave_base / visit_ave_base  * 100,precision:0) rescue 0 %></td>
+        <td><%= full_talk_ave_base rescue 0 %></td>
+        <td><%= number_to_percentage(full_talk_ave_base / interview_ave_base * 100,precision:0) rescue 0 %></td>
+        <td><%= sum_product_ave_base rescue 0 %></td>
+        <td><%= number_to_percentage(sum_product_ave_base / full_talk_ave_base * 100,precision:0) rescue 0 %></td>
         <%# 全体獲得数 %>
         <td><%= base_dmer %></td>
         <td><%= base_dmer_slmt %></td>

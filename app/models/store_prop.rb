@@ -23,6 +23,7 @@ class StoreProp < ApplicationRecord
   has_one :rakuten_casa , dependent: :destroy
   has_many :trouble_sses, dependent: :destroy
   has_many :comments, dependent: :destroy
+  has_many :demaekans, dependent: :destroy
   has_one :st_insurance, dependent: :destroy
   has_one :rakuten_pay, dependent: :destroy
 

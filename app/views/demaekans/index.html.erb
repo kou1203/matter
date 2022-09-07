@@ -24,9 +24,7 @@
         <tr >
           <th class="search-head" rowspan="2" >検索</th>
           <th colspan="2" class="search-th">獲得日付</th>
-          <th colspan="2" class="search-th">審査完了日</th>
-          <th class="search-th">店舗番号</th>
-          <th class="search-th">店舗名</th>
+          <th colspan="2" class="search-th">CS締結日</th>
           <th class="search-th">獲得者</th>
           <th class="search-th">拠点</th>
           <th class="search-th">審査ステータス</th>
@@ -35,21 +33,19 @@
         <tr >
         <td ><%= f.date_field :date_gteq, class: "input" %>~</td>
         <td ><%= f.date_field :date_lteq, class: "input" %></td>
-        <td ><%= f.date_field :result_point_gteq, class: "input" %>~</td>
-        <td ><%= f.date_field :result_point_lteq, class: "input" %></td>
-          <td ><%= f.text_field :customer_num_cont, class: "input" %></td>
-          <td ><%= f.text_field :store_name_cont, class: "input" %></td>
+        <td ><%= f.date_field :first_cs_contract_gteq, class: "input" %>~</td>
+        <td ><%= f.date_field :first_cs_contract_lteq, class: "input" %></td>
           <td ><%= f.text_field :user_name_cont, class: "input" %></td>
           <td ><%= f.text_field :user_base_cont, class: "input" %></td>
-          <td ><%= f.select :status_eq, options_from_collection_for_select(Airpay.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
-          <td class="reset"><%= link_to "絞込みリセット", airpays_path, class: "reset-link" %></td>
+          <td ><%= f.select :status_eq, options_from_collection_for_select(Demaekan.select(:status).distinct,:status, :status),{include_blank: true}, {class: "input"} %></td>
+          <td class="reset"><%= link_to "絞込みリセット", demaekans_path, class: "reset-link" %></td>
         </tr>
     </table>
     <% end %>
-  <% if @airpays.empty? %>
+  <% if @demaekans.empty? %>
     <div class="warning"><%= alert %></div>
   <% else %>
-      <h1>獲得日：<%= @airpays.minimum(:date) %>（<%= days[@airpays.minimum(:date).wday] %>）〜<%= @airpays.maximum(:date) %>（<%= days[@airpays.maximum(:date).wday] %>）</h1>
+      <h1>獲得日：<%= @demaekans.minimum(:date) %>（<%= days[@demaekans.minimum(:date).wday] %>）〜<%= @demaekans.maximum(:date) %>（<%= days[@demaekans.maximum(:date).wday] %>）</h1>
     <table >
       <tr>
         <th class="search-th">獲得数</th>
@@ -60,12 +56,12 @@
         <th class="search-th">キャンセル</th>
       </tr>
       <tr>
-        <td><%= @airpays.length %></td>
-        <td><%= @airpays.where(status: "書類提出待ち").length %></td>
-        <td><%= @airpays.where(status: "審査中").length %></td>
-        <td><%= @airpays.where(status: "審査完了").length %></td>
-        <td><%= @airpays.where(status: "審査NG").length %></td>
-        <td><%= @airpays.where(status: "キャンセル").length %></td>
+        <td><%= @demaekans.length %></td>
+        <td><%= @demaekans.where(status: "書類提出待ち").length %></td>
+        <td><%= @demaekans.where(status: "審査中").length %></td>
+        <td><%= @demaekans.where(status: "審査完了").length %></td>
+        <td><%= @demaekans.where(status: "審査NG").length %></td>
+        <td><%= @demaekans.where(status: "キャンセル").length %></td>
       </tr>
     </table>
     <table class="out-tb">
@@ -89,28 +85,28 @@
       </tr>
       </thead>
       <tbody>
-      <% @airpays_data.each do |airpay| %>
+      <% @demaekans_data.each do |demaekan| %>
       <tr >
-        <td class="out-td"><%= airpay.id %></td>
-        <td class="out-td"><%= airpay.customer_num %></td>
-        <td class="out-td"><%= airpay.store_name %></td>
-        <td class="out-td"><%= airpay.date %></td>
-        <td class="out-td"><%= airpay.user.name %></td>
-        <td class="out-td"><%= airpay.status %></td>
-        <td class="out-td"><%= airpay.vm_status_name %></td>
-        <td class="out-td"><%= airpay.result_point %></td>
-        <td class="out-td"><%= airpay.ipad_flag %></td>
-        <td class="out-td"><%= airpay.doc_follow %></td>
-        <td class="out-td"><%= airpay.delivery_status %></td>
-        <td class="out-td"><%= airpay.valuation %></td>
+        <td class="out-td"><%= demaekan.id %></td>
+        <td class="out-td"><%= demaekan.customer_num %></td>
+        <td class="out-td"><%= demaekan.store_name %></td>
+        <td class="out-td"><%= demaekan.date %></td>
+        <td class="out-td"><%= demaekan.user.name %></td>
+        <td class="out-td"><%= demaekan.status %></td>
+        <td class="out-td"><%= demaekan.vm_status_name %></td>
+        <td class="out-td"><%= demaekan.result_point %></td>
+        <td class="out-td"><%= demaekan.ipad_flag %></td>
+        <td class="out-td"><%= demaekan.doc_follow %></td>
+        <td class="out-td"><%= demaekan.delivery_status %></td>
+        <td class="out-td"><%= demaekan.valuation %></td>
         <% if current_user.position == "権限①" %>
-        <td class="out-td"><%= airpay.profit %></td>
+        <td class="out-td"><%= demaekan.profit %></td>
         <% end %>
       <% end %>
       </tbody>
     </table>
   <div class="kaminari-page">
-    <%= paginate @airpays_data %>
+    <%= paginate @demaekans_data %>
   </div>
   <% end %>
   </div>
