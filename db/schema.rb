@@ -114,7 +114,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_075202) do
     t.bigint "user_id"
     t.bigint "store_prop_id"
     t.date "cs_send"
-    t.date "datedeadline"
+    t.date "deadline"
     t.date "first_cs_contract"
     t.integer "profit", null: false
     t.integer "valuation", null: false

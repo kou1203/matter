@@ -7,7 +7,7 @@ class CreateDemaekans < ActiveRecord::Migration[6.1]
       t.references :user         , foreign_key: true
       t.references :store_prop   , foreign_key: true
       t.date :cs_send
-      t.date :datedeadline
+      t.date :deadline
       t.date :first_cs_contract
       t.integer :profit          , null: false
       t.integer :valuation       , null: false    

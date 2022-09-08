@@ -1,6 +1,6 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <div data-scope-path="shared/header">
-  <h1 class="sub-title"></h1>
+  <h1 class="sub-title">出前館</h1>
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;">
@@ -48,20 +48,10 @@
       <h1>獲得日：<%= @demaekans.minimum(:date) %>（<%= days[@demaekans.minimum(:date).wday] %>）〜<%= @demaekans.maximum(:date) %>（<%= days[@demaekans.maximum(:date).wday] %>）</h1>
     <table >
       <tr>
-        <th class="search-th">獲得数</th>
-        <th class="search-th">書類提出待ち</th>
-        <th class="search-th">審査中</th>
-        <th class="search-th">審査完了</th>
-        <th class="search-th">審査NG</th>
-        <th class="search-th">キャンセル</th>
+        <th >獲得数（完了）</th>
       </tr>
       <tr>
         <td><%= @demaekans.length %></td>
-        <td><%= @demaekans.where(status: "書類提出待ち").length %></td>
-        <td><%= @demaekans.where(status: "審査中").length %></td>
-        <td><%= @demaekans.where(status: "審査完了").length %></td>
-        <td><%= @demaekans.where(status: "審査NG").length %></td>
-        <td><%= @demaekans.where(status: "キャンセル").length %></td>
       </tr>
     </table>
     <table class="out-tb">
@@ -73,11 +63,9 @@
         <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
         <th class="out-th">獲得者</th>
         <th class="out-th">審査ステータス</th>
-        <th class="out-th">VM審査ステータス</th>
-        <th class="out-th">審査完了日</th>
-        <th class="out-th">iPad申込区分</th>
-        <th class="out-th">書類フォロー</th>
-        <th class="out-th">配送ステータス</th>
+        <th class="out-th">初回CS送信日</th>
+        <th class="out-th">締結期限</th>
+        <th class="out-th">初回CS締結日</th>
         <th class="out-th">評価売</th>
         <% if current_user.position == "権限①" %>
         <th class="out-th">実売</th>
@@ -89,15 +77,13 @@
       <tr >
         <td class="out-td"><%= demaekan.id %></td>
         <td class="out-td"><%= demaekan.customer_num %></td>
-        <td class="out-td"><%= demaekan.store_name %></td>
+        <td class="out-td"><%= demaekan.store_prop.name %></td>
         <td class="out-td"><%= demaekan.date %></td>
         <td class="out-td"><%= demaekan.user.name %></td>
         <td class="out-td"><%= demaekan.status %></td>
-        <td class="out-td"><%= demaekan.vm_status_name %></td>
-        <td class="out-td"><%= demaekan.result_point %></td>
-        <td class="out-td"><%= demaekan.ipad_flag %></td>
-        <td class="out-td"><%= demaekan.doc_follow %></td>
-        <td class="out-td"><%= demaekan.delivery_status %></td>
+        <td class="out-td"><%= demaekan.cs_send %></td>
+        <td class="out-td"><%= demaekan.deadline %></td>
+        <td class="out-td"><%= demaekan.first_cs_contract %></td>
         <td class="out-td"><%= demaekan.valuation %></td>
         <% if current_user.position == "権限①" %>
         <td class="out-td"><%= demaekan.profit %></td>

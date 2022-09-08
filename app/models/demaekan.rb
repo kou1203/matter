@@ -15,15 +15,15 @@ class Demaekan < ApplicationRecord
   def self.csv_check(file)
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
-      store_prop = StoreProp.find_by(mail_1: row["メールアドレス"],name: row["店舗名"],municipalities: row["町村"])
+      store_prop = StoreProp.find_by(mail_1: row["契約者メールアドレス"],city: row["市区"])
       user = User.find_by(name: row["獲得者"])
       errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
         store_id = store_prop.id if store_prop.present?
         demaekan = new(
-          status: row["ステータス"],
+          status: row["簡易ステータス"],
           user_id: user.id,
           store_prop_id: store_id,
-          date: row["獲得日"],
+          date: row["タイムスタンプ"],
           customer_num: row["案件NO"],
           first_cs_contract: row["初回CS締結日"],
           deadline: row["締結期限"],
@@ -43,13 +43,15 @@ class Demaekan < ApplicationRecord
     nochange_cnt = 0
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
     user = User.find_by(name: row["獲得者"])
-    demaekan = find_by(customer_num: row["店舗番号"])
+    store_prop = StoreProp.find_by(mail_1: row["契約者メールアドレス"],city: row["市区"])
+    store_id = store_prop.id if store_prop.present?
+    demaekan = find_by(customer_num: row["案件NO"])
     if demaekan.present? 
       demaekan.assign_attributes(
-        status: row["ステータス"],
+        status: row["簡易ステータス"],
         user_id: user.id,
         store_prop_id: store_id,
-        date: row["獲得日"],
+        date: row["タイムスタンプ"],
         customer_num: row["案件NO"],
         first_cs_contract: row["初回CS締結日"],
         deadline: row["締結期限"],
@@ -64,10 +66,10 @@ class Demaekan < ApplicationRecord
       end 
     else  
       demaekan = new(
-        status: row["ステータス"],
+        status: row["簡易ステータス"],
         user_id: user.id,
         store_prop_id: store_id,
-        date: row["獲得日"],
+        date: row["タイムスタンプ"],
         customer_num: row["案件NO"],
         first_cs_contract: row["初回CS締結日"],
         deadline: row["締結期限"],
