@@ -11,7 +11,9 @@
       @paypay_done.sum(:valuation) +
       @rakuten_pay_done_val +
       @airpay_done.sum(:valuation) +
-      (@airpay_done.length * 3000)
+      (@airpay_done.length * 3000) +
+      # その他商材
+      @aupay_pic_val
       elsif @airpay_done.present? && @airpay_done.length >= 10
       @dmer_done.sum(:valuation_new) +
       @dmer_slmt_done.sum(:valuation_settlement) +
