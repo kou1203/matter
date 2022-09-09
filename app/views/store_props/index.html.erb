@@ -62,6 +62,7 @@
             <th>auPay</th>
             <th>PayPay</th>
             <th>楽天ペイ</th>
+            <th>出前館</th>
           </tr>
           <tr class="search-tr">
             <td ><%= @store_props.length %></td>
@@ -69,6 +70,7 @@
             <td ><%= @store_props.where.not(aupay: {id: nil}).length %></td>
             <td ><%= @store_props.where.not(paypay: {id: nil}).length %></td>
             <td ><%= @store_props.where.not(rakuten_pay: {id: nil}).length %></td>
+            <td ><%= @store_props.where.not(demaekan: {id: nil}).length %></td>
           </tr>
         </table>
 
@@ -119,6 +121,9 @@
               <% else %>
                 <%= link_to "楽天ペイ", rakuten_pay_path(store_prop.rakuten_pay.id),class:"link" %>
               <% end %>
+            <% end %>
+            <% if store_prop.demaekan.present? %>
+              出前館
             <% end %>
             </td>
               <% if current_user.position == "権限①" %>

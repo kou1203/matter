@@ -799,6 +799,9 @@ class UsersController < ApplicationController
           0
         end 
         @airpay_done_val = @airpay_done.sum(:valuation) + airpay_bonus
+
+        @demaekan = Demaekan.includes(:user).where(user_id: @user.id).where(first_cs_contract: @results_date_min..@results_date_max)
+        @demaekan_len = @demaekan.length
       # 楽天フェムト新規
       @rakuten_casas_user = RakutenCasa.where(user_id: @results.first.user_id)
       @rakuten_casas_this_month = this_period(@rakuten_casas_user, @results)
@@ -831,7 +834,8 @@ class UsersController < ApplicationController
         @paypay_done.sum(:valuation) + 
         @rakuten_pay_done_val + 
         @airpay_done_val +
-        @aupay_pic_val
+        @aupay_pic_val + 
+        @demaekan.sum(:valuation)
       
       # 帯同Ave
       @ojt_val_ave = @valuation_sum / (@digestion_new + @digestion_settlement) rescue 0
@@ -1081,7 +1085,8 @@ class UsersController < ApplicationController
             @paypay_result1_fin +
             @rakuten_pay_result1_fin +
             @airpay_result1_fin +
-            @aupay_pic_val
+            @aupay_pic_val +
+            @demaekan.sum(:valuation)
           ).to_i
         if (@valuation_sum > @result_fin) || (Date.today >= @minimum_date_cash.next_month.end_of_month)
           @result_fin = @valuation_sum

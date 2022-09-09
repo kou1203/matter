@@ -3,7 +3,7 @@ class StorePropsController < ApplicationController
   before_action :authenticate_user!
   before_action :back_retirement, only: [:index]
   def index 
-    @q = StoreProp.includes(:dmer, :aupay, :paypay,:rakuten_pay).ransack(params[:q])
+    @q = StoreProp.includes(:dmer, :aupay, :paypay,:rakuten_pay,:demaekan).ransack(params[:q])
     @store_props = 
       if params[:q].nil?
         StoreProp.none 
@@ -122,6 +122,7 @@ class StorePropsController < ApplicationController
     @rakuten_casa = @store_prop.rakuten_casa
     @st_insurance = @store_prop.st_insurance
     @rakuten_pay = @store_prop.rakuten_pay
+    @demaekan = @store_prop.demaekan
     @summit_customer_prop = @store_prop.summit_customer_prop
     if @summit_customer_prop.nil?
       @summits = 0

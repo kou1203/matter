@@ -12,6 +12,7 @@
       @rakuten_pay_done_val +
       @airpay_done.sum(:valuation) +
       (@airpay_done.length * 3000) +
+      @demaekan.sum(:valuation) +
       # その他商材
       @aupay_pic_val
       elsif @airpay_done.present? && @airpay_done.length >= 10
@@ -23,6 +24,7 @@
       @rakuten_pay_done_val +
       @airpay_done.sum(:valuation) +
       (@airpay_done.length * 2000) +
+      @demaekan.sum(:valuation) +
       # その他商材
       @aupay_pic_val
       else
@@ -33,6 +35,7 @@
       @paypay_done.sum(:valuation) +
       @rakuten_pay_done_val +
       @airpay_done.sum(:valuation) +
+      @demaekan.sum(:valuation) +
       # その他商材
       @aupay_pic_val
       end
@@ -102,6 +105,13 @@
     <td class="valuation-td"><%= @aupay_pic_val.to_s(:delimited) rescue 0 %></td>
   </tr>
   <% end %>
+  <tr>
+    <td class="valuation-td">出前館</td>
+    <td class="valuation-td"><%= @demaekan_len rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @demaekan.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+  </tr>
   </table>
 <% if @dmer_done.present? %>
 <h2>dメル第一成果（審査完了）</h2>
@@ -364,6 +374,31 @@
       <td class="valuation-td "><%= pic.valuation %></td>
       <td class="valuation-td "><%= link_to "編集", edit_other_product_path(pic.id) %></td>
       </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @demaekan.present? %>
+<h2>出前館（成果）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">初回CS締結日</th>
+      <th class="valuation-th">評価売上</th>
+    </thead>
+    <tbody>
+      <% @demaekan.each do |d| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= d.store_prop.name %></td>
+      <td class="valuation-td "><%= d.date %></td>
+      <td class="valuation-td "><%= d.first_cs_contract %></td>
+      <td class="valuation-td "><%= d.valuation %></td>
+      </tr>
+      <% num += 1 %>
       <% end %>
     </tbody>
   </table>

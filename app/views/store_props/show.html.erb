@@ -41,6 +41,7 @@
       <tr>
         <th class="product-th">少額短期保険</th>
         <th class="product-th">楽天ペイ</th>
+        <th class="product-th">出前館</th>
       </tr>
       <tr>
         <% if @st_insurance.nil? %>
@@ -52,6 +53,11 @@
           <td><%= link_to "新規登録", store_prop_rakuten_pays_new_path(@store_prop.id), class: "link" %></td>
         <% else %>
           <td class="reg-td"><%= link_to "登録済/詳細", rakuten_pay_path(@store_prop.rakuten_pay.id),class: "link" %></td>
+        <% end %>
+        <% if @demaekan.nil? %>
+          <td>未獲得</td>
+        <% else %>
+          <td class="reg-td">登録済</td>
         <% end %>
       </tr>
     </table>
