@@ -119,11 +119,23 @@
                     </td>
                   </tr>
                   <tr class="s-tr">
+                    <td class="s-td">商流</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :client_eq,
+                        options_from_collection_for_select(Dmer.select(:client)
+                        .distinct,:client, :client),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
                     <td class="s-td">審査ステータス</td>
                     <td class="s-td">
                       <%= 
                         f.select :status_eq,
-                        options_from_collection_for_select(Aupay.select(:status)
+                        options_from_collection_for_select(Dmer.select(:status)
                         .distinct,:status, :status),
                         {include_blank: true},
                         {class: "t-input"} 
@@ -135,7 +147,7 @@
                     <td class="s-td">
                       <%= 
                         f.select :status_settlement_eq,
-                        options_from_collection_for_select(Aupay.select(:status_settlement)
+                        options_from_collection_for_select(Dmer.select(:status_settlement)
                         .distinct,:status_settlement, :status_settlement),
                         {include_blank: true},
                         {class: "t-input"}

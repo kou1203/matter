@@ -583,7 +583,7 @@
             aupay_pic = 
               OtherProduct.where(user_id: r.user_id)
               .where(product_name: "auPay写真")
-              .where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date))
+              .where(date: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
           %>
           <% aupay_pic_val = aupay_pic.sum(:valuation) %>
         <%# /auPay写真 %>
