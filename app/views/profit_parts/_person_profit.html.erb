@@ -1,0 +1,57 @@
+<%# 個別実売基準値 %>
+<%= javascript_pack_tag 'profit_person' %>
+<h2>合計実売</h2>
+<% @kansai_cash_list.each do |list| %>
+  <% list %>
+<% end  %>
+<table>
+  <tr>
+    <th>拠点</th>
+    <th>現状実売</th>
+    <th>終着実売</th>
+  </tr>
+  <tr>
+    <td>中部SS</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>関西SS</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>関東SS</td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>キャッシュレス合計</td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+<article id='profit_person'><%# 拠点選択 %>
+  <select v-model="baseSlct">
+    <option value="">拠点を選択してください</option>
+    <option>全拠点</option>
+    <option>中部SS</option>
+    <option>関西SS</option>
+    <option>関東SS</option>
+  </select>
+  <div>値：{{ baseSlct }}</div>
+  <div v-if="baseSlct=='全拠点'">
+  a
+  </div>
+  <div v-else-if="baseSlct=='中部SS'">
+  b
+  </div>
+  <div v-else-if="baseSlct=='関西SS'">
+  c
+  </div>
+  <div v-else-if="baseSlct=='関東SS'">
+  d
+  </div>
+  <div v-else>
+  </div>
+</article><%# 拠点選択 %>

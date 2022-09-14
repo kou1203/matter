@@ -97,6 +97,7 @@ Rails.application.routes.draw do
       post :import 
       get :date_progress
       get :ranking
+      get :profit
     }
   end  
 

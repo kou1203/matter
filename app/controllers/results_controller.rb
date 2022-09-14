@@ -1,7 +1,7 @@
 class ResultsController < ApplicationController
   before_action :authenticate_user!
-  def index 
-    
+  def index
+  # 商材情報
     @dmers = 
       Dmer.eager_load(:store_prop).select("dmers.id,dmers.user_id,dmers.store_prop_id")
       .where(store_prop: {head_store: nil})
@@ -14,6 +14,7 @@ class ResultsController < ApplicationController
       .where.not(status: "自社NG")
     @paypays = Paypay.select("paypays.id,paypays.user_id")
     @rakuten_pays = RakutenPay.select("rakuten_pays.id,rakuten_pays.user_id")
+  # ユーザー情報
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
     @users_chubu = @users.where(base: "中部SS")
@@ -24,7 +25,7 @@ class ResultsController < ApplicationController
     @users_kanto_cash = @users_kanto.where(base_sub: "キャッシュレス")
     @users_partner = @users.where(base: "2次店")
     @user_partner_cash = @users_partner.where(base_sub: "キャッシュレス")
-    @results_data = Result.all
+  # 終着データ
     @q = Result.ransack(params[:q])
     @results = 
     if params[:q].nil?
@@ -33,8 +34,8 @@ class ResultsController < ApplicationController
       @q.result(distinct: false).includes(:user).joins(:user).order(date: :asc)
     end
     if @results.present?
-      @minimum_result_cash = @results.minimum(:date)
-      @maximum_result_cash = @results.minimum(:date).beginning_of_month.since(1.month).since(24.days)
+      @minimum_result_cash = @results.minimum(:date) #26日
+      @maximum_result_cash = @results.minimum(:date).beginning_of_month.since(1.month).since(24.days) #25日
       if @results.first.user.base == "中部SS"
         @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash).where(user: {base: "中部SS"})
       elsif @results.first.user.base == "関西SS"
@@ -45,145 +46,140 @@ class ResultsController < ApplicationController
       @cash_result = @results.joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
       end
       @month = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
-      @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
-      @maximum_date_cash = @month.beginning_of_month.since(24.days)
     end
-    # 日々獲得進捗
-      @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today.yesterday #当日日付
-      # 日々獲得進捗
-        @dmer_monthly = 
-            Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id,:status_settlement,:status,:industry_status).where(user: {base_sub: "キャッシュレス"})
-        @aupay_monthly = 
-            Aupay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-        @paypay_monthly = 
-            Paypay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-        @rakuten_pay_monthly = 
-            RakutenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-        @airpay_monthly = 
-            Airpay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-        @shift_monthly_plan = 
-          Shift.includes(:user)
-          .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
-          .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-        @shift_monthly_slmt_plan = 
-          Shift.includes(:user)
-          .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
-          .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-        @shift_monthly_digestion = 
-          Result.includes(:user)
-          .where(date: @month_daily.beginning_of_month..@month_daily)
-          .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-        @shift_monthly_slmt_digestion = 
-          Result.includes(:user)
-          .where(date: @month_daily.beginning_of_month..@month_daily)
-          .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-        # 即時在庫
-        @dmer_stock = DmerStock.where(date:@month_daily.all_month)
-        # 目標獲得数
-        @product_targets = ProductTarget.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
-        @dmer_target = @product_targets.where(product: "dメル")
-        @aupay_target = @product_targets.where(product: "auPay")
-        @rakuten_pay_target = @product_targets.where(product: "楽天ペイ")
-        @airpay_target = @product_targets.where(product: "AirPay")
-
-        # 月間決済率
-        # 当月
-        @dmer_slmt_this_month = 
-          @dmer_monthly.where(status: "審査OK")
-          .where.not(industry_status: "NG")
-          .where.not(industry_status: "×")
-          .where.not(industry_status: "要確認")
-          @aupay_slmt_this_month =
-          @aupay_monthly.where(status: "審査通過")
-          @dmer_slmt_this_month_chubu = @dmer_slmt_this_month.where(user: {base: "中部SS"})
-          @dmer_slmt_this_month_kansai = @dmer_slmt_this_month.where(user: {base: "関西SS"})
-          @dmer_slmt_this_month_kanto = @dmer_slmt_this_month.where(user: {base: "関東SS"})
-          @aupay_slmt_this_month_chubu = @aupay_slmt_this_month.where(user: {base: "中部SS"})
-          @aupay_slmt_this_month_kansai = @aupay_slmt_this_month.where(user: {base: "関西SS"})
-          @aupay_slmt_this_month_kanto = @aupay_slmt_this_month.where(user: {base: "関東SS"})
-        # 過去月
-        @dmer_slmt_prev_month = 
-          Dmer.includes(:user).where("? > date",@month_daily.beginning_of_month)
-          .where("settlement_deadline > ?",@month_daily.beginning_of_month)
-          .where(status: "審査OK")
-          .where.not(industry_status: "NG")
-          .where.not(industry_status: "×")
-          .where.not(industry_status: "要確認")
-        @aupay_slmt_prev_month = 
-          Aupay.includes(:user).where("? > date",@month_daily.beginning_of_month)
-          .where("settlement_deadline > ?",@month_daily.beginning_of_month)
-          .where(status_update_settlement: nil)
-          .where(status: "審査通過")
-          .or(
-            Aupay.where("? > date",@month_daily.beginning_of_month)
-            .where("settlement_deadline > ?",@month_daily.beginning_of_month)
-            .where(status_update_settlement: @month_daily.beginning_of_month..@month_daily.end_of_month)
-            .where(status: "審査通過")
-          )
-          @dmer_slmt_prev_month_chubu = @dmer_slmt_prev_month.where(user: {base: "中部SS"})
-          @dmer_slmt_prev_month_kansai = @dmer_slmt_prev_month.where(user: {base: "関西SS"})
-          @dmer_slmt_prev_month_kanto = @dmer_slmt_prev_month.where(user: {base: "関東SS"})
-          @aupay_slmt_prev_month_chubu = @aupay_slmt_prev_month.where(user: {base: "中部SS"})
-          @aupay_slmt_prev_month_kansai = @aupay_slmt_prev_month.where(user: {base: "関西SS"})
-          @aupay_slmt_prev_month_kanto = @aupay_slmt_prev_month.where(user: {base: "関東SS"})
-        # 現状売上
-        @result_monthly = 
-          if @month_daily.day >= 26
-            Result.where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-            .or(
-              Result.where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-            )
-          else  
-            Result.where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-            .or(
-              Result.where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-            )
-          end
-        @shift_monthly = 
-          if @month_daily.day >= 26
-            Shift.where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.next_month.since(24.days)).includes(:user)
-            .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-            .or(
-              Shift.where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.next_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-            )
-          else  
-            Shift.where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-            .or(
-              Shift.where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-            )
-          end
-      # 当日獲得数・売上
-        @dmer_today_data = Dmer.where(date: @month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-        @aupay_today_data = Aupay.where(date: @month_daily).includes(:user).includes(:user).select(:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-        @paypay_today_data = Paypay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-        @rakuten_pay_today_data = RakutenPay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-        @airpay_today_data = Airpay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-        @result_today_data = Result.where(date: @month_daily).includes(:user).select(:profit, :user_id,:date,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"})
-        @shift_today_data = 
-          Shift.where(start_time: @month_daily).includes(:user).select(:user_id,:start_time,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-          .or(
-            Shift.where(start_time: @month_daily).includes(:user).select(:user_id,:start_time,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-          )
-          # 当月不備
-          @dmer_def = Dmer.includes(:store_prop,:user).where(store_prop: {head_store: nil}).where(status: "不備対応中")
-          @dmer_def_this_month = 
-            @dmer_def.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
-          @dmer_def_prev_month = 
-            @dmer_def.where(date: @month_daily.beginning_of_month.prev_month..@month_daily.end_of_month.prev_month)
-          @aupay_def = 
-            Aupay.includes(:store_prop,:user)
-            .where(status: "差し戻し")
-            .where.not(deficiency_remarks: "既存auPAY加盟店の登録がすでにあるため、差し戻しさせていただきます。")
-            .where(store_prop: {head_store: nil})
-          @aupay_def_this_month = 
-            @aupay_def.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
-          @aupay_def_prev_month = 
-            @aupay_def.where(date: @month_daily.prev_month.beginning_of_month..@month_daily.prev_month.end_of_month)
-          @rakuten_pay_def = RakutenPay.includes(:user).where(status: "自社不備")
-          @rakuten_pay_def_this_month = 
-            @rakuten_pay_def.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
-          @rakuten_pay_def_prev_month = 
-            @rakuten_pay_def.where(date: @month_daily.prev_month.beginning_of_month..@month_daily.prev_month.end_of_month)
+  # 日々獲得進捗
+    @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today.yesterday #当日日付
+    @dmer_monthly = 
+        Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @aupay_monthly = 
+        Aupay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @paypay_monthly = 
+        Paypay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @rakuten_pay_monthly = 
+        RakutenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @airpay_monthly = 
+        Airpay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @shift_monthly_plan = 
+      Shift.includes(:user)
+      .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
+      .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+    @shift_monthly_slmt_plan = 
+      Shift.includes(:user)
+      .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
+      .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+    @shift_monthly_digestion = 
+      Result.includes(:user)
+      .where(date: @month_daily.beginning_of_month..@month_daily)
+      .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+    @shift_monthly_slmt_digestion = 
+      Result.includes(:user)
+      .where(date: @month_daily.beginning_of_month..@month_daily)
+      .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+  # 即時在庫
+    @dmer_stock = DmerStock.where(date:@month_daily.all_month)
+  # 目標獲得数
+    @product_targets = ProductTarget.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
+    @dmer_target = @product_targets.where(product: "dメル")
+    @aupay_target = @product_targets.where(product: "auPay")
+    @rakuten_pay_target = @product_targets.where(product: "楽天ペイ")
+    @airpay_target = @product_targets.where(product: "AirPay")
+  # 月間決済率
+    # 当月
+    @dmer_slmt_this_month = 
+      @dmer_monthly.where(status: "審査OK")
+      .where.not(industry_status: "NG")
+      .where.not(industry_status: "×")
+      .where.not(industry_status: "要確認")
+      @aupay_slmt_this_month =
+      @aupay_monthly.where(status: "審査通過")
+      @dmer_slmt_this_month_chubu = @dmer_slmt_this_month.where(user: {base: "中部SS"})
+      @dmer_slmt_this_month_kansai = @dmer_slmt_this_month.where(user: {base: "関西SS"})
+      @dmer_slmt_this_month_kanto = @dmer_slmt_this_month.where(user: {base: "関東SS"})
+      @aupay_slmt_this_month_chubu = @aupay_slmt_this_month.where(user: {base: "中部SS"})
+      @aupay_slmt_this_month_kansai = @aupay_slmt_this_month.where(user: {base: "関西SS"})
+      @aupay_slmt_this_month_kanto = @aupay_slmt_this_month.where(user: {base: "関東SS"})
+    # 過去月
+    @dmer_slmt_prev_month = 
+      Dmer.includes(:user).where("? > date",@month_daily.beginning_of_month)
+      .where("settlement_deadline > ?",@month_daily.beginning_of_month)
+      .where(status: "審査OK")
+      .where.not(industry_status: "NG")
+      .where.not(industry_status: "×")
+      .where.not(industry_status: "要確認")
+    @aupay_slmt_prev_month = 
+      Aupay.includes(:user).where("? > date",@month_daily.beginning_of_month)
+      .where("settlement_deadline > ?",@month_daily.beginning_of_month)
+      .where(status_update_settlement: nil)
+      .where(status: "審査通過")
+      .or(
+        Aupay.where("? > date",@month_daily.beginning_of_month)
+        .where("settlement_deadline > ?",@month_daily.beginning_of_month)
+        .where(status_update_settlement: @month_daily.beginning_of_month..@month_daily.end_of_month)
+        .where(status: "審査通過")
+      )
+      @dmer_slmt_prev_month_chubu = @dmer_slmt_prev_month.where(user: {base: "中部SS"})
+      @dmer_slmt_prev_month_kansai = @dmer_slmt_prev_month.where(user: {base: "関西SS"})
+      @dmer_slmt_prev_month_kanto = @dmer_slmt_prev_month.where(user: {base: "関東SS"})
+      @aupay_slmt_prev_month_chubu = @aupay_slmt_prev_month.where(user: {base: "中部SS"})
+      @aupay_slmt_prev_month_kansai = @aupay_slmt_prev_month.where(user: {base: "関西SS"})
+      @aupay_slmt_prev_month_kanto = @aupay_slmt_prev_month.where(user: {base: "関東SS"})
+  # 現状売上
+    if @month_daily.day >= 26
+      @result_monthly = 
+        Result.where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+        .or(
+          Result.where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+        )
+      @shift_monthly =
+        Shift.where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.next_month.since(24.days)).includes(:user)
+        .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+        .or(
+          Shift.where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.next_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+        )
+    else  
+      @result_monthly = 
+        Result.where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+        .or(
+          Result.where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+        )
+      @shift_monthly =
+        Shift.where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+        .or(
+          Shift.where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+        )
+    end
+  # 当日獲得数・売上
+    @dmer_today_data = Dmer.where(date: @month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+    @aupay_today_data = Aupay.where(date: @month_daily).includes(:user).includes(:user).select(:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+    @paypay_today_data = Paypay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+    @rakuten_pay_today_data = RakutenPay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+    @airpay_today_data = Airpay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
+    @result_today_data = Result.where(date: @month_daily).includes(:user).select(:profit, :user_id,:date,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"})
+    @shift_today_data = 
+      Shift.where(start_time: @month_daily).includes(:user).select(:user_id,:start_time,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+      .or(
+        Shift.where(start_time: @month_daily).includes(:user).select(:user_id,:start_time,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+      )
+      # 当月不備
+      @dmer_def = Dmer.includes(:store_prop,:user).where(store_prop: {head_store: nil}).where(status: "不備対応中")
+      @dmer_def_this_month = 
+        @dmer_def.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
+      @dmer_def_prev_month = 
+        @dmer_def.where(date: @month_daily.beginning_of_month.prev_month..@month_daily.end_of_month.prev_month)
+      @aupay_def = 
+        Aupay.includes(:store_prop,:user)
+        .where(status: "差し戻し")
+        .where.not(deficiency_remarks: "既存auPAY加盟店の登録がすでにあるため、差し戻しさせていただきます。")
+        .where(store_prop: {head_store: nil})
+      @aupay_def_this_month = 
+        @aupay_def.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
+      @aupay_def_prev_month = 
+        @aupay_def.where(date: @month_daily.prev_month.beginning_of_month..@month_daily.prev_month.end_of_month)
+      @rakuten_pay_def = RakutenPay.includes(:user).where(status: "自社不備")
+      @rakuten_pay_def_this_month = 
+        @rakuten_pay_def.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
+      @rakuten_pay_def_prev_month = 
+        @rakuten_pay_def.where(date: @month_daily.prev_month.beginning_of_month..@month_daily.prev_month.end_of_month)
     # 日付が~25までは前月の26日が初日と計算するようにする
     if 26 > @month_daily.day
       @shift_month = 
@@ -247,12 +243,9 @@ class ResultsController < ApplicationController
           # 設置依頼
           @rakuten_casas_put_request = @rakuten_casas_put.where(user_id: @results.first.user_id).where.not(putter_id: @results.first.user_id)
           @result_monthly
-          
       else
       # 全体売上
         @shift_sum = this_period(@shifts,@results)
-
-        
       end
   end 
 
@@ -383,6 +376,125 @@ class ResultsController < ApplicationController
     end 
     @airpays_rank = @airpays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
   end
+
+  def profit 
+  # 期間
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @start_date = @month.prev_month.beginning_of_month.since(25.days) # 26日
+    @end_date = @month.beginning_of_month.since(24.days) # 25日
+    @start_done = @month.beginning_of_month # 月初
+    @end_done = @month.end_of_month # 月末
+    @results = Result.includes(:user).where(date: @start_date..@end_date)
+    @shifts = 
+      Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
+      .or(
+        Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス決済")
+      )
+  # ハッシュ・リストデータ
+    @chubu_cash_list = []
+    @kansai_cash_list = []
+    @kanto_cash_list = []
+    @partner_cash_list = []
+    @femto_list = []
+    @bases = ["中部SS", "関西SS", "関東SS", "2次店"]
+    @users = 
+      User.where(base_sub: "キャッシュレス").where.not(position: "退職")
+      .or(
+        User.where(base_sub: "フェムト").where.not(position: "退職")
+      )
+  # ハッシュの中身
+    @bases.each do |base| # 拠点ごとに繰り返す
+      @users.where(base: base).each do |user| #ユーザーごとに繰り返す
+        person_hash = {}
+        user_result = @results.where(user_id: user.id)
+        person_hash["名前"] = user.name
+      # 予定シフト
+        user_shift = @shifts.where(user_id: user.id)
+        person_hash["予定シフト"] = user_shift.length
+        person_hash["予定新規シフト"] = user_shift.where(shift: "キャッシュレス新規").length
+        person_hash["予定決済シフト"] = user_shift.where(shift: "キャッシュレス決済").length
+        person_hash["予定決済シフト"] = user_shift.where(shift: "キャッシュレス決済").length
+      # 消化シフト
+        user_result_shift = 
+          user_result.where(shift: "キャッシュレス新規")
+            .or(
+              user_result.where(shift: "キャッシュレス決済")
+            )
+        person_hash["消化シフト"] = user_result_shift.length 
+        person_hash["消化新規シフト"] = user_result_shift.where(shift: "キャッシュレス新規").length 
+        person_hash["消化決済シフト"] = user_result_shift.where(shift: "キャッシュレス決済").length 
+      # 基準値
+        person_hash["訪問"] = user_result.sum("first_total_visit + latter_total_visit") / person_hash["消化新規シフト"] rescue 0
+        person_hash["応答"] = user_result.sum("first_visit + latter_visit") / person_hash["消化新規シフト"] rescue 0
+        person_hash["対面"] = user_result.sum("first_interview + latter_interview") / person_hash["消化新規シフト"] rescue 0
+        person_hash["フル"] = user_result.sum("first_full_talk + latter_full_talk") / person_hash["消化新規シフト"] rescue 0
+        person_hash["獲得"] = user_result.sum("first_get + latter_get") / person_hash["消化新規シフト"] rescue 0
+      # 現状売上
+      # dメル
+        dmer_user = 
+          Dmer.where(user_id: user.id).where(status: "審査OK")
+          .where.not(industry_status: "NG")
+          .where.not(industry_status: "×")
+          .where.not(industry_status: "要確認")
+        dmer_slmter = 
+          Dmer.where(settlementer_id: user.id)
+          .where(status: "審査OK")
+          .where.not(industry_status: "NG")
+          .where.not(industry_status: "×")
+          .where.not(industry_status: "要確認")
+          .where(status_settlement: "完了")
+        # 第一成果
+        dmer_result1 = 
+          dmer_user.where(result_point: @start_done..@end_done)
+          .where("? >= settlement", @end_done)
+          .or(
+            dmer_user.where(settlement: @start_done..@end_done)
+            .where("? >= result_point", @end_done)
+          )
+        dmer_result1_profit = dmer_result1.sum(:profit_new)
+        person_hash["dメル現状売上1"] = dmer_result1_profit
+        # 第二成果
+        dmer_result2 = dmer_slmter.where(status_update_settlement: @start_done..@end_done)
+          dmer_result2_profit = dmer_result2.sum(:profit_settlement)
+        person_hash["dメル現状売上2"] = dmer_result2_profit
+        # 第三成果
+        dmer_result3 = 
+          dmer_slmter.where(settlement_second: @start_done..@end_done)
+          .where("? >= status_update_settlement",@end_done)
+          .or(
+            dmer_slmter.where(settlement_second: @start_done..@end_done)
+            .where("? >= settlement_second",@end_done)
+          )
+        dmer_result3_profit = dmer_result3.sum(:profit_second_settlement)
+        person_hash["dメル現状売上3"] = dmer_result3_profit
+      # auPay
+          aupay_slmter = 
+            Aupay.where(settlementer_id: user.id).where(status: "審査通過")
+            .where(status_settlement: "完了")
+          # 一次成果
+          aupay_result1 = aupay_slmter.where(status_update_settlement: @start_done..@end_done)
+          aupay_result1_profit = aupay_result1.sum(:profit_settlement)
+          person_hash["auPay現状売上1"] = aupay_result1_profit
+      #PayPay
+          
+      # ハッシュへデータを配列へ格納
+        if user.base_sub =="フェムト"
+          @femto_list << person_hash
+        elsif base == "中部SS"
+          @chubu_cash_list << person_hash
+        elsif base == "関西SS"
+          @kansai_cash_list << person_hash
+        elsif base == "関東SS"
+          @kanto_cash_list << person_hash
+        elsif base == "2次店"
+          @partner_cash_list << person_hash
+        end 
+      end #ユーザーごとに繰り返す
+    end # 拠点ごとに繰り返す
+    
+    
+    
+  end 
 
 
   private

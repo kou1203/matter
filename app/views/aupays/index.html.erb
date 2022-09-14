@@ -14,7 +14,7 @@
       <table class="csv-tb">
         <tr>
           <td class="csv-label">CSV</td>
-          <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+          <td class="csv-td"><%= f.file_field :file, accept: ".csv", class: "input" %></td>
           <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？', disable_with: "インポート中" } %></td>
         </tr>
       </table>
@@ -94,6 +94,12 @@
                     <td class="s-td">
                       <%= f.date_field :picture_gteq, class: "s-input" %>〜
                       <%= f.date_field :picture_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">アクセプタンス審査</td>
+                    <td class="s-td">
+                      <%= f.select :status_update_settlement_null,{"未完了": true,"完了": false},{include_blank: true},{ class: "t-input"} %>
                     </td>
                   </tr>
                   <tr class="s-tr">
@@ -238,58 +244,58 @@
         </tr>
     </table>
     <table class="out-tb">
-    <thead>
-    <tr >
-      <th class="out-th"></th>
-      <th class="out-th">ID</th>
-      <th class="out-th">本店名</th>
-      <th class="out-th">店舗名</th>
-      <th class="out-th">獲得者</th>
-      <th class="out-th">獲得日</th>
-      <th class="out-th">共有日</th>
-      <th class="out-th">審査ステータス</th>
-      <th class="out-th"><%= sort_link(@q, :result_point, "審査完了日",{},{class: "reset-link"}) %></th>
-      <th class="out-th">キット発送日</th>
-      <th class="out-th">決済対応者</th>
-      <th class="out-th">初回決済日</th>
-      <th class="out-th">アクセプタンス</th>
-      <th class="out-th">決済ステータス</th>
-      <th class="out-th">決済完了日</th>
-      <th class="out-th">決済期限</th>
-      <th class="out-th">不備内容(新規)</th>
-      <th class="out-th">不備内容(決済)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <% @aupays_data.find_each do |aupay| %>
-    <tr >
-      <td ><%= link_to "　詳細　",  aupay_path(aupay.id) ,class: "link" %></td>
-      <td ><%= aupay.id %></td>
-      <% if @aupays.find_by(store_props: {head_store: aupay.store_prop.name}).present? %>
-        <td class="index-td">複数店本店</td>
-      <% elsif aupay.store_prop.head_store.blank? %>
-        <td class="index-td"></td>
-      <% else %>
-        <td class="index-td">本店名：<%= aupay.store_prop.head_store %></td>
+      <thead>
+        <tr >
+          <th class="out-th"></th>
+          <th class="out-th">ID</th>
+          <th class="out-th">本店名</th>
+          <th class="out-th">店舗名</th>
+          <th class="out-th">獲得者</th>
+          <th class="out-th">獲得日</th>
+          <th class="out-th">共有日</th>
+          <th class="out-th">審査ステータス</th>
+          <th class="out-th"><%= sort_link(@q, :result_point, "審査完了日",{},{class: "reset-link"}) %></th>
+          <th class="out-th">キット発送日</th>
+          <th class="out-th">決済対応者</th>
+          <th class="out-th">初回決済日</th>
+          <th class="out-th">アクセプタンス</th>
+          <th class="out-th">決済ステータス</th>
+          <th class="out-th">決済完了日</th>
+          <th class="out-th">決済期限</th>
+          <th class="remarks-th">不備内容(新規)</th>
+          <th class="remarks-th">不備内容(決済)</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% @aupays_data.find_each do |aupay| %>
+        <tr >
+          <td class="index-td"><%= link_to "　詳細　",  aupay_path(aupay.id) ,class: "link" %></td>
+          <td class="index-td"><%= aupay.id %></td>
+          <% if @aupays.find_by(store_props: {head_store: aupay.store_prop.name}).present? %>
+            <td class="index-td">複数店本店</td>
+          <% elsif aupay.store_prop.head_store.blank? %>
+            <td class="index-td"></td>
+          <% else %>
+            <td class="index-td">本店名：<%= aupay.store_prop.head_store %></td>
+          <% end %>
+          <td class="index-td"><%= aupay.store_prop.name %></td>
+          <td class="index-td"><%= aupay.user.name %></td>
+          <td class="index-td"><%= aupay.date %></td>
+          <td class="index-td"><%= aupay.share %></td>
+          <td class="index-td"><%= aupay.status %></td>
+          <td class="index-td"><%= aupay.result_point %></td>
+          <td class="index-td"><%= aupay.shipment %></td>
+          <td class="index-td"><%= aupay.settlementer.name rescue ' ' %></td>
+          <td class="index-td"><%= aupay.settlement %></td>
+          <td class="index-td"><%= aupay.picture %></td>
+          <td class="index-td"><%= aupay.status_settlement %></td>
+          <td class="index-td"><%= aupay.status_update_settlement %></td>
+          <td class="index-td"><%= aupay.settlement_deadline %></td>
+          <td class="remarks-td"><%= aupay.deficiency_remarks %></td>
+          <td class="remarks-td"><%= aupay.deficiency_remarks_settlement %></td>
+        </tr>
       <% end %>
-      <td ><%= aupay.store_prop.name %></td>
-      <td ><%= aupay.user.name %></td>
-      <td ><%= aupay.date %></td>
-      <td ><%= aupay.share %></td>
-      <td ><%= aupay.status %></td>
-      <td ><%= aupay.result_point %></td>
-      <td ><%= aupay.shipment %></td>
-      <td ><%= aupay.settlementer.name rescue ' ' %></td>
-      <td ><%= aupay.settlement %></td>
-      <td ><%= aupay.picture %></td>
-      <td ><%= aupay.status_settlement %></td>
-      <td ><%= aupay.status_update_settlement %></td>
-      <td ><%= aupay.settlement_deadline %></td>
-      <td class="td-remarks"><%= aupay.deficiency_remarks %></td>
-      <td class="td-remarks"><%= aupay.deficiency_remarks_settlement %></td>
-    </tr>
-    <% end %>
-    </tbody>
+      </tbody>
     </table>
   <div class="kaminari-page">
   <%= paginate @aupays_data %>

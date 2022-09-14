@@ -1,0 +1,19 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>実売資料</h1>
+  <%= render "shared/header" %>
+</div>
+  <div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div class="main">
+    <div data-scope-path="results/index">
+        <h2>
+          <%= link_to "<<",profit_results_path(month:@month.prev_month), class:"link" %>
+          <%= @month.month %>月
+          <%= link_to ">>",profit_results_path(month:@month.next_month), class:"link" %>
+        </h2>
+    <%= render 'profit_parts/person_profit' %>
+    </div>
+  </div>

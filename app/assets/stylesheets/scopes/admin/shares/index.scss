@@ -31,15 +31,13 @@ h2 {
 }
 
 table{
-  border-collapse: collapse;
+  // border-collapse: collapse;
   margin: 20px ;
   table-layout: fixed;
-  min-width: 80vw;
-  display: block;
+  // min-width: 80vw;
   overflow-x: scroll;
-  white-space: nowrap;
   -webkit-overflow-scrolling: touch;
-  max-width: 80vw;
+  // max-width: 80vw;
 }
 
 tr:nth-child(odd) {background: #ede5e5;}
@@ -48,28 +46,42 @@ th {
   text-align: center;
   color: white;
   background: #96C0CE;
-  padding: 10px;
-  border-bottom: none;
+  box-shadow: 0px -3px 5px 1px #eee inset;
+  padding: 8px;
+  // border-bottom: none;
+  font-size: 6px;
+  white-space: nowrap;
 }
 
 .th-head {background: #969595;}
 
 td {
+  // white-space: nowrap;
   border-bottom: 1px solid rgb(205, 203, 203);
   text-align: center;
   box-shadow: 0px -3px 5px 1px #eee inset;
-  padding: 10px ;
+  padding: 6px;
+  font-size: 4px;
+}
+
+.index-td {
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 // スクロール
 
-.out-th {
-  text-align:left;
-  vertical-align: middle;
+.remarks-td {
+  text-align: left;
 }
 
-.out-tb {
-  max-height: 70vh;
+.remarks-td-dmer {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.remarks-th {
+  text-align: left;
 }
 
 .out-tb thead th {
@@ -231,8 +243,6 @@ td {
   color: white;
   background: #c4c2c2;
   box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-  padding: 10px 0;
-  font-size: 15px;
 }
 
 .search-head {
@@ -268,6 +278,7 @@ td {
 
 .result {
   background: #96C0CE;
+  // width: 10%;
 }
 
 .reset {
@@ -344,9 +355,18 @@ td {
 // テキストフォーム
 
 // CSVフォーム
+.csv-tb {
+  max-width: 30vw;
+}
+
 .csv-label {
   background: linear-gradient(30deg, #add8e6 30%, #c4c2c2 100%);
   color: white;
+  width: 10%;
+}
+
+.csv-td {
+  // width: 20%;
 }
 // CSVフォーム
 

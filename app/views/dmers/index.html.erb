@@ -105,6 +105,12 @@
                     </td>
                   </tr>
                   <tr class="s-tr">
+                    <td class="s-td">アクセプタンス審査</td>
+                    <td class="s-td">
+                      <%= f.select :status_update_settlement_null,{"未完了": true,"完了": false},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
                     <td class="s-td">決済完了</td>
                     <td class="s-td">
                       <%= f.date_field :status_update_settlement_gteq, class: "s-input" %>〜
@@ -272,66 +278,66 @@
       </table>
     </div>
     <table  class="out-tb">
-    <thead>
-    <tr class="table-row">
-      <th class="out-th">ID</th>
-      <th class="out-th"></th>
-      <th class="out-th">商流</th>
-      <th class="out-th">複数店</th>
-      <th class="out-th">店舗名</th>
-      <th class="out-th">獲得者</th>
-      <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
-      <th class="out-th">業種チェック</th>
-      <th class="out-th">審査ステータス</th>
-      <th class="out-th">審査完了日</th>
-      <th class="out-th">キット発送日</th>
-      <th class="out-th">決済対応者</th>
-      <th class="out-th">初回決済日</th>
-      <th class="out-th">アクセプタンス</th>
-      <th class="out-th">決済ステータス</th>
-      <th class="out-th">決済完了日</th>
-      <th class="out-th">2回目決済日</th>
-      <th class="out-th">決済期限</th>
-      <th class="out-th">不備内容(新規)</th>
-      <th class="out-th">不備内容(決済)</th>
-    </tr>
-    </thead>
-    <tbody>
-    <% @dmers_data.find_each do |dmer| %>
-    <tr class="index-tr">
-      <td class="index-td"><%= dmer.id %></td>
-      <td class="index-td"><%= link_to "　詳細　",  dmer_path(dmer.id) ,class: "link" %></td>
-      <td class="index-td"><%= dmer.client %></td>
-      <% if @dmers.find_by(store_props: {head_store: dmer.store_prop.name}).present? %>
-        <td class="index-td">複数店本店</td>
-      <% elsif dmer.store_prop.head_store.blank? %>
-        <td class="index-td"></td>
-      <% else %>
-        <td class="index-td">本店名：<%= dmer.store_prop.head_store %></td>
+      <thead>
+        <tr >
+          <th class="out-th">ID</th>
+          <th class="out-th"></th>
+          <th class="out-th">商流</th>
+          <th class="out-th">複数店</th>
+          <th class="out-th">店舗名</th>
+          <th class="out-th">獲得者</th>
+          <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+          <th class="out-th">業種チェック</th>
+          <th class="out-th">審査ステータス</th>
+          <th class="out-th">審査完了日</th>
+          <th class="out-th">キット発送日</th>
+          <th class="out-th">決済対応者</th>
+          <th class="out-th">初回決済日</th>
+          <th class="out-th">アクセプタンス</th>
+          <th class="out-th">決済ステータス</th>
+          <th class="out-th">決済完了日</th>
+          <th class="out-th">2回目決済日</th>
+          <th class="out-th">決済期限</th>
+          <th class="out-th">不備内容(新規)</th>
+          <th class="out-th">不備内容(決済)</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% @dmers_data.find_each do |dmer| %>
+        <tr >
+          <td class="index-td"><%= dmer.id %></td>
+          <td class="index-td"><%= link_to "　詳細　",  dmer_path(dmer.id) ,class: "link" %></td>
+          <td class="index-td"><%= dmer.client %></td>
+          <% if @dmers.find_by(store_props: {head_store: dmer.store_prop.name}).present? %>
+            <td class="index-td">複数店本店</td>
+          <% elsif dmer.store_prop.head_store.blank? %>
+            <td class="index-td"></td>
+          <% else %>
+            <td class="index-td">本店名：<%= dmer.store_prop.head_store %></td>
+          <% end %>
+          <td class="index-td"><%= dmer.store_prop.name %></td>
+          <td class="index-td"><%= dmer.user.name %></td>
+          <td class="index-td"><%= dmer.date.month %>月<%= dmer.date.day %>日</td>
+          <% if dmer.industry_status == "NG" || dmer.industry_status == "×" || dmer.industry_status == "要確認" %>
+          <td class="index-td" style="color:red;"><%= dmer.industry_status %></td>
+          <% else %>
+          <td class="index-td"><%= dmer.industry_status %></td>
+          <% end %>
+          <td class="index-td"><%= dmer.status %></td>
+          <td class="index-td"><%= dmer.result_point %></td>
+          <td class="index-td"><%= dmer.shipment %></td>
+          <td class="index-td"><%= dmer.settlementer.name rescue ' ' %></td>
+          <td class="index-td"><%= dmer.settlement %></td>
+          <td class="index-td"><%= dmer.picture %></td>
+          <td class="index-td"><%= dmer.status_settlement %></td>
+          <td class="index-td"><%= dmer.status_update_settlement %></td>
+          <td class="index-td"><%= dmer.settlement_second %></td>
+          <td class="index-td"><%= dmer.settlement_deadline %></td>
+          <td class="remarks-td-dmer"><%= dmer.deficiency_remarks %></td>
+          <td class="remarks-td-dmer"><%= dmer.deficiency_remarks_settlement %></td>
+        </tr>
       <% end %>
-      <td class="index-td"><%= dmer.store_prop.name %></td>
-      <td class="index-td"><%= dmer.user.name %></td>
-      <td class="index-td"><%= dmer.date.month %>月<%= dmer.date.day %>日</td>
-      <% if dmer.industry_status == "NG" || dmer.industry_status == "×" || dmer.industry_status == "要確認" %>
-      <td class="index-td" style="color:red;"><%= dmer.industry_status %></td>
-      <% else %>
-      <td class="index-td"><%= dmer.industry_status %></td>
-      <% end %>
-      <td class="index-td"><%= dmer.status %></td>
-      <td class="index-td"><%= dmer.result_point %></td>
-      <td class="index-td"><%= dmer.shipment %></td>
-      <td class="index-td"><%= dmer.settlementer.name rescue ' ' %></td>
-      <td class="index-td"><%= dmer.settlement %></td>
-      <td class="index-td"><%= dmer.picture %></td>
-      <td class="index-td"><%= dmer.status_settlement %></td>
-      <td class="index-td"><%= dmer.status_update_settlement %></td>
-      <td class="index-td"><%= dmer.settlement_second %></td>
-      <td class="index-td"><%= dmer.settlement_deadline %></td>
-      <td class="td-remarks"><%= dmer.deficiency_remarks %></td>
-      <td class="td-remarks"><%= dmer.deficiency_remarks_settlement %></td>
-    </tr>
-    <% end %>
-    </tbody>
+      </tbody>
     </table>
   <div class="kaminari-page">
     <%= paginate @dmers_data %>

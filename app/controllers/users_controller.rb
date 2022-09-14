@@ -439,6 +439,7 @@ class UsersController < ApplicationController
       @result_shift_max = @result_shift.maximum(:start_time) 
 
       @new_shift = @result_shift.where(shift: "キャッシュレス新規").length 
+      @new_shift26_10 = @result_shift.where(shift: "キャッシュレス新規").where(start_time: @result_shift_min..@result_shift_min.next_month.beginning_of_month.since(9.days)).length
       @settlement_shift = @result_shift.where(shift: "キャッシュレス決済").length 
       @summit_shift = @result_shift.where(shift: "サミット").length 
       @casa_shift = @result_shift.where(shift: "楽天フェムト新規").length 
@@ -448,6 +449,7 @@ class UsersController < ApplicationController
       end
       # 消化シフト変数
       @digestion_new = @results_date.where(shift: "キャッシュレス新規").length
+      @digestion_new26_10 = @results_date.where(shift: "キャッシュレス新規").where(date: @minimum_date_cash..@minimum_date_cash.next_month.beginning_of_month.since(9.days)).length
       @digestion_settlement = @results_date.where(shift: "キャッシュレス決済").length
       @digestion_summit = @results_date.where(shift: "サミット").length
       @digestion_casa = @results_date.where(shift: "楽天フェムト新規").length
@@ -975,12 +977,12 @@ class UsersController < ApplicationController
         else 
           aupay_slmt_per = aupay_slmt_per - dec_per 
         end 
-      
+        
         if dec_per > aupay_slmt_per_prev 
           aupay_slmt_per_prev = 0 
         else 
           aupay_slmt_per_prev = aupay_slmt_per_prev - dec_per 
-        end 
+        end
         # 過去の決済対象
         @aupay_slmt_tgt_prev = 
         @aupay_user.where("settlement_deadline >= ?", @minimum_date_cash)
@@ -1021,7 +1023,7 @@ class UsersController < ApplicationController
         @aupay_result1_fin_len = 
           (
             (@aupay_uq_26_10_len - @aupay_def_26_10_len - @aupay_val_26_10_len).to_f / 
-            @digestion_new * @new_shift * aupay_slmt_per
+            @digestion_new26_10 * @new_shift26_10 * aupay_slmt_per
           ).round() rescue 0
         @aupay_result1_fin_this_month = 
           (aupay_price * @aupay_result1_fin_len) + 
