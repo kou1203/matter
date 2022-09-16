@@ -158,5 +158,5 @@ Rails.application.routes.draw do
     collection {post :import}
   end 
 
-  resources :profits
+  get 'profits', to: 'profits#index'
 end

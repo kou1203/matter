@@ -92,3 +92,5 @@ gem 'charlock_holmes'
 gem 'kaminari'
 
 gem 'activerecord-import'
+
+gem 'render_async'

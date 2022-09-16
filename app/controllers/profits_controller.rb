@@ -1,6 +1,5 @@
 class ProfitsController < ApplicationController
-
-  def index 
+  def index
 # 期間
   @month = params[:month] ? Time.parse(params[:month]) : Date.today
   @start_date = @month.prev_month.beginning_of_month.since(25.days) # 26日
