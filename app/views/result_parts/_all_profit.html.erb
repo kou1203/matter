@@ -343,8 +343,6 @@
             <% dmer_val3_period_len = dmer_val3_period.length %>
             <% dmer_result1_fin_len = (dmer_len_ave * new_shift).round() %>
             <%# 期間内終着 %>
-
-
             <%
               dmer_result1_fin_this_month_len = 
                 (
@@ -701,7 +699,6 @@
           <% demaekan_data = demaekan_user.where(first_cs_contract: @cash_result.minimum(:date)..@cash_result.maximum(:date)) %>
           <% demaekan_valuations = demaekan_data.sum(:valuation) %>
           <% demaekan_len = demaekan_data.length %>
-
         <%# 少額短期保険 %>
           <% st_insurance_user = StInsurance.includes(:store_prop).where(user_id: r.user_id) %>
           <% st_insurance_data = this_period(st_insurance_user,@cash_result) %>

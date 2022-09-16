@@ -1,57 +1,49 @@
 <%# 個別実売基準値 %>
-<%= javascript_pack_tag 'profit_person' %>
+<script>
+  window.chubu_base=<%= @chubu_cash_list.to_json.html_safe %>;
+  window.kansai_base=<%= @kansai_cash_list.to_json.html_safe %>;
+  window.kanto_base=<%= @kanto_cash_list.to_json.html_safe %>;
+  window.femto_base=<%= @femto_list.to_json.html_safe %>;
+  window.partner_base=<%= @partner_cash_list.to_json.html_safe %>;
+  window.all_base=<%= @all_list.to_json.html_safe %>;
+</script>
+
 <h2>合計実売</h2>
-<% @kansai_cash_list.each do |list| %>
-  <% list %>
-<% end  %>
+<%# @kansai_cash_list.each do |list| %>
+  <%# list %>
+  <%# break %>
+<%# end  %>
+
 <table>
   <tr>
     <th>拠点</th>
+    <th>実売Ave</th>
     <th>現状実売</th>
     <th>終着実売</th>
   </tr>
+  <% all_ave = 0 %>
+  <% @base_list.each do |base| %>
+  <% base_fin = base.sum { |hash| hash["合計終着"] } rescue 0 %>
+  <% base_shift = base.sum { |hash| hash["予定シフト"] } rescue 0 %>
+  <% base_ave = (base_fin.to_f / base_shift).round() rescue 0 %>
+  <% if (base[0]["拠点"] == "中部SS") || (base[0]["拠点"] == "関西SS") || (base[0]["拠点"] == "関東SS") %>
+  <% all_ave += base_ave %>
+  <% end %>
   <tr>
-    <td>中部SS</td>
-    <td></td>
-    <td></td>
+    <td><%= base[0]["拠点"] %></td>
+    <td><%= base_ave.to_s(:delimited) rescue 0 %></td>
+    <td><%= (base.sum { |hash| hash["合計現状売上"] }).to_s(:delimited) rescue 0 %></td>
+    <td><%= base_fin.to_s(:delimited) rescue 0 %></td>
   </tr>
-  <tr>
-    <td>関西SS</td>
-    <td></td>
-    <td></td>
-  </tr>
-  <tr>
-    <td>関東SS</td>
-    <td></td>
-    <td></td>
-  </tr>
+  <% end %>
   <tr>
     <td>キャッシュレス合計</td>
-    <td></td>
-    <td></td>
+    <td><%= (all_ave / 3).round().to_s(:delimited) rescue 0 %></td>
+    <td><%= @all_list.sum { |hash| hash["合計現状売上"] } %></td>
+    <td><%= @all_list.sum { |hash| hash["合計終着"] } %></td>
   </tr>
 </table>
-<article id='profit_person'><%# 拠点選択 %>
-  <select v-model="baseSlct">
-    <option value="">拠点を選択してください</option>
-    <option>全拠点</option>
-    <option>中部SS</option>
-    <option>関西SS</option>
-    <option>関東SS</option>
-  </select>
-  <div>値：{{ baseSlct }}</div>
-  <div v-if="baseSlct=='全拠点'">
-  a
-  </div>
-  <div v-else-if="baseSlct=='中部SS'">
-  b
-  </div>
-  <div v-else-if="baseSlct=='関西SS'">
-  c
-  </div>
-  <div v-else-if="baseSlct=='関東SS'">
-  d
-  </div>
-  <div v-else>
-  </div>
-</article><%# 拠点選択 %>
+<div>
+  <%= javascript_pack_tag 'profit_person' %>
+  <%= stylesheet_pack_tag 'profit_person' %>
+</div>

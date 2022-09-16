@@ -157,4 +157,6 @@ Rails.application.routes.draw do
   resources :demaekans, only: [:index] do 
     collection {post :import}
   end 
+
+  resources :profits
 end
