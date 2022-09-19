@@ -137,6 +137,19 @@
                     </td>
                   </tr>
                   <tr class="s-tr">
+                    <td class="s-td">業種ステータス</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :industry_status_eq,
+                        options_from_collection_for_select(Dmer.select(:industry_status)
+                        .distinct,:industry_status, :industry_status),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  </tr>
+                  <tr class="s-tr">
                     <td class="s-td">審査ステータス</td>
                     <td class="s-td">
                       <%= 
