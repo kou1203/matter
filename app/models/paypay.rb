@@ -55,8 +55,8 @@ class Paypay < ApplicationRecord
       store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
       u_id = user.id if user.present?
       store_id = store_prop.id if store_prop.present?
-      paypay = find_by(store_prop_id:  store_prop.id)
-      if store_prop.paypay.present? && Paypay.find_by(customer_num: row["上位店管理番号"]).present? 
+      paypay = find_by(store_prop_id: store_prop.id)
+      if store_prop.paypay.present? && Paypay.find_by(customer_num: row["上位店管理番号"]).present?
         paypay.assign_attributes(
           customer_num: row["上位店管理番号"],
           client: row["商流"],
