@@ -28,6 +28,7 @@
     <th>楽天ペイ最終更新日</th>
   </tr>
   <% all_ave = 0 %>
+  <%= @chubu_cash_list[2] %>
   <% @base_list.each do |base| %>
   <% base_fin = base.sum { |hash| hash["合計終着"] } rescue 0 %>
   <% base_shift = base.sum { |hash| hash["予定シフト"] } rescue 0 %>

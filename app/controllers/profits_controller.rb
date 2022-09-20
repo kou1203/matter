@@ -206,13 +206,18 @@ class ProfitsController < ApplicationController
           dmer_uq = dmer_user.where(date: @start_date..@end_date).where(store_prop: {head_store: nil})
           dmer_def =  dmer_uq.where(status: "自社不備")
           .or(dmer_uq.where(status: "審査NG"))
-          .or(dmer_uq.where(status: "不備対応中"))
           .or(dmer_uq.where(status: "申込取消"))
           .or(dmer_uq.where(status: "申込取消（不備）"))
+          .or(dmer_uq.where(status: "社内確認中"))
+          .or(dmer_uq.where(status: "審査OK").where(industry_status: "NG"))
+          .or(dmer_uq.where(status: "審査OK").where(industry_status: "×"))
+          .or(dmer_uq.where(status: "不備対応中"))
           dmer_db = 
           dmer_user.where(share: @start_date..@end_date).where.not(store_prop: {head_store: nil})
           .where.not(industry_status: "×").where.not(industry_status: "NG").where.not(industry_status: "要確認")
-          .where(status: "審査OK")
+          .where.not(status: "不備対応中")
+          .where.not(status: "審査NG")
+          .where.not(status: "本店審査待ち")
           dmer_len = dmer_uq.length  - dmer_def.length + dmer_db.length #評価件数
           dmer_slmt2nd = dmer_slmter.where(settlement_second: @start_done..@end_done)
           if dmer_len == 0
