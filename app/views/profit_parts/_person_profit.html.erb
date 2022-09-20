@@ -11,9 +11,9 @@
 </script>
 <h2>合計実売
 <% if @shifts.length == @results.length %>
-  <span class="shift-text">（<%= Date.today.strftime("%m月%d日") %>までの予定シフト数<%= @shifts.where(start_time: @start_time..Date.today).length %>, 消化シフト, <%= @results.where(date: @start_time..Date.today).length %>）</span>
+  <span class="shift-text">（<%= Date.today.strftime("%m月%d日") %>までの予定シフト数<%= @shifts.where(start_time: @start_date..Date.today).length %>, 消化シフト, <%= @results.where(date: @start_date..Date.today).length %>）</span>
 <% else %>
-  <span class="shift-text red">（<%= Date.today.strftime("%m月%d日") %>までの予定シフト数<%= @shifts.where(start_time: @start_time..Date.today).length %>, 消化シフト, <%= @results.where(date: @start_time..Date.today).length %>）</span>
+  <span class="shift-text red">（<%= Date.today.strftime("%m月%d日") %>までの予定シフト数<%= @shifts.where(start_time: @start_date..Date.today).length %>, 消化シフト, <%= @results.where(date: @start_date..Date.today).length %>）</span>
 <% end %>
 </h2>
 <table>
