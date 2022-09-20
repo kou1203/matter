@@ -479,11 +479,11 @@ class ProfitsController < ApplicationController
             Airpay.where(date: @start_date..@end_date).where(status: "審査中")
           )
           airpay_all_len = airpay_all.length
-          airpay_all_len_ave = airpay_all_len.to_f / @results.where(shift: "キャッシュレス新規").length
+          airpay_all_len_ave = (airpay_all_len.to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
           airpay_all_len_fin = (airpay_all_len_ave * @shifts.where(shift: "キャッシュレス新規").length * 0.85).round() rescue 0
           airpay_user = airpay_all.where(user_id: user.id)
           airpay_user_len = airpay_user.length
-          airpay_len_ave = airpay_user_len.to_f / person_hash["消化新規シフト"]
+          airpay_len_ave = (airpay_user_len.to_f / person_hash["消化新規シフト"]).round(1) rescue 0
           airpay_len_fin = (airpay_len_ave * person_hash["予定新規シフト"] * 0.85).round() rescue 0
         # 単価
         airpay_price = 
@@ -495,7 +495,8 @@ class ProfitsController < ApplicationController
             3000
           end 
         # 一次成果
-        airpay_user = Airpay.where(user_id: user.id).where(status: "審査完了")
+        airpay_user = 
+          Airpay.where(user_id: user.id).where(status: "審査完了")
         airpay_result1 = airpay_user.where(result_point: @start_done..@end_done)
         airpay_result1_profit = airpay_result1.sum(:profit) + (airpay_result1.length * (airpay_price - 3000) )
         person_hash["AirPay第一成果件数"] = airpay_result1.length
@@ -505,6 +506,7 @@ class ProfitsController < ApplicationController
         if (airpay_result1_profit >= airpay_result1_fin) || (Date.today >= @end_done)
           airpay_result1_fin = airpay_result1_profit
         end 
+        person_hash["AirPay獲得数"] = airpay_len_ave
         person_hash["AirPay一次成果終着"] = airpay_result1_fin
       # 出前館
         demaekan_user = Demaekan.where(user_id: user.id).where(status: "完了")
