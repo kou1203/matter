@@ -10,10 +10,12 @@
   window.all_base=<%= @all_list.to_json.html_safe %>;
 </script>
 <h2>合計実売
-<% if @shifts.length == @results.length %>
-  <span class="shift-text">（<%= Date.today.ago(1.days).strftime("%m月%d日") %>までの予定シフト数<%= @shifts.where(start_time: @start_date..Date.today.ago(1.days)).length %>, 消化シフト, <%= @results.where(date: @start_date..Date.today.ago(1.days)).length %>）</span>
+<% shifts_prev_len = @shifts.where(start_time: @start_date..Date.today.ago(1.days)).length %>
+<% results_prev_len = @results.where(date: @start_date..Date.today.ago(1.days)).length %>
+<% if shifts_prev_len == results_prev_len %>
+  <span class="shift-text">（<%= Date.today.ago(1.days).strftime("%m月%d日") %>までの予定シフト数<%= shifts_prev_len %>, 消化シフト, <%= results_prev_len %>）</span>
 <% else %>
-  <span class="shift-text red">（<%= Date.today.ago(1.days).strftime("%m月%d日") %>までの予定シフト数<%= @shifts.where(start_time: @start_date..Date.today.ago(1.days)).length %>, 消化シフト, <%= @results.where(date: @start_date..Date.today.ago(1.days)).length %>）</span>
+  <span class="shift-text red">（<%= Date.today.ago(1.days).strftime("%m月%d日") %>までの予定シフト数<%= shifts_prev_len %>, 消化シフト, <%= results_prev_len %>）</span>
 <% end %>
 </h2>
 <table>
