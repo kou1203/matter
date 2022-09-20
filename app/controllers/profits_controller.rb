@@ -303,8 +303,8 @@ class ProfitsController < ApplicationController
               dmer_result1.where("? > date",@start_date).sum(:profit_new)
             # 合計
             dmer_result1_fin = dmer_result1_fin_this_month + dmer_result1_fin_prev_month
-            # person_hash["dメル一次成果終着（期間内）"] = dmer_result1_fin_this_month
-            # person_hash["dメル一次成果終着（過去月）"] = dmer_result1_fin_prev_month
+            # person_hash["dメル一次成果終着（期間内）"] = dmer_result1.where("? > date",@start_date).sum(:profit_new)
+            # person_hash["dメル一次成果終着（過去月）"] = dmer_result1_fin_prev_month_len
             person_hash["dメル一次成果終着"] = dmer_result1_fin
           # 第二成果
             # 期間内
@@ -321,8 +321,8 @@ class ProfitsController < ApplicationController
             dmer_result2.where("? > date",@start_date).sum(:profit_settlement)
             # 合計
             dmer_result2_fin = dmer_result2_fin_this_month + dmer_result2_fin_prev_month
-            # person_hash["dメル二次成果終着（期間内）"] = dmer_result2_fin_this_month
-            # person_hash["dメル二次成果終着（過去）"] = dmer_result2_fin_prev_month
+            person_hash["dメル二次成果終着（期間内）"] = dmer_result2_fin_this_month
+            person_hash["dメル二次成果終着（過去）"] = dmer_result2_fin_prev_month
             person_hash["dメル二次成果終着"] = dmer_result2_fin
           # 第三成果
             dmer_result3 = 
@@ -430,7 +430,7 @@ class ProfitsController < ApplicationController
               (aupay_price * aupay_result1_fin_prev_month_len) + 
               aupay_result1.where("? > date", @start_date).sum(:profit_settlement) rescue 0
             aupay_result1_fin = aupay_result1_fin_this_month + aupay_result1_fin_prev_month
-            # person_hash["auPay一次成果終着（期間内）"] = aupay_result1_fin_this_month
+            # person_hash["auPay一次成果終着（期間内）"] = aupay_def_26_10_len
             # person_hash["auPay一次成果終着（過去月）"] = aupay_result1_fin_prev_month
             person_hash["auPay一次成果終着"] = aupay_result1_fin
       #PayPay
