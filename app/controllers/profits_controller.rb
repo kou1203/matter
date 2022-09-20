@@ -549,9 +549,7 @@ class ProfitsController < ApplicationController
             person_hash["合計終着"] = profit_new_fin + profit_slmt_fin
 
       # ハッシュへデータを配列へ格納
-        if (user.position != "退職")
-          @all_list << person_hash
-        end
+        @all_list << person_hash
         if (user.base_sub =="フェムト") && (user.position != "退職")
           @femto_list << person_hash
         elsif (user.base_sub =="サミット") && (user.position != "退職")
