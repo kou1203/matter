@@ -511,7 +511,7 @@ class ProfitsController < ApplicationController
       # 出前館
         demaekan_user = Demaekan.where(user_id: user.id).where(status: "完了")
         # 一次成果
-        demaekan_result1 = demaekan_user.where(first_cs_contract: @start_done..@end_done)
+        demaekan_result1 = demaekan_user.where(first_cs_contract: @start_date..@end_date)
         demaekan_result1_profit = demaekan_result1.sum(:profit)
         person_hash["出前館第一成果件数"] = demaekan_result1.length
         person_hash["出前館現状売上"] = demaekan_result1_profit
