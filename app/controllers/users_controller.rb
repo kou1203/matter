@@ -329,6 +329,7 @@ class UsersController < ApplicationController
       @time_get_sum_kansai = [@get10_sum_kansai,@get11_sum_kansai,@get12_sum_kansai,@get13_sum_kansai,@get14_sum_kansai,@get15_sum_kansai,@get16_sum_kansai,@get17_sum_kansai,@get18_sum_kansai,@get19_sum_kansai]
       @time_get_ave_kansai = [@get10_ave_kansai,@get11_ave_kansai,@get12_ave_kansai,@get13_ave_kansai,@get14_ave_kansai,@get15_ave_kansai,@get16_ave_kansai,@get17_ave_kansai,@get18_ave_kansai,@get19_ave_kansai]
     # /関西基準値
+
     # 関東基準値
       @kanto_shift = 
         Shift.includes(:user).where(user: {base: "関東SS"})
@@ -745,7 +746,7 @@ class UsersController < ApplicationController
       @rakuten_pay_user = 
         RakutenPay.includes(:store_prop).where(user_id: @results.first.user_id).select(:valuation,:store_prop_id)
       @rakuten_pay_uq =
-        this_period(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id,:date,:id,:result_point,:status)
+        this_period(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id,:share,:date,:id,:result_point,:status)
       @rakuten_pay_dec = 
         @rakuten_pay_uq.where.not(deficiency: nil)
         .where.not(share: @results_date.minimum(:date)..@results_date.maximum(:date)).select(:valuation,:store_prop_id)
@@ -757,7 +758,11 @@ class UsersController < ApplicationController
           .where.not(deficiency_solution: @results_date.minimum(:date)..@results_date.maximum(:date))
         )
         .select(:valuation,:store_prop_id,:date,:status,:result_point,:id)
-      @rakuten_pay_inc = rakuten_inc(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id,:date,:status,:result_point,:id)
+      @rakuten_pay_inc = 
+        @rakuten_pay_user.where.not(date: @results_date.minimum(:date)..@results_date.maximum(:date))
+        .where(share: @results_date.minimum(:date)..@results_date.maximum(:date))
+        .where.not(deficiency: nil)
+        .select(:valuation,:store_prop_id,:date,:status,:result_point,:share,:id,:deficiency)
         
       @rakuten_pay_done_val = 
         @rakuten_pay_uq.sum(:valuation) - 

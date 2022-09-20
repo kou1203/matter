@@ -11,6 +11,8 @@
           <option value="関東SS">関東SS</option>
           <option value="2次店">２次店</option>
           <option value="フェムト">フェムト</option>
+          <option value="サミット">サミット</option>
+          <option value="その他">その他</option>
         </select>
         <label class="base-slct-label">こちらから拠点を選択してください</label>
       </div>
@@ -346,6 +348,10 @@ export default {
         return this.baseItems = partner_base
       } else if (this.val == 'フェムト') {
         return this.baseItems = femto_base
+      } else if (this.val == 'サミット') {
+        return this.baseItems = summit_base
+      } else if (this.val == 'その他') {
+        return this.baseItems = retire_base
       } else {
         return this.baseItems = all_base
       }

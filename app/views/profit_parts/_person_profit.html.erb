@@ -4,17 +4,28 @@
   window.kansai_base=<%= @kansai_cash_list.to_json.html_safe %>;
   window.kanto_base=<%= @kanto_cash_list.to_json.html_safe %>;
   window.femto_base=<%= @femto_list.to_json.html_safe %>;
+  window.summit_base=<%= @summit_list.to_json.html_safe %>;
   window.partner_base=<%= @partner_cash_list.to_json.html_safe %>;
+  window.retire_base=<%= @retire_list.to_json.html_safe %>;
   window.all_base=<%= @all_list.to_json.html_safe %>;
 </script>
-
-<h2>合計実売</h2>
+<h2>合計実売
+<% if @shifts.length == @results.length %>
+  <span class="shift-text">（<%= Date.today.strftime("%m月%d日") %>までの予定シフト数<%= @shifts.where(start_time: @start_time..Date.today).length %>, 消化シフト, <%= @results.where(date: @start_time..Date.today).length %>）</span>
+<% else %>
+  <span class="shift-text red">（<%= Date.today.strftime("%m月%d日") %>までの予定シフト数<%= @shifts.where(start_time: @start_time..Date.today).length %>, 消化シフト, <%= @results.where(date: @start_time..Date.today).length %>）</span>
+<% end %>
+</h2>
 <table>
   <tr>
     <th>拠点</th>
     <th>実売Ave</th>
     <th>現状実売</th>
     <th>終着実売</th>
+    <th>dメル最終更新日</th>
+    <th>auPay最終更新日</th>
+    <th>PayPay最終更新日</th>
+    <th>楽天ペイ最終更新日</th>
   </tr>
   <% all_ave = 0 %>
   <% @base_list.each do |base| %>
@@ -27,15 +38,30 @@
   <tr>
     <td><%= base[0]["拠点"] %></td>
     <td><%= base_ave.to_s(:delimited) rescue 0 %></td>
-    <td><%= (base.sum { |hash| hash["合計現状売上"] }).to_s(:delimited) rescue 0 %></td>
+    <td><%= (base.sum { |hash| hash["合計現状売上"] }).to_s(:delimited) rescue "" %></td>
     <td><%= base_fin.to_s(:delimited) rescue 0 %></td>
+    <% if (base[0]["拠点"] == "フェムト") || (base[0]["拠点"] == "サミット") %>
+    <td><%= Dmer.includes(:user).where(user: {base_sub: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
+    <td><%= Aupay.includes(:user).where(user: {base_sub: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
+    <td><%= Paypay.includes(:user).where(user: {base_sub: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
+    <td><%= RakutenPay.includes(:user).where(user: {base_sub: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
+    <% else %>
+    <td><%= Dmer.includes(:user).where(user: {base: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
+    <td><%= Aupay.includes(:user).where(user: {base: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
+    <td><%= Paypay.includes(:user).where(user: {base: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
+    <td><%= RakutenPay.includes(:user).where(user: {base: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
+    <% end %>
   </tr>
   <% end %>
   <tr>
-    <td>キャッシュレス合計</td>
+    <td>全拠点</td>
     <td><%= (all_ave / 3).round().to_s(:delimited) rescue 0 %></td>
     <td><%= @all_list.sum { |hash| hash["合計現状売上"] } %></td>
     <td><%= @all_list.sum { |hash| hash["合計終着"] } %></td>
+    <td><%= Dmer.maximum(:status_update).strftime("%m月%d日") rescue 0 %></td>
+    <td><%= Aupay.maximum(:status_update).strftime("%m月%d日") rescue 0 %></td>
+    <td><%= Paypay.maximum(:status_update).strftime("%m月%d日") rescue 0 %></td>
+    <td><%= RakutenPay.maximum(:status_update).strftime("%m月%d日") rescue 0 %></td>
   </tr>
 </table>
 <div>

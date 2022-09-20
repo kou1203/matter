@@ -9,7 +9,11 @@ class ProfitsController < ApplicationController
   @rakuten_start = @month.prev_month.beginning_of_month.since(10.days) # 11日
   @rakuten_end = @month.beginning_of_month.since(14.days) # 15日
   @rakuten_change_date = @month.beginning_of_month.since(17.days) # 18日
-  @results = Result.includes(:user).where(date: @start_date..@end_date)
+  @results = 
+    Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @start_date..@end_date)
+    .or(
+      Result.includes(:user).where(shift: "キャッシュレス決済").where(date: @start_date..@end_date)
+    )
   @shifts = 
     Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     .or(
@@ -22,12 +26,17 @@ class ProfitsController < ApplicationController
   @kanto_cash_list = []
   @partner_cash_list = []
   @femto_list = []
+  @summit_list = []
+  @retire_list = []
   @all_list = []
-  @bases = ["中部SS", "関西SS", "関東SS", "2次店"]
+  @bases = ["中部SS", "関西SS", "関東SS", "2次店","退職"]
   @users = 
-    User.where(base_sub: "キャッシュレス").where.not(position: "退職")
+    User.where(base_sub: "キャッシュレス")
     .or(
-      User.where(base_sub: "フェムト").where.not(position: "退職")
+      User.where(base_sub: "フェムト")
+    )
+    .or(
+      User.where(base_sub: "サミット")
     )
   # ハッシュの中身
     @bases.each do |base| # 拠点ごとに繰り返す
@@ -35,8 +44,12 @@ class ProfitsController < ApplicationController
         person_hash = {}
       # ユーザー情報
         user_result = @results.where(user_id: user.id)
-        if user.base_sub == "フェムト"
+        if user.position == "退職"
+          person_hash["拠点"] = "その他"
+        elsif user.base_sub == "フェムト"
           person_hash["拠点"] = "フェムト"
+        elsif user.base_sub == "サミット"
+          person_hash["拠点"] = "サミット"
         else  
           person_hash["拠点"] = user.base 
         end
@@ -71,6 +84,7 @@ class ProfitsController < ApplicationController
         dmer_price_2 = 5000
         dmer_price_3 = 5000
         aupay_price = 13500
+        paypay_price = 2000
         # 審査通過率
         if (Date.today > @end_date) && (Date.today.month == @end_date.month)
           dec_per = (Date.today.day - @end_date.day) * 0.1
@@ -220,8 +234,15 @@ class ProfitsController < ApplicationController
               dmer_val1_period.where(settlement: @start_date..@end_done)
               .where("? >= result_point",@end_done)
             )
+            
           dmer_val2_period = 
-          dmer_val1_period.where.not(status_update_settlement: nil).where(status_settlement: "完了")
+          dmer_user.where(status: "審査OK")
+          .where.not(industry_status: "×")
+          .where.not(industry_status: "NG")
+          .where.not(industry_status: "要確認")
+          .where(date: @start_date..@end_date)
+          .where("? >= status_update_settlement",@end_done)
+          .where(status_settlement: "完了")
           dmer_val3_period = dmer_val2_period.where.not(settlement_second: nil)
           dmer_val1_period_len = dmer_val1_period.length
           dmer_val2_period_len = dmer_val2_period.length
@@ -408,10 +429,10 @@ class ProfitsController < ApplicationController
             # person_hash["auPay一次成果終着（過去月）"] = aupay_result1_fin_prev_month
             person_hash["auPay一次成果終着"] = aupay_result1_fin
       #PayPay
-        paypay_user = Paypay.where(user_id: user.id).where(status: "60審査可決")
+        paypay_user = Paypay.where(user_id: user.id)
         # 現状売上
           # 一次成果
-          paypay_result1 = paypay_user.where(result_point: @start_done..@end_done)
+          paypay_result1 = paypay_user.where(status: "60審査可決").where(result_point: @start_done..@end_done)
           paypay_result1_profit = paypay_result1.sum(:profit)
           person_hash["PayPay第一成果件数"] = paypay_result1.length
           person_hash["PayPay現状売上"] = paypay_result1_profit
@@ -424,7 +445,7 @@ class ProfitsController < ApplicationController
           else 
             paypay_len_ave = (paypay_len.to_f / person_hash["消化新規シフト"]).round(1) rescue 0
           end 
-          paypay_fin_len = (paypay_len_ave * new_shift).round() rescue 0 
+          paypay_fin_len = (paypay_len_ave * person_hash["予定新規シフト"]).round() rescue 0 
           paypay_result1_fin = paypay_price * paypay_fin_len rescue 0
           if (paypay_result1_profit > paypay_result1_fin) || (Date.today >=@end_done)
             paypay_result1_fin = paypay_result1_profit
@@ -521,20 +542,26 @@ class ProfitsController < ApplicationController
             person_hash["合計終着"] = profit_new_fin + profit_slmt_fin
 
       # ハッシュへデータを配列へ格納
-        @all_list << person_hash
-        if user.base_sub =="フェムト"
+        if (user.position != "退職")
+          @all_list << person_hash
+        end
+        if (user.base_sub =="フェムト") && (user.position != "退職")
           @femto_list << person_hash
-        elsif base == "中部SS"
+        elsif (user.base_sub =="サミット") && (user.position != "退職")
+          @summit_list << person_hash
+        elsif (base == "中部SS") && (user.position != "退職")
           @chubu_cash_list << person_hash
-        elsif base == "関西SS"
+        elsif (base == "関西SS") && (user.position != "退職")
           @kansai_cash_list << person_hash
-        elsif base == "関東SS"
+        elsif (base == "関東SS") && (user.position != "退職")
           @kanto_cash_list << person_hash
-        elsif base == "2次店"
+        elsif (base == "2次店") && (user.position != "退職")
           @partner_cash_list << person_hash
+        elsif (user.position == "退職")
+          @retire_list << person_hash
         end 
       end #ユーザーごとに繰り返す
     end # 拠点ごとに繰り返す
-  @base_list = [@chubu_cash_list,@kansai_cash_list,@kanto_cash_list,@femto_list,@partner_cash_list]
+  @base_list = [@chubu_cash_list,@kansai_cash_list,@kanto_cash_list,@femto_list,@summit_list,@partner_cash_list,@retire_list]
   end 
 end
