@@ -1,4 +1,4 @@
-<table>
+<table class="status-tb">
   <tr>
     <th class="valuation-th" colspan="7">ステータス早見</th>
   </tr>
@@ -61,7 +61,7 @@
           @rakuten_pays.where(status: "未処理")
           .or(@rakuten_pays.where(status: "審査待ち")).length 
     %></td>
-    <td class="valuation-td"><%=  %></td>
+    <td class="valuation-td"><%= @rakuten_pays.where(status: "OK").length %></td>
     <td class="valuation-td"><%= 
       @rakuten_pays.where(status: "自社不備")
       .or(@rakuten_pays.where(status: "自社NG")).length 

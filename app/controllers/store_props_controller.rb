@@ -63,7 +63,7 @@ class StorePropsController < ApplicationController
     @store_props_csv = StoreProp.includes(:dmer, :aupay, :paypay, :rakuten_pay)
     head :no_content
     filename = "店舗情報一覧#{Date.today}"
-
+    
     columns_ja = [
       "店舗名", "本店名", "法人/個人", "業種",
       "都道府県", "市区", "町村","番地","建物名",
