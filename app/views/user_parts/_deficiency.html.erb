@@ -8,7 +8,7 @@
       <th class="valuation-th">拠点</th>
       <th class="valuation-th">獲得者</th>
       <th class="valuation-th">獲得日</th>
-      <th class="valuation-th">不備内容</th>
+      <th class="valuation-th-remarks">不備内容</th>
       <th class="valuation-th">詳細</th>
       <th class="valuation-th">対応日</th>
       <th class="valuation-th">対応状況</th>
@@ -31,7 +31,7 @@
       <td class="valuation-td"><%= dmer.user.base %></td>
       <td class="valuation-td"><%= dmer.user.name %></td>
       <td class="valuation-td"><%= dmer.date %></td>
-      <td class="valuation-td"><%= dmer.deficiency_remarks %></td>
+      <td class="valuation-td-remarks"><%= dmer.deficiency_remarks %></td>
       <td class="valuation-td"><%= link_to "詳細" ,dmer_path(dmer.id) %></td>
       <%# コメント %>
       <% if comment.present? %>
@@ -82,7 +82,7 @@
       <td class="valuation-td"><%= aupay.user.base %></td>
       <td class="valuation-td"><%= aupay.user.name %></td>
       <td class="valuation-td"><%= aupay.date %></td>
-      <td class="valuation-td"><%= aupay.deficiency_remarks %></td>
+      <td class="valuation-td-remarks"><%= aupay.deficiency_remarks %></td>
       <td class="valuation-td"><%= link_to "詳細" ,aupay_path(aupay.id) %></td>
   <% if comment.present? %>
       <td class="valuation-td"><%= aupay.store_prop.comments.where(content: "不備").first.request %></td>
@@ -132,7 +132,7 @@
       <td class="valuation-td"><%= rakuten_pay.user.base %></td>
       <td class="valuation-td"><%= rakuten_pay.user.name %></td>
       <td class="valuation-td"><%= rakuten_pay.date %></td>
-      <td class="valuation-td"><%= rakuten_pay.deficiency_info %></td>
+      <td class="valuation-td-remarks"><%= rakuten_pay.deficiency_info %></td>
       <td class="valuation-td"><%= link_to "詳細" ,rakuten_pay_path(rakuten_pay.id) %></td>
 <% if comment.present? %>
       <td class="valuation-td"><%= rakuten_pay.store_prop.comments.where(content: "不備").first.request %></td>
