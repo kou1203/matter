@@ -2,19 +2,19 @@
 <table class="out-tb">
   <thead>
     <tr>
-      <th class="out-th">店舗名</th>
-      <th class="out-th">商材</th>
-      <th class="out-th">商流</th>
-      <th class="out-th">拠点</th>
-      <th class="out-th">獲得者</th>
-      <th class="out-th">獲得日</th>
-      <th class="out-th-text">不備内容</th>
-      <th class="out-th">詳細</th>
-      <th class="out-th">対応日</th>
-      <th class="out-th">対応状況</th>
-      <th class="out-th">対応者</th>
-      <th class="out-th">対応メモ</th>
-      <th class="out-th"></th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">商材</th>
+      <th class="valuation-th">商流</th>
+      <th class="valuation-th">拠点</th>
+      <th class="valuation-th">獲得者</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">不備内容</th>
+      <th class="valuation-th">詳細</th>
+      <th class="valuation-th">対応日</th>
+      <th class="valuation-th">対応状況</th>
+      <th class="valuation-th">対応者</th>
+      <th class="valuation-th">対応メモ</th>
+      <th class="valuation-th"></th>
     </tr>
   </thead>
   <tbody>
@@ -25,28 +25,28 @@
     <% else %>
     <tr>
     <% end %>
-      <td class="out-td"><%= dmer.store_prop.name %></td>
-      <td class="out-td">dメル</td>
-      <td class="out-td"><%= dmer.client %></td>
-      <td class="out-td"><%= dmer.user.base %></td>
-      <td class="out-td"><%= dmer.user.name %></td>
-      <td class="out-td"><%= dmer.date %></td>
-      <td class="out-td-text"><%= dmer.deficiency_remarks %></td>
-      <td class="out-td"><%= link_to "詳細" ,dmer_path(dmer.id) %></td>
+      <td class="valuation-td"><%= dmer.store_prop.name %></td>
+      <td class="valuation-td">dメル</td>
+      <td class="valuation-td"><%= dmer.client %></td>
+      <td class="valuation-td"><%= dmer.user.base %></td>
+      <td class="valuation-td"><%= dmer.user.name %></td>
+      <td class="valuation-td"><%= dmer.date %></td>
+      <td class="valuation-td"><%= dmer.deficiency_remarks %></td>
+      <td class="valuation-td"><%= link_to "詳細" ,dmer_path(dmer.id) %></td>
       <%# コメント %>
       <% if comment.present? %>
-      <td class="out-td-text"><%= dmer.store_prop.comments.where(content: "不備").first.request %></td>
-      <td class="out-td-text"><%= dmer.store_prop.comments.where(content: "不備").first.status %></td>
-      <td class="out-td-text"><%= dmer.store_prop.comments.where(content: "不備").first.ball %></td>
-      <td class="out-td-text"><%= dmer.store_prop.comments.where(content: "不備").first.request_show %></td>
-      <td class="out-td"><%= link_to "編集" ,edit_comment_path(dmer.store_prop.comments.where(content: "不備").first.id), class: "link" %></td>
+      <td class="valuation-td"><%= dmer.store_prop.comments.where(content: "不備").first.request %></td>
+      <td class="valuation-td"><%= dmer.store_prop.comments.where(content: "不備").first.status %></td>
+      <td class="valuation-td"><%= dmer.store_prop.comments.where(content: "不備").first.ball %></td>
+      <td class="valuation-td"><%= dmer.store_prop.comments.where(content: "不備").first.request_show %></td>
+      <td class="valuation-td"><%= link_to "編集" ,edit_comment_path(dmer.store_prop.comments.where(content: "不備").first.id), class: "link" %></td>
       <% else %>
       <%= form_with(url: comment_new_users_path,data: {remote: false}) do |f| %>
       <%= f.hidden_field :store_prop_id, value: dmer.store_prop.id %>
       <%= f.hidden_field :product, value: "dメル" %>
       <%= f.hidden_field :content, value: "不備" %>
-      <td class="out-td"><%= f.date_field :request, value: Date.today, class: "input" %></td>
-      <td class="out-td">
+      <td class="valuation-td"><%= f.date_field :request, value: Date.today, class: "input" %></td>
+      <td class="valuation-td">
         <%= 
           f.select :status, {
             "対応中": "対応中",
@@ -55,7 +55,7 @@
           }, {}, {class: "input"}
         %>
       </td>
-      <td class="out-td">
+      <td class="valuation-td">
         <%= 
           f.select :ball, {
             "営業": "営業",
@@ -63,8 +63,8 @@
           }, {}, {class: "input"}
         %>
       </td>
-      <td class="out-td"><%= f.text_field :request_show, class: "input" %></td>
-      <td class="out-td"><%= f.submit "登録", class: "comment-btn" %></td>
+      <td class="valuation-td"><%= f.text_field :request_show, class: "input" %></td>
+      <td class="valuation-td"><%= f.submit "登録", class: "comment-btn" %></td>
       <% end %>
     <% end %>
     </tr>
@@ -76,27 +76,27 @@
     <% else %>
     <tr>
     <% end %>
-      <td class="out-td"><%= aupay.store_prop.name %></td>
-      <td class="out-td">auPay</td>
-      <td class="out-td"><%= aupay.client %></td>
-      <td class="out-td"><%= aupay.user.base %></td>
-      <td class="out-td"><%= aupay.user.name %></td>
-      <td class="out-td"><%= aupay.date %></td>
-      <td class="out-td-text"><%= aupay.deficiency_remarks %></td>
-      <td class="out-td"><%= link_to "詳細" ,aupay_path(aupay.id) %></td>
+      <td class="valuation-td"><%= aupay.store_prop.name %></td>
+      <td class="valuation-td">auPay</td>
+      <td class="valuation-td"><%= aupay.client %></td>
+      <td class="valuation-td"><%= aupay.user.base %></td>
+      <td class="valuation-td"><%= aupay.user.name %></td>
+      <td class="valuation-td"><%= aupay.date %></td>
+      <td class="valuation-td"><%= aupay.deficiency_remarks %></td>
+      <td class="valuation-td"><%= link_to "詳細" ,aupay_path(aupay.id) %></td>
   <% if comment.present? %>
-      <td class="out-td-text"><%= aupay.store_prop.comments.where(content: "不備").first.request %></td>
-      <td class="out-td-text"><%= aupay.store_prop.comments.where(content: "不備").first.status %></td>
-      <td class="out-td-text"><%= aupay.store_prop.comments.where(content: "不備").first.ball %></td>
-      <td class="out-td-text"><%= aupay.store_prop.comments.where(content: "不備").first.request_show %></td>
-      <td class="out-td"><%= link_to "編集" ,edit_comment_path(aupay.store_prop.comments.where(content: "不備").first.id), class: "link" %></td>
+      <td class="valuation-td"><%= aupay.store_prop.comments.where(content: "不備").first.request %></td>
+      <td class="valuation-td"><%= aupay.store_prop.comments.where(content: "不備").first.status %></td>
+      <td class="valuation-td"><%= aupay.store_prop.comments.where(content: "不備").first.ball %></td>
+      <td class="valuation-td"><%= aupay.store_prop.comments.where(content: "不備").first.request_show %></td>
+      <td class="valuation-td"><%= link_to "編集" ,edit_comment_path(aupay.store_prop.comments.where(content: "不備").first.id), class: "link" %></td>
       <% else %>
       <%= form_with(url: comment_new_users_path,data: {remote: false}) do |f| %>
       <%= f.hidden_field :store_prop_id, value: aupay.store_prop.id %>
       <%= f.hidden_field :product, value: "auPay" %>
       <%= f.hidden_field :content, value: "不備" %>
-      <td class="out-td"><%= f.date_field :request, value: Date.today, class: "input" %></td>
-      <td class="out-td">
+      <td class="valuation-td"><%= f.date_field :request, value: Date.today, class: "input" %></td>
+      <td class="valuation-td">
         <%= 
           f.select :status, {
             "対応中": "対応中",
@@ -105,7 +105,7 @@
           }, {}, {class: "input"}
         %>
       </td>
-      <td class="out-td">
+      <td class="valuation-td">
         <%= 
           f.select :ball, {
             "営業": "営業",
@@ -113,8 +113,8 @@
           }, {}, {class: "input"}
         %>
       </td>
-      <td class="out-td"><%= f.text_field :request_show, class: "input" %></td>
-      <td class="out-td"><%= f.submit "登録", class: "comment-btn" %></td>
+      <td class="valuation-td"><%= f.text_field :request_show, class: "input" %></td>
+      <td class="valuation-td"><%= f.submit "登録", class: "comment-btn" %></td>
       <% end %>
     <% end %>
     </tr>
@@ -126,27 +126,27 @@
     <% else %>
     <tr>
     <% end %>
-      <td class="out-td"><%= rakuten_pay.store_prop.name %></td>
-      <td class="out-td">楽天ペイ</td>
-      <td class="out-td"><%= rakuten_pay.client %></td>
-      <td class="out-td"><%= rakuten_pay.user.base %></td>
-      <td class="out-td"><%= rakuten_pay.user.name %></td>
-      <td class="out-td"><%= rakuten_pay.date %></td>
-      <td class="out-td-text"><%= rakuten_pay.deficiency_info %></td>
-      <td class="out-td"><%= link_to "詳細" ,rakuten_pay_path(rakuten_pay.id) %></td>
+      <td class="valuation-td"><%= rakuten_pay.store_prop.name %></td>
+      <td class="valuation-td">楽天ペイ</td>
+      <td class="valuation-td"><%= rakuten_pay.client %></td>
+      <td class="valuation-td"><%= rakuten_pay.user.base %></td>
+      <td class="valuation-td"><%= rakuten_pay.user.name %></td>
+      <td class="valuation-td"><%= rakuten_pay.date %></td>
+      <td class="valuation-td"><%= rakuten_pay.deficiency_info %></td>
+      <td class="valuation-td"><%= link_to "詳細" ,rakuten_pay_path(rakuten_pay.id) %></td>
 <% if comment.present? %>
-      <td class="out-td-text"><%= rakuten_pay.store_prop.comments.where(content: "不備").first.request %></td>
-      <td class="out-td-text"><%= rakuten_pay.store_prop.comments.where(content: "不備").first.status %></td>
-      <td class="out-td-text"><%= rakuten_pay.store_prop.comments.where(content: "不備").first.ball %></td>
-      <td class="out-td-text"><%= rakuten_pay.store_prop.comments.where(content: "不備").first.request_show %></td>
-      <td class="out-td"><%= link_to "編集" ,edit_comment_path(rakuten_pay.store_prop.comments.where(content: "不備").first.id), class: "link" %></td>
+      <td class="valuation-td"><%= rakuten_pay.store_prop.comments.where(content: "不備").first.request %></td>
+      <td class="valuation-td"><%= rakuten_pay.store_prop.comments.where(content: "不備").first.status %></td>
+      <td class="valuation-td"><%= rakuten_pay.store_prop.comments.where(content: "不備").first.ball %></td>
+      <td class="valuation-td"><%= rakuten_pay.store_prop.comments.where(content: "不備").first.request_show %></td>
+      <td class="valuation-td"><%= link_to "編集" ,edit_comment_path(rakuten_pay.store_prop.comments.where(content: "不備").first.id), class: "link" %></td>
       <% else %>
       <%= form_with(url: comment_new_users_path,data: {remote: false}) do |f| %>
       <%= f.hidden_field :store_prop_id, value: rakuten_pay.store_prop.id %>
       <%= f.hidden_field :product, value: "楽天ペイ" %>
       <%= f.hidden_field :content, value: "不備" %>
-      <td class="out-td"><%= f.date_field :request, value: Date.today, class: "input" %></td>
-      <td class="out-td">
+      <td class="valuation-td"><%= f.date_field :request, value: Date.today, class: "input" %></td>
+      <td class="valuation-td">
         <%= 
           f.select :status, {
             "対応中": "対応中",
@@ -155,7 +155,7 @@
           }, {}, {class: "input"}
         %>
       </td>
-      <td class="out-td">
+      <td class="valuation-td">
         <%= 
           f.select :ball, {
             "営業": "営業",
@@ -163,8 +163,8 @@
           }, {}, {class: "input"}
         %>
       </td>
-      <td class="out-td"><%= f.text_field :request_show, class: "input" %></td>
-      <td class="out-td"><%= f.submit "登録", class: "comment-btn" %></td>
+      <td class="valuation-td"><%= f.text_field :request_show, class: "input" %></td>
+      <td class="valuation-td"><%= f.submit "登録", class: "comment-btn" %></td>
       <% end %>
     <% end %>
     </tr>
