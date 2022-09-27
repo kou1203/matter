@@ -28,7 +28,6 @@ class StoreProp < ApplicationRecord
   has_one :rakuten_pay, dependent: :destroy
   has_one :demaekan, dependent: :destroy
 
-
   def self.csv_check(file)
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
@@ -36,12 +35,8 @@ class StoreProp < ApplicationRecord
       if row["ID"].present?
         store_prop = find_by(id: row["ID"])
         errors << "#{index}行目のIDが不適切です" if store_prop.blank? && errors.length < 5
-      elsif row["区分"].blank? && errors.length < 5
-        errors << "#{index}行目の区分が空欄です。" && errors.length < 5
       elsif row["店舗名"].blank? && errors.length < 5
         errors << "#{index}行目の店舗名が空欄です。" 
-      elsif row["業種"].blank? && errors.length < 5
-        errors << "#{index}行目の業種が空欄です。"
       elsif row["代表者性別"].blank? && errors.length < 5
         errors << "#{index}行目の代表者性別が空欄です。"
       elsif row["代表者名"].blank? && errors.length < 5
@@ -50,8 +45,6 @@ class StoreProp < ApplicationRecord
         errors << "#{index}行目の代表者名カナが空欄です。"
       elsif row["電話番号1"].blank? && errors.length < 5
         errors << "#{index}行目の電話番号1が空欄です。"
-      elsif row["メールアドレス1"].blank? && errors.length < 5
-        errors << "#{index}行目のメールアドレス1が空欄です。"
       elsif row["都道府県"].blank? && errors.length < 5
         errors << "#{index}行目の都道府県が空欄です。"
       elsif row["市区"].blank? && errors.length < 5

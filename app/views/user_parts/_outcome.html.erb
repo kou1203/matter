@@ -1,9 +1,25 @@
 <% num = 1 %>
 <div class="nav-text" style="color: red;"><%= alert %></div>
+<% if @month.beginning_of_month >= @before_airpay_bonus_date %>
+  <% if @airpay_done.present? && @airpay_done.length >= 20 %>
+  <% airpay_bonus = @airpay_done.length * 5000 %>
+  <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
+  <% airpay_bonus = @airpay_done.length * 3000 %>
+  <% else %>
+  <% airpay_bonus = 0 %>
+  <% end %>
+<% else %>
+  <% if @airpay_done.present? && @airpay_done.length >= 20 %>
+  <% airpay_bonus = @airpay_done.length * 3000 %>
+  <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
+  <% airpay_bonus = @airpay_done.length * 2000 %>
+  <% else %>
+  <% airpay_bonus = 0 %>
+  <% end %>
+<% end %>
 <h2 class="red">成果売上：
   <%=   
     (
-      if @airpay_done.present? && @airpay_done.length >= 20
       @dmer_done.sum(:valuation_new) +
       @dmer_slmt_done.sum(:valuation_settlement) +
       @dmer_slmt2nd_done.sum(:valuation_second_settlement) +
@@ -11,34 +27,10 @@
       @paypay_done.sum(:valuation) +
       @rakuten_pay_done_val +
       @airpay_done.sum(:valuation) +
-      (@airpay_done.length * 3000) +
+      airpay_bonus +
       @demaekan.sum(:valuation) +
       # その他商材
       @aupay_pic_val
-      elsif @airpay_done.present? && @airpay_done.length >= 10
-      @dmer_done.sum(:valuation_new) +
-      @dmer_slmt_done.sum(:valuation_settlement) +
-      @dmer_slmt2nd_done.sum(:valuation_second_settlement) +
-      @aupay_slmt_done.sum(:valuation_settlement) +
-      @paypay_done.sum(:valuation) +
-      @rakuten_pay_done_val +
-      @airpay_done.sum(:valuation) +
-      (@airpay_done.length * 2000) +
-      @demaekan.sum(:valuation) +
-      # その他商材
-      @aupay_pic_val
-      else
-      @dmer_done.sum(:valuation_new) +
-      @dmer_slmt_done.sum(:valuation_settlement) +
-      @dmer_slmt2nd_done.sum(:valuation_second_settlement) +
-      @aupay_slmt_done.sum(:valuation_settlement) +
-      @paypay_done.sum(:valuation) +
-      @rakuten_pay_done_val +
-      @airpay_done.sum(:valuation) +
-      @demaekan.sum(:valuation) +
-      # その他商材
-      @aupay_pic_val
-      end
     ).to_s(:delimited) rescue 0
   %></h2>
   <table>
@@ -89,9 +81,9 @@
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
     <% if @airpay_done.present? && @airpay_done.length >= 20 %>
-    <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + 3000 * @airpay_done.length).to_s(:delimited) rescue 0 %></td>
+    <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + airpay_bonus).to_s(:delimited) rescue 0 %></td>
     <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
-    <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + 2000 * @airpay_done.length).to_s(:delimited) rescue 0 %></td>
+    <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + airpay_bonus).to_s(:delimited) rescue 0 %></td>
     <% else %>
     <td class="valuation-td"><%= @airpay_done.sum(:valuation).to_s(:delimited) rescue 0 %></td>
     <% end %>
@@ -352,12 +344,22 @@
       <td class="valuation-td "><%= airpay.date %></td>
       <td class="valuation-td "><%= airpay.status %></td>
       <td class="valuation-td "><%= airpay.result_point %></td>
-      <% if @airpay_done.present? && @airpay_done.length >= 20 %>
-      <td class="valuation-td "><%= airpay.valuation + 3000 %></td>
-      <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
-      <td class="valuation-td "><%= airpay.valuation + 2000 %></td>
+      <% if @month.beginning_of_month >= @before_airpay_bonus_date %>
+        <% if @airpay_done.present? && @airpay_done.length >= 20 %>
+        <td class="valuation-td "><%= airpay.valuation + 5000 %></td>
+        <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
+        <td class="valuation-td "><%= airpay.valuation + 3000 %></td>
+        <% else %>
+        <td class="valuation-td "><%= airpay.valuation %></td>
+        <% end %>
       <% else %>
-      <td class="valuation-td "><%= airpay.valuation %></td>
+        <% if @airpay_done.present? && @airpay_done.length >= 20 %>
+        <td class="valuation-td "><%= airpay.valuation + 3000 %></td>
+        <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
+        <td class="valuation-td "><%= airpay.valuation + 2000 %></td>
+        <% else %>
+        <td class="valuation-td "><%= airpay.valuation %></td>
+        <% end %>
       <% end %>
       <td class="valuation-td "><%= link_to "詳細", airpay_path(airpay.id),class: "link" %></td>
       </tr>

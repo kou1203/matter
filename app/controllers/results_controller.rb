@@ -46,6 +46,7 @@ class ResultsController < ApplicationController
       @cash_result = @results.joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
       end
       @month = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
+      @cash_result_out = @cash_result.includes(:result_cash).select(:result_cash_id, :user_id)
     end
   # 日々獲得進捗
     @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today.yesterday #当日日付
@@ -59,6 +60,8 @@ class ResultsController < ApplicationController
         RakutenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
     @airpay_monthly = 
         Airpay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @result_demaekan = Result.includes(:result_cash,:user).select(:user_id,:result_id,:date)
+    @demaekan_monthly = @result_demaekan.where(date: @month_daily.beginning_of_month..@month_daily).where(user: {base_sub: "キャッシュレス"})
     @shift_monthly_plan = 
       Shift.includes(:user)
       .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)

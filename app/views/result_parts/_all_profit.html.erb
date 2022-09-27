@@ -91,6 +91,8 @@
       <th class="search-th" colspan="6">商材別成果数</th>
       <th class="search-th" colspan="5">商材別平均獲得数</th>
       <th class="search-th" colspan="5">商材別獲得終着見込</th>
+      <th class="search-th" colspan="3">出前館基準値</th>
+
     </tr>
     <tr>
       <th class="search-th" >平均売上</th>
@@ -129,6 +131,11 @@
       <th class="search-th">楽天ペイ</th>
       <th class="search-th">AirPay</th>
       <% end %>
+      <%# 商材別基準値 %>
+      <th class="search-th">フル</th>
+      <th class="search-th">成約</th>
+      <th class="search-th">成約率</th>
+
     </tr>
     <tr></tr>
     <%# 合計値 %>
@@ -343,6 +350,8 @@
             <% dmer_val3_period_len = dmer_val3_period.length %>
             <% dmer_result1_fin_len = (dmer_len_ave * new_shift).round() %>
             <%# 期間内終着 %>
+
+
             <%
               dmer_result1_fin_this_month_len = 
                 (
@@ -699,6 +708,7 @@
           <% demaekan_data = demaekan_user.where(first_cs_contract: @cash_result.minimum(:date)..@cash_result.maximum(:date)) %>
           <% demaekan_valuations = demaekan_data.sum(:valuation) %>
           <% demaekan_len = demaekan_data.length %>
+
         <%# 少額短期保険 %>
           <% st_insurance_user = StInsurance.includes(:store_prop).where(user_id: r.user_id) %>
           <% st_insurance_data = this_period(st_insurance_user,@cash_result) %>
@@ -815,7 +825,6 @@
       <td ><%= aupay_result1_len %></td>
       <td ><%= paypay_result1_len %></td>
       <td ><%= airpay_result1_len %></td>
-
       <%# 平均獲得数 %>
       <td ><%= dmer_len_ave %></td>
       <td ><%= aupay_len_ave %></td>
@@ -828,6 +837,15 @@
       <td ><%= paypay_fin_len %></td>
       <td ><%= rakuten_pay_len_fin %></td>
       <td ><%= airpay_len_fin %></td>
+      <%# 商材別基準値 %>
+      <% demaekan_out = @cash_result_out.where(user_id: r.user_id) %>
+      <% demaekan_full_talk_sum = demaekan_out.sum(:out_full_talk_20) %>
+      <% demaekan_full_talk_ave = (demaekan_full_talk_sum.to_f / new_shift_digestion).round(1) %>
+      <% demaekan_get_sum = demaekan_out.sum(:out_get_20) %>
+      <% demaekan_get_ave = (demaekan_get_sum.to_f / new_shift_digestion).round(1) %>
+      <td ><%= demaekan_full_talk_ave %></td>
+      <td ><%= demaekan_get_ave %></td>
+      <td><%= number_to_percentage(demaekan_get_ave / demaekan_full_talk_ave * 100,precision:0) rescue 0 %></td>
     </tr>
       <% end %>
     <tr>
@@ -885,6 +903,14 @@
         <td><%= base_paypay_fin %></td>
         <td><%= base_rakuten_pay_fin %></td>
         <td><%= base_airpay_fin %></td>
+      <%# 商材別基準値 %>
+      <% demaekan_full_talk_sum_base = @cash_result_out.sum(:out_full_talk_20) rescue 0 %>
+      <% demaekan_full_talk_ave_base = (demaekan_full_talk_sum_base.to_f / base_new_shift_digestion).round(1) rescue 0 %>
+      <% demaekan_get_sum_base = @cash_result_out.sum(:out_get_20) rescue 0 %>
+      <% demaekan_get_ave_base = (demaekan_get_sum_base.to_f / base_new_shift_digestion).round(1) rescue 0 %>
+      <td ><%= demaekan_full_talk_ave_base rescue 0 %></td>
+      <td ><%= demaekan_get_ave_base rescue 0 %></td>
+      <td><%= number_to_percentage(demaekan_get_ave / demaekan_full_talk_ave * 100,precision:0) rescue 0 %></td>
     </tr>
   </table>
   <% end %>

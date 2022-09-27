@@ -189,7 +189,18 @@
         <%= f.number_field :out_full_talk_13, class: "num-input" %>
         <%= f.number_field :out_get_13, class: "num-input" %>
   </div>
- 
+  <h1>その他商材基準値</h1>
+  <div class="form">
+      <p class="form-head">２０：出前館</p><%# 20 %>
+      <p>
+        <%= f.label :out_full_talk_20, "フル", class: "form-text" %>-
+        <%= f.label :out_get_20, "成約", class: "form-text" %>
+      </p>
+      <p>
+        <%= f.number_field :out_full_talk_20, class: "num-input" %>
+        <%= f.number_field :out_get_20, class: "num-input" %>
+      </p>
+  </div>
   <div class="form-submit">
     <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
   </div>

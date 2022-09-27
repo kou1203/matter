@@ -117,14 +117,14 @@
               <th class="">新規残シフト</th>
               <th class="gray">dメル</th>
               <th class="gray">auPay</th>
-              <th class="gray">PayPay</th>
               <th class="gray">楽天ペイ</th>
               <th class="gray">AirPay</th>
+              <th class="gray">出前館</th>
               <th class="">dメル</th>
               <th class="">auPay</th>
-              <th class="">PayPay</th>
               <th class="">楽天ペイ</th>
               <th class="">AirPay</th>
+              <th class="">出前館</th>
             </tr>
           </thead>
           <tbody>
@@ -155,6 +155,10 @@
                   (@airpay_monthly.where(user: {base: base}).length.to_f / 
                   @shift_monthly_digestion.where(user: {base: base}).length)
               %>
+              <%
+                demaeekan_base_monthly_ave = 
+                  (@demaekan_monthly.where(user: {base: base}).sum(:out_get_20).to_f / @shift_monthly_digestion.where(user: {base: base}).length)
+              %>
             <%# /拠点別平均獲得数の変数 %>
             <tr>
               <th class=""><%= base %></th>
@@ -184,7 +188,6 @@
                 NaN
                 <% end %>
               </td>
-              <td class=""><%= @paypay_monthly.where(user: {base: base}).length %></td>
               <td class="">
                 <%= @rakuten_pay_monthly.where(user: {base: base}).length %> / 
                 <% if @rakuten_pay_target.where(base: base).first.present? %>
@@ -201,18 +204,21 @@
                 NaN
                 <% end %>
               </td>
+              <td class="">
+              <%= @demaekan_monthly.where(user: {base: base}).sum(:out_get_20) %>
+              </td>
               <%# 終着 %>
               <td class=""><%= (dmer_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
               <td class=""><%= (aupay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
-              <td class=""><%= (paypay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
               <td class=""><%= (rakuten_pay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
               <td class=""><%= (airpay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= (demaeekan_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
             </tr>
           <% end %>
               <%# 平均獲得数の変数 %>
                 <% dmer_monthly_ave = (@dmer_monthly.length.to_f / @shift_monthly_digestion.length) %>
                 <% aupay_monthly_ave = (@aupay_monthly.length.to_f / @shift_monthly_digestion.length) %>
-                <% paypay_monthly_ave = (@paypay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+                <% demaekan_monthly_ave = (@demaekan_monthly.sum(:out_get_20).to_f / @shift_monthly_digestion.length) %>
                 <% rakuten_pay_monthly_ave = (@rakuten_pay_monthly.length.to_f / @shift_monthly_digestion.length) %>
                 <% airpay_monthly_ave = (@airpay_monthly.length.to_f / @shift_monthly_digestion.length) %>
               <%# /平均獲得数の変数 %>
@@ -234,7 +240,6 @@
                 <%= @aupay_monthly.length %> / 
                 <%= @aupay_target.sum(:product_len) %>
               </td>
-              <td class=""><%= @paypay_monthly.length %></td>
               <td class="">
                 <%= @rakuten_pay_monthly.length %> / 
                 <%= @rakuten_pay_target.sum(:product_len) %>
@@ -243,11 +248,12 @@
                 <%= @airpay_monthly.length %> / 
                 <%= @airpay_target.sum(:product_len) %>
               </td>
+              <td class=""><%= @demaekan_monthly.sum(:out_get_20) %></td>
               <td class=""><%= (dmer_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
               <td class=""><%= (aupay_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
-              <td class=""><%= (paypay_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
               <td class=""><%= (rakuten_pay_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
               <td class=""><%= (airpay_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
+              <td class=""><%= (demaekan_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
             </tr>
           </tbody>
         </table>

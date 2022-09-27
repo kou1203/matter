@@ -4,13 +4,23 @@
   <% airpay_len = @airpay_result.length  %>
           <% 
             airpay_bonus =
-              if @airpay_done.length >= 20
-                @airpay_done.length * 3000
-              elsif @airpay_done.length >= 10
-                @airpay_done.length * 2000
-              else
-                0
-              end 
+              if @month.beginning_of_month >= @before_airpay_bonus_date
+                if @airpay_done.length >= 20
+                  @airpay_done.length * 5000
+                elsif @airpay_done.length >= 10
+                  @airpay_done.length * 3000
+                else
+                  0
+                end 
+              else  
+                if @airpay_done.length >= 20
+                  @airpay_done.length * 3000
+                elsif @airpay_done.length >= 10
+                  @airpay_done.length * 2000
+                else
+                  0
+                end 
+              end
           %>
   <% airpay_valuations = @airpay_done.sum(:valuation) + airpay_bonus %>
   <%# 合計成果売上 %>
@@ -103,6 +113,10 @@
             <th class="date-th"><span class="date-span">１３：その他対面数<span class="date-span"></th>
             <th class="date-th"><span class="date-span">１３：その他フル数</span></th>
             <th class="date-th"><span class="date-span">１３：その他成約数</span></th>
+            <% if @results_out.sum(:out_full_talk_20) != 0 %>
+            <th class="date-th"><span class="date-span">２０：出前館フル数</span></th>
+            <th class="date-th"><span class="date-span">２０：出前館成約数</span></th>
+            <% end %>
           <% end %>
             <th class="head-th date-th"><span class="date-span">時間別基準値</span></th>
             <th class="date-th"><span class="date-span">10時訪問</span></th>
@@ -260,8 +274,14 @@
         <% else %>
           <% if result.result_cash.nil? %>
             <th class="th-blank"></th>
-            <% 39.times do %>
-            <td class="td-blank race-border"></td>
+            <% if @results_out.sum(:out_full_talk_20) != 0 %>
+              <% 41.times do %>
+              <td class="td-blank race-border"></td>
+              <% end %>
+            <% else %>
+              <% 39.times do %>
+              <td class="td-blank race-border"></td>
+              <% end %>
             <% end %>
           <% else %>
           <th class="th-blank"></th>
@@ -317,55 +337,11 @@
           <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_13 %></span></td>
           <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_13 %></span></td>
           <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_13 %></td>
+          <%#出前館%>
+          <% if @results_out.sum(:out_full_talk_20) != 0 %>
+          <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_20 %></span></td>
+          <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_20 %></td>
           <% end %>
-        <% end %>
-      <%# 楽天フェムト切り返し %>
-        <% if @results.where(shift: "楽天フェムト新規").empty? %>
-        <% else %>
-          <% if result.result_casa.nil? %>
-            <td class="td-blank"></td>
-            <% 27.times do %>
-            <td class="td-blank"></td>
-            <% end %>
-          <% else %>
-          <td class="td-blank"></td>
-          <% casa_out = result.result_casa %>
-          <%#０１：楽天使ってない%>
-          <td ><%= casa_out.out_interview_01 %></td>
-          <td ><%= casa_out.out_full_talk_01 %></td>
-          <td ><%= casa_out.out_get_01 %></td>
-          <%#０２：めんどくさい%>
-          <td ><%= casa_out.out_interview_02 %></td>
-          <td ><%= casa_out.out_full_talk_02 %></td>
-          <td ><%= casa_out.out_get_02 %></td>
-          <%#０３：置く場所がない%>
-          <td ><%= casa_out.out_interview_03 %></td>
-          <td ><%= casa_out.out_full_talk_03 %></td>
-          <td ><%= casa_out.out_get_03 %></td>
-          <%#０４：メリットない%>
-          <td ><%= casa_out.out_interview_04 %></td>
-          <td ><%= casa_out.out_full_talk_04 %></td>
-          <td ><%= casa_out.out_get_04 %></td>
-          <%#０５：前断った%>
-          <td ><%= casa_out.out_interview_05 %></td>
-          <td ><%= casa_out.out_full_talk_05 %></td>
-          <td ><%= casa_out.out_get_05 %></td>
-          <%#０６：必要ない%>
-          <td ><%= casa_out.out_interview_06 %></td>
-          <td ><%= casa_out.out_full_talk_06 %></td>
-          <td ><%= casa_out.out_get_06 %></td>
-          <%#０７：忙しい%>
-          <td ><%= casa_out.out_interview_07 %></td>
-          <td ><%= casa_out.out_full_talk_07 %></td>
-          <td ><%= casa_out.out_get_07 %></td>
-          <%#０８：ペロ%>
-          <td ><%= casa_out.out_interview_08 %></td>
-          <td ><%= casa_out.out_full_talk_08 %></td>
-          <td ><%= casa_out.out_get_08 %></td>
-          <%#０９：そのた%>
-          <td ><%= casa_out.out_interview_09 %></td>
-          <td ><%= casa_out.out_full_talk_09 %></td>
-          <td ><%= casa_out.out_get_09 %></td>
           <% end %>
         <% end %>
       <%# 時間別基準値 %>
@@ -524,8 +500,6 @@
         <td class="date-td race-border"><span class="date-span"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></span></td>
         <% if result.shift == "キャッシュレス新規" || result.shift == "キャッシュレス決済" %>
           <td class="date-td race-border" ><span class="date-span"><%= link_to "切り返し編集", edit_result_cash_path(result.result_cash.id),class: "link" rescue "error" %></span></td>
-        <% elsif result.shift == "楽天フェムト新規" %>
-        <td class="date-td race-border"><span class="date-span"><%= link_to "切り返し編集", edit_result_casa_path(result.result_casa.id),class: "link" %></span></td>
         <% else %>
         <td class="total-td race-border"></td>
         <% end %>
@@ -1836,6 +1810,21 @@
             <td class="total-td"><%= (@results_out.sum(:out_get_13).to_f / @digestion_new).round(1) %></td>
             <td class="total-td"><%= number_to_percentage(@results_out.sum(:out_get_13).to_f / @results_out.sum(:out_full_talk_13).to_f * 100,precision: 1)  %></td>
           </tr>
+          <% if @results_out.sum(:out_full_talk_20) != 0 %>
+          <tr>
+            <th rowspan="3" class="total-th">２０：出前館</th>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results_out.sum(:out_full_talk_20) %></td>
+            <td class="total-td"><%= (@results_out.sum(:out_full_talk_20).to_f / @digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results_out.sum(:out_get_20) %></td>
+            <td class="total-td"><%= (@results_out.sum(:out_get_20).to_f / @digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results_out.sum(:out_get_20).to_f / @results_out.sum(:out_full_talk_20).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <% end %>
           </tbody>
         </table>
       </div><%# /個人 %>

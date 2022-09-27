@@ -102,46 +102,46 @@ class ProfitsController < ApplicationController
         aupay_slmt_per = 0.75
         aupay_slmt_per_prev = 0.71
         # dメル
-        if dec_per > dmer_result1_per 
-          dmer_result1_per = 0 
-        else 
-          dmer_result1_per = dmer_result1_per - dec_per 
-        end 
+        # if dec_per > dmer_result1_per 
+        #   dmer_result1_per = 0 
+        # else 
+        #   dmer_result1_per = dmer_result1_per - dec_per 
+        # end 
         
-        if dec_per > dmer_result2_per 
-          dmer_result2_per = 0 
-        else 
-          dmer_result2_per = dmer_result2_per - dec_per 
-        end 
+        # if dec_per > dmer_result2_per 
+        #   dmer_result2_per = 0 
+        # else 
+        #   dmer_result2_per = dmer_result2_per - dec_per 
+        # end 
         
-        if dec_per > dmer_result3_per 
-          dmer_result3_per = 0 
-        else 
-          dmer_result3_per = dmer_result3_per - dec_per 
-        end 
+        # if dec_per > dmer_result3_per 
+        #   dmer_result3_per = 0 
+        # else 
+        #   dmer_result3_per = dmer_result3_per - dec_per 
+        # end 
         
-        if dec_per > dmer_result1_per_prev 
-          dmer_result1_per_prev = 0 
-        else 
-          dmer_result1_per_prev = dmer_result1_per_prev - dec_per 
-        end 
+        # if dec_per > dmer_result1_per_prev 
+        #   dmer_result1_per_prev = 0 
+        # else 
+        #   dmer_result1_per_prev = dmer_result1_per_prev - dec_per 
+        # end 
         
-        if dec_per > dmer_result2_per_prev 
-          dmer_result2_per_prev = 0 
-        else 
-          dmer_result2_per_prev = dmer_result2_per_prev - dec_per 
-        end 
+        # if dec_per > dmer_result2_per_prev 
+        #   dmer_result2_per_prev = 0 
+        # else 
+        #   dmer_result2_per_prev = dmer_result2_per_prev - dec_per 
+        # end 
         # auPay
-        if dec_per > aupay_slmt_per 
-          aupay_slmt_per = 0 
-        else 
-          aupay_slmt_per = aupay_slmt_per - dec_per 
-        end 
-        if dec_per > aupay_slmt_per_prev
-          aupay_slmt_per_prev = 0 
-        else 
-          aupay_slmt_per_prev = aupay_slmt_per_prev - dec_per 
-        end 
+        # if dec_per > aupay_slmt_per 
+        #   aupay_slmt_per = 0 
+        # else 
+        #   aupay_slmt_per = aupay_slmt_per - dec_per 
+        # end 
+        # if dec_per > aupay_slmt_per_prev
+        #   aupay_slmt_per_prev = 0 
+        # else 
+        #   aupay_slmt_per_prev = aupay_slmt_per_prev - dec_per 
+        # end 
       # dメル
         dmer_user = 
           Dmer.where(user_id: user.id).includes(:store_prop)
@@ -291,20 +291,32 @@ class ProfitsController < ApplicationController
             (
               (dmer_len - dmer_val1_period_len).to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * dmer_result1_per
             ).round() rescue 0 
-            dmer_result1_fin_this_month = 
-            (dmer_price_1 * dmer_result1_fin_this_month_len) + dmer_result1.where(date: @start_date..@end_date).sum(:profit_new)
+            if (dmer_len.to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * dmer_result1_per) > dmer_result1.where(date: @start_date..@end_date).length
+              dmer_result1_fin_this_month = 
+              (dmer_price_1 * dmer_result1_fin_this_month_len) + dmer_result1.where(date: @start_date..@end_date).sum(:profit_new)
+            else  
+              dmer_result1_fin_this_month = 
+              (dmer_price_1 * dmer_result1_fin_this_month_len) + ((dmer_result1.where(date: @start_date..@end_date).length.to_f * dmer_result1_per).round() * dmer_price_1)
+            end
+
             # 過去月
             dmer_result1_fin_prev_month_len =
             (
               (dmer_slmt_tgt_prev.length - dmer_slmt_prev_val_len).to_f * dmer_result1_per_prev
             ).round()
+            if (dmer_slmt_tgt_prev.length.to_f * dmer_result1_per_prev) > dmer_result1.where("? > date",@start_date).length
             dmer_result1_fin_prev_month = 
               (dmer_price_1 * dmer_result1_fin_prev_month_len) + 
               dmer_result1.where("? > date",@start_date).sum(:profit_new)
+            else  
+              dmer_result1_fin_prev_month = 
+                (dmer_price_1 * dmer_result1_fin_prev_month_len) + 
+                ((dmer_result1.where("? > date",@start_date).length.to_f * dmer_result1_per_prev).round() * dmer_price_1)
+            end 
             # 合計
             dmer_result1_fin = dmer_result1_fin_this_month + dmer_result1_fin_prev_month
-            # person_hash["dメル一次成果終着（期間内）"] = dmer_result1.where("? > date",@start_date).sum(:profit_new)
-            # person_hash["dメル一次成果終着（過去月）"] = dmer_result1_fin_prev_month_len
+            person_hash["dメル一次成果終着（期間内）"] = dmer_result1_fin_prev_month
+            person_hash["dメル一次成果終着（過去月）"] = dmer_result1_fin_this_month
             person_hash["dメル一次成果終着"] = dmer_result1_fin
           # 第二成果
             # 期間内
@@ -312,13 +324,25 @@ class ProfitsController < ApplicationController
             (
               (dmer_len - dmer_val2_period_len).to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * dmer_result2_per
             ).round() rescue 0
+            if (dmer_len.to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * dmer_result2_per) > dmer_result1.where(date: @start_date..@end_date).length
             dmer_result2_fin_this_month = 
             (dmer_price_2 * dmer_result2_fin_this_month_len) + 
             dmer_result2.where(date: @start_date..@end_date).sum(:profit_settlement)
+          else  
+            dmer_result2_fin_this_month = 
+            (dmer_price_2 * dmer_result2_fin_this_month_len) + 
+            ((dmer_result2.where(date: @start_date..@end_date).length.to_f * dmer_result2_per).round() * dmer_price_2)
+            end 
             # 過去月
+            if (dmer_slmt_tgt_prev.length.to_f * dmer_result2_per_prev) > dmer_result1.where("? > date",@start_date).length
+              dmer_result2_fin_prev_month = 
+              (dmer_price_2 * dmer_result1_fin_prev_month_len) + 
+              dmer_result2.where("? > date",@start_date).sum(:profit_settlement)
+            else  
             dmer_result2_fin_prev_month = 
             (dmer_price_2 * dmer_result1_fin_prev_month_len) + 
-            dmer_result2.where("? > date",@start_date).sum(:profit_settlement)
+            ( (dmer_result2.where("? > date",@start_date).length.to_f * dmer_result2_per_prev).round() * dmer_price_2 )
+            end 
             # 合計
             dmer_result2_fin = dmer_result2_fin_this_month + dmer_result2_fin_prev_month
             person_hash["dメル二次成果終着（期間内）"] = dmer_result2_fin_this_month
@@ -351,9 +375,15 @@ class ProfitsController < ApplicationController
                     (dmer_len - dmer_val3_period_len).to_f / 
                     person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * dmer_result3_per
                   ).round() rescue 0 
-            dmer_result3_fin_this_month = 
-              (dmer_price_3 * dmer_result3_fin_this_month_len) + 
-              dmer_result3.where(date: @start_date..@end_date).sum(:profit_second_settlement)  
+            if (dmer_len.to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * dmer_result3_per) > dmer_result3.where(date: @start_date..@end_date).length
+              dmer_result3_fin_this_month = 
+                (dmer_price_3 * dmer_result3_fin_this_month_len) + 
+                dmer_result3.where(date: @start_date..@end_date).sum(:profit_second_settlement)  
+            else  
+              dmer_result3_fin_this_month = 
+                (dmer_price_3 * dmer_result3_fin_this_month_len) + 
+                ((dmer_result3.where(date: @start_date..@end_date).length.to_f * dmer_result3_per).round() * dmer_price_3)
+            end 
             dmer_result3_fin_prev_month = 
               (
                 dmer_price_3 * (dmer_slmt_tgt_prev_len - dmer_2ndslmt_prev_val_len - dmer_slmt_dead_len)
@@ -418,17 +448,30 @@ class ProfitsController < ApplicationController
                 (aupay_uq_26_10_len - aupay_def_26_10_len - aupay_val_26_10_len).to_f / 
                 user_shift26_10 * user_result26_10 * aupay_slmt_per
               ).round() rescue 0 
-            aupay_result1_fin_this_month = 
-              (aupay_price * aupay_result1_fin_len) + 
-              aupay_result1.where(date: @start_date..@end_date).sum(:profit_settlement) rescue 0
+              aupay_uq_26_10_judge_len = ((aupay_uq_26_10_len - aupay_def_26_10_len).to_f / user_shift26_10 * user_result26_10 * aupay_slmt_per) rescue 0
+            if (aupay_uq_26_10_judge_len > aupay_result1.where(date: @start_date..@end_date).length) || (aupay_uq_26_10_judge_len == 0)
+              aupay_result1_fin_this_month = 
+                (aupay_price * aupay_result1_fin_len) + 
+                aupay_result1.where(date: @start_date..@end_date).sum(:profit_settlement) rescue 0
+            else  
+              aupay_result1_fin_this_month = 
+                (aupay_price * aupay_result1_fin_len) + 
+                ((aupay_result1.where(date: @start_date..@end_date).length.to_f * aupay_slmt_per).round() * aupay_price) rescue 0
+            end 
             # 過去月
             aupay_result1_fin_prev_month_len = 
               (
                 (aupay_slmt_tgt_prev_len - aupay_slmt_prev_val_len) * aupay_slmt_per_prev
               ).round() rescue 0
-            aupay_result1_fin_prev_month = 
-              (aupay_price * aupay_result1_fin_prev_month_len) + 
-              aupay_result1.where("? > date", @start_date).sum(:profit_settlement) rescue 0
+            if (aupay_slmt_tgt_prev_len.to_f * aupay_slmt_per_prev) > aupay_result1.where("? > date", @start_date).length
+              aupay_result1_fin_prev_month = 
+                (aupay_price * aupay_result1_fin_prev_month_len) + 
+                aupay_result1.where("? > date", @start_date).sum(:profit_settlement) rescue 0
+            else  
+              aupay_result1_fin_prev_month = 
+                (aupay_price * aupay_result1_fin_prev_month_len) + 
+                ((aupay_result1.where("? > date", @start_date).length.to_f * aupay_slmt_per_prev).round() * aupay_price) rescue 0
+            end 
             aupay_result1_fin = aupay_result1_fin_this_month + aupay_result1_fin_prev_month
             # person_hash["auPay一次成果終着（期間内）"] = aupay_def_26_10_len
             # person_hash["auPay一次成果終着（過去月）"] = aupay_result1_fin_prev_month

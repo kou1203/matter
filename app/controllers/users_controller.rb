@@ -746,7 +746,7 @@ class UsersController < ApplicationController
       @rakuten_pay_user = 
         RakutenPay.includes(:store_prop).where(user_id: @results.first.user_id).select(:valuation,:store_prop_id)
       @rakuten_pay_uq =
-        this_period(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id,:share,:date,:id,:result_point,:status)
+        this_period(@rakuten_pay_user,@results_date).select(:valuation,:store_prop_id,:share,:date,:id,:result_point,:status,:deficiency)
       @rakuten_pay_dec = 
         @rakuten_pay_uq.where.not(deficiency: nil)
         .where.not(share: @results_date.minimum(:date)..@results_date.maximum(:date)).select(:valuation,:store_prop_id)
@@ -797,6 +797,17 @@ class UsersController < ApplicationController
       @airpay_done = 
         @airpay_user.where(status: "審査完了")
         .where(result_point: @month.beginning_of_month..@month.end_of_month)
+      @before_airpay_bonus_date = Date.new(2022,10,1)
+      if @month.beginning_of_month >= @before_airpay_bonus_date
+        airpay_bonus =
+        if @airpay_done.length >= 20
+          @airpay_done.length * 5000
+        elsif @airpay_done.length >= 10
+          @airpay_done.length * 3000
+        else  
+          0
+        end 
+      else  
         airpay_bonus =
         if @airpay_done.length >= 20
           @airpay_done.length * 3000
@@ -805,6 +816,7 @@ class UsersController < ApplicationController
         else  
           0
         end 
+      end
         @airpay_done_val = @airpay_done.sum(:valuation) + airpay_bonus
 
         @demaekan = Demaekan.includes(:user).where(user_id: @user.id).where(first_cs_contract: @results_date_min..@results_date_max)
@@ -1070,18 +1082,27 @@ class UsersController < ApplicationController
             # 単価
             airpay_per = 0.85
             @airpay_result_len_fin = (@airpay_result_len_ave * @new_shift * airpay_per).round() rescue 0
-            if @airpay_result_len_fin >= 20
-              airpay_price = 6000
-            elsif @airpay_result_len_fin >= 10
-              airpay_price = 5000
+            if @month.beginning_of_month >= @before_airpay_bonus_date
+              if @airpay_result_len_fin >= 20
+                airpay_price = 8000
+              elsif @airpay_result_len_fin >= 10
+                airpay_price = 6000
+              else  
+                airpay_price = 3000
+              end
             else  
-              airpay_price = 3000
+              if @airpay_result_len_fin >= 20
+                airpay_price = 6000
+              elsif @airpay_result_len_fin >= 10
+                airpay_price = 5000
+              else  
+                airpay_price = 3000
+              end
             end
             @airpay_result1_fin = airpay_price * @airpay_result_len_fin rescue 0
               if (@airpay_done_val > @airpay_result1_fin) || (Date.today >= @minimum_date_cash.next_month.end_of_month)
                 @airpay_result1_fin = @airpay_done_val rescue 0
               end
-        
         # 成果終着
         @result_fin = 
           (
