@@ -88,6 +88,7 @@ class ProfitsController < ApplicationController
         # 審査通過率
         if (Date.today > @end_date) && (Date.today.month == @end_date.month)
           dec_per = (Date.today.day - @end_date.day) * 0.1
+          inc_per = (Date.today.day - @end_date.day) * 0.05
         else  
           dec_per = 0
         end
@@ -296,7 +297,7 @@ class ProfitsController < ApplicationController
             #   (dmer_price_1 * dmer_result1_fin_this_month_len) + dmer_result1.where(date: @start_date..@end_date).sum(:profit_new)
             # else  
               dmer_result1_fin_this_month = 
-              (dmer_price_1 * dmer_result1_fin_this_month_len) + ((dmer_result1.where(date: @start_date..@end_date).length.to_f * 0.64).round() * dmer_price_1)
+              (dmer_price_1 * dmer_result1_fin_this_month_len) + ((dmer_result1.where(date: @start_date..@end_date).length.to_f * (0.64 + inc_per)).round() * dmer_price_1)
             # end
 
             # 過去月
@@ -317,7 +318,7 @@ class ProfitsController < ApplicationController
             dmer_result1_fin = dmer_result1_fin_this_month + dmer_result1_fin_prev_month
             # person_hash["dメル一次成果終着（期間内）"] = dmer_result1_fin_prev_month
             # person_hash["dメル一次成果終着（過去月）"] = dmer_result1_fin_this_month
-            if person_hash["dメル現状売上1"] > dmer_result1_fin
+            if (person_hash["dメル現状売上1"] > dmer_result1_fin) || (Date.today >= @end_done)
               person_hash["dメル一次成果終着"] = person_hash["dメル現状売上1"]
             else
             person_hash["dメル一次成果終着"] = dmer_result1_fin
@@ -335,7 +336,7 @@ class ProfitsController < ApplicationController
           # else  
             dmer_result2_fin_this_month = 
             (dmer_price_2 * dmer_result2_fin_this_month_len) + 
-            ((dmer_result2.where(date: @start_date..@end_date).length.to_f * 0.58).round() * dmer_price_2)
+            ((dmer_result2.where(date: @start_date..@end_date).length.to_f * (0.58 + inc_per)).round() * dmer_price_2)
             # end 
             # 過去月
             # if (dmer_slmt_tgt_prev.length.to_f * dmer_result2_per_prev) > dmer_result1.where("? > date",@start_date).length
@@ -351,7 +352,7 @@ class ProfitsController < ApplicationController
             dmer_result2_fin = dmer_result2_fin_this_month + dmer_result2_fin_prev_month
             # person_hash["dメル二次成果終着（期間内）"] = dmer_result2_fin_this_month
             # person_hash["dメル二次成果終着（過去）"] = dmer_result2_fin_prev_month
-            if person_hash["dメル現状売上2"] > dmer_result2_fin
+            if (person_hash["dメル現状売上2"] > dmer_result2_fin) || (Date.today >= @end_done)
               person_hash["dメル二次成果終着"] = person_hash["dメル現状売上2"]
             else
               person_hash["dメル二次成果終着"] = dmer_result2_fin
@@ -390,7 +391,7 @@ class ProfitsController < ApplicationController
             # else  
               dmer_result3_fin_this_month = 
                 (dmer_price_3 * dmer_result3_fin_this_month_len) + 
-                ((dmer_result3.where(date: @start_date..@end_date).length.to_f * 0.52).round() * dmer_price_3)
+                ((dmer_result3.where(date: @start_date..@end_date).length.to_f * (0.52 + inc_per)).round() * dmer_price_3)
             # end 
             dmer_result3_fin_prev_month = 
               (
@@ -399,7 +400,7 @@ class ProfitsController < ApplicationController
             dmer_result3_fin = dmer_result3_fin_this_month + dmer_result3_fin_prev_month
             # person_hash["dメル三次成果終着（期間内）"] = dmer_result3_fin_this_month
             # person_hash["dメル三次成果終着（過去月）"] = dmer_result3_fin_prev_month
-            if person_hash["dメル現状売上3"] > dmer_result3_fin
+            if (person_hash["dメル現状売上3"] > dmer_result3_fin) || (Date.today >= @end_done)
               person_hash["dメル三次成果終着"] = person_hash["dメル現状売上3"]
             else  
               person_hash["dメル三次成果終着"] = dmer_result3_fin
@@ -468,7 +469,7 @@ class ProfitsController < ApplicationController
             # else  
               aupay_result1_fin_this_month = 
                 (aupay_price * aupay_result1_fin_len) + 
-                ((aupay_result1.where(date: @start_date..@end_date).length.to_f * 0.75).round() * aupay_price) rescue 0
+                ((aupay_result1.where(date: @start_date..@end_date).length.to_f * (0.75 + inc_per)).round() * aupay_price) rescue 0
             # end 
             # 過去月
             aupay_result1_fin_prev_month_len = 
@@ -482,12 +483,12 @@ class ProfitsController < ApplicationController
             # else  
               aupay_result1_fin_prev_month = 
                 (aupay_price * aupay_result1_fin_prev_month_len) + 
-                ((aupay_result1.where("? > date", @start_date).length.to_f * 0.71).round() * aupay_price) rescue 0
+                ((aupay_result1.where("? > date", @start_date).length.to_f * (0.71 + inc_per)).round() * aupay_price) rescue 0
             # end 
             aupay_result1_fin = aupay_result1_fin_this_month + aupay_result1_fin_prev_month
             # person_hash["auPay一次成果終着（期間内）"] = aupay_def_26_10_len
             # person_hash["auPay一次成果終着（過去月）"] = aupay_result1_fin_prev_month
-            if person_hash["auPay現状売上1"] > aupay_result1_fin
+            if (person_hash["auPay現状売上1"] > aupay_result1_fin) || (Date.today >= @end_done)
               person_hash["auPay一次成果終着"] = person_hash["auPay現状売上1"]
             else  
               person_hash["auPay一次成果終着"] = aupay_result1_fin

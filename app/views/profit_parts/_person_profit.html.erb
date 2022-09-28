@@ -60,8 +60,8 @@
   <tr>
     <td>全拠点</td>
     <td><%= (all_ave / 3).round().to_s(:delimited) rescue 0 %></td>
-    <td><%= @all_list.sum { |hash| hash["合計現状売上"] } %></td>
-    <td><%= @all_list.sum { |hash| hash["合計終着"] } %></td>
+    <td><%= (@all_list.sum { |hash| hash["合計現状売上"] }).to_s(:delimited) %></td>
+    <td><%= (@all_list.sum { |hash| hash["合計終着"] }).to_s(:delimited) %></td>
     <td><%= Dmer.maximum(:status_update).strftime("%m月%d日") rescue 0 %></td>
     <td><%= Aupay.maximum(:status_update).strftime("%m月%d日") rescue 0 %></td>
     <td><%= Paypay.maximum(:status_update).strftime("%m月%d日") rescue 0 %></td>
