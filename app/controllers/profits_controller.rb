@@ -88,7 +88,7 @@ class ProfitsController < ApplicationController
         # 審査通過率
         if (Date.today > @end_date) && (Date.today.month == @end_date.month)
           dec_per = (Date.today.day - @end_date.day) * 0.1
-          inc_per = (Date.today.day - @end_date.day) * 0.05
+          inc_per = (Date.today.day - @end_date.day) * 0.07
         else  
           dec_per = 0
         end

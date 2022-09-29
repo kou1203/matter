@@ -782,7 +782,7 @@ class UsersController < ApplicationController
       @st_insurances_user = StInsurance.where(user_id: @results.first.user_id )
       @st_insurances_this_month = this_period(@st_insurances_user,@results)
       @st_insurances_def_this_month = this_period(@st_insurances_this_month,@results)
-      @airpay_user = Airpay.where(user_id: @results.first.user_id)
+      @airpay_user = Airpay.includes(:store_prop).where(user_id: @results.first.user_id)
       @airpay_result = 
         @airpay_user.where(date: @minimum_date_cash..@maximum_date_cash).where(status: "審査完了")
         .or(
@@ -794,10 +794,11 @@ class UsersController < ApplicationController
         @airpay_result_len_ave = (@airpay_result.length.to_f / @digestion_new).round(1) rescue 0
       end
       
+      @before_airpay_bonus_date = Date.new(2022,10,1)
       @airpay_done = 
         @airpay_user.where(status: "審査完了")
         .where(result_point: @month.beginning_of_month..@month.end_of_month)
-      @before_airpay_bonus_date = Date.new(2022,10,1)
+
       if @month.beginning_of_month >= @before_airpay_bonus_date
         airpay_bonus =
         if @airpay_done.length >= 20

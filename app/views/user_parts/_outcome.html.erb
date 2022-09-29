@@ -1,5 +1,6 @@
 <% num = 1 %>
 <div class="nav-text" style="color: red;"><%= alert %></div>
+<% @before_airpay_bonus_date = Date.new(2022,10,1) %>
 <% if @month.beginning_of_month >= @before_airpay_bonus_date %>
   <% if @airpay_done.present? && @airpay_done.length >= 20 %>
   <% airpay_bonus = @airpay_done.length * 5000 %>
@@ -340,7 +341,7 @@
       <% @airpay_done.each do |airpay| %>
       <tr>
       <td class="valuation-td "><%= num %></td>
-      <td class="valuation-td "><%= airpay.store_name %></td>
+      <td class="valuation-td "><%= airpay.store_prop.name %></td>
       <td class="valuation-td "><%= airpay.date %></td>
       <td class="valuation-td "><%= airpay.status %></td>
       <td class="valuation-td "><%= airpay.result_point %></td>

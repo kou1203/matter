@@ -9,7 +9,7 @@
 </div>
 <div data-scope-path="shares/index">
 <div class="main">
-<% if current_user.name == "管理用" || current_user.name == "キャッシュ管理" %>
+<% if current_user.position_sub == "管理" %>
     <%= form_with url: import_dmers_path do |f| %>
       <table class="csv-tb">
         <tr>

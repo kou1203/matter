@@ -13,24 +13,29 @@
 ActiveRecord::Schema.define(version: 2022_09_06_075202) do
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "store_name", null: false
+    t.bigint "store_prop_id"
     t.bigint "user_id"
-    t.string "race"
-    t.string "corporate_name"
     t.date "date", null: false
-    t.string "status", null: false
     t.string "terminal_status"
+    t.string "status", null: false
     t.string "customer_num", null: false
+    t.string "customer_conf"
+    t.string "slmt_conf"
+    t.string "cash_conf"
+    t.string "doubt_remarks"
     t.date "result_point"
-    t.integer "payment"
-    t.string "ipad_flag", null: false
-    t.integer "vm_status", null: false
-    t.integer "vm_status_name", null: false
+    t.date "payment"
+    t.string "qr_flag"
+    t.string "ipad_flag"
     t.integer "doc_follow"
+    t.string "doc_deadline"
     t.date "shipping"
     t.string "delivery_status"
+    t.date "activate"
     t.integer "valuation", null: false
     t.integer "profit", null: false
+    t.date "status_update"
+    t.index ["store_prop_id"], name: "index_airpays_on_store_prop_id"
     t.index ["user_id"], name: "index_airpays_on_user_id"
   end
 
@@ -1032,6 +1037,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_075202) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "airpays", "store_props"
   add_foreign_key "airpays", "users"
   add_foreign_key "aupays", "store_props"
   add_foreign_key "aupays", "users"

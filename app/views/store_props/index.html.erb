@@ -9,23 +9,22 @@
   <div data-scope-path="store_props/index">
   <div class="main">
     <div class="flex">
+      <% if current_user.position == "権限①" %>
       <table>
-        <th class="reg"><%= link_to "店舗登録", new_store_prop_path, class: "reg-link" %></th>
+        <th class="reg"><%= link_to "CSV出力", export_store_props_path(format: :csv), data: {confirm: "CSVを出力しますか？"}, class: "reg-link",id:'download-csv' %></th>
       </table>
-      <table>
-        
-      </table>
+      <% end %>
     </div>
-    <% if current_user.position == "権限①" %>
+    <% if current_user.position_sub == "管理" %>
       <%= form_with url: import_store_props_path do |f| %>
       <table class="csv-tb">
         <td class="csv-label">CSV</td>
         <td><%= f.file_field :file, accept:'.csv', class:"csv-input" %></td>
         <td class="csv-result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"} %>
-        <td class="reset"><%= link_to "CSV出力", export_store_props_path(format: :csv), data: {confirm: "CSVを出力しますか？"}, class: "reg-link",id:'download-csv' %></td>
-      </table>
       <% end %>
+      </table>
     <% end %>
+
     <%= search_form_for @q do |f| %>
     <table>
       <tr>
@@ -62,6 +61,7 @@
             <th>auPay</th>
             <th>PayPay</th>
             <th>楽天ペイ</th>
+            <th>AirPay</th>
             <th>出前館</th>
           </tr>
           <tr class="search-tr">
@@ -70,6 +70,7 @@
             <td ><%= @store_props.where.not(aupay: {id: nil}).length %></td>
             <td ><%= @store_props.where.not(paypay: {id: nil}).length %></td>
             <td ><%= @store_props.where.not(rakuten_pay: {id: nil}).length %></td>
+            <td ><%= @store_props.where.not(airpay: {id: nil}).length %></td>
             <td ><%= @store_props.where.not(demaekan: {id: nil}).length %></td>
           </tr>
         </table>
@@ -121,6 +122,9 @@
               <% else %>
                 <%= link_to "楽天ペイ", rakuten_pay_path(store_prop.rakuten_pay.id),class:"link" %>
               <% end %>
+            <% end %>
+            <% if store_prop.airpay.present? %>
+              AirPay
             <% end %>
             <% if store_prop.demaekan.present? %>
               出前館

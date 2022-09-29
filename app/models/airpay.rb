@@ -1,16 +1,14 @@
 class Airpay < ApplicationRecord
   require 'charlock_holmes'
   belongs_to :user 
+  belongs_to :store_prop 
 
   with_options presence: true do 
     validates :user_id
-    validates :store_name
+    validates :store_prop_id
     validates :date 
     validates :status
     validates :customer_num
-    validates :ipad_flag
-    validates :vm_status
-    validates :vm_status_name
     validates :valuation
     validates :profit
   end 
@@ -20,22 +18,29 @@ class Airpay < ApplicationRecord
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
       user = User.find_by(name: row["獲得者"])
+      store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
+      store_id = store_prop.id if store_prop.present? 
       errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
+      errors << "#{index}行目店舗名が不正です" if store_prop.blank? && errors.length < 5
         airpay = new(
-          status: row["審査状況"],
-          terminal_status: row["端末ステータス"],
+          store_prop_id: store_id,
           user_id: user.id,
           date: row["申込日"],
-          corporate_name: row["法人名"],
-          store_name: row["店舗名"],
+          terminal_status: row["端末ステータス"],
+          status: row["審査状況"],
           customer_num: row["店舗番号"],
+          customer_conf: row["お申込者様に関する確認"],
+          slmt_conf: row["決済を行う店舗に関する確認"],
+          cash_conf: row["口座情報に関する確認"],
+          doubt_remarks: row["疑出し内容"],
           result_point: row["審査通過日"],
-          vm_status: row["審査ステータス"],
-          vm_status_name: row["審査ステータス読替"],
+          qr_flag: row["QR同時申込有無"],
           ipad_flag: row["iPadCPN申込有無"],
           doc_follow: row["書類フォロー"],
+          doc_deadline: row["書類提出期限"],
           shipping: row["端末受取日"],
           delivery_status: row["端末受取状態"],
+          activate: row["アクティベート日"],
           profit: 3000,
           valuation: 3000,
         )
@@ -52,48 +57,59 @@ class Airpay < ApplicationRecord
     nochange_cnt = 0
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
     user = User.find_by(name: row["獲得者"])
+    store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
+    store_id = store_prop.id if store_prop.present? 
     airpay = find_by(customer_num: row["店舗番号"])
     if airpay.present? 
       airpay.assign_attributes(
-        status: row["審査状況"],
-        terminal_status: row["端末ステータス"],
+        store_prop_id: store_id,
         user_id: user.id,
         date: row["申込日"],
-        corporate_name: row["法人名"],
-        store_name: row["店舗名"],
+        terminal_status: row["端末ステータス"],
+        status: row["審査状況"],
         customer_num: row["店舗番号"],
+        customer_conf: row["お申込者様に関する確認"],
+        slmt_conf: row["決済を行う店舗に関する確認"],
+        cash_conf: row["口座情報に関する確認"],
+        doubt_remarks: row["疑出し内容"],
         result_point: row["審査通過日"],
-        vm_status: row["審査ステータス"],
-        vm_status_name: row["審査ステータス読替"],
+        qr_flag: row["QR同時申込有無"],
         ipad_flag: row["iPadCPN申込有無"],
         doc_follow: row["書類フォロー"],
+        doc_deadline: row["書類提出期限"],
         shipping: row["端末受取日"],
         delivery_status: row["端末受取状態"],
+        activate: row["アクティベート日"],
         profit: 3000,
         valuation: 3000,
       )
       if airpay.has_changes_to_save? 
         airpay.save!
+        airpay.assign_attributes(status_update: Date.today)
         update_cnt += 1
       else  
         nochange_cnt += 1
       end 
     else  
       airpay = new(
-        status: row["審査状況"],
-        terminal_status: row["端末ステータス"],
+        store_prop_id: store_id,
         user_id: user.id,
         date: row["申込日"],
-        corporate_name: row["法人名"],
-        store_name: row["店舗名"],
+        terminal_status: row["端末ステータス"],
+        status: row["審査状況"],
         customer_num: row["店舗番号"],
+        customer_conf: row["お申込者様に関する確認"],
+        slmt_conf: row["決済を行う店舗に関する確認"],
+        cash_conf: row["口座情報に関する確認"],
+        doubt_remarks: row["疑出し内容"],
         result_point: row["審査通過日"],
-        vm_status: row["審査ステータス"],
-        vm_status_name: row["審査ステータス読替"],
+        qr_flag: row["QR同時申込有無"],
         ipad_flag: row["iPadCPN申込有無"],
         doc_follow: row["書類フォロー"],
+        doc_deadline: row["書類提出期限"],
         shipping: row["端末受取日"],
         delivery_status: row["端末受取状態"],
+        activate: row["アクティベート日"],
         profit: 3000,
         valuation: 3000,
         )

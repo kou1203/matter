@@ -11,6 +11,10 @@ class AirpaysController < ApplicationController
       @airpays_data = @airpays.page(params[:page]).per(100)
   end 
 
+  def show 
+    @airpay = Airpay.find(params[:id])
+  end 
+
   def import
     if params[:file].present?
       if Airpay.csv_check(params[:file]).present?
@@ -27,19 +31,16 @@ class AirpaysController < ApplicationController
   private 
   def airpay_params
     params.require(:aiepay).permit(
-      :store_name              ,
-      :user                    ,
-       :race                   ,
-       :corporate_name         ,
+      :store_prop_id                    ,
+      :user_id                    ,
        :date                   ,  
        :status                 , 
        :terminal_status        ,
        :customer_num           , 
        :result_point           ,
        :payment                ,
+       :qr_flag              ,
        :ipad_flag              ,
-       :vm_status              ,
-       :vm_status_name         ,
        :doc_follow             ,
        :delivery_status        ,
        :shipping               ,
