@@ -91,6 +91,7 @@ class ProfitsController < ApplicationController
           inc_per = (Date.today.day - @end_date.day) * 0.07
         else  
           dec_per = 0
+          inc_per = 0
         end
         dmer_result1_per = 0.64
         dmer_result2_per = 0.58

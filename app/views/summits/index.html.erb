@@ -1,216 +1,89 @@
-<div data-scope-path="summits/index">
-  <h1>サミットエナジー一覧</h1>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title">サミットエナジー</h1>
   <%= render "shared/header" %>
-    <%= search_form_for @q do |f| %>
-    <table>
-      <tr>
-        <th class="search1">獲得日付</th>
-        <td><%= f.date_field :get_date_gteq, class: "input" %>~</td>
-        <td><%= f.date_field :get_date_lteq, class: "input" %></td>
-        <th class="search1">利用開始</th>
-        <td><%= f.date_field :start_gteq, class: "input" %>~</td>
-        <td><%= f.date_field :start_lteq, class: "input" %></td>
-      </tr>
-    </table>
-    <table>
-      <tr>
-        <th class="search1">電力会社</th>
-        <th class="search1">獲得者</th>
-        <th class="search1">審査ステータス</th>
-        <th class="search1">契約種別</th>
-        <td class="result"><%= f.submit "絞込み" , class: "result-btn" %></td>
-      </tr>
-      <tr>
-        <td><%= f.select :power_company_eq, options_from_collection_for_select(Summit.select(:power_company).distinct, :power_company, :power_company), {include_blank: true},{class: "input"} %></td>
-        <td><%= f.select :user_id_eq, options_from_collection_for_select(User.joins(:summits).where.not(base: "退職").distinct, :id, :name), {prompt: "全体"},{class: "input"} %></td>
-        <td><%= f.select :status_eq, options_from_collection_for_select(Summit.select(:status).distinct, :status, :status), {include_blank: true} ,{class: "input"} %></td>
-        <td><%= f.select :contract_type_eq, options_from_collection_for_select(Summit.select(:contract_type).distinct, :contract_type, :contract_type), {include_blank: true} ,{class: "input"} %></td>
-        <td class="reset"><%= link_to "絞込みリセット", summits_path, class: "reset-link" %></td>
-      </tr>
-    </table>
-    <% end %>
-    <hr>
-  <% if @summits.empty? %>
-  <% if @amount_month.empty? %>
-  <% else %>
-
-    <h1>サミット全体獲得詳細</h1>
-    <h1>月間平均</h1>
-    <table>
-      <tr>
-          <th></th>
-        <% @amount_month.each do |amount| %>
-          <th><%= amount[0][0] %>年<%= amount[0][1] %>月</td>
-        <% end %>
-      </tr>        
-
-      <tr>
-          <th>従量電灯</th>
-          <% @metered_month.each do |metered| %>
-            <td><%= metered[1] %>kVA</td>
-          <% end %>
-      </tr>
-
-      <tr>
-          <th>低圧電力</th>
-        <% @low_voltage_month.each do |low_voltage| %>
-          <td><%= low_voltage[1] %>kW</td>
-        <% end %>
-      </tr>
-
-
-      <tr>
-          <th>使用量</th>
-        <% @amount_month.each do |amount| %>
-          <td><%= amount[1] %>kWh</td>
-        <% end %>
-      </tr>
-    </table>
-
-    <h2>入金</h2>
-    <table>
-      <tr>
-        <th></th>
-        <% Summit.group("YEAR(start)").group("MONTH(start)").where.not(start: nil).each do |summit| %>
-        <th>
-          <%= summit.start.year %>年<%= summit.start.month + 1 %>月
-        </th>
-        <% end %>
-      </tr>
-      <tr>
-        <% low_voltage_profit_expected = [] %>
-        <th>低圧電力入金予定</th>
-        <% @low_voltage_profit_expected.each do |amount| %>
-          <% low_voltage_profit_expected << [amount[0],(amount[1] * 0.02 / 12).round] %>
-          <td><%= (amount[1] * 0.02 / 12).round %>円</td>
-        <% end %>
-      </tr>
-      <tr>
-        <th>低圧電力入金額</th>
-        <td></td>
-      </tr>
-      <tr>
-        <% metered_profit_expected = [] %>
-        <th>従量電灯入金予定</th>
-        <% @metered_profit_expected.each do |amount| %>
-          <% metered_profit_expected << [amount[0],(amount[1] * 0.07 / 12).round] %>
-          <td><%= (amount[1] * 0.07 / 12).round %>円</td>
-        <% end %>
-      </tr>
-      <tr>
-        <th>従量電灯入金額</th>
-        <td></td>
-      </tr>
-
-        
-
-          
-      
-    </table>
-
-  <h2>月毎の各電力の平均容量</h2>
-  <%= column_chart @chart %>
-  <h2>月毎の各電力>の平均使用量</h2>
-  <%= area_chart @amount_chart %>
-  <h2>月毎の請求予測額</h2>
-  <%= line_chart [
-    { name: "予測請求額(従量電灯)",data: metered_profit_expected },
-    { name: "予測請求額(低圧電力)",data: low_voltage_profit_expected }
-  ] %>
-<% end %>
-  <% else %>
-    <% low_voltage_sum = 0 %>
-    <% lamp_sum = 0 %>
-    <% amount_sum = 0 %>
-    <% low_voltage_count = 0 %>
-    <% lamp_count = 0 %>
-    <% amount_count = 0 %>
-    <% @summits.each do |summit| %>
-      <% if summit.contract_type == "低圧電力" && summit.contract_cap != nil %>
-        <% low_voltage_sum += summit.contract_cap %>
-        <% low_voltage_count += 1 %>
-      <% elsif summit.contract_type != "低圧電力" && summit.contract_cap != nil %>
-        <% lamp_sum += summit.contract_cap %>
-        <% lamp_count += 1 %>
-      <% end %>
-      <% if summit.amount_use != nil %>
-      <% amount_sum += summit.amount_use %>
-      <% amount_count += 1 %>
-      <% end %>
-    <% end %>
-    
-      <h1>表示範囲：<%= @summits.minimum(:get_date) %>〜<%= @summits.maximum(:get_date) %></h2>
-    <table>
-      <tr>
-        <th class="search1">契約数</th>
-        <th class="search1">従量電灯合計</th>
-        <th class="search1">低圧電力合計</th>
-        <th class="search1">使用量合計</th>
-      </tr>
-      <tr>
-        <td><%= @summits.length  %>件</td>
-        <td><%= lamp_sum %>kWh</td>
-        <td><%= low_voltage_sum %>kW</td>
-        <td><%= amount_sum %>kWh</td>
-        
-      </tr>
-      <tr>
-        <th class="search1"></th>
-        <th class="search1">従量電灯平均</th>
-        <th class="search1">低圧電力平均</th>
-        <th class="search1">使用量平均</th>
-      </tr>
-      <tr>
-        <td></td>
-        <% if lamp_count == 0 %>
-        <td>0kWh</td>
-        <% else %>
-        <td><%= lamp_sum / lamp_count %>kWh</td>
-        <% end %>
-        <% if low_voltage_count == 0 %>
-        <td>0kW</td>
-        <% else %>
-        <td><%= low_voltage_sum / low_voltage_count %>kW</td>
-        <% end %>
-        <% if amount_count == 0 %>
-        <td>0kWh</td>
-        <% else %>
-        <td><%= amount_sum / amount_count %>kWh</td>
-        <% end %>
-        <td><%= link_to "月毎のデータ", summit_customer_props_path, class: "reset-link" %></td>
-      </tr>
-    </table>
-
-    <table>
-    <tr>
-      <th></th>
-      <th></th>
-      <th><%= sort_link(@q, :get_date, "獲得日",{},{class: "reset-link"}) %></th>
-      <th><%= sort_link(@q, :start, "利用開始日",{},{class: "reset-link"}) %></th>
-      <th>電力会社</th>
-      <th>店舗名</th>
-      <th>契約種別</th>
-      <th>契約容量</th>
-      <th>使用量</th>
-      <th><%= sort_link(@q, :user_id,"獲得者",{},{class: "reset-link"}) %></th>
-      <th>審査ステータス</th>
-    </tr>
-    <% @summits.each do |summit| %>
-    <tr>
-      <td><%= link_to "削除",  summit_path(summit.id),method: :delete, data: {confirm: "削除しますか？"} ,class: "link" %></td>
-      <td><%= link_to "詳細",  summit_customer_prop_path(summit.summit_customer_prop.id) ,class: "link" %></td>
-      <td><%= summit.get_date %></td>
-      <td><%= summit.start %></td>
-      <td><%= summit.power_company %></td>
-      <td><%= summit.summit_customer_prop.store_prop.name %></td>
-      <td><%= summit.contract_type %></td>
-      <td><%= summit.contract_cap %><%= summit.contract_cap_unit %></td>
-      <td><%= summit.amount_use %>kWh</td>
-      <td><%= summit.user.name %></td>
-      <td><%= summit.status %></td>
-    </tr>
-    <% end %>
-    </table>
-  <% end %>
 </div>
-  </main>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/index">
+<div class="main">
+<% if current_user.position_sub == "管理" %>
+  <%= form_with url: import_summits_path do |f| %>
+    <table class="csv-tb">
+      <tr>
+        <td class="csv-label" >CSV</td>
+        <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
+        </tr>
+      </table>
+  <% end %>
+<% end %>
+      <hr>
+  <% if @summits.empty? %>
+    <div class="warning"><%= alert %></div>
+  <% else %>
+      <h1>獲得日：<%= @summits.minimum(:date) %>（<%= days[@summits.minimum(:date).wday] %>）〜<%= @summits.maximum(:date) %>（<%= days[@summits.maximum(:date).wday] %>）</h1>
+    <table >
+      <tr>
+        <th class="search-th">獲得数</th>
+        <th class="search-th">書類提出待ち</th>
+        <th class="search-th">審査中</th>
+        <th class="search-th">審査完了</th>
+        <th class="search-th">審査NG</th>
+        <th class="search-th">キャンセル</th>
+      </tr>
+      <tr>
+        <td><%= @summits.length %></td>
+        <td><%= @summits.where(status: "書類提出待ち").length %></td>
+        <td><%= @summits.where(status: "審査中").length %></td>
+        <td><%= @summits.where(status: "審査完了").length %></td>
+        <td><%= @summits.where(status: "審査NG").length %></td>
+        <td><%= @summits.where(status: "キャンセル").length %></td>
+      </tr>
+    </table>
+    <table class="out-tb">
+      <thead>
+      <tr>
+        <th class="out-th">ID</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">店舗番号</th>
+        <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+        <th class="out-th">獲得者</th>
+        <th class="out-th">審査ステータス</th>
+        <th class="out-th">書類提出期限</th>
+        <th class="out-th">審査完了日</th>
+        <th class="out-th">iPad申込区分</th>
+        <th class="out-th">書類フォロー</th>
+        <th class="out-th">配送ステータス</th>
+        <th class="out-th">アクティベート日</th>
+        <th class="out-th">詳細</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @summits_data.each do |summit| %>
+      <tr >
+        <td class="out-td"><%= summit.id %></td>
+        <td class="out-td"><%= summit.customer_num %></td>
+        <td class="out-td"><%= summit.store_prop.name %></td>
+        <td class="out-td"><%= summit.date %></td>
+        <td class="out-td"><%= summit.user.name %></td>
+        <td class="out-td"><%= summit.status %></td>
+        <td class="out-td"><%= summit.doc_deadline %></td>
+        <td class="out-td"><%= summit.result_point %></td>
+        <td class="out-td"><%= summit.ipad_flag %></td>
+        <td class="out-td"><%= summit.doc_follow %></td>
+        <td class="out-td"><%= summit.delivery_status %></td>
+        <td class="out-td"><%= summit.activate %></td>
+        <td class="out-td"><%= link_to "詳細", summit_path(summit.id),class: "link" %></td>
+      <% end %>
+      </tbody>
+    </table>
+  <div class="kaminari-page">
+    <%= paginate @summits_data %>
+  </div>
+  <% end %>
+  </div>
+  </div>
+</div>

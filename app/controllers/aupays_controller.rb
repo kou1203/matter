@@ -14,12 +14,10 @@ class AupaysController < ApplicationController
   def new 
     @aupay = Aupay.new
     @store_prop = StoreProp.find(params[:store_prop_id])
-    @users = User.all
   end
   
   def create 
     @store_prop = StoreProp.find(params[:store_prop_id])
-    @users = User.all
     @aupay = Aupay.new(aupay_params)
     @aupay.save 
     if @aupay.save 

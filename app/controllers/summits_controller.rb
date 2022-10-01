@@ -1,42 +1,23 @@
 class SummitsController < ApplicationController
 
   def index 
-    @q = Summit.ransack(params[:q])
+    @q = Summit.includes(:user, :store_prop).ransack(params[:q])
     @summits = 
       if params[:q].nil?
-        Summit.none
-      else
-        @q.result(distinct: true)
+        Summit.none 
+      else 
+        @q.result(distinct: false)
       end
+      @summits_data = @summits.page(params[:page]).per(100)
+  end
 
-      @users = User.joins(:summit).where.not(summit: nil).distinct
-      # 提出済み
-      @amount_month = Summit.where(status: "提出済み").group("YEAR(get_date)").group("MONTH(get_date)").average(:amount_use)
-      
-      @low_voltage_month = Summit.where(status: "提出済み").where(contract_type: '低圧電力').group("YEAR(get_date)").group("MONTH(get_date)").average(:contract_cap) 
-      @metered_month = Summit.where(status: "提出済み").where("contract_type = '従量電灯A' OR contract_type = '従量電灯B'").group("YEAR(get_date)").group("MONTH(get_date)").average(:contract_cap)
-      @low_voltage_profit_expected = Summit.where(status: "提出済み").where(contract_type: '低圧電力').group("YEAR(start)").group("MONTH(start)").sum(:profit_expected)
-      
-      @metered_profit_expected = Summit.where(status: "提出済み").where("contract_type = '従量電灯A' OR contract_type = '従量電灯B'").group("YEAR(start)").group("MONTH(start)").sum(:profit_expected)
-  
-  
-      @chart = [
-        {name: "従量電灯", data: @metered_month},
-        {name: "低圧電力", data: @low_voltage_month}
-      ]
-      @amount_chart = [{name: "使用量", data: @amount_month}]
-  
-  end 
 
   def new 
-    @users = User.all
-    @summit_customer_prop = SummitCustomerProp.find(params[:summit_customer_prop_id])
     @summit = Summit.new
   end 
   
   def create 
     @users = User.all
-    @summit_customer_prop = SummitCustomerProp.find(params[:summit_customer_prop_id])
     @summit = Summit.new(summit_params)
     @summit.save 
     if @summit.save
@@ -47,8 +28,16 @@ class SummitsController < ApplicationController
   end 
 
   def import 
-    Summit.import(params[:file])
-    redirect_to summits_path
+    if params[:file].present?
+      if Summit.csv_check(params[:file]).present?
+        redirect_to summits_path , alert: "エラーが発生したため中断しました#{Summit.csv_check(params[:file])}"
+      else
+        message = Summit.import(params[:file]) 
+        redirect_to summits_path, alert: "インポート処理を完了しました#{message}"
+      end
+    else
+      redirect_to summits_path, alert: "インポートに失敗しました。ファイルを選択してください"
+    end
   end 
 
   def show 
@@ -60,7 +49,6 @@ class SummitsController < ApplicationController
 
   def edit 
     @summit = Summit.find(params[:id])
-    @users = User.all
   end 
   
   def update 
@@ -77,26 +65,6 @@ class SummitsController < ApplicationController
   private 
 
   def summit_params 
-    params.require(:summit).permit(
-      :summit_customer_prop_id, 
-      :user_id, 
-      :get_date,
-      :payment,
-      :status, 
-      :before_status,
-      :supply_num, 
-      :contract_num,
-      :menu,
-      :plan,
-      :contract_type,
-      :contract_cap,
-      :contract_cap_unit,
-      :amount_use, 
-      :start,
-      :profit,
-      :profit_expected,
-      :remarks, 
-    )
   end 
 
 end

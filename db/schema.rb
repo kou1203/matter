@@ -962,12 +962,12 @@ ActiveRecord::Schema.define(version: 2022_09_06_075202) do
   end
 
   create_table "summits", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.bigint "store_prop_id"
-    t.bigint "user_id"
+    t.string "processing_status"
     t.string "control_num", null: false
-    t.date "date", null: false
+    t.bigint "store_prop_id"
     t.string "store_name", null: false
-    t.string "store_name_kana"
+    t.date "date", null: false
+    t.bigint "user_id"
     t.string "power_company"
     t.string "power_company_other"
     t.string "power_area"
@@ -987,14 +987,19 @@ ActiveRecord::Schema.define(version: 2022_09_06_075202) do
     t.string "current_contractor_kana"
     t.string "new_contractor"
     t.string "new_contractor_kana"
+    t.string "store_name_kana"
     t.string "destination_item"
     t.string "destination_name"
     t.string "destination_name_kana"
+    t.string "billing_item"
+    t.string "billing_name"
+    t.string "billing_name_kana"
+    t.string "billing_name_mail"
+    t.text "remarks"
+    t.integer "fc_num"
     t.date "mail_send"
     t.string "status", null: false
-    t.string "processing_status"
     t.integer "profit"
-    t.string "remarks"
     t.date "payment"
     t.date "status_update"
     t.index ["store_prop_id"], name: "index_summits_on_store_prop_id"

@@ -5,7 +5,7 @@ h1 {
   font-size: 20px;
   background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
   color: white;
-  width: 80vw;
+  width: 100%;
 }
 
 h2 {
@@ -84,14 +84,14 @@ header {
 
 table{
   border-collapse: collapse;
-  margin: 10px ;
+  margin: 10px;
   table-layout: fixed;
   min-width: 50%;
   display: block;
   overflow-x: scroll;
   white-space: nowrap;
   -webkit-overflow-scrolling: touch;
-  max-width: 80vw;
+  max-width: 75vw;
   background-color: white;
   background-clip: padding-box;
 }
@@ -122,10 +122,10 @@ tr:nth-child(odd) {
   color: white;
   background:  #c4c2c2;
   box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-  padding: 10px 0;
-  margin: 15px;
+  // padding: 10px 0;
+  // margin: 15px;
   width: 20vw;
-  vertical-align: middle;
+  // vertical-align: middle;
 }
 
 .input-math {
@@ -226,7 +226,7 @@ td {
   border: none;
   background: none;
   color: white;
-  font-size: 15px;
+  // font-size: 15px;
 
 }
 
@@ -296,6 +296,10 @@ td {
   align-items: flex-end;
 }
 
+.frame {
+  width: 100%;
+}
+
 .result-flex {
   display: flex;
   max-width: 80vw;
@@ -322,26 +326,37 @@ td {
 
 .main {width:80vw;}
 
+h1 {width: 100%;}
+
 @media screen and (max-width: 599px) {
 .result-flex {
   display: flex;
   flex-flow: column;
 }
 
+table {
+  margin:10px 0 10px 10px;
+  max-width: 85vw;
+}
+
+.main {width:100%;}
+p {font-size: 6px;}
 .user-form {flex-flow: column;}
 
 h1 {font-size: 100%;}
 h2 {
   width: 50vw;
-  font-size: 10px;
+  font-size: 6px;
 }
+
+.frame {flex-flow: column;}
 .warning {font-size: 70%;}
-.nav-text {font-size: 12px;}
-.input {font-size: 12px;}
-.date-input {font-size: 12px;}
-th {font-size: 12px;}
-td {font-size: 12px;}
-.caution-text {font-size: 12px;}
+.nav-text {font-size: 6px;}
+.input {font-size: 6px;}
+.date-input {font-size: 6px;}
+th {font-size: 6px;}
+td {font-size: 6px;}
+.caution-text {font-size: 6px;}
 }
 
 
