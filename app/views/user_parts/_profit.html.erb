@@ -2929,7 +2929,7 @@
           <% end %>
             <% week_valuations += rakuten_pay_valuations_week %>
           <%# シフト %>
-            <% week_shift = week.where(shift: "キャッシュレス新規").length %>
+            <% week_shift = week.where(shift: "キャッシュレス新規").length rescue 0 %>
           <%# 基準値 %>
             <% week_visit = week.sum("first_visit + latter_visit") rescue 0 %>
             <% week_interview = week.sum("first_interview + latter_interview") rescue 0 %>
