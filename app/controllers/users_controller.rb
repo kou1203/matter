@@ -565,7 +565,7 @@ class UsersController < ApplicationController
        elsif days[start_date.wday] == "火" 
          week1 = (start_date - 1) 
        end 
-       if @results_date.minimum(:date).month == @results_date.maximum(:date).prev_month.month
+       if @results_date.minimum(:date).month == @results_date.maximum(:date).prev_month.month && week1.present?
         @results_week1 = Result.where(user_id: @user.id).where(date: week1..(week1+6))
         @results_week2 = Result.where(user_id: @user.id).where(date: (week1+7)..(week1+13))
         @results_week3 = Result.where(user_id: @user.id).where(date: (week1+14)..(week1+20))
