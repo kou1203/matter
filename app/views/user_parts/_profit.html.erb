@@ -2868,7 +2868,7 @@
         <% week_ave = 0 %>
         <%# dメル %>
           <%# 新規 %>
-            <% if week.length == 0 %>
+            <% if week.present? %>
             <% dmer_valuations_week = 0 %>
             <% dmer_len_week = 0 %>
             <% else %>
@@ -2885,7 +2885,7 @@
         <%# aupay %>
           <%# 新規 %>
             <%# 合計 %>
-          <% if week.length == 0 %>
+          <% if week.present? %>
             <% aupay_valuations_week = 0 %>
             <% aupay_len_week = 0 %>
           <% else %>
@@ -2907,7 +2907,7 @@
             <% aupay_sum_len_week += aupay_len_week %>
           <%# 決済 %>
         <%# PayPay %>
-          <% if week.length == 0 %>
+          <% if week.present? %>
           <% paypay_valuations_week = 0 %>
           <% else %>
           <% paypay_data_week = this_period(@paypay_user ,week) rescue 0 %>
@@ -2916,7 +2916,7 @@
           <% end %>
         <%# 少額短期保険 %>
         <%# 楽天ペイ %>
-          <% if week.length == 0 %>
+          <% if week.present? %>
             <% rakuten_pay_valuations_week = 0 %>
             <% else %>
           <% 
