@@ -2868,11 +2868,11 @@
         <% week_ave = 0 %>
         <%# dメル %>
           <%# 新規 %>
-            <% dmer_uq_week = this_period(@dmer_user,week).where(store_prop: {head_store: nil}) %>
             <% if week.length == 0 %>
             <% dmer_valuations_week = 0 %>
             <% dmer_len_week = 0 %>
             <% else %>
+            <% dmer_uq_week = this_period(@dmer_user,week).where(store_prop: {head_store: nil}) %>
             <% dmer_valuations_week = dmer_uq_week.sum(:valuation_new) rescue 0 %>
             <% week_valuations += dmer_valuations_week %>
             <% 
@@ -2884,16 +2884,16 @@
             <%# week_valuations += dmer_slmt2nd_valuations %>
         <%# aupay %>
           <%# 新規 %>
-            <% 
-              aupay_uq_week = 
-                this_period(@aupay_user,week)
-                .where(store_prop: {head_store: nil})
-            %>
             <%# 合計 %>
           <% if week.length == 0 %>
             <% aupay_valuations_week = 0 %>
             <% aupay_len_week = 0 %>
           <% else %>
+            <% 
+              aupay_uq_week = 
+                this_period(@aupay_user,week)
+                .where(store_prop: {head_store: nil})
+            %>
             <% 
               aupay_valuations_week =
                 aupay_uq_week.sum(:valuation_new) rescue 0
@@ -2907,22 +2907,22 @@
             <% aupay_sum_len_week += aupay_len_week %>
           <%# 決済 %>
         <%# PayPay %>
-          <% paypay_data_week = this_period(@paypay_user ,week) %>
           <% if week.length == 0 %>
           <% paypay_valuations_week = 0 %>
           <% else %>
+          <% paypay_data_week = this_period(@paypay_user ,week) rescue 0 %>
           <% paypay_valuations_week = paypay_data_week.sum(:valuation) rescue 0 %>
           <% week_valuations += paypay_valuations_week %>
           <% end %>
         <%# 少額短期保険 %>
         <%# 楽天ペイ %>
+          <% if week.length == 0 %>
+            <% rakuten_pay_valuations_week = 0 %>
+            <% else %>
           <% 
             rakuten_pay_uq_week =
               @rakuten_pay_user.where(date: week.minimum(:date)..week.maximum(:date)) rescue 0
           %>
-          <% if week.length == 0 %>
-            <% rakuten_pay_valuations_week = 0 %>
-            <% else %>
             <%
               rakuten_pay_valuations_week = rakuten_pay_uq_week.sum(:valuation) rescue 0
             %>
