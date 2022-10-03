@@ -2918,7 +2918,7 @@
         <%# 楽天ペイ %>
           <% 
             rakuten_pay_uq_week =
-              this_period(@rakuten_pay_user,week)
+              @rakuten_pay_user.where(date: week.minimum(:date)..week.maximum(:date)) rescue 0
           %>
           <% if week.length == 0 %>
             <% rakuten_pay_valuations_week = 0 %>
