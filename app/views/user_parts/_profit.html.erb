@@ -2931,10 +2931,10 @@
           <%# シフト %>
             <% week_shift = week.where(shift: "キャッシュレス新規").length %>
           <%# 基準値 %>
-            <% week_visit = week.sum("first_visit + latter_visit") %>
-            <% week_interview = week.sum("first_interview + latter_interview") %>
-            <% week_full_talk = week.sum("first_full_talk + latter_full_talk") %>
-            <% week_get = week.sum("first_get + latter_get") %>
+            <% week_visit = week.sum("first_visit + latter_visit") rescue 0 %>
+            <% week_interview = week.sum("first_interview + latter_interview") rescue 0 %>
+            <% week_full_talk = week.sum("first_full_talk + latter_full_talk") rescue 0 %>
+            <% week_get = week.sum("first_get + latter_get") rescue 0 %>
           <%# 合計 %>
             <% week_sum_shift += week_shift %>
             <% week_sum_valuations += week_valuations %>
