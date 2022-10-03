@@ -950,7 +950,7 @@ class UsersController < ApplicationController
           @dmer_val1_period_len = @dmer_val1_period.length
           @dmer_val2_period_len = @dmer_val2_period.length
           @dmer_val3_period_len = @dmer_val3_period.length
-        @dmer_result1_fin_len = (@dmer_len_ave * @new_shift).round()
+        @dmer_result1_fin_len = (@dmer_len_ave * @new_shift).round() rescue 0
         # 期間内終着
         @dmer_result1_fin_this_month_len = ((@dmer_len - @dmer_val1_period_len).to_f / @digestion_new * @new_shift * @dmer_result1_per).round() rescue 0
         @dmer_result1_fin_this_month = 
@@ -1057,7 +1057,7 @@ class UsersController < ApplicationController
           # 単価
           paypay_price = 1000
           # 第一成果終着
-          @paypay_fin_len = (@paypay_len_ave * @new_shift).round()
+          @paypay_fin_len = (@paypay_len_ave * @new_shift).round() rescue 0
           if @new_shift.present?
           @paypay_result1_fin = 
             if (@paypay_done.sum(:valuation) > (paypay_price * @paypay_fin_len)) | (Date.today >= @minimum_date_cash.next_month.end_of_month)
@@ -1074,7 +1074,7 @@ class UsersController < ApplicationController
             rakuten_pay_price = 4000
             rakuten_pay_per = 0.9
             # 第一成果終着
-            @rakuten_pay_result1_fin_len = (@rakuten_pay_len_ave * @new_shift * rakuten_pay_per).round()
+            @rakuten_pay_result1_fin_len = (@rakuten_pay_len_ave * @new_shift * rakuten_pay_per).round() rescue 0
             @rakuten_pay_result1_fin = rakuten_pay_price * @rakuten_pay_result1_fin_len rescue 0
               if (@rakuten_pay_done_val > @rakuten_pay_result1_fin) || (Date.today >= @minimum_date_cash.next_month.end_of_month)
                 @rakuten_pay_result1_fin = @rakuten_pay_done_val
