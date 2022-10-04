@@ -99,7 +99,10 @@ class UsersController < ApplicationController
         .where(user_id: @user.id)
       )
     # 利益表
-
+    @start_date = @month.prev_month.beginning_of_month.since(25.days)
+    @end_date = @month.beginning_of_month.since(24.days)
+    @start_done = @month.beginning_of_month
+    @end_done = @month.end_of_month
     @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
     @maximum_date_cash = @month.beginning_of_month.since(24.days)
     @results = Result.where(user_id: @user.id).where(date: @minimum_date_cash..@maximum_date_cash).order(:date)
@@ -548,30 +551,29 @@ class UsersController < ApplicationController
         @time_visit_ave = [@visit10_ave,@visit11_ave,@visit12_ave,@visit13_ave,@visit14_ave,@visit15_ave,@visit16_ave,@visit17_ave,@visit18_ave,@visit19_ave]
         @time_get_sum = [@get10_sum,@get11_sum,@get12_sum,@get13_sum,@get14_sum,@get15_sum,@get16_sum,@get17_sum,@get18_sum,@get19_sum]
         @time_get_ave = [@get10_ave,@get11_ave,@get12_ave,@get13_ave,@get14_ave,@get15_ave,@get16_ave,@get17_ave,@get18_ave,@get19_ave]
-    if @results.present?
+    if @results.where(shift: "キャッシュレス新規").present?
       # 週毎の期間
       days = ["日", "月", "火", "水", "木", "金", "土"]
-      start_date = Date.new(@results.minimum(:date).year,@results.minimum(:date).month,26)
-       if days[start_date.wday] == "日" 
-         week1 = (start_date + 1) 
-       elsif days[start_date.wday] == "土" 
-         week1 = (start_date - 5)
-       elsif days[start_date.wday] == "金" 
-         week1 = (start_date - 4)
-       elsif days[start_date.wday] == "木" 
-         week1 = (start_date - 3) 
-       elsif days[start_date.wday] == "水" 
-         week1 = (start_date - 2) 
-       elsif days[start_date.wday] == "火" 
-         week1 = (start_date - 1) 
-       end 
-       if @results_date.minimum(:date).month == @results_date.maximum(:date).prev_month.month && @week1.present?
-        @results_week1 = Result.where(user_id: @user.id).where(date: @week1..(@week1+6))
-        @results_week2 = Result.where(user_id: @user.id).where(date: (@week1+7)..(@week1+13))
-        @results_week3 = Result.where(user_id: @user.id).where(date: (@week1+14)..(@week1+20))
-        @results_week4 = Result.where(user_id: @user.id).where(date: (@week1+21)..(@week1+27))
-        @results_week5 = Result.where(user_id: @user.id).where(date: (@week1+28)..(@week1+34))
+
+      
+       if days[@start_date.wday] == "日" 
+         week1 = (@start_date.since(1.days)) 
+       elsif days[@start_date.wday] == "土" 
+         week1 = (@start_date.ago(5.days))
+       elsif days[@start_date.wday] == "金" 
+         week1 = (@start_date.ago(4.days))
+       elsif days[@start_date.wday] == "木" 
+         week1 = (@start_date.ago(3.days)) 
+       elsif days[@start_date.wday] == "水" 
+         week1 = (@start_date.ago(2.days)) 
+       elsif days[@start_date.wday] == "火" 
+         week1 = (@start_date.ago(1.days)) 
        end
+        @results_week1 = Result.where(user_id: @user.id).where(date: week1..(week1.since(6.days)))
+        @results_week2 = Result.where(user_id: @user.id).where(date: (week1.since(7.days))..(week1.since(13.days)))
+        @results_week3 = Result.where(user_id: @user.id).where(date: (week1.since(14.days))..(week1.since(20.days)))
+        @results_week4 = Result.where(user_id: @user.id).where(date: (week1.since(21.days))..(week1.since(27.days)))
+        @results_week5 = Result.where(user_id: @user.id).where(date: (week1.since(28.days))..(week1.since(34.days)))
       #  営業打ち込み売上
        @sales_new_profit_sum = @results.where(shift: "キャッシュレス新規").sum(:profit)
        @sales_new_profit_ave = @results.where(shift: "キャッシュレス新規").average(:profit)
