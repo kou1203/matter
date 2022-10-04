@@ -6,7 +6,7 @@ class ProfitsController < ApplicationController
   @end_date = @month.beginning_of_month.since(24.days) # 25日
   @start_done = @month.beginning_of_month # 月初
   @end_done = @month.end_of_month # 月末
-  @rakuten_start = @month.prev_month.beginning_of_month.since(10.days) # 11日
+  @rakuten_start = @month.prev_month.beginning_of_month.since(15.days) # 16日
   @rakuten_end = @month.beginning_of_month.since(14.days) # 15日
   @rakuten_change_date = @month.beginning_of_month.since(17.days) # 18日
   @results = 
