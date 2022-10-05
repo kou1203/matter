@@ -486,7 +486,8 @@ class ProfitsController < ApplicationController
                 (aupay_price * aupay_result1_fin_prev_month_len) + 
                 ((aupay_result1.where("? > date", @start_date).length.to_f * (0.71 + inc_per)).round() * aupay_price) rescue 0
             # end 
-            aupay_result1_fin = aupay_result1_fin_this_month + aupay_result1_fin_prev_month
+            # aupay_result1_fin_this_month +
+            aupay_result1_fin = aupay_result1_fin_prev_month
             # person_hash["auPay一次成果終着（期間内）"] = aupay_def_26_10_len
             # person_hash["auPay一次成果終着（過去月）"] = aupay_result1_fin_prev_month
             if (person_hash["auPay現状売上1"] > aupay_result1_fin) || (Date.today > @end_done)

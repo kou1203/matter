@@ -1055,7 +1055,8 @@ class UsersController < ApplicationController
            ((@aupay_slmt_tgt_prev_len - @aupay_slmt_prev_val_len) * aupay_slmt_per_prev).round() rescue 0
           @aupay_result1_fin_prev_month = (aupay_price * @aupay_result1_fin_prev_month_len) + @aupay_slmt_done.where(" ?> date",@minimum_date_cash).sum(:valuation_settlement) rescue 0
         # 終着
-        @aupay_result1_fin = @aupay_result1_fin_this_month + @aupay_result1_fin_prev_month
+        # @aupay_result1_fin_this_month +
+        @aupay_result1_fin =  @aupay_result1_fin_prev_month
         
         # PayPay
           # 単価
