@@ -3009,6 +3009,8 @@
                   <% end %>
                 </tr><%# 週間基準値ボディー %>
                   <% week_cnt += 1 %>
+              <% end %>  
+            <% end %>
               <%# 合計変数 %>
               <% week_sum_visit_ave = week_sum_visit.to_f / week_sum_shift rescue 0 %>
               <% week_sum_interview_ave = week_sum_interview.to_f / week_sum_shift rescue 0 %>
@@ -3099,10 +3101,9 @@
                 <td class="total-td"><%= number_to_percentage(week_sum_get_ave / week_sum_full_talk_ave * 100, precision: 0) rescue "NaN" %></td>
                 <% end %>
               </tr><%# /合計基準値ボディー %>
-              <% end %>
-            <% end %>
             </tbody>
           </table>
+
     </div><%# /週間基準値 %>
     <div style="display: flex;"><%# 獲得内訳・決済内訳 %>
       <div><%# 獲得内訳 %>
