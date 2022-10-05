@@ -2,6 +2,7 @@ class Summit < ApplicationRecord
   belongs_to :store_prop
   belongs_to :user
 
+
   with_options presence: true do
     validates :store_prop_id
     validates :user_id 
@@ -17,11 +18,11 @@ class Summit < ApplicationRecord
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
       user = User.find_by(name: row["獲得者"])
-      store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
+      store_prop = StoreProp.find_by(phone_number_1: row["連絡先（-あり）"],name: row["屋号名"])
       errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
-      errors << "#{index}行目店舗名が不正です" if store_prop.blank? && errors.length < 5
+      errors << "#{index}行目屋号名が不正です" if store_prop.blank? && errors.length < 5
         store_id = store_prop.id if store_prop.present? 
-        aupay = new(
+        summit = new(
           processing_status: row["処理状況"],
           control_num: row["管理番号"],
           store_prop_id: store_id,
@@ -61,7 +62,7 @@ class Summit < ApplicationRecord
           mail_send: row["メール送付"],
           status: row["現状ステータス"],
         )
-        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if aupay.invalid? && errors.length < 5
+        errors << "#{index}行目,屋号名「#{row["屋号名"]}」保存できませんでした" if summit.invalid? && errors.length < 5
     end
     errors
   end
@@ -74,17 +75,11 @@ class Summit < ApplicationRecord
     nochange_cnt = 0
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
     user = User.find_by(name: row["獲得者"])
-    store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
-    settlementer = User.find_by(name: row["決済対応者"])
-    settlementer_params = 
-    if settlementer.present?
-      settlementer.id 
-    else
-      row["決済対応者"]
-    end
-    aupay = find_by(store_prop_id: store_prop.id)
-    if store_prop.aupay.present? 
-      aupay.assign_attributes(
+    store_prop = StoreProp.find_by(phone_number_1: row["連絡先（-あり）"],name: row["屋号名"])
+    store_id = store_prop.id if store_prop.present? 
+    summit = find_by(control_num: row["管理番号"])
+    if summit.present? 
+      summit.assign_attributes(
         processing_status: row["処理状況"],
         control_num: row["管理番号"],
         store_prop_id: store_id,
@@ -124,15 +119,15 @@ class Summit < ApplicationRecord
         mail_send: row["メール送付"],
         status: row["現状ステータス"],
       )
-      if aupay.has_changes_to_save? 
-        aupay.save!
-        aupay.assign_attributes(status_update: Date.today)
+      if summit.has_changes_to_save? 
+        summit.save!
+        summit.assign_attributes(status_update: Date.today)
         update_cnt += 1
       else  
         nochange_cnt += 1
       end 
     else  
-      aupay = new(
+      summit = new(
         processing_status: row["処理状況"],
         control_num: row["管理番号"],
         store_prop_id: store_id,
@@ -172,7 +167,7 @@ class Summit < ApplicationRecord
         mail_send: row["メール送付"],
         status: row["現状ステータス"],
         )
-      aupay.save!
+      summit.save!
       new_cnt += 1
     end
   end

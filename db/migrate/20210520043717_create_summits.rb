@@ -34,6 +34,7 @@ class CreateSummits < ActiveRecord::Migration[6.0]
       t.string :billing_name          
       t.string :billing_name_kana          
       t.string :billing_name_mail          
+      t.string :crepiko_num               
       t.text :remarks               
       t.integer :fc_num               
       t.date :mail_send               

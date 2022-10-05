@@ -995,6 +995,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_075202) do
     t.string "billing_name"
     t.string "billing_name_kana"
     t.string "billing_name_mail"
+    t.string "crepiko_num"
     t.text "remarks"
     t.integer "fc_num"
     t.date "mail_send"

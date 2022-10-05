@@ -553,27 +553,29 @@ class UsersController < ApplicationController
         @time_get_ave = [@get10_ave,@get11_ave,@get12_ave,@get13_ave,@get14_ave,@get15_ave,@get16_ave,@get17_ave,@get18_ave,@get19_ave]
     if @results.where(shift: "キャッシュレス新規").present?
       # 週毎の期間
-      # days = ["日", "月", "火", "水", "木", "金", "土"]
+      days = ["日", "月", "火", "水", "木", "金", "土"]
 
       
-      #  if days[@start_date.wday] == "日" 
-      #    week1 = (@start_date.since(1.days)) 
-      #  elsif days[@start_date.wday] == "土" 
-      #    week1 = (@start_date.ago(5.days))
-      #  elsif days[@start_date.wday] == "金" 
-      #    week1 = (@start_date.ago(4.days))
-      #  elsif days[@start_date.wday] == "木" 
-      #    week1 = (@start_date.ago(3.days)) 
-      #  elsif days[@start_date.wday] == "水" 
-      #    week1 = (@start_date.ago(2.days)) 
-      #  elsif days[@start_date.wday] == "火" 
-      #    week1 = (@start_date.ago(1.days)) 
-      #  end
-      #   @results_week1 = Result.where(user_id: @user.id).where(date: week1..(week1.since(6.days)))
-      #   @results_week2 = Result.where(user_id: @user.id).where(date: (week1.since(7.days))..(week1.since(13.days)))
-      #   @results_week3 = Result.where(user_id: @user.id).where(date: (week1.since(14.days))..(week1.since(20.days)))
-      #   @results_week4 = Result.where(user_id: @user.id).where(date: (week1.since(21.days))..(week1.since(27.days)))
-      #   @results_week5 = Result.where(user_id: @user.id).where(date: (week1.since(28.days))..(week1.since(34.days)))
+       if days[@start_date.wday] == "日" 
+         week1 = (@start_date.since(1.days)) 
+       elsif days[@start_date.wday] == "土" 
+         week1 = (@start_date.ago(5.days))
+       elsif days[@start_date.wday] == "金" 
+         week1 = (@start_date.ago(4.days))
+       elsif days[@start_date.wday] == "木" 
+         week1 = (@start_date.ago(3.days)) 
+       elsif days[@start_date.wday] == "水" 
+         week1 = (@start_date.ago(2.days)) 
+       elsif days[@start_date.wday] == "火" 
+         week1 = (@start_date.ago(1.days)) 
+       else 
+        week1 = @start_date
+       end
+        @results_week1 = Result.where(user_id: @user.id).where(date: week1..(week1.since(6.days)))
+        @results_week2 = Result.where(user_id: @user.id).where(date: (week1.since(7.days))..(week1.since(13.days)))
+        @results_week3 = Result.where(user_id: @user.id).where(date: (week1.since(14.days))..(week1.since(20.days)))
+        @results_week4 = Result.where(user_id: @user.id).where(date: (week1.since(21.days))..(week1.since(27.days)))
+        @results_week5 = Result.where(user_id: @user.id).where(date: (week1.since(28.days))..(week1.since(34.days)))
       #  営業打ち込み売上
        @sales_new_profit_sum = @results.where(shift: "キャッシュレス新規").sum(:profit)
        @sales_new_profit_ave = @results.where(shift: "キャッシュレス新規").average(:profit)

@@ -28,6 +28,7 @@ class StoreProp < ApplicationRecord
   has_one :rakuten_pay, dependent: :destroy
   has_one :demaekan, dependent: :destroy
   has_one :airpay, dependent: :destroy
+  has_many :summits, dependent: :destroy
 
   def self.csv_check(file)
     errors = []
