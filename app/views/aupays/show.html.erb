@@ -8,11 +8,9 @@
   <%= render "shared/sidebar" %>
 </div>
 <div class="main">
-<div data-scope-path="aupays/show">
+<div data-scope-path="shares/show">
+  <h2>店舗詳細</h2>
     <table>
-    <tr>
-      <th colspan="4">店舗詳細</th>
-    </tr>
     <tr>
     <th >店舗名</th>
     <td ><%= @aupay.store_prop.name %></td>
@@ -38,7 +36,7 @@
     </table>
     <table >
     </table>
-    <h1 >連絡先</h1>
+    <h2>連絡先</h2>
     <table >
     <th >電話番号1</th>
     <td ><%= @aupay.store_prop.phone_number_1 %></td>
@@ -63,7 +61,7 @@
     <td ><%= link_to "店舗情報編集", edit_store_prop_path(@aupay.store_prop.id), class: "link" %></td>
     </tr>
     </table>
-    <h1>auペイ情報</h1>
+    <h2>auペイ情報</h2>
     <table>
     <tr>
       <th >獲得日</th>
@@ -106,7 +104,7 @@
       <td colspan="3"><%= @aupay.description %></td>
     </tr>
   </table>
-  <h1>決済情報</h1>
+  <h2>決済情報</h2>
   <table>
     <tr>
       <th >キット発送日</th>
@@ -146,7 +144,7 @@
       <% end %>
     </tr>
   </table>
-  <h1>入金日/利益</h1>
+  <h2>入金日/利益</h2>
   <table>
     <tr>
       <th>審査完了日（新規）</th>

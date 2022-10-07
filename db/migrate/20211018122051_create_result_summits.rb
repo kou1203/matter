@@ -2,11 +2,54 @@ class CreateResultSummits < ActiveRecord::Migration[6.1]
   def change
     create_table :result_summits do |t|
       t.references :result                  ,foreign_key: true 
-      # 対象外・NG
-      t.integer :ng_01
-      t.integer :ng_02
-      t.integer :ng_03
-      # 切り返し    
+# 電力会社別基準値（訪問-獲得）
+      t.integer :power_company1_full_talk1
+      t.integer :power_company1_full_talk2
+      t.integer :power_company1_get
+      t.integer :power_company2_full_talk1
+      t.integer :power_company2_full_talk2
+      t.integer :power_company2_get
+      t.integer :power_company3_full_talk1
+      t.integer :power_company3_full_talk2
+      t.integer :power_company3_get
+      t.integer :power_company4_full_talk1
+      t.integer :power_company4_full_talk2
+      t.integer :power_company4_get
+      t.integer :power_company5_full_talk1
+      t.integer :power_company5_full_talk2
+      t.integer :power_company5_get
+      t.integer :power_company6_full_talk1
+      t.integer :power_company6_full_talk2
+      t.integer :power_company6_get
+      t.integer :power_company7_full_talk1
+      t.integer :power_company7_full_talk2
+      t.integer :power_company7_get
+      t.integer :power_company8_full_talk1
+      t.integer :power_company8_full_talk2
+      t.integer :power_company8_get
+      t.integer :power_company9_full_talk1
+      t.integer :power_company9_full_talk2
+      t.integer :power_company9_get
+# 業種別基準値（訪問-獲得）
+      t.integer :industry1_visit          
+      t.integer :industry1_get          
+      t.integer :industry2_visit          
+      t.integer :industry2_get          
+      t.integer :industry3_visit          
+      t.integer :industry3_get          
+      t.integer :industry4_visit          
+      t.integer :industry4_get          
+      t.integer :industry5_visit          
+      t.integer :industry5_get          
+      t.integer :industry6_visit          
+      t.integer :industry6_get          
+      t.integer :industry7_visit          
+      t.integer :industry7_get          
+      t.integer :industry8_visit          
+      t.integer :industry8_get          
+      t.integer :industry9_visit          
+      t.integer :industry9_get          
+# 切り返し（フル①）
       t.integer :out_interview_01
       t.integer :out_full_talk_01
       t.integer :out_get_01
@@ -26,7 +69,7 @@ class CreateResultSummits < ActiveRecord::Migration[6.1]
       t.integer :out_full_talk_06
       t.integer :out_get_06
       t.integer :out_interview_07
-      t.integer :out_full_talk_07
+      t.integer :out_full_talk_07   
       t.integer :out_get_07
       t.integer :out_interview_08
       t.integer :out_full_talk_08
@@ -37,36 +80,51 @@ class CreateResultSummits < ActiveRecord::Migration[6.1]
       t.integer :out_interview_10
       t.integer :out_full_talk_10
       t.integer :out_get_10
-      t.integer :out_interview_11
-      t.integer :out_full_talk_11
-      t.integer :out_get_11
-      t.integer :out_interview_12
-      t.integer :out_full_talk_12
-      t.integer :out_get_12
-      t.integer :out_interview_13
-      t.integer :out_full_talk_13
-      t.integer :out_get_13
-      t.integer :out_interview_14
-      t.integer :out_full_talk_14
-      t.integer :out_get_14
-      t.integer :out_interview_15
-      t.integer :out_full_talk_15
-      t.integer :out_get_15
-      t.integer :out_interview_16
-      t.integer :out_full_talk_16
-      t.integer :out_get_16
-      t.integer :out_interview_17
-      t.integer :out_full_talk_17
-      t.integer :out_get_17
-      t.integer :out_interview_18
-      t.integer :out_full_talk_18
-      t.integer :out_get_18
-      t.integer :out_interview_19
-      t.integer :out_full_talk_19
-      t.integer :out_get_19
-      t.integer :out_interview_20
-      t.integer :out_full_talk_20
-      t.integer :out_get_20
+# 切り返し（フル②）
+      t.integer :out2_interview_01
+      t.integer :out2_full_talk_01
+      t.integer :out2_get_01
+      t.integer :out2_interview_02
+      t.integer :out2_full_talk_02
+      t.integer :out2_get_02
+      t.integer :out2_interview_03
+      t.integer :out2_full_talk_03
+      t.integer :out2_get_03
+      t.integer :out2_interview_04
+      t.integer :out2_full_talk_04
+      t.integer :out2_get_04
+      t.integer :out2_interview_05
+      t.integer :out2_full_talk_05
+      t.integer :out2_get_05
+      t.integer :out2_interview_06
+      t.integer :out2_full_talk_06
+      t.integer :out2_get_06
+      t.integer :out2_interview_07
+      t.integer :out2_full_talk_07
+      t.integer :out2_get_07
+      t.integer :out2_interview_08
+      t.integer :out2_full_talk_08
+      t.integer :out2_get_08
+      t.integer :out2_interview_09
+      t.integer :out2_full_talk_09
+      t.integer :out2_get_09
+      t.integer :out2_interview_10
+      t.integer :out2_full_talk_10
+      t.integer :out2_get_10
+      t.integer :out2_interview_11
+      t.integer :out2_full_talk_11
+      t.integer :out2_get_11
+      t.integer :out2_interview_12
+      t.integer :out2_full_talk_12
+      t.integer :out2_get_12
+      t.integer :out2_interview_13
+      t.integer :out2_full_talk_13
+      t.integer :out2_get_13
+      t.integer :out2_interview_14
+      t.integer :out2_full_talk_14
+      t.integer :out2_get_14
+      t.integer :out2_interview_15
+      t.integer :out2_full_talk_15
     end
   end
 end

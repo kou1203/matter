@@ -42,9 +42,6 @@ class SummitsController < ApplicationController
 
   def show 
     @summit = Summit.find(params[:id])
-    @summit_customer_prop = SummitCustomerProp.find(params[:id])
-    @summits = @summit_customer_prop.summits
-    @store_prop = @summit_customer_prop.store_prop
   end 
 
   def edit 

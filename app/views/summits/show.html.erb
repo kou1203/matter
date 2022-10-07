@@ -1,0 +1,169 @@
+<div data-scope-path="shared/header">
+  <h1 >AirPay詳細</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/show">
+  <h2>店舗情報</h2>
+    <table >
+    <tr>
+    <th >店舗名</th>
+    <td ><%= @summit.store_prop.name %></td>
+    <th >区分</th>
+    <td ><%= @summit.store_prop.race %></td>
+    </tr>
+    <th >業種</th>
+    <td ><%= @summit.store_prop.industry %></td>
+    <th>本店名</th>
+    <td ><%= @summit.store_prop.head_store %></td>
+    <tr >
+    </tr>
+    <tr >
+    <th >店舗代表</th>
+    <td ><%= @summit.store_prop.person_main_name %></td>
+    <th >店舗担当</th>
+    <td ><%= @summit.store_prop.person_sub_name %></td>
+    </tr>
+    <tr >
+    <th >店舗住所</th>
+    <td colspan="3"><%= @summit.store_prop.prefecture %><%= @summit.store_prop.city %><%= @summit.store_prop.municipalities %><%= @summit.store_prop.address %><%= @summit.store_prop.building_name %></td>
+    </table>
+    <h2 >連絡先</h2>
+    <table >
+    <tr>
+    <th >電話番号1</th>
+    <td ><%= @summit.store_prop.phone_number_1 %></td>
+    <th >電話番号2</th>
+    <td ><%= @summit.store_prop.phone_number_2 %></td>
+    </tr>
+    <tr >
+    <th >メールアドレス１</th>
+      <td ><%= @summit.store_prop.mail_1 %></td>
+    <th >メールアドレス２</th>
+      <td ><%= @summit.store_prop.mail_2 %></td>
+    </tr>
+    <tr >
+    <th >好適時間</th>
+    <td ><%= @summit.store_prop.suitable_time %></td>
+    <th >定休日</th>
+    <td ><%= @summit.store_prop.holiday %></td>
+    </tr>
+    <tr >
+    <th >備考</th>
+    <td colspan="2"><%= @summit.store_prop.description %></td>
+    <td ><%= link_to "編集", edit_store_prop_path(@summit.store_prop.id), class: "link" %></td>
+    </tr>
+    </table>
+    <h2 >サミット情報</h2>
+    <table >
+    <tr >
+      <th >管理番号</th>
+      <td ><%= @summit.control_num %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+    <th >獲得日</th>
+      <td ><%= @summit.date %></td>
+      <th >獲得者</th>
+      <td ><%= @summit.user.name %></td>
+    </tr>
+
+
+    <tr >
+      <th >現状ステータス</th>
+      <td ><%= @summit.status %></td>
+      <th >審査ステータス更新日</th>
+      <td ><%= @summit.status_update %></td>
+    </tr>
+    <tr>
+      <th >電力会社</th>
+      <td ><%= @summit.power_company %></td>
+      <th >電力会社その他</th>
+      <td ><%= @summit.power_company_other %></td>
+    </tr>
+    <tr>
+      <th >電力エリア</th>
+      <td ><%= @summit.power_area %></td>
+      <th >プラン名</th>
+      <td ><%= @summit.plan %></td>
+    </tr>
+    <tr>
+      <th >契約種別</th>
+      <td ><%= @summit.contract_type %></td>
+      <th >契約容量（数量）</th>
+      <td ><%= @summit.contract_cap %><%= @summit.contract_cap_unit %></td>
+    </tr>
+    <tr>
+      <th >使用期間（開始）</th>
+      <td ><%= @summit.use_start %></td>
+      <th >使用期間（区切）</th>
+      <td ><%= @summit.use_end %></td>
+    </tr>
+    <tr>
+      <th >使用量（kWh）</th>
+      <td ><%= @summit.amount_use %>kWh</td>
+      <th >事務処理日</th>
+      <td ><%= @summit.processing_date %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+      <th >サミット到着日</th>
+      <td ><%= @summit.arrival_date %></td>
+      <th >利用開始日</th>
+      <td ><%= @summit.summit_start %></td>
+    </tr>
+    <tr>
+      <th >お客様番号（14桁）</th>
+      <td ><%= @summit.customer_num %></td>
+      <th >供給地点番号（22桁）</th>
+      <td ><%= @summit.supply_num %></td>
+    </tr>
+    <tr>
+      <th >FC番号</th>
+      <td ><%= @summit.fc_num %></td>
+      <th >メール送付</th>
+      <td ><%= @summit.mail_send %></td>
+    </tr>
+    <tr>
+      <th >備考</th>
+      <td colspan="3"><%= @summit.remarks %></td>
+    </tr>
+  </table>
+  <h2>契約者情報</h2>
+  <table>
+    <tr>
+      <th >現契約名義（漢字）</th>
+      <td ><%= @summit.current_contractor %></td>
+      <th >現契約名義（カタカナ）</th>
+      <td ><%= @summit.current_contractor_kana %></td>
+    </tr>
+    <tr>
+      <th >新契約名義（漢字）</th>
+      <td ><%= @summit.new_contractor %></td>
+      <th >新契約名義（カタカナ）</th>
+      <td ><%= @summit.new_contractor_kana %></td>
+    </tr>
+    <tr>
+      <th >宛名（漢字）</th>
+      <td ><%= @summit.destination_name %></td>
+      <th >宛名（カタカナ）</th>
+      <td ><%= @summit.destination_name_kana %></td>
+    </tr>
+    <tr>
+      <th >請求担当者①（漢字）</th>
+      <td ><%= @summit.billing_name %></td>
+      <th >請求担当者①（カタカナ）</th>
+      <td ><%= @summit.billing_name_kana %></td>
+    </tr>
+    <tr>
+      <th >請求担当者①（メールアドレス）</th>
+      <td ><%= @summit.billing_name_mail %></td>
+      <th >請求担当者①</th>
+      <td ><%= @summit.billing_item %></td>
+    </tr>
+  </table>
+  </div>
+</div>

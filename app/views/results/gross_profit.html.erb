@@ -1,21 +1,20 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <div data-scope-path="shared/header">
-  <h1>ランキング</h1>
+  <h1>利益計算用終着</h1>
   <%= render "shared/header" %>
 </div>
+
 <div style="display:flex;">
   <div data-scope-path="shared/side_bar">
     <%= render "shared/sidebar" %>
   </div>
   <div class="main">
     <div data-scope-path="results/ranking">
-<% ranking = {} %>
-<% ranking_ave = {} %>
 <%# 各商材の%を選択 %>
 <h2>
-  <%= link_to "<<",ranking_results_path(month:@month.prev_month), class:"link" %>
+  <%= link_to "<<",gross_profit_results_path(month:@month.prev_month), class:"link" %>
   <%= @month.month %>月 (<%= @minimum_date_cash.strftime("%m月%d日") %>〜<%= @maximum_date_cash.strftime("%m月%d日") %>)
-  <%= link_to ">>",ranking_results_path(month:@month.next_month), class:"link" %>
+  <%= link_to ">>",gross_profit_results_path(month:@month.next_month), class:"link" %>
 </h2>
 <% max_date = @month.beginning_of_month.since(24.days) %>
 <% if @results.present? %>
@@ -143,6 +142,15 @@
       <% base_airpay_ave = 0 %>
       <% base_airpay_fin = 0 %>
       <% base_st_insurace = 0 %>
+    <table>
+    <thead>
+      <tr>
+        <th class="rank-th">氏名</th>
+        <th class="rank-th">役職</th>
+        <th class="rank-th">終着売上</th>
+      </tr>
+    </thead>
+    <tbody>
     <% @cash_result.group(:user_id).each do |r| %>
     <%# 変数 %>
       <% r_user = @cash_result.where(user_id: r.user.id) %>
@@ -532,7 +540,7 @@
               .sum(:valuation_settlement) rescue 0
           %>
           <%# aupay_result1_fin_this_month + %>
-          <% aupay_result1_fin = aupay_result1_fin_prev_month %>
+          <% aupay_result1_fin =  aupay_result1_fin_prev_month %>
         <%# auPay写真 %>
           <% 
             aupay_pic = 
@@ -693,184 +701,15 @@
           <% if  (sum_valuations_fin.present?) && (shifts != 0) %>
             <% sum_valuations_ave = sum_valuations_fin / shifts rescue 0 %>
           <% end %>
-          <%# 各訪問員のデータをハッシュに格納 %>
-          <% ranking.store(r.user.name,[sum_valuations_fin]) %>
-          <% ranking_ave.store(r.user.name,[sum_valuations_ave]) %>
-          <%# 合計獲得数 %>
-          <% sum_product = (dmer_uq.length + aupay_uq.length + rakuten_pay_uq.length + airpay_data.length).to_f %>
-          <% base_sum_product += sum_product %>
-          <% base_dmer += dmer_len %>
-          <% base_dmer_ave = base_dmer / shift_digestion rescue 0 %>
-          <% base_dmer_fin += dmer_len_fin %>
-          <% base_dmer_slmt += dmer_slmt_len %>
-          <% base_dmer_slmt2nd += dmer_slmt2nd_len %>
-          <% base_aupay += aupay_len %>
-          <% base_aupay_ave = base_aupay / shift_digestion rescue 0 %>
-          <% base_aupay_fin += aupay_len_fin %>
-          <% base_aupay_slmt += aupay_slmt_len %>
-          <% base_paypay += paypay_len %>
-          <% base_paypay_ave = base_paypay / shift_digestion rescue 0 %>
-          <% base_paypay_fin += paypay_fin_len %>
-          <% base_rakuten_pay += rakuten_pay_len %>
-          <% base_rakuten_pay_ave = base_rakuten_pay / shift_digestion rescue 0 %>
-          <% base_rakuten_pay_fin += rakuten_pay_len_fin %>
-          <% base_airpay += airpay_len %>
-          <% base_airpay_ave = base_airpay / shift_digestion rescue 0 %>
-          <% base_airpay_fin += airpay_len_fin %>
-          <% base_st_insurace += st_insurance_len %>
-          <% base_sum += sum_valuations %>
-          <% base_fin += sum_valuations_fin %>
-          <%# 成果件数 %>
-          <% base_dmer_result1_len += dmer_result1_len %>
-          <% base_dmer_result2_len += dmer_result2_len %>
-          <% base_dmer_result3_len += dmer_result3_len %>
-          <% base_aupay_result1_len += aupay_result1_len %>
-          <% base_paypay_result1_len += paypay_result1_len %>
-          <% base_airpay_result1_len += airpay_result1_len %>
+          <tr>
+          <td class="rank-td"><%= r.user.name %></td>
+          <td class="rank-td"><%= r.user.position_sub %></td>
+          <td class="rank-td"><%= sum_valuations_fin.to_s(:delimited) %></td>
+          </tr>
       <% end %>
+        </tbody>
+    </table>
   <% end %>
 <% end %>
-    <% ranking = ranking.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h %>
-    <% ranking_ave = ranking_ave.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h %>
-    <div style="display: flex;">
-      <div><%# 終着 %>
-        <p class="sub-title">終着</p>
-        <table>
-          <thead>
-            <tr>
-              <th class="rank-th">順位</th>
-              <th class="rank-th">氏名</th>
-              <th class="rank-th">終着売上</th>
-            </tr>
-          </thead>
-          <tbody>
-          <% ranking.each_with_index do |rank,i| %>
-            <tr>
-              <td class="rank-td"><%= i + 1 %>位</td>
-              <td class="rank-td"><%= rank[0] %></td>
-              <td class="rank-td"><%= (rank[1][0]).to_s(:delimited) %></td>
-            </tr>
-          <% break if i == 4 %>
-          <% end %>
-          </tbody>
-        </table>
-      </div><%# /終着 %>
-      <div><%# Ave %>
-        <p class="sub-title">平均</p>
-        <table>
-          <thead>
-            <tr>
-              <th class="rank-th">順位</th>
-              <th class="rank-th">氏名</th>
-              <th class="rank-th">Ave</th>
-            </tr>
-          </thead>
-          <tbody>
-          <% ranking_ave.each_with_index do |rank,i| %>
-            <tr>
-              <td class="rank-td"><%= i + 1 %>位</td>
-              <td class="rank-td"><%= rank[0] %></td>
-              <td class="rank-td"><%= (rank[1][0]).to_s(:delimited) %></td>
-            </tr>
-          <% break if i == 4 %>
-          <% end %>
-          </tbody>
-        </table>
-      </div><%# /終着 %>
-    </div>
-    <h2>商材別獲得数</h2>
-    <div style="display: flex;">
-      <div><%# dメル %>
-        <p class="sub-title">dメル</p>
-        <table>
-          <thead>
-            <tr>
-              <th>順位</th>
-              <th>氏名</th>
-              <th>現状獲得数</th>
-            </tr>
-          </thead>
-          <tbody>
-          <% @dmers_rank.each_with_index do |dmer,i| %>
-            <tr>
-              <td><%= i + 1 %>位</td>
-              <td><%= dmer[0] %></td>
-              <td><%= (dmer[1]) %></td>
-            </tr>
-          <% break if i == 4 %>
-          <% end %>
-          </tbody>
-        </table>
-      </div><%# /dメル %>
-      <div><%# auPay %>
-        <p class="sub-title">auPay</p>
-        <table>
-          <thead>
-            <tr>
-              <th>順位</th>
-              <th>氏名</th>
-              <th>現状獲得数</th>
-            </tr>
-          </thead>
-          <tbody>
-          <% @aupays_rank.each_with_index do |aupay,i| %>
-            <tr>
-              <td><%= i + 1 %>位</td>
-              <td><%= aupay[0] %></td>
-              <td><%= (aupay[1]) %></td>
-            </tr>
-          <% break if i == 4 %>
-          <% end %>
-          </tbody>
-        </table>
-      </div><%# /auPay %>
-    </div>
-    <div style="display: flex;">
-      <div><%# 楽天ペイ %>
-        <p class="sub-title">楽天ペイ</p>
-        <table>
-          <thead>
-            <tr>
-              <th>順位</th>
-              <th>氏名</th>
-              <th>現状獲得数</th>
-            </tr>
-          </thead>
-          <tbody>
-          <% @rakuten_pays_rank.each_with_index do |rakuten_pay,i| %>
-            <tr>
-              <td><%= i + 1 %>位</td>
-              <td><%= rakuten_pay[0] %></td>
-              <td><%= (rakuten_pay[1]) %></td>
-            </tr>
-          <% break if i == 4 %>
-          <% end %>
-          </tbody>
-        </table>
-      </div><%# /楽天ペイ %>
-      <div><%# AirPay %>
-        <p class="sub-title">AirPay</p>
-        <table>
-          <thead>
-            <tr>
-              <th>順位</th>
-              <th>氏名</th>
-              <th>現状獲得数</th>
-            </tr>
-          </thead>
-          <tbody>
-          <% @airpays_rank.each_with_index do |airpay,i| %>
-            <tr>
-              <td><%= i + 1 %>位</td>
-              <td><%= airpay[0] %></td>
-              <td><%= (airpay[1]) %></td>
-            </tr>
-          <% break if i == 4 %>
-          <% end %>
-          </tbody>
-        </table>
-      </div><%# /AirPay %>
-    </div>
-      <p class="caution-text">※獲得数は不備・NGも入ってます。（<%= @minimum_date_cash.strftime("%m月%d日") %>〜<%= @maximum_date_cash.strftime("%m月%d日") %>）の範囲で算出しております。</p>
   </div>
 </div>

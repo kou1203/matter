@@ -20,7 +20,144 @@
       </table>
   <% end %>
 <% end %>
-      <hr>
+    <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
+      <%= javascript_pack_tag 'search' %>
+      <article id='search'><%# 検索フォーム %>
+        <button @click="active" v-if="!isActive" class="active-btn">詳細検索表示</button>
+        <button @click="active" v-if="isActive" class="active-btn">詳細検索表示中</button>
+        <div v-if="isActive" class="s-form"><%# 検索フォームの外枠 %>
+          
+          <%= search_form_for @q do |f| %>
+            <p class="s-text">検索したい内容を入力してください。</p>
+            <hr>
+          <div class="s-flex"><%# 検索フォーム %>
+            <div class="user-form"><%# ユーザー情報 %>
+              <p class="s-label">獲得者</p>
+              <p class="s-text-field"><%= f.text_field :user_name_cont, class: "s-text-input" %></p>
+              <p class="s-label">拠点</p>
+              <p class="s-slct-field"><%= f.select :user_base_cont,{"中部SS": "中部SS","関東SS": "関東SS","関西SS": "関西SS","2次店": "2次店"},{include_blank: true},{ class: "s-slct-input"} %></p>
+              <p class="s-label">処理状況</p>
+              <p class="s-text-field"><%= f.text_field :processing_status_cont, class: "s-text-input" %></p>
+              <p class="s-label">備考</p>
+              <p class="s-text-field"><%= f.text_field :remarks_cont, class: "s-text-input" %></p>
+            </div><%# ユーザー情報 %>
+            <div class="product-form"><%# 商材情報 %>
+              <table class="s-tb">
+                <thead>
+                  <tr class="s-tr">
+                    <th class="s-th">項目</th>
+                    <th class="s-th">検索内容</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="s-tr">
+                    <td class="s-td">獲得日</td>
+                    <td class="s-td">
+                      <%= f.date_field :date_eq, class: "t-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">獲得日（範囲））</td>
+                    <td class="s-td">
+                      <%= f.date_field :date_gteq, class: "s-input" %>〜
+                      <%= f.date_field :date_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">事務処理日</td>
+                    <td class="s-td">
+                      <%= f.date_field :processing_date_gteq, class: "s-input" %>〜
+                      <%= f.date_field :processing_date_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">サミット到着</td>
+                    <td class="s-td">
+                      <%= f.date_field :arrival_date_gteq, class: "s-input" %>〜
+                      <%= f.date_field :arrival_date_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">利用開始日</td>
+                    <td class="s-td">
+                      <%= f.date_field :summit_start_gteq, class: "s-input" %>〜
+                      <%= f.date_field :summit_start_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">使用期間（開始）</td>
+                    <td class="s-td">
+                      <%= f.date_field :use_start_gteq, class: "s-input" %>〜
+                      <%= f.date_field :use_start_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">使用期間（区切）</td>
+                    <td class="s-td">
+                      <%= f.date_field :use_end_gteq, class: "s-input" %>〜
+                      <%= f.date_field :use_end_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">メール送付</td>
+                    <td class="s-td">
+                      <%= f.date_field :mail_send_gteq, class: "s-input" %>〜
+                      <%= f.date_field :mail_send_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">審査ステータス</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :status_eq,
+                        options_from_collection_for_select(Summit.select(:status)
+                        .distinct,:status, :status),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">契約種別</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :contract_type_eq,
+                        options_from_collection_for_select(Summit.select(:contract_type)
+                        .distinct,:contract_type, :contract_type),
+                        {include_blank: true},
+                        {class: "t-input"}
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">電力エリア</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :power_area_eq,
+                        options_from_collection_for_select(Summit.select(:power_area)
+                        .distinct,:power_area, :power_area),
+                        {include_blank: true},
+                        {class: "t-input"}
+                      %>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div><%# 商材情報 %>
+          </div><%# 検索フォーム %>
+          <hr>
+          <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "s-btn" %>
+          <button class="s-reset-btn"><%= link_to "解除", summits_path, class: "reset-link" %></button>
+          <% end %>
+        </div><%# /検索フォームの外枠 %>
+        <div v-else>
+          <%= search_form_for @q do |f| %>
+              <%= f.text_field :store_prop_name_or_supply_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
+              <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "search-btn" %>
+          <% end %>
+        </div>
+      </article><%# /検索フォーム %>
+    <hr>
   <% if @summits.empty? %>
     <div class="warning"><%= alert %></div>
   <% else %>
@@ -28,36 +165,51 @@
     <table >
       <tr>
         <th class="search-th">獲得数</th>
-        <th class="search-th">書類提出待ち</th>
-        <th class="search-th">審査中</th>
-        <th class="search-th">審査完了</th>
-        <th class="search-th">審査NG</th>
-        <th class="search-th">キャンセル</th>
+        <th class="search-th">SW完了</th>
+        <th class="search-th">SW完了待ち</th>
+        <th class="search-th">SWエラー</th>
+        <th class="search-th">処理待ち</th>
+        
       </tr>
       <tr>
         <td><%= @summits.length %></td>
-        <td><%= @summits.where(status: "書類提出待ち").length %></td>
-        <td><%= @summits.where(status: "審査中").length %></td>
-        <td><%= @summits.where(status: "審査完了").length %></td>
-        <td><%= @summits.where(status: "審査NG").length %></td>
+        <td><%= @summits.where(status: "SW完了").length %></td>
+        <td><%= @summits.where(status: "SW完了待ち").length %></td>
+        <td><%= @summits.where(status: "SWエラー").length %></td>
+        <td><%= @summits.where(status: "処理待ち").length %></td>
+      </tr>
+      <tr>
+        <th class="search-th">不備・保留</th>
+        <th class="search-th">キャンセル</th>
+        <th class="search-th">廃止</th>
+      </tr>
+      <tr>
+        <td><%= @summits.where(status: "不備・保留").length %></td>
         <td><%= @summits.where(status: "キャンセル").length %></td>
+        <td><%= @summits.where(status: "廃止").length %></td>
       </tr>
     </table>
     <table class="out-tb">
       <thead>
       <tr>
         <th class="out-th">ID</th>
+        <th class="out-th">管理番号</th>
         <th class="out-th">店舗名</th>
-        <th class="out-th">店舗番号</th>
-        <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+        <th class="out-th">獲得日</th>
         <th class="out-th">獲得者</th>
-        <th class="out-th">審査ステータス</th>
-        <th class="out-th">書類提出期限</th>
-        <th class="out-th">審査完了日</th>
-        <th class="out-th">iPad申込区分</th>
-        <th class="out-th">書類フォロー</th>
-        <th class="out-th">配送ステータス</th>
-        <th class="out-th">アクティベート日</th>
+        <th class="out-th">処理状況</th>
+        <th class="out-th">現状ステータス</th>
+        <th class="out-th">電力エリア</th>
+        <th class="out-th">契約種別</th>
+        <th class="out-th">契約容量（数量）</th>
+        <th class="out-th">使用期間（開始）</th>
+        <th class="out-th">使用期間（区切）</th>
+        <th class="out-th">使用量（kWh）</th>
+        <th class="out-th">事務処理日</th>
+        <th class="out-th">サミット到着日</th>
+        <th class="out-th">利用開始日</th>
+        <th class="out-th">お客様番号（14桁）</th>
+        <th class="out-th">供給地点番号（22桁）</th>
         <th class="out-th">詳細</th>
       </tr>
       </thead>
@@ -65,17 +217,23 @@
       <% @summits_data.each do |summit| %>
       <tr >
         <td class="out-td"><%= summit.id %></td>
-        <td class="out-td"><%= summit.customer_num %></td>
+        <td class="out-td"><%= summit.control_num %></td>
         <td class="out-td"><%= summit.store_prop.name %></td>
         <td class="out-td"><%= summit.date %></td>
         <td class="out-td"><%= summit.user.name %></td>
+        <td class="out-td"><%= summit.processing_status %></td>
         <td class="out-td"><%= summit.status %></td>
-        <td class="out-td"><%= summit.doc_deadline %></td>
-        <td class="out-td"><%= summit.result_point %></td>
-        <td class="out-td"><%= summit.ipad_flag %></td>
-        <td class="out-td"><%= summit.doc_follow %></td>
-        <td class="out-td"><%= summit.delivery_status %></td>
-        <td class="out-td"><%= summit.activate %></td>
+        <td class="out-td"><%= summit.power_area %></td>
+        <td class="out-td"><%= summit.contract_type %></td>
+        <td class="out-td"><%= summit.contract_cap %><%= summit.contract_cap_unit %></td>
+        <td class="out-td"><%= summit.use_start %></td>
+        <td class="out-td"><%= summit.use_end %></td>
+        <td class="out-td"><%= summit.amount_use %>kWh</td>
+        <td class="out-td"><%= summit.processing_date %></td>
+        <td class="out-td"><%= summit.arrival_date %></td>
+        <td class="out-td"><%= summit.summit_start %></td>
+        <td class="out-td"><%= summit.customer_num %></td>
+        <td class="out-td"><%= summit.supply_num %></td>
         <td class="out-td"><%= link_to "詳細", summit_path(summit.id),class: "link" %></td>
       <% end %>
       </tbody>

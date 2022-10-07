@@ -6,7 +6,7 @@
   <div data-scope-path="shared/side_bar">
     <%= render "shared/sidebar" %>
   </div>
-  <div data-scope-path="store_props/index">
+  <div data-scope-path="shares/index">
   <div class="main">
     <div class="flex">
       <% if current_user.position == "権限①" %>
@@ -20,7 +20,7 @@
       <table class="csv-tb">
         <td class="csv-label">CSV</td>
         <td><%= f.file_field :file, accept:'.csv', class:"csv-input" %></td>
-        <td class="csv-result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"} %>
+        <td class="result"><%= f.submit "インポート", class: "result-btn", data: {confirm: "インポートしますか？", disable_with: "インポート中"} %>
       <% end %>
       </table>
     <% end %>
@@ -50,7 +50,6 @@
     <% end %>
     
     <hr>
-    <%= alert %>
       <% if @store_props.empty? %>
       <div class="warning"><%= alert %></div>
       <% else %>
@@ -63,15 +62,17 @@
             <th>楽天ペイ</th>
             <th>AirPay</th>
             <th>出前館</th>
+            <th>サミット</th>
           </tr>
           <tr class="search-tr">
-            <td ><%= @store_props.length %></td>
-            <td ><%= @store_props.where.not(dmer: {id: nil}).length %></td>
-            <td ><%= @store_props.where.not(aupay: {id: nil}).length %></td>
-            <td ><%= @store_props.where.not(paypay: {id: nil}).length %></td>
-            <td ><%= @store_props.where.not(rakuten_pay: {id: nil}).length %></td>
-            <td ><%= @store_props.where.not(airpay: {id: nil}).length %></td>
-            <td ><%= @store_props.where.not(demaekan: {id: nil}).length %></td>
+            <td ><%= @store_len %></td>
+            <td ><%= @dmer_len %></td>
+            <td ><%= @aupay_len %></td>
+            <td ><%= @paypay_len %></td>
+            <td ><%= @rakuten_pay_len %></td>
+            <td ><%= @airpay_len %></td>
+            <td ><%= @demaekan_len %></td>
+            <td ><%= @summit_len %></td>
           </tr>
         </table>
 
@@ -128,6 +129,9 @@
             <% end %>
             <% if store_prop.demaekan.present? %>
               出前館
+            <% end %>
+            <% if store_prop.summits.present? %>
+              サミット
             <% end %>
             </td>
               <% if current_user.position == "権限①" %>

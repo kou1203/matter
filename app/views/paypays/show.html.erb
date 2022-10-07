@@ -7,11 +7,9 @@
   <%= render "shared/sidebar" %>
 </div>
 <div class="main">
-  <div data-scope-path="paypays/show">
+  <div data-scope-path="shares/show">
+    <h2>店舗情報</h2>
       <table>
-      <tr>
-      <th colspan="4">店舗情報</th>
-      </tr>
       <tr>
       <th>店舗名</th>
       <td><%= @paypay.store_prop.name %></td>
@@ -33,7 +31,7 @@
       <td colspan="3"><%= @paypay.store_prop.prefecture %><%= @paypay.store_prop.city %><%= @paypay.store_prop.municipalities %><%= @paypay.store_prop.address %><%= @paypay.store_prop.building_name %></td>
       </tr>
       </table>
-      <h1>連絡先</h1>
+      <h2>連絡先</h2>
       <table>
         <tr>
           <th>電話番号1</th>
@@ -50,7 +48,7 @@
           <td> <%= link_to "編集", edit_store_prop_path(@paypay.store_prop.id), class: "link" %></td>
         </tr>
       </table>
-      <h1>PayPay情報</h1>
+      <h2>PayPay情報</h2>
       <table>
       <tr>
       <th>獲得日</th>
@@ -75,7 +73,7 @@
         <td colspan=2><%= @paypay.remarks %></td>
       </tr>
     </table>
-    <h1>売上/評価地点</h1>
+    <h2>売上/評価地点</h2>
     <table>
       <tr>
         <th>審査完了日</th>

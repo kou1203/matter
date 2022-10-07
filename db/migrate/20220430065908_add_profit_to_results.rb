@@ -25,6 +25,11 @@ class AddProfitToResults < ActiveRecord::Migration[6.1]
     add_column :results, :get18, :integer
     add_column :results, :get19, :integer
     add_column :results, :get20, :integer
+    # サミットの基準値
+    add_column :results, :first_full_talk2, :integer
+    add_column :results, :latter_full_talk2, :integer
+    add_column :results, :revisit_full_talk, :integer
+    add_column :results, :revisit_get, :integer
     add_column :results, :product, :string
   end
 end

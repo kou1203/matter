@@ -265,8 +265,6 @@ class ResultsController < ApplicationController
         redirect_to  result_result_cashes_new_path(@result.id)
       elsif @result.shift == "キャッシュレス決済"
         redirect_to  result_result_cashes_new_path(@result.id)
-      elsif @result.shift == "楽天フェムト新規"
-        redirect_to  result_result_casas_new_path(@result.id)
       elsif @result.shift == "サミット"
         redirect_to  result_result_summits_new_path(@result.id)
       else  
@@ -379,6 +377,40 @@ class ResultsController < ApplicationController
     end 
     @airpays_rank = @airpays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
   end
+
+  def gross_profit
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @results = Result.where(date: @month.prev_month.beginning_of_month.since(25.days)..@month.beginning_of_month.since(24.days))
+    @minimum_result_cash = @results.minimum(:date)
+    @maximum_result_cash = @results.maximum(:date)
+    @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
+    @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
+    @maximum_date_cash = @month.beginning_of_month.since(24.days)
+    @dmers = Dmer.where(date: @minimum_date_cash..@maximum_date_cash)
+    @aupays = Aupay.where(date: @minimum_date_cash..@maximum_date_cash)
+    @rakuten_pays = RakutenPay.where(date: @minimum_date_cash..@maximum_date_cash)
+    @airpays = Airpay.where(date: @minimum_date_cash..@maximum_date_cash)
+    @dmers_rank = {}
+    @dmers.group(:user_id).each do |dmer| 
+      @dmers_rank.store(dmer.user.name,@dmers.where(user_id: dmer.user_id).length)
+    end 
+    @dmers_rank = @dmers_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    @aupays_rank = {}
+    @aupays.group(:user_id).each do |aupay| 
+      @aupays_rank.store(aupay.user.name,@aupays.where(user_id: aupay.user_id).length)
+    end 
+    @aupays_rank = @aupays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    @rakuten_pays_rank = {}
+    @rakuten_pays.group(:user_id).each do |rakuten_pay| 
+      @rakuten_pays_rank.store(rakuten_pay.user.name,@rakuten_pays.where(user_id: rakuten_pay.user_id).length)
+    end 
+    @rakuten_pays_rank = @rakuten_pays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    @airpays_rank = {}
+    @airpays.group(:user_id).each do |airpay| 
+      @airpays_rank.store(airpay.user.name,@airpays.where(user_id: airpay.user_id).length)
+    end 
+    @airpays_rank = @airpays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+  end 
 
 
   private
@@ -571,6 +603,11 @@ class ResultsController < ApplicationController
       :get18,
       :get19,
       :get20,
+    # サミット基準値
+      :first_full_talk2,
+      :latter_full_talk2,
+      :revisit_full_talk,
+      :revisit_get,
     )
   end 
 end
