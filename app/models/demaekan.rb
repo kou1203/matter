@@ -51,7 +51,7 @@ class Demaekan < ApplicationRecord
       demaekan.assign_attributes(
         status: row["簡易ステータス"],
         user_id: user.id,
-        store_prop_id: store_id,
+        # store_prop_id: store_id,
         date: row["タイムスタンプ"],
         customer_num: row["案件NO"],
         cs_send: row["初回CS送信日"],

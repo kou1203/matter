@@ -10,11 +10,6 @@ class ResultSummitsController < ApplicationController
     @result = Result.find(params[:result_id])
     @result_summit = ResultSummit.new(result_summit_params)
     if @result_summit.save 
-      # if @result_summit.shift == "サミット"
-      #   redirect_to  result_result_summits_new_path(@result_summit.id)
-      # else  
-      #   redirect_to results_path
-      # end  
       redirect_to results_path
     else  
       render :new 
@@ -22,14 +17,12 @@ class ResultSummitsController < ApplicationController
   end
 
   def show 
-    @result_summit_summit = ResultSummit.find(params[:id])
-    @q = Result.ransack(params[:q])
-    @result_summits = 
-    if params[:q].nil? 
-      Result.none 
-    else    
-      @q.result(distinct: false)
-    end
+    @month = params[:month] ? Date.parse(params[:month]) : Time.zone.today
+    @start_date = @month.beginning_of_month
+    @end_date = @month.end_of_month
+    @user = User.find(params[:id])
+    @results = Result.where(user_id: @user.id).where(date: @start_date..@end_date)
+    @shifs = Shift.where(user_id: @user.id).where(start_time: @start_date..@end_date)
 
   end 
 

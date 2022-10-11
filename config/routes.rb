@@ -102,11 +102,14 @@ Rails.application.routes.draw do
     }
   end  
 
+
+
   resources :result_cashes do 
     collection { post :import}
   end
   resources :result_casas, expect: [:new, :create]
-  resources :result_summits, expect: [:new, :create]
+  resources :result_summits, expect: :show 
+  resources :result_summits, only: :show,param: :user_id
   
   resources :n_results do 
     collection { post :import }

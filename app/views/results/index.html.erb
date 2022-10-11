@@ -547,6 +547,7 @@
         <p class="caution-text">※過去月決済は前月以前に獲得したもので決済期限が<%= @month_daily.beginning_of_month %>以降のものを対象としています。</p>
       <h2>キャッシュレス</h2>
       <% users_data = [@users_chubu_cash, @users_kansai_cash, @users_kanto_cash,@user_partner_cash] %>
+      <% users_summit_data = [@users_chubu_summit, @users_kansai_summit, @users_kanto_summit] %>
       <div class="user-form">
         <div>
         <table class="user-tb">
@@ -559,6 +560,19 @@
         </tr>
       <% end %>
         </table>
+      <% if current_user.name=="管理用" %>
+      <h2>サミット</h2>
+        <table class="user-tb">
+      <% users_summit_data.each do |users| %>
+        <tr>
+          <th><%= users.first.base %></th>
+        <% users.each do |user| %>
+          <td><%= link_to user.name, result_summit_path(user.id), class: "link" %></td>
+        <% end %>
+        </tr>
+      <% end %>
+        </table>
+      <% end %>
       <% if current_user.position_sub == "管理" %>
         <h2>利益表（基準値）インポート</h2>
         <%= form_with url: import_results_path do |f| %>

@@ -17,12 +17,16 @@ class ResultsController < ApplicationController
   # ユーザー情報
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
+    # キャッシュレス
     @users_chubu = @users.where(base: "中部SS")
     @users_chubu_cash = @users_chubu.where(base_sub: "キャッシュレス")
+    @users_chubu_summit = @users_chubu.where(base_sub: "サミット")
     @users_kansai = @users.where(base: "関西SS")
     @users_kansai_cash = @users_kansai.where(base_sub: "キャッシュレス")
+    @users_kansai_summit = @users_kansai.where(base_sub: "サミット")
     @users_kanto = @users.where(base: "関東SS")
     @users_kanto_cash = @users_kanto.where(base_sub: "キャッシュレス")
+    @users_kanto_summit = @users_kanto.where(base_sub: "サミット")
     @users_partner = @users.where(base: "2次店")
     @user_partner_cash = @users_partner.where(base_sub: "キャッシュレス")
   # 終着データ
