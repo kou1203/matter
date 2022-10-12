@@ -52,6 +52,12 @@
                     </td>
                   </tr>
                   <tr class="s-tr">
+                    <td class="s-td">区分</td>
+                    <td class="s-td">
+                      <%= f.select :store_prop_race_eq,{"法人": "法人","個人": "個人"},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
                     <td class="s-td">獲得日</td>
                     <td class="s-td">
                       <%= f.date_field :date_eq, class: "t-input" %>
@@ -134,6 +140,7 @@
       <thead>
       <tr>
         <th class="out-th">ID</th>
+        <th class="out-th">区分</th>
         <th class="out-th">店舗名</th>
         <th class="out-th">店舗番号</th>
         <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
@@ -152,6 +159,7 @@
       <% @airpays_data.each do |airpay| %>
       <tr >
         <td class="out-td"><%= airpay.id %></td>
+        <td class="out-td"><%= airpay.store_prop.race %></td>
         <td class="out-td"><%= airpay.customer_num %></td>
         <td class="out-td"><%= airpay.store_prop.name %></td>
         <td class="out-td"><%= airpay.date %></td>
