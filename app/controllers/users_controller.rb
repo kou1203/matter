@@ -70,6 +70,16 @@ class UsersController < ApplicationController
     .where.not(share: @month.all_month).where.not(deficiency: nil)
 
     @airpays = Airpay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
+    @airpay_def_ng = @airpays.where(status: "審査NG")
+    .or(
+      @airpays.where(status: "代表者情報不備")
+      )
+    .or(
+      @airpays.where(status: "店舗情報不備")
+      )
+    .or(
+      @airpays.where(status: "口座情報不備")
+      )
     # 決済リスト
     @slmts = 
       StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})
@@ -788,11 +798,22 @@ class UsersController < ApplicationController
       @st_insurances_this_month = this_period(@st_insurances_user,@results)
       @st_insurances_def_this_month = this_period(@st_insurances_this_month,@results)
       @airpay_user = Airpay.includes(:store_prop).where(user_id: @results.first.user_id)
+      @airpay_period = @airpay_user.where(date: @minimum_date_cash..@maximum_date_cash)
       @airpay_result = 
-        @airpay_user.where(date: @minimum_date_cash..@maximum_date_cash).where(status: "審査完了")
+      @airpay_period.where(status: "審査完了")
         .or(
-          @airpay_user.where(date: @minimum_date_cash..@maximum_date_cash).where(status: "審査中")
+          @airpay_period.where(status: "審査中")
         )
+        @airpay_period_def_ng = @airpay_period.where(status: "審査NG")
+        .or(
+          @airpay_period.where(status: "代表者情報不備")
+          )
+        .or(
+          @airpay_period.where(status: "店舗情報不備")
+          )
+        .or(
+          @airpay_period.where(status: "口座情報不備")
+          )
       if (@airpay_result.length == 0) || (@digestion_new == 0)
         @airpay_result_len_ave = 0
       else  

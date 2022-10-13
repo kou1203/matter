@@ -75,18 +75,7 @@
       .or(@airpays.where(status: "書類提出待ち")).length 
     %></td>
     <td class="valuation-td"><%= @airpays.where(status: "審査完了").length %></td>
-    <td class="valuation-td"><%= 
-      @airpays.where(status: "審査NG")
-      .or(
-        @airpays.where(status: "代表者情報不備")
-        )
-      .or(
-        @airpays.where(status: "店舗情報不備")
-        )
-      .or(
-        @airpays.where(status: "口座情報不備")
-        ).length 
-    %></td>
+    <td class="valuation-td"><%= @airpay_def_ng.length %></td>
   </tr>
 </table>
 <% if @dmers.present? %>
