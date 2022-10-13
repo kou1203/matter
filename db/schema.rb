@@ -729,6 +729,17 @@ ActiveRecord::Schema.define(version: 2022_09_06_075202) do
     t.integer "aupay"
     t.integer "paypay"
     t.integer "rakuten_pay"
+    t.integer "airpay"
+    t.integer "other_product1"
+    t.integer "other_product2"
+    t.integer "other_product3"
+    t.integer "other_product4"
+    t.integer "other_product5"
+    t.integer "other_product6"
+    t.integer "other_product7"
+    t.integer "other_product8"
+    t.integer "other_product9"
+    t.integer "other_product10"
     t.index ["result_id"], name: "index_result_cashes_on_result_id"
   end
 

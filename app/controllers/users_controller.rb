@@ -69,6 +69,7 @@ class UsersController < ApplicationController
     @rakuten_pays_dec = RakutenPay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
     .where.not(share: @month.all_month).where.not(deficiency: nil)
 
+    @airpays = Airpay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
     # 決済リスト
     @slmts = 
       StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})

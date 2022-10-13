@@ -408,27 +408,6 @@
         </span></td>
       <%# 時間別基準値 %>
       <%# 獲得商材 %>
-        <% dmer_uq_user = @dmer_user.where(store_prop: {head_store: nil}) %>
-        <% 
-          dmax_date_len = 
-            dmer_uq_user.where(date: result.date).where(client: "マックス通常").length 
-        %>
-        <% 
-          dmax_mer_date_len = 
-            dmer_uq_user.where(user_id: result.user_id).where(date: result.date).where(client: "マックス即時（メル）").length 
-        %>
-        <% 
-          dmax_d_date_len = 
-            dmer_uq_user.where(user_id: result.user_id).where(date: result.date).where(client: "マックス即時（ｄ）").length 
-        %>
-        <% 
-          dpias_date_len = 
-            dmer_uq_user.where(user_id: result.user_id).where(date: result.date).where(client: "ピアズ").length 
-        %>
-        <% 
-          dusen_date_len = 
-            dmer_uq_user.where(user_id: result.user_id).where(date: result.date).where(client: "USEN").length 
-        %>
         <%# 決済 %>
         <% dmax_mer_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "マックス即時（メル）").length %>
         <% dpias_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "ピアズ").length %>
@@ -436,43 +415,25 @@
         <% dmax_d_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "マックス即時（ｄ）").length %>
         <% dusen_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "USEN").length %>
         <% dmer_slmt2nd_date_len = @dmer_slmter.where(settlement_second: result.date).length %>
-        <% 
-          aupay_date_len = 
-            @aupay_user.where(user_id: result.user_id).where(date: result.date).length 
-        %>
         <% aupay_slmt_date_len = @aupay_user.where(status_settlement: "完了").where(picture: result.date).length %>
-        <% paypay_date_len = @paypay_user.where(date: result.date).length %>
-        <% rakuten_pay_date_len = @rakuten_pay_user.where(date: result.date).length %>
-        <% airpay_date_len = @airpay_user.where(date: result.date).length %>
 
         <td class="date-td race-border">
         <span class="date-span">
-          <% if dmax_date_len != 0 %>
-            dマックス通常<%= dmax_date_len %><br>
+        <% if result.result_cash.present? %>
+          <% if result.result_cash.dmer.present? %>
+            dメル<%= result.result_cash.dmer %><br>
           <% end %>
-          <% if dmax_mer_date_len != 0 %>
-            d即時（メル）<%= dmax_mer_date_len %><br>
+          <% if result.result_cash.aupay.present? %>
+            auPay<%= result.result_cash.aupay %><br>
           <% end %>
-          <% if dmax_d_date_len != 0 %>
-            d即時（d）<%= dmax_d_date_len %><br>
+          <% if result.result_cash.paypay.present? %>
+            PayPay<%= result.result_cash.paypay %><br>
           <% end %>
-          <% if dpias_date_len != 0 %>
-            dピアズ<%= dpias_date_len %><br>
+          <% if result.result_cash.rakuten_pay.present? %>
+            楽天ペイ<%= result.result_cash.rakuten_pay %><br>
           <% end %>
-          <% if dusen_date_len != 0 %>
-            dUSEN<%= dpias_date_len %><br>
-          <% end %>
-          <% if aupay_date_len != 0 %>
-            auPay<%= aupay_date_len %><br>
-          <% end %>
-          <% if paypay_date_len != 0 %>
-            PayPay<%= paypay_date_len %><br>
-          <% end %>
-          <% if rakuten_pay_date_len != 0 %>
-            楽天ペイ<%= rakuten_pay_date_len %><br>
-          <% end %>
-          <% if airpay_date_len != 0 %>
-            Airay<%= airpay_date_len %><br>
+          <% if result.result_cash.airpay.present? %>
+            Airay<%= result.result_cash.airpay %><br>
           <% end %>
           <% if dmax_slmt_date_len != 0 %>
             dマックス通常決済<%= dmax_slmt_date_len %><br>
@@ -495,6 +456,7 @@
           <% if aupay_slmt_date_len != 0 %>
             auPay決済<%= aupay_slmt_date_len %><br>
           <% end %>
+        <% end %>
         </span>
         </td>
         <td class="date-td race-border"><span class="date-span"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></span></td>

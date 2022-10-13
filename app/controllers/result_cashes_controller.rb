@@ -118,7 +118,8 @@ class ResultCashesController < ApplicationController
       :dmer,
       :aupay,
       :paypay,
-      :rakuten_pay
+      :rakuten_pay,
+      :airpay
     )
   end 
 end

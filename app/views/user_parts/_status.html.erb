@@ -67,7 +67,29 @@
       .or(@rakuten_pays.where(status: "自社NG")).length 
     %></td>
   </tr>
+  <tr>
+    <th class="product-th">AirPay</th>
+    <td class="valuation-td"><%= @airpays.length %></td>
+    <td class="valuation-td"><%= 
+      @airpays.where(status: "審査中")
+      .or(@airpays.where(status: "書類提出待ち")).length 
+    %></td>
+    <td class="valuation-td"><%= @airpays.where(status: "審査完了").length %></td>
+    <td class="valuation-td"><%= 
+      @airpays.where(status: "審査NG")
+      .or(
+        @airpays.where(status: "代表者情報不備")
+        )
+      .or(
+        @airpays.where(status: "店舗情報不備")
+        )
+      .or(
+        @airpays.where(status: "口座情報不備")
+        ).length 
+    %></td>
+  </tr>
 </table>
+<% if @dmers.present? %>
 <h2>dメル審査状況（<%= @dmers.length %>件）</h2>
 <table>
   <thead>
@@ -115,6 +137,8 @@
     <% end %>
   </tbody>
 </table>
+<% end %>
+<% if @aupays.present? %>
 <h2>auPay審査状況（<%= @aupays.length %>件）</h2>
 <table>
   <thead>
@@ -160,6 +184,8 @@
     <% end %>
   </tbody>
 </table>
+<% end %>
+<% if @rakuten_pays.present? %>
 <h2>楽天ペイ審査状況（<%= @rakuten_pays.length %>件）</h2>
 <table>
   <thead>
@@ -191,7 +217,42 @@
     <% end %>
   </tbody>
 </table>
-
+<% end %>
+<% if @airpays.present? %>
+<h2>AirPay審査状況（<%= @airpays.length %>件）</h2>
+<table>
+  <thead>
+    <tr>
+      <th class="valuation-th">詳細</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @airpays.each do |airpay| %>
+      <% if airpay.status == "審査NG"  %>
+      <tr style="color:red;">
+      <% elsif 
+        (airpay.status == "代表者情報不備") || 
+        (airpay.status == "店舗情報不備") ||  
+        (airpay.status == "口座情報不備")
+      %>
+      <tr style="color:purple;">
+      <% else %>
+      <tr>
+      <% end %>
+      <td class="valuation-td"><%= link_to "詳細", airpay_path(airpay.id), class: "link" %></td>
+      <td class="valuation-td"><%= airpay.store_prop.name %></td>
+      <td class="valuation-td"><%= airpay.date %></td>
+      <td class="valuation-td"><%= airpay.status %></td>
+      <td class="valuation-td"><%= airpay.result_point %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
 <% if @dmers_db.length != 0 || @aupays_db.length != 0 %>
 <h2>複数店一覧</h2>
 <table>
