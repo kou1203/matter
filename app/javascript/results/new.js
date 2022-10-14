@@ -19,6 +19,16 @@ window.addEventListener('turbolinks:load', function(){
   const summitVal2 = document.getElementById("summit-val2")
   const summitForm1 = document.getElementById("summit-form1")
 
+  // 商材別
+  memoButton.addEventListener('click', function(){
+    if (memoPage.getAttribute("style") == "display:block;") {
+      memoPage.removeAttribute("style", "display:block;")
+      memoButton.removeAttribute("style", "background: #74828F;")
+    } else {
+      memoPage.setAttribute("style", "display:block;")
+      memoButton.setAttribute("style", "background: #74828F;")
+    }
+  })
   // シフト
   shiftSlct.addEventListener('change',function(){
     console.log(this.value)
@@ -60,16 +70,6 @@ window.addEventListener('turbolinks:load', function(){
       summitForm1.style.display = "inline";
     }else {
       basicForm.style.display = "none";
-    }
-  })
-  // 商材別
-  memoButton.addEventListener('click', function(){
-    if (memoPage.getAttribute("style") == "display:block;") {
-      memoPage.removeAttribute("style", "display:block;")
-      memoButton.removeAttribute("style", "background: #74828F;")
-    } else {
-      memoPage.setAttribute("style", "display:block;")
-      memoButton.setAttribute("style", "background: #74828F;")
     }
   })
 

@@ -101,6 +101,9 @@ Rails.application.routes.draw do
       get :profit
     }
   end  
+  
+  resources :ojts, only: :index
+  resources :ojts, only: :show, param: :result_id
 
 
 

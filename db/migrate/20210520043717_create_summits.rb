@@ -2,6 +2,7 @@ class CreateSummits < ActiveRecord::Migration[6.0]
   def change
     create_table :summits do |t|
       t.string :processing_status     
+      t.string :record_num             
       t.string :control_num             , null: false
       t.references :store_prop          , foreign_key: true 
       t.string :store_name              , null: false 

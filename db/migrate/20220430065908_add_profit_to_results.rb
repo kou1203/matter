@@ -31,5 +31,9 @@ class AddProfitToResults < ActiveRecord::Migration[6.1]
     add_column :results, :revisit_full_talk, :integer
     add_column :results, :revisit_get, :integer
     add_column :results, :product, :string
+    # 帯同時間、備考 
+    add_column :results, :ojt_start, :time
+    add_column :results, :ojt_end, :time
+    add_column :results, :remarks, :text
   end
 end

@@ -417,6 +417,7 @@ class ResultsController < ApplicationController
   end 
 
 
+
   private
   # dメル,aupayメソッド
     # 新規
@@ -549,6 +550,9 @@ class ResultsController < ApplicationController
       :ojt_id, 
       :profit,
       :product,
+      :ojt_start,
+      :ojt_end,
+      :remarks,
     # 基準値
       # 前半
       :first_total_visit,

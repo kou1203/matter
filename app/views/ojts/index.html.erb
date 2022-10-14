@@ -1,0 +1,43 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>帯同資料</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div class="main">
+    <div data-scope-path="results/ojt">
+    <h2>
+      <%= link_to "<<",ojts_path(month:@month.prev_month), class:"link" %>
+      <%= @month.month %>月
+      <%= link_to ">>",ojts_path(month:@month.next_month), class:"link" %>
+    </h2>
+    <table>
+      <thead>
+      <tr>
+        <th>訪問員</th>
+        <th>日付</th>
+        <th>エリア</th>
+        <th>帯同者</th>
+        <th>帯同結果</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @ojts.each do |ojt| %>
+      <% unless ojt.user_id == ojt.ojt_id %>
+      <tr>
+        <td><%= ojt.user.name %></td>
+        <td><%= ojt.date %></td>
+        <td><%= ojt.area %></td>
+        <td><%= ojt.ojt.name %></td>
+        <td><%= link_to "詳細", ojt_path(ojt.id), class: "link" %></td>
+      </tr>
+      <% end %>
+      <% end %>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</div>

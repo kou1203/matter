@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_06_075202) do
+ActiveRecord::Schema.define(version: 2022_10_14_093256) do
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "store_prop_id"
@@ -935,6 +935,9 @@ ActiveRecord::Schema.define(version: 2022_09_06_075202) do
     t.integer "revisit_full_talk"
     t.integer "revisit_get"
     t.string "product"
+    t.time "ojt_start"
+    t.time "ojt_end"
+    t.text "remarks"
     t.index ["ojt_id"], name: "index_results_on_ojt_id"
     t.index ["user_id"], name: "index_results_on_user_id"
   end
@@ -1021,6 +1024,25 @@ ActiveRecord::Schema.define(version: 2022_09_06_075202) do
     t.string "description"
   end
 
+  create_table "summit_clients", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "summit_id"
+    t.date "start_use"
+    t.string "supply_num"
+    t.string "pay_menu"
+    t.text "remarks"
+    t.date "create_date"
+    t.date "update"
+    t.integer "target_record_num"
+    t.string "novice_menu"
+    t.integer "rate"
+    t.date "cancel"
+    t.string "cancel_status"
+    t.string "cancel_app_company"
+    t.text "error_contents"
+    t.string "crepiko_num"
+    t.index ["summit_id"], name: "index_summit_clients_on_summit_id"
+  end
+
   create_table "summit_customer_props", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num", null: false
     t.string "client", null: false
@@ -1034,6 +1056,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_075202) do
 
   create_table "summits", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "processing_status"
+    t.string "record_num"
     t.string "control_num", null: false
     t.bigint "store_prop_id"
     t.string "store_name", null: false
@@ -1168,6 +1191,7 @@ ActiveRecord::Schema.define(version: 2022_09_06_075202) do
   add_foreign_key "st_insurances", "users"
   add_foreign_key "stock_histories", "stocks"
   add_foreign_key "stock_histories", "users"
+  add_foreign_key "summit_clients", "summits"
   add_foreign_key "summit_customer_props", "store_props"
   add_foreign_key "summits", "store_props"
   add_foreign_key "summits", "users"

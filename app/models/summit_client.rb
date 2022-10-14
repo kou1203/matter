@@ -1,19 +1,4 @@
-class Summit < ApplicationRecord
-  belongs_to :store_prop
-  belongs_to :user
-
-
-  with_options presence: true do
-    validates :store_prop_id
-    validates :user_id 
-    validates :control_num
-    validates :date
-    validates :store_name  
-    validates :contract_type
-    validates :supply_num 
-    validates :status
-  end 
-
+class SummitClient < ApplicationRecord
   def self.csv_check(file)
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
@@ -176,5 +161,4 @@ class Summit < ApplicationRecord
   end
   "新規登録#{new_cnt}件, 更新#{update_cnt}件, 変更なし#{nochange_cnt}件 "
   end
-
 end

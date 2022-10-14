@@ -21,7 +21,7 @@
         <h1>基本情報</h1>
             <%= f.hidden_field :user_id, value: current_user.id %>
         <div class="form">
-            <p><%= f.label :request, "日付", class: "form-text" %></p>
+            <p><%= f.label :date, "日付", class: "form-text" %></p>
             <p><%= f.date_field :date , value: Date.today, class: "date-input" %></p>
         </div>
         <div class="form">
@@ -36,11 +36,21 @@
                 },{include_blank: true}, {class: "slct-input",id: "shift-slct"} %></p>
         </div>
         <div class="form">
-            <p><%= f.label :request_show, "帯同者", class: "form-text" %></p>
+            <p><%= f.label :ojt_id, "帯同者", class: "form-text" %></p>
             <p><%= f.collection_select(:ojt_id, User.includes(:shifts).where(shifts: {shift: "帯同"}), :id, :name,{include_blank: true}, {class: "slct-input"})%></p>
         </div>
+        <% if current_user.name == "管理用" %>
         <div class="form">
-            <p><%= f.label :response, "売上", class: "form-text" %></p>
+            <p><%= f.label :ojt_start, "帯同開始〜", class: "form-text" %><%= f.label :ojt_start, "帯同終了", class: "form-text" %></p>
+            <p><%= f.time_field :ojt_start , class: "time-input" %>〜<%= f.time_field :ojt_end , class: "time-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :remarks, "備考", class: "form-text" %></p>
+            <p><%= f.text_field :remarks,class: "input", min: 0 %></p>
+        </div>
+        <% end %>
+        <div class="form">
+            <p><%= f.label :profit, "売上", class: "form-text" %></p>
             <p><%= f.number_field :profit,class: "input", min: 0 %></p>
         </div>
         <div class="basic-form" id="basic-form">

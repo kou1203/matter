@@ -1,0 +1,2 @@
+module OjtsHelper
+end
