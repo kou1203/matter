@@ -30,8 +30,10 @@
       </tr>
       <% @ojt_name.each do |ojt| %>
       <tr>
-        <% ojts = @ojts.where(ojt_id: ojt) %>
-        <td><%= User.find_by(id: ojt).name %></td>
+        <% ojts = @ojts.where(ojt_id: ojt).where.not(user_id: ojt) %>
+        <td>
+          <%= User.find_by(id: ojt).name %><br>
+        </td>
         <td><%= ojts.length %>シフト</td>
         <td>
           <%= (ojts.sum("first_total_visit + latter_total_visit") / ojts.length).round(1) %> - 
@@ -98,7 +100,9 @@
       <%# <p class="search-title">検索</p> %>
       <%= form_with url: ojts_path, local: true, method: :get do |f| %>
       <p class="search">
+        <%= f.hidden_field :search_date, value: @month %>
         <%= f.text_field :word,class:"search-input" %>
+
         <%= f.submit "絞込",class: "search-btn" %>
       </p>
       <% end %>

@@ -100,7 +100,9 @@ Rails.application.routes.draw do
     }
   end  
   
-  resources :ojts, only: :index
+  resources :ojts, only: :index do 
+    collection { get :export }
+  end 
   resources :ojts, only: :show, param: :result_id
 
 
