@@ -7,14 +7,16 @@ class OjtsController < ApplicationController
     if params[:word].present?
       @user = User.where("name LIKE?","%#{params[:word]}%")
       @ojts = 
-      Result.includes(:user)
+      Result.includes(:user,:result_cash)
       .where.not(ojt_id: nil)
       .where(date: @start_date..@end_date)
+      .where.not(user: {base: "2次店"})
       .order(date: "ASC")
       .where(ojt_id: @user.first.id)
     else
       @ojts = Result.includes(:user).where.not(ojt_id: nil).where(date: @start_date..@end_date).order(date: "ASC")
     end
+    @ojt_name = @ojts.pluck(:ojt_id).uniq
   end 
 
   def show 

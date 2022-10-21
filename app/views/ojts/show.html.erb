@@ -209,8 +209,8 @@
           <th>帯同後</th>
           <td>
             <%= @ojt_after.first.date.month %>月
-            <%= @ojt_after.last.date.day %>日〜
-            <%= @ojt_after.first.date.month %>月
+            <%= @ojt_after.first.date.day %>日〜
+            <%= @ojt_after.last.date.month %>月
             <%= @ojt_after.last.date.day %>日
           </td>
           <% after_total_visit = ((@ojt_after.sum {|hash| hash[:first_total_visit].to_f} + @ojt_after.sum {|hash| hash[:latter_total_visit].to_f}).to_f / @ojt_after.length).round(1) %>

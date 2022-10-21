@@ -14,9 +14,88 @@
       <%= @month.month %>月
       <%= link_to ">>",ojts_path(month:@month.next_month), class:"link" %>
     </h2>
+    <% if @ojts.present? %>
+    <h2>◆帯同結果早見</h2>
+    <div class="ojt-items">
+    <table>
+      <tr>
+        <th>帯同者</th>
+        <th>帯同数</th>
+        <th>基準値</th>
+        <th>dメル</th>
+        <th>auPay</th>
+        <th>楽天ペイ</th>
+        <th>AirPay</th>
+        <th>平均売上</th>
+      </tr>
+      <% @ojt_name.each do |ojt| %>
+      <tr>
+        <% ojts = @ojts.where(ojt_id: ojt) %>
+        <td><%= User.find_by(id: ojt).name %></td>
+        <td><%= ojts.length %>シフト</td>
+        <td>
+          <%= (ojts.sum("first_total_visit + latter_total_visit") / ojts.length).round(1) %> - 
+          <%= (ojts.sum("first_visit + latter_visit") / ojts.length).round(1) %> - 
+          <%= (ojts.sum("first_interview + latter_interview") / ojts.length).round(1) %> - 
+          <%= (ojts.sum("first_full_talk + latter_full_talk") / ojts.length).round(1) %> - 
+          <%= (ojts.sum("first_get + latter_get") / ojts.length).round(1) %>
+        </td>
+        <% dmer = 0 %>
+        <% aupay = 0 %>
+        <% rakuten_pay = 0 %>
+        <% airpay = 0 %>
+        <% dmer_price = 8000 %>
+        <% aupay_price = 6000 %>
+        <% rakuten_pay_price = 4000 %>
+        <% airpay_price = 6000 %>
+        <% ojts.each do |ojt_data| %>
+        <% if ojt_data.result_cash.present? %>
+          <% dmer += ojt_data.result_cash.dmer.to_f %>
+          <% aupay += ojt_data.result_cash.aupay.to_f %>
+          <% rakuten_pay += ojt_data.result_cash.rakuten_pay.to_f %>
+          <% airpay += ojt_data.result_cash.airpay.to_f %>
+        <% end %>
+        <% end %>
+        <td><%= (dmer / ojts.length).round(1) %></td>
+        <td><%= (aupay / ojts.length).round(1) %></td>
+        <td><%= (rakuten_pay / ojts.length).round(1) %></td>
+        <td><%= (airpay / ojts.length).round(1) %></td>
+        <td><%= 
+          (((dmer * dmer_price) +
+          (aupay * aupay_price) +
+          (rakuten_pay * rakuten_pay_price) +
+          (airpay * airpay_price)) / ojts.length).round().to_s(:delimited)
+        %></td>
+      </tr>
+      <% end %>
+    </table>
+    <div>
+    <table>
+      <tr>
+        <th></th>
+        <th>dメル</th>
+        <th>auPay</th>
+        <th>楽天ペイ</th>
+        <th>AirPay</th>
+      </tr>
+      <tr>
+        <td>単価</td>
+        <td>8,000</td>
+        <td>8,000</td>
+        <td>4,000</td>
+        <td>6,000</td>
+      </tr>
+    </table>
+    <p class="caution-text">※単価は暫定的な金額にしております。</p>
+    </div>
+    </div>
+  <% else %>
+      <p class="caution-text">※帯同されているシフトがありません。</p>
+  <% end %>
+    <h2>◆帯同結果一覧</h2>
     <%# 検索機能 %>
     <div class="search-form">
-      <p class="search-title">検索</p>
+      <%# <p class="search-title">検索</p> %>
       <%= form_with url: ojts_path, local: true, method: :get do |f| %>
       <p class="search">
         <%= f.text_field :word,class:"search-input" %>
@@ -25,7 +104,6 @@
       <% end %>
     </div>
     <%# /検索機能 %>
-    <h2>◆帯同結果一覧</h2>
       <table>
         <thead>
         <tr>
