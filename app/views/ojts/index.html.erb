@@ -14,30 +14,131 @@
       <%= @month.month %>月
       <%= link_to ">>",ojts_path(month:@month.next_month), class:"link" %>
     </h2>
-    <table>
-      <thead>
-      <tr>
-        <th>訪問員</th>
-        <th>日付</th>
-        <th>エリア</th>
-        <th>帯同者</th>
-        <th>帯同結果</th>
-      </tr>
-      </thead>
-      <tbody>
-      <% @ojts.each do |ojt| %>
-      <% unless ojt.user_id == ojt.ojt_id %>
-      <tr>
-        <td><%= ojt.user.name %></td>
-        <td><%= ojt.date %></td>
-        <td><%= ojt.area %></td>
-        <td><%= ojt.ojt.name %></td>
-        <td><%= link_to "詳細", ojt_path(ojt.id), class: "link" %></td>
-      </tr>
+    <%# 検索機能 %>
+    <div class="search-form">
+      <p class="search-title">検索</p>
+      <%= form_with url: ojts_path, local: true, method: :get do |f| %>
+      <p class="search">
+        <%= f.text_field :word,class:"search-input" %>
+        <%= f.submit "絞込",class: "search-btn" %>
+      </p>
       <% end %>
-      <% end %>
-      </tbody>
-    </table>
+    </div>
+    <%# /検索機能 %>
+    <h2>◆帯同結果一覧</h2>
+      <table>
+        <thead>
+        <tr>
+          <th>拠点</th>
+          <th>訪問員</th>
+          <th>帯同者</th>
+          <th>項目</th>
+          <th>日付</th>
+          <th>エリア</th>
+          <th>基準値（訪問-対面-フル-成約）</th>
+          <th>dメル</th>
+          <th>auPay</th>
+          <th>楽天ペイ</th>
+          <th>AirPay</th>
+          <th>帯同結果</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% cnt = 0 %>
+        <% @ojts.each do |ojt| %>
+          <% unless ojt.user_id == ojt.ojt_id %>
+          <% cnt += 1 %>
+          <tr class="">
+          <% if cnt % 2 == 0 %>
+            <td class="even-td" rowspan="3"><%= ojt.user.base %></td>
+            <td class="even-td" rowspan="3"><%= ojt.user.name %></td>
+            <td class="even-td" rowspan="3"><%= ojt.ojt.name %></td>
+          <% else %>
+            <td class="odd-td" rowspan="3"><%= ojt.user.base %></td>
+            <td class="odd-td" rowspan="3"><%= ojt.user.name %></td>
+            <td class="odd-td" rowspan="3"><%= ojt.ojt.name %></td>
+          <% end %>
+            <td>帯同日</td>
+            <td><%= ojt.date.strftime("%m/%d") %></td>
+            <td><%= ojt.area %></td>
+            <td>
+              <%= ojt.first_total_visit.to_i + ojt.latter_total_visit.to_i %> -
+              <%= ojt.first_visit.to_i + ojt.latter_visit.to_i %> -
+              <%= ojt.first_interview.to_i + ojt.latter_interview.to_i %> -
+              <%= ojt.first_full_talk.to_i + ojt.latter_full_talk.to_i %> -
+              <%= ojt.first_get.to_i + ojt.latter_get.to_i %>
+            </td>
+            <td><%= ojt.result_cash.dmer.to_i rescue 0 %></td>
+            <td><%= ojt.result_cash.aupay.to_i rescue 0 %></td>
+            <td><%= ojt.result_cash.rakuten_pay.to_i rescue 0 %></td>
+            <td><%= ojt.result_cash.airpay.to_i rescue 0 %></td>
+            <td rowspan="3"><%= link_to "詳細", ojt_path(ojt.id), class: "link" %></td>
+          </tr>
+          <tr class="before-row">
+            <%# 帯同前変数 %>
+            <% ojt_before = Result.includes(:user,:result_cash).where(user_id: ojt.user_id).where("? > date",ojt.date).last(3) %>
+            <% before_total_visit = ((ojt_before.sum {|hash| hash[:first_total_visit].to_f} + ojt_before.sum {|hash| hash[:latter_total_visit].to_f}).to_f / ojt_before.length).round(1) %>
+            <% before_visit = ((ojt_before.sum {|hash| hash[:first_visit].to_f} + ojt_before.sum {|hash| hash[:latter_visit].to_f}).to_f / ojt_before.length).round(1) %>
+            <% before_interview = ((ojt_before.sum {|hash| hash[:first_interview].to_f} + ojt_before.sum {|hash| hash[:latter_interview].to_f}).to_f / ojt_before.length).round(1) %>
+            <% before_full_talk = ((ojt_before.sum {|hash| hash[:first_full_talk].to_f} + ojt_before.sum {|hash| hash[:latter_full_talk].to_f}).to_f / ojt_before.length).round(1) %>
+            <% before_get = ((ojt_before.sum {|hash| hash[:first_get].to_f} + ojt_before.sum {|hash| hash[:latter_get].to_f}).to_f / ojt_before.length).round(1) %>
+            <% before_dmer = (ojt_before.sum {|hash| hash.result_cash[:dmer].to_f} / ojt_before.length).round(1) rescue 0 %>
+            <% before_aupay = (ojt_before.sum {|hash| hash.result_cash[:aupay].to_f} / ojt_before.length).round(1) rescue 0 %>
+            <% before_rakuten_pay = (ojt_before.sum {|hash| hash.result_cash[:rakuten_pay].to_f} / ojt_before.length).round(1) rescue 0 %>
+            <% before_airpay = (ojt_before.sum {|hash| hash.result_cash[:airpay].to_f} / ojt_before.length).round(1) rescue 0 %>
+            <td>帯同前</td>
+            <% if ojt_before.length >= 2 %>
+            <td><%= ojt_before.first.date.strftime("%m/%d")  %>〜<%= ojt_before.last.date.strftime("%m/%d") %></td>
+            <% elsif ojt_before.length == 1 %>
+            <td><%= ojt_before.first.date.strftime("%m/%d")  %></td>
+            <% else %>
+            <td></td>
+            <% end %>
+            <td><%=  %></td>
+            <% if ojt_before.present? %>
+            <td><%= before_total_visit %> -<%= before_visit %> -<%= before_interview %> -<%= before_full_talk %> -<%= before_get %></td>
+            <% else %>
+            <td></td>
+            <% end %>
+            <td><%= before_dmer %></td>
+            <td><%= before_aupay %></td>
+            <td><%= before_rakuten_pay %></td>
+            <td><%= before_airpay %></td>
+          </tr>
+          <tr class="after-row">
+            <% ojt_after = Result.where(user_id: ojt.user_id).where("? < date",ojt.date).first(3) %>
+            <% after_total_visit = ((ojt_after.sum {|hash| hash[:first_total_visit].to_f} + ojt_after.sum {|hash| hash[:latter_total_visit].to_f}).to_f / ojt_after.length).round(1) %>
+            <% after_visit = ((ojt_after.sum {|hash| hash[:first_visit].to_f} + ojt_after.sum {|hash| hash[:latter_visit].to_f}).to_f / ojt_after.length).round(1) %>
+            <% after_interview = ((ojt_after.sum {|hash| hash[:first_interview].to_f} + ojt_after.sum {|hash| hash[:latter_interview].to_f}).to_f / ojt_after.length).round(1) %>
+            <% after_full_talk = ((ojt_after.sum {|hash| hash[:first_full_talk].to_f} + ojt_after.sum {|hash| hash[:latter_full_talk].to_f}).to_f / ojt_after.length).round(1) %>
+            <% after_get = ((ojt_after.sum {|hash| hash[:first_get].to_f} + ojt_after.sum {|hash| hash[:latter_get].to_f}).to_f / ojt_after.length).round(1) %>
+            <% after_dmer = (ojt_after.sum {|hash| hash.result_cash[:dmer].to_f} / ojt_after.length).round(1) rescue 0 %>
+            <% after_aupay = (ojt_after.sum {|hash| hash.result_cash[:aupay].to_f} / ojt_after.length).round(1) rescue 0 %>
+            <% after_rakuten_pay = (ojt_after.sum {|hash| hash.result_cash[:rakuten_pay].to_f} / ojt_after.length).round(1) rescue 0 %>
+            <% after_airpay = (ojt_after.sum {|hash| hash.result_cash[:airpay].to_f} / ojt_after.length).round(1) rescue 0 %>
+            <td>帯同後</td>
+            <% if ojt_after.length >= 2 %>
+            <td><%= ojt_after.first.date.strftime("%m/%d")  %>〜<%= ojt_after.last.date.strftime("%m/%d") %></td>
+            <% elsif ojt_after.length == 1 %>
+            <td><%= ojt_after.first.date.strftime("%m/%d")  %></td>
+            <% else %>
+            <td></td>
+            <% end %>
+            <td><%=  %></td>
+            <% if ojt_after.present? %>
+            <td><%= after_total_visit %> -<%= after_visit %> -<%= after_interview %> -<%= after_full_talk %> -<%= after_get %></td>
+            <% else %>
+            <td></td>
+            <% end %>
+            <td><%= after_dmer %></td>
+            <td><%= after_aupay %></td>
+            <td><%= after_rakuten_pay %></td>
+            <td><%= after_airpay %></td>
+          </tr>
+          <% end %>
+        <% end %>
+        </tbody>
+      </table>
     </div>
   </div>
 </div>

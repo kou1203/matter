@@ -1,32 +1,32 @@
-<div data-scope-path="shifts/new">
-  <h1>シフト入力：<%= current_user.name %></h1>
+<div data-scope-path="shared/header">
+  <h1>シフト入力</h1>
   <%= render "shared/header" %>
-  <%= form_with model: @form, url: shifts_path,method: :post,class: "form-frame", local: true do |form| %>
-    <%= form.fields_for :shifts do |f|  %> 
-    <table>
-      <tr>
-        
-        <th class="form-text">登録　</th>
-        <th><%= form.label :date, "日付", class:  "form-text"%></th>
-        <th><%= form.label :shift, "シフト", class:  "form-text"%></th>
-      </tr>
-    <%= f.hidden_field :user_id, value: current_user.id %>
-      <tr>
-        <td ><%= f.check_box :availability,{} ,{class: "form-checkbox"} %></td>
-        <td><%= f.date_field :date, class: "form-input" %></td>
-        <td><%= f.select :shift, {
-          "キャッシュレス新規": "キャッシュレス新規",
-          "キャッシュレス決済": "キャッシュレス決済",
-          "楽天フェムト新規": "楽天フェムト新規",
-          "楽天フェムト設置": "楽天フェムト設置",
-          "サミット": "サミット",
-          "帯同": "帯同",
-          "内勤": "内勤",
-          "休み": "休み",
-          "欠勤": "欠勤"} ,{}, {class: "form-input"} %></td>
-      </tr>
-    </table>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form">
+    <div class="form-main">
+      <div class="form-title">
+      </div>
+    <%= form_with(model: @shift, date: {remote: false}) do |f| %>
+    <%# render "shared/error_messages", model: f.object %>
+    <h1>基本情報（<%= @shift.user.name %>）</h1>
+    <%= f.hidden_field :user_id, value: @shift.user_id %>
+    <div class="form">
+        <p><%= f.label :request, "日付", class: "form-text" %></p>
+        <p><%= f.date_field :start_time , class: "date-input" %></p>
+    </div>
+    <div class="form">
+        <p><%= f.label :ball, "シフト", class: "form-text" %></p>
+        <p><%= f.select :shift, {"キャッシュレス新規": "キャッシュレス新規", "キャッシュレス決済": "キャッシュレス決済", "楽天フェムト設置": "楽天フェムト設置",  "サミット": "サミット","帯同": "帯同","内勤": "内勤", "休み": "休み","欠勤": "欠勤"},{include_blank: true}, {class: "slct-input", id: "selectbox"} %></p>
+    </div>
+   
+    
+    <div class="form-submit">
+      <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+    </div>
     <% end %>
-      <%= form.submit "登録", class: "submit-btn" %>
-  <% end %>
+  </div>
 </div>

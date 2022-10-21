@@ -1,5 +1,5 @@
 <div data-scope-path="shared/header">
-  <h1>サミット終着報告</h1>
+  <h1>サミット終着編集</h1>
   <%= render "shared/header" %>
 </div>
 
@@ -10,14 +10,13 @@
   <div data-scope-path="shared/form">
   <div class="form-main">
     <div class="form-title">
-      <h1><%= @result.user.name %>切り返し入力</h1>
+      <h1><%= @result_summit.result.user.name %>切り返し編集</h1>
     </div>
       <button id="memo-button">メモ</button>
     <div class="memo-form" id="memo-page">
       <textarea></textarea>
     </div>
-  <%= form_with model: @result_summit,url: result_result_summits_create_path(@result.id), local: true, class: "form-frame", local: true do |f| %>
-  <%= f.hidden_field :result_id, value: @result.id %>
+  <%= form_with model: @result_summit, local: true, class: "form-frame", local: true do |f| %>
   <%# render "shared/error_messages", model: f.object %>
     <h1>電力会社</h1>
   <div class="form">

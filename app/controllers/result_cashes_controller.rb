@@ -17,7 +17,6 @@ class ResultCashesController < ApplicationController
 
   def show 
     @result_cash = ResultCash.find(params[:id])
-
   end 
 
   def edit 
@@ -119,7 +118,6 @@ class ResultCashesController < ApplicationController
       :aupay,
       :paypay,
       :rakuten_pay,
-      :airpay
     )
   end 
 end

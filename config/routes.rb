@@ -29,9 +29,7 @@ Rails.application.routes.draw do
     collection { get :export }
   end 
 
-  resources :summit_customer_props, expect: [:new, :create] do
-    get 'summits/new'
-    post 'summits/create'
+  resources :summit_clients, only: [:index, :show] do
     collection { post :import }
   end
 

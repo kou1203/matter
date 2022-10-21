@@ -7,7 +7,7 @@ class CreateSummitClients < ActiveRecord::Migration[6.1]
       t.string :pay_menu
       t.text :remarks
       t.date :create_date
-      t.date :update
+      t.date :update_date
       t.integer :target_record_num
       t.string :novice_menu
       t.integer :rate

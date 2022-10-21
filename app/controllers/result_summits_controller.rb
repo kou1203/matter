@@ -10,7 +10,7 @@ class ResultSummitsController < ApplicationController
     @result = Result.find(params[:result_id])
     @result_summit = ResultSummit.new(result_summit_params)
     if @result_summit.save 
-      redirect_to results_path
+      redirect_to result_summit_path(@result_summit.result.user_id)
     else  
       render :new 
     end
@@ -20,10 +20,60 @@ class ResultSummitsController < ApplicationController
     @month = params[:month] ? Date.parse(params[:month]) : Time.zone.today
     @start_date = @month.beginning_of_month
     @end_date = @month.end_of_month
+    @date_period = (@start_date..@end_date)
     @user = User.find(params[:id])
-    @results = Result.where(user_id: @user.id).where(date: @start_date..@end_date)
-    @shifs = Shift.where(user_id: @user.id).where(start_time: @start_date..@end_date)
+    @results = Result.includes(:result_summit).where(user_id: @user.id).where(date: @start_date..@end_date)
+    @result_summit = @results.where(shift: "サミット")
+    @result_ojt = @results.where(shift: "帯同")
+    @result_office_work = @results.where(shift: "内勤")
+    @shifts = Shift.where(user_id: @user.id).where(start_time: @start_date..@end_date)
+    @shift_summit = @shifts.where(shift: "サミット")
+    @shift_ojt = @shifts.where(shift: "帯同")
+    @shift_office_work = @shifts.where(shift: "内勤")
 
+      #  合計変数 
+      @sum_visit = @results.where(shift: "サミット").sum("first_visit + latter_visit") 
+      @sum_interview = @results.where(shift: "サミット").sum("first_interview + latter_interview") 
+      @sum_full_talk = @results.where(shift: "サミット").sum("first_full_talk + latter_full_talk") 
+      @sum_full_talk2 = @results.where(shift: "サミット").sum("first_full_talk2 + latter_full_talk2") 
+      @sum_get = @results.where(shift: "サミット").sum("first_get + latter_get") 
+      @revisit_full_talk = @results.where(shift: "サミット").sum(:revisit_full_talk) 
+      @revisit_get = @results.where(shift: "サミット").sum(:revisit_get) 
+      @standard_label_ary = ["訪問","対面","フル①","フル②","成約"]
+      @standard_val_ary = [@sum_visit,@sum_interview,@sum_full_talk,@sum_full_talk2,@sum_get]
+     #  前半変数  
+      @sum_visit_f = @results.where(shift: "サミット").sum(:first_visit) 
+      @sum_interview_f = @results.where(shift: "サミット").sum(:first_interview) 
+      @sum_full_talk_f = @results.where(shift: "サミット").sum(:first_full_talk) 
+      @sum_full_talk2_f = @results.where(shift: "サミット").sum(:first_full_talk2) 
+      @sum_get_f = @results.where(shift: "サミット").sum(:first_get) 
+      @standard_val_ary_f = [@sum_visit_f,@sum_interview_f,@sum_full_talk_f,@sum_full_talk2_f,@sum_get_f]
+      # 後半変数 
+      @sum_visit_l = @results.where(shift: "サミット").sum(:latter_visit) 
+      @sum_interview_l = @results.where(shift: "サミット").sum(:latter_interview) 
+      @sum_full_talk_l = @results.where(shift: "サミット").sum(:latter_full_talk) 
+      @sum_full_talk2_l = @results.where(shift: "サミット").sum(:latter_full_talk2) 
+      @sum_get_l = @results.where(shift: "サミット").sum(:latter_get) 
+      @standard_val_ary_l = [@sum_visit_l,@sum_interview_l,@sum_full_talk_l,@sum_full_talk2_l,@sum_get_l]
+      @sum_revisit_full_talk = @results.where(shift: "サミット").sum(:revisit_full_talk) 
+      @sum_revisit_get = @results.where(shift: "サミット").sum(:revisit_get) 
+      @revisit_label_ary = ["フル②", "成約"]
+      @revisit_val_ary = [@sum_revisit_full_talk, @sum_revisit_get]
+      # 電力会社
+      @sum_power_company1_full_talk = @results.where(shift: "サミット").sum(:power_company1_full_talk1) 
+      @sum_power_company1_full_talk2 = @results.where(shift: "サミット").sum(:power_company1_full_talk2) 
+      @sum_power_company1_get = @results.where(shift: "サミット").sum(:power_company1_get) 
+      @sum_power_company2_full_talk = @results.where(shift: "サミット").sum(:power_company2_full_talk1) 
+      @sum_power_company2_full_talk2 = @results.where(shift: "サミット").sum(:power_company2_full_talk2) 
+      @sum_power_company2_get = @results.where(shift: "サミット").sum(:power_company2_get) 
+      @sum_power_company3_full_talk = @results.where(shift: "サミット").sum(:power_company3_full_talk1) 
+      @sum_power_company3_full_talk2 = @results.where(shift: "サミット").sum(:power_company3_full_talk2) 
+      @sum_power_company3_get = @results.where(shift: "サミット").sum(:power_company3_get) 
+      @sum_power_company4_full_talk = @results.where(shift: "サミット").sum(:power_company4_full_talk1) 
+      @sum_power_company4_full_talk2 = @results.where(shift: "サミット").sum(:power_company4_full_talk2) 
+      @sum_power_company4_get = @results.where(shift: "サミット").sum(:power_company4_get) 
+      @power_company_label_ary = ["地域電力", "地域ガス", "ハルエネ", "その他"]
+      @power_company_label_ary2 = ["フル①", "フル②", "成約"]
   end 
 
   def edit 
@@ -33,7 +83,7 @@ class ResultSummitsController < ApplicationController
   def update 
     @result_summit_summit = ResultSummit.find(params[:id])
     @result_summit_summit.update(result_summit_params)
-    redirect_to results_path
+    redirect_to result_summit_path(@result_summit_summit.result.user_id)
   end
 
 

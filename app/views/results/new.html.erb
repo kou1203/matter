@@ -10,7 +10,7 @@
   <div data-scope-path="shared/form"><%# CSSスコープ %>
     <div class="form-main"><%# フォーム外枠 %>
         <div class="form-title">
-        <h1><%= current_user.name %>終着入力</h1>
+        <h1><%= @result.user.name %>終着入力</h1>
         </div>
         <button id="memo-button">メモ</button>
         <div class="memo-form" id="memo-page">
@@ -19,10 +19,10 @@
         <%= form_with(model: @result, date: {remote: false}) do |f| %>
         <%# render "shared/error_messages", model: f.object %>
         <h1>基本情報</h1>
-            <%= f.hidden_field :user_id, value: current_user.id %>
+            <%= f.hidden_field :user_id, value: @result.user.id %>
         <div class="form">
             <p><%= f.label :date, "日付", class: "form-text" %></p>
-            <p><%= f.date_field :date , value: Date.today, class: "date-input" %></p>
+            <p><%= f.date_field :date , value: @result.date, class: "date-input" %></p>
         </div>
         <div class="form">
             <p><%= f.label :status, "地域", class: "form-text" %></p>
@@ -39,11 +39,11 @@
             <p><%= f.label :ojt_id, "帯同者", class: "form-text" %></p>
             <p><%= f.collection_select(:ojt_id, User.includes(:shifts).where(shifts: {shift: "帯同"}), :id, :name,{include_blank: true}, {class: "slct-input"})%></p>
         </div>
-        <% if current_user.name == "管理用" %>
         <div class="form">
             <p><%= f.label :ojt_start, "帯同開始〜", class: "form-text" %><%= f.label :ojt_start, "帯同終了", class: "form-text" %></p>
             <p><%= f.time_field :ojt_start , class: "time-input" %>〜<%= f.time_field :ojt_end , class: "time-input" %></p>
         </div>
+        <% if current_user == "管理用" %>
         <div class="form">
             <p><%= f.label :remarks, "備考", class: "form-text" %></p>
             <p><%= f.text_field :remarks,class: "input", min: 0 %></p>

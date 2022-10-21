@@ -38,20 +38,20 @@
       <% after_rakuten_pay = 0 %>
       <% after_airpay = 0 %>
       <% @ojt_before.each do |ojt| %>
-        <tr class="date-tr">
+        <tr class="show-row">
           <th class="date-th"><span class="date-span"><%= ojt.date.month %>月<%= ojt.date.day %>日</span></th>
           <th class="date-th"><span class="date-span"><%= days[ojt.date.wday] %></span></th>
           <td class="date-td"><span class="date-span"><%= ojt.ojt.name rescue "" %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.area %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.first_total_visit.to_i + ojt.latter_total_visit.to_i %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.first_total_visit.to_f + ojt.latter_total_visit.to_f %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.first_visit + ojt.latter_visit rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.first_interview + ojt.latter_interview rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.first_full_talk + ojt.latter_full_talk rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.first_get + ojt.latter_get rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.dmer rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.aupay rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.rakuten_pay rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.airpay rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.dmer.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.aupay.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.rakuten_pay.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.airpay.to_i rescue 0 %></span></td>
           <% if ojt.result_cash.present? %>
             <% if ojt.result_cash.dmer.present? %>
             <% before_dmer += ojt.result_cash.dmer  %>
@@ -68,23 +68,23 @@
           <% end %>
         </tr>
       <% end %>
-        <tr class="date-tr">
+        <tr class="show-row">
           <th class="date-th"><span class="date-span"><%= @ojt_date.date.month %>月<%= @ojt_date.date.day %>日</span></th>
           <th class="date-th"><span class="date-span"><%= days[@ojt_date.date.wday] %></span></th>
           <td class="date-td"><span class="date-span"><%= @ojt_date.ojt.name rescue "" %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.area %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.first_total_visit.to_i + @ojt_date.latter_total_visit.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.first_total_visit.to_f + @ojt_date.latter_total_visit.to_f rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.first_visit + @ojt_date.latter_visit rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.first_interview + @ojt_date.latter_interview rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.first_full_talk + @ojt_date.latter_full_talk rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.first_get + @ojt_date.latter_get rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.dmer rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.aupay rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.rakuten_pay rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.airpay rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.dmer.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.aupay.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.rakuten_pay.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.airpay.to_i rescue 0 %></span></td>
         </tr>
       <% @ojt_after.each do |ojt| %>
-        <tr class="date-tr">
+        <tr class="show-row">
           <th class="date-th"><span class="date-span"><%= ojt.date.month %>月<%= ojt.date.day %>日</span></th>
           <th class="date-th"><span class="date-span"><%= days[ojt.date.wday] %></span></th>
           <td class="date-td"><span class="date-span"><%= ojt.ojt.name rescue "" %></span></td>
@@ -94,10 +94,10 @@
           <td class="date-td"><span class="date-span"><%= ojt.first_interview + ojt.latter_interview rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.first_full_talk + ojt.latter_full_talk rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.first_get + ojt.latter_get rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.dmer rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.aupay rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.rakuten_pay rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.airpay rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.dmer.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.aupay.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.rakuten_pay.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.airpay.to_i rescue 0 %></span></td>
           <% if ojt.result_cash.present? %>
             <% if ojt.result_cash.dmer.present? %>
             <% after_dmer += ojt.result_cash.dmer  %>
@@ -138,7 +138,25 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
+        
+        <tr class="show-row">
+          <th>現状</th>
+          <td ><%= @start_date.month %>月<%= @start_date.day %>日〜<%= @end_date.month %>月<%= @end_date.day %>日</td>
+          <td ><%= total_visit_now = (@results.sum("first_total_visit+latter_total_visit")  / @results.length).to_f.round(1) %></td>
+          <td ><%= visit_now = (@results.sum("first_visit+latter_visit")  / @results.length).to_f.round(1) %></td>
+          <td ><%= number_to_percentage(visit_now.to_f / total_visit_now.to_f * 100,precision: 0) %></td>
+          <td ><%= interview_now = (@results.sum("first_interview+latter_interview")  / @results.length).to_f.round(1) %></td>
+          <td ><%= number_to_percentage(interview_now.to_f / visit_now.to_f * 100,precision: 0) %></td>
+          <td ><%= full_talk_now = (@results.sum("first_full_talk+latter_full_talk")  / @results.length).to_f.round(1) %></td>
+          <td ><%= number_to_percentage(full_talk_now.to_f / interview_now.to_f * 100,precision: 0) %></td>
+          <td ><%= get_now = (@results.sum("first_get+latter_get")  / @results.length).to_f.round(1) %></td>
+          <td ><%= number_to_percentage(get_now.to_f / full_talk_now.to_f * 100,precision: 0) %></td>
+          <td ><%= (@results.sum(:dmer).to_f / @results.length).round(1) %></td>
+          <td ><%= (@results.sum(:aupay).to_f / @results.length).round(1) %></td>
+          <td ><%= (@results.sum(:rakuten_pay).to_f / @results.length).round(1) %></td>
+          <td ><%= (@results.sum(:airpay).to_f / @results.length).round(1) %></td>
+        </tr>
+        <tr class="show-row">
           <th>帯同日</th>
           <td ><%= @ojt_date.date.month %>月<%= @ojt_date.date.day %>日</td>
           <td ><%= total_visit = @ojt_date.first_total_visit + @ojt_date.latter_total_visit rescue 0 %></td>
@@ -151,13 +169,13 @@
           <td ><%= number_to_percentage(full_talk.to_f / interview.to_f * 100,precision: 0) %></td>
           <td ><%= get = @ojt_date.first_get + @ojt_date.latter_get rescue 0 %></td>
           <td ><%= number_to_percentage(get.to_f / full_talk.to_f * 100,precision: 0) %></td>
-          <td ><%= @ojt_date.result_cash.dmer rescue 0 %></td>
-          <td ><%= @ojt_date.result_cash.aupay rescue 0 %></td>
-          <td ><%= @ojt_date.result_cash.rakuten_pay rescue 0 %></td>
-          <td ><%= @ojt_date.result_cash.airpay rescue 0 %></td>
+          <td ><%= @ojt_date.result_cash.dmer.to_f rescue 0 %></td>
+          <td ><%= @ojt_date.result_cash.aupay.to_f rescue 0 %></td>
+          <td ><%= @ojt_date.result_cash.rakuten_pay.to_f rescue 0 %></td>
+          <td ><%= @ojt_date.result_cash.airpay.to_f rescue 0 %></td>
         </tr>
         <% if @ojt_before.present? %>
-        <tr>
+        <tr class="show-row">
           <th>帯同前</th>
           <td>
             <%= @ojt_before.first.date.month %>月
@@ -165,23 +183,29 @@
             <%= @ojt_before.last.date.month %>月
             <%= @ojt_before.last.date.day %>日
           </td>
-          <td><%= before_total_visit = ((@ojt_before.sum {|hash| hash[:first_total_visit].to_i} + @ojt_before.sum {|hash| hash[:latter_total_visit].to_i}).to_f / @ojt_before.length).round(1) %></td>
-          <td><%= before_visit = ((@ojt_before.sum {|hash| hash[:first_visit].to_i} + @ojt_before.sum {|hash| hash[:latter_visit].to_i}).to_f / @ojt_before.length).round(1) %></td>
+          <%# 商材別の平均変数 %>
+          <% before_dmer_ave = before_dmer.to_f / @ojt_before.length %>
+          <% before_aupay_ave = before_aupay.to_f / @ojt_before.length %>
+          <% before_rakuten_pay_ave = before_rakuten_pay.to_f / @ojt_before.length %>
+          <% before_airpay_ave = before_airpay.to_f / @ojt_before.length %>
+
+          <td><%= before_total_visit = ((@ojt_before.sum {|hash| hash[:first_total_visit].to_f} + @ojt_before.sum {|hash| hash[:latter_total_visit].to_f}).to_f / @ojt_before.length).round(1) %></td>
+          <td><%= before_visit = ((@ojt_before.sum {|hash| hash[:first_visit].to_f} + @ojt_before.sum {|hash| hash[:latter_visit].to_f}).to_f / @ojt_before.length).round(1) %></td>
           <td ><%= number_to_percentage(before_visit.to_f / before_total_visit.to_f * 100,precision: 0) %></td>
-          <td><%= before_interview = ((@ojt_before.sum {|hash| hash[:first_interview].to_i} + @ojt_before.sum {|hash| hash[:latter_interview].to_i}).to_f / @ojt_before.length).round(1) %></td>
+          <td><%= before_interview = ((@ojt_before.sum {|hash| hash[:first_interview].to_f} + @ojt_before.sum {|hash| hash[:latter_interview].to_f}).to_f / @ojt_before.length).round(1) %></td>
           <td ><%= number_to_percentage(before_interview.to_f / before_visit.to_f * 100,precision: 0) %></td>
-          <td><%= before_full_talk = ((@ojt_before.sum {|hash| hash[:first_full_talk].to_i} + @ojt_before.sum {|hash| hash[:latter_full_talk].to_i}).to_f / @ojt_before.length).round(1) %></td>
+          <td><%= before_full_talk = ((@ojt_before.sum {|hash| hash[:first_full_talk].to_f} + @ojt_before.sum {|hash| hash[:latter_full_talk].to_f}).to_f / @ojt_before.length).round(1) %></td>
           <td ><%= number_to_percentage(before_full_talk.to_f / before_interview.to_f * 100,precision: 0) %></td>
-          <td><%= before_get = ((@ojt_before.sum {|hash| hash[:first_get].to_i} + @ojt_before.sum {|hash| hash[:latter_get].to_i}).to_f / @ojt_before.length).round(1) %></td>
+          <td><%= before_get = ((@ojt_before.sum {|hash| hash[:first_get].to_f} + @ojt_before.sum {|hash| hash[:latter_get].to_f}).to_f / @ojt_before.length).round(1) %></td>
           <td ><%= number_to_percentage(before_get.to_f / before_full_talk.to_f * 100,precision: 0) %></td>
-          <td><%= (before_dmer.to_f / @ojt_before.length).round(1) %></td>
-          <td><%= (before_aupay.to_f / @ojt_before.length).round(1) %></td>
-          <td><%= (before_rakuten_pay.to_f / @ojt_before.length).round(1) %></td>
-          <td><%= (before_airpay.to_f / @ojt_before.length).round(1) %></td>
+          <td><%= before_dmer_ave.round(1) %></td>
+          <td><%= before_aupay_ave.round(1) %></td>
+          <td><%= before_rakuten_pay_ave.round(1) %></td>
+          <td><%= before_airpay_ave.round(1) %></td>
         </tr>
         <% end %>
         <% if @ojt_after.present? %>
-        <tr>
+        <tr class="show-row">
           <th>帯同後</th>
           <td>
             <%= @ojt_after.first.date.month %>月
@@ -189,64 +213,124 @@
             <%= @ojt_after.first.date.month %>月
             <%= @ojt_after.last.date.day %>日
           </td>
-          <% after_total_visit = ((@ojt_after.sum {|hash| hash[:first_total_visit].to_i} + @ojt_after.sum {|hash| hash[:latter_total_visit].to_i}).to_f / @ojt_after.length).round(1) %>
-          <% after_visit = ((@ojt_after.sum {|hash| hash[:first_visit].to_i} + @ojt_after.sum {|hash| hash[:latter_visit].to_i}).to_f / @ojt_after.length).round(1) %>
-          <% after_interview = ((@ojt_after.sum {|hash| hash[:first_interview].to_i} + @ojt_after.sum {|hash| hash[:latter_interview].to_i}).to_f / @ojt_after.length).round(1) %>
-          <% after_full_talk = ((@ojt_after.sum {|hash| hash[:first_full_talk].to_i} + @ojt_after.sum {|hash| hash[:latter_full_talk].to_i}).to_f / @ojt_after.length).round(1) %>
-          <% after_get = ((@ojt_after.sum {|hash| hash[:first_get].to_i} + @ojt_after.sum {|hash| hash[:latter_get].to_i}).to_f / @ojt_after.length).round(1) %>
-          <% if after_total_visit.to_i >= before_total_visit.to_i %>
+          <% after_total_visit = ((@ojt_after.sum {|hash| hash[:first_total_visit].to_f} + @ojt_after.sum {|hash| hash[:latter_total_visit].to_f}).to_f / @ojt_after.length).round(1) %>
+          <% after_visit = ((@ojt_after.sum {|hash| hash[:first_visit].to_f} + @ojt_after.sum {|hash| hash[:latter_visit].to_f}).to_f / @ojt_after.length).round(1) %>
+          <% after_interview = ((@ojt_after.sum {|hash| hash[:first_interview].to_f} + @ojt_after.sum {|hash| hash[:latter_interview].to_f}).to_f / @ojt_after.length).round(1) %>
+          <% after_full_talk = ((@ojt_after.sum {|hash| hash[:first_full_talk].to_f} + @ojt_after.sum {|hash| hash[:latter_full_talk].to_f}).to_f / @ojt_after.length).round(1) %>
+          <% after_get = ((@ojt_after.sum {|hash| hash[:first_get].to_f} + @ojt_after.sum {|hash| hash[:latter_get].to_f}).to_f / @ojt_after.length).round(1) %>
+          <% if after_total_visit.to_f >= before_total_visit.to_f %>
           <td style="color: blue;"><%= after_total_visit %></td>
           <% else %>
           <td style="color: red;"><%= after_total_visit %></td>
           <% end %>
-          <% if after_visit.to_i >= before_visit.to_i %>
+          <% if after_visit.to_f >= before_visit.to_f %>
           <td style="color: blue;"><%= after_visit %></td>
           <% else %>
           <td style="color: red;"><%= after_visit %></td>
           <% end %>
           <td ><%= number_to_percentage(after_visit.to_f / after_total_visit.to_f * 100,precision: 0) %></td>
-          <% if after_interview.to_i >= before_interview.to_i  %>
+          <% if after_interview.to_f >= before_interview.to_f  %>
           <td style="color: blue;"><%= after_interview %></td>
           <% else %>
           <td style="color: red;"><%= after_interview %></td>
           <% end %>
           
           <td ><%= number_to_percentage(after_interview.to_f / after_visit.to_f * 100,precision: 0) %></td>
-          <% if after_full_talk.to_i >= before_full_talk.to_i  %>
+          <% if after_full_talk.to_f >= before_full_talk.to_f  %>
           <td style="color: blue;"><%= after_full_talk %></td>
           <% else %>
           <td style="color: red;"><%= after_full_talk %></td>
           <% end %>
           <td ><%= number_to_percentage(after_full_talk.to_f / after_interview.to_f * 100,precision: 0) %></td>
-          <% if after_get.to_i >= before_get.to_i %>
+          <% if after_get.to_f >= before_get.to_f %>
           <td style="color: blue;"><%= after_get %></td>
           <% else %>
           <td style="color: red;"><%= after_get %></td>
           <% end %>
           <td ><%= number_to_percentage(after_get.to_f / after_full_talk.to_f * 100,precision: 0) %></td>
-          <% if after_dmer.to_i >= before_dmer.to_i %>
-          <td style="color: blue;"><%= (after_dmer.to_f / @ojt_after.length).round(1) %></td>
+          <%# 商材別の平均変数 %>
+          <% after_dmer_ave = after_dmer.to_f / @ojt_after.length %>
+          <% after_aupay_ave = after_aupay.to_f / @ojt_after.length %>
+          <% after_rakuten_pay_ave = after_rakuten_pay.to_f / @ojt_after.length %>
+          <% after_airpay_ave = after_airpay.to_f / @ojt_after.length %>
+          <% if after_dmer_ave.to_f >= before_dmer_ave.to_f %>
+          <td style="color: blue;"><%= after_dmer_ave.round(1) %></td>
           <% else %>
-          <td style="color: red;"><%= (after_dmer.to_f / @ojt_after.length).round(1) %></td>
+          <td style="color: red;"><%= after_dmer_ave.round(1) %></td>
           <% end %>
-          <% if after_aupay.to_i >= before_aupay.to_i %>
-          <td style="color: blue;"><%= (after_aupay.to_f / @ojt_after.length).round(1) %></td>
+          <% if after_aupay_ave.to_f >= before_aupay_ave.to_f %>
+          <td style="color: blue;"><%= after_aupay_ave.round(1) %></td>
           <% else %>
-          <td style="color: red;"><%= (after_aupay.to_f / @ojt_after.length).round(1) %></td>
+          <td style="color: red;"><%= after_aupay_ave.round(1) %></td>
           <% end %>
-          <% if after_rakuten_pay.to_i >= before_rakuten_pay.to_i %>
-          <td style="color: blue;"><%= (after_rakuten_pay.to_f / @ojt_after.length).round(1) %></td>
+          <% if after_rakuten_pay_ave.to_f >= before_rakuten_pay_ave.to_f %>
+          <td style="color: blue;"><%= after_rakuten_pay_ave.round(1) %></td>
           <% else %>
-          <td style="color: red;"><%= (after_rakuten_pay.to_f / @ojt_after.length).round(1) %></td>
+          <td style="color: red;"><%= after_rakuten_pay_ave.round(1) %></td>
           <% end %>
-          <% if before_airpay.to_i >= after_airpay.to_i %>
-          <td style="color: blue;"><%= (after_airpay.to_f / @ojt_after.length).round(1) %></td>
+          <% if after_airpay_ave.to_f >= before_airpay_ave.to_f %>
+          <td style="color: blue;"><%= after_airpay_ave.round(1) %></td>
           <% else %>
-          <td style="color: red;"><%= (after_airpay.to_f / @ojt_after.length).round(1) %></td>
+          <td style="color: red;"><%= after_airpay_ave.round(1) %></td>
+          <% end %>
+        </tr>
+        <tr class="show-row">
+          <th>差異</th>
+          <td><%=  %></td>
+          <% if after_total_visit.to_f >= before_total_visit.to_f %>
+          <td style="color: blue;"><%= (after_total_visit.to_f - before_total_visit.to_f).round(1) %></td>
+          <% else %>
+          <td style="color: red;"><%= (after_total_visit.to_f - before_total_visit.to_f).round(1) %></td>
+          <% end %>
+          <% if after_visit.to_f >= before_visit.to_f %>
+          <td style="color: blue;"><%= (after_visit.to_f - before_visit.to_f).round(1) %></td>
+          <% else %>
+          <td style="color: red;"><%= (after_visit.to_f - before_visit.to_f).round(1) %></td>
+          <% end %>
+
+          <td><%=  %></td>
+          <% if after_interview.to_f >= before_interview.to_f %>
+          <td style="color: blue;"><%= (after_interview.to_f - before_interview.to_f).round(1) %></td>
+          <% else %>
+          <td style="color: red;"><%= (after_interview.to_f - before_interview.to_f).round(1) %></td>
+          <% end %>
+          <td><%=  %></td>
+          <% if after_full_talk.to_f >= before_full_talk.to_f %>
+          <td style="color: blue;"><%= (after_full_talk.to_f - before_full_talk.to_f).round(1) %></td>
+          <% else %>
+          <td style="color: red;"><%= (after_full_talk.to_f - before_full_talk.to_f).round(1) %></td>
+          <% end %>
+          <td><%=  %></td>
+          <% if after_get.to_f >= before_get.to_f %>
+          <td style="color: blue;"><%= (after_get.to_f - before_get.to_f).round(1) %></td>
+          <% else %>
+          <td style="color: red;"><%= (after_get.to_f - before_get.to_f).round(1) %></td>
+          <% end %>
+          <td><%=  %></td>
+          <% if after_dmer_ave.to_f >= before_dmer_ave.to_f %>
+          <td style="color: blue;"><%= (after_dmer_ave.to_f - before_dmer_ave.to_f).round(1) %></td>
+          <% else %>
+          <td style="color: red;"><%= (after_dmer_ave.to_f - before_dmer_ave.to_f).round(1) %></td>
+          <% end %>
+          <% if after_aupay_ave.to_f >= before_aupay_ave.to_f %>
+          <td style="color: blue;"><%= (after_aupay_ave.to_f - before_aupay_ave.to_f).round(1) %></td>
+          <% else %>
+          <td style="color: red;"><%= (after_aupay_ave.to_f - before_aupay_ave.to_f).round(1) %></td>
+          <% end %>
+          <% if after_rakuten_pay_ave.to_f >= before_rakuten_pay_ave.to_f %>
+          <td style="color: blue;"><%= (after_rakuten_pay_ave.to_f - before_rakuten_pay_ave.to_f).round(1) %></td>
+          <% else %>
+          <td style="color: red;"><%= (after_rakuten_pay_ave.to_f - before_rakuten_pay_ave.to_f).round(1) %></td>
+          <% end %>
+          <% if after_airpay_ave.to_f >= before_airpay_ave.to_f %>
+          <td style="color: blue;"><%= (after_airpay_ave.to_f - before_airpay_ave.to_f).round(1) %></td>
+          <% else %>
+          <td style="color: else;"><%= (after_airpay_ave.to_f - before_airpay_ave.to_f).round(1) %></td>
           <% end %>
         </tr>
         <% end %>
       </tbody>
     </table>
+    <p class="caution-text">※差異は帯同前と帯同後の差を表示されております。</p>
     </div>
   </div>

@@ -258,7 +258,8 @@ class ResultsController < ApplicationController
 
   def new 
     @users = User.where.not(position: "退職")
-    @result = Result.new 
+    @result = Result.new(user_id: params[:user_id],date: params[:date])
+    session[:previous_url] = request.referer
   end 
   
   def create 
@@ -272,7 +273,7 @@ class ResultsController < ApplicationController
       elsif @result.shift == "サミット"
         redirect_to  result_result_summits_new_path(@result.id)
       else  
-        redirect_to results_path
+        redirect_to session[:previous_url]
       end  
     else  
       render :new 

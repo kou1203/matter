@@ -2,51 +2,25 @@ class SummitClient < ApplicationRecord
   def self.csv_check(file)
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
-      user = User.find_by(name: row["獲得者"])
-      store_prop = StoreProp.find_by(phone_number_1: row["連絡先（-あり）"],name: row["屋号名"])
-      errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
-      errors << "#{index}行目屋号名が不正です" if store_prop.blank? && errors.length < 5
-        store_id = store_prop.id if store_prop.present? 
+      summit_unique = Summit.find_by(record_num: row["拠点情報_レコード番号"])
+      errors << "#{index}行目のレコード番号が存在しません。#{row["拠点情報_レコード番号"]}" if summit_unique.blank? && errors.length < 5
+      s_id = summit_unique.id if summit_unique.present? 
         summit = new(
-          processing_status: row["処理状況"],
-          record_num: row["レコード番号"],
-          control_num: row["管理番号"],
-          store_prop_id: store_id,
-          store_name: row["屋号名"],
-          date: row["獲得日"],
-          user_id: user.id,
-          power_company: row["電力会社"],
-          power_company_other: row["電力会社その他"],
-          power_area: row["電力エリア"],
-          plan: row["プラン名"],
-          contract_type: row["契約種別"],
-          contract_cap: row["契約容量（数量）"],
-          contract_cap_unit: row["契約容量（単位）"],
-          use_start: row["使用期間（開始）"],
-          use_end: row["使用期間（区切）"],
-          amount_use: row["使用量（kWh）"],
-          processing_date: row["事務処理日"],
-          arrival_date: row["サミット到着日"],
-          summit_start: row["利用開始日"],
-          customer_num: row["お客様番号（14桁）"],
-          supply_num: row["供給地点番号（22桁）"],
-          current_contractor: row["現契約名義（漢字）"],
-          current_contractor_kana: row["現契約名義（カタカナ）"],
-          new_contractor: row["新契約名義（漢字）"],
-          new_contractor_kana: row["新契約名義（カタカナ）"],
-          store_name_kana: row["屋号名（カタカナ）"],
-          destination_item: row["宛名"],
-          destination_name: row["宛名（漢字）"],
-          destination_name_kana: row["宛名（カタカナ）"],
-          billing_item: row["請求担当者①"],
-          billing_name: row["請求担当者①（漢字）"],
-          billing_name_kana: row["請求担当者①（カタカナ）"],
-          billing_name_mail: row["請求担当者①（メールアドレス）"],
-          crepiko_num: row["クレピコお客様番号"],
+          summit_id: s_id,
+          start_use: row["開始希望日"],
+          supply_num: row["供給地点特定番号"],
+          pay_menu: row["料金メニュー"],
           remarks: row["備考"],
-          fc_num: row["FC番号"],
-          mail_send: row["メール送付"],
-          status: row["現状ステータス"],
+          create_date: row["作成日時"],
+          update_date: row["更新日時"],
+          target_record_num: row["対象案件一覧_レコード番号"],
+          novice_menu: row["ノービスメニュー"],
+          rate: row["報酬率"],
+          cancel: row["SECIP(解約申込)-異動日"],
+          cancel_status: row["SECIP(解約申込)-申込ステータス"],
+          cancel_app_company: row["SECIP(解約申込)-小売事業者名称（SW）"],
+          error_contents: row["SECIP(開始申込)-エラー内容"],
+          crepiko_num: row["クレピコお客様番号"]
         )
         errors << "#{index}行目,屋号名「#{row["屋号名"]}」保存できませんでした" if summit.invalid? && errors.length < 5
     end
@@ -60,51 +34,24 @@ class SummitClient < ApplicationRecord
     update_cnt = 0
     nochange_cnt = 0
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
-    user = User.find_by(name: row["獲得者"])
-    store_prop = StoreProp.find_by(phone_number_1: row["連絡先（-あり）"],name: row["屋号名"])
-    store_id = store_prop.id if store_prop.present? 
-    summit = find_by(supply_num: row["供給地点番号（22桁）"])
+    summit = find_by(record_num: row["拠点情報_レコード番号"])
     if summit.present? 
       summit.assign_attributes(
-        processing_status: row["処理状況"],
-        record_num: row["レコード番号"],
-        control_num: row["管理番号"],
-        store_prop_id: store_id,
-        store_name: row["屋号名"],
-        date: row["獲得日"],
-        user_id: user.id,
-        power_company: row["電力会社"],
-        power_company_other: row["電力会社その他"],
-        power_area: row["電力エリア"],
-        plan: row["プラン名"],
-        contract_type: row["契約種別"],
-        contract_cap: row["契約容量（数量）"],
-        contract_cap_unit: row["契約容量（単位）"],
-        use_start: row["使用期間（開始）"],
-        use_end: row["使用期間（区切）"],
-        amount_use: row["使用量（kWh）"],
-        processing_date: row["事務処理日"],
-        arrival_date: row["サミット到着日"],
-        summit_start: row["利用開始日"],
-        customer_num: row["お客様番号（14桁）"],
-        supply_num: row["供給地点番号（22桁）"],
-        current_contractor: row["現契約名義（漢字）"],
-        current_contractor_kana: row["現契約名義（カタカナ）"],
-        new_contractor: row["新契約名義（漢字）"],
-        new_contractor_kana: row["新契約名義（カタカナ）"],
-        store_name_kana: row["屋号名（カタカナ）"],
-        destination_item: row["宛名"],
-        destination_name: row["宛名（漢字）"],
-        destination_name_kana: row["宛名（カタカナ）"],
-        billing_item: row["請求担当者①"],
-        billing_name: row["請求担当者①（漢字）"],
-        billing_name_kana: row["請求担当者①（カタカナ）"],
-        billing_name_mail: row["請求担当者①（メールアドレス）"],
-        crepiko_num: row["クレピコお客様番号"],
+        summit_id: s_id,
+        start_use: row["開始希望日"],
+        supply_num: row["供給地点特定番号"],
+        pay_menu: row["料金メニュー"],
         remarks: row["備考"],
-        fc_num: row["FC番号"],
-        mail_send: row["メール送付"],
-        status: row["現状ステータス"],
+        create_date: row["作成日時"],
+        update_date: row["更新日時"],
+        target_record_num: row["対象案件一覧_レコード番号"],
+        novice_menu: row["ノービスメニュー"],
+        rate: row["報酬率"],
+        cancel: row["SECIP(解約申込)-異動日"],
+        cancel_status: row["SECIP(解約申込)-申込ステータス"],
+        cancel_app_company: row["SECIP(解約申込)-小売事業者名称（SW）"],
+        error_contents: row["SECIP(開始申込)-エラー内容"],
+        crepiko_num: row["クレピコお客様番号"]
       )
       if summit.has_changes_to_save? 
         summit.save!
@@ -115,45 +62,21 @@ class SummitClient < ApplicationRecord
       end 
     else  
       summit = new(
-        processing_status: row["処理状況"],
-        record_num: row["レコード番号"],
-        control_num: row["管理番号"],
-        store_prop_id: store_id,
-        store_name: row["屋号名"],
-        date: row["獲得日"],
-        user_id: user.id,
-        power_company: row["電力会社"],
-        power_company_other: row["電力会社その他"],
-        power_area: row["電力エリア"],
-        plan: row["プラン名"],
-        contract_type: row["契約種別"],
-        contract_cap: row["契約容量（数量）"],
-        contract_cap_unit: row["契約容量（単位）"],
-        use_start: row["使用期間（開始）"],
-        use_end: row["使用期間（区切）"],
-        amount_use: row["使用量（kWh）"],
-        processing_date: row["事務処理日"],
-        arrival_date: row["サミット到着日"],
-        summit_start: row["利用開始日"],
-        customer_num: row["お客様番号（14桁）"],
-        supply_num: row["供給地点番号（22桁）"],
-        current_contractor: row["現契約名義（漢字）"],
-        current_contractor_kana: row["現契約名義（カタカナ）"],
-        new_contractor: row["新契約名義（漢字）"],
-        new_contractor_kana: row["新契約名義（カタカナ）"],
-        store_name_kana: row["屋号名（カタカナ）"],
-        destination_item: row["宛名"],
-        destination_name: row["宛名（漢字）"],
-        destination_name_kana: row["宛名（カタカナ）"],
-        billing_item: row["請求担当者①"],
-        billing_name: row["請求担当者①（漢字）"],
-        billing_name_kana: row["請求担当者①（カタカナ）"],
-        billing_name_mail: row["請求担当者①（メールアドレス）"],
-        crepiko_num: row["クレピコお客様番号"],
+        summit_id: summit_id,
+        start_use: row["開始希望日"],
+        supply_num: row["供給地点特定番号"],
+        pay_menu: row["料金メニュー"],
         remarks: row["備考"],
-        fc_num: row["FC番号"],
-        mail_send: row["メール送付"],
-        status: row["現状ステータス"],
+        create_date: row["作成日時"],
+        update_date: row["更新日時"],
+        target_record_num: row["対象案件一覧_レコード番号"],
+        novice_menu: row["ノービスメニュー"],
+        rate: row["報酬率"],
+        cancel: row["SECIP(解約申込)-異動日"],
+        cancel_status: row["SECIP(解約申込)-申込ステータス"],
+        cancel_app_company: row["SECIP(解約申込)-小売事業者名称（SW）"],
+        error_contents: row["SECIP(開始申込)-エラー内容"],
+        crepiko_num: row["クレピコお客様番号"]
         )
       summit.save!
       new_cnt += 1

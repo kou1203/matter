@@ -153,9 +153,13 @@
           <%# その日の予定シフト %>
           <% 
             shift_date_plan = 
-              Shift.where(user_id: result.user_id).where(start_time: result.date).first.shift rescue "未申請"
+              Shift.find_by(user_id: result.user_id,start_time: result.date).shift rescue "未申請"
           %>
+          <% if Shift.find_by(user_id: result.user_id,start_time: result.date).present? %>
           <td class="date-td"><span class="date-span"><%= shift_date_plan  %></span></td>
+          <% else %>
+          <td class="date-td"><span class="date-span"><%= link_to "未申請", new_shift_path(user_id: result.user.id, date: result.date),class: "link"  %></span></td>
+          <% end %>
           <% if shift_date_plan == result.shift %>
           <td class="date-td" style="color:blue;"><span class="date-span"><%= result.shift %></span></td>
           <% else %>
@@ -3081,7 +3085,6 @@
               </tr><%# /合計基準値ボディー %>
             </tbody>
           </table>
-
     </div><%# /週間基準値 %>
     <div style="display: flex;"><%# 獲得内訳・決済内訳 %>
       <div><%# 獲得内訳 %>

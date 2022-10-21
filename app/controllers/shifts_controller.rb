@@ -12,16 +12,21 @@ class ShiftsController < ApplicationController
       end
     @results = Result.all
   end 
+
+  def new 
+    @shift = Shift.new({user_id: params[:user_id],start_time: params[:date]})
+    session[:previous_url] = request.referer
+  end 
   
   
   def create 
     @shift = Shift.new(shift_params)
       if @shift.save
       flash[:notice] = "#{@shift.start_time.to_date}#{@shift.shift}のシフト申請をしました。"
-      redirect_to shifts_path
+      redirect_to session[:previous_url]
     else 
       flash[:notice] = "申請に失敗しました。"
-      redirect_to shifts_path
+      redirect_to session[:previous_url]
     end
   end 
   
@@ -30,12 +35,13 @@ class ShiftsController < ApplicationController
 
   def edit 
     @shift = Shift.find(params[:id])
+    session[:previous_url] = request.referer
   end 
   
   def update 
     @shift = Shift.find(params[:id])
     @shift.update(shift_params)
-    redirect_to shifts_path
+    redirect_to session[:previous_url]
   end 
 
   def update_month

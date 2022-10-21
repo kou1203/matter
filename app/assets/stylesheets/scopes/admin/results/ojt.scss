@@ -242,15 +242,33 @@
   td {
     border-bottom: 1px solid rgb(205, 203, 203);
     text-align: center;
+    vertical-align: middle;
     // box-shadow: 0px -3px 5px 1px #eee inset;
     border: 1px solid #bbb;
     padding:5px;
     font-size: 4px;
   }
 
+  .odd-td {
+    background-color: #ede5e5;
+  }
+  .even-td {
+    background-color: none;
+  }
   
-  tr:nth-child(odd) {
+  .show-row:nth-child(odd) {
     background: #ede5e5;
+  }
+
+  .ojt-row {
+    background-color: #ede5e5;
+  }
+
+  .before-row {
+    background-color: none;
+  }
+  .after-row {
+    background-color: rgb(230, 226, 226);
   }
 
   // 日々進捗
@@ -333,17 +351,29 @@
   .table-note {
     border-radius: 50px;
   }
-  
-  .search-th {
-    text-align: center;
-    color: white;
-    // background: linear-gradient(40deg, #c4c2c2 0%,  #add8e6 90%);
-    background: #c4c2c2;
-    box-shadow: 0px 1px 1px rgb(214, 219, 235) inset;
-    padding: 10px 0;
-    margin: 15px;
-    width: 100px;
+
+  .search {
+    margin: 20px;
   }
+
+  .search-title {
+    margin: 20px;
+    font-weight: bold;
+    color: rgb(70, 40, 40);
+  }
+
+
+  .search-input {
+    // border-radius: 5px;
+  }
+  .search-btn {
+    border: none;
+    background-color: #96C0CE;
+    color: #fff;
+    cursor: pointer;
+    
+  }
+
   
   
   .search-head {

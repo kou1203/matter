@@ -1031,7 +1031,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_093256) do
     t.string "pay_menu"
     t.text "remarks"
     t.date "create_date"
-    t.date "update"
+    t.date "update_date"
     t.integer "target_record_num"
     t.string "novice_menu"
     t.integer "rate"
