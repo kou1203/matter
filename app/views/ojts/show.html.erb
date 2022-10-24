@@ -43,11 +43,11 @@
           <th class="date-th"><span class="date-span"><%= days[ojt.date.wday] %></span></th>
           <td class="date-td"><span class="date-span"><%= ojt.ojt.name rescue "" %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.area %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.first_total_visit.to_f + ojt.latter_total_visit.to_f %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.first_visit + ojt.latter_visit rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.first_interview + ojt.latter_interview rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.first_full_talk + ojt.latter_full_talk rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.first_get + ojt.latter_get rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.first_total_visit.to_i + ojt.latter_total_visit.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.first_visit.to_i + ojt.latter_visit.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.first_interview.to_i + ojt.latter_interview.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.first_full_talk.to_i + ojt.latter_full_talk.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.first_get.to_i + ojt.latter_get.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.result_cash.dmer.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.result_cash.aupay.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.result_cash.rakuten_pay.to_i rescue 0 %></span></td>
@@ -73,11 +73,11 @@
           <th class="date-th"><span class="date-span"><%= days[@ojt_date.date.wday] %></span></th>
           <td class="date-td"><span class="date-span"><%= @ojt_date.ojt.name rescue "" %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.area %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.first_total_visit.to_f + @ojt_date.latter_total_visit.to_f rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.first_visit + @ojt_date.latter_visit rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.first_interview + @ojt_date.latter_interview rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.first_full_talk + @ojt_date.latter_full_talk rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.first_get + @ojt_date.latter_get rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.first_total_visit.to_i + @ojt_date.latter_total_visit.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.first_visit.to_i + @ojt_date.latter_visit.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.first_interview.to_i + @ojt_date.latter_interview.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.first_full_talk.to_i + @ojt_date.latter_full_talk.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.first_get.to_i + @ojt_date.latter_get.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.dmer.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.aupay.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.rakuten_pay.to_i rescue 0 %></span></td>
@@ -89,11 +89,11 @@
           <th class="date-th"><span class="date-span"><%= days[ojt.date.wday] %></span></th>
           <td class="date-td"><span class="date-span"><%= ojt.ojt.name rescue "" %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.area %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.first_total_visit + ojt.latter_total_visit rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.first_visit + ojt.latter_visit rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.first_interview + ojt.latter_interview rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.first_full_talk + ojt.latter_full_talk rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.first_get + ojt.latter_get rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.first_total_visit.to_i + ojt.latter_total_visit.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.first_visit.to_i + ojt.latter_visit.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.first_interview.to_i + ojt.latter_interview.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.first_full_talk.to_i + ojt.latter_full_talk.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.first_get.to_i + ojt.latter_get.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.result_cash.dmer.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.result_cash.aupay.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.result_cash.rakuten_pay.to_i rescue 0 %></span></td>
@@ -141,15 +141,15 @@
         
         <tr class="show-row">
           <th>現状</th>
-          <td ><%= @start_date.month %>月<%= @start_date.day %>日〜<%= @end_date.month %>月<%= @end_date.day %>日</td>
-          <td ><%= total_visit_now = (@results.sum("first_total_visit+latter_total_visit")  / @results.length).to_f.round(1) %></td>
-          <td ><%= visit_now = (@results.sum("first_visit+latter_visit")  / @results.length).to_f.round(1) %></td>
+          <td ><%= @results.first.date.month %>月<%= @results.first.date.day %>日〜<%= @results.last.date.month %>月<%= @results.last.date.day %>日</td>
+          <td ><%= total_visit_now = ((@results.sum(:first_total_visit) + @results.sum(:latter_total_visit)).to_f  / @results.length).round(1) %></td>
+          <td ><%= visit_now = ((@results.sum(:first_visit) + @results.sum(:latter_visit)).to_f  / @results.length).round(1) %></td>
           <td ><%= number_to_percentage(visit_now.to_f / total_visit_now.to_f * 100,precision: 0) %></td>
-          <td ><%= interview_now = (@results.sum("first_interview+latter_interview")  / @results.length).to_f.round(1) %></td>
+          <td ><%= interview_now = ((@results.sum(:first_interview) + @results.sum(:latter_interview)).to_f  / @results.length).to_f.round(1) %></td>
           <td ><%= number_to_percentage(interview_now.to_f / visit_now.to_f * 100,precision: 0) %></td>
-          <td ><%= full_talk_now = (@results.sum("first_full_talk+latter_full_talk")  / @results.length).to_f.round(1) %></td>
+          <td ><%= full_talk_now = ((@results.sum(:first_full_talk)+ @results.sum(:latter_full_talk)).to_f  / @results.length).to_f.round(1) %></td>
           <td ><%= number_to_percentage(full_talk_now.to_f / interview_now.to_f * 100,precision: 0) %></td>
-          <td ><%= get_now = (@results.sum("first_get+latter_get")  / @results.length).to_f.round(1) %></td>
+          <td ><%= get_now = ((@results.sum(:first_get) + @results.sum(:latter_get)).to_f  / @results.length).to_f.round(1) %></td>
           <td ><%= number_to_percentage(get_now.to_f / full_talk_now.to_f * 100,precision: 0) %></td>
           <td ><%= (@results.sum(:dmer).to_f / @results.length).round(1) %></td>
           <td ><%= (@results.sum(:aupay).to_f / @results.length).round(1) %></td>

@@ -151,11 +151,11 @@ class UsersController < ApplicationController
         .where(date: @minimum_date_cash..@maximum_date_cash)
         .where(shift: "キャッシュレス新規")
       #  合計変数 
-      @sum_total_visit_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum("first_total_visit + latter_total_visit") 
-      @sum_visit_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit") 
-      @sum_interview_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview") 
-      @sum_full_talk_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") 
-      @sum_get_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum("first_get + latter_get") 
+      @sum_total_visit_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_total_visit) + @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
+      @sum_visit_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_visit) + @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_visit) 
+      @sum_interview_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_interview) + @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+      @sum_full_talk_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_full_talk) + @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+      @sum_get_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_get) + @chubu_result.where(shift: "キャッシュレス新規").sum(:latter_get)
      #  前半変数 
       @sum_total_visit_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_total_visit) 
       @sum_visit_f_chubu = @chubu_result.where(shift: "キャッシュレス新規").sum(:first_visit) 
@@ -252,11 +252,11 @@ class UsersController < ApplicationController
         .where(date: @minimum_date_cash..@maximum_date_cash)
         .where(shift: "キャッシュレス新規")
       #  合計変数 
-      @sum_total_visit_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum("first_total_visit + latter_total_visit") 
-      @sum_visit_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit") 
-      @sum_interview_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview") 
-      @sum_full_talk_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") 
-      @sum_get_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum("first_get + latter_get") 
+      @sum_total_visit_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:first_total_visit) + @kansai_result.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
+      @sum_visit_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:first_visit) + @kansai_result.where(shift: "キャッシュレス新規").sum(:latter_visit) 
+      @sum_interview_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:first_interview) + @kansai_result.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+      @sum_full_talk_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:first_full_talk) + @kansai_result.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+      @sum_get_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:first_get) + @kansai_result.where(shift: "キャッシュレス新規").sum(:latter_get) 
      #  前半変数 
       @sum_total_visit_f_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:first_total_visit) 
       @sum_visit_f_kansai = @kansai_result.where(shift: "キャッシュレス新規").sum(:first_visit) 
@@ -354,11 +354,11 @@ class UsersController < ApplicationController
         .where(date: @minimum_date_cash..@maximum_date_cash)
         .where(shift: "キャッシュレス新規")
       #  合計変数 
-      @sum_total_visit_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum("first_total_visit + latter_total_visit")
-      @sum_visit_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit")
-      @sum_interview_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview") 
-      @sum_full_talk_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") 
-      @sum_get_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum("first_get + latter_get") 
+      @sum_total_visit_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:first_total_visit) + @kanto_result.where(shift: "キャッシュレス新規").sum(:latter_total_visit)
+      @sum_visit_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:first_visit) + @kanto_result.where(shift: "キャッシュレス新規").sum(:latter_visit)
+      @sum_interview_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:first_interview) + @kanto_result.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+      @sum_full_talk_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:first_full_talk) + @kanto_result.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+      @sum_get_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:first_get) + @kanto_result.where(shift: "キャッシュレス新規").sum(:latter_get) 
      #  前半変数 
       @sum_total_visit_f_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:first_total_visit) 
       @sum_visit_f_kanto = @kanto_result.where(shift: "キャッシュレス新規").sum(:first_visit) 
@@ -472,11 +472,11 @@ class UsersController < ApplicationController
       @digestion_ojt = @results_date.where(shift: "帯同").length
       @digestion_house_work = @results_date.where(shift: "内勤").length
       #  合計変数 
-       @sum_total_visit = @results.where(shift: "キャッシュレス新規").sum("first_total_visit + latter_total_visit") 
-       @sum_visit = @results.where(shift: "キャッシュレス新規").sum("first_visit + latter_visit") 
-       @sum_interview = @results.where(shift: "キャッシュレス新規").sum("first_interview + latter_interview") 
-       @sum_full_talk = @results.where(shift: "キャッシュレス新規").sum("first_full_talk + latter_full_talk") 
-       @sum_get = @results.where(shift: "キャッシュレス新規").sum("first_get + latter_get") 
+       @sum_total_visit = @results.where(shift: "キャッシュレス新規").sum(:first_total_visit) + @results.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
+       @sum_visit = @results.where(shift: "キャッシュレス新規").sum(:first_visit) + @results.where(shift: "キャッシュレス新規").sum(:latter_visit) 
+       @sum_interview = @results.where(shift: "キャッシュレス新規").sum(:first_interview) + @results.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+       @sum_full_talk = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk) + @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+       @sum_get = @results.where(shift: "キャッシュレス新規").sum(:first_get) + @results.where(shift: "キャッシュレス新規").sum(:latter_get)
       #  前半変数 
        @sum_total_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_total_visit) 
        @sum_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_visit) 

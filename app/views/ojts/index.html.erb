@@ -36,11 +36,11 @@
         </td>
         <td><%= ojts.length %>シフト</td>
         <td>
-          <%= (ojts.sum("first_total_visit + latter_total_visit") / ojts.length).round(1) %> - 
-          <%= (ojts.sum("first_visit + latter_visit") / ojts.length).round(1) %> - 
-          <%= (ojts.sum("first_interview + latter_interview") / ojts.length).round(1) %> - 
-          <%= (ojts.sum("first_full_talk + latter_full_talk") / ojts.length).round(1) %> - 
-          <%= (ojts.sum("first_get + latter_get") / ojts.length).round(1) %>
+          <%= ((ojts.sum(:first_total_visit) + ojts.sum(:latter_total_visit)).to_f / ojts.length).round(1) %> - 
+          <%= ((ojts.sum(:first_visit) + ojts.sum(:latter_visit)).to_f / ojts.length).round(1) %> - 
+          <%= ((ojts.sum(:first_interview) + ojts.sum(:latter_interview)).to_f / ojts.length).round(1) %> - 
+          <%= ((ojts.sum(:first_full_talk) + ojts.sum(:latter_full_talk)).to_f / ojts.length).round(1) %> - 
+          <%= ((ojts.sum(:first_get) + ojts.sum(:latter_get)).to_f / ojts.length).round(1) %>
         </td>
         <% dmer = 0 %>
         <% aupay = 0 %>
