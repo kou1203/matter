@@ -762,7 +762,7 @@
             <% sum_valuations_ave = sum_valuations_fin / shifts rescue 0 %>
           <% end %>
           <%# 合計獲得数 %>
-          <% sum_product = (dmer_uq.length + aupay_uq.length + rakuten_pay_uq.length + airpay_data.length).to_f %>
+          <% sum_product = (dmer_uq.length + rakuten_pay_uq.length + airpay_data.length).to_f %>
           <% base_sum_product += sum_product %>
           <% base_dmer += dmer_len %>
           <% base_dmer_ave = base_dmer / shift_digestion rescue 0 %>
@@ -808,7 +808,7 @@
       <% visit_ave = (sum_visit / new_shift_digestion).round(1) rescue 0 %>
       <% interview_ave = (sum_interview / new_shift_digestion).round(1) rescue 0 %>
       <% full_talk_ave = (sum_full_talk / new_shift_digestion).round(1) rescue 0 %>
-      <% sum_product_ave = (sum_product / 4 / new_shift_digestion).round(1) rescue 0 %>
+      <% sum_product_ave = (sum_product / 3 / new_shift_digestion).round(1) rescue 0 %>
       <td><%= total_visit_ave rescue 0 %></td>
       <td><%= visit_ave rescue 0 %></td>
       <td><%= number_to_percentage(visit_ave / total_visit_ave * 100,precision:0) rescue 0 %></td>
@@ -887,7 +887,7 @@
       <% interview_ave_base = ((@cash_result.sum(:first_interview) + @cash_result.sum(:latter_interview)).to_f / base_new_shift_digestion).round(1) rescue 0 %>
       <% full_talk_ave_base = ((@cash_result.sum(:first_full_talk) + @cash_result.sum(:latter_full_talk)).to_f / base_new_shift_digestion).round(1) rescue 0 %>
       
-      <% sum_product_ave_base = (base_sum_product / base_new_shift_digestion / 4).round(1) rescue 0 %>
+      <% sum_product_ave_base = (base_sum_product / base_new_shift_digestion / 3).round(1) rescue 0 %>
         <td><%= total_visit_ave_base rescue 0 %></td>
         <td><%= visit_ave_base rescue 0 %></td>
         <td><%= number_to_percentage(visit_ave_base / total_visit_ave_base * 100,precision:0) rescue 0 %></td>
