@@ -1,3 +1,4 @@
+<div data-scope-path="results/date_progress">
 <h2><%= link_to "<<",date_progress_results_path(month:@month_daily.ago(3.days)), class:"link" %>
     <%= @month_daily.month %>月
     <% if @month_daily.present? %>
@@ -10,10 +11,10 @@
   <table class="out-tb">
   <thead>
     <tr>
-    <th>ユーザー名</th>
-    <th>内容</th>
+    <th class="th-head">ユーザー名</th>
+    <th class="th-head">内容</th>
     <% @results_week.group(:date).order(:date).each do |r_date| %><%# 日付をループ %>
-    <th class="out-th"><%= r_date.date.month %>月<%= r_date.date.day %>日</th>
+    <th class="th-head"><%= r_date.date.month %>月<%= r_date.date.day %>日</th>
     <% end %>
       </tr>
     </thead>
@@ -28,6 +29,7 @@
       <% aupay_len = @aupays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
       <% paypay_len = @paypays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
       <% rakuten_pay_len = @rakuten_pays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
+      <% airpay_len = @airpays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
         <td>
         <% if 
           @results_week.where(user_id: r_user.user_id).exists?(date: r_date.date) && 
@@ -66,6 +68,14 @@
         <% end %>
         <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.rakuten_pay %>
         <% end %>
+        <% if @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.airpay.present?  %>
+        <% if airpay_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.airpay %>
+        <span style="color:red;">AirPay</span>
+        <% else %>
+        <span >AirPay</span>
+        <% end %>
+        <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.airpay %>
+        <% end %>
         </td>
       <% end %>
     <% end %>
@@ -78,6 +88,7 @@
       <% aupay_len = @aupays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
       <% paypay_len = @paypays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
       <% rakuten_pay_len = @rakuten_pays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
+      <% airpay_len = @airpays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
       <td style="opacity: 0.5;">
       <% if dmer_len != 0 %>
         dメル
@@ -95,9 +106,14 @@
         楽天ペイ
         <%=  rakuten_pay_len %>
       <% end %>
+      <% if airpay_len != 0 %>
+        AirPay
+        <%=  airpay_len %>
+      <% end %>
       </td>
       <% end %>
     </tr>
   <% end %>
   </tbody>
   </table>
+</div>

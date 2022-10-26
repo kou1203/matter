@@ -345,6 +345,7 @@ class ResultsController < ApplicationController
       .where.not(status: "自社NG")
     @paypays = Paypay.select("paypays.id,paypays.user_id")
     @rakuten_pays = RakutenPay.select("rakuten_pays.id,rakuten_pays.user_id")
+    @airpays = Airpay.select("airpays.id, airpays.user_id")
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
   end 
