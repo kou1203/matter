@@ -10,11 +10,16 @@
   h2 {
     margin-top: 20px;
     margin-left: 15px;
+    margin-bottom: 5px;
     padding: 0.5em;
     font-size: 15px;
     border-bottom:2px solid #c4c2c2;
     color: rgb(70, 40, 40);
     // width: 15vw;
+  }
+
+  .date-title {
+    margin-left: 0px;
   }
   
   // ヘッダー
@@ -92,6 +97,29 @@
     color: white;
     background: #c4c2c2;
   }
+
+/* スクロールバーの幅と高さを設定する */
+.scrollbar::-webkit-scrollbar {
+  width: 5%;
+  height: 10px;
+}
+/* スクロールバーの形を設定する */
+.scrollbar-thumb-rounded::-webkit-scrollbar-thumb {
+  border-radius: 0.25rem;
+}
+/* スクロールバーの色を設定する */
+.scrollbar-thumb-gray::-webkit-scrollbar-thumb {
+  --bg-opacity: 1;
+  background-color: gray;
+}
+
+.content {
+  position: relative;
+  // width: 200px;
+  // height: 200px;
+  transform: scale(1, -1); 
+  overflow-x: auto;  
+}
 
   .btn-form {
     margin:0 0 15px 15px;
@@ -258,6 +286,7 @@
     // top: 0;
     /* tbody内のセルより手前に表示する */
     // z-index: 1;
+    transform: scale(1, -1); 
   }
   
   .date-tr {
