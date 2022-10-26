@@ -60,6 +60,7 @@
         <% end %>
         <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.paypay %>
         <% end %>
+
         <% if @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.rakuten_pay.present?  %>
         <% if rakuten_pay_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.rakuten_pay %>
         <span style="color:red;">楽天ペイ</span>
@@ -68,6 +69,7 @@
         <% end %>
         <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.rakuten_pay %>
         <% end %>
+
         <% if @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.airpay.present?  %>
         <% if airpay_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.airpay %>
         <span style="color:red;">AirPay</span>
