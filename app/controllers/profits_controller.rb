@@ -392,7 +392,7 @@ class ProfitsController < ApplicationController
             # else  
               dmer_result3_fin_this_month = 
                 (dmer_price_3 * dmer_result3_fin_this_month_len) + 
-                ((dmer_result3.where(date: @start_date..@end_date).length.to_f * (0.52 + inc_per)).round() * dmer_price_3)
+                ((dmer_result3.where(date: @start_date..@end_date).length.to_f * (dmer_result3_per + inc_per)).round() * dmer_price_3)
             # end 
             dmer_result3_fin_prev_month = 
               (
@@ -411,24 +411,24 @@ class ProfitsController < ApplicationController
         aupay_slmter = 
           Aupay.where(settlementer_id: user.id)
         # 獲得数（26-10日）
-          aupay_uq_26_10 = aupay_user.where(date: @start_date..@end_date.beginning_of_month.since(9.days)) 
-          aupay_val_26_10 = 
-            aupay_uq_26_10.where(status: "審査通過")
-            .where(status_settlement: "完了")
-            .where(status_update_settlement: @start_done..@end_done)
-          aupay_def_26_10 = 
-            aupay_uq_26_10.where(status: "不合格")
-            .or(aupay_uq_26_10.where(status: "申込取消"))
-            .or(aupay_uq_26_10.where(status: "差し戻し"))
-            .or(aupay_uq_26_10.where(status: "報酬対象外"))
-            .or(aupay_uq_26_10.where(status: "重複対象外"))
-            .or(aupay_uq_26_10.where(status: "本店審査待ち"))
-            .or(aupay_uq_26_10.where(status: "自社NG"))
-            .or(aupay_uq_26_10.where(status: "自社不備"))
-            .or(aupay_uq_26_10.where(status: "解約"))
-            aupay_uq_26_10_len = aupay_uq_26_10.length
-            aupay_def_26_10_len = aupay_def_26_10.length
-            aupay_val_26_10_len = aupay_val_26_10.length
+          # aupay_uq_26_10 = aupay_user.where(date: @start_date..@end_date.beginning_of_month.since(9.days)) 
+          # aupay_val_26_10 = 
+          #   aupay_uq_26_10.where(status: "審査通過")
+          #   .where(status_settlement: "完了")
+          #   .where(status_update_settlement: @start_done..@end_done)
+          # aupay_def_26_10 = 
+          #   aupay_uq_26_10.where(status: "不合格")
+          #   .or(aupay_uq_26_10.where(status: "申込取消"))
+          #   .or(aupay_uq_26_10.where(status: "差し戻し"))
+          #   .or(aupay_uq_26_10.where(status: "報酬対象外"))
+          #   .or(aupay_uq_26_10.where(status: "重複対象外"))
+          #   .or(aupay_uq_26_10.where(status: "本店審査待ち"))
+          #   .or(aupay_uq_26_10.where(status: "自社NG"))
+          #   .or(aupay_uq_26_10.where(status: "自社不備"))
+          #   .or(aupay_uq_26_10.where(status: "解約"))
+          #   aupay_uq_26_10_len = aupay_uq_26_10.length
+          #   aupay_def_26_10_len = aupay_def_26_10.length
+          #   aupay_val_26_10_len = aupay_val_26_10.length
         # 過去の決済対象
           aupay_slmt_tgt_prev = 
             aupay_user.where("settlement_deadline >= ?", @start_date)
@@ -457,20 +457,20 @@ class ProfitsController < ApplicationController
         # 終着
           # 一次成果
             # 期間内
-            aupay_result1_fin_len = 
-              (
-                (aupay_uq_26_10_len - aupay_def_26_10_len - aupay_val_26_10_len).to_f / 
-                user_shift26_10 * user_result26_10 * aupay_slmt_per
-              ).round() rescue 0 
-              aupay_uq_26_10_judge_len = ((aupay_uq_26_10_len - aupay_def_26_10_len).to_f / user_shift26_10 * user_result26_10 * aupay_slmt_per) rescue 0
+            # aupay_result1_fin_len = 
+            #   (
+            #     (aupay_uq_26_10_len - aupay_def_26_10_len - aupay_val_26_10_len).to_f / 
+            #     user_shift26_10 * user_result26_10 * aupay_slmt_per
+            #   ).round() rescue 0 
+            #   aupay_uq_26_10_judge_len = ((aupay_uq_26_10_len - aupay_def_26_10_len).to_f / user_shift26_10 * user_result26_10 * aupay_slmt_per) rescue 0
             # if (aupay_uq_26_10_judge_len > aupay_result1.where(date: @start_date..@end_date).length) || (aupay_uq_26_10_judge_len == 0)
             #   aupay_result1_fin_this_month = 
             #     (aupay_price * aupay_result1_fin_len) + 
             #     aupay_result1.where(date: @start_date..@end_date).sum(:profit_settlement) rescue 0
             # else  
-              aupay_result1_fin_this_month = 
-                (aupay_price * aupay_result1_fin_len) + 
-                ((aupay_result1.where(date: @start_date..@end_date).length.to_f * (0.75 + inc_per)).round() * aupay_price) rescue 0
+              # aupay_result1_fin_this_month = 
+              #   (aupay_price * aupay_result1_fin_len) + 
+              #   ((aupay_result1.where(date: @start_date..@end_date).length.to_f * (0.75 + inc_per)).round() * aupay_price) rescue 0
             # end 
             # 過去月
             aupay_result1_fin_prev_month_len = 

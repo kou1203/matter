@@ -102,6 +102,8 @@ Rails.application.routes.draw do
   
   resources :ojts, only: :index do 
     collection { get :export }
+    collection { get :index_export }
+    collection { get :summary_export }
   end 
   resources :ojts, only: :show, param: :result_id
 
