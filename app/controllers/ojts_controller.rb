@@ -115,56 +115,38 @@ class OjtsController < ApplicationController
     @start_date = @month.prev_month.beginning_of_month.since(25.days)
     @end_date = @month.beginning_of_month.since(24.days)
     @date_period = (@start_date..@end_date)
-    @ojts = Result.where(date: @start_date..@end_date).where.not(ojt_id: nil).where.not(user: {base: "2次店"})
-    @users = @ojts.pluck(:user_id).uniq
+    @ojts = Result.includes(:user).where(date: @start_date..@end_date).where.not(ojt_id: nil).where.not(user: {base: "2次店"})
     @ojt_name = @ojts.pluck(:ojt_id).uniq
     @results = Result.includes(:user,:result_cash).where(date: @start_date..@end_date).where.not(user: {base: "2次店"})
     head :no_content
-    filename = "帯同資料用利益表"
+    filename = "帯同結果早見"
     
     columns_ja = [
-      "氏名", "帯同者","エリア","日付","訪問", "応答", "対面","フル","成約",
+      "帯同者", "帯同数","訪問", "応答", "対面","フル","成約",
       "dメル獲得数", "auPay獲得数", "楽天ペイ獲得数", "AirPay獲得数"
     ]
     columns = [
-      "name","ojt","area","date","total_visit","visit","interview","full_talk","get",
+      "name","ojt_len","total_visit","visit","interview","full_talk","get",
       "dmer","aupay","rakuten_pay","airpay"
     ]
     bom = "\uFEFF"
     csv = CSV.generate(bom) do |csv|
       csv << columns_ja
-      @users.each do |user|
-        if @results.where(ojt_id: user).length  == 0
-          @date_period.each do |date|
-            results = @results.where(user_id: user)
-              result = results.find_by(date: date)
-              if result.present? 
-                result_attributes = result.attributes
-                result_attributes["name"] = result.user.name
-                if result.ojt.present?
-                result_attributes["ojt"] = result.ojt.name
-                end 
-                result_attributes["area"] = result.area
-                result_attributes["date"] = result.date
-                result_attributes["total_visit"] = result.first_total_visit.to_i + result.latter_total_visit.to_i
-                result_attributes["visit"] = result.first_visit.to_i + result.latter_visit.to_i
-                result_attributes["interview"] = result.first_interview.to_i + result.latter_interview.to_i
-                result_attributes["full_talk"] = result.first_full_talk.to_i + result.latter_full_talk.to_i
-                result_attributes["get"] = result.first_get.to_i + result.latter_get.to_i
-                if result.result_cash.present?
-                  result_attributes["dmer"] = result.result_cash.dmer.to_i
-                  result_attributes["aupay"] = result.result_cash.aupay.to_i
-                  result_attributes["rakuten_pay"] = result.result_cash.rakuten_pay.to_i
-                  result_attributes["airpay"] = result.result_cash.airpay.to_i
-                end
-              else 
+      @ojt_name.each do |ojt|
+          ojts = @ojts.includes(:result_cash).where(ojt_id: ojt).where.not(user_id: ojt)
                 result_attributes = {}
-                result_attributes["name"] = User.find_by(id: user).name
-                result_attributes["date"] = date.strftime("%y-%m-%d")
-              end 
+                result_attributes["name"] = User.find_by(id: ojt).name
+                result_attributes["ojt_len"] = ojts.length
+                result_attributes["total_visit"] = ((ojts.sum(:first_total_visit) + ojts.sum(:latter_total_visit)).to_f / ojts.length).round(1)
+                result_attributes["visit"] = ((ojts.sum(:first_visit) + ojts.sum(:latter_visit)) / ojts.length).round(1)
+                result_attributes["interview"] = ((ojts.sum(:first_interview) + ojts.sum(:latter_interview)).to_f / ojts.length).round(1)
+                result_attributes["full_talk"] = ((ojts.sum(:first_full_talk) + ojts.sum(:latter_full_talk)).to_f / ojts.length).round(1)
+                result_attributes["get"] = ((ojts.sum(:first_get) + ojts.sum(:latter_get)).to_f / ojts.length).round(1)
+                  result_attributes["dmer"] = (ojts.sum(:dmer).to_f / ojts.length).round(1)
+                  result_attributes["aupay"] = (ojts.sum(:aupay).to_f / ojts.length).round(1)
+                  result_attributes["rakuten_pay"] = (ojts.sum(:rakuten_pay).to_f / ojts.length).round(1)
+                  result_attributes["airpay"] = (ojts.sum(:airpay).to_f / ojts.length).round(1)
             csv << result_attributes.values_at(*columns)
-          end 
-        end
       end
     end 
     create_csv(filename,csv)

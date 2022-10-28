@@ -15,12 +15,19 @@
       <%= link_to ">>",ojts_path(month:@month.next_month), class:"link" %>
       <% if current_user.position == "権限①" %>
       <span class="ojt-date-csv">
-        <%= link_to "元データ出力", export_ojts_path(format: :csv,month:@month), data: {confirm: "CSVを出力しますか？"}, class: "csv-link",id:'download-csv' %>
+        <%= link_to "元データCSV出力", export_ojts_path(format: :csv,month:@month), data: {confirm: "CSVを出力しますか？"}, class: "csv-link",id:'download-csv' %>
       </span>
       <% end %>
     </h2>
     <% if @ojts.present? %>
-    <h2>◆帯同結果早見</h2>
+    <h2>
+      ◆帯同結果早見
+      <% if current_user.position == "権限①" %>
+      <span class="ojt-date-csv">
+        <%= link_to "CSV出力", summary_export_ojts_path(format: :csv,month:@month), data: {confirm: "CSVを出力しますか？"}, class: "csv-link",id:'download-csv' %>
+      </span>
+      <% end %>
+    </h2>
     <div class="ojt-items">
     <table>
       <tr>
