@@ -55,8 +55,8 @@ class OjtsController < ApplicationController
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @start_date = @month.prev_month.beginning_of_month.since(25.days)
     @end_date = @month.beginning_of_month.since(24.days)
-    @date_period = (@start_date..@end_date)
-    @ojts = Result.where(date: @start_date..@end_date).where.not(ojt_id: nil).where.not(user: {base: "2次店"})
+    @date_period = (@start_date.to_date..@end_date.to_date)
+    @ojts = Result.includes(:user).where(date: @start_date..@end_date).where.not(ojt_id: nil).where.not(user: {base: "2次店"})
     @users = @ojts.pluck(:user_id).uniq
     @results = Result.includes(:user,:result_cash).where(date: @start_date..@end_date).where.not(user: {base: "2次店"})
     head :no_content
@@ -114,7 +114,7 @@ class OjtsController < ApplicationController
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @start_date = @month.prev_month.beginning_of_month.since(25.days)
     @end_date = @month.beginning_of_month.since(24.days)
-    @date_period = (@start_date..@end_date)
+    @date_period = (@start_date.to_date..@end_date.to_date)
     @ojts = Result.includes(:user).where(date: @start_date..@end_date).where.not(ojt_id: nil).where.not(user: {base: "2次店"})
     @ojt_name = @ojts.pluck(:ojt_id).uniq
     @results = Result.includes(:user,:result_cash).where(date: @start_date..@end_date).where.not(user: {base: "2次店"})
