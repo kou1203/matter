@@ -79,7 +79,7 @@
         <% end %>
         <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.airpay %>
         <% end %>
-        <%= link_to "編集",edit_result_cash_path(r_date.result_cash.id) %>
+        <%= link_to "編集",edit_result_cash_path(@results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.id) %>
         </td>
       <% end %>
     <% end %>
