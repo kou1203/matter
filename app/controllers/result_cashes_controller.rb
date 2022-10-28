@@ -21,13 +21,14 @@ class ResultCashesController < ApplicationController
 
   def edit 
     @result_cash = ResultCash.find(params[:id])
-    # session[:previous_url] = request.referer
+    session[:previous_url] = request.referer
   end 
   
   def update 
     @result_cash = ResultCash.find(params[:id])
     @result_cash.update(result_cash_params)
-    redirect_to user_path(@result_cash.result.user_id)
+    redirect_to session[:previous_url]
+    # user_path(@result_cash.result.user_id)
   end
 
 

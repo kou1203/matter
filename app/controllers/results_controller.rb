@@ -301,25 +301,7 @@ class ResultsController < ApplicationController
   def update 
     @result = Result.find(params[:id])
     @result.update(result_params)
-    if @result.shift == "キャッシュレス新規" && @result.result_cash.nil?
-      redirect_to  result_result_cashes_new_path(@result.id)
-    elsif @result.shift == "キャッシュレス決済" && @result.result_cash.nil?
-      redirect_to  result_result_cashes_new_path(@result.id)
-    elsif @result.shift == "キャッシュレス新規"
-      redirect_to edit_result_cash_path(@result.result_cash.id)
-    elsif @result.shift == "キャッシュレス決済"
-      redirect_to edit_result_cash_path(@result.result_cash.id)
-    elsif @result.shift == "楽天フェムト新規" && @result.result_cash.nil?
-      redirect_to edit_result_casa_path(@result.result_casa.id)
-    elsif @result.shift == "楽天フェムト新規"
-      redirect_to  result_result_cashes_new_path(@result.id)
-    elsif @result.shift == "サミット" && @result.result_cash.nil?
-      redirect_to edit_result_summit_path(@result.result_summit.id)
-    elsif @result.shift == "サミット"
-      redirect_to  result_result_summits_new_path(@result.id)
-    else  
       redirect_to session[:previous_url]
-    end
   end
 
   def destroy 

@@ -7,6 +7,7 @@
     獲得
     <% end %>
     <%= link_to ">>",date_progress_results_path(month:@month_daily.since(3.days)), class:"link" %>
+    <span><%= link_to "Top",results_path %></span>
 </h2>
   <table class="out-tb">
   <thead>
@@ -78,6 +79,7 @@
         <% end %>
         <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.airpay %>
         <% end %>
+        <%= link_to "編集",edit_result_cash_path(r_date.result_cash.id) %>
         </td>
       <% end %>
     <% end %>
