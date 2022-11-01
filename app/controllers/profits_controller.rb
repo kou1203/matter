@@ -592,8 +592,7 @@ class ProfitsController < ApplicationController
             (
               (@result_airpay_sum - @airpay_period_result_len).to_f / 
               person_hash["消化新規シフト"] * 
-              person_hash["予定新規シフト"] *
-              (airpay_result_per - @airpay_dec_per)
+              person_hash["予定新規シフト"] 
             ).round() rescue 0
           airpay_prev_len_fin = (@airpay_prev_val_len * (airpay_result_per_prev - @airpay_prev_dec_per)).round() rescue 0
           airpay_period_fin = (airpay_len_fin * airpay_price) rescue 0
@@ -607,7 +606,7 @@ class ProfitsController < ApplicationController
             airpay_result1_fin = airpay_result1_profit
           end 
           person_hash["AirPay獲得数"] = @result_airpay_sum
-          person_hash["AirPay終着獲得数"] = airpay_len_fin
+          person_hash["AirPay終着獲得数"] = airpay_len_fin + airpay_result1.length
           person_hash["AirPay一次成果終着"] = airpay_result1_fin
           person_hash["過去月審査中案件"] = @airpay_prev_val_len
           person_hash["期間内成果率"] = ((airpay_result_per - @airpay_dec_per) * 100).round(1) 
