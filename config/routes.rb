@@ -167,7 +167,11 @@ Rails.application.routes.draw do
     collection {post :import}
   end 
 
-  get 'profits', to: 'profits#index' do 
-    collection {get :export}
-  end 
+  resources :profits, only: [:index] do 
+    collection {get :sum_export}
+    collection {get :index_export}
+  end
+  # get 'profits', to: 'profits#index' do 
+  #   collection {get :sum_export}
+  # end 
 end

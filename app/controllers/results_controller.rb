@@ -331,6 +331,7 @@ class ResultsController < ApplicationController
     @airpays = 
       @airpays.where(status: "審査完了")
       .or(@airpays.where(status: "審査中"))
+      .or(@airpays.where(status: "審査OK"))
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
   end 
