@@ -100,7 +100,6 @@ class ProfitsController < ApplicationController
     dmer_result3_per = 0.52
     dmer_result_per_prev = 0.9
     dmer_result3_per_prev = 1
-    dmer_this_month_slmt_per = 0.6
     dmer_prev_month_slmt_per = 0.9
     aupay_slmt_per = 0.75
     aupay_slmt_per_prev = 0.71
@@ -405,11 +404,11 @@ class ProfitsController < ApplicationController
               # 期間内
               dmer_result2_fin_this_month_len =
               (
-                (dmer_len - dmer_val2_period_len).to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (dmer_prev_month_slmt_per - @dmer2_dec_per)
+                (dmer_len - dmer_val2_period_len).to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (dmer_result2_per - @dmer2_dec_per)
               ).round() rescue 0
               dmer_result2_fin_this_month = 
               (dmer_price_2 * dmer_result2_fin_this_month_len) + 
-              ((dmer_result2.where(date: @start_date..@end_date).length.to_f * (dmer_prev_month_slmt_per + @dmer2_dec_per)).round() * dmer_price_2)
+              ((dmer_result2.where(date: @start_date..@end_date).length.to_f * (dmer_result2_per + @dmer2_inc_per)).round() * dmer_price_2)
               
               dmer_result2_fin_prev_month = 
               (dmer_price_2 * dmer_result1_fin_prev_month_len) + 
