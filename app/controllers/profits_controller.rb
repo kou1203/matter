@@ -109,6 +109,7 @@ class ProfitsController < ApplicationController
     @closing_span = (@closing_date.to_date - @end_date.to_date).to_i
     @period_span = (Date.today.to_date - @end_date.to_date).to_i
     # 増加率
+    if Date.today.to_date >= @end_date.to_date
     # dメル
     @dmer1_inc_per = (1.0 - dmer_result1_per) / @closing_span * @period_span
     @dmer2_inc_per = (1.0 - dmer_result2_per) / @closing_span * @period_span
@@ -132,7 +133,31 @@ class ProfitsController < ApplicationController
     # AirPay
     @airpay_dec_per = airpay_result_per / @closing_span * @period_span
     @airpay_prev_dec_per = airpay_result_per_prev / @closing_span * @period_span
-
+  else  
+    # dメル
+    @dmer1_inc_per = 0
+    @dmer2_inc_per = 0
+    @dmer3_inc_per = 0
+    @dmer_prev_inc_per = 0
+    # auPay
+    @aupay_inc_per = 0
+    @aupay_prev_inc_per = 0
+    # AirPay
+    @airpay_inc_per = 0
+    @airpay_prev_inc_per = 0
+    # 減少率
+    # dメル
+    @dmer1_dec_per = 0
+    @dmer2_dec_per = 0
+    @dmer3_dec_per = 0
+    @dmer_prev_dec_per = 0
+    # auPay
+    @aupay_dec_per = 0
+    @aupay_prev_dec_per = 0
+    # AirPay
+    @airpay_dec_per = 0
+    @airpay_prev_dec_per = 0
+    end 
 
     # 成果率
     @results = 
@@ -371,7 +396,7 @@ class ProfitsController < ApplicationController
               dmer_result1_fin = dmer_result1_fin_this_month + dmer_result1_fin_prev_month
               # person_hash["dメル一次成果終着（期間内）"] = dmer_result1_fin_prev_month
               # person_hash["dメル一次成果終着（過去月）"] = dmer_result1_fin_this_month
-              if (person_hash["dメル現状売上1"] > dmer_result1_fin) || (Date.today > @end_done)
+              if (person_hash["dメル現状売上1"] > dmer_result1_fin) || (Date.today >= @closing_date)
                 person_hash["dメル一次成果終着"] = person_hash["dメル現状売上1"]
               else
               person_hash["dメル一次成果終着"] = dmer_result1_fin
@@ -380,20 +405,20 @@ class ProfitsController < ApplicationController
               # 期間内
               dmer_result2_fin_this_month_len =
               (
-                (dmer_len - dmer_val2_period_len).to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (dmer_prev_month_slmt_per - @dmer_prev_dec_per)
+                (dmer_len - dmer_val2_period_len).to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (dmer_prev_month_slmt_per - @dmer2_dec_per)
               ).round() rescue 0
               dmer_result2_fin_this_month = 
               (dmer_price_2 * dmer_result2_fin_this_month_len) + 
-              ((dmer_result2.where(date: @start_date..@end_date).length.to_f * (dmer_prev_month_slmt_per + @dmer_prev_inc_per)).round() * dmer_price_2)
+              ((dmer_result2.where(date: @start_date..@end_date).length.to_f * (dmer_prev_month_slmt_per + @dmer2_dec_per)).round() * dmer_price_2)
               
               dmer_result2_fin_prev_month = 
               (dmer_price_2 * dmer_result1_fin_prev_month_len) + 
-              ( (dmer_result2.where("? > date",@start_date).length.to_f * 0.9).round() * dmer_price_2 )
+              ( (dmer_result2.where("? > date",@start_date).length.to_f * @dmer_prev_inc_per).round() * dmer_price_2 )
               # 合計
               dmer_result2_fin = dmer_result2_fin_this_month + dmer_result2_fin_prev_month
               # person_hash["dメル二次成果終着（期間内）"] = dmer_result2_fin_this_month
               # person_hash["dメル二次成果終着（過去）"] = dmer_result2_fin_prev_month
-              if (person_hash["dメル現状売上2"] > dmer_result2_fin) || (Date.today > @end_done)
+              if (person_hash["dメル現状売上2"] > dmer_result2_fin) || (Date.today >= @closing_date)
                 person_hash["dメル二次成果終着"] = person_hash["dメル現状売上2"]
               else
                 person_hash["dメル二次成果終着"] = dmer_result2_fin
@@ -435,7 +460,7 @@ class ProfitsController < ApplicationController
               dmer_result3_fin = dmer_result3_fin_this_month + dmer_result3_fin_prev_month
               # person_hash["dメル三次成果終着（期間内）"] = dmer_result3_fin_this_month
               # person_hash["dメル三次成果終着（過去月）"] = dmer_result3_fin_prev_month
-              if (person_hash["dメル現状売上3"] > dmer_result3_fin) || (Date.today > @closing_date)
+              if (person_hash["dメル現状売上3"] > dmer_result3_fin) || (Date.today >= @closing_date)
                 person_hash["dメル三次成果終着"] = person_hash["dメル現状売上3"]
               else  
                 person_hash["dメル三次成果終着"] = dmer_result3_fin
@@ -573,7 +598,7 @@ class ProfitsController < ApplicationController
           airpay_result1_fin = 
             airpay_period_fin + airpay_prev_fin + 
             (airpay_result1.length * (airpay_result_per + airpay_inc_per) * airpay_price) rescue 0
-          if (airpay_result1_profit >= airpay_result1_fin) || (Date.today > @closing_date)
+          if (airpay_result1_profit >= airpay_result1_fin) || (Date.today >= @closing_date)
             airpay_result1_fin = airpay_result1_profit
           end 
           person_hash["AirPay獲得数"] = airpay_len_ave
