@@ -588,7 +588,8 @@ class ProfitsController < ApplicationController
             Airpay.where(user_id: user.id)
             .where(status: "審査中")
             .where("? > date",@start_date).length
-          airpay_len_fin = (@result_airpay_sum - @airpay_period_result_len) / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (airpay_result_per - @airpay_dec_per) rescue 0
+          airpay_len_fin = 
+            ((@result_airpay_sum - @airpay_period_result_len).to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (airpay_result_per - @airpay_dec_per)).round() rescue 0
           airpay_prev_len_fin = (@airpay_prev_val_len * (airpay_result_per_prev - @airpay_prev_dec_per)).round() rescue 0
           airpay_period_fin = (airpay_len_fin * airpay_price) rescue 0
           airpay_prev_fin = (airpay_prev_len_fin * airpay_price) rescue 0
