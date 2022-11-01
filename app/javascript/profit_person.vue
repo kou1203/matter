@@ -264,6 +264,7 @@
                   <th class="base-head-th" colspan="">獲得数</th>
                   <th class="base-head-th" colspan="">終着獲得数</th>
                   <th class="base-head-th" colspan="">成果になった件数</th>
+                  <th class="base-head-th" colspan="">過去月審査中案件</th>
                 </tr>
               </thead>
               <tbody>
@@ -275,6 +276,7 @@
                   <td class="base-td">{{ item["AirPay獲得数"] }}</td>
                   <td class="base-td">{{ item["AirPay終着獲得数"] }}</td>
                   <td class="base-td">{{ item["AirPay第一成果件数"] }}</td>
+                  <td class="base-td">{{ item["過去月審査中案件"] }}</td>
                 </tr>
               </tbody>
             </table>
