@@ -261,6 +261,7 @@
                   <th class="base-head-th">役職</th>
                   <th class="base-head-th" colspan="">現状実売</th>
                   <th class="base-head-th" colspan="">終着実売</th>
+                  <th class="base-head-th" colspan="">獲得数</th>
                   <th class="base-head-th" colspan="">成果になった件数</th>
                 </tr>
               </thead>
@@ -270,6 +271,7 @@
                   <td class="base-td">{{item["役職"]}}</td>
                   <td class="base-td">{{ item["AirPay現状売上"].toLocaleString() }}</td>
                   <td class="base-td">{{ item["AirPay一次成果終着"].toLocaleString() }}</td>
+                  <td class="base-td">{{ item["AirPay獲得数"] }}</td>
                   <td class="base-td">{{ item["AirPay第一成果件数"] }}</td>
                 </tr>
               </tbody>

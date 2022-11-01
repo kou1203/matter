@@ -583,24 +583,22 @@ class ProfitsController < ApplicationController
           person_hash["AirPay第一成果件数"] = airpay_result1.length
           person_hash["AirPay現状売上"] = airpay_result1_profit
           # 終着
-          @airpay_period_result_len = airpay_user.where(date: @start_date..@end_date).where(result_point: @start_done..@end_done).length
+          @airpay_period_result_len = airpay_user.where(date: @start_date..@end_date).where(status: "審査完了").length
           @airpay_prev_val_len = 
             Airpay.where(user_id: user.id)
             .where(status: "審査中")
-            .where("? > date",@start_date)
-            .where(result_point: @start_done..@end_done).length
-          
-          airpay_len_fin = (@result_airpay_sum - @airpay_period_result_len) / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (airpay_result_per - airpay_dec_per) rescue 0
-          airpay_prev_len_fin = (@airpay_prev_val_len * (airpay_result_per_prev - airpay_prev_dec_per)) rescue 0
+            .where("? > date",@start_date).length
+          airpay_len_fin = (@result_airpay_sum - @airpay_period_result_len) / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (airpay_result_per - @airpay_dec_per) rescue 0
+          airpay_prev_len_fin = (@airpay_prev_val_len * (airpay_result_per_prev - @airpay_prev_dec_per)).round() rescue 0
           airpay_period_fin = (airpay_len_fin * airpay_price) rescue 0
           airpay_prev_fin = (airpay_prev_len_fin * airpay_price) rescue 0
           airpay_result1_fin = 
             airpay_period_fin + airpay_prev_fin + 
-            (airpay_result1.length * (airpay_result_per + airpay_inc_per) * airpay_price) rescue 0
+            (airpay_result1.length * (airpay_result_per + @airpay_inc_per) * airpay_price) rescue 0
           if (airpay_result1_profit >= airpay_result1_fin) || (Date.today >= @closing_date)
             airpay_result1_fin = airpay_result1_profit
           end 
-          person_hash["AirPay獲得数"] = airpay_len_ave
+          person_hash["AirPay獲得数"] = @result_airpay_sum
           person_hash["AirPay一次成果終着"] = airpay_result1_fin
         # 出前館
           demaekan_user = Demaekan.where(user_id: user.id).where(status: "完了")
