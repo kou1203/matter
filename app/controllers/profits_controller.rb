@@ -600,6 +600,7 @@ class ProfitsController < ApplicationController
             airpay_result1_fin = airpay_result1_profit
           end 
           person_hash["AirPay獲得数"] = @result_airpay_sum
+          person_hash["AirPay終着獲得数"] = airpay_len_fin
           person_hash["AirPay一次成果終着"] = airpay_result1_fin
         # 出前館
           demaekan_user = Demaekan.where(user_id: user.id).where(status: "完了")
