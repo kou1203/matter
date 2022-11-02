@@ -4,19 +4,32 @@ Vue.use(TurbolinksAdapter)
 
 
 document.addEventListener('turbolinks:load', () => {
+  chubu_slmt = window.chubu_slmt
+  kansai_slmt = window.kansai_slmt
+  kanto_slmt = window.kanto_slmt
+  kyushu_slmt = window.kyushu_slmt
   const element = document.getElementById("slmt_per");
 
   if (element != null) {
     const vueapp = new Vue({
       el: element,
       data: {
-        btnText: "絞り込み内容表示",
-        isActive: false
+        isActive: false,
+        baseItems: chubu_slmt,
       },
       methods: {
-        active: function () {
-            this.isActive = !this.isActive;
-        }
+        baseSlct: function(e) {
+          this.val = e.target.value
+          if (this.val == 'chubu-slct') {
+            return this.baseItems = chubu_slmt
+          } else if (this.val == 'kansai-slct') {
+            return this.baseItems = kansai_slmt
+          } else if (this.val == 'kanto-slct') {
+            return this.baseItems = kanto_slmt
+          } else if (this.val == 'kyushu-slct') {
+            return this.baseItems = kyushu_slmt
+          }
+        },
       }
       // components: { App }
     });

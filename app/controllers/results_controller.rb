@@ -17,6 +17,7 @@ class ResultsController < ApplicationController
   # ユーザー情報
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
+    @users_cash = @users.where(base_sub: "キャッシュレス")
     # キャッシュレス
     @users_chubu = @users.where(base: "中部SS")
     @users_chubu_cash = @users_chubu.where(base_sub: "キャッシュレス")
@@ -126,12 +127,42 @@ class ResultsController < ApplicationController
         .where(status_update_settlement: @month_daily.beginning_of_month..@month_daily.end_of_month)
         .where(status: "審査通過")
       )
-      @dmer_slmt_prev_month_chubu = @dmer_slmt_prev_month.where(user: {base: "中部SS"})
-      @dmer_slmt_prev_month_kansai = @dmer_slmt_prev_month.where(user: {base: "関西SS"})
-      @dmer_slmt_prev_month_kanto = @dmer_slmt_prev_month.where(user: {base: "関東SS"})
-      @aupay_slmt_prev_month_chubu = @aupay_slmt_prev_month.where(user: {base: "中部SS"})
-      @aupay_slmt_prev_month_kansai = @aupay_slmt_prev_month.where(user: {base: "関西SS"})
-      @aupay_slmt_prev_month_kanto = @aupay_slmt_prev_month.where(user: {base: "関東SS"})
+    # 拠点が増えた場合↓を追加
+    @chubu_slmt = []
+    @kansai_slmt = []
+    @kanto_slmt = []
+    @kyushu_slmt = []
+    @users_cash.each do |user|
+      person_hash = {}
+      person_hash["拠点"] = user.base 
+      person_hash["氏名"] = user.name 
+      # dメル
+      person_hash["dメル当月決済対象"] = @dmer_slmt_this_month.where(user_id: user.id).length
+      person_hash["dメル当月決済完了数"] = @dmer_slmt_this_month.where(user_id: user.id).where(status_settlement: "完了").length
+      person_hash["dメル当月決済完了率"] = (person_hash["dメル当月決済完了数"].to_f / person_hash["dメル当月決済対象"].to_f * 100).round() rescue 0
+      person_hash["dメル過去月決済対象"] = @dmer_slmt_prev_month.where(user_id: user.id).length
+      person_hash["dメル過去月決済完了数"] = @dmer_slmt_prev_month.where(user_id: user.id).where(status_settlement: "完了").length
+      person_hash["dメル過去月決済完了率"] =( person_hash["dメル過去月決済完了数"].to_f / person_hash["dメル過去月決済対象"].to_f * 100).round() rescue 0
+      # au
+      person_hash["auPay当月決済対象"] = @aupay_slmt_this_month.where(user_id: user.id).length
+      person_hash["auPay当月決済完了数"] = @aupay_slmt_this_month.where(user_id: user.id).where(status_settlement: "完了").length
+      person_hash["auPay当月決済完了率"] = (person_hash["auPay当月決済完了数"].to_f / person_hash["auPay当月決済対象"].to_f * 100).round() rescue 0
+      person_hash["auPay過去月決済対象"] = @aupay_slmt_prev_month.where(user_id: user.id).length
+      person_hash["auPay過去月決済完了数"] = @aupay_slmt_prev_month.where(user_id: user.id).where(status_settlement: "完了").length
+      person_hash["auPay過去月決済完了率"] =( person_hash["auPay過去月決済完了数"].to_f / person_hash["auPay過去月決済対象"].to_f * 100).round() rescue 0
+      # 拠点が増えた場合↓を追加
+      if user.base == "中部SS"
+        @chubu_slmt << person_hash 
+      elsif user.base == "関西SS"
+        @kansai_slmt << person_hash 
+      elsif user.base == "関東SS"
+        @kanto_slmt << person_hash 
+      elsif user.base == "九州SS"
+        @kyushu_slmt << person_hash
+      else
+      end
+    end
+
   # 現状売上
     if @month_daily.day >= 26
       @result_monthly = 
