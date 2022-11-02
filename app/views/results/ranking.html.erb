@@ -292,10 +292,10 @@
             <%
               dmer_val3_period = dmer_val2_period.where.not(settlement_second: nil)
             %>
-            <% dmer_val1_period_len = dmer_val1_period.length %>
-            <% dmer_val2_period_len = dmer_val2_period.length %>
-            <% dmer_val3_period_len = dmer_val3_period.length %>
-            <% dmer_result1_fin_len = (dmer_len_ave * new_shift).round() %>
+            <% dmer_val1_period_len = dmer_val1_period.length rescue 0 %>
+            <% dmer_val2_period_len = dmer_val2_period.length rescue 0 %>
+            <% dmer_val3_period_len = dmer_val3_period.length rescue 0 %>
+            <% dmer_result1_fin_len = (dmer_len_ave * new_shift).round() rescue 0 %>
             <%# 期間内終着 %>
 
 
@@ -307,20 +307,20 @@
             %>
             <%
               dmer_result1_fin_this_month =
-                (dmer_price_1 * dmer_result1_fin_this_month_len) + 
-                dmer_result1.where(date: @minimum_date_cash..@maximum_date_cash).sum(:valuation_new)
+                (dmer_price_1 * dmer_result1_fin_this_month_len).to_i + 
+                dmer_result1.where(date: @minimum_date_cash..@maximum_date_cash).sum(:valuation_new) rescue 0
             %>
             <%# 過去月終着 %>
             <%
               dmer_result1_fin_prev_month_len =
                 (
                   (dmer_slmt_tgt_prev.length - dmer_slmt_prev_val_len).to_f * dmer_result1_per_prev
-                ).round()
+                ).round() rescue 0
             %>
             <%
               dmer_result1_fin_prev_month = 
                 (dmer_price_1 * dmer_result1_fin_prev_month_len) + 
-                dmer_result1.where("? > date",@minimum_date_cash).sum(:valuation_new)
+                dmer_result1.where("? > date",@minimum_date_cash).sum(:valuation_new) rescue 0
             %>
             <% dmer_result1_fin = dmer_result1_fin_this_month + dmer_result1_fin_prev_month %>
         <%# dメル（決済） %>
@@ -603,10 +603,10 @@
           <% end %>
           <% rakuten_pay_len_fin = (rakuten_pay_len_ave * new_shift).round() rescue 0 %>
           <%# 第一成果 %>
-          <% rakuten_pay_result1_fin_len = (rakuten_pay_len_ave * new_shift * 0.9).round() %>
+          <% rakuten_pay_result1_fin_len = (rakuten_pay_len_ave * new_shift * 0.9).round() rescue 0 %>
           <% rakuten_pay_result1_fin = rakuten_pay_price * rakuten_pay_result1_fin_len rescue 0 %>
           <% if (rakuten_pay_valuations > rakuten_pay_result1_fin) || (Date.today >= @month.end_of_month) %>
-          <% rakuten_pay_result1_fin = rakuten_pay_valuations %>
+          <% rakuten_pay_result1_fin = rakuten_pay_valuations rescue 0 %>
           <% end %>
         <%# AirPay %>
           <% airpay_user = Airpay.where(user_id: r.user_id) %>
@@ -615,7 +615,7 @@
           %>
           <% airpay_result = airpay_data.where(status: "審査完了").or(airpay_data.where(status: "審査中"))
           %>
-          <% airpay_len = airpay_result.length %>
+          <% airpay_len = airpay_result.length rescue 0 %>
           <% if airpay_len == 0 %>
           <% airpay_len_ave = 0 %>
           <% else %>

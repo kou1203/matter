@@ -27,6 +27,8 @@ class ResultsController < ApplicationController
     @users_kanto = @users.where(base: "関東SS")
     @users_kanto_cash = @users_kanto.where(base_sub: "キャッシュレス")
     @users_kanto_summit = @users_kanto.where(base_sub: "サミット")
+    @users_kyushu = @users.where(base: "九州SS")
+    @users_kyushu_cash = @users_kyushu.where(base_sub: "キャッシュレス")
     @users_partner = @users.where(base: "2次店")
     @user_partner_cash = @users_partner.where(base_sub: "キャッシュレス")
   # 終着データ
