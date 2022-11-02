@@ -652,7 +652,7 @@ class ProfitsController < ApplicationController
           person_hash["AirPay一次成果終着"] = airpay_result1_fin
           person_hash["過去月審査中案件"] = @airpay_prev_val_len
           person_hash["期間内成果率"] = ((airpay_result_per - @airpay_dec_per) * 100).round(1) 
-          person_hash["期間内計算式"] = "#{@result_airpay_sum - @airpay_period_result_len} / #{person_hash["消化新規シフト"]} * #{person_hash["予定新規シフト"]} * #{(airpay_result_per - @airpay_dec_per)}"
+          # person_hash["期間内計算式"] = "#{@result_airpay_sum - @airpay_period_result_len} / #{person_hash["消化新規シフト"]} * #{person_hash["予定新規シフト"]} * #{(airpay_result_per - @airpay_dec_per)}"
         # 出前館
           demaekan_user = Demaekan.where(user_id: user.id).where(status: "完了")
           # 一次成果
