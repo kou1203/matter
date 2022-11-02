@@ -42,7 +42,7 @@ class ProfitsController < ApplicationController
   def index_export 
     profit_pack # 必要な変数がまとまった関数
     head :no_content
-    filename = "#{@end_date.month}月合計実売"
+    filename = "#{@end_date.month}月個別実売資料"
     columns_ja = [
       "拠点","ユーザー", "キャッシュ1日Ave","新規売上","決済売上","現状売上",
       "新規終着","決済終着","終着売上","新規予定","決済予定","予定シフト",
@@ -50,13 +50,52 @@ class ProfitsController < ApplicationController
       "dメル","dメル決済","dメル2回目決済","auPay","auPay決済","PayPay",
       "楽天ペイ","AirPay","出前館", "auステッカー"
     ]
-    columns = ["base","profit_ave","new_profit","slmt_profit","sum_profit","new_fin",
+    columns = ["base","user","profit_ave","new_profit","slmt_profit","sum_profit","new_fin",
          "slmt_fin","sum_fin",
          "new_shift","slmt_shift","all_shift","new_result","slmt_result","all_result","stock_shift","ojt_shift",
-         "dmer","dmer_slmt","dmer_slmt2nd","aupay","aupay_slmt","paypay","rakuten_pay",
+         "dmer1","dmer2","dmer3","aupay","paypay","rakuten_pay",
          "airpay","demaekan","austicker"
     ]
     bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      @base_list.each do |base|
+        base.each do |user|
+          result_attributes = {}
+          result_attributes["base"] = user["拠点"]
+          result_attributes["user"] = user["名前"]
+          result_attributes["profit_ave"] = (user["合計終着"] / user["予定シフト"]).round() rescue 0
+          result_attributes["sum_profit"] = user["合計現状売上"]
+          result_attributes["new_profit"] = user["新規現状売上"]
+          result_attributes["slmt_profit"] = user["決済現状売上"]
+          result_attributes["new_fin"] = user["新規終着"]
+          result_attributes["slmt_fin"] = user["決済終着"]
+          result_attributes["sum_fin"] = user["合計終着"]
+          result_attributes["new_shift"] = user["予定新規シフト"]
+          result_attributes["slmt_shift"] = user["予定決済シフト"]
+          result_attributes["all_shift"] = user["予定シフト"]
+          result_attributes["new_result"] = user["消化新規シフト"]
+          result_attributes["slmt_result"] = user["消化決済シフト"]
+          result_attributes["all_result"] = user["消化シフト"]
+          result_attributes["stock_shift"] = user["予定シフト"] - user["消化シフト"]
+          result_attributes["ojt_shift"] = user["消化帯同シフト"]
+          result_attributes["dmer1"] = user["dメル第一成果件数"]
+          result_attributes["dmer2"] = user["dメル第二成果件数"]
+          result_attributes["dmer3"] = user["dメル第三成果件数"]
+          result_attributes["aupay"] = user["auPay第一成果件数"]
+          result_attributes["paypay"] = user["PayPay第一成果件数"]
+          result_attributes["rakuten_pay"] = user["楽天ペイ第一成果件数"]
+          result_attributes["airpay"] = user["AirPay第一成果件数"]
+          result_attributes["demaekan"] = user["出前館第一成果件数"]
+          result_attributes["austicker"] = user["auステッカー第一成果件数"]
+          csv << result_attributes.values_at(*columns)
+        end 
+      end 
+    end 
+    create_csv(filename,csv)
+
+
+    # @base_list
 
   end 
 
@@ -213,6 +252,7 @@ class ProfitsController < ApplicationController
           person_hash["予定新規シフト"] = user_shift.where(shift: "キャッシュレス新規").length
           person_hash["予定決済シフト"] = user_shift.where(shift: "キャッシュレス決済").length
           person_hash["予定決済シフト"] = user_shift.where(shift: "キャッシュレス決済").length
+          person_hash["予定帯同シフト"] = user_shift.where(shift: "帯同").length
           user_shift26_10 = user_shift.where(shift: "キャッシュレス新規").where(start_time: @start_date..@end_date.beginning_of_month.since(9.days)).length
         # 消化シフト
           user_result_shift = 
@@ -223,6 +263,7 @@ class ProfitsController < ApplicationController
           person_hash["消化シフト"] = user_result_shift.length 
           person_hash["消化新規シフト"] = user_result_shift.where(shift: "キャッシュレス新規").length 
           person_hash["消化決済シフト"] = user_result_shift.where(shift: "キャッシュレス決済").length 
+          person_hash["消化帯同シフト"] = user_result_shift.where(shift: "帯同").length 
           user_result26_10 = user_result_shift.where(shift: "キャッシュレス新規").where(date: @start_date..@end_date.beginning_of_month.since(9.days)).length
         # 基準値
           person_hash["訪問"] = user_result.sum("first_total_visit + latter_total_visit") / person_hash["消化新規シフト"] rescue 0
@@ -592,7 +633,8 @@ class ProfitsController < ApplicationController
             (
               (@result_airpay_sum - @airpay_period_result_len).to_f / 
               person_hash["消化新規シフト"] * 
-              person_hash["予定新規シフト"] 
+              person_hash["予定新規シフト"] *
+              (airpay_result_per - @airpay_dec_per)
             ).round() rescue 0
           airpay_prev_len_fin = (@airpay_prev_val_len * (airpay_result_per_prev - @airpay_prev_dec_per)).round() rescue 0
           airpay_period_fin = (airpay_len_fin * airpay_price) rescue 0
@@ -606,10 +648,11 @@ class ProfitsController < ApplicationController
             airpay_result1_fin = airpay_result1_profit
           end 
           person_hash["AirPay獲得数"] = @result_airpay_sum
-          person_hash["AirPay終着獲得数"] = airpay_len_fin + airpay_result1.length
+          person_hash["AirPay終着獲得数"] = airpay_len_fin + airpay_result1.length + airpay_prev_len_fin
           person_hash["AirPay一次成果終着"] = airpay_result1_fin
           person_hash["過去月審査中案件"] = @airpay_prev_val_len
           person_hash["期間内成果率"] = ((airpay_result_per - @airpay_dec_per) * 100).round(1) 
+          person_hash["期間内計算式"] = "#{@result_airpay_sum - @airpay_period_result_len} / #{person_hash["消化新規シフト"]} * #{person_hash["予定新規シフト"]} * #{(airpay_result_per - @airpay_dec_per)}"
         # 出前館
           demaekan_user = Demaekan.where(user_id: user.id).where(status: "完了")
           # 一次成果
