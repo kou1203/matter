@@ -1,6 +1,7 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <%# 成果売上の変数 %>
   <%# エアペイのボーナスインセン %>
+
   <% airpay_len = @airpay_result.length rescue 0 %>
   <% airpay_done_len = @airpay_done.length rescue 0 %>
           <% 
@@ -23,7 +24,11 @@
                 end 
               end
           %>
+  <% if @airpay_done.present? %>
   <% airpay_valuations = @airpay_done.sum(:valuation) + airpay_bonus %>
+  <% else %>
+  <% airpay_valuations = 0 %>
+  <% end %>
   <%# 合計成果売上 %>
 <div class="result-flex"><%# 大枠 %>
   <div class="right-frame"><%#日々進捗の区切り%>
@@ -178,6 +183,7 @@
           <td class="date-td race-border"><span class="date-span"><%= result.ojt.name rescue "" %></span></td>
           <td class="date-td race-border"><span class="date-span"><%= result.area %></span></td>
           <%# その日の売上 %>
+          <% if @results.where(shift: "キャッシュレス新規").present? %>
             <% 
             date_profit =
               @dmer_user.where(date: result.date).where(store_prop: {head_store: nil}).sum(:valuation_new) +
@@ -188,6 +194,9 @@
               @paypay_user.where(date: result.date).sum(:valuation) +
               @rakuten_pay_user.where(user_id: result.user_id).where(date: result.date).sum(:valuation) + @airpay_user.where(date: result.date).sum(:valuation)
             %>
+          <% else %>
+            <% date_profit = 0 %>
+          <% end %>
           <% if result.profit.present? %>
             <% if result.profit == date_profit.to_i %>
             <td class="date-td"><span class="date-span"><%= result.profit.to_s(:delimited) %></span></td>
@@ -383,14 +392,13 @@
       <%# 時間別基準値 %>
       <%# 獲得商材 %>
         <%# 決済 %>
-        <% dmax_mer_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "マックス即時（メル）").length %>
-        <% dpias_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "ピアズ").length %>
-        <% dmax_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "マックス通常").length %>
-        <% dmax_d_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "マックス即時（ｄ）").length %>
-        <% dusen_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "USEN").length %>
-        <% dmer_slmt2nd_date_len = @dmer_slmter.where(settlement_second: result.date).length %>
-        <% aupay_slmt_date_len = @aupay_user.where(status_settlement: "完了").where(picture: result.date).length %>
-
+        <% dmax_mer_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "マックス即時（メル）").length rescue 0 %>
+        <% dpias_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "ピアズ").length rescue 0 %>
+        <% dmax_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "マックス通常").length rescue 0 %>
+        <% dmax_d_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "マックス即時（ｄ）").length rescue 0 %>
+        <% dusen_slmt_date_len = @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).where(client: "USEN").length rescue 0 %>
+        <% dmer_slmt2nd_date_len = @dmer_slmter.where(settlement_second: result.date).length rescue 0 %>
+        <% aupay_slmt_date_len = @aupay_user.where(status_settlement: "完了").where(picture: result.date).length rescue 0 %>
         <td class="date-td race-border">
         <span class="date-span">
         <% if result.result_cash.present? %>
@@ -462,19 +470,19 @@
               dmer_valuations = 
                 @dmer_uq.sum(:valuation_new) -
                 @dmer_def.sum(:valuation_new) +
-                @dmer_db_data.sum(:valuation_new)
+                @dmer_db_data.sum(:valuation_new) rescue 0
             %>
             <% 
               dmer_len =  
                 @dmer_uq.length -
                 @dmer_def.length +
-                @dmer_db_data.length
+                @dmer_db_data.length rescue 0
             %>
           <%# 決済 %>
-            <% dmer_slmt_valuations = @dmer_slmt.sum(:valuation_settlement) %>
-            <% dmer_slmt_len = @dmer_slmt.length %>
-            <% dmer_slmt2nd_valuations = @dmer_slmt2nd.sum(:valuation_second_settlement) %>
-            <% dmer_slmt2nd_len =  @dmer_slmt2nd.length %>
+            <% dmer_slmt_valuations = @dmer_slmt.sum(:valuation_settlement) rescue 0 %>
+            <% dmer_slmt_len = @dmer_slmt.length rescue 0 %>
+            <% dmer_slmt2nd_valuations = @dmer_slmt2nd.sum(:valuation_second_settlement) rescue 0 %>
+            <% dmer_slmt2nd_len =  @dmer_slmt2nd.length rescue 0 %>
         <%# aupay %>
           <%# 新規 %>
             <%# 合計 %>
@@ -482,34 +490,34 @@
               aupay_valuations =
                 @aupay_uq.sum(:valuation_new) - 
                 @aupay_def.sum(:valuation_new) + 
-                @aupay_db.sum(:valuation_new)
+                @aupay_db.sum(:valuation_new) rescue 0
             %>
             <% 
               aupay_len = 
                 @aupay_uq.length - @aupay_def.length + 
-                @aupay_db.length
+                @aupay_db.length rescue 0
             %>
           <%# 決済 %>
-            <% aupay_slmt_valuations = @aupay_slmt.sum(:valuation_settlement) %>
-            <% aupay_slmt_len = @aupay_slmt.length %>
+            <% aupay_slmt_valuations = @aupay_slmt.sum(:valuation_settlement) rescue 0 %>
+            <% aupay_slmt_len = @aupay_slmt.length rescue 0 %>
         <%# PayPay %>
-          <% paypay_valuations = @paypay_data.sum(:valuation) %>
-          <% paypay_len = @paypay_data.length %>
-          <% paypay_r_len = @paypay_result.length %>
+          <% paypay_valuations = @paypay_data.sum(:valuation) rescue 0 %>
+          <% paypay_len = @paypay_data.length rescue 0 %>
+          <% paypay_r_len = @paypay_result.length rescue 0 %>
         <%# 少額短期保険 %>
-          <% st_insurance_user = StInsurance.where(user_id: @results_date.first.user_id) %>
-          <% st_insurance_data = st_insurance_user.where(date: @results_date.minimum(:date)..@results_date.maximum(:date)) %>
-          <% st_insurance_valuations = st_insurance_data.sum(:valuation) %>
-          <% st_insurance_len = st_insurance_data.length %>
+          <% st_insurance_user = StInsurance.where(user_id: @results_date.first.user_id) rescue 0 %>
+          <% st_insurance_data = st_insurance_user.where(date: @results_date.minimum(:date)..@results_date.maximum(:date)) rescue 0 %>
+          <% st_insurance_valuations = st_insurance_data.sum(:valuation) rescue 0 %>
+          <% st_insurance_len = st_insurance_data.length rescue 0 %>
         <%# 楽天ペイ %>
         <%# 合計売上 %>
-          <% sum_profit_new = dmer_valuations + aupay_valuations + paypay_valuations + st_insurance_valuations + @rakuten_pay_done_val + airpay_valuations + @aupay_pic_val %>
-          <% sum_profit_slmt = dmer_slmt_valuations + dmer_slmt2nd_valuations + aupay_slmt_valuations %>
-          <% sum_profit = sum_profit_new + sum_profit_slmt %>
+          <% sum_profit_new = dmer_valuations.to_i + aupay_valuations.to_i + paypay_valuations.to_i + st_insurance_valuations.to_i + @rakuten_pay_done_val.to_i + airpay_valuations.to_i + @aupay_pic_val.to_i %>
+          <% sum_profit_slmt = dmer_slmt_valuations.to_i + dmer_slmt2nd_valuations.to_i + aupay_slmt_valuations.to_i %>
+          <% sum_profit = sum_profit_new.to_i + sum_profit_slmt.to_i rescue 0 %>
         <%# 平均売上 %>
-          <% ave_profit_new = sum_profit_new.to_f / @digestion_new %>
-          <% ave_profit_slmt = sum_profit_slmt.to_f / @digestion_settlement %>
-          <% ave_profit = (sum_profit.to_f / @results_date.where.not(shift: "休み").where.not(shift: "帯同").where.not(shift: "内勤").where.not(shift: "欠勤").length) %>
+          <% ave_profit_new = sum_profit_new.to_f / @digestion_new rescue 0 %>
+          <% ave_profit_slmt = sum_profit_slmt.to_f / @digestion_settlement rescue 0 %>
+          <% ave_profit = (sum_profit.to_f / @results_date.where.not(shift: "休み").where.not(shift: "帯同").where.not(shift: "内勤").where.not(shift: "欠勤").length) rescue 0 %>
 
       <h2 class="shift-h2"><%= @minimum_date_cash.strftime('%Y-%m-%d') %>（<%= days[@minimum_date_cash.wday] %>）〜<%= @maximum_date_cash.strftime('%Y-%m-%d') %>（<%= days[@maximum_date_cash.wday] %>）</h2>
       <% end %>
@@ -579,7 +587,7 @@
           <td class="date-td"><%= @ojt_shift %></td>
           <td class="date-td"><%= @digestion_ojt %></td>
           <td class="date-td"><%= @ojt_shift - @digestion_ojt %></td>
-          <td class="date-td"><%= @ojt_val_sum.to_s(:delimited) %></td>
+          <td class="date-td"><%= @ojt_val_sum.to_s(:delimited) rescue 0 %></td>
           <td class="date-td"><%=  %></td>
           <td class="date-td"></td>
           <td class="date-td"></td>
@@ -2728,6 +2736,7 @@
   </div><%# left-frame %>
 </div><%# /大枠 %>
 <div class="result-flex"><%# foot-frame %>
+<% if @results.where(shift: "キャッシュレス新規").present? %>
   <div><%# 週間基準値と獲得内訳の括り %>
     <div><%# 週間基準値 %>
         <h2>週間基準値（新規のみ）</h2>
@@ -3078,7 +3087,7 @@
                 <% end %>
               </tr><%# /合計基準値ボディー %>
             </tbody>
-          </table>
+        </table>
     </div><%# /週間基準値 %>
     <div style="display: flex;"><%# 獲得内訳・決済内訳 %>
       <div><%# 獲得内訳 %>
@@ -3397,4 +3406,6 @@
       </table>
     </div><%# /成果件数 %>
   </div><%# /生産性と成果件数の括り %>
+<% else %>
+<% end %>
 </div>
