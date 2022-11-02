@@ -39,6 +39,7 @@ class UsersController < ApplicationController
     @shift = @shifts.where(user_id: @user.id)
     # 月間増減
     @month = params[:month] ? Date.parse(params[:month]) : Time.zone.today
+    @month = @month.to_date
     # dメル
     @dmers = Dmer.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id).where(store_prop: {head_store: nil})
     @dmers_inc = 
@@ -820,7 +821,7 @@ class UsersController < ApplicationController
         @airpay_result_len_ave = (@airpay_result.length.to_f / @digestion_new).round(1) rescue 0
       end
       
-      @before_airpay_bonus_date = Date.new(2022,10,1)
+      @before_airpay_bonus_date = Date.new(2022,10,1).to_date
       @airpay_done = 
         @airpay_user.where(status: "審査完了")
         .where(result_point: @month.beginning_of_month..@month.end_of_month)
