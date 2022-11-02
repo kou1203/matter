@@ -86,6 +86,18 @@
                   </tr>
                   </tr>
                   <tr class="s-tr">
+                    <td class="s-td">商流</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :client_eq,
+                        options_from_collection_for_select(Airpay.select(:client)
+                        .distinct,:client, :client),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
                     <td class="s-td">審査ステータス</td>
                     <td class="s-td">
                       <%= 
@@ -139,7 +151,7 @@
     <table class="out-tb">
       <thead>
       <tr>
-        <th class="out-th">ID</th>
+        <th class="out-th">商流</th>
         <th class="out-th">区分</th>
         <th class="out-th">店舗名</th>
         <th class="out-th">店舗番号</th>
@@ -158,7 +170,7 @@
       <tbody>
       <% @airpays_data.each do |airpay| %>
       <tr >
-        <td class="out-td"><%= airpay.id %></td>
+        <td class="out-td"><%= airpay.client %></td>
         <td class="out-td"><%= airpay.store_prop.race %></td>
         <td class="out-td"><%= airpay.customer_num %></td>
         <td class="out-td"><%= airpay.store_prop.name %></td>

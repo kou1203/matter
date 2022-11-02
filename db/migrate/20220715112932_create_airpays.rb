@@ -4,6 +4,7 @@ class CreateAirpays < ActiveRecord::Migration[6.1]
       t.references :store_prop          , foreign_key: true
       t.references :user                , foreign_key: true
       t.date :date                      ,null: false 
+      t.string :client
       t.string :terminal_status
       t.string :status                  ,null: false 
       t.string :customer_num            ,null: false 

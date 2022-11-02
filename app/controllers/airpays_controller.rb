@@ -34,6 +34,7 @@ class AirpaysController < ApplicationController
       :store_prop_id                    ,
       :user_id                    ,
        :date                   ,  
+       :client                 , 
        :status                 , 
        :terminal_status        ,
        :customer_num           , 

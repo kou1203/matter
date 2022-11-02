@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(version: 2022_10_14_093256) do
     t.bigint "store_prop_id"
     t.bigint "user_id"
     t.date "date", null: false
+    t.string "client"
     t.string "terminal_status"
     t.string "status", null: false
     t.string "customer_num", null: false
