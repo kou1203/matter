@@ -2,7 +2,7 @@
 <%# 成果売上の変数 %>
   <%# エアペイのボーナスインセン %>
   <% airpay_len = @airpay_result.length rescue 0 %>
-  <% airpay_done_len = @airpay_done.length.to_i %>
+  <% airpay_done_len = @airpay_done.length rescue 0 %>
           <% 
             airpay_bonus =
               if @month.beginning_of_month >= @before_airpay_bonus_date
