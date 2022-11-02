@@ -70,15 +70,15 @@
           <% airpay += ojt_data.result_cash.airpay.to_f %>
         <% end %>
         <% end %>
-        <td><%= (dmer / ojts.length).round(1) %></td>
-        <td><%= (aupay / ojts.length).round(1) %></td>
-        <td><%= (rakuten_pay / ojts.length).round(1) %></td>
-        <td><%= (airpay / ojts.length).round(1) %></td>
+        <td><%= (dmer / ojts.length).round(1) rescue 0 %></td>
+        <td><%= (aupay / ojts.length).round(1) rescue 0 %></td>
+        <td><%= (rakuten_pay / ojts.length).round(1) rescue 0 %></td>
+        <td><%= (airpay / ojts.length).round(1) rescue 0 %></td>
         <td><%= 
           (((dmer * dmer_price) +
           (aupay * aupay_price) +
           (rakuten_pay * rakuten_pay_price) +
-          (airpay * airpay_price)) / ojts.length).round().to_s(:delimited)
+          (airpay * airpay_price)) / ojts.length).round().to_s(:delimited) rescue 0
         %></td>
       </tr>
       <% end %>
