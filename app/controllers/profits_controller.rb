@@ -126,6 +126,37 @@ class ProfitsController < ApplicationController
     @rakuten_start = @month.prev_month.beginning_of_month.since(15.days).to_date # 16日
     @rakuten_end = @month.beginning_of_month.since(14.days).to_date # 15日
     @rakuten_change_date = @month.beginning_of_month.since(17.days).to_date # 18日
+    @results = 
+      Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @start_date..@end_date)
+      .or(
+        Result.includes(:user).where(shift: "キャッシュレス決済").where(date: @start_date..@end_date)
+      )
+    @shifts = 
+      Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
+      .or(
+        Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス決済")
+      )
+    # 楽天ペイ全体
+    rakuten_all_len = RakutenPay.where(status: "OK").where(result_point: @rakuten_start..@rakuten_end).length
+    rakuten_all_len_prev = RakutenPay.where(status: "OK").where(result_point: @rakuten_start.prev_month..@rakuten_end.prev_month).length
+    # 全体AirPay
+    airpay_all = 
+    Airpay.where(date: @start_date..@end_date).where(status: "審査完了")
+    .or(
+      Airpay.where(date: @start_date..@end_date).where(status: "審査中")
+    )
+    airpay_all_len = airpay_all.length
+    airpay_all_len_ave = (airpay_all_len.to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
+    airpay_all_len_fin = (airpay_all_len_ave * @shifts.where(shift: "キャッシュレス新規").length * 0.85).round() rescue 0
+  # AirPay単価
+  airpay_price = 
+    if airpay_all_len_fin >= 300
+      15000
+    elsif airpay_all_len_fin >= 75
+      11000
+    else  
+      3000
+    end 
     # 単価
       # 単価
       dmer_price_1 = 9000
@@ -198,16 +229,7 @@ class ProfitsController < ApplicationController
     end 
 
     # 成果率
-    @results = 
-      Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @start_date..@end_date)
-      .or(
-        Result.includes(:user).where(shift: "キャッシュレス決済").where(date: @start_date..@end_date)
-      )
-    @shifts = 
-      Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
-      .or(
-        Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス決済")
-      )
+
 
 
 
@@ -586,7 +608,7 @@ class ProfitsController < ApplicationController
           rakuten_pay_result1_prev = rakuten_pay_user.where(result_point: @rakuten_start.prev_month..@rakuten_end.prev_month)
           rakuten_pay_result1_prev_len = rakuten_pay_result1_prev.length
           rakuten_pay_result1_prev_profit = rakuten_pay_result1_prev.sum(:profit)
-          if (rakuten_pay_result1_len >= rakuten_pay_result1_prev_len) || (Date.today >= @rakuten_change_date)
+          if (rakuten_all_len >= rakuten_all_len_prev) || (Date.today >= @rakuten_change_date)
             rakuten_pay_result1_prev_profit = rakuten_pay_result1_profit
           end 
           person_hash["楽天ペイ一次成果終着"] = rakuten_pay_result1_prev_profit
@@ -594,28 +616,11 @@ class ProfitsController < ApplicationController
           results = Result.includes(:user,:result_cash).where(date: @start_date..@end_date)
           result_user = results.where(user_id: user.id)
           @result_airpay_sum = result_user.sum(:airpay)
-          airpay_all = 
-            Airpay.where(date: @start_date..@end_date).where(status: "審査完了")
-            .or(
-              Airpay.where(date: @start_date..@end_date).where(status: "審査中")
-            )
-            airpay_all_len = airpay_all.length
-            airpay_all_len_ave = (airpay_all_len.to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
-            airpay_all_len_fin = (airpay_all_len_ave * @shifts.where(shift: "キャッシュレス新規").length * 0.85).round() rescue 0
+
             airpay_user = airpay_all.where(user_id: user.id)
             airpay_user_len = airpay_user.length
             airpay_len_ave = (airpay_user_len.to_f / person_hash["消化新規シフト"]).round(1) rescue 0
-            
 
-          # 単価
-          airpay_price = 
-            if airpay_all_len_fin >= 300
-              15000
-            elsif airpay_all_len_fin >= 75
-              11000
-            else  
-              3000
-            end 
           # 一次成果
           airpay_user = 
             Airpay.where(user_id: user.id).where(status: "審査完了")
