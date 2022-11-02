@@ -2,21 +2,22 @@
 <%# 成果売上の変数 %>
   <%# エアペイのボーナスインセン %>
   <% airpay_len = @airpay_result.length rescue 0 %>
+  <% airpay_done_len = @airpay_done.length.to_i %>
           <% 
             airpay_bonus =
               if @month.beginning_of_month >= @before_airpay_bonus_date
-                if @airpay_done.length >= 20
-                  @airpay_done.length * 5000
-                elsif @airpay_done.length >= 10
-                  @airpay_done.length * 3000
+                if airpay_done_len >= 20
+                  airpay_done_len * 5000
+                elsif airpay_done_len >= 10
+                  airpay_done_len * 3000
                 else
                   0
                 end 
               else  
-                if @airpay_done.length >= 20
-                  @airpay_done.length * 3000
-                elsif @airpay_done.length >= 10
-                  @airpay_done.length * 2000
+                if airpay_done_len >= 20
+                  airpay_done_len * 3000
+                elsif airpay_done_len >= 10
+                  airpay_done_len * 2000
                 else
                   0
                 end 
@@ -3373,7 +3374,7 @@
           <td class="total-td"><%= @aupay_slmt_done.length %></td>
           <td class="total-td"><%= @paypay_done.length %></td>
           <td class="total-td"><%= @rakuten_pay_done_len %></td>
-          <td class="total-td"><%= @airpay_done.length %></td>
+          <td class="total-td"><%= airpay_done_len %></td>
           <td class="total-td"><%= @demaekan.length %></td>
           <td class="total-td"><%=  %></td>
           <td class="total-td"><%=  %></td>
