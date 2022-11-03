@@ -1634,7 +1634,7 @@
           <tr>
             <th class="total-th">フル数</th>
             <td class="total-td"><%= @results_out.sum(:out_full_talk_07) %></td>
-            <td class="total-td"><%= (@results_out.sum(:out_full_talk_07) / @digestion_new).to_f.round(1) rescue 0 %></td>
+            <td class="total-td"><%= (@results_out.sum(:out_full_talk_07).to_f / @digestion_new).to_f.round(1) rescue 0 %></td>
             <td class="total-td"><%= number_to_percentage(@results_out.sum(:out_full_talk_07).to_f / @results_out.sum(:out_interview_07).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
