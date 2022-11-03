@@ -1,9 +1,9 @@
 import TurbolinksAdapter from 'vue-turbolinks';
 import Vue from 'vue/dist/vue.esm'
-Vue.use(TurbolinksAdapter)
+// Vue.use(TurbolinksAdapter)
 
 
-document.addEventListener('turbolinks:load', () => {
+document.addEventListener('DOMContentLoaded', () => {
   chubu_slmt = window.chubu_slmt
   kansai_slmt = window.kansai_slmt
   kanto_slmt = window.kanto_slmt
