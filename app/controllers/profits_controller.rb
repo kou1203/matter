@@ -47,8 +47,8 @@ class ProfitsController < ApplicationController
       "拠点","ユーザー", "キャッシュ1日Ave","新規売上","決済売上","現状売上",
       "新規終着","決済終着","終着売上","新規予定","決済予定","予定シフト",
       "新規消化","決済消化","消化シフト","残シフト","帯同シフト",
-      "dメル","dメル決済","dメル2回目決済","auPay決済","PayPay",
-      "楽天ペイ","AirPay","出前館", "auステッカー",
+      "dメル成果1","dメル成果2","dメル成果3","auPay成果","PayPay成果",
+      "楽天ペイ成果","AirPay成果","出前館成果", "auステッカー成果",
       "訪問","応答","応答率","対面","対面率","フルトーク","フルトーク率","成約","成約率",
       "０１：どうゆうこと？：対面","０１：どうゆうこと？：フル","０１：どうゆうこと？：フル率","０１：どうゆうこと？：成約","０１：どうゆうこと？：成約率",
       "０２：君は誰？協会？：対面","０２：君は誰？協会？：フル","０２：君は誰？協会？：フル率","０２：君は誰？協会？：成約","０２：君は誰？協会？：成約率",
@@ -90,7 +90,7 @@ class ProfitsController < ApplicationController
          "cafe_visit","cafe_get","other_food_visit","other_food_get","car_visit","car_get",
          "other_retail_visit","other_retail_get","hair_salon_visit","hair_salon_get",
          "manipulative_visit","manipulative_get","other_service_visit","other_service_get",
-         "dmer1","dmer2","dmer3","aupay1","aupay2","paypay","rakuten_pay","airpay"
+         "dmer1_get","dmer2_get","dmer3_get","aupay1_get","aupay2_get","paypay_get","rakuten_pay_get","airpay_get"
     ]
 
     bom = "\uFEFF"
@@ -213,14 +213,14 @@ class ProfitsController < ApplicationController
           result_attributes["manipulative_get"] = user["整体・鍼灸獲得数"]
           result_attributes["other_service_visit"] = user["その他サービス訪問数"]
           result_attributes["other_service_get"] = user["その他サービス獲得数"]
-          result_attributes["dmer1"] = user["dメル獲得数"]
-          result_attributes["dmer2"] = user["dメルアクセプタンス数"]
-          result_attributes["dmer3"] = user["dメル2回目決済数"]
-          result_attributes["aupay1"] = user["auPay獲得数"]
-          result_attributes["aupay2"] = user["auPayアクセプタンス数"]
-          result_attributes["paypay"] = user["PayPay獲得数"]
-          result_attributes["rakuten_pay"] = user["楽天ペイ獲得数"]
-          result_attributes["airpay"] = user["AirPay獲得数"]
+          result_attributes["dmer1_get"] = user["dメル獲得数"]
+          result_attributes["dmer2_get"] = user["dメルアクセプタンス数"]
+          result_attributes["dmer3_get"] = user["dメル2回目決済数"]
+          result_attributes["aupay1_get"] = user["auPay獲得数"]
+          result_attributes["aupay2_get"] = user["auPayアクセプタンス数"]
+          result_attributes["paypay_get"] = user["PayPay獲得数"]
+          result_attributes["rakuten_pay_get"] = user["楽天ペイ獲得数"]
+          result_attributes["airpay_get"] = user["AirPay獲得数"]
           csv << result_attributes.values_at(*columns)
         end 
       end 
