@@ -76,7 +76,7 @@ class ProfitsController < ApplicationController
          "full_talk","full_talk_per","get","get_per",
          "out_interview_01","out_full_talk_01","out_full_talk_01_per","out_get_01","out_get_01_per",
          "out_interview_02","out_full_talk_02","out_full_talk_02_per","out_get_02","out_get_02_per",
-         "out_interview_03","out_full_talk_03","out_full_talk_03_per","out_get_02","out_get_03_per",
+         "out_interview_03","out_full_talk_03","out_full_talk_03_per","out_get_03","out_get_03_per",
          "out_interview_04","out_full_talk_04","out_full_talk_04_per","out_get_04","out_get_04_per",
          "out_interview_05","out_full_talk_05","out_full_talk_05_per","out_get_05","out_get_05_per",
          "out_interview_06","out_full_talk_06","out_full_talk_06_per","out_get_06","out_get_06_per",
