@@ -67,7 +67,7 @@
     <% if @cash_result.empty? %>
     <p class="caution-text">指定した日付には終着がありません。</p>
     <% else %>
-    <h1>
+    <h2 class="base-title">◆
       <% if @cash_result.group(:base).length > 1 %>
       全拠点
       <% else %>
@@ -76,73 +76,73 @@
       （稼働訪問員<%= @cash_result.group(:user_id).length %>人）
       表示範囲：
       <%= @cash_result.minimum(:date) %>（<%= days[@cash_result.minimum(:date).wday] %>）〜<%= @cash_result.maximum(:date) %>（<%= days[@cash_result.maximum(:date).wday] %>）
-    </h1> 
+    </h2> 
   <table class="base-tb">
     <tr>
       <th class="sticky" rowspan="2" >名前</th>
-      <th class="search-th" rowspan="2" >担当商材</th>
-      <th class="search-th" rowspan="2" >新規予定シフト</th>
-      <th class="search-th" rowspan="2" >決済予定シフト</th>
-      <th class="search-th" rowspan="2" >新規消化シフト</th>
-      <th class="search-th" rowspan="2" >決済消化シフト</th>
-      <th class="search-th" colspan="3" >評価売上</th>
-      <th class="search-th" colspan="9">基準値</th>
-      <th class="search-th" colspan="8">商材別獲得数</th>
-      <th class="search-th" colspan="6">商材別成果数</th>
-      <th class="search-th" colspan="5">商材別平均獲得数</th>
-      <th class="search-th" colspan="5">商材別獲得終着見込</th>
-      <th class="search-th" colspan="5">AirPay導入基準値</th>
-      <th class="search-th" colspan="3">出前館基準値</th>
+      <th class="base-th" rowspan="2" >担当商材</th>
+      <th class="base-th" rowspan="2" >新規予定シフト</th>
+      <th class="base-th" rowspan="2" >決済予定シフト</th>
+      <th class="base-th" rowspan="2" >新規消化シフト</th>
+      <th class="base-th" rowspan="2" >決済消化シフト</th>
+      <th class="base-th" colspan="3" >評価売上</th>
+      <th class="base-th" colspan="9">基準値</th>
+      <th class="base-th" colspan="8">商材別獲得数</th>
+      <th class="base-th" colspan="6">商材別成果数</th>
+      <th class="base-th" colspan="5">商材別平均獲得数</th>
+      <th class="base-th" colspan="5">商材別獲得終着見込</th>
+      <th class="base-th" colspan="5">AirPay導入基準値</th>
+      <th class="base-th" colspan="3">出前館基準値</th>
 
     </tr>
     <tr>
-      <th class="search-th" >平均売上</th>
-      <th class="search-th" >現状成果売上</th>
-      <th class="search-th" >終着売上</th>
-      <th class="search-th">訪問</th>
-      <th class="search-th">応答</th>
-      <th class="search-th">応答率</th>
-      <th class="search-th">対面</th>
-      <th class="search-th">対面率</th>
-      <th class="search-th">フル</th>
-      <th class="search-th">フル率</th>
-      <th class="search-th">成約</th>
-      <th class="search-th">獲得成約率</th>
+      <th class="base-th" >平均売上</th>
+      <th class="base-th" >現状成果売上</th>
+      <th class="base-th" >終着売上</th>
+      <th class="base-th">訪問</th>
+      <th class="base-th">応答</th>
+      <th class="base-th">応答率</th>
+      <th class="base-th">対面</th>
+      <th class="base-th">対面率</th>
+      <th class="base-th">フル</th>
+      <th class="base-th">フル率</th>
+      <th class="base-th">成約</th>
+      <th class="base-th">獲得成約率</th>
       <%# 獲得商材 %>
-      <th class="search-th">dメル（新規）</th>
-      <th class="search-th">dメル（決済+写真）</th>
-      <th class="search-th">dメル（2回目決済）</th>
-      <th class="search-th">aupay（新規）</th>
-      <th class="search-th">aupay（決済）</th>
-      <th class="search-th">PayPay</th>
-      <th class="search-th">楽天ペイ</th>
-      <th class="search-th">AirPay</th>
+      <th class="base-th">dメル（新規）</th>
+      <th class="base-th">dメル（決済+写真）</th>
+      <th class="base-th">dメル（2回目決済）</th>
+      <th class="base-th">aupay（新規）</th>
+      <th class="base-th">aupay（決済）</th>
+      <th class="base-th">PayPay</th>
+      <th class="base-th">楽天ペイ</th>
+      <th class="base-th">AirPay</th>
       <%# 成果件数 %>
-      <th class="search-th">dメル（審査通過）</th>
-      <th class="search-th">dメル（決済+写真）</th>
-      <th class="search-th">dメル（2回目決済）</th>
-      <th class="search-th">auPay（決済+写真）</th>
-      <th class="search-th">PayPay（審査通過）</th>
-      <th class="search-th">AirPay（審査通過）</th>
+      <th class="base-th">dメル（審査通過）</th>
+      <th class="base-th">dメル（決済+写真）</th>
+      <th class="base-th">dメル（2回目決済）</th>
+      <th class="base-th">auPay（決済+写真）</th>
+      <th class="base-th">PayPay（審査通過）</th>
+      <th class="base-th">AirPay（審査通過）</th>
       <%# 平均・終着 %>
       <% 2.times do %>
-      <th class="search-th">dメル（新規）</th>
-      <th class="search-th">aupay（新規）</th>
-      <th class="search-th">PayPay</th>
-      <th class="search-th">楽天ペイ</th>
-      <th class="search-th">AirPay</th>
+      <th class="base-th">dメル（新規）</th>
+      <th class="base-th">aupay（新規）</th>
+      <th class="base-th">PayPay</th>
+      <th class="base-th">楽天ペイ</th>
+      <th class="base-th">AirPay</th>
       <% end %>
       <%# 商材別基準値 %>
       <%# AirPay %>
-      <th class="search-th">訪問</th>
-      <th class="search-th">対面</th>
-      <th class="search-th">対面率</th>
-      <th class="search-th">成約</th>
-      <th class="search-th">成約率</th>
+      <th class="base-th">訪問</th>
+      <th class="base-th">対面</th>
+      <th class="base-th">対面率</th>
+      <th class="base-th">成約</th>
+      <th class="base-th">成約率</th>
       <%# 出前館 %>
-      <th class="search-th">フル</th>
-      <th class="search-th">成約</th>
-      <th class="search-th">成約率</th>
+      <th class="base-th">フル</th>
+      <th class="base-th">成約</th>
+      <th class="base-th">成約率</th>
 
     </tr>
     <tr></tr>
@@ -356,16 +356,20 @@
             <% dmer_val1_period_len = dmer_val1_period.length %>
             <% dmer_val2_period_len = dmer_val2_period.length %>
             <% dmer_val3_period_len = dmer_val3_period.length %>
-            <% dmer_result1_fin_len = (dmer_len_ave * new_shift).round() %>
             <%# 期間内終着 %>
 
-
+            <% if new_shift_digestion * new_shift == 0 %>
+            <% dmer_result1_fin_this_month_len = 0 %>
+            <% dmer_result1_fin_len = 0 %>
+            <% else %>
+            <% dmer_result1_fin_len = (dmer_len_ave * new_shift).round() %>
             <%
               dmer_result1_fin_this_month_len = 
                 (
                   (dmer_len - dmer_val1_period_len).to_f / new_shift_digestion * new_shift * dmer_result1_per
                 ).round() rescue 0 
             %>
+            <% end %>
             <%
               dmer_result1_fin_this_month =
                 (dmer_price_1 * dmer_result1_fin_this_month_len) + 
@@ -452,18 +456,22 @@
           <% dmer_slmt2nd_len = dmer_slmt2nd.length %>
           <%# 第三成果終着 %>
             <%# 期間内 %>
+            <% if new_shift_digestion * new_shift == 0 %>
+            <% dmer_result3_fin_this_month_len = 0 %>
+            <% else %>
             <% 
               dmer_result3_fin_this_month_len = 
                 (
                   (dmer_len - dmer_val3_period_len).to_f / 
                   new_shift_digestion * new_shift * dmer_result3_per
-                ).round() rescue 0 
+                ) rescue 0 
             %>
+            <% end %>
             <% 
               dmer_result3_fin_this_month = 
               (dmer_price_3 * dmer_result3_fin_this_month_len) + 
               dmer_result3.where(date: @cash_result.minimum(:date)..@cash_result.maximum(:date))
-              .sum(:valuation_second_settlement)  
+              .sum(:valuation_second_settlement).to_f.round() rescue 0
             %>
             <%# 過去月 %>
             <% 
@@ -664,7 +672,7 @@
           <% end %>
           <% rakuten_pay_len_fin = (rakuten_pay_len_ave * new_shift).round() rescue 0 %>
           <%# 第一成果 %>
-          <% rakuten_pay_result1_fin_len = (rakuten_pay_len_ave * new_shift * 0.9).round() %>
+          <% rakuten_pay_result1_fin_len = (rakuten_pay_len_ave * new_shift * 0.9).round() rescue 0 %>
           <% rakuten_pay_result1_fin = rakuten_pay_price * rakuten_pay_result1_fin_len rescue 0 %>
           <% if (rakuten_pay_valuations > rakuten_pay_result1_fin) || (Date.today >= @month.next_month.end_of_month) %>
           <% rakuten_pay_result1_fin = rakuten_pay_valuations %>
@@ -743,22 +751,22 @@
           <% 
             sum_valuations_fin = 
               (
-                dmer_result1_fin +
-                dmer_result2_fin  +
-                dmer_result3_fin +
-                aupay_result1_fin +
-                paypay_result1_fin +
-                rakuten_pay_result1_fin +
-                airpay_result1_fin +
-                aupay_pic_val +
-                demaekan_valuations
-              ).to_i
+                dmer_result1_fin.to_i +
+                dmer_result2_fin.to_i  +
+                dmer_result3_fin.to_i +
+                aupay_result1_fin.to_i +
+                paypay_result1_fin.to_i +
+                rakuten_pay_result1_fin.to_i +
+                airpay_result1_fin.to_i +
+                aupay_pic_val.to_i +
+                demaekan_valuations.to_i
+              )
            %>
            <% if (sum_valuations > sum_valuations_fin) || Date.today > @month.next_month.end_of_month %>
             <% sum_valuations_fin = sum_valuations rescue 0 %>
            <% end %>
            <% sum_valuations_ave = 0 %>
-          <% if  (sum_valuations_fin.present?) && (shifts != 0) %>
+          <% if (sum_valuations_fin.present?) || (shifts != 0) %>
             <% sum_valuations_ave = sum_valuations_fin / shifts rescue 0 %>
           <% end %>
           <%# 合計獲得数 %>
@@ -793,59 +801,59 @@
           <% base_paypay_result1_len += paypay_result1_len %>
           <% base_airpay_result1_len += airpay_result1_len %>
     <tr>
-      <th class="sticky"><%= r.user.name %></th>
-      <td ><%= r.user.base_sub  %></td>
-      <td ><%= new_shift %></td>
-      <td ><%= slmt_shift %></td>
-      <td ><%= new_shift_digestion %></td>
-      <td ><%= slmt_shift_digestion %></td>
+      <th class="base-td sticky"><%= r.user.name %></th>
+      <td class="base-td"><%= r.user.base_sub  %></td>
+      <td class="base-td"><%= new_shift %></td>
+      <td class="base-td"><%= slmt_shift %></td>
+      <td class="base-td"><%= new_shift_digestion %></td>
+      <td class="base-td"><%= slmt_shift_digestion %></td>
       <%# 評価売上 %>
-      <td ><%= sum_valuations_ave.to_s(:delimited) rescue 0 %></td>
-      <td ><%= sum_valuations.to_s(:delimited) rescue 0 %></td>
-      <td ><%= sum_valuations_fin.to_s(:delimited) rescue 0 %></td>
+      <td class="base-td"><%= sum_valuations_ave.to_s(:delimited) rescue 0 %></td>
+      <td class="base-td"><%= sum_valuations.to_s(:delimited) rescue 0 %></td>
+      <td class="base-td"><%= sum_valuations_fin.to_s(:delimited) rescue 0 %></td>
       <%# 基準値 %>
       <% total_visit_ave = (sum_total_visit / new_shift_digestion).round(1) rescue 0 %>
       <% visit_ave = (sum_visit / new_shift_digestion).round(1) rescue 0 %>
       <% interview_ave = (sum_interview / new_shift_digestion).round(1) rescue 0 %>
       <% full_talk_ave = (sum_full_talk / new_shift_digestion).round(1) rescue 0 %>
       <% sum_product_ave = (sum_product / 3 / new_shift_digestion).round(1) rescue 0 %>
-      <td><%= total_visit_ave rescue 0 %></td>
-      <td><%= visit_ave rescue 0 %></td>
-      <td><%= number_to_percentage(visit_ave / total_visit_ave * 100,precision:0) rescue 0 %></td>
-      <td><%= interview_ave rescue 0 %></td>
-      <td><%= number_to_percentage(interview_ave / visit_ave * 100,precision:0) rescue 0 %></td>
-      <td><%= full_talk_ave rescue 0 %></td>
-      <td><%= number_to_percentage(full_talk_ave / interview_ave * 100,precision:0) rescue 0 %></td>
-      <td><%= sum_product_ave %></td>
-      <td><%= number_to_percentage(sum_product_ave / full_talk_ave * 100,precision:0) rescue 0 %></td>
+      <td class="base-td"><%= total_visit_ave rescue 0 %></td>
+      <td class="base-td"><%= visit_ave rescue 0 %></td>
+      <td class="base-td"><%= number_to_percentage(visit_ave / total_visit_ave * 100,precision:0) rescue 0 %></td>
+      <td class="base-td"><%= interview_ave rescue 0 %></td>
+      <td class="base-td"><%= number_to_percentage(interview_ave / visit_ave * 100,precision:0) rescue 0 %></td>
+      <td class="base-td"><%= full_talk_ave rescue 0 %></td>
+      <td class="base-td"><%= number_to_percentage(full_talk_ave / interview_ave * 100,precision:0) rescue 0 %></td>
+      <td class="base-td"><%= sum_product_ave %></td>
+      <td class="base-td"><%= number_to_percentage(sum_product_ave / full_talk_ave * 100,precision:0) rescue 0 %></td>
       <%# 獲得数 %>
-      <td ><%= dmer_len %></td>
-      <td ><%= dmer_slmt_len %></td>
-      <td ><%= dmer_slmt2nd_len %></td>
-      <td ><%= aupay_len %></td>
-      <td ><%= aupay_slmt_len %></td>
-      <td ><%= paypay_len %></td>
-      <td ><%= rakuten_pay_len %></td>
-      <td ><%= airpay_len %></td>
+      <td class="base-td"><%= dmer_len %></td>
+      <td class="base-td"><%= dmer_slmt_len %></td>
+      <td class="base-td"><%= dmer_slmt2nd_len %></td>
+      <td class="base-td"><%= aupay_len %></td>
+      <td class="base-td"><%= aupay_slmt_len %></td>
+      <td class="base-td"><%= paypay_len %></td>
+      <td class="base-td"><%= rakuten_pay_len %></td>
+      <td class="base-td"><%= airpay_len %></td>
       <%# 成果件数 %>
-      <td ><%= dmer_result1_len %></td>
-      <td ><%= dmer_result2_len %></td>
-      <td ><%= dmer_result3_len %></td>
-      <td ><%= aupay_result1_len %></td>
-      <td ><%= paypay_result1_len %></td>
-      <td ><%= airpay_result1_len %></td>
+      <td class="base-td"><%= dmer_result1_len %></td>
+      <td class="base-td"><%= dmer_result2_len %></td>
+      <td class="base-td"><%= dmer_result3_len %></td>
+      <td class="base-td"><%= aupay_result1_len %></td>
+      <td class="base-td"><%= paypay_result1_len %></td>
+      <td class="base-td"><%= airpay_result1_len %></td>
       <%# 平均獲得数 %>
-      <td ><%= dmer_len_ave %></td>
-      <td ><%= aupay_len_ave %></td>
-      <td ><%= paypay_len_ave %></td>
-      <td ><%= rakuten_pay_len_ave %></td>
-      <td ><%= airpay_len_ave %></td>
+      <td class="base-td"><%= dmer_len_ave %></td>
+      <td class="base-td"><%= aupay_len_ave %></td>
+      <td class="base-td"><%= paypay_len_ave %></td>
+      <td class="base-td"><%= rakuten_pay_len_ave %></td>
+      <td class="base-td"><%= airpay_len_ave %></td>
       <%# 獲得終着 %>
-      <td ><%= dmer_len_fin %></td>
-      <td ><%= aupay_len_fin %></td>
-      <td ><%= paypay_fin_len %></td>
-      <td ><%= rakuten_pay_len_fin %></td>
-      <td ><%= airpay_len_fin %></td>
+      <td class="base-td"><%= dmer_len_fin %></td>
+      <td class="base-td"><%= aupay_len_fin %></td>
+      <td class="base-td"><%= paypay_fin_len %></td>
+      <td class="base-td"><%= rakuten_pay_len_fin %></td>
+      <td class="base-td"><%= airpay_len_fin %></td>
       <%# 商材別基準値 %>
       <% cash_user = @cash_result_out.where(user_id: r.user_id) %>
       <%# AirPay基準値 %>
@@ -855,32 +863,32 @@
       <% airpay_full_talk_ave = (airpay_full_talk_sum.to_f / new_shift_digestion).round(1) %>
       <% airpay_get_sum = cash_user.sum(:out_get_19) %>
       <% airpay_get_ave = (airpay_get_sum.to_f / new_shift_digestion).round(1) %>
-      <td ><%= airpay_interview_ave %></td>
-      <td ><%= airpay_full_talk_ave %></td>
-      <td><%= number_to_percentage(airpay_full_talk_ave / airpay_interview_ave * 100,precision:0) rescue 0 %></td>
-      <td ><%= airpay_get_ave %></td>
-      <td><%= number_to_percentage(airpay_get_ave / airpay_full_talk_ave * 100,precision:0) rescue 0 %></td>
+      <td class="base-td"><%= airpay_interview_ave %></td>
+      <td class="base-td"><%= airpay_full_talk_ave %></td>
+      <td class="base-td"><%= number_to_percentage(airpay_full_talk_ave / airpay_interview_ave * 100,precision:0) rescue 0 %></td>
+      <td class="base-td"><%= airpay_get_ave %></td>
+      <td class="base-td"><%= number_to_percentage(airpay_get_ave / airpay_full_talk_ave * 100,precision:0) rescue 0 %></td>
       <%# 出前館基準値 %>
       <% demaekan_full_talk_sum = cash_user.sum(:out_full_talk_20) %>
       <% demaekan_full_talk_ave = (demaekan_full_talk_sum.to_f / new_shift_digestion).round(1) %>
       <% demaekan_get_sum = cash_user.sum(:out_get_20) %>
       <% demaekan_get_ave = (demaekan_get_sum.to_f / new_shift_digestion).round(1) %>
-      <td ><%= airpay_full_talk_ave %></td>
-      <td ><%= airpay_get_ave %></td>
-      <td><%= number_to_percentage(demaekan_get_ave / demaekan_full_talk_ave * 100,precision:0) rescue 0 %></td>
+      <td class="base-td"><%= airpay_full_talk_ave %></td>
+      <td class="base-td"><%= airpay_get_ave %></td>
+      <td class="base-td"><%= number_to_percentage(demaekan_get_ave / demaekan_full_talk_ave * 100,precision:0) rescue 0 %></td>
     </tr>
       <% end %>
     <tr>
         <th class="sticky">全体</th>
-        <td ></td>
-        <td><%= base_new_shift %></td>
-        <td><%= base_slmt_shift %></td>
-        <td><%= base_new_shift_digestion %></td>
-        <td><%= base_slmt_shift_digestion %></td>
+        <td class="base-td"></td>
+        <td class="base-td"><%= base_new_shift %></td>
+        <td class="base-td"><%= base_slmt_shift %></td>
+        <td class="base-td"><%= base_new_shift_digestion %></td>
+        <td class="base-td"><%= base_slmt_shift_digestion %></td>
         <%# 全体評価売上 %>
-        <td><%= (base_fin / (base_new_shift + base_slmt_shift)).round().to_s(:delimited) rescue 0 %></td>
-        <td><%= base_sum.to_s(:delimited) rescue 0 %></td>
-        <td><%= base_fin.to_s(:delimited) rescue 0 %></td>
+        <td class="base-td"><%= (base_fin / (base_new_shift + base_slmt_shift)).round().to_s(:delimited) rescue 0 %></td>
+        <td class="base-td"><%= base_sum.to_s(:delimited) rescue 0 %></td>
+        <td class="base-td"><%= base_fin.to_s(:delimited) rescue 0 %></td>
         <%# 基準値 %>
       <% total_visit_ave_base = ((@cash_result.sum(:first_total_visit) + @cash_result.sum(:latter_total_visit)).to_f / base_new_shift_digestion).round(1) rescue 0 %>
       <% visit_ave_base = ((@cash_result.sum(:first_visit) + @cash_result.sum(:latter_visit)).to_f / base_new_shift_digestion).round(1) rescue 0 %>
@@ -888,43 +896,43 @@
       <% full_talk_ave_base = ((@cash_result.sum(:first_full_talk) + @cash_result.sum(:latter_full_talk)).to_f / base_new_shift_digestion).round(1) rescue 0 %>
       
       <% sum_product_ave_base = (base_sum_product / base_new_shift_digestion / 3).round(1) rescue 0 %>
-        <td><%= total_visit_ave_base rescue 0 %></td>
-        <td><%= visit_ave_base rescue 0 %></td>
-        <td><%= number_to_percentage(visit_ave_base / total_visit_ave_base * 100,precision:0) rescue 0 %></td>
-        <td><%= interview_ave_base rescue 0 %></td>
-        <td><%= number_to_percentage(interview_ave_base / visit_ave_base  * 100,precision:0) rescue 0 %></td>
-        <td><%= full_talk_ave_base rescue 0 %></td>
-        <td><%= number_to_percentage(full_talk_ave_base / interview_ave_base * 100,precision:0) rescue 0 %></td>
-        <td><%= sum_product_ave_base rescue 0 %></td>
-        <td><%= number_to_percentage(sum_product_ave_base / full_talk_ave_base * 100,precision:0) rescue 0 %></td>
+        <td class="base-td"><%= total_visit_ave_base rescue 0 %></td>
+        <td class="base-td"><%= visit_ave_base rescue 0 %></td>
+        <td class="base-td"><%= number_to_percentage(visit_ave_base / total_visit_ave_base * 100,precision:0) rescue 0 %></td>
+        <td class="base-td"><%= interview_ave_base rescue 0 %></td>
+        <td class="base-td"><%= number_to_percentage(interview_ave_base / visit_ave_base  * 100,precision:0) rescue 0 %></td>
+        <td class="base-td"><%= full_talk_ave_base rescue 0 %></td>
+        <td class="base-td"><%= number_to_percentage(full_talk_ave_base / interview_ave_base * 100,precision:0) rescue 0 %></td>
+        <td class="base-td"><%= sum_product_ave_base rescue 0 %></td>
+        <td class="base-td"><%= number_to_percentage(sum_product_ave_base / full_talk_ave_base * 100,precision:0) rescue 0 %></td>
         <%# 全体獲得数 %>
-        <td><%= base_dmer %></td>
-        <td><%= base_dmer_slmt %></td>
-        <td><%= base_dmer_slmt2nd %></td>
-        <td><%= base_aupay %></td>
-        <td><%= base_aupay_slmt %></td>
-        <td><%= base_paypay %></td>
-        <td><%= base_rakuten_pay %></td>
-        <td><%= base_airpay %></td>
+        <td class="base-td"><%= base_dmer %></td>
+        <td class="base-td"><%= base_dmer_slmt %></td>
+        <td class="base-td"><%= base_dmer_slmt2nd %></td>
+        <td class="base-td"><%= base_aupay %></td>
+        <td class="base-td"><%= base_aupay_slmt %></td>
+        <td class="base-td"><%= base_paypay %></td>
+        <td class="base-td"><%= base_rakuten_pay %></td>
+        <td class="base-td"><%= base_airpay %></td>
         <%# 全体成果件数 %>
-        <td><%= base_dmer_result1_len %></td>
-        <td><%= base_dmer_result2_len %></td>
-        <td><%= base_dmer_result3_len %></td>
-        <td><%= base_aupay_result1_len %></td>
-        <td><%= base_paypay_result1_len %></td>
-        <td><%= base_airpay_result1_len %></td>
+        <td class="base-td"><%= base_dmer_result1_len %></td>
+        <td class="base-td"><%= base_dmer_result2_len %></td>
+        <td class="base-td"><%= base_dmer_result3_len %></td>
+        <td class="base-td"><%= base_aupay_result1_len %></td>
+        <td class="base-td"><%= base_paypay_result1_len %></td>
+        <td class="base-td"><%= base_airpay_result1_len %></td>
         <%# 全体平均獲得数 %>
-        <td><%= (base_dmer.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
-        <td><%= (base_aupay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
-        <td><%= (base_paypay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
-        <td><%= (base_rakuten_pay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
-        <td><%= (base_airpay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td class="base-td"><%= (base_dmer.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td class="base-td"><%= (base_aupay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td class="base-td"><%= (base_paypay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td class="base-td"><%= (base_rakuten_pay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
+        <td class="base-td"><%= (base_airpay.to_f / base_new_shift_digestion).round(1) rescue 0 %></td>
         <%# 全体終着獲得数 %>
-        <td><%= base_dmer_fin %></td>
-        <td><%= base_aupay_fin %></td>
-        <td><%= base_paypay_fin %></td>
-        <td><%= base_rakuten_pay_fin %></td>
-        <td><%= base_airpay_fin %></td>
+        <td class="base-td"><%= base_dmer_fin %></td>
+        <td class="base-td"><%= base_aupay_fin %></td>
+        <td class="base-td"><%= base_paypay_fin %></td>
+        <td class="base-td"><%= base_rakuten_pay_fin %></td>
+        <td class="base-td"><%= base_airpay_fin %></td>
       <%# 商材別基準値 %>
       <%#  AirPay %>
       <% airpay_interview_sum_base = @cash_result_out.sum(:out_interview_19) rescue 0 %>
@@ -933,19 +941,19 @@
       <% airpay_full_talk_ave_base = (airpay_full_talk_sum_base.to_f / base_new_shift_digestion).round(1) rescue 0 %>
       <% airpay_get_sum_base = @cash_result_out.sum(:out_get_19) rescue 0 %>
       <% airpay_get_ave_base = (airpay_get_sum_base.to_f / base_new_shift_digestion).round(1) rescue 0 %>
-      <td ><%= airpay_interview_ave_base rescue 0 %></td>
-      <td ><%= airpay_full_talk_ave_base rescue 0 %></td>
-      <td><%= number_to_percentage(airpay_full_talk_ave_base / airpay_interview_ave_base * 100,precision:0) rescue 0 %></td>
-      <td ><%= airpay_get_ave_base rescue 0 %></td>
-      <td><%= number_to_percentage(airpay_get_ave_base / airpay_full_talk_ave_base * 100,precision:0) rescue 0 %></td>
+      <td class="base-td"><%= airpay_interview_ave_base rescue 0 %></td>
+      <td class="base-td"><%= airpay_full_talk_ave_base rescue 0 %></td>
+      <td class="base-td"><%= number_to_percentage(airpay_full_talk_ave_base / airpay_interview_ave_base * 100,precision:0) rescue 0 %></td>
+      <td class="base-td"><%= airpay_get_ave_base rescue 0 %></td>
+      <td class="base-td"><%= number_to_percentage(airpay_get_ave_base / airpay_full_talk_ave_base * 100,precision:0) rescue 0 %></td>
       <%# 出前館 %>
       <% demaekan_full_talk_sum_base = @cash_result_out.sum(:out_full_talk_20) rescue 0 %>
       <% demaekan_full_talk_ave_base = (demaekan_full_talk_sum_base.to_f / base_new_shift_digestion).round(1) rescue 0 %>
       <% demaekan_get_sum_base = @cash_result_out.sum(:out_get_20) rescue 0 %>
       <% demaekan_get_ave_base = (demaekan_get_sum_base.to_f / base_new_shift_digestion).round(1) rescue 0 %>
-      <td ><%= demaekan_full_talk_ave_base rescue 0 %></td>
-      <td ><%= demaekan_get_ave_base rescue 0 %></td>
-      <td><%= number_to_percentage(demaekan_get_ave / demaekan_full_talk_ave * 100,precision:0) rescue 0 %></td>
+      <td class="base-td"><%= demaekan_full_talk_ave_base rescue 0 %></td>
+      <td class="base-td"><%= demaekan_get_ave_base rescue 0 %></td>
+      <td class="base-td"><%= number_to_percentage(demaekan_get_ave / demaekan_full_talk_ave * 100,precision:0) rescue 0 %></td>
     </tr>
   </table>
   <% end %>

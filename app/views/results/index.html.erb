@@ -16,12 +16,12 @@
           <tr>
             <th class="search-th" colspan="">獲得月</th>
             <th class="search-th">拠点</th>
-            <td class="result"><%= f.submit "絞込み",data: {"turbolinks" => false, disable_with: "絞込み中"} , class: "result-btn" %></td>
+            <td class="result"><%= f.submit "絞込",data: {"turbolinks" => false, disable_with: "絞込み中"} , class: "result-btn" %></td>
           </tr>
           <tr>
             <td class="search-td"><%= f.date_select :date_during_month, {discard_day: true,selected: Date.today},{class: "date-input"} %></td>
             <td class="search-td"><%= f.select :user_base_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(position: "退職").select(:base).distinct, :base, :base), {},{class: "input"} %></td>
-            <td class="reset"><%= link_to "絞込みリセット", results_path, class: "reset-link" %></td>
+            <td class="reset"><%= link_to "絞込解除", results_path, class: "reset-link","data-turbolinks": false %></td>
           </tr>
         </table>
       <% end %>
@@ -359,7 +359,7 @@
           <option value="kyushu-slct">九州SS</option>
         </select>
       </p>
-        <table>
+        <table class="slmt-tb">
           <tr>
             <th rowspan="2">拠点</th>
             <th rowspan="2">氏名</th>
