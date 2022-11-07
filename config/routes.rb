@@ -93,6 +93,7 @@ Rails.application.routes.draw do
     post 'result_summits/create'
     collection { 
       post :import 
+      get :export
       get :date_progress
       get :ranking
       get :gross_profit
