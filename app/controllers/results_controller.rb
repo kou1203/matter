@@ -363,10 +363,6 @@ class ResultsController < ApplicationController
     @paypays = Paypay.select("paypays.id,paypays.user_id")
     @rakuten_pays = RakutenPay.select("rakuten_pays.id,rakuten_pays.user_id")
     @airpays = Airpay.eager_load(:store_prop).select("airpays.id, airpays.user_id,airpays.store_prop_id,airpays.status")
-    @airpays = 
-      @airpays.where(status: "審査完了")
-      .or(@airpays.where(status: "審査中"))
-      .or(@airpays.where(status: "審査OK"))
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
   end 
