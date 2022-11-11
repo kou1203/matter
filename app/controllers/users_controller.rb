@@ -901,8 +901,8 @@ class UsersController < ApplicationController
           .where.not(industry_status: "要確認")
           .where(date: @start_date...@dmer1_start_date) # 26~月末
           .where(result_point: @start_date...@dmer1_start_date) 
-          @dmer_val2_period = @dmer_val1_period.where.not(status_update_settlement: nil).where(status_settlement: "完了")
-          @dmer_val3_period = @dmer_val2_period.where.not(settlement_second: nil)
+          @dmer_val2_period = @dmer_val1_period.where(status_update_settlement: @start_date...@dmer1_start_date).where(status_settlement: "完了")
+          @dmer_val3_period = @dmer_val2_period.where(settlement_second: @start_date...@dmer1_start_date)
           # 前月26~末日までに成果まで踏んだ案件の売上
           @dmer_val1_period_profit = @dmer_val1_period.sum(:valuation_new)
           @dmer_val2_period_profit = @dmer_val2_period.sum(:valuation_settlement)
