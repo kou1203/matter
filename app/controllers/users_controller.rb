@@ -917,7 +917,10 @@ class UsersController < ApplicationController
         @dmer1_done_prev_len = 
           (@dmer1_done_prev.length.to_f * (@dmer1_prev_month_per + @dmer1_prev_inc_per)).round()
         @dmer_result1_fin_prev_month_len = 
-          ((@dmer1_slmt_tgt_prev.length - @dmer1_prev_val_len).to_f * (@dmer1_prev_month_per - @dmer1_prev_dec_per)).round()
+          (
+            (@dmer1_slmt_tgt_prev.length - @dmer1_prev_val_len).to_f * 
+            (@dmer1_prev_month_per - @dmer1_prev_dec_per)
+          ).round()
         @dmer_result1_fin_prev_month = 
           (@dmer1_price * @dmer_result1_fin_prev_month_len) + 
           (@dmer1_price * @dmer1_done_prev_len)
