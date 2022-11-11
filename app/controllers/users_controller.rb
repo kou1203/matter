@@ -864,18 +864,9 @@ class UsersController < ApplicationController
           .where.not(industry_status: "×")
           .where.not(industry_status: "NG")
           .where.not(industry_status: "要確認")
-          .or(
-            @dmer_user.where("settlement_deadline >= ?", @start_date)
-            .where("? > date", @start_date)
-            .where(status: "審査OK")
-            .where(status_settlement: "完了")
-            .where.not(industry_status: "×")
-            .where.not(industry_status: "NG")
-            .where.not(industry_status: "要確認")
-          )
           @dmer1_slmt_tgt_prev = 
-            @dmer_slmt_tgt_prev.where(settlement: @dmer1_start_date..@dmer1_end_date)
-            .or(@dmer_slmt_tgt_prev.where(settlement: nil))
+            @dmer_slmt_tgt_prev.where(result_point: @dmer1_start_date..@dmer1_end_date)
+            .or(@dmer_slmt_tgt_prev.where(result_point: nil))
           @dmer2_slmt_tgt_prev = 
           @dmer_slmt_tgt_prev.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
           .or(@dmer_slmt_tgt_prev.where(status_update_settlement: nil))
