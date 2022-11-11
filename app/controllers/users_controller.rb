@@ -997,7 +997,8 @@ class UsersController < ApplicationController
         # AirPay
               # 営業が終着に打ち込んだAirPayの件数
               @airpays_result_len = @results.sum(:airpay)
-              @airpays_result_len_fin = (@airpays_result_len / @digestion_new * @new_shift * @airpay1_this_month_per).round()
+              @airpays_result_len_ave = (@airpays_result_len.to_f / @digestion_new).round(1)
+              @airpays_result_len_fin = (@airpays_result_len.to_f / @digestion_new * @new_shift * @airpay1_this_month_per).round()
               # マックスの件数（終着件数）
               @airpay_max = @airpay_period.where(client: "マックス")
               .where(date: @start_date..@end_date)
@@ -1012,9 +1013,9 @@ class UsersController < ApplicationController
             # 単価
             @airpay_result_len_fin = (@airpay_result_len_ave * @new_shift * @airpay1_this_month_per).round() rescue 0
             if @month.beginning_of_month >= @before_airpay_bonus_date
-              if @airpays_result_len_fin >= @airpay_bonus2_len
+              if (@airpays_result_len_fin + @airpay_prev_len + @airpay_period_done_len) >= @airpay_bonus2_len
                 @airpay_price = @airpay_bonus2_price
-              elsif @airpays_result_len_fin >= @airpay_bonus1_len
+              elsif (@airpays_result_len_fin + @airpay_prev_len + @airpay_period_done_len) >= @airpay_bonus1_len
                 @airpay_price = @airpay_bonus1_price
               else  
                 @airpay_price = @airpay_price
