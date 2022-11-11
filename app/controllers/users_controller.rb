@@ -586,10 +586,10 @@ class UsersController < ApplicationController
       #  dメル
        @dmer_user = Dmer.includes(:store_prop).where(user_id: @results.first.user_id )
         @dmer_uq = 
-          @dmer_user.where(date: @dmer1_start_date..@dmer1_end_date)
+          @dmer_user.where(date: @start_date..@end_date)
           .where(store_prop: {head_store: nil})
         @dmer_db_data = 
-        @dmer_user.where(share: @dmer1_start_date..@dmer1_end_date)
+        @dmer_user.where(share: @start_date..@end_date)
         .where.not(store_prop: {head_store: nil})
         .where.not(industry_status: "×")
         .where.not(industry_status: "NG")
