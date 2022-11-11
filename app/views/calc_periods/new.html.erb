@@ -1,0 +1,97 @@
+<div data-scope-path="shared/header">
+  <h1>売上計算期間設定</h1>
+  <%= render "shared/header" %>
+</div>
+
+<div style="display:flex;"><%# サイドバーと分ける %>
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form"><%# CSSスコープ %>
+    <div class="form-main"><%# フォーム外枠 %>
+      <div class="form-title">
+      <h1>売上計算期間設定</h1>
+      <p class="caution-text"><%= alert %></p>
+      </div>
+      <%= form_with(model: @calc_period, date: {remote: false}) do |f| %>
+        <div class="form">
+            <p><%= f.label :name, "商材名", class: "form-text" %></p>
+            <p><%= f.select :name, {
+                "各商材獲得": "各商材獲得","dメル成果1": "dメル成果1", "dメル成果2": "dメル成果2",
+                "dメル成果3": "dメル成果3","auPay成果1": "auPay成果1","PayPay成果1": "PayPay成果1", 
+                "楽天ペイ成果1": "楽天ペイ成果1","AirPay成果1": "AirPay成果1", "出前館成果1": "出前館成果1",
+                "auステッカー成果1": "auステッカー成果1"
+                },{include_blank: true}, {class: "slct-input not-entered", id: "name"} %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :sales_category, "売上区分", class: "form-text" %></p>
+            <p><%= f.select :sales_category, {"評価売": "評価売", "実売": "実売"},{include_blank: true}, {class: "slct-input not-entered", id: "category"} %></p>
+        </div>
+        <h1>集計期間</h1>
+        <div class="form">
+            <p><%= f.label :start_date_month, "集計期間", class: "form-text" %>
+              <span class="date-val" id="start-date-month-val"></span><span class="date-val" id="start-date-day-val"></span>
+              <span class="date-val" id="end-date-month-val"></span><span class="date-val" id="end-date-day-val"></span>
+            </p>
+            <p class="date-text">
+            <%= f.select :start_date_month, {"前月": -1, "当月": 0,"来月": 1},{include_blank: true}, {class: "month-input",id: "start-date-month"} %>
+            <%= f.number_field :start_date_day,max: 30, class: "day-input",id: "start-date-day" %><span class="date-span">日 〜</span>
+            <%= f.select :end_date_month, {"前月": -1, "当月": 0,"来月": 1},{include_blank: true}, {class: "month-input",id: "end-date-month"} %>
+            <%= f.number_field :end_date_day,max: 30, class: "day-input",id: "end-date-day" %><span class="date-span">日</span>
+            </p>
+            <div class="date-display">
+            </div>
+            <p class="caution-text">※月末の場合はを日付を0にしてください。</p>
+        </div>
+        <div class="form">
+            <p><%= f.label :closing_date_month, "締め日（終着を現状売上に切り替えるタイミング）", class: "form-text" %>
+              <span class="date-val" id="closing-date-month-val"></span><span class="date-val" id="closing-date-day-val"></span>
+            </p>
+            <p class="date-text">
+            <%= f.select :closing_date_month, {"前月": -1, "当月": 0,"来月": 1},{include_blank: true}, {class: "month-input",id: "closing-date-month"} %>
+            <%= f.number_field :closing_date_day,max: 30, class: "day-input",id: "closing-date-day" %><span class="date-span">日</span>
+            </p>
+            <p class="caution-text">※月末の場合はを日付を0にしてください。</p>
+        </div>
+        <h1>成果率</h1>
+        <div class="form">
+            <p><%= f.label :this_month_per, "当月成果率(獲得期間内)", class: "form-text" %></p>
+            <p class="date-text">
+            <%= f.number_field :this_month_per,min: 0,max: 100 ,class: "num-input not-entered", id: "this_month_per" %><span class="date-span">％</span>
+            </p>
+            <p class="caution-text">※成果率は0〜100％の間で設定を行ってください。</p>
+        </div>
+        <div class="form">
+            <p><%= f.label :prev_month_per, "過去月成果率(獲得期間前)", class: "form-text" %></p>
+            <p class="date-text">
+            <%= f.number_field :prev_month_per,min: 0,max: 100 ,class: "num-input not-entered", id: "prev_month_per" %><span class="date-span">％</span>
+            </p>
+            <p class="caution-text">※成果率は0〜100％の間で設定を行ってください。</p>
+        </div>
+        <div class="form">
+            <p><%= f.label :price, "単価", class: "form-text" %></p>
+            <p class="date-text">
+            <%= f.number_field :price,min: 0 ,class: "num-input not-entered", id: "price" %><span class="date-span"></span>
+            </p>
+        </div>
+        <div class="form">
+            <p><%= f.label :bonus1_len, "獲得インセンティブ１", class: "form-text" %></p>
+            <p class="date-text">
+            <%= f.number_field :bonus1_len ,class: "num-input not-entered", id: "bonus1-len" %><span class="date-span">件獲得で</span>
+            <%= f.number_field :bonus1_price ,class: "num-input not-entered", id: "bonus1-price" %>
+            </p>
+        </div>
+        <div class="form">
+            <p><%= f.label :bonus1_len, "獲得インセンティブ２", class: "form-text" %></p>
+            <p class="date-text">
+            <%= f.number_field :bonus2_len ,class: "num-input not-entered", id: "bonus2-len" %><span class="date-span">件獲得で</span>
+            <%= f.number_field :bonus2_price ,class: "num-input not-entered", id: "bonus2-price" %>
+            </p>
+        </div>
+        <div class="form-submit">
+            <%= f.submit "登録", class: "submit-btn",id:"form-check-btn" %>
+        </div>
+    </div><%# フォーム外枠 %>
+     <% end %>
+  </div><%# CSSスコープ %>
+</div><%# サイドバーと分ける %>

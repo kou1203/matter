@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_10_14_093256) do
+ActiveRecord::Schema.define(version: 2022_11_08_084506) do
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "store_prop_id"
@@ -75,6 +75,24 @@ ActiveRecord::Schema.define(version: 2022_10_14_093256) do
     t.index ["settlementer_id"], name: "index_aupays_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_aupays_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_aupays_on_user_id"
+  end
+
+  create_table "calc_periods", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "sales_category", null: false
+    t.integer "start_date_month", null: false
+    t.integer "start_date_day", null: false
+    t.integer "end_date_month", null: false
+    t.integer "end_date_day", null: false
+    t.integer "closing_date_month", null: false
+    t.integer "closing_date_day", null: false
+    t.float "this_month_per"
+    t.float "prev_month_per"
+    t.integer "price"
+    t.integer "bonus1_len"
+    t.integer "bonus2_len"
+    t.integer "bonus1_price"
+    t.integer "bonus2_price"
   end
 
   create_table "comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|

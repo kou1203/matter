@@ -112,6 +112,7 @@
     <div class="warning"><%= alert %></div>
   <% else %>
       <h1>獲得日：<%= @rakuten_pays.minimum(:date) %>（<%= days[@rakuten_pays.minimum(:date).wday] %>）〜<%= @rakuten_pays.maximum(:date) %>（<%= days[@rakuten_pays.maximum(:date).wday] %>）</h1>
+      <%# 重複確認 %>
       <% rakuten_duplicate = @rakuten_pays.where.not(customer_num: nil).group(:customer_num).having('count(*) >= 2') %>
         <% if rakuten_duplicate.present? %>
         <p class="nav-text">管理番号重複</p>

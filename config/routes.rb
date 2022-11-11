@@ -175,4 +175,6 @@ Rails.application.routes.draw do
   # get 'profits', to: 'profits#index' do 
   #   collection {get :sum_export}
   # end 
+
+  resources :calc_periods
 end

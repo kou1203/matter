@@ -61,4 +61,5 @@ class OtherProductsController < ApplicationController
   def set_other_product_params
     other_product_params.merge(@other_product.set_aupay_pic_params)
   end 
+  
 end

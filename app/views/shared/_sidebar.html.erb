@@ -37,6 +37,7 @@
             <li id="lists2"><%= link_to "帯同資料", ojts_path,class: "side-link" %></li>
             <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") %>
             <li id="lists2"><span data-turbolinks="false"><%= link_to "会議資料", profits_path,class: "side-link" %></span></li>
+            <li id="lists2"><span data-turbolinks="false"><%= link_to "利益計算期間", calc_periods_path,class: "side-link" %></span></li>
             <% end %>
             <li id="lists2"><%= link_to "評価売上結果一覧", result_sales_path,class: "side-link"%></li>
           </ul>
