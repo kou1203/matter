@@ -1,17 +1,67 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <%# 成果売上の変数 %>
   <%# 合計成果売上 %>
+    <% if current_user.name == "管理用" %>
+  <h2>終着計算内容</h2>
+  <table>
+  <tr>
+    <th>dメル審査完了</th>
+    <th>dメル審査完了（期間内）</th>
+    <th>dメル審査完了（過去）</th>
+    <th>成果率（期間内）</th>
+    <th>成果率（過去）</th>
+  </tr>
+  <tr>
+    <td><%= @dmer_result1_fin %></td>
+    <td><%= @dmer1_price %> * <%= @dmer_result1_fin_this_month_len %>（<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @dmer1_this_month_per - @dmer1_dec_per %>） - <%= @dmer_val1_period_profit %></td>
+    <td><%= @dmer1_price %> * <%= @dmer_result1_fin_prev_month_len %> + <%= @dmer1_price %> * <%= @dmer1_done_prev_len %></td>
+    <td><%= @dmer1_this_month_per  %> - <%= @dmer1_dec_per %></td>
+    <td><%= @dmer1_prev_month_per  %> - <%= @dmer1_prev_dec_per %></td>
+  </tr>
+  <tr>
+    <th>dメルアクセプタンス</th>
+    <th>dメルアクセプタンス（期間内）</th>
+    <th>dメルアクセプタンス（過去）</th>
+    <th>dメルアクセプタンス（期間内）</th>
+    <th>dメルアクセプタンス（過去）</th>
+  </tr>
+  <tr>
+    <td><%= @dmer_result2_fin %></td>
+    <td><%= @dmer2_price %> * <%= @dmer_result2_fin_this_month_len %>（<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @dmer2_this_month_per - @dmer2_dec_per %>） - <%= @dmer_val2_period_profit %></td>
+    <td><%= @dmer2_price %> * <%= @dmer_result2_fin_prev_month_len %>
+    （<%= @dmer2_slmt_tgt_prev.length %> - <%= @dmer2_prev_val_len %> * <%= @dmer2_prev_month_per - @dmer2_prev_dec_per %>）
+     + <%= @dmer2_price %> * <%= @dmer2_done_prev_len %></td>
+    <td><%= @dmer2_this_month_per  %> - <%= @dmer2_dec_per %></td>
+    <td><%= @dmer2_prev_month_per  %> - <%= @dmer2_prev_dec_per %></td>
+  </tr>
+  <tr>
+    <th>2回目決済</th>
+    <th>2回目決済（期間内）</th>
+    <th>2回目決済（過去）</th>
+    <th>2回目決済（期間内）</th>
+    <th>2回目決済（過去）</th>
+  </tr>
+  <tr>
+    <td><%= @dmer_result3_fin %></td>
+    <td><%= @dmer3_price %> * <%= @dmer_result3_fin_this_month_len %>（<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @dmer3_this_month_per - @dmer3_dec_per %>） - <%= @dmer_val3_period_profit %></td>
+    <td><%= @dmer3_price %> * <%= @dmer_result3_fin_prev_month_len %>
+    （<%= @dmer2_slmt_tgt_prev.length %> - <%= @dmer3_prev_val_len %> - <%= @dmer_slmt_dead_len %>）
+     + <%= @dmer3_price %> * <%= @dmer3_done_prev_len %> + <%= @dmer_slmt2nd_done.where("? > date",@start_date).sum(:valuation_second_settlement) %></td>
+    <td><%= @dmer3_this_month_per  %> - <%= @dmer3_dec_per %></td>
+    <td></td>
+  </tr>
+  </table>
+  <% end %>
 <div class="result-flex"><%# 大枠 %>
   <div class="right-frame"><%#日々進捗の区切り%>
     <h2 class="date-title">日々進捗</h2>
-    <%= @dmer_result1_fin_prev_month_len %>
   <div class="
     content
 	  scrollbar
 	  scrollbar-thumb-rounded
 	  scrollbar-thumb-gray
   ">
-  
+
     <table class="date-tb">
       <thead class="date-thead">
         <tr>
@@ -472,7 +522,6 @@
             %>
           <%# 決済 %>
             <% aupay_slmt_valuations = @aupay_slmt.sum(:valuation_settlement) rescue 0 %>
-            <% aupay_slmt_len = @aupay_slmt.length rescue 0 %>
         <%# PayPay %>
           <% paypay_len = @paypay_data.length rescue 0 %>
           <% paypay_r_len = @paypay_done.length rescue 0 %>
@@ -3208,7 +3257,7 @@
             </tr>
             <tr>
               <td class="total-td" colspan="">auPay</td>
-              <td class="total-td" colspan=""><%= aupay_slmt_len %></td>
+              <td class="total-td" colspan=""><%= @aupay_slmt.length %></td>
               <td class="total-td" colspan=""><%= @aupay_slmt_def.length %></td>
               <td class="total-td" colspan=""><%= @aupay_pic_def.length %></td>
             </tr>
@@ -3243,7 +3292,7 @@
           <td class="total-td"><%= dmer_slmt_len %></td>
           <td class="total-td"><%= dmer_slmt2nd_len %></td>
           <td class="total-td"><%= @airpays_result_len %></td>
-          <td class="total-td"><%= aupay_slmt_len %></td>
+          <td class="total-td"><%= @aupay_slmt.length %></td>
           <td class="total-td"><%= paypay_len %></td>
           <td class="total-td"><%= @rakuten_pay_done_len %></td>
           <td class="total-td"><%= @airpay_period.length %></td>
@@ -3257,8 +3306,8 @@
           <td class="total-td"><%= dmer_slmt_len_ave = (dmer_slmt_len.to_f / @digestion_new).round(1) rescue "NaN" %></td>
           <td class="total-td"><%= dmer_2ndslmt_len_ave = (dmer_slmt2nd_len.to_f / @digestion_new).round(1) rescue "NaN" %></td>
           <td class="total-td"><%= @aupay_len_ave.round(1) rescue "NaN" %></td>
-          <td class="total-td"><%= aupay_slmt_len_ave = (aupay_slmt_len.to_f / @digestion_settlement).round(1) rescue "NaN" %></td>
-          <td class="total-td"><%= paypay_len_ave = (paypay_len.to_f / @digestion_new).round(1) rescue "NaN" %></td>
+          <td class="total-td"><%= aupay_slmt_len_ave = (@aupay_slmt.length.to_f / @digestion_settlement).round(1) rescue "NaN" %></td>
+          <td class="total-td"><%= @paypay_len_ave.round(1) rescue "NaN" %></td>
           <td class="total-td"><%= @rakuten_pay_len_ave.round(1) rescue "NaN" %></td>
           <td class="total-td"><%= @airpays_result_len_ave rescue "NaN" %></td>
           <td class="total-td"><%=  %></td>
