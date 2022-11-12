@@ -1028,7 +1028,11 @@ class UsersController < ApplicationController
             # 期間内終着
             @airpay_result1_fin_this_month = @airpay_price * @airpays_result_len_fin - (@airpay26_end_done.length * @airpay_price) rescue 0
             # 過去月終着（審査中件数 * 0.87 + 過去月の売上）
-            @airpay_result1_fin_prev_month = ((@airpay_price * @airpay_prev_len - @airpay_period_done_len) * (@airpay1_prev_month_per - @airpay_prev_dec_per)) + (@airpay_price * @airpay_period_done_len)
+            @airpay_result1_fin_prev_month = 
+              @airpay_price * (
+                ( @airpay_prev_len - @airpay_period_done_len) * 
+                (@airpay1_prev_month_per - @airpay_prev_dec_per)
+              ).round() + (@airpay_price * @airpay_period_done_len)
             # 合計 期間内終着 + 過去月終着 
             @airpay_result1_fin = @airpay_result1_fin_this_month + @airpay_result1_fin_prev_month
               if (@airpay_done_val > @airpay_result1_fin) || (Date.today >= @start_date.next_month.end_of_month)
