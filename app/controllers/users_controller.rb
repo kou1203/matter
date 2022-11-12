@@ -784,7 +784,14 @@ class UsersController < ApplicationController
       @airpay_user = Airpay.includes(:store_prop).where(user_id: @results.first.user_id)
       @airpay_period = @airpay_user.where(date: @start_date..@end_date)
       
-      @airpay_prev_len = @airpay_user.where("? > date",@start_date).where(status: "審査中").length
+      @airpay_prev = 
+        @airpay_user.where("? > date",@start_date)
+        .where(result_point: nil)
+        .or(@airpay_user.where("? > date",@start_date).where(result_point: @airpay1_start_date..@airpay1_end_date)) 
+        @airpay_prev = 
+          @airpay_prev.where(status: "審査完了")
+          .or(@airpay_prev.where(status: "審査中"))
+        @airpay_prev_len = @airpay_prev.length 
       @airpay_period_done_len = 
         @airpay_user.where("? > date",@start_date)
         .where(status: "審査完了")
@@ -993,18 +1000,12 @@ class UsersController < ApplicationController
               # 営業が終着に打ち込んだAirPayの件数
               @airpays_result_len = @results.sum(:airpay)
               @airpays_result_len_ave = (@airpays_result_len.to_f / @digestion_new).round(1)
-              @airpays_result_len_fin = (@airpays_result_len.to_f / @digestion_new * @new_shift * @airpay1_this_month_per).round()
-              # マックスの件数（終着件数）
-              @airpay_max = @airpay_period.where(client: "マックス")
-              .where(date: @start_date..@end_date)
-              @airpay_max_val = 
-                @airpay_max.where(status: "審査中")
-                .or(
-                  @airpay_max.where(status: "審査完了")
-                )
-              @airpay_max_val_len = @airpay_max_val.length 
-              @airpay_max_val_len_fin = (@airpay_max_val_len / @digestion_new * @new_shift * @airpay1_this_month_per).round()
-              
+              @airpays_result_len_fin = (@airpays_result_len.to_f / @digestion_new * @new_shift * (@airpay1_this_month_per - @airpay_dec_per)).round()
+              #前月26~末日までに成果を踏んだ件数
+              @airpay26_end_done = 
+                @airpay_user.where(date: @start_date...@airpay1_start_date)
+                .where(result_point: @start_date...@airpay1_start_date)
+                .where(status: "審査完了")
             # 単価
             @airpay_result_len_fin = (@airpay_result_len_ave * @new_shift * @airpay1_this_month_per).round() rescue 0
             if @month.beginning_of_month >= @before_airpay_bonus_date
@@ -1025,11 +1026,11 @@ class UsersController < ApplicationController
               end
             end
             # 期間内終着
-            @airpay_result1_fin_this_month = @airpay_price * @airpays_result_len_fin rescue 0
+            @airpay_result1_fin_this_month = @airpay_price * @airpays_result_len_fin - (@airpay26_end_done.length * @airpay_price) rescue 0
             # 過去月終着（審査中件数 * 0.87 + 過去月の売上）
-            @airpay_result1_fin_prev_month = (@airpay_prev_len * @airpay_price) + (@airpay_period_done_len * @airpay_price)
-            # 合計 期間内終着 + 過去月終着 - マックス終着獲得件数 * 2000
-            @airpay_result1_fin = @airpay_result1_fin_this_month + @airpay_result1_fin_prev_month - (@airpay_max_val_len_fin * 2000)
+            @airpay_result1_fin_prev_month = ((@airpay_price * @airpay_prev_len - @airpay_period_done_len) * (@airpay1_prev_month_per - @airpay_prev_dec_per)) + (@airpay_price * @airpay_period_done_len)
+            # 合計 期間内終着 + 過去月終着 
+            @airpay_result1_fin = @airpay_result1_fin_this_month + @airpay_result1_fin_prev_month
               if (@airpay_done_val > @airpay_result1_fin) || (Date.today >= @start_date.next_month.end_of_month)
                 @airpay_result1_fin = @airpay_done_val rescue 0
               end

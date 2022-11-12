@@ -6,8 +6,8 @@
   <table>
   <tr>
     <th>dメル審査完了</th>
-    <th>dメル審査完了（期間内）</th>
-    <th>dメル審査完了（過去）</th>
+    <th>（期間内）</th>
+    <th>（過去）</th>
     <th>成果率（期間内）</th>
     <th>成果率（過去）</th>
   </tr>
@@ -20,10 +20,10 @@
   </tr>
   <tr>
     <th>dメルアクセプタンス</th>
-    <th>dメルアクセプタンス（期間内）</th>
-    <th>dメルアクセプタンス（過去）</th>
-    <th>dメルアクセプタンス（期間内）</th>
-    <th>dメルアクセプタンス（過去）</th>
+    <th>（期間内）</th>
+    <th>（過去）</th>
+    <th>成果率（期間内）</th>
+    <th>成果率（過去）</th>
   </tr>
   <tr>
     <td><%= @dmer_result2_fin %></td>
@@ -36,10 +36,10 @@
   </tr>
   <tr>
     <th>2回目決済</th>
-    <th>2回目決済（期間内）</th>
-    <th>2回目決済（過去）</th>
-    <th>2回目決済（期間内）</th>
-    <th>2回目決済（過去）</th>
+    <th>（期間内）</th>
+    <th>（過去）</th>
+    <th>成果率（期間内）</th>
+    <th>成果率（過去）</th>
   </tr>
   <tr>
     <td><%= @dmer_result3_fin %></td>
@@ -49,6 +49,24 @@
      + <%= @dmer3_price %> * <%= @dmer3_done_prev_len %> + <%= @dmer_slmt2nd_done.where("? > date",@start_date).sum(:valuation_second_settlement) %></td>
     <td><%= @dmer3_this_month_per  %> - <%= @dmer3_dec_per %></td>
     <td></td>
+  </tr>
+  <tr>
+    <th>AirPay</th>
+    <th>（期間内）</th>
+    <th>（過去）</th>
+    <th>成果率（期間内）</th>
+    <th>成果率（過去）</th>
+  </tr>
+  <tr>
+    <td><%= @airpay_result1_fin %></td>
+    <td><%= @airpay_price %> * <%= @airpays_result_len_fin %>（<%= @airpays_result_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @airpay1_this_month_per - @airpay_dec_per %>） - （<%= @airpay_price %> * <%= @airpay26_end_done.length %> ）</td>
+    <td>
+      <%= @airpay_price %> * （（<%= @airpay_prev_len %> - <%= @airpay_period_done_len %>） * 
+      <%= @airpay1_prev_month_per - @airpay_prev_dec_per %> ）+
+    （<%= @airpay_price %> * <%= @airpay_period_done_len %>） 
+    </td>
+    <td><%= @airpay1_this_month_per  %> - <%= @airpay_dec_per %></td>
+    <td><%= @airpay1_prev_month_per  %> - <%= @airpay_prev_dec_per %></td>
   </tr>
   </table>
   <% end %>
