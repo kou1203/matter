@@ -882,7 +882,7 @@ class UsersController < ApplicationController
         @dmer_slmt_dead_len = @dmer_slmt_dead.length
         # 過去の決済対象で今月成果になったもの
         @dmer1_prev_val = 
-          @dmer1_slmt_tgt_prev.where(settlement: @dmer1_start_date..@dmer1_end_date)
+          @dmer1_slmt_tgt_prev.where(result_point: @dmer1_start_date..@dmer1_end_date)
         @dmer1_prev_val_len = @dmer1_prev_val.length
         @dmer2_prev_val = 
           @dmer2_slmt_tgt_prev.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
@@ -970,7 +970,7 @@ class UsersController < ApplicationController
         # 過去月
         @aupay_result1_fin_prev_month_len = 
            ((@aupay_slmt_tgt_prev_len - @aupay_slmt_prev_val_len) * @aupay1_prev_month_per).round() rescue 0
-          @aupay_result1_fin_prev_month = (@aupay_price * @aupay_result1_fin_prev_month_len) + @aupay_slmt_done.where(" ? > date",@start_date).sum(:valuation_settlement) rescue 0
+          @aupay_result1_fin_prev_month = (@aupay1_price * @aupay_result1_fin_prev_month_len) + @aupay_slmt_done.where(" ? > date",@start_date).sum(:valuation_settlement) rescue 0
         # 終着
         # @aupay_result1_fin_this_month +
         @aupay_result1_fin =  @aupay_result1_fin_prev_month

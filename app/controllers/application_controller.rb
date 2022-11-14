@@ -592,6 +592,7 @@ class ApplicationController < ActionController::Base
       @dmer1_price = @dmer1_calc_data.price
       @dmer2_price = @dmer2_calc_data.price
       @dmer3_price = @dmer3_calc_data.price
+      @aupay1_price = @aupay1_calc_data.price
       @paypay_price = @aupay1_calc_data.price
       @paypay_price = @paypay1_calc_data.price
       @rakuten_pay_price = @rakuten_pay1_calc_data.price
