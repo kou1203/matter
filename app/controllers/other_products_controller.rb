@@ -16,7 +16,7 @@ class OtherProductsController < ApplicationController
       @other_product[:profit] = @other_product.product_len * 3000
     end
     if @other_product.save 
-      redirect_to dmers_path, alert: "入力された獲得情報が保存されました。"
+      redirect_to results_path, alert: "入力された獲得情報が保存されました。"
     else  
       render :new 
     end
@@ -68,7 +68,7 @@ class OtherProductsController < ApplicationController
   def set_other_product_params
     other_product_params.merge(@other_product.set_aupay_pic_params)
   end 
-  
+
   def set_dmersticker_product_params
     other_product_params.merge(@other_product.set_dmer_pic_params)
   end 
