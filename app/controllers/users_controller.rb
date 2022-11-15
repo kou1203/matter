@@ -691,7 +691,12 @@ class UsersController < ApplicationController
           .or(slmt_dead_line(@dmer_slmter, @results_date)
           .where(industry_status: nil))
       # auPay
-      @aupay_pic = OtherProduct.where(product_name: "auPay写真").where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
+      @other_products = OtherProduct.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
+      @aupay_pic = @other_products.where(product_name: "auPay写真")
+      @dmer_pic = @other_products.where(product_name: "dメルステッカー")
+      @other_products_val = @other_products.sum(:valuation)
+      @dmer_pic_len = @dmer_pic.sum(:product_len)
+      @dmer_pic_val = @dmer_pic.sum(:valuation)
       @aupay_pic_len = @aupay_pic.sum(:product_len)
       @aupay_pic_val = @aupay_pic.sum(:valuation)
       @aupay_user = 
@@ -856,6 +861,7 @@ class UsersController < ApplicationController
         @rakuten_pay_done_val + 
         @airpay_done_val +
         @aupay_pic_val + 
+        @dmer_pic_val + 
         @demaekan.sum(:valuation)
       
       # 帯同Ave
@@ -1049,6 +1055,7 @@ class UsersController < ApplicationController
             @rakuten_pay_result1_fin +
             @airpay_result1_fin +
             @aupay_pic_val +
+            @dmer_pic_val +
             @demaekan.sum(:valuation)
           ).to_i
         if (@valuation_sum > @result_fin) || (Date.today >= @start_date.next_month.end_of_month)

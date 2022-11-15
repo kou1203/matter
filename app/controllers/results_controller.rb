@@ -1,8 +1,10 @@
 class ResultsController < ApplicationController
   before_action :authenticate_user!
   def index
+
   # 商材情報
-  
+
+
     @dmers = 
       Dmer.eager_load(:store_prop).select("dmers.id,dmers.user_id,dmers.store_prop_id")
       .where(store_prop: {head_store: nil})
@@ -42,6 +44,10 @@ class ResultsController < ApplicationController
       @q.result(distinct: false).includes(:user).joins(:user).order(date: :asc)
     end
     if @results.present?
+      @month = params[:month] ? Time.parse(params[:month]) : Date.today
+      @calc_periods = CalcPeriod.where(sales_category: "評価売")
+      @month_result = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
+      calc_period_and_per
       @minimum_result_cash = @results.minimum(:date) #26日
       @maximum_result_cash = @results.minimum(:date).beginning_of_month.since(1.month).since(24.days) #25日
       if @results.first.user.base == "中部SS"
@@ -55,7 +61,6 @@ class ResultsController < ApplicationController
       else
       @cash_result = @results.joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
       end
-      @month = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
       @cash_result_out = @cash_result.includes(:result_cash).select(:result_cash_id, :user_id)
     end
   # 日々獲得進捗

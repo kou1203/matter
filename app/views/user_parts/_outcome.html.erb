@@ -31,7 +31,8 @@
       airpay_bonus +
       @demaekan.sum(:valuation) +
       # その他商材
-      @aupay_pic_val
+      @aupay_pic_val +
+      @dmer_pic_val
     ).to_s(:delimited) rescue 0
   %></h2>
   <table>
@@ -96,6 +97,15 @@
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @aupay_pic_val.to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <% end %>
+  <% if @dmer_pic.present? && @dmer_pic.exists?(user_id: @user.id) %>
+  <tr>
+    <td class="valuation-td">dメルステッカー</td>
+    <td class="valuation-td"><%= @dmer_pic_len rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @dmer_pic_val.to_s(:delimited) rescue 0 %></td>
   </tr>
   <% end %>
   <tr>
@@ -382,6 +392,30 @@
     </thead>
     <tbody>
       <% @aupay_pic.each do |pic| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= pic.date %></td>
+      <td class="valuation-td "><%= pic.product_len %></td>
+      <td class="valuation-td "><%= pic.valuation %></td>
+      <td class="valuation-td "><%= link_to "編集", edit_other_product_path(pic.id) %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @dmer_pic.present? %>
+<h2>dメルステッカー（獲得）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">獲得数</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @dmer_pic.each do |pic| %>
       <tr>
       <td class="valuation-td "><%= num %></td>
       <td class="valuation-td "><%= pic.date %></td>

@@ -3372,7 +3372,7 @@
           <td class="total-td"><%= @rakuten_pay_done_val.to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= @airpay_done_val.to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= @demaekan.sum(:valuation).to_s(:delimited) rescue "NaN" %></td>
-          <td class="total-td"><%= @aupay_pic_val.to_s(:delimited) rescue "NaN" %></td>
+          <td class="total-td"><%= @other_products_val.to_s(:delimited) rescue "NaN" %></td>
           <td class="total-td"><%= sum_profit.to_s(:delimited) rescue "NaN" %></td>
         </tr>
         <tr>
@@ -3386,10 +3386,11 @@
         <td class="total-td"><%= @rakuten_pay_result1_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
         <td class="total-td"><%= @airpay_result1_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
         <td class="total-td"><%= @demaekan.sum(:valuation).to_i.to_s(:delimited) %></td>
-        <td class="total-td"><%= @aupay_pic_val.to_i.to_s(:delimited) %></td>
+        <td class="total-td"><%= @other_products_val.to_i.to_s(:delimited) %></td>
         <td class="total-td"><%= @result_fin.to_i.to_s(:delimited) rescue "NaN" %></td>
         </tr>
       </table>
+
     </div><%# /商材別売上/生産性 %> 
     <div><%# /成果件数 %>
       <h2>成果件数</h2>
