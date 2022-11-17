@@ -355,7 +355,7 @@
       <td class="valuation-td "><%= airpay.date %></td>
       <td class="valuation-td "><%= airpay.status %></td>
       <td class="valuation-td "><%= airpay.result_point %></td>
-      <% if @month.beginning_of_month >= @before_airpay_bonus_date %>
+      <% if @start_date.next_month.beginning_of_month >= @before_airpay_bonus_date %>
         <% if @airpay_done.present? && @airpay_done.length >= 20 %>
         <td class="valuation-td "><%= airpay.valuation + 5000 %></td>
         <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>

@@ -11,12 +11,12 @@
 </script>
 
 <h2>合計実売
-<% if Date.today >= @basic_end_date %>
-  <% shifts_prev_len = @shifts.where(start_time: @basic_start_date..@basic_end_date).length %>
-  <% results_prev_len = @results.where(date: @basic_start_date..@basic_end_date).length %>
+<% if Date.today >= @end_date %>
+  <% shifts_prev_len = @shifts.where(start_time: @start_date..@end_date).length %>
+  <% results_prev_len = @results.where(date: @start_date..@end_date).length %>
 <% else %>
-<% shifts_prev_len = @shifts.where(start_time: @basic_start_date..Date.today.ago(1.days)).length %>
-<% results_prev_len = @results.where(date: @basic_start_date..Date.today.ago(1.days)).length %>
+<% shifts_prev_len = @shifts.where(start_time: @start_date..Date.today.ago(1.days)).length %>
+<% results_prev_len = @results.where(date: @start_date..Date.today.ago(1.days)).length %>
 <% end %>
 <% if shifts_prev_len == results_prev_len %>
   <span class="shift-text">現状予定シフト数<%= shifts_prev_len %>, 消化シフト, <%= results_prev_len %>）</span>

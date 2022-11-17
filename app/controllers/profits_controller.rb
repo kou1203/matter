@@ -3,6 +3,8 @@ class ProfitsController < ApplicationController
   before_action :back_retirement, only: [:index]
   def index
     # controllers/application_controller.rbから参照
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @calc_periods = CalcPeriod.where(sales_category: "実売")
     profit_pack # 実売の計算式が入った関数
   end 
 

@@ -36,7 +36,8 @@ class ResultsController < ApplicationController
     @users_partner = @users.where(base: "2次店")
     @user_partner_cash = @users_partner.where(base_sub: "キャッシュレス")
   # 終着データ
-    @q = Result.ransack(params[:q])
+  @result_category = "拠点別終着"
+  @q = Result.ransack(params[:q])
     @results = 
     if params[:q].nil?
       Result.none 
@@ -374,76 +375,59 @@ class ResultsController < ApplicationController
   end 
 
   def ranking
+    @result_category = "ランキング"
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @results = Result.where(date: @month.prev_month.beginning_of_month.since(25.days)..@month.beginning_of_month.since(24.days))
-    @minimum_result_cash = @results.minimum(:date)
-    @maximum_result_cash = @results.maximum(:date)
-    @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
-    @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
-    @maximum_date_cash = @month.beginning_of_month.since(24.days)
-    @dmers = Dmer.where(date: @minimum_date_cash..@maximum_date_cash)
-    @aupays = Aupay.where(date: @minimum_date_cash..@maximum_date_cash)
-    @rakuten_pays = RakutenPay.where(date: @minimum_date_cash..@maximum_date_cash)
-    @airpays = Airpay.where(date: @minimum_date_cash..@maximum_date_cash)
-    @dmers_rank = {}
-    @dmers.group(:user_id).each do |dmer| 
-      @dmers_rank.store(dmer.user.name,@dmers.where(user_id: dmer.user_id).length)
-    end 
-    @dmers_rank = @dmers_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
-    @aupays_rank = {}
-    @aupays.group(:user_id).each do |aupay| 
-      @aupays_rank.store(aupay.user.name,@aupays.where(user_id: aupay.user_id).length)
-    end 
-    @aupays_rank = @aupays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
-    @rakuten_pays_rank = {}
-    @rakuten_pays.group(:user_id).each do |rakuten_pay| 
-      @rakuten_pays_rank.store(rakuten_pay.user.name,@rakuten_pays.where(user_id: rakuten_pay.user_id).length)
-    end 
-    @rakuten_pays_rank = @rakuten_pays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
-    @airpays_rank = {}
-    @airpays.group(:user_id).each do |airpay| 
-      @airpays_rank.store(airpay.user.name,@airpays.where(user_id: airpay.user_id).length)
-    end 
-    @airpays_rank = @airpays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    @calc_periods = CalcPeriod.where(sales_category: "評価売")
+    valuation_pack
   end
 
   def gross_profit
+    @result_category = "利益計算用終着"
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @results = Result.where(date: @month.prev_month.beginning_of_month.since(25.days)..@month.beginning_of_month.since(24.days))
-    @minimum_result_cash = @results.minimum(:date)
-    @maximum_result_cash = @results.maximum(:date)
-    @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
-    @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
-    @maximum_date_cash = @month.beginning_of_month.since(24.days)
-    @dmers = Dmer.where(date: @minimum_date_cash..@maximum_date_cash)
-    @aupays = Aupay.where(date: @minimum_date_cash..@maximum_date_cash)
-    @rakuten_pays = RakutenPay.where(date: @minimum_date_cash..@maximum_date_cash)
-    @airpays = Airpay.where(date: @minimum_date_cash..@maximum_date_cash)
-    @dmers_rank = {}
-    @dmers.group(:user_id).each do |dmer| 
-      @dmers_rank.store(dmer.user.name,@dmers.where(user_id: dmer.user_id).length)
-    end 
-    @dmers_rank = @dmers_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
-    @aupays_rank = {}
-    @aupays.group(:user_id).each do |aupay| 
-      @aupays_rank.store(aupay.user.name,@aupays.where(user_id: aupay.user_id).length)
-    end 
-    @aupays_rank = @aupays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
-    @rakuten_pays_rank = {}
-    @rakuten_pays.group(:user_id).each do |rakuten_pay| 
-      @rakuten_pays_rank.store(rakuten_pay.user.name,@rakuten_pays.where(user_id: rakuten_pay.user_id).length)
-    end 
-    @rakuten_pays_rank = @rakuten_pays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
-    @airpays_rank = {}
-    @airpays.group(:user_id).each do |airpay| 
-      @airpays_rank.store(airpay.user.name,@airpays.where(user_id: airpay.user_id).length)
-    end 
-    @airpays_rank = @airpays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    @calc_periods = CalcPeriod.where(sales_category: "評価売")
+    valuation_pack
   end 
 
 
 
   private
+    # 利益表を出力するための関数
+    # @calc_periods, @month, @result_category
+    # 上記3点をvaluation_packより上に配置して設定する必要があります。
+    def valuation_pack 
+      calc_period_and_per
+      @results = Result.where(date: @month.prev_month.beginning_of_month.since(25.days)..@month.beginning_of_month.since(24.days))
+      @month_result = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
+      @minimum_result_cash = @results.minimum(:date)
+      @maximum_result_cash = @results.maximum(:date)
+      @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
+      @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
+      @maximum_date_cash = @month.beginning_of_month.since(24.days)
+      @dmers = Dmer.where(date: @minimum_date_cash..@maximum_date_cash)
+      @aupays = Aupay.where(date: @minimum_date_cash..@maximum_date_cash)
+      @rakuten_pays = RakutenPay.where(date: @minimum_date_cash..@maximum_date_cash)
+      @airpays = Airpay.where(date: @minimum_date_cash..@maximum_date_cash)
+      @dmers_rank = {}
+      @dmers.group(:user_id).each do |dmer| 
+        @dmers_rank.store(dmer.user.name,@dmers.where(user_id: dmer.user_id).length)
+      end 
+      @dmers_rank = @dmers_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+      @aupays_rank = {}
+      @aupays.group(:user_id).each do |aupay| 
+        @aupays_rank.store(aupay.user.name,@aupays.where(user_id: aupay.user_id).length)
+      end 
+      @aupays_rank = @aupays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+      @rakuten_pays_rank = {}
+      @rakuten_pays.group(:user_id).each do |rakuten_pay| 
+        @rakuten_pays_rank.store(rakuten_pay.user.name,@rakuten_pays.where(user_id: rakuten_pay.user_id).length)
+      end 
+      @rakuten_pays_rank = @rakuten_pays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+      @airpays_rank = {}
+      @airpays.group(:user_id).each do |airpay| 
+        @airpays_rank.store(airpay.user.name,@airpays.where(user_id: airpay.user_id).length)
+      end 
+      @airpays_rank = @airpays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    end 
   # dメル,aupayメソッド
     # 新規
       # 絞り込んだ期間のもの

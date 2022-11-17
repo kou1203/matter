@@ -42,7 +42,7 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @shift = @shifts.where(user_id: @user.id)
     # 月間増減
-    @before_airpay_bonus_date = Date.new(2022,10,1)
+    @before_airpay_bonus_date = Date.new(2022,10,01)
     # dメル
     @dmers = Dmer.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id).where(store_prop: {head_store: nil})
     @dmers_inc = 
@@ -457,7 +457,7 @@ class UsersController < ApplicationController
       @summit_shift = @result_shift.where(shift: "サミット").length 
       @casa_shift = @result_shift.where(shift: "楽天フェムト新規").length 
       @casa_put_shift= @result_shift.where(shift: "楽天フェムト設置").length 
-      @ojt_shift = @result_shift.where(shift: "帯同").length 
+      @ojt_shift = Shift.where(user_id: @user.id).where(start_time: @end_date.beginning_of_month..@end_date.end_of_month).where(shift: "帯同").length 
       @house_work_shift = @result_shift.where(shift: "内勤").length
       end
       # 消化シフト変数
@@ -466,7 +466,7 @@ class UsersController < ApplicationController
       @digestion_summit = @results_date.where(shift: "サミット").length
       @digestion_casa = @results_date.where(shift: "楽天フェムト新規").length
       @digestion_casa_put = @results_date.where(shift: "楽天フェムト設置").length
-      @digestion_ojt = @results_date.where(shift: "帯同").length
+      @digestion_ojt = Result.where(user_id: @user.id).where(date: @end_date.beginning_of_month..@end_date.end_of_month).where(shift: "帯同").length
       @digestion_house_work = @results_date.where(shift: "内勤").length
       #  合計変数 
        @sum_total_visit = @results.where(shift: "キャッシュレス新規").sum(:first_total_visit) + @results.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
@@ -825,7 +825,7 @@ class UsersController < ApplicationController
         @airpay_user.where(status: "審査完了")
         .where(result_point: @airpay1_start_date..@airpay1_end_date)
 
-      if @month.beginning_of_month >= @before_airpay_bonus_date
+      if @start_date.next_month.beginning_of_month >= @before_airpay_bonus_date
         @airpay_bonus =
         if @airpay_done.length >= @airpay_bonus2_len
           @airpay_done.length * (@airpay_bonus2_price - @airpay_price)
@@ -863,10 +863,6 @@ class UsersController < ApplicationController
         @aupay_pic_val + 
         @dmer_pic_val + 
         @demaekan.sum(:valuation)
-      
-      # 帯同Ave
-      @ojt_val_ave = @valuation_sum / (@digestion_new + @digestion_settlement) rescue 0
-      @ojt_val_sum = @ojt_val_ave * @digestion_ojt rescue 0
       # 成果売上終着
       # dメル
         # 過去の決済対象
@@ -1014,7 +1010,7 @@ class UsersController < ApplicationController
                 .where(status: "審査完了")
             # 単価
             @airpay_result_len_fin = (@airpay_result_len_ave * @new_shift * @airpay1_this_month_per).round() rescue 0
-            if @month.beginning_of_month >= @before_airpay_bonus_date
+            if @start_date.next_month.beginning_of_month >= @before_airpay_bonus_date
               if (@airpays_result_len_fin + @airpay_prev_len + @airpay_period_done_len) >= @airpay_bonus2_len
                 @airpay_price = @airpay_bonus2_price
               elsif (@airpays_result_len_fin + @airpay_prev_len + @airpay_period_done_len) >= @airpay_bonus1_len
@@ -1061,6 +1057,11 @@ class UsersController < ApplicationController
         if (@valuation_sum > @result_fin) || (Date.today >= @start_date.next_month.end_of_month)
           @result_fin = @valuation_sum
         end
+
+      # 帯同Ave
+      @ojt_val_ave = @result_fin / (@new_shift + @settlement_shift) rescue 0
+      @ojt_val_sum = @ojt_val_ave * @digestion_ojt rescue 0
+      @ojt_val_fin = @ojt_val_ave * @ojt_shift
         # 成果平均
         if @new_shift.present?
           @result_ave = @result_fin / (@new_shift + @settlement_shift)

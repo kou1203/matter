@@ -336,11 +336,8 @@
         </div>
       </div>
       <% else %>
-        <% if @results.group(:user_id).length == 1 %>
-          <%= render "result_parts/profit_table_copiedata" %>
-        <% else %>
-          <%= render "result_parts/all_profit" %>
-        <% end %>
+          <%# 拠点別利益表 %>
+          <%= render "result_parts/valuation_factory" %>
       <% end %>
       <script>
         window.chubu_slmt=<%= @chubu_slmt.to_json.html_safe %>;

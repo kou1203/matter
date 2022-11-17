@@ -1,7 +1,8 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <%# 成果売上の変数 %>
   <%# 合計成果売上 %>
-    <% if current_user.name == "管理用" %>
+  <%= @start_date.next_month.beginning_of_month %>
+<% if current_user.name == "管理用" %>
   <h2>終着計算内容</h2>
   <table>
   <tr>
@@ -30,7 +31,7 @@
     <td><%= @dmer2_price %> * <%= @dmer_result2_fin_this_month_len %>（<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @dmer2_this_month_per - @dmer2_dec_per %>） - <%= @dmer_val2_period_profit %></td>
     <td><%= @dmer2_price %> * <%= @dmer_result2_fin_prev_month_len %>
     （<%= @dmer2_slmt_tgt_prev.length %> - <%= @dmer2_prev_val_len %> * <%= @dmer2_prev_month_per - @dmer2_prev_dec_per %>）
-     + <%= @dmer2_price %> * <%= @dmer2_done_prev_len %></td>
+    + <%= @dmer2_price %> * <%= @dmer2_done_prev_len %></td>
     <td><%= @dmer2_this_month_per  %> - <%= @dmer2_dec_per %></td>
     <td><%= @dmer2_prev_month_per  %> - <%= @dmer2_prev_dec_per %></td>
   </tr>
@@ -46,7 +47,7 @@
     <td><%= @dmer3_price %> * <%= @dmer_result3_fin_this_month_len %>（<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @dmer3_this_month_per - @dmer3_dec_per %>） - <%= @dmer_val3_period_profit %></td>
     <td><%= @dmer3_price %> * <%= @dmer_result3_fin_prev_month_len %>
     （<%= @dmer2_slmt_tgt_prev.length %> - <%= @dmer3_prev_val_len %> - <%= @dmer_slmt_dead_len %>）
-     + <%= @dmer3_price %> * <%= @dmer3_done_prev_len %> + <%= @dmer_slmt2nd_done.where("? > date",@start_date).sum(:valuation_second_settlement) %></td>
+    + <%= @dmer3_price %> * <%= @dmer3_done_prev_len %> + <%= @dmer_slmt2nd_done.where("? > date",@start_date).sum(:valuation_second_settlement) %></td>
     <td><%= @dmer3_this_month_per  %> - <%= @dmer3_dec_per %></td>
     <td></td>
   </tr>
@@ -69,16 +70,16 @@
     <td><%= @airpay1_prev_month_per  %> - <%= @airpay_prev_dec_per %></td>
   </tr>
   </table>
-  <% end %>
+<% end %>
 <div class="result-flex"><%# 大枠 %>
   <div class="right-frame"><%#日々進捗の区切り%>
     <h2 class="date-title">日々進捗</h2>
-  <div class="
-    content
-	  scrollbar
-	  scrollbar-thumb-rounded
-	  scrollbar-thumb-gray
-  ">
+    <div class="
+      content
+      scrollbar
+      scrollbar-thumb-rounded
+      scrollbar-thumb-gray
+    ">
 
     <table class="date-tb">
       <thead class="date-thead">
@@ -203,10 +204,10 @@
       <tbody>
       <% @results.each do |result| %>
         <tr class="date-tr">
-          <%#日付%>
+        <%#日付%>
           <th class="date-th"><span class="date-span"><%= result.date.month %>月<%= result.date.day %>日</span></th>
           <th class="date-th"><span class="date-span"><%= days[result.date.wday] %></span></th>
-          <%# その日の予定シフト %>
+        <%# その日の予定シフト %>
           <% 
             shift_date_plan = 
               Shift.find_by(user_id: result.user_id,start_time: result.date).shift rescue "未申請"
@@ -223,7 +224,7 @@
           <% end %>
           <td class="date-td race-border"><span class="date-span"><%= result.ojt.name rescue "" %></span></td>
           <td class="date-td race-border"><span class="date-span"><%= result.area %></span></td>
-          <%# その日の売上 %>
+        <%# その日の売上 %>
           <% if @results.where(shift: "キャッシュレス新規").present? %>
             <% 
             date_profit =
@@ -248,19 +249,19 @@
             <td class="date-td"><span class="date-span"><%= result.profit.to_s(:delimited) rescue "未入力" %></span></td>
           <% end %>
           <td class="date-td race-border"><span class="date-span"><%= date_profit.round().to_s(:delimited) %></td>
-          <%# 合計 %>
+        <%# 合計 %>
           <td class="date-td"><span class="date-span"><%= result.first_total_visit.to_i + result.latter_total_visit.to_i %></span></td>
           <td class="date-td"><span class="date-span"><%= result.first_visit.to_i + result.latter_visit.to_i %></td>
           <td class="date-td"><span class="date-span"><%= result.first_interview.to_i + result.latter_interview.to_i %></span></td>
           <td class="date-td"><span class="date-span"><%= result.first_full_talk.to_i + result.latter_full_talk.to_i %></span></td>
           <td class="date-td race-border"><span class="date-span"><%= result.first_get.to_i + result.latter_get.to_i %></td>
-          <%#前半%>
+        <%#前半%>
           <td class="date-td"><span class="date-span"><%= result.first_total_visit.to_i %></span></td>
           <td class="date-td"><span class="date-span"><%= result.first_visit.to_i  %></td>
           <td class="date-td"><span class="date-span"><%= result.first_interview.to_i  %></span></td>
           <td class="date-td"><span class="date-span"><%= result.first_full_talk.to_i  %></span></td>
           <td class="date-td race-border"><span class="date-span"><%= result.first_get.to_i %></td>
-          <%# 後半 %>
+        <%# 後半 %>
           <td class="date-td"><span class="date-span"><%= result.latter_total_visit.to_i %></span></td>
           <td class="date-td"><span class="date-span"><%= result.latter_visit.to_i %></span></td>
           <td class="date-td"><span class="date-span"><%= result.latter_interview.to_i %></span></td>
@@ -482,6 +483,7 @@
         <% end %>
         </span>
         </td>
+      <%# 編集や削除 %>
         <td class="date-td race-border"><span class="date-span"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></span></td>
         <% if result.shift == "キャッシュレス新規" || result.shift == "キャッシュレス決済" %>
           <% if result.result_cash.present? %>
@@ -597,33 +599,13 @@
           <td class="date-td"></td>
         </tr>
         <tr>
-          <td class="date-td">楽天フェムト新規</td>
-          <td class="date-td"><%= @casa_shift %></td>
-          <td class="date-td"><%= @digestion_casa %></td>
-          <td class="date-td"><%= @casa_shift - @digestion_casa %></td>
-          <td class="date-td"></td>
-          <td class="date-td"></td>
-          <td class="date-td"></td>
-          <td class="date-td"></td>
-        </tr>
-        <tr>
-          <td class="date-td">楽天フェムト設置</td>
-          <td class="date-td"><%= @casa_put_shift %></td>
-          <td class="date-td"><%= @digestion_casa_put %></td>
-          <td class="date-td"><%= @casa_put_shift - @digestion_casa_put %></td>
-          <td class="date-td"></td>
-          <td class="date-td"></td>
-          <td class="date-td"></td>
-          <td class="date-td"></td>
-        </tr>
-        <tr>
           <td class="date-td">帯同</td>
           <td class="date-td"><%= @ojt_shift %></td>
           <td class="date-td"><%= @digestion_ojt %></td>
           <td class="date-td"><%= @ojt_shift - @digestion_ojt %></td>
           <td class="date-td"><%= @ojt_val_sum.to_s(:delimited) rescue 0 %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"></td>
+          <td class="date-td"><%= @ojt_val_ave.to_s(:delimited) rescue 0 %></td>
+          <td class="date-td"><%= @ojt_val_fin.to_s(:delimited) rescue 0 %></td>
           <td class="date-td"></td>
         </tr>
         <tr>
@@ -638,15 +620,16 @@
         </tr>
         <tr>
           <td class="date-td">合計</td>
-          <td class="date-td"><%= shift_sum = @new_shift + @settlement_shift + @summit_shift + @casa_shift + @casa_put_shift + @ojt_shift + @house_work_shift %></td>
-              <td class="date-td"><%= digestion_sum = @digestion_new + @digestion_settlement + @digestion_summit + @digestion_casa + @digestion_casa_put + @digestion_ojt + @digestion_house_work %></td>
+          <td class="date-td"><%= shift_sum = @new_shift + @settlement_shift + @summit_shift + @ojt_shift + @house_work_shift %></td>
+              <td class="date-td"><%= digestion_sum = @digestion_new + @digestion_settlement + @digestion_summit + @digestion_ojt + @digestion_house_work %></td>
           <td class="date-td"><%= shift_sum - digestion_sum %></td>
           <td class="date-td"><%= @valuation_sum.to_s(:delimited) rescue 0 %></td>
           <td class="date-td"><%= @result_ave.to_s(:delimited) rescue 0 %></td>
           <td class="date-td"><%= @result_fin.to_s(:delimited) rescue 0 %></td>
-          <td class="date-td"><%= (@result_fin + @ojt_val_sum).to_s(:delimited) rescue 0 %></td>
+          <td class="date-td"><%= (@result_fin + @ojt_val_fin).to_s(:delimited) rescue 0 %></td>
         </tr>
       </table> 
+      <p class="caution-text">※帯同シフトは月初〜月末の範囲で計算されております。</p>
     </div><%#/シフト/売上の区切り%>
     <div class="result-flex"><%#基準値区切り%>
       <div><%# 個人基準値 %>
