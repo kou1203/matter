@@ -2,8 +2,8 @@ class OjtsController < ApplicationController
   require 'csv'
   def index 
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @start_date = @month.prev_month.beginning_of_month.since(25.days)
-    @end_date = @month.beginning_of_month.since(24.days)
+    @start_date = @month.beginning_of_month
+    @end_date = @month.end_of_month
     if params[:word].present?
       @start_date = params[:search_date].to_date.prev_month.beginning_of_month.since(25.days)
       @end_date = params[:search_date].to_date.beginning_of_month.since(24.days)
@@ -173,7 +173,7 @@ class OjtsController < ApplicationController
       "dメル獲得数", "auPay獲得数", "楽天ペイ獲得数", "AirPay獲得数","帯同開始","帯同終了"
     ]
     columns = [
-      "base","name","ojt","section","area","date","total_visit","visit","interview","full_talk","get",
+      "base","name","ojt","section","date","area","total_visit","visit","interview","full_talk","get",
       "dmer","aupay","rakuten_pay","airpay","ojt_start","ojt_end"
     ]
     bom = "\uFEFF"
