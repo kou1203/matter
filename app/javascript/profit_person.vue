@@ -88,44 +88,6 @@
           </tbody>
         </table><!-- /拠点情報 -->
       <hr>
-      <div class="base-flex"><!-- 基準値と商材情報 -->
-        <div><!-- 基準値 -->
-          <div class="title-form">
-            <label class="sub-title">基準値</label>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th class="base-th">ユーザー</th>
-                <th class="base-th">役職</th>
-                <th class="base-th">訪問</th>
-                <th class="base-th">応答</th>
-                <th class="base-th">応答率</th>
-                <th class="base-th">対面</th>
-                <th class="base-th">対面率</th>
-                <th class="base-th">フル</th>
-                <th class="base-th">フル率</th>
-                <th class="base-th">成約</th>
-                <th class="base-th">成約率</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in baseItems" :key="item" class="body-tr">
-                <td class="base-td">{{ item["名前"] }}</td>
-                <td class="base-td">{{ item["役職"] }}</td>
-                <td class="base-td">{{ item["訪問"] }}</td>
-                <td class="base-td">{{ item["応答"] }}</td>
-                <td class="base-td">{{ (item["応答"] / item["訪問"]).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:0}) }}</td>
-                <td class="base-td">{{ item["対面"] }}</td>
-                <td class="base-td">{{ (item["対面"] / item["応答"]).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:0}) }}</td>
-                <td class="base-td">{{ item["フル"] }}</td>
-                <td class="base-td">{{ (item["フル"] / item["対面"]).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:0}) }}</td>
-                <td class="base-td">{{ item["獲得"] }}</td>
-                <td class="base-td">{{ (item["獲得"] / item["フル"]).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:0}) }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div><!-- /基準値 -->
         <div><!-- /商材情報 -->
           <div class="title-form">
             <label class="sub-title">商材</label>
@@ -150,6 +112,8 @@
                   <th class="base-head-th" colspan="4">現状実売</th>
                   <th class="base-head-th" colspan="4">終着実売</th>
                   <th class="base-head-th" colspan="3">成果になった件数</th>
+                  <th class="base-head-th" colspan="3">終着獲得数</th>
+                  <th class="base-head-th" colspan="3">過去母体</th>
                 </tr>
                 <tr>
                   <th class="base-th">ユーザー</th>
@@ -165,6 +129,12 @@
                   <th class="base-th">審査完了+決済</th>
                   <th class="base-th">アクセプタンス</th>
                   <th class="base-th">2回目決済</th>
+                  <th class="base-th">審査完了+決済</th>
+                  <th class="base-th">アクセプタンス）</th>
+                  <th class="base-th">2回目決済</th>
+                  <th class="base-th">未決済<br>（過去）</th>
+                  <th class="base-th">アクセプタンス未審査<br>（過去）</th>
+                  <th class="base-th">期限切れ</th>
                 </tr>
                 
               </thead>
@@ -183,6 +153,12 @@
                   <td class="base-td">{{ item["dメル第一成果件数"] }}</td>
                   <td class="base-td">{{ item["dメル第二成果件数"] }}</td>
                   <td class="base-td">{{ item["dメル第三成果件数"] }}</td>
+                  <td class="base-td">{{ item["dメル1終着獲得数（期内）"] }}</td>
+                  <td class="base-td">{{ item["dメル2終着獲得数（期内）"] }}</td>
+                  <td class="base-td">{{ item["dメル3終着獲得数（期内）"] }}</td>
+                  <td class="base-td">{{ item["dメル1過去母体"] }}</td>
+                  <td class="base-td">{{ item["dメル2過去母体"] }}</td>
+                  <td class="base-td">{{ item["dメル決済期限切れ"] }}</td>
                 </tr>
               </tbody>
             </table>
@@ -330,7 +306,46 @@
           <div v-else>
           </div>
         </div><!-- /商材情報 -->
-      </div><!-- /基準値と商材情報 -->
+        <div><!-- 基準値 -->
+          <div class="title-form">
+            <label class="sub-title">基準値</label>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th class="base-head-th" colspan="11">{{ productVal }}</th>
+              </tr>
+              <tr>
+                <th class="base-th">ユーザー</th>
+                <th class="base-th">役職</th>
+                <th class="base-th">訪問</th>
+                <th class="base-th">応答</th>
+                <th class="base-th">応答率</th>
+                <th class="base-th">対面</th>
+                <th class="base-th">対面率</th>
+                <th class="base-th">フル</th>
+                <th class="base-th">フル率</th>
+                <th class="base-th">成約</th>
+                <th class="base-th">成約率</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in baseItems" :key="item" class="body-tr">
+                <td class="base-td">{{ item["名前"] }}</td>
+                <td class="base-td">{{ item["役職"] }}</td>
+                <td class="base-td">{{ item["訪問"] }}</td>
+                <td class="base-td">{{ item["応答"] }}</td>
+                <td class="base-td">{{ (item["応答"] / item["訪問"]).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:0}) }}</td>
+                <td class="base-td">{{ item["対面"] }}</td>
+                <td class="base-td">{{ (item["対面"] / item["応答"]).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:0}) }}</td>
+                <td class="base-td">{{ item["フル"] }}</td>
+                <td class="base-td">{{ (item["フル"] / item["対面"]).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:0}) }}</td>
+                <td class="base-td">{{ item["獲得"] }}</td>
+                <td class="base-td">{{ (item["獲得"] / item["フル"]).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:0}) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div><!-- /基準値 -->
   </div><!-- /id=app -->
 </template>
 

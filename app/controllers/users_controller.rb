@@ -926,6 +926,7 @@ class UsersController < ApplicationController
           (@dmer1_price * @dmer1_done_prev_len)
           
         @dmer_result1_fin = @dmer_result1_fin_this_month + @dmer_result1_fin_prev_month 
+        
         # 第二成果終着
         # 期間内終着
         @dmer_result2_fin_this_month_len = (@dmer_len.to_f / @digestion_new * @new_shift * (@dmer2_this_month_per - @dmer2_dec_per)).round() rescue 0

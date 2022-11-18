@@ -663,8 +663,6 @@ class ApplicationController < ActionController::Base
       # calc_period_and_perは"@calc_periods"と"@month"の配置を先にするのが必須
       calc_period_and_per
       # 期間
-      @start_done = @month.beginning_of_month.to_date # 月初
-      @end_done = @month.end_of_month.to_date # 月末
       @results = 
         Result.includes(:user,:result_cash).where(shift: "キャッシュレス新規").where(date: @start_date..@end_date)
         .or(Result.includes(:user,:result_cash).where(shift: "キャッシュレス決済").where(date: @start_date..@end_date))
@@ -736,8 +734,7 @@ class ApplicationController < ActionController::Base
             person_hash["予定新規シフト"] = user_shift.where(shift: "キャッシュレス新規").length
             person_hash["予定決済シフト"] = user_shift.where(shift: "キャッシュレス決済").length
             person_hash["予定決済シフト"] = user_shift.where(shift: "キャッシュレス決済").length
-            person_hash["予定帯同シフト"] = user_shift.where(shift: "帯同").length
-            user_shift26_10 = user_shift.where(shift: "キャッシュレス新規").where(start_time: @start_date..@end_date.beginning_of_month.since(9.days)).length
+            person_hash["予定帯同シフト"] = Shift.where(start_time: @start_date..@end_date).where(shift: "帯同").length
           # 消化シフト
             user_result_shift = 
               user_result.where(shift: "キャッシュレス新規")
@@ -746,8 +743,7 @@ class ApplicationController < ActionController::Base
             person_hash["消化シフト"] = user_result_shift.length 
             person_hash["消化新規シフト"] = user_result_shift.where(shift: "キャッシュレス新規").length 
             person_hash["消化決済シフト"] = user_result_shift.where(shift: "キャッシュレス決済").length 
-            person_hash["消化帯同シフト"] = user_result_shift.where(shift: "帯同").length 
-            user_result26_10 = user_result_shift.where(shift: "キャッシュレス新規").where(date: @start_date..@end_date.beginning_of_month.since(9.days)).length
+            person_hash["消化帯同シフト"] = Result.where(date: @start_date..@end_date).where(shift: "帯同").length 
           # 基準値
             person_hash["訪問"] = (user_result.sum("first_total_visit + latter_total_visit").to_f / person_hash["消化新規シフト"]).round(1) rescue 0
             person_hash["応答"] = (user_result.sum("first_visit + latter_visit").to_f / person_hash["消化新規シフト"]).round(1) rescue 0
@@ -823,7 +819,7 @@ class ApplicationController < ActionController::Base
                 .where.not(industry_status: "×")
                 .where.not(industry_status: "要確認")
                 .or(
-                  dmer_user.where(settlement: @start_done..@dmer1_end_date)
+                  dmer_user.where(settlement: @dmer1_start_date..@dmer1_end_date)
                   .where("? >= result_point", @dmer1_end_date)
                   .where(status: "審査OK")
                   .where.not(industry_status: "NG")
@@ -831,11 +827,29 @@ class ApplicationController < ActionController::Base
                   .where.not(industry_status: "要確認")
                 )
               dmer_result1_profit = dmer_result1.sum(:profit_new)
+              # 26-末日までに成果になった案件（前月の売上になっているもの）
+              dmer1_val_26_end_of_month = 
+                dmer_user.where(result_point: @start_date...@dmer1_start_date)
+                .where("? > settlement", @dmer1_start_date)
+                .where(status: "審査OK")
+                .where.not(industry_status: "NG")
+                .where.not(industry_status: "×")
+                .where.not(industry_status: "要確認")
+                .or(
+                  dmer_user.where(settlement: @start_date...@dmer1_start_date)
+                  .where("? > result_point", @dmer1_start_date)
+                  .where(status: "審査OK")
+                  .where.not(industry_status: "NG")
+                  .where.not(industry_status: "×")
+                  .where.not(industry_status: "要確認")
+                )
+                dmer2_val_26_end_of_month = dmer1_val_26_end_of_month.where(status_update_settlement: @start_date...@dmer2_start_date)
+                dmer3_val_26_end_of_month = dmer1_val_26_end_of_month.where("? >= settlement_second", @dmer3_end_date)
               person_hash["dメル第一成果件数"] = dmer_result1.length
               person_hash["dメル現状売上1"] = dmer_result1_profit
               # 第二成果
               dmer_result2 = 
-                dmer_slmter.where(status_update_settlement: @start_done..@dmer2_end_date)
+                dmer_slmter.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
                 .where(status: "審査OK")
                 .where.not(industry_status: "NG")
                 .where.not(industry_status: "×")
@@ -847,7 +861,7 @@ class ApplicationController < ActionController::Base
               person_hash["dメル現状売上2"] = dmer_result2_profit
               # 第三成果
               dmer_result3 = 
-                dmer_slmter.where(settlement_second: @start_done..@dmer3_end_date)
+                dmer_slmter.where(settlement_second: @dmer3_start_date..@dmer3_end_date)
                 .where("? >= status_update_settlement", @dmer3_end_date)
                 .where(status: "審査OK")
                 .where.not(industry_status: "NG")
@@ -856,7 +870,7 @@ class ApplicationController < ActionController::Base
                 .where(status_settlement: "完了")
                 .or(
                   dmer_slmter
-                  .where(status_update_settlement: @start_done..@dmer3_end_date)
+                  .where(status_update_settlement: @dmer3_start_date..@dmer3_end_date)
                   .where("? >= settlement_second", @dmer3_end_date)
                   .where(status: "審査OK")
                   .where.not(industry_status: "NG")
@@ -888,7 +902,7 @@ class ApplicationController < ActionController::Base
               .where.not(status: "審査NG")
               .where.not(status: "本店審査待ち")
               dmer_len = dmer_uq.length  - dmer_def.length + dmer_db.length #評価件数
-              dmer_slmt2nd = dmer_slmter.where(settlement_second: @start_done..@dmer3_end_date)
+              dmer_slmt2nd = dmer_slmter.where(settlement_second: @dmer3_start_date..@dmer3_end_date)
               person_hash["dメル獲得数"] = dmer_uq.length
               if dmer_len == 0
                 dmer_len_ave = 0
@@ -922,6 +936,7 @@ class ApplicationController < ActionController::Base
               dmer_val1_period_len = dmer_val1_period.length
               dmer_val2_period_len = dmer_val2_period.length
               dmer_val3_period_len = dmer_val3_period.length
+
             # 過去月の決済対象
               dmer_slmt_tgt_prev = 
                 dmer_user.where("settlement_deadline >= ?", @start_date)
@@ -930,52 +945,51 @@ class ApplicationController < ActionController::Base
                 .where.not(industry_status: "×")
                 .where.not(industry_status: "NG")
                 .where.not(industry_status: "要確認")
-                .where(status_update_settlement: nil)
-                .or(
-                  dmer_user.where("settlement_deadline >= ?", @start_date)
-                  .where("? > date", @start_date)
-                  .where(status: "審査OK")
-                  .where(status_settlement: "完了")
-                  .where.not(industry_status: "×")
-                  .where.not(industry_status: "NG")
-                  .where.not(industry_status: "要確認")
-                  .where(status_update_settlement: @start_done..@dmer1_end_date)
-                )
                 dmer_slmt_tgt_prev_len = dmer_slmt_tgt_prev.length rescue 0
+              # 過去母体
+              dmer1_tgt_prev = dmer_slmt_tgt_prev.where(settlement: nil)
+              dmer2_tgt_prev = dmer_slmt_tgt_prev.where(status_update_settlement: nil)
+              person_hash["dメル1過去母体"] = dmer1_tgt_prev.length 
+              person_hash["dメル2過去母体"] = dmer2_tgt_prev.length
+            # 過去月の決済母体数（第一成果）
                 # 決済期限切れ
                 dmer_slmt_dead = 
                   dmer_slmt_tgt_prev.where(status_settlement: "期限切れ")
                   .where(status_update_settlement: nil)
+                  person_hash["dメル決済期限切れ"] = dmer_slmt_dead.length
                 dmer_slmt_dead_len = dmer_slmt_dead.length
                 # 過去の案件で対象月に成果になったもの
-                dmer_slmt_prev_val =  
-                  dmer_slmt_tgt_prev.where(status_update_settlement: @start_done..@dmer1_end_date)
-                dmer_2ndslmt_prev_val = 
-                  dmer_slmt_prev_val.where("? >= settlement_second", @month.next_month.end_of_month)
-                dmer_slmt_prev_val_len = dmer_slmt_prev_val.length
-                dmer_2ndslmt_prev_val_len = dmer_2ndslmt_prev_val.length
+                dmer1_prev_val = dmer_slmt_tgt_prev.where(settlement: @start_date..@dmer1_end_date)
+                dmer2_prev_val =  
+                  dmer_slmt_tgt_prev.where(status_update_settlement: @start_date..@dmer1_end_date)
+                dmer3_prev_val = 
+                  dmer2_prev_val.where("? >= settlement_second", @dmer3_end_date)
+                dmer1_prev_val_len = dmer1_prev_val.length
+                dmer3_prev_val_len = dmer3_prev_val.length
             # 終着
               # 第一成果
-                # 期間内
-                dmer_result1_fin_this_month_len = 
+                # 終着獲得数 = 評価件数 / 消化新規シフト * 予定新規シフト * （成果率 - 減少%）
+                dmer1_fin_this_month_len = 
                 (
-                  (dmer_len - dmer_val1_period_len).to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (@dmer1_this_month_per - @dmer1_dec_per)
+                  dmer_len.to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (@dmer1_this_month_per - @dmer1_dec_per)
                 ).round() rescue 0 
-                  dmer_result1_fin_this_month = 
-                  (@dmer1_price * dmer_result1_fin_this_month_len) + ((dmer_result1.where(date: @start_date..@end_date).length.to_f * (@dmer1_this_month_per + @dmer1_inc_per)).round() * @dmer1_price)
+                person_hash["dメル1終着獲得数（期内）"] = dmer1_fin_this_month_len - dmer1_val_26_end_of_month.length
+                # 期間内終着売上 = （単価 * 終着獲得数） - 26〜末日までに成果になった案件（前月の売上に既になっている）
+                  dme1_fin_this_month = 
+                  (@dmer1_price * dmer1_fin_this_month_len) - dmer1_val_26_end_of_month.sum(:profit_new)
   
-                # 過去月
-                dmer_result1_fin_prev_month_len =
+                # 過去月終着獲得数 = 母体数 * 成果率
+                dmer_result1_fin_prev_month_len = 
                 (
-                  (dmer_slmt_tgt_prev.length - dmer_slmt_prev_val_len).to_f * (@dmer1_prev_month_per - @dmer1_prev_dec_per)
+                  dmer1_tgt_prev.length.to_f * (@dmer1_prev_month_per - @dmer1_prev_dec_per)
                 ).round()
                   dmer_result1_fin_prev_month = 
                     (@dmer1_price * dmer_result1_fin_prev_month_len) + 
                     ((dmer_result1.where("? > date",@start_date).length.to_f * (@dmer1_prev_month_per + @dmer1_prev_inc_per)).round() * @dmer1_price)
                 # 合計
-                dmer_result1_fin = dmer_result1_fin_this_month + dmer_result1_fin_prev_month
+                dmer_result1_fin = dme1_fin_this_month + dmer_result1_fin_prev_month
                 # person_hash["dメル一次成果終着（期間内）"] = dmer_result1_fin_prev_month
-                # person_hash["dメル一次成果終着（過去月）"] = dmer_result1_fin_this_month
+                # person_hash["dメル一次成果終着（過去月）"] = dme1_fin_this_month
                 if (person_hash["dメル現状売上1"] > dmer_result1_fin) || (Date.today >= @closing_date)
                   person_hash["dメル一次成果終着"] = person_hash["dメル現状売上1"]
                 else
@@ -983,16 +997,21 @@ class ApplicationController < ActionController::Base
                 end 
               # 第二成果
                 # 期間内
-                dmer_result2_fin_this_month_len =
+                dmer2_fin_this_month_len =
                 (
-                  (dmer_len - dmer_val2_period_len).to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (@dmer2_this_month_per - @dmer2_dec_per)
+                  dmer_len.to_f / person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (@dmer2_this_month_per - @dmer2_dec_per)
                 ).round() rescue 0
                 dmer_result2_fin_this_month = 
-                (@dmer2_price * dmer_result2_fin_this_month_len) + 
-                ((dmer_result2.where(date: @start_date..@end_date).length.to_f * (@dmer2_this_month_per + @dmer2_inc_per)).round() * @dmer2_price)
-                
+                (@dmer2_price * dmer2_fin_this_month_len) -
+                dmer2_val_26_end_of_month.sum(:profit_settlement)
+                person_hash["dメル2終着獲得数（期内）"] = dmer2_fin_this_month_len - dmer2_val_26_end_of_month.length
+                # 過去
+                dmer2_fin_prev_month_len = 
+                  (
+                    dmer2_tgt_prev.length.to_f * (@dmer2_prev_month_per - @dmer2_prev_dec_per)
+                  ).round()
                 dmer_result2_fin_prev_month = 
-                (@dmer2_price * dmer_result1_fin_prev_month_len) + 
+                (@dmer2_price * dmer2_fin_prev_month_len) + 
                 ( (dmer_result2.where("? > date",@start_date).length.to_f * (@dmer2_prev_month_per  + @dmer2_prev_inc_per)).round() * @dmer2_price )
                 # 合計
                 dmer_result2_fin = dmer_result2_fin_this_month + dmer_result2_fin_prev_month
@@ -1005,7 +1024,7 @@ class ApplicationController < ActionController::Base
                 end
               # 第三成果
                 dmer_result3 = 
-                  dmer_slmter.where(settlement_second: @start_done..@dmer3_end_date)
+                  dmer_slmter.where(settlement_second: @dmer3_start_date..@dmer3_end_date)
                   .where.not(industry_status: "NG")
                   .where.not(industry_status: "×")
                   .where.not(industry_status: "要確認")
@@ -1013,7 +1032,7 @@ class ApplicationController < ActionController::Base
                   .where(status_settlement: "完了")
                   .where("? >= status_update_settlement", @dmer3_end_date)
                   .or(
-                    dmer_slmter.where(status_update_settlement: @start_done..@dmer3_end_date)
+                    dmer_slmter.where(status_update_settlement: @dmer3_start_date..@dmer3_end_date)
                     .where.not(industry_status: "NG")
                     .where.not(industry_status: "×")
                     .where.not(industry_status: "要確認")
@@ -1025,19 +1044,20 @@ class ApplicationController < ActionController::Base
                 dmer_result3_len = dmer_result3.length
                 dmer_slmt2nd_len = dmer_slmt2nd.length
                 # 期間内
-                dmer_result3_fin_this_month_len = 
+                dmer3_fin_this_month_len = 
                       (
-                        (dmer_len - dmer_val3_period_len).to_f / 
+                        dmer_len.to_f / 
                         person_hash["消化新規シフト"] * person_hash["予定新規シフト"] * (@dmer3_this_month_per - @dmer3_dec_per)
                       ).round() rescue 0 
                   dmer_result3_fin_this_month = 
-                    (@dmer3_price * dmer_result3_fin_this_month_len) + 
-                    ((dmer_result3.where(date: @start_date..@end_date).length.to_f * (@dmer3_this_month_per + @dmer3_inc_per)).round() * @dmer3_price)
+                    (@dmer3_price * dmer3_fin_this_month_len) -
+                    dmer3_val_26_end_of_month.sum(:profit_second_settlement)
                 dmer_result3_fin_prev_month = 
                   (
-                    @dmer3_price * (dmer_slmt_tgt_prev_len - dmer_2ndslmt_prev_val_len - dmer_slmt_dead_len)
+                    @dmer3_price * (dmer2_tgt_prev.length - dmer_slmt_dead_len)
                   ) + (dmer_result3.where("? > date",@start_date).sum(:profit_second_settlement))
                 dmer_result3_fin = dmer_result3_fin_this_month + dmer_result3_fin_prev_month
+                person_hash["dメル3終着獲得数（期内）"] = dmer3_fin_this_month_len - dmer3_val_26_end_of_month.length
                 # person_hash["dメル三次成果終着（期間内）"] = dmer_result3_fin_this_month
                 # person_hash["dメル三次成果終着（過去月）"] = dmer_result3_fin_prev_month
                 if (person_hash["dメル現状売上3"] > dmer_result3_fin) || (Date.today >= @closing_date)
@@ -1060,16 +1080,16 @@ class ApplicationController < ActionController::Base
                   aupay_user.where("settlement_deadline >= ?", @start_date)
                   .where("? > date", @start_date)
                   .where(status: "審査通過")
-                  .where(status_update_settlement: @start_done..@aupay1_end_date)
+                  .where(status_update_settlement: @aupay1_start_date..@aupay1_end_date)
                 )
               aupay_slmt_tgt_prev_len = aupay_slmt_tgt_prev.length
               aupay_slmt_prev_val = 
-              aupay_slmt_tgt_prev.where(status_update_settlement: @start_done..@aupay1_end_date)
+              aupay_slmt_tgt_prev.where(status_update_settlement: @aupay1_start_date..@aupay1_end_date)
               aupay_slmt_prev_val_len = aupay_slmt_prev_val.length
             # 現状売上
               # 一次成果
                 aupay_result1 = 
-                  aupay_slmter.where(status_update_settlement: @start_done..@aupay1_end_date)
+                  aupay_slmter.where(status_update_settlement: @aupay1_start_date..@aupay1_end_date)
                   .where(status: "審査通過")
                   .where(status_settlement: "完了")
                 aupay_result1_profit = aupay_result1.sum(:profit_settlement)
@@ -1099,7 +1119,7 @@ class ApplicationController < ActionController::Base
             paypay_uq = paypay_user.where(date: @start_date..@end_date)
             # 現状売上
               # 一次成果
-              paypay_result1 = paypay_user.where(status: "60審査可決").where(result_point: @start_done..@paypay_end_date)
+              paypay_result1 = paypay_user.where(status: "60審査可決").where(result_point: @paypay_start_date..@paypay_end_date)
               paypay_result1_profit = paypay_result1.sum(:profit)
               person_hash["PayPay獲得数"] = paypay_uq.length
               person_hash["PayPay第一成果件数"] = paypay_result1.length
@@ -1150,7 +1170,7 @@ class ApplicationController < ActionController::Base
             airpay_user = 
               Airpay.where(user_id: user.id).where(status: "審査完了")
               .or(Airpay.where(user_id: user.id).where(status: "審査中"))
-            airpay_result1 = airpay_user.where(status: "審査完了").where(result_point: @start_done..@airpay_end_date)
+            airpay_result1 = airpay_user.where(status: "審査完了").where(result_point: @airpay_start_date..@airpay_end_date)
             airpay_result1_profit = airpay_result1.sum(:profit) + (airpay_result1.length * (@airpay_price - 3000) )
             person_hash["AirPay第一成果件数"] = airpay_result1.length
             person_hash["AirPay現状売上"] = airpay_result1_profit
@@ -1226,7 +1246,9 @@ class ApplicationController < ActionController::Base
                 person_hash["合計終着"] = profit_new_fin + profit_slmt_fin
   
           # ハッシュへデータを配列へ格納
-            @all_list << person_hash
+            if user.position != "退職"
+              @all_list << person_hash
+            end
             if (user.base_sub =="フェムト") && (user.position != "退職")
               @femto_list << person_hash
             elsif (user.base_sub =="サミット") && (user.position != "退職")
