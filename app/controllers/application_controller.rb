@@ -831,12 +831,14 @@ class ApplicationController < ActionController::Base
               dmer1_val_26_end_of_month = 
                 dmer_user.where(result_point: @start_date...@dmer1_start_date)
                 .where("? > settlement", @dmer1_start_date)
+                .where(date: @start_date...@dmer1_start_date)
                 .where(status: "審査OK")
                 .where.not(industry_status: "NG")
                 .where.not(industry_status: "×")
                 .where.not(industry_status: "要確認")
                 .or(
                   dmer_user.where(settlement: @start_date...@dmer1_start_date)
+                  .where(date: @start_date...@dmer1_start_date)
                   .where("? > result_point", @dmer1_start_date)
                   .where(status: "審査OK")
                   .where.not(industry_status: "NG")
@@ -844,7 +846,7 @@ class ApplicationController < ActionController::Base
                   .where.not(industry_status: "要確認")
                 )
                 dmer2_val_26_end_of_month = dmer1_val_26_end_of_month.where(status_update_settlement: @start_date...@dmer2_start_date)
-                dmer3_val_26_end_of_month = dmer1_val_26_end_of_month.where("? >= settlement_second", @dmer3_end_date)
+                dmer3_val_26_end_of_month = dmer2_val_26_end_of_month.where("? >= settlement_second", @dmer3_end_date)
               person_hash["dメル第一成果件数"] = dmer_result1.length
               person_hash["dメル現状売上1"] = dmer_result1_profit
               # 第二成果
