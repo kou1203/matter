@@ -83,25 +83,44 @@
     <tr>
       <th>商材</th>
       <th>期間</th>
-      <th>成果率</th>
+      <th>成果率（期内）</th>
+      <th>成果率（過去）</th>
       <th>単価</th>
     </tr>
     <tr>
       <th>獲得期間</th>
       <td><%= @start_date %>〜<%= @end_date %></td>
       <td></td>
+      <td></td>
+      <td></td>
     </tr>
     <tr>
       <th>dメル1</th>
       <td><%= @dmer1_start_date %>〜<%= @dmer1_end_date %></td>
-      <td><%=  %></td>
+      <td><%= @dmer1_this_month_per %></td>
+      <td><%= @dmer1_prev_month_per %></td>
       <td><%= @dmer1_price %></td>
     </tr>
     <tr>
       <th>dメル2</th>
       <td><%= @dmer2_start_date %>〜<%= @dmer2_end_date %></td>
-      <td><%=  %></td>
+      <td><%= @dmer2_this_month_per %></td>
+      <td><%= @dmer2_prev_month_per %></td>
       <td><%= @dmer2_price %></td>
+    </tr>
+    <tr>
+      <th>dメル3</th>
+      <td><%= @dmer3_start_date %>〜<%= @dmer3_end_date %></td>
+      <td><%= @dmer3_this_month_per %></td>
+      <td><%= @dmer3_prev_month_per %></td>
+      <td><%= @dmer3_price %></td>
+    </tr>
+    <tr>
+      <th>AirPay</th>
+      <td><%= @airpay1_start_date %>〜<%= @airpay1_end_date %></td>
+      <td><%= @airpay1_this_month_per %></td>
+      <td><%= @airpay1_prev_month_per %></td>
+      <td><%= @airpay_price %></td>
     </tr>
   </table>
 </div>

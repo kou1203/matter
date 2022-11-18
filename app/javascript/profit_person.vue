@@ -110,9 +110,11 @@
                   <th class="base-head-th"></th>
                   <th class="base-head-th"></th>
                   <th class="base-head-th" colspan="4">現状実売</th>
-                  <th class="base-head-th" colspan="4">終着実売</th>
+                  <th class="base-head-th" colspan="3">終着実売（期内）</th>
+                  <th class="base-head-th" colspan="3">終着実売（過去）</th>
+                  <th class="base-head-th" colspan="">終着実売（合計）</th>
                   <th class="base-head-th" colspan="3">成果になった件数</th>
-                  <th class="base-head-th" colspan="3">終着獲得数</th>
+                  <th class="base-head-th" colspan="3">終着獲得数（期内）</th>
                   <th class="base-head-th" colspan="3">過去母体</th>
                 </tr>
                 <tr>
@@ -125,12 +127,15 @@
                   <th class="base-th">審査完了+決済</th>
                   <th class="base-th">アクセプタンス</th>
                   <th class="base-th">2回目決済</th>
+                  <th class="base-th">審査完了+決済</th>
+                  <th class="base-th">アクセプタンス</th>
+                  <th class="base-th">2回目決済</th>
                   <th class="base-th">合計</th>
                   <th class="base-th">審査完了+決済</th>
                   <th class="base-th">アクセプタンス</th>
                   <th class="base-th">2回目決済</th>
                   <th class="base-th">審査完了+決済</th>
-                  <th class="base-th">アクセプタンス）</th>
+                  <th class="base-th">アクセプタンス</th>
                   <th class="base-th">2回目決済</th>
                   <th class="base-th">未決済<br>（過去）</th>
                   <th class="base-th">アクセプタンス未審査<br>（過去）</th>
@@ -146,10 +151,13 @@
                   <td class="base-td">{{ item["dメル現状売上2"].toLocaleString() }}</td>
                   <td class="base-td">{{ item["dメル現状売上3"].toLocaleString() }}</td>
                   <td class="base-td">{{ (item["dメル現状売上1"] + item["dメル現状売上2"] + item["dメル現状売上3"]).toLocaleString()}}</td>
-                  <td class="base-td">{{ item["dメル一次成果終着"].toLocaleString() }}</td>
-                  <td class="base-td">{{ item["dメル二次成果終着"].toLocaleString() }}</td>
-                  <td class="base-td">{{ item["dメル三次成果終着"].toLocaleString() }}</td>
-                  <td class="base-td">{{ (item["dメル一次成果終着"] + item["dメル二次成果終着"] + item["dメル三次成果終着"]).toLocaleString()}}</td>
+                  <td class="base-td">{{ item["dメル一次成果終着（期内）"].toLocaleString() }}</td>
+                  <td class="base-td">{{ item["dメル二次成果終着（期内）"].toLocaleString() }}</td>
+                  <td class="base-td">{{ item["dメル三次成果終着（期内）"].toLocaleString() }}</td>
+                  <td class="base-td">{{ item["dメル一次成果終着（過去）"].toLocaleString() }}</td>
+                  <td class="base-td">{{ item["dメル二次成果終着（過去）"].toLocaleString() }}</td>
+                  <td class="base-td">{{ item["dメル三次成果終着（過去）"].toLocaleString() }}</td>
+                  <td class="base-td">{{ (item["dメル一次成果終着"] + item["dメル二次成果終着"] + item["dメル三次成果終着"]).toLocaleString() }}</td>
                   <td class="base-td">{{ item["dメル第一成果件数"] }}</td>
                   <td class="base-td">{{ item["dメル第二成果件数"] }}</td>
                   <td class="base-td">{{ item["dメル第三成果件数"] }}</td>
@@ -172,6 +180,7 @@
                   <th class="base-head-th" colspan="">現状実売</th>
                   <th class="base-head-th" colspan="">終着実売</th>
                   <th class="base-head-th" colspan="">成果になった件数</th>
+                  <th class="base-head-th" colspan="">アクセプタンス未審査</th>
                 </tr>
               </thead>
               <tbody>
@@ -181,6 +190,7 @@
                   <td class="base-td">{{ item["auPay現状売上1"].toLocaleString() }}</td>
                   <td class="base-td">{{ item["auPay一次成果終着"].toLocaleString() }}</td>
                   <td class="base-td">{{ item["auPay第一成果件数"] }}</td>
+                  <td class="base-td">{{ item["auPay未決済"] }}</td>
                 </tr>
               </tbody>
             </table>
@@ -313,7 +323,7 @@
           <table>
             <thead>
               <tr>
-                <th class="base-head-th" colspan="11">{{ productVal }}</th>
+                <th class="base-head-th" colspan="11"></th>
               </tr>
               <tr>
                 <th class="base-th">ユーザー</th>
