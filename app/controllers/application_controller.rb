@@ -1118,7 +1118,7 @@ class ApplicationController < ActionController::Base
             paypay_uq = paypay_user.where(date: @start_date..@end_date)
             # 現状売上
               # 一次成果
-              paypay_result1 = paypay_user.where(status: "60審査可決").where(result_point: @paypay_start_date..@paypay_end_date)
+              paypay_result1 = paypay_user.where(status: "60審査可決").where(result_point: @paypay1_start_date..@paypay1_end_date)
               paypay_result1_profit = paypay_result1.sum(:profit)
               person_hash["PayPay獲得数"] = paypay_uq.length
               person_hash["PayPay第一成果件数"] = paypay_result1.length
