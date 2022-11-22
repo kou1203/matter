@@ -94,3 +94,6 @@ gem 'kaminari'
 gem 'activerecord-import'
 
 gem 'render_async'
+
+gem 'google_drive'
+

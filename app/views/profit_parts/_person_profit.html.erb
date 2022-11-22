@@ -24,6 +24,7 @@
   <span class="shift-text red">現状予定シフト数<%= shifts_prev_len %>, 消化シフト, <%= results_prev_len %>）</span>
 <% end %>
 </h2>
+
 <span class="ojt-date-csv">
         <%= link_to "合計実売CSV出力", sum_export_profits_path(format: :csv,month:@month), data: {confirm: "CSVを出力しますか？"}, class: "csv-link",id:'download-csv' %>
         <%= link_to "個別資料CSV出力", index_export_profits_path(format: :csv,month:@month), data: {confirm: "CSVを出力しますか？"}, class: "csv-link",id:'download-csv' %>

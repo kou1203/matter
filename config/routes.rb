@@ -171,6 +171,7 @@ Rails.application.routes.draw do
   resources :profits, only: [:index] do 
     collection {get :sum_export}
     collection {get :index_export}
+    collection {get :profit_export_by_spreadsheet}
   end
   # get 'profits', to: 'profits#index' do 
   #   collection {get :sum_export}

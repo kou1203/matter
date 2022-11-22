@@ -1,12 +1,53 @@
 class ProfitsController < ApplicationController
   before_action :authenticate_user!
   before_action :back_retirement, only: [:index]
+  require 'google_drive'
   def index
     # controllers/application_controller.rbから参照
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @calc_periods = CalcPeriod.where(sales_category: "実売")
     profit_pack # 実売の計算式が入った関数
   end 
+
+  def profit_export_by_spreadsheet
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @calc_periods = CalcPeriod.where(sales_category: "実売")
+    profit_pack # 実売の計算式が入った関数
+    # GoogleDriveのセッションを取得する
+    @session = GoogleDrive::Session.from_config("config.json")
+    # 書き込むシートを指定する
+    @sheets = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("エクスポート")
+    # スプレッドシートへの書き込み
+    # @sheets[1, 1] = "Hello World"
+    index_cnt = 2
+    @base_list.each do |base|
+      base.each do |user|
+        result_attributes = {}
+        @sheets[index_cnt, 1] = user["拠点"]
+        @sheets[index_cnt, 2] = user["名前"]
+        @sheets[index_cnt, 3] = (user["合計終着"] / user["予定シフト"]).round() rescue 0
+        @sheets[index_cnt, 4] = user["決済現状売上"]
+        @sheets[index_cnt, 5] = user["新規現状売上"]
+        @sheets[index_cnt, 6] = user["合計現状売上"]
+        @sheets[index_cnt, 7] = user["新規終着"]
+        @sheets[index_cnt, 8] = user["決済終着"]
+        @sheets[index_cnt, 9] = user["合計終着"]
+        @sheets[index_cnt, 10] = user["予定新規シフト"]
+        @sheets[index_cnt, 11] = user["予定決済シフト"]
+        @sheets[index_cnt, 12] = user["予定シフト"]
+        @sheets[index_cnt, 13] = user["消化新規シフト"]
+        @sheets[index_cnt, 14] = user["消化決済シフト"]
+        @sheets[index_cnt, 15] = user["消化シフト"]
+        @sheets[index_cnt, 16] = user["予定シフト"] - user["消化シフト"]
+        @sheets[index_cnt, 17] = user["消化帯同シフト"]
+        @sheets[index_cnt, 18] = user["dメル第一成果件数"]
+        index_cnt += 1
+      end 
+    end 
+    # シートの保存
+    @sheets.save
+    
+  end
 
   def sum_export 
     profit_pack # 実売の計算式が入った関数
