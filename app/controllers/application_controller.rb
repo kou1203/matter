@@ -846,7 +846,7 @@ class ApplicationController < ActionController::Base
                   .where.not(industry_status: "要確認")
                 )
                 dmer2_val_26_end_of_month = dmer1_val_26_end_of_month.where(status_update_settlement: @start_date...@dmer2_start_date)
-                dmer3_val_26_end_of_month = dmer2_val_26_end_of_month.where("? >= settlement_second", @dmer3_end_date)
+                dmer3_val_26_end_of_month = dmer2_val_26_end_of_month.where("? > settlement_second", @dmer3_start_date)
               person_hash["dメル第一成果件数"] = dmer_result1.length
               person_hash["dメル現状売上1"] = dmer_result1_profit
               # 第二成果
@@ -983,11 +983,13 @@ class ApplicationController < ActionController::Base
                 # 過去月終着獲得数 = 母体数 * 成果率
                 dmer_result1_fin_prev_month_len = 
                 (
-                  dmer1_tgt_prev.length.to_f * (@dmer1_prev_month_per - @dmer1_prev_dec_per)
+                  person_hash["dメル1過去母体"].to_f * (@dmer1_prev_month_per - @dmer1_prev_dec_per)
                 ).round()
                   dmer_result1_fin_prev_month = 
                     (@dmer1_price * dmer_result1_fin_prev_month_len) + 
-                    ((dmer_result1.where("? > date",@start_date).length.to_f * (@dmer1_prev_month_per + @dmer1_prev_inc_per)).round() * @dmer1_price)
+                    (
+                      @dmer1_price * (dmer_result1.where("? > date",@start_date).length.to_f * (@dmer1_prev_month_per + @dmer1_prev_inc_per)).round()
+                    )
                 # 合計
                 dmer_result1_fin = dme1_fin_this_month + dmer_result1_fin_prev_month
                 person_hash["dメル一次成果終着（期内）"] = dme1_fin_this_month
