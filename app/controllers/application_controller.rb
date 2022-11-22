@@ -1198,7 +1198,8 @@ class ApplicationController < ActionController::Base
             airpay_period_fin = 
               (airpay_len_fin * @airpay_price) - 
               (@airpay_price * @airpay26_end_of_month_done_len) rescue 0
-            airpay_prev_fin = (airpay_prev_len_fin * @airpay_price) rescue 0
+            # 過去
+            airpay_prev_fin = (@airpay_price * airpay_prev_len_fin) + (@airpay_price * airpay_result1.where("? > date",@start_date).length) rescue 0
             airpay_maxsup = 
               airpay_user.where(client: "マックス").where(date: @start_date..@end_date) rescue 0
             airpay_maxsup_len = 
