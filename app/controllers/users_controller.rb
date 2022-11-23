@@ -790,12 +790,7 @@ class UsersController < ApplicationController
       @airpay_period = @airpay_user.where(date: @start_date..@end_date)
       
       @airpay_prev = 
-        @airpay_user.where("? > date",@start_date)
-        .where(result_point: nil)
-        .or(@airpay_user.where("? > date",@start_date).where(result_point: @airpay1_start_date..@airpay1_end_date)) 
-        @airpay_prev = 
-          @airpay_prev.where(status: "審査完了")
-          .or(@airpay_prev.where(status: "審査中"))
+        @airpay_user.where("? > date",@start_date).where(status: "審査中") 
         @airpay_prev_len = @airpay_prev.length 
       @airpay_period_done_len = 
         @airpay_user.where("? > date",@start_date)
@@ -873,9 +868,7 @@ class UsersController < ApplicationController
           .where.not(industry_status: "×")
           .where.not(industry_status: "NG")
           .where.not(industry_status: "要確認")
-          @dmer1_slmt_tgt_prev = 
-            @dmer_slmt_tgt_prev.where(result_point: @dmer1_start_date..@dmer1_end_date)
-            .or(@dmer_slmt_tgt_prev.where(result_point: nil))
+          @dmer1_tgt_prev = @dmer_uq.where(status: "審査待ち").where("? > date", @start_date)
           @dmer2_slmt_tgt_prev = 
           @dmer_slmt_tgt_prev.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
           .or(@dmer_slmt_tgt_prev.where(status_update_settlement: nil))
@@ -883,9 +876,6 @@ class UsersController < ApplicationController
         @dmer_slmt_dead = @dmer_slmt_tgt_prev.where(status_settlement: "期限切れ")
         @dmer_slmt_dead_len = @dmer_slmt_dead.length
         # 過去の決済対象で今月成果になったもの
-        @dmer1_prev_val = 
-          @dmer1_slmt_tgt_prev.where(result_point: @dmer1_start_date..@dmer1_end_date)
-        @dmer1_prev_val_len = @dmer1_prev_val.length
         @dmer2_prev_val = 
           @dmer2_slmt_tgt_prev.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
         @dmer2_prev_val_len = @dmer2_prev_val.length
@@ -918,7 +908,7 @@ class UsersController < ApplicationController
           (@dmer1_done_prev.length.to_f * (@dmer1_prev_month_per + @dmer1_prev_inc_per)).round()
         @dmer_result1_fin_prev_month_len = 
           (
-            (@dmer1_slmt_tgt_prev.length - @dmer1_prev_val_len).to_f * 
+            @dmer1_tgt_prev.length.to_f * 
             (@dmer1_prev_month_per - @dmer1_prev_dec_per)
           ).round()
         @dmer_result1_fin_prev_month = 
@@ -1033,7 +1023,7 @@ class UsersController < ApplicationController
             # 過去月終着（審査中件数 * 0.87 + 過去月の売上）
             @airpay_result1_fin_prev_month = 
               @airpay_price * (
-                ( @airpay_prev_len - @airpay_period_done_len) * 
+                @airpay_prev_len * 
                 (@airpay1_prev_month_per - @airpay_prev_dec_per)
               ).round() + (@airpay_price * @airpay_period_done_len)
             # 合計 期間内終着 + 過去月終着 

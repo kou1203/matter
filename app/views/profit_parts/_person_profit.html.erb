@@ -28,6 +28,7 @@
 <span class="ojt-date-csv">
         <%= link_to "合計実売CSV出力", sum_export_profits_path(format: :csv,month:@month), data: {confirm: "CSVを出力しますか？"}, class: "csv-link",id:'download-csv' %>
         <%= link_to "個別資料CSV出力", index_export_profits_path(format: :csv,month:@month), data: {confirm: "CSVを出力しますか？"}, class: "csv-link",id:'download-csv' %>
+        <%= link_to "スプレッド出力", profit_export_by_spreadsheet_profits_path, data: {confirm: "スプレッドを出力しますか？"}, class: "csv-link",id:'download-csv' %>
       </span>
 <div style="display: flex;">
   <table>
@@ -40,6 +41,7 @@
       <th>auPay最終更新日</th>
       <th>PayPay最終更新日</th>
       <th>楽天ペイ最終更新日</th>
+      <th>人員</th>
     </tr>
     <% all_ave = 0 %>
     <%# 中身確認 %>
@@ -61,11 +63,13 @@
       <td><%= Aupay.includes(:user).where(user: {base_sub: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
       <td><%= Paypay.includes(:user).where(user: {base_sub: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
       <td><%= RakutenPay.includes(:user).where(user: {base_sub: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
+      <td><%= base.length %>人</td>
       <% else %>
       <td><%= Dmer.includes(:user).where(user: {base: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
       <td><%= Aupay.includes(:user).where(user: {base: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
       <td><%= Paypay.includes(:user).where(user: {base: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
       <td><%= RakutenPay.includes(:user).where(user: {base: base[0]["拠点"]}).maximum(:status_update).strftime("%m月%d日") rescue "" %></td>
+      <td><%= base.length %>人</td>
       <% end %>
     </tr>
     <% end %>
@@ -78,6 +82,7 @@
       <td><%= Aupay.maximum(:status_update).strftime("%m月%d日") rescue 0 %></td>
       <td><%= Paypay.maximum(:status_update).strftime("%m月%d日") rescue 0 %></td>
       <td><%= RakutenPay.maximum(:status_update).strftime("%m月%d日") rescue 0 %></td>
+      <td><%= @all_list.length %>人</td>
     </tr>
   </table>
   <table>
@@ -117,11 +122,25 @@
       <td><%= @dmer3_price %></td>
     </tr>
     <tr>
+      <th>auPay</th>
+      <td><%= @aupay1_start_date %>〜<%= @aupay1_end_date %></td>
+      <td><%= @aupay1_this_month_per %></td>
+      <td><%= @aupay1_prev_month_per %></td>
+      <td><%= @aupay1_price %></td>
+    </tr>
+    <tr>
       <th>PayPay</th>
       <td><%= @paypay1_start_date %>〜<%= @paypay1_end_date %></td>
       <td><%= @paypay1_this_month_per %></td>
       <td><%= @paypay1_prev_month_per %></td>
       <td><%= @paypay_price %></td>
+    </tr>
+    <tr>
+      <th>楽天ペイ</th>
+      <td><%= @rakuten_pay1_start_date %>〜<%= @rakuten_pay1_end_date %></td>
+      <td><%= @rakuten_pay1_this_month_per %></td>
+      <td><%= @rakuten_pay1_prev_month_per %></td>
+      <td><%= @rakuten_pay1_price %></td>
     </tr>
     <tr>
       <th>AirPay</th>

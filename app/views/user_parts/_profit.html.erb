@@ -13,8 +13,17 @@
   </tr>
   <tr>
     <td><%= @dmer_result1_fin %></td>
-    <td><%= @dmer1_price %> * <%= @dmer_result1_fin_this_month_len %>（<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @dmer1_this_month_per - @dmer1_dec_per %>） - <%= @dmer_val1_period_profit %></td>
-    <td><%= @dmer1_price %> * <%= @dmer_result1_fin_prev_month_len %>（<%= @dmer1_slmt_tgt_prev.length %> - <%= @dmer1_prev_val_len %>） + <%= @dmer1_price %> * <%= @dmer1_done_prev_len %></td>
+    <td>
+      <%= @dmer1_price %> * 
+      <%= @dmer_result1_fin_this_month_len %>
+      （<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * 
+      <%= @dmer1_this_month_per - @dmer1_dec_per %>） - <%= @dmer_val1_period_profit %>
+    </td>
+    <td>
+      <%= @dmer1_price %> * 
+      <%= @dmer_result1_fin_prev_month_len %>
+      <%= @dmer1_price %> * <%= @dmer1_tgt_prev.length %> + 
+      <%= @dmer1_price %> * <%= @dmer1_done_prev_len %></td>
     <td><%= @dmer1_this_month_per  %> - <%= @dmer1_dec_per %></td>
     <td><%= @dmer1_prev_month_per  %> - <%= @dmer1_prev_dec_per %></td>
   </tr>
@@ -43,10 +52,14 @@
   </tr>
   <tr>
     <td><%= @dmer_result3_fin %></td>
-    <td><%= @dmer3_price %> * <%= @dmer_result3_fin_this_month_len %>（<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @dmer3_this_month_per - @dmer3_dec_per %>） - <%= @dmer_val3_period_profit %></td>
-    <td><%= @dmer3_price %> * <%= @dmer_result3_fin_prev_month_len %>
-    （<%= @dmer2_slmt_tgt_prev.length %> - <%= @dmer3_prev_val_len %> - <%= @dmer_slmt_dead_len %>）
-    + <%= @dmer3_price %> * <%= @dmer3_done_prev_len %> + <%= @dmer_slmt2nd_done.where("? > date",@start_date).sum(:valuation_second_settlement) %></td>
+    <td>
+      <%= @dmer3_price %> * <%= @dmer_result3_fin_this_month_len %>（<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @dmer3_this_month_per - @dmer3_dec_per %>） - <%= @dmer_val3_period_profit %>
+    </td>
+    <td>
+      <%= @dmer3_price %> * <%= @dmer_result3_fin_prev_month_len %>
+    （<%= @dmer2_slmt_tgt_prev.length %> - <%= @dmer3_prev_val_len %> - <%= @dmer_slmt_dead_len %>）+
+     <%= @dmer_slmt2nd_done.where("? > date",@start_date).sum(:valuation_second_settlement) %>
+    </td>
     <td><%= @dmer3_this_month_per  %> - <%= @dmer3_dec_per %></td>
     <td></td>
   </tr>
@@ -61,7 +74,7 @@
     <td><%= @airpay_result1_fin %></td>
     <td><%= @airpay_price %> * <%= @airpays_result_len_fin %>（<%= @airpays_result_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @airpay1_this_month_per - @airpay_dec_per %>） - （<%= @airpay_price %> * <%= @airpay26_end_done.length %> ）</td>
     <td>
-      <%= @airpay_price %> * （（<%= @airpay_prev_len %> - <%= @airpay_period_done_len %>） * 
+      <%= @airpay_price %> * （<%= @airpay_prev_len %> * 
       <%= @airpay1_prev_month_per - @airpay_prev_dec_per %> ）+
     （<%= @airpay_price %> * <%= @airpay_period_done_len %>） 
     </td>

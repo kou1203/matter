@@ -15,38 +15,37 @@ class ProfitsController < ApplicationController
     profit_pack # 実売の計算式が入った関数
     # GoogleDriveのセッションを取得する
     @session = GoogleDrive::Session.from_config("config.json")
+    @chubu_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("中部利益表")
+    @kansai_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("関西利益表")
+    @kanto_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("関東利益表")
+    @kyushu_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("九州利益表")
+    @session_ary = [@chubu_session,@kansai_session,@kanto_session,@kyushu_session]
     # 書き込むシートを指定する
-    @sheets = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("エクスポート")
     # スプレッドシートへの書き込み
     # @sheets[1, 1] = "Hello World"
-    index_cnt = 2
-    @base_list.each do |base|
-      base.each do |user|
-        result_attributes = {}
-        @sheets[index_cnt, 1] = user["拠点"]
-        @sheets[index_cnt, 2] = user["名前"]
-        @sheets[index_cnt, 3] = (user["合計終着"] / user["予定シフト"]).round() rescue 0
-        @sheets[index_cnt, 4] = user["決済現状売上"]
-        @sheets[index_cnt, 5] = user["新規現状売上"]
-        @sheets[index_cnt, 6] = user["合計現状売上"]
-        @sheets[index_cnt, 7] = user["新規終着"]
-        @sheets[index_cnt, 8] = user["決済終着"]
-        @sheets[index_cnt, 9] = user["合計終着"]
-        @sheets[index_cnt, 10] = user["予定新規シフト"]
-        @sheets[index_cnt, 11] = user["予定決済シフト"]
-        @sheets[index_cnt, 12] = user["予定シフト"]
-        @sheets[index_cnt, 13] = user["消化新規シフト"]
-        @sheets[index_cnt, 14] = user["消化決済シフト"]
-        @sheets[index_cnt, 15] = user["消化シフト"]
-        @sheets[index_cnt, 16] = user["予定シフト"] - user["消化シフト"]
-        @sheets[index_cnt, 17] = user["消化帯同シフト"]
-        @sheets[index_cnt, 18] = user["dメル第一成果件数"]
-        index_cnt += 1
-      end 
-    end 
-    # シートの保存
-    @sheets.save
-    
+      @cash_ary.zip(@session_ary) do |base, session|
+        index_cnt = 4
+        out_index = 12 + (base.length * 2)
+        base.each do |user|
+          base_profit_by_spread(session,user,index_cnt)
+          base_out_by_spread(session,user,out_index)
+          index_cnt += 1
+          out_index += 1
+        end
+        session.save
+      end
+
+      @calc_periods_len = CalcPeriod.where(sales_category: "評価売")
+      @users_ary = [@users_chubu_len, @users_kansai_len, @users_kanto_len,@users_kyushu_len]
+      valuation_pack
+      @cash_ary.zip(@session_ary) do |base, session|
+        index_cnt = 8 + base.length
+        base.each do |user|
+          base_profit_by_spread(session,user,index_cnt)
+          index_cnt += 1
+        end
+        session.save
+      end
   end
 
   def sum_export 
@@ -274,6 +273,97 @@ class ProfitsController < ApplicationController
   end 
 
   private 
+
+  def base_profit_by_spread(sheets,user,index_cnt)
+    sheets[index_cnt, 2] = user["名前"]
+    sheets[index_cnt, 3] = (user["合計終着"] / user["予定シフト"]).round() rescue 0
+    sheets[index_cnt, 4] = user["新規現状売上"]
+    sheets[index_cnt, 5] = user["決済現状売上"]
+    sheets[index_cnt, 6] = user["合計現状売上"]
+    sheets[index_cnt, 7] = user["新規終着"]
+    sheets[index_cnt, 8] = user["決済終着"]
+    sheets[index_cnt, 9] = user["合計終着"]
+    sheets[index_cnt, 10] = user["予定新規シフト"]
+    sheets[index_cnt, 11] = user["予定決済シフト"]
+    sheets[index_cnt, 12] = user["予定シフト"]
+    sheets[index_cnt, 13] = user["消化新規シフト"]
+    sheets[index_cnt, 14] = user["消化決済シフト"]
+    sheets[index_cnt, 15] = user["消化シフト"]
+    sheets[index_cnt, 16] = user["予定シフト"] - user["消化シフト"]
+    sheets[index_cnt, 17] = user["消化帯同シフト"]
+    sheets[index_cnt, 18] = user["dメル獲得数"]
+    sheets[index_cnt, 19] = user["dメル第二成果件数"]
+    sheets[index_cnt, 20] = user["dメル第三成果件数"]
+    sheets[index_cnt, 21] = user["auPay獲得数"]
+    sheets[index_cnt, 22] = user["auPay第一成果件数"]
+    sheets[index_cnt, 23] = user["PayPay獲得数"]
+    sheets[index_cnt, 24] = user["楽天ペイ第一成果件数"]
+    sheets[index_cnt, 25] = user["AirPay第一成果件数"]
+    sheets[index_cnt, 26] = user["出前館第一成果件数"]
+    sheets[index_cnt, 27] = user["auステッカー第一成果件数"]
+  end 
+
+  def base_out_by_spread(sheets,user,index_cnt)
+    sheets[index_cnt, 2] = user["名前"]
+    sheets[index_cnt, 3] = user["訪問"]
+    sheets[index_cnt, 4] = user["応答"]
+    sheets[index_cnt, 6] = user["対面"]
+    sheets[index_cnt, 8] = user["フル"]
+    sheets[index_cnt, 10] = user["獲得"]
+    sheets[index_cnt, 12] = user["０１：どうゆうこと？：対面"]
+    sheets[index_cnt, 13] = user["０１：どうゆうこと？：フル"]
+    sheets[index_cnt, 15] = user["０１：どうゆうこと？：成約"]
+    sheets[index_cnt, 17] = user["０２：君は誰？協会？：対面"]
+    sheets[index_cnt, 18] = user["０２：君は誰？協会？：フル"]
+    sheets[index_cnt, 20] = user["０２：君は誰？協会？：成約"]
+    sheets[index_cnt, 22] = user["０３：もらうだけでいいの？：対面"]
+    sheets[index_cnt, 23] = user["０３：もらうだけでいいの？：フル"]
+    sheets[index_cnt, 25] = user["０３：もらうだけでいいの？：成約"]
+    sheets[index_cnt, 27] = user["０４：PayPayのみ：対面"]
+    sheets[index_cnt, 28] = user["０４：PayPayのみ：フル"]
+    sheets[index_cnt, 30] = user["０４：PayPayのみ：成約"]
+    sheets[index_cnt, 32] = user["０５：AirPayのみ：対面"]
+    sheets[index_cnt, 33] = user["０５：AirPayのみ：フル"]
+    sheets[index_cnt, 35] = user["０５：AirPayのみ：成約"]
+    sheets[index_cnt, 37] = user["０６：カードのみ：対面"]
+    sheets[index_cnt, 38] = user["０６：カードのみ：フル"]
+    sheets[index_cnt, 40] = user["０６：カードのみ：成約"]
+    sheets[index_cnt, 42] = user["０７：先延ばし：対面"]
+    sheets[index_cnt, 43] = user["０７：先延ばし：フル"]
+    sheets[index_cnt, 45] = user["０７：先延ばし：成約"]
+    sheets[index_cnt, 47] = user["０８：現金のみ：対面"]
+    sheets[index_cnt, 48] = user["０８：現金のみ：フル"]
+    sheets[index_cnt, 50] = user["０８：現金のみ：成約"]
+    sheets[index_cnt, 52] = user["０９：忙しい：対面"]
+    sheets[index_cnt, 53] = user["０９：忙しい：フル"]
+    sheets[index_cnt, 55] = user["０９：忙しい：成約"]
+    sheets[index_cnt, 57] = user["１０：面倒くさい：対面"]
+    sheets[index_cnt, 58] = user["１０：面倒くさい：フル"]
+    sheets[index_cnt, 60] = user["１０：面倒くさい：成約"]
+    sheets[index_cnt, 62] = user["１１：情報不足：対面"]
+    sheets[index_cnt, 63] = user["１１：情報不足：フル"]
+    sheets[index_cnt, 65] = user["１１：情報不足：成約"]
+    sheets[index_cnt, 67] = user["１２：ペロ：対面"]
+    sheets[index_cnt, 68] = user["１２：ペロ：フル"]
+    sheets[index_cnt, 70] = user["１２：ペロ：成約"]
+    sheets[index_cnt, 72] = user["１３：その他：対面"]
+    sheets[index_cnt, 73] = user["１３：その他：フル"]
+    sheets[index_cnt, 75] = user["１３：その他：成約"]
+    sheets[index_cnt, 77] = user["喫茶・カフェ訪問数"]
+    sheets[index_cnt, 78] = user["喫茶・カフェ獲得数"]
+    sheets[index_cnt, 79] = user["その他飲食訪問数"]
+    sheets[index_cnt, 80] = user["その他飲食獲得数"]
+    sheets[index_cnt, 81] = user["車屋訪問数"]
+    sheets[index_cnt, 82] = user["車屋獲得数"]
+    sheets[index_cnt, 83] = user["その他小売訪問数"]
+    sheets[index_cnt, 84] = user["その他小売獲得数"]
+    sheets[index_cnt, 85] = user["理容・美容訪問数"]
+    sheets[index_cnt, 86] = user["理容・美容獲得数"]
+    sheets[index_cnt, 87] = user["整体・鍼灸訪問数"]
+    sheets[index_cnt, 88] = user["整体・鍼灸獲得数"]
+    sheets[index_cnt, 89] = user["その他サービス訪問数"]
+    sheets[index_cnt, 90] = user["その他サービス獲得数"]
+  end
 
   def create_csv(filename, csv1)
     #ファイル書き込み
