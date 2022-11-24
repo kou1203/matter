@@ -28,12 +28,13 @@ class ProfitsController < ApplicationController
         # out_index = 12 + (base.length * 2)
         base.each do |user|
           base_profit_by_spread(session,user,index_cnt)
+          sleep(0.1)
           # base_out_by_spread(session,user,out_index)
           index_cnt += 1
           # out_index += 1
         end
         session.save
-        sleep(3)
+        sleep(0.1)
       end
 
       # @calc_periods_len = CalcPeriod.where(sales_category: "評価売")
