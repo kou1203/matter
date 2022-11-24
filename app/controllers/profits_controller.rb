@@ -25,13 +25,13 @@ class ProfitsController < ApplicationController
     # @sheets[1, 1] = "Hello World"
       @cash_ary.zip(@session_ary) do |base, session|
         index_cnt = 4
-        out_index = 12 + (base.length * 2)
+        # out_index = 12 + (base.length * 2)
         base.each do |user|
           base_profit_by_spread(session,user,index_cnt)
-          base_out_by_spread(session,user,out_index)
+          # base_out_by_spread(session,user,out_index)
 
           index_cnt += 1
-          out_index += 1
+          # out_index += 1
         end
         session.save
         sleep(1)
