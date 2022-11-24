@@ -1294,7 +1294,8 @@ class ApplicationController < ActionController::Base
               # 新規
               profit_new = 
                 person_hash["dメル現状売上1"] + person_hash["PayPay現状売上"] + person_hash["楽天ペイ現状売上"] +
-                person_hash["AirPay現状売上"] + person_hash["出前館現状売上"] + person_hash["auステッカー現状売上"]
+                person_hash["AirPay現状売上"] + person_hash["出前館現状売上"] + person_hash["auステッカー現状売上"] +
+                person_hash["dメルステッカー現状売上"]
               person_hash["新規現状売上"] = profit_new
               # 決済
               profit_slmt = 
@@ -1306,7 +1307,7 @@ class ApplicationController < ActionController::Base
               # 新規
               profit_new_fin = 
                 person_hash["dメル一次成果終着"] + person_hash["PayPay一次成果終着"] + person_hash["楽天ペイ一次成果終着"] +
-                person_hash["AirPay一次成果終着"] + person_hash["出前館一次成果終着"] + person_hash["auステッカー一次成果終着"]
+                person_hash["AirPay一次成果終着"] + person_hash["出前館一次成果終着"] + person_hash["auステッカー一次成果終着"] + person_hash["dメルステッカー一次成果終着"]
               person_hash["新規終着"] = profit_new_fin
               # 決済
               profit_slmt_fin = 
@@ -1844,6 +1845,13 @@ class ApplicationController < ActionController::Base
               person_hash["auステッカー第一成果件数"] = au_sticker_result1.length
               person_hash["auステッカー現状売上"] = au_sticker_result1_valuation
               person_hash["auステッカー一次成果終着"] = au_sticker_result1_valuation
+          # auステッカー
+              dmer_sticker_user = OtherProduct.where(user_id: user.id).where(product_name: "dメルステッカー")
+              dmer_sticker_result1 = dmer_sticker_user.where(date: @dmersticker1_start_date.. @dmersticker1_end_date)
+              dmer_sticker_result1_valuation = dmer_sticker_result1.sum(:valuation)
+              person_hash["dメルステッカー第一成果件数"] = dmer_sticker_result1.length
+              person_hash["dメルステッカー現状売上"] = dmer_sticker_result1_valuation
+              person_hash["dメルステッカー一次成果終着"] = dmer_sticker_result1_valuation
           # 現状売上
               # 新規
               valuation_new = 
