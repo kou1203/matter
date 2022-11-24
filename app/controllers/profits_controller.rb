@@ -29,26 +29,25 @@ class ProfitsController < ApplicationController
         base.each do |user|
           base_profit_by_spread(session,user,index_cnt)
           # base_out_by_spread(session,user,out_index)
-
           index_cnt += 1
           # out_index += 1
         end
         session.save
-        sleep(1)
+        sleep(3)
       end
 
-      @calc_periods_len = CalcPeriod.where(sales_category: "評価売")
-      @users_ary = [@users_chubu_len, @users_kansai_len, @users_kanto_len,@users_kyushu_len]
-      valuation_pack
-      @cash_ary.zip(@session_ary) do |base, session|
-        index_cnt = 8 + base.length
-        base.each do |user|
-          base_profit_by_spread(session,user,index_cnt)
-          index_cnt += 1
-        end
-        session.save
-        sleep(1)
-      end
+      # @calc_periods_len = CalcPeriod.where(sales_category: "評価売")
+      # @users_ary = [@users_chubu_len, @users_kansai_len, @users_kanto_len,@users_kyushu_len]
+      # valuation_pack
+      # @cash_ary.zip(@session_ary) do |base, session|
+      #   index_cnt = 8 + base.length
+      #   base.each do |user|
+      #     base_profit_by_spread(session,user,index_cnt)
+      #     index_cnt += 1
+      #   end
+      #   session.save
+      #   sleep(3)
+      # end
   end
 
   def product_export_by_spreadsheet
@@ -67,6 +66,28 @@ class ProfitsController < ApplicationController
     @dmersticker_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("dメルステッカー")
 
     index = 4
+    @base_list.each do |list|
+      list.each do |user|
+        dmer_by_spread(@dmer_session,user,index)
+        aupay_by_spread(@aupay_session,user,index)
+        paypay_by_spread(@paypay_session,user,index)
+        rakuten_pay_by_spread(@rakuten_pay_session,user,index)
+        airpay_by_spread(@airpay_session,user,index)
+        demaekan_by_spread(@demaekan_session,user,index)
+        austicker_by_spread(@austicker_session,user,index)
+        dmersticker_by_spread(@dmersticker_session,user,index)
+        index += 1
+      end 
+      @dmer_session.save
+      @aupay_session.save
+      @paypay_session.save
+      @rakuten_pay_session.save
+      @airpay_session.save
+      @demaekan_session.save
+      @austicker_session.save
+      @dmersticker_session.save
+      sleep(1)
+    end 
     @base_list.each do |list|
       list.each do |user|
         dmer_by_spread(@dmer_session,user,index)
