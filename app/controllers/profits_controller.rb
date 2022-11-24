@@ -29,10 +29,12 @@ class ProfitsController < ApplicationController
         base.each do |user|
           base_profit_by_spread(session,user,index_cnt)
           base_out_by_spread(session,user,out_index)
+
           index_cnt += 1
           out_index += 1
         end
         session.save
+        sleep(1)
       end
 
       @calc_periods_len = CalcPeriod.where(sales_category: "評価売")
@@ -45,6 +47,7 @@ class ProfitsController < ApplicationController
           index_cnt += 1
         end
         session.save
+        sleep(1)
       end
   end
 
@@ -84,6 +87,7 @@ class ProfitsController < ApplicationController
       @demaekan_session.save
       @austicker_session.save
       @dmersticker_session.save
+      sleep(1)
     end 
   end 
 
