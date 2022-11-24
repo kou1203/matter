@@ -57,7 +57,7 @@
     </td>
     <td>
       <%= @dmer3_price %> * <%= @dmer_result3_fin_prev_month_len %>
-    （<%= @dmer2_slmt_tgt_prev.length %> - <%= @dmer3_prev_val_len %> - <%= @dmer_slmt_dead_len %>）+
+    （<%= @dmer3_slmt_tgt_prev.length %> - <%= @dmer3_val_prev_len %> - <%= @dmer_slmt_dead_len %>）+
      <%= @dmer_slmt2nd_done.where("? > date",@start_date).sum(:valuation_second_settlement) %>
     </td>
     <td><%= @dmer3_this_month_per  %> - <%= @dmer3_dec_per %></td>

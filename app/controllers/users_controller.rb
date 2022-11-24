@@ -869,9 +869,11 @@ class UsersController < ApplicationController
           .where.not(industry_status: "NG")
           .where.not(industry_status: "要確認")
           @dmer1_tgt_prev = @dmer_uq.where(status: "審査待ち").where("? > date", @start_date)
-          @dmer2_slmt_tgt_prev = 
+          @dmer2_slmt_tgt_prev = @dmer_slmt_tgt_prev.where(status_update_settlement: nil)
+          @dmer3_slmt_tgt_prev = 
           @dmer_slmt_tgt_prev.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
           .or(@dmer_slmt_tgt_prev.where(status_update_settlement: nil))
+          @dmer3_val_prev_len = @dmer3_slmt_tgt_prev.where("? >= settlement_second", @dmer3_end_date).length
         # 期限切れ
         @dmer_slmt_dead = @dmer_slmt_tgt_prev.where(status_settlement: "期限切れ")
         @dmer_slmt_dead_len = @dmer_slmt_dead.length
@@ -916,7 +918,10 @@ class UsersController < ApplicationController
           (@dmer1_price * @dmer1_done_prev_len)
           
         @dmer_result1_fin = @dmer_result1_fin_this_month + @dmer_result1_fin_prev_month 
-        
+        if (@dmer_done.sum(:valuation_new) > @dmer_result1_fin) || Date.today >= @closing_date
+          @dmer_result1_fin = @dmer_done.sum(:valuation_new)
+        end 
+         
         # 第二成果終着
         # 期間内終着
         @dmer_result2_fin_this_month_len = (@dmer_len.to_f / @digestion_new * @new_shift * (@dmer2_this_month_per - @dmer2_dec_per)).round() rescue 0
@@ -926,10 +931,13 @@ class UsersController < ApplicationController
         @dmer2_done_prev = @dmer_slmt_done.where("? > date",@start_date)
         @dmer2_done_prev_len = (@dmer2_done_prev.length.to_f * (@dmer2_prev_month_per + @dmer2_prev_inc_per)).round()
         @dmer_result2_fin_prev_month_len = 
-          ((@dmer2_slmt_tgt_prev.length - @dmer2_prev_val_len).to_f * (@dmer2_prev_month_per - @dmer2_prev_dec_per)).round()
+          (@dmer2_slmt_tgt_prev.length.to_f * (@dmer2_prev_month_per - @dmer2_prev_dec_per)).round()
         @dmer_result2_fin_prev_month = 
           (@dmer2_price * @dmer_result2_fin_prev_month_len) + (@dmer2_price * @dmer2_done_prev_len)
         @dmer_result2_fin = @dmer_result2_fin_this_month + @dmer_result2_fin_prev_month
+        if (@dmer_slmt_done.sum(:valuation_settlement) > @dmer_result2_fin) || Date.today >= @closing_date
+          @dmer_result2_fin = @dmer_slmt_done.sum(:valuation_settlement)
+        end 
         # 第三成果終着
         # 期間内
         @dmer_result3_fin_this_month_len = (@dmer_len.to_f / @digestion_new * @new_shift * (@dmer3_this_month_per - @dmer3_dec_per)).round() rescue 0
@@ -937,9 +945,12 @@ class UsersController < ApplicationController
           (@dmer3_price * @dmer_result3_fin_this_month_len) - @dmer_val3_period_profit
         # 過去月
         @dmer_result3_fin_prev_month = 
-          (@dmer3_price * (@dmer2_slmt_tgt_prev.length - @dmer3_prev_val_len - @dmer_slmt_dead_len)) + 
+          (@dmer3_price * (@dmer2_slmt_tgt_prev.length - @dmer3_val_prev_len - @dmer_slmt_dead_len)) + 
           @dmer_slmt2nd_done.where("? > date",@start_date).sum(:valuation_second_settlement)
         @dmer_result3_fin = @dmer_result3_fin_this_month + @dmer_result3_fin_prev_month
+        if (@dmer_slmt2nd_done.sum(:valuation_second_settlement) > @dmer_result3_fin) || Date.today >= @closing_date
+          @dmer_result3_fin = @dmer_slmt2nd_done.sum(:valuation_second_settlement)
+        end 
       # auPay
         # 過去の決済対象
         @aupay_slmt_tgt_prev = 
@@ -963,7 +974,13 @@ class UsersController < ApplicationController
         # 過去月
         @aupay_result1_fin_prev_month_len = 
            ((@aupay_slmt_tgt_prev_len - @aupay_slmt_prev_val_len) * @aupay1_prev_month_per).round() rescue 0
-          @aupay_result1_fin_prev_month = (@aupay1_price * @aupay_result1_fin_prev_month_len) + @aupay_slmt_done.where(" ? > date",@start_date).sum(:valuation_settlement) rescue 0
+          @aupay_result1_fin_prev_month = (@aupay1_price * @aupay_result1_fin_prev_month_len) + 
+          (
+            (
+              @aupay_slmt_done.where(" ? > date",@start_date).length.to_f * 
+            (@aupay1_prev_month_per + @aupay_prev_inc_per)
+            ).round() * @aupay1_price
+          ) rescue 0
         # 終着
         # @aupay_result1_fin_this_month +
         @aupay_result1_fin =  @aupay_result1_fin_prev_month

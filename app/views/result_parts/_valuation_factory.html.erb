@@ -251,18 +251,22 @@
           dmer1_tgt_prev.where(result_point: @cash_result.minimum(:date)..@cash_result.minimum(:date).next_month.end_of_month) 
         %>
         <% dmer1_prev_val_len = dmer1_prev_val.length %>
-        <% dmer2_slmt_tgt_prev =  
-            dmer_slmt_tgt_prev.where(status_update_settlement: @month_result.next_month.beginning_of_month..@month_result.next_month.end_of_month)
-            .or(dmer_slmt_tgt_prev.where(status_update_settlement: nil))
+        <% 
+          dmer2_slmt_tgt_prev =  
+            dmer_slmt_tgt_prev.where(status_update_settlement: nil)
         %>
-        <% dmer3_slmt_tgt_prev = dmer2_slmt_tgt_prev.where("? >= settlement_second", @month_result.next_month.end_of_month) %>
+        <% 
+          dmer3_slmt_tgt_prev = dmer_slmt_tgt_prev.where(status_update_settlement: nil).or(
+          dmer_slmt_tgt_prev.where(status_update_settlement: @cash_result.minimum(:date).next_month.beginning_of_month..@cash_result.minimum(:date).next_month.end_of_month)
+        ) 
+        %>
+        <% dmer3_val_prev_len = dmer3_slmt_tgt_prev.where("? >= settlement_second", @month_result.next_month.end_of_month).length %>
 
         <% dmer_slmt_tgt_prev_len = dmer_slmt_tgt_prev.length rescue 0 %>
       <%# 決済期限切れ %>
             <% 
               dmer_slmt_dead = 
                 dmer_slmt_tgt_prev.where(status_settlement: "期限切れ")
-                .where(status_update_settlement: nil) 
             %>
             <% dmer_slmt_dead_len = dmer_slmt_dead.length %>
             <%# 過去の決済対象で今月成果になったもの %>
@@ -274,7 +278,6 @@
               dmer_2ndslmt_prev_val = 
                 dmer_slmt_prev_val.where("? >= settlement_second", @month_result.next_month.end_of_month)
             %>
-            <% dmer_slmt_prev_val_len = dmer_slmt_prev_val.length %>
             <% dmer_2ndslmt_prev_val_len = dmer_2ndslmt_prev_val.length %>
       <%# 第一成果終着 %>
         <%# 終着獲得数 %>
@@ -315,6 +318,10 @@
           <%# 過去月でまだ審査待ちの案件 %>
           <% dmer_result1_fin_prev_month = (@dmer1_price * (dmer1_tgt_prev.length * @dmer1_prev_month_per).round()) + dmer_result1.where("? > date",@cash_result.minimum(:date)).sum(:valuation_new) %>
           <% dmer_result1_fin = dmer_result1_fin_this_month + dmer_result1_fin_prev_month %>
+          <% if (dmer_valuations > dmer_result1_fin) || Date.today >= @closing_date %>
+            <% dmer_result1_fin = dmer_valuations %>
+          <% end %>
+          
           
         <%# dメル（決済） %>
           <% dmer_slmter = Dmer.where(settlementer_id: r.user_id) %>
@@ -351,18 +358,25 @@
           %>
           <%
             dmer_result2_fin_prev_month_len =
-              (
-                (dmer2_slmt_tgt_prev.length - dmer_slmt_prev_val_len).to_f * 
-                (@dmer2_prev_month_per - @dmer2_prev_dec_per)
-              ).round()
+              (dmer2_slmt_tgt_prev.length.to_f * 
+                (@dmer2_prev_month_per - @dmer2_prev_dec_per)).round()
           %>
         <%# 過去月 %>
           <%
             dmer_result2_fin_prev_month = 
               (@dmer2_price * dmer_result2_fin_prev_month_len) + 
-              dmer_result2.where("? > date",@cash_result.minimum(:date)).sum(:valuation_settlement)
+              (
+                (
+                dmer_result2.where("? > date",@cash_result.minimum(:date)).length.to_f *
+                (@dmer2_prev_month_per  + @dmer2_prev_inc_per)
+                ).round() * @dmer2_price
+              )
           %>
           <% dmer_result2_fin = dmer_result2_fin_this_month + dmer_result2_fin_prev_month %>
+          <% if (dmer_slmt_valuations > dmer_result2_fin) || Date.today >= @closing_date %>
+            <% dmer_result2_fin = dmer_slmt_valuations %>
+          <% end %>
+          
       <%# 第三成果終着 %>
           <%# 第三成果の過去母体 %>
             <% dmer_result3 = 
@@ -407,7 +421,7 @@
             <% 
               dmer_result3_fin_prev_month = 
               (
-                @dmer3_price * (dmer2_slmt_tgt_prev.length - dmer3_slmt_tgt_prev.length - dmer_slmt_dead_len)
+                @dmer3_price * (dmer3_slmt_tgt_prev.length - dmer3_val_prev_len - dmer_slmt_dead_len)
               ) + (dmer_result3.where("? > date",@cash_result.minimum(:date)).sum(:valuation_second_settlement))
             %>
             <% dmer_result3_fin = dmer_result3_fin_this_month + dmer_result3_fin_prev_month %>
@@ -416,6 +430,9 @@
             <% dmer_val_len_ave = (dmer_val_len.to_f / new_shift_digestion).round(1) rescue 0 %><%# 生産性 %>
             <% dmer_val_len_fin = dmer_val_len_ave * new_shift %><%# 獲得終着見込 %>
             <% dmer_result1_this_month_fin = dmer_val_len_fin %>
+          <% if (dmer_slmt2nd_valuations > dmer_result3_fin) || Date.today >= @closing_date %>
+            <% dmer_result3_fin = dmer_slmt2nd_valuations %>
+          <% end %>
       <%# aupay（新規） %>
         <% aupay_user = Aupay.includes(:store_prop).where(user_id: r.user_id) %>
         <% 
@@ -463,12 +480,6 @@
             .where("? > date", @cash_result.minimum(:date))
             .where(status: "審査通過")
             .where(status_update_settlement: nil)
-            .or(
-              aupay_user.where("settlement_deadline >= ?", @cash_result.minimum(:date))
-              .where("? > date", @cash_result.minimum(:date))
-              .where(status: "審査通過")
-              .where(status_update_settlement: @month_result.next_month.beginning_of_month..@month_result.next_month.end_of_month)
-            )
         %>
         <%
           aupay_slmt_prev_val = 
@@ -526,8 +537,12 @@
           <%
             aupay_result1_fin_prev_month = 
               (@aupay1_price * aupay_result1_fin_prev_month_len) + 
-              aupay_result1.where("? > date",@cash_result.minimum(:date))
-              .sum(:valuation_settlement) rescue 0
+              (
+                (
+                aupay_result1.where("? > date",@cash_result.minimum(:date)).length.to_f * 
+                (@aupay1_prev_month_per + @aupay_prev_inc_per)
+                ).round() * @aupay1_price
+              ) rescue 0
           %>
 
           <% aupay_result1_fin = aupay_result1_fin_prev_month %>
@@ -567,7 +582,7 @@
           <% paypay_fin_len = (paypay_len_ave * new_shift).round() rescue 0 %>
         <%# 第一成果終着 %>
           <% paypay_result1_fin = @paypay_price * paypay_fin_len rescue 0 %>
-          <% if (paypay_valuations > paypay_result1_fin) || (Date.today >= Date.new(@month_result.since(2.month).year,@month_result.since(2.month).month,@closing_date.day)) %>
+          <% if (paypay_valuations > paypay_result1_fin) || (Date.today >= @closing_date) %>
           <% paypay_result1_fin = paypay_valuations %>
           <% end %>
       <%# 楽天ペイ %>
@@ -723,7 +738,6 @@
               demaekan_valuations.to_i
             )
           %>
-          
         <% if (sum_valuations > sum_valuations_fin) || (Date.today >= Date.new(@month_result.since(2.month).year,@month_result.since(2.month).month,@closing_date.day)) %>
           <% sum_valuations_fin = sum_valuations rescue 0 %>
         <% end %>

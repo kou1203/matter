@@ -48,6 +48,45 @@ class ProfitsController < ApplicationController
       end
   end
 
+  def product_export_by_spreadsheet
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @calc_periods = CalcPeriod.where(sales_category: "実売")
+    profit_pack # 実売の計算式が入った関数
+    # GoogleDriveのセッションを取得する
+    @session = GoogleDrive::Session.from_config("config.json")
+    @dmer_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("dメル")
+    @aupay_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("auPay")
+    @paypay_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("PayPay")
+    @rakuten_pay_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("楽天ペイ")
+    @airpay_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("AirPay")
+    @demaekan_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("出前館")
+    @austicker_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("auステッカー")
+    @dmersticker_session = @session.spreadsheet_by_key("1Cz5Bzdsc1er2H6TbdiiLRRdcQVeoAb6ApQ6a8-K5An4").worksheet_by_title("dメルステッカー")
+
+    index = 4
+    @base_list.each do |list|
+      list.each do |user|
+        dmer_by_spread(@dmer_session,user,index)
+        aupay_by_spread(@aupay_session,user,index)
+        paypay_by_spread(@paypay_session,user,index)
+        rakuten_pay_by_spread(@rakuten_pay_session,user,index)
+        airpay_by_spread(@airpay_session,user,index)
+        demaekan_by_spread(@demaekan_session,user,index)
+        austicker_by_spread(@austicker_session,user,index)
+        dmersticker_by_spread(@dmersticker_session,user,index)
+        index += 1
+      end 
+      @dmer_session.save
+      @aupay_session.save
+      @paypay_session.save
+      @rakuten_pay_session.save
+      @airpay_session.save
+      @demaekan_session.save
+      @austicker_session.save
+      @dmersticker_session.save
+    end 
+  end 
+
   def sum_export 
     profit_pack # 実売の計算式が入った関数
     head :no_content
@@ -274,96 +313,180 @@ class ProfitsController < ApplicationController
 
   private 
 
-  def base_profit_by_spread(sheets,user,index_cnt)
-    sheets[index_cnt, 2] = user["名前"]
-    sheets[index_cnt, 3] = (user["合計終着"] / user["予定シフト"]).round() rescue 0
-    sheets[index_cnt, 4] = user["新規現状売上"]
-    sheets[index_cnt, 5] = user["決済現状売上"]
-    sheets[index_cnt, 6] = user["合計現状売上"]
-    sheets[index_cnt, 7] = user["新規終着"]
-    sheets[index_cnt, 8] = user["決済終着"]
-    sheets[index_cnt, 9] = user["合計終着"]
-    sheets[index_cnt, 10] = user["予定新規シフト"]
-    sheets[index_cnt, 11] = user["予定決済シフト"]
-    sheets[index_cnt, 12] = user["予定シフト"]
-    sheets[index_cnt, 13] = user["消化新規シフト"]
-    sheets[index_cnt, 14] = user["消化決済シフト"]
-    sheets[index_cnt, 15] = user["消化シフト"]
-    sheets[index_cnt, 16] = user["予定シフト"] - user["消化シフト"]
-    sheets[index_cnt, 17] = user["消化帯同シフト"]
-    sheets[index_cnt, 18] = user["dメル獲得数"]
-    sheets[index_cnt, 19] = user["dメル第二成果件数"]
-    sheets[index_cnt, 20] = user["dメル第三成果件数"]
-    sheets[index_cnt, 21] = user["auPay獲得数"]
-    sheets[index_cnt, 22] = user["auPay第一成果件数"]
-    sheets[index_cnt, 23] = user["PayPay獲得数"]
-    sheets[index_cnt, 24] = user["楽天ペイ第一成果件数"]
-    sheets[index_cnt, 25] = user["AirPay第一成果件数"]
-    sheets[index_cnt, 26] = user["出前館第一成果件数"]
-    sheets[index_cnt, 27] = user["auステッカー第一成果件数"]
+  def base_profit_by_spread(sheets,user,index)
+    sheets[index, 2] = user["名前"]
+    sheets[index, 3] = (user["合計終着"] / user["予定シフト"]).round() rescue 0
+    sheets[index, 4] = user["新規現状売上"]
+    sheets[index, 5] = user["決済現状売上"]
+    sheets[index, 6] = user["合計現状売上"]
+    sheets[index, 7] = user["新規終着"]
+    sheets[index, 8] = user["決済終着"]
+    sheets[index, 9] = user["合計終着"]
+    sheets[index, 10] = user["予定新規シフト"]
+    sheets[index, 11] = user["予定決済シフト"]
+    sheets[index, 12] = user["予定シフト"]
+    sheets[index, 13] = user["消化新規シフト"]
+    sheets[index, 14] = user["消化決済シフト"]
+    sheets[index, 15] = user["消化シフト"]
+    sheets[index, 16] = user["予定シフト"] - user["消化シフト"]
+    sheets[index, 17] = user["消化帯同シフト"]
+    sheets[index, 18] = user["dメル獲得数"]
+    sheets[index, 19] = user["dメル第二成果件数"]
+    sheets[index, 20] = user["dメル第三成果件数"]
+    sheets[index, 21] = user["auPay獲得数"]
+    sheets[index, 22] = user["auPay第一成果件数"]
+    sheets[index, 23] = user["PayPay獲得数"]
+    sheets[index, 24] = user["楽天ペイ第一成果件数"]
+    sheets[index, 25] = user["AirPay第一成果件数"]
+    sheets[index, 26] = user["出前館第一成果件数"]
+    sheets[index, 27] = user["auステッカー第一成果件数"]
   end 
 
-  def base_out_by_spread(sheets,user,index_cnt)
-    sheets[index_cnt, 2] = user["名前"]
-    sheets[index_cnt, 3] = user["訪問"]
-    sheets[index_cnt, 4] = user["応答"]
-    sheets[index_cnt, 6] = user["対面"]
-    sheets[index_cnt, 8] = user["フル"]
-    sheets[index_cnt, 10] = user["獲得"]
-    sheets[index_cnt, 12] = user["０１：どうゆうこと？：対面"]
-    sheets[index_cnt, 13] = user["０１：どうゆうこと？：フル"]
-    sheets[index_cnt, 15] = user["０１：どうゆうこと？：成約"]
-    sheets[index_cnt, 17] = user["０２：君は誰？協会？：対面"]
-    sheets[index_cnt, 18] = user["０２：君は誰？協会？：フル"]
-    sheets[index_cnt, 20] = user["０２：君は誰？協会？：成約"]
-    sheets[index_cnt, 22] = user["０３：もらうだけでいいの？：対面"]
-    sheets[index_cnt, 23] = user["０３：もらうだけでいいの？：フル"]
-    sheets[index_cnt, 25] = user["０３：もらうだけでいいの？：成約"]
-    sheets[index_cnt, 27] = user["０４：PayPayのみ：対面"]
-    sheets[index_cnt, 28] = user["０４：PayPayのみ：フル"]
-    sheets[index_cnt, 30] = user["０４：PayPayのみ：成約"]
-    sheets[index_cnt, 32] = user["０５：AirPayのみ：対面"]
-    sheets[index_cnt, 33] = user["０５：AirPayのみ：フル"]
-    sheets[index_cnt, 35] = user["０５：AirPayのみ：成約"]
-    sheets[index_cnt, 37] = user["０６：カードのみ：対面"]
-    sheets[index_cnt, 38] = user["０６：カードのみ：フル"]
-    sheets[index_cnt, 40] = user["０６：カードのみ：成約"]
-    sheets[index_cnt, 42] = user["０７：先延ばし：対面"]
-    sheets[index_cnt, 43] = user["０７：先延ばし：フル"]
-    sheets[index_cnt, 45] = user["０７：先延ばし：成約"]
-    sheets[index_cnt, 47] = user["０８：現金のみ：対面"]
-    sheets[index_cnt, 48] = user["０８：現金のみ：フル"]
-    sheets[index_cnt, 50] = user["０８：現金のみ：成約"]
-    sheets[index_cnt, 52] = user["０９：忙しい：対面"]
-    sheets[index_cnt, 53] = user["０９：忙しい：フル"]
-    sheets[index_cnt, 55] = user["０９：忙しい：成約"]
-    sheets[index_cnt, 57] = user["１０：面倒くさい：対面"]
-    sheets[index_cnt, 58] = user["１０：面倒くさい：フル"]
-    sheets[index_cnt, 60] = user["１０：面倒くさい：成約"]
-    sheets[index_cnt, 62] = user["１１：情報不足：対面"]
-    sheets[index_cnt, 63] = user["１１：情報不足：フル"]
-    sheets[index_cnt, 65] = user["１１：情報不足：成約"]
-    sheets[index_cnt, 67] = user["１２：ペロ：対面"]
-    sheets[index_cnt, 68] = user["１２：ペロ：フル"]
-    sheets[index_cnt, 70] = user["１２：ペロ：成約"]
-    sheets[index_cnt, 72] = user["１３：その他：対面"]
-    sheets[index_cnt, 73] = user["１３：その他：フル"]
-    sheets[index_cnt, 75] = user["１３：その他：成約"]
-    sheets[index_cnt, 77] = user["喫茶・カフェ訪問数"]
-    sheets[index_cnt, 78] = user["喫茶・カフェ獲得数"]
-    sheets[index_cnt, 79] = user["その他飲食訪問数"]
-    sheets[index_cnt, 80] = user["その他飲食獲得数"]
-    sheets[index_cnt, 81] = user["車屋訪問数"]
-    sheets[index_cnt, 82] = user["車屋獲得数"]
-    sheets[index_cnt, 83] = user["その他小売訪問数"]
-    sheets[index_cnt, 84] = user["その他小売獲得数"]
-    sheets[index_cnt, 85] = user["理容・美容訪問数"]
-    sheets[index_cnt, 86] = user["理容・美容獲得数"]
-    sheets[index_cnt, 87] = user["整体・鍼灸訪問数"]
-    sheets[index_cnt, 88] = user["整体・鍼灸獲得数"]
-    sheets[index_cnt, 89] = user["その他サービス訪問数"]
-    sheets[index_cnt, 90] = user["その他サービス獲得数"]
+  def base_out_by_spread(sheets,user,index)
+    sheets[index, 2] = user["名前"]
+    sheets[index, 3] = user["訪問"]
+    sheets[index, 4] = user["応答"]
+    sheets[index, 6] = user["対面"]
+    sheets[index, 8] = user["フル"]
+    sheets[index, 10] = user["獲得"]
+    sheets[index, 12] = user["０１：どうゆうこと？：対面"]
+    sheets[index, 13] = user["０１：どうゆうこと？：フル"]
+    sheets[index, 15] = user["０１：どうゆうこと？：成約"]
+    sheets[index, 17] = user["０２：君は誰？協会？：対面"]
+    sheets[index, 18] = user["０２：君は誰？協会？：フル"]
+    sheets[index, 20] = user["０２：君は誰？協会？：成約"]
+    sheets[index, 22] = user["０３：もらうだけでいいの？：対面"]
+    sheets[index, 23] = user["０３：もらうだけでいいの？：フル"]
+    sheets[index, 25] = user["０３：もらうだけでいいの？：成約"]
+    sheets[index, 27] = user["０４：PayPayのみ：対面"]
+    sheets[index, 28] = user["０４：PayPayのみ：フル"]
+    sheets[index, 30] = user["０４：PayPayのみ：成約"]
+    sheets[index, 32] = user["０５：AirPayのみ：対面"]
+    sheets[index, 33] = user["０５：AirPayのみ：フル"]
+    sheets[index, 35] = user["０５：AirPayのみ：成約"]
+    sheets[index, 37] = user["０６：カードのみ：対面"]
+    sheets[index, 38] = user["０６：カードのみ：フル"]
+    sheets[index, 40] = user["０６：カードのみ：成約"]
+    sheets[index, 42] = user["０７：先延ばし：対面"]
+    sheets[index, 43] = user["０７：先延ばし：フル"]
+    sheets[index, 45] = user["０７：先延ばし：成約"]
+    sheets[index, 47] = user["０８：現金のみ：対面"]
+    sheets[index, 48] = user["０８：現金のみ：フル"]
+    sheets[index, 50] = user["０８：現金のみ：成約"]
+    sheets[index, 52] = user["０９：忙しい：対面"]
+    sheets[index, 53] = user["０９：忙しい：フル"]
+    sheets[index, 55] = user["０９：忙しい：成約"]
+    sheets[index, 57] = user["１０：面倒くさい：対面"]
+    sheets[index, 58] = user["１０：面倒くさい：フル"]
+    sheets[index, 60] = user["１０：面倒くさい：成約"]
+    sheets[index, 62] = user["１１：情報不足：対面"]
+    sheets[index, 63] = user["１１：情報不足：フル"]
+    sheets[index, 65] = user["１１：情報不足：成約"]
+    sheets[index, 67] = user["１２：ペロ：対面"]
+    sheets[index, 68] = user["１２：ペロ：フル"]
+    sheets[index, 70] = user["１２：ペロ：成約"]
+    sheets[index, 72] = user["１３：その他：対面"]
+    sheets[index, 73] = user["１３：その他：フル"]
+    sheets[index, 75] = user["１３：その他：成約"]
+    sheets[index, 77] = user["喫茶・カフェ訪問数"]
+    sheets[index, 78] = user["喫茶・カフェ獲得数"]
+    sheets[index, 79] = user["その他飲食訪問数"]
+    sheets[index, 80] = user["その他飲食獲得数"]
+    sheets[index, 81] = user["車屋訪問数"]
+    sheets[index, 82] = user["車屋獲得数"]
+    sheets[index, 83] = user["その他小売訪問数"]
+    sheets[index, 84] = user["その他小売獲得数"]
+    sheets[index, 85] = user["理容・美容訪問数"]
+    sheets[index, 86] = user["理容・美容獲得数"]
+    sheets[index, 87] = user["整体・鍼灸訪問数"]
+    sheets[index, 88] = user["整体・鍼灸獲得数"]
+    sheets[index, 89] = user["その他サービス訪問数"]
+    sheets[index, 90] = user["その他サービス獲得数"]
   end
+
+  def dmer_by_spread(sheets,user,index)
+    sheets[index, 2] = user["拠点"]
+    sheets[index, 3] = user["名前"]
+    sheets[index, 4] = user["役職"]
+    sheets[index, 5] = user["予定新規シフト"]
+    sheets[index, 6] = user["消化新規シフト"]
+    sheets[index, 7] = user["dメル獲得数"]
+    sheets[index, 10] = user["dメル現状売上1"] + user["dメル現状売上2"] + user["dメル現状売上3"]
+    sheets[index, 11] = user["dメル一次成果終着"] + user["dメル二次成果終着"] + user["dメル三次成果終着"]
+  end 
+
+  def aupay_by_spread(sheets,user,index)
+    sheets[index, 2] = user["拠点"]
+    sheets[index, 3] = user["名前"]
+    sheets[index, 4] = user["役職"]
+    sheets[index, 5] = user["予定新規シフト"]
+    sheets[index, 6] = user["消化新規シフト"]
+    sheets[index, 7] = user["auPay獲得数"]
+    sheets[index, 10] = user["auPay現状売上1"]
+    sheets[index, 11] = user["auPay一次成果終着"]
+  end 
+
+  def paypay_by_spread(sheets,user,index)
+    sheets[index, 2] = user["拠点"]
+    sheets[index, 3] = user["名前"]
+    sheets[index, 4] = user["役職"]
+    sheets[index, 5] = user["予定新規シフト"]
+    sheets[index, 6] = user["消化新規シフト"]
+    sheets[index, 7] = user["PayPay獲得数"]
+    sheets[index, 10] = user["PayPay現状売上"]
+    sheets[index, 11] = user["PayPay一次成果終着"]
+  end 
+
+  def rakuten_pay_by_spread(sheets,user,index)
+    sheets[index, 2] = user["拠点"]
+    sheets[index, 3] = user["名前"]
+    sheets[index, 4] = user["役職"]
+    sheets[index, 5] = user["予定新規シフト"]
+    sheets[index, 6] = user["消化新規シフト"]
+    sheets[index, 7] = user["楽天ペイ獲得数"]
+    sheets[index, 10] = user["楽天ペイ現状売上"]
+    sheets[index, 11] = user["楽天ペイ一次成果終着"]
+  end 
+
+  def airpay_by_spread(sheets,user,index)
+    sheets[index, 2] = user["拠点"]
+    sheets[index, 3] = user["名前"]
+    sheets[index, 4] = user["役職"]
+    sheets[index, 5] = user["予定新規シフト"]
+    sheets[index, 6] = user["消化新規シフト"]
+    sheets[index, 7] = user["AirPay獲得数"]
+    sheets[index, 10] = user["AirPay現状売上"]
+    sheets[index, 11] = user["AirPay一次成果終着"]
+  end 
+
+  def demaekan_by_spread(sheets,user,index)
+    sheets[index, 2] = user["拠点"]
+    sheets[index, 3] = user["名前"]
+    sheets[index, 4] = user["役職"]
+    sheets[index, 5] = user["予定新規シフト"]
+    sheets[index, 6] = user["消化新規シフト"]
+    sheets[index, 7] = user["出前館第一成果件数"]
+    sheets[index, 8] = user["出前館現状売上"]
+    sheets[index, 9] = user["出前館一次成果終着"]
+  end 
+
+  def austicker_by_spread(sheets,user,index)
+    sheets[index, 2] = user["拠点"]
+    sheets[index, 3] = user["名前"]
+    sheets[index, 4] = user["役職"]
+    sheets[index, 5] = user["auステッカー第一成果件数"]
+    sheets[index, 6] = user["auステッカー現状売上"]
+  end 
+
+  def dmersticker_by_spread(sheets,user,index)
+    sheets[index, 2] = user["拠点"]
+    sheets[index, 3] = user["名前"]
+    sheets[index, 4] = user["役職"]
+    sheets[index, 5] = user["dメルステッカー第一成果件数"]
+    sheets[index, 6] = user["dメルステッカー現状売上"]
+  end 
+
+
 
   def create_csv(filename, csv1)
     #ファイル書き込み
