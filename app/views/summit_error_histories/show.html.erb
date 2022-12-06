@@ -1,0 +1,29 @@
+<div data-scope-path="shared/header">
+  <h1>支払遅延履歴</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div class="main">
+  <div data-scope-path="shares/show">
+    <h2><%= @summit_error.store_name %></h2>
+    <% @summit_errors.each do |error_history| %>
+    <article class="section">
+    <h2>作成日：<%= error_history.create_date %></h2>
+      <table>
+      <tr>
+      <th>対応内容</th>
+      <td><%= error_history.next_request %></td>
+      </tr>
+      <tr>
+      <th>次回対応依頼</th>
+      <td><%= error_history.response_remarks %></td>
+      </tr>
+      </table>
+    </article>
+    <% end %>
+    </div>
+  </div>
+</div>

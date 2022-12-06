@@ -28,6 +28,15 @@
       </tr>
     </table>
   <% end %>
+  <%= form_with url: import_price_summits_path do |f| %>
+    <table class="csv-tb">
+      <tr>
+        <td class="csv-label" >単価</td>
+        <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
+      </tr>
+    </table>
+  <% end %>
 <% end %>
     <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
       <%= javascript_pack_tag 'search' %>
@@ -41,6 +50,8 @@
             <hr>
           <div class="s-flex"><%# 検索フォーム %>
             <div class="user-form"><%# ユーザー情報 %>
+              <p class="s-label">レコード番号</p>
+              <p class="s-text-field"><%= f.text_field :record_num_cont, class: "s-text-input" %></p>
               <p class="s-label">獲得者</p>
               <p class="s-text-field"><%= f.text_field :user_name_cont, class: "s-text-input" %></p>
               <p class="s-label">拠点</p>
@@ -59,6 +70,19 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <tr class="s-tr">
+                    <td class="s-td">上位店連携</td>
+                    <td class="s-td">
+                      <%= f.select :summit_client_id_null, {"未連携": true, "連携済": false},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">単価連携</td>
+                    <td class="s-td">
+                      <%= f.select :summit_price_id_null, {"未連携": true, "連携済": false},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
+
                   <tr class="s-tr">
                     <td class="s-td">獲得日</td>
                     <td class="s-td">
@@ -87,31 +111,17 @@
                     </td>
                   </tr>
                   <tr class="s-tr">
-                    <td class="s-td">利用開始日</td>
+                    <td class="s-td">契約開始日</td>
                     <td class="s-td">
-                      <%= f.date_field :summit_start_gteq, class: "s-input" %>〜
-                      <%= f.date_field :summit_start_lteq, class: "s-input" %>
+                      <%= f.date_field :summit_client_contract_start_gteq, class: "s-input" %>〜
+                      <%= f.date_field :summit_client_contract_start_lteq, class: "s-input" %>
                     </td>
                   </tr>
                   <tr class="s-tr">
-                    <td class="s-td">使用期間（開始）</td>
+                    <td class="s-td">契約終了</td>
                     <td class="s-td">
-                      <%= f.date_field :use_start_gteq, class: "s-input" %>〜
-                      <%= f.date_field :use_start_lteq, class: "s-input" %>
-                    </td>
-                  </tr>
-                  <tr class="s-tr">
-                    <td class="s-td">使用期間（区切）</td>
-                    <td class="s-td">
-                      <%= f.date_field :use_end_gteq, class: "s-input" %>〜
-                      <%= f.date_field :use_end_lteq, class: "s-input" %>
-                    </td>
-                  </tr>
-                  <tr class="s-tr">
-                    <td class="s-td">メール送付</td>
-                    <td class="s-td">
-                      <%= f.date_field :mail_send_gteq, class: "s-input" %>〜
-                      <%= f.date_field :mail_send_lteq, class: "s-input" %>
+                      <%= f.date_field :summit_client_contract_end_gteq, class: "s-input" %>〜
+                      <%= f.date_field :summit_client_contract_end_lteq, class: "s-input" %>
                     </td>
                   </tr>
                   <tr class="s-tr">
@@ -159,18 +169,29 @@
           <button class="s-reset-btn"><%= link_to "解除", summits_path, class: "reset-link" %></button>
           <% end %>
         </div><%# /検索フォームの外枠 %>
-        <div v-else>
+        <div v-else><%# キーワード検索 %>
           <%= search_form_for @q do |f| %>
               <%= f.text_field :store_prop_name_or_supply_num_or_record_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
               <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "search-btn" %>
           <% end %>
-        </div>
+        </div><%# /キーワード検索 %>
       </article><%# /検索フォーム %>
     <hr>
   <% if @summits.empty? %>
     <div class="warning"><%= alert %></div>
+    <%= render 'shared/summit_links' %>
   <% else %>
       <h1>獲得日：<%= @summits.minimum(:date) %>（<%= days[@summits.minimum(:date).wday] %>）〜<%= @summits.maximum(:date) %>（<%= days[@summits.maximum(:date).wday] %>）</h1>
+      <%# 重複確認 %>
+      <% summit_duplicate = @summits.where.not(record_num: nil).group(:record_num).having('count(*) >= 2') %>
+        <% if summit_duplicate.present? %>
+        <p class="nav-text">管理番号重複</p>
+        <% end %>
+        <%# PJ078772 ばんやジル %>
+      <% summit_duplicate.each do |db| %>
+        <p class="nav-text" style="color: red;"><%= db.record_num %><%= db.store_prop.name %></p>
+      <% end %>
+      
     <table >
       <tr>
         <th class="search-th">獲得数</th>
@@ -201,8 +222,8 @@
     <table class="out-tb">
       <thead>
       <tr>
-        <th class="out-th">ID</th>
-        <th class="out-th">管理番号</th>
+        <th class="out-th">kintone連携</th>
+        <th class="out-th">レコード番号</th>
         <th class="out-th">店舗名</th>
         <th class="out-th">獲得日</th>
         <th class="out-th">獲得者</th>
@@ -211,22 +232,33 @@
         <th class="out-th">電力エリア</th>
         <th class="out-th">契約種別</th>
         <th class="out-th">契約容量（数量）</th>
-        <th class="out-th">使用期間（開始）</th>
-        <th class="out-th">使用期間（区切）</th>
         <th class="out-th">使用量（kWh）</th>
         <th class="out-th">事務処理日</th>
         <th class="out-th">サミット到着日</th>
         <th class="out-th">利用開始日</th>
-        <th class="out-th">お客様番号（14桁）</th>
-        <th class="out-th">供給地点番号（22桁）</th>
+        <th class="out-th">単価連携</th>
+        <th class="out-th">初回明細料金</th>
+        <th class="out-th">最新明細料金</th>
+        <th class="out-th">エラー内容</th>
+        <th class="out-th">契約開始</th>
+        <th class="out-th">契約終了</th>
+        <th class="out-th">支払件数</th>
         <th class="out-th">詳細</th>
       </tr>
       </thead>
       <tbody>
       <% @summits_data.each do |summit| %>
       <tr >
-        <td class="out-td"><%= summit.id %></td>
-        <td class="out-td"><%= summit.control_num %></td>
+        <% if summit.summit_client.present? %>
+        <td class="out-td">連携済</td>
+        <% else %>
+          <% if current_user.name == "管理用" %>
+          <td class="out-td"><%= link_to "未連携", summit_path(summit.id), method: :delete,data: { confirm: "#{summit.store_prop.name}の自社サミット情報を削除してもよろしいですか？" } ,class: "link","data-turbolinks": false %></td>
+          <% else %>
+          <td class="out-td b-red">未連携</td>
+          <% end  %>
+        <% end %>
+        <td class="out-td"><%= summit.record_num %></td>
         <td class="out-td"><%= summit.store_prop.name %></td>
         <td class="out-td"><%= summit.date %></td>
         <td class="out-td"><%= summit.user.name %></td>
@@ -235,15 +267,26 @@
         <td class="out-td"><%= summit.power_area %></td>
         <td class="out-td"><%= summit.contract_type %></td>
         <td class="out-td"><%= summit.contract_cap %><%= summit.contract_cap_unit %></td>
-        <td class="out-td"><%= summit.use_start %></td>
-        <td class="out-td"><%= summit.use_end %></td>
         <td class="out-td"><%= summit.amount_use %>kWh</td>
         <td class="out-td"><%= summit.processing_date %></td>
         <td class="out-td"><%= summit.arrival_date %></td>
         <td class="out-td"><%= summit.summit_start %></td>
-        <td class="out-td"><%= summit.customer_num %></td>
-        <td class="out-td"><%= summit.supply_num %></td>
-        <td class="out-td"><%= link_to "詳細", summit_path(summit.id),class: "link" %></td>
+        <% if summit.summit_price.present? %>
+        <td class="out-td">連携済</td>
+        <% else %>
+          <% if current_user.name == "管理用" %>
+          <td class="out-td"><%= link_to "未連携", summit_path(summit.id), method: :delete,data: { confirm: "#{summit.store_prop.name}の自社サミット情報を削除してもよろしいですか？" } ,class: "link","data-turbolinks": false %></td>
+          <% else %>
+          <td class="out-td b-red">未連携</td>
+          <% end  %>
+        <% end %>
+        <td class="out-td"><%= summit.summit_price.first_billing.to_s(:delimited) rescue "" %></td>
+        <td class="out-td"><%= summit.summit_price.last_billing.to_s(:delimited) rescue "" %></td>
+        <td class="out-td"><%= summit.summit_client.error_contents rescue "" %></td>
+        <td class="out-td"><%= summit.summit_client.contract_start rescue "" %></td>
+        <td class="out-td"><%= summit.summit_client.contract_end rescue "" %></td>
+        <td class="out-td"><%= summit.summit_billing_amounts.length rescue 0 %></td>
+        <td class="out-td"><%= link_to "詳細", summit_path(summit.id),class: "link","data-turbolinks": false %></td>
       <% end %>
       </tbody>
     </table>

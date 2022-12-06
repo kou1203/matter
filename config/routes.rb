@@ -15,8 +15,6 @@ Rails.application.routes.draw do
     post 'paypays/create'
     get 'pandas/new'
     post 'pandas/create'
-    get 'summit_customer_props/new'
-    post 'summit_customer_props/create'
     get 'rakuten_casas/new'
     post 'rakuten_casas/create'
     get 'trouble_sses/new'
@@ -35,7 +33,21 @@ Rails.application.routes.draw do
 
   resources :summits, expect: [:new, :create] do 
     collection { post :import }
+    collection { post :import_price }
+    collection { get :sw_error }
   end
+
+  resources :summit_customer_props do 
+    collection { post :import}
+  end 
+
+  resources :summit_error_histories do 
+    collection { post :import }
+  end 
+
+  resources :summit_billing_amounts do 
+    collection { post :import }
+  end 
 
 
   resources :pranesses, expect: [:new, :create] do 
@@ -114,7 +126,9 @@ Rails.application.routes.draw do
     collection { post :import}
   end
   resources :result_casas, expect: [:new, :create]
-  resources :result_summits, expect: :show 
+  resources :result_summits, expect: :show do 
+    collection { get :base_profit }
+  end 
   resources :result_summits, only: :show,param: :user_id
   
   resources :n_results do 
@@ -179,4 +193,9 @@ Rails.application.routes.draw do
   # end 
 
   resources :calc_periods
+
+  resources :dmer_date_progresses do 
+    collection {post :progress_create}
+  end 
+
 end

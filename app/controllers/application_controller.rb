@@ -658,6 +658,15 @@ class ApplicationController < ActionController::Base
       @airpay_bonus2_price = @airpay1_calc_data.bonus2_price
     end 
 
+    def shift_pack_cash
+      @results = 
+        Result.includes(:user,:result_cash).where(shift: "キャッシュレス新規").where(date: @start_date..@end_date)
+        .or(Result.includes(:user,:result_cash).where(shift: "キャッシュレス決済").where(date: @start_date..@end_date))
+      @shifts = 
+        Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
+        .or(Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス決済"))
+    end 
+
     # 実売資料の関数
     def profit_pack
       # calc_period_and_perは"@calc_periods"と"@month"の配置を先にするのが必須
@@ -984,9 +993,7 @@ class ApplicationController < ActionController::Base
               person_hash["dメル2過去母体"] = dmer2_tgt_prev.length
             # 過去月の決済母体数（第一成果）
                 # 決済期限切れ
-                dmer_slmt_dead = 
-                  dmer_slmt_tgt_prev.where(status_settlement: "期限切れ")
-                  .where(status_update_settlement: nil)
+                dmer_slmt_dead = dmer_slmt_tgt_prev.where(status_settlement: "期限切れ")
                   person_hash["dメル決済期限切れ"] = dmer_slmt_dead.length
                 dmer_slmt_dead_len = dmer_slmt_dead.length
                 # 過去の案件で対象月に成果になったもの

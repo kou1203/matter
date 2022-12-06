@@ -1,0 +1,176 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title">サミットエナジー（支払遅延）</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/index">
+<div class="main">
+<% if current_user.position_sub == "管理" %>
+  <%= form_with url: import_summit_error_histories_path do |f| %>
+    <table class="csv-tb">
+      <tr>
+        <td class="csv-label" >エラー修正依頼</td>
+        <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
+      </tr>
+    </table>
+  <% end %>
+<% end %>
+    <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
+      <%= javascript_pack_tag 'search' %>
+      <article id='search'><%# 検索フォーム %>
+        <button @click="active" v-if="!isActive" class="active-btn">詳細検索表示</button>
+        <button @click="active" v-if="isActive" class="active-btn">詳細検索表示中</button>
+        <div v-if="isActive" class="s-form"><%# 検索フォームの外枠 %>
+          
+          <%= search_form_for @q do |f| %>
+            <p class="s-text">検索したい内容を入力してください。</p>
+            <hr>
+          <div class="s-flex"><%# 検索フォーム %>
+            <div class="user-form"><%# ユーザー情報 %>
+              <p class="s-label">獲得者</p>
+              <p class="s-text-field"><%= f.text_field :user_name_cont, class: "s-text-input" %></p>
+              <p class="s-label">拠点</p>
+              <p class="s-slct-field"><%= f.select :user_base_cont,{"中部SS": "中部SS","関東SS": "関東SS","関西SS": "関西SS","2次店": "2次店"},{include_blank: true},{ class: "s-slct-input"} %></p>
+              <p class="s-label">対応内容</p>
+              <p class="s-text-field"><%= f.text_field :response_remarks_cont, class: "s-text-input" %></p>
+              <p class="s-label">次回対応メモ</p>
+              <p class="s-text-field"><%= f.text_field :next_request_cont, class: "s-text-input" %></p>
+            </div><%# ユーザー情報 %>
+            <div class="product-form"><%# 商材情報 %>
+              <table class="s-tb">
+                <thead>
+                  <tr class="s-tr">
+                    <th class="s-th">項目</th>
+                    <th class="s-th">検索内容</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="s-tr">
+                    <td class="s-td">レコードの開始</td>
+                    <td class="s-td">
+                      <%= f.select :start_section_null, {"レコードの開始行のみ": false},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">作成日（範囲）</td>
+                    <td class="s-td">
+                      <%= f.date_field :create_date_gteq, class: "s-input" %>〜
+                      <%= f.date_field :create_date_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">店舗名</td>
+                    <td class="s-td">
+                      <%= f.text_field :store_name_cont, class: "t-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">エラー区分②</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :error_class2_eq,
+                        options_from_collection_for_select(SummitErrorHistory.select(:error_class2)
+                        .distinct,:error_class2, :error_class2),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">未入金対象月</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :not_payment_month_eq,
+                        options_from_collection_for_select(SummitErrorHistory.select(:not_payment_month)
+                        .distinct,:not_payment_month, :not_payment_month),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">次回対応</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :next_response_user_eq,
+                        options_from_collection_for_select(SummitErrorHistory.select(:next_response_user)
+                        .distinct,:next_response_user, :next_response_user),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div><%# 商材情報 %>
+          </div><%# 検索フォーム %>
+          <hr>
+          <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "s-btn" %>
+          <button class="s-reset-btn"><%= link_to "解除", summit_error_histories_path, class: "reset-link" %></button>
+          <% end %>
+        </div><%# /検索フォームの外枠 %>
+        <div v-else>
+          <%= search_form_for @q do |f| %>
+              <%= f.text_field :store_name_or_target_record_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
+              <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "search-btn" %>
+          <% end %>
+        </div>
+      </article><%# /検索フォーム %>
+    <hr>
+  <% if @summit_errors.empty? %>
+    <div class="warning"><%= alert %></div>
+    <%= render "shared/summit_links" %>
+  <% else %>
+      <h1>作成日：<%= @summit_errors.minimum(:create_date).to_date %>（<%= days[@summit_errors.minimum(:create_date).wday] %>）〜<%= @summit_errors.maximum(:create_date).to_date %>（<%= days[@summit_errors.maximum(:create_date).wday] %>）</h1>
+    <table class="out-tb">
+      <thead>
+      <tr>
+        <th class="out-th">件数</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">営業担当者</th>
+        <th class="out-th">エラー区分②</th>
+        <th class="out-th">未入金対象月</th>
+        <th class="out-th">次回対応日</th>
+        <th class="out-th">対応内容・次回依頼</th>
+        <th class="out-th">次回対応メモ</th>
+        <th class="out-th">次回対応者</th>
+        <th class="out-th">対応手段</th>
+        <th class="out-th">電気料金</th>
+        <th class="out-th">作成</th>
+        <th class="out-th">履歴</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% num = 1 %>
+      <% @summit_errors_data.group(:error_record_num).select("*, MAX(create_date) AS create_date").each do |summit_error| %>
+      <tr >
+        <td class="out-td"><%= num %></td>
+        <td class="out-td"><%= summit_error.store_name %></td>
+        <td class="out-td"><%= summit_error.user.name %></td>
+        <td class="out-td"><%= summit_error.error_class2 %></td>
+        <td class="out-td"><%= summit_error.not_payment_month %></td>
+        <td class="out-td"><%= summit_error.next_response %></td>
+        <td class="remarks-td"><%= summit_error.response_remarks %></td>
+        <td class="remarks-td"><%= summit_error.next_request %></td>
+        <td class="out-td"><%= summit_error.next_response_user %></td>
+        <td class="out-td"><%= summit_error.response_method %></td>
+        <td class="out-td"><%= summit_error.price.to_s(:delimited) %></td>
+        <td class="out-td"><%= summit_error.create_date %></td>
+        <td class="out-td"><%= link_to "詳細", summit_error_history_path(summit_error.id) ,class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+      </tbody>
+    </table>
+  <div class="kaminari-page">
+    <%# paginate @summit_errors_data %>
+  </div>
+  <% end %>
+  </div>
+  </div>
+</div>

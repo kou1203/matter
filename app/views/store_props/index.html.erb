@@ -24,10 +24,6 @@
       <% end %>
       </table>
     <% end %>
-    <% if current_user.name == "管理用" %>
-    <%= link_to "スプレッド出力（利益表）", profit_export_by_spreadsheet_profits_path, data: {confirm: "スプレッドを出力しますか？"}, class: "csv-link",id:'download-csv' %>
-        <%= link_to "スプレッド出力（商材）", product_export_by_spreadsheet_profits_path, data: {confirm: "スプレッドを出力しますか？"}, class: "csv-link",id:'download-csv' %>
-    <% end %>
 
     <%= search_form_for @q do |f| %>
     <table>

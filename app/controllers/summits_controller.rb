@@ -1,7 +1,7 @@
 class SummitsController < ApplicationController
 
   def index 
-    @q = Summit.includes(:user, :store_prop).ransack(params[:q])
+    @q = Summit.includes(:user, :store_prop,:summit_client,:summit_price).ransack(params[:q])
     @summits = 
       if params[:q].nil?
         Summit.none 
@@ -39,9 +39,25 @@ class SummitsController < ApplicationController
       redirect_to summits_path, alert: "インポートに失敗しました。ファイルを選択してください"
     end
   end 
+  def import_price 
+    if params[:file].present?
+      if SummitPrice.csv_check(params[:file]).present?
+        redirect_to summits_path , alert: "エラーが発生したため中断しました#{SummitPrice.csv_check(params[:file])}"
+      else
+        message = SummitPrice.import(params[:file]) 
+        redirect_to summits_path, alert: "インポート処理を完了しました#{message}"
+      end
+    else
+      redirect_to summits_path, alert: "インポートに失敗しました。ファイルを選択してください"
+    end
+  end 
+
+  def sw_error
+    @sw_errors = Summit.includes(:summit_client).where(status: "SWエラー")
+  end 
 
   def show 
-    @summit = Summit.find(params[:id])
+    @summit = Summit.includes(:summit_client,:summit_billing_amounts).find(params[:id])
   end 
 
   def edit 

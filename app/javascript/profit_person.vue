@@ -5,7 +5,6 @@
       <div class="title-form">
         <label class="sub-title">実売内訳</label>
         <select @change="baseSlct" class="base-slcter">
-          <option value="全拠点">全拠点</option>
           <option value="中部SS">中部SS</option>
           <option value="関西SS">関西SS</option>
           <option value="関東SS">関東SS</option>
@@ -370,7 +369,7 @@ export default {
   data: function () {
     return {
       val: '',
-      baseItems: all_base,
+      baseItems: chubu_base,
       productVal: ''
     }
   },

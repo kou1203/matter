@@ -42,7 +42,7 @@ window.addEventListener('turbolinks:load', function(){
       cashVal1.style.display = "inline";
       cashVal2.style.display = "inline";
       cashForm1.style.display = "block";
-      // サミット
+      // 電気
       summitLabel1.style.display = "none";
       summitLabel2.style.display = "none";
       summitLabel3.style.display = "none";
@@ -50,7 +50,7 @@ window.addEventListener('turbolinks:load', function(){
       summitVal1.style.display = "none";
       summitVal2.style.display = "none";
       summitForm1.style.display = "none";
-    }else if(this.value == "サミット") {
+    }else if(this.value == "電気" || this.value == "設置電気") {
       basicForm.style.display = "block";
       // キャッシュレス
       cashLabel1.style.display = "none";
@@ -60,7 +60,7 @@ window.addEventListener('turbolinks:load', function(){
       cashVal1.style.display = "none";
       cashVal2.style.display = "none";
       cashForm1.style.display = "none";
-      // サミット
+      // 電気
       summitLabel1.style.display = "inline";
       summitLabel2.style.display = "inline";
       summitLabel3.style.display = "inline";

@@ -312,7 +312,7 @@ class ResultsController < ApplicationController
         redirect_to  result_result_cashes_new_path(@result.id)
       elsif @result.shift == "キャッシュレス決済"
         redirect_to  result_result_cashes_new_path(@result.id)
-      elsif @result.shift == "サミット"
+      elsif @result.shift == "電気" || @result.shift == "設置電気"
         redirect_to  result_result_summits_new_path(@result.id)
       else  
         redirect_to session[:previous_url]

@@ -1,123 +1,33 @@
-<div data-scope-path="summit_customer_props/show">
-  <h1>サミットエナジー詳細</h1>
+<div data-scope-path="shared/header">
+  <h1>対応履歴</h1>
   <%= render "shared/header" %>
-  <table>
-    <tr>
-      <th colspan="4">店舗情報</th>
-    </tr>
-    <tr>
-      <th>店舗名</th>
-      <td><%= @store_prop.name %></td>
-      <th>属性</th>
-      <td><%= @store_prop.race %></td>
-    </tr>
-      <th>業種</th>
-      <td><%= @store_prop.industry %></td>
-      <th>店舗代表</th>
-      <td><%= @store_prop.person_main %></td>
-    <tr>
-      <th>店舗担当</th>
-      <td><%= @store_prop.person_sub %></td>
-      <th>店舗住所</th>
-      <td class="show-td-long"><%= @store_prop.prefecture %><%= @store_prop.city %><%= @store_prop.municipalities %><%= @store_prop.address %><%= @store_prop.building_name %></td>
-    </tr>
-  </table>
-  <h1 >連絡先</h1>
-  <table>
-    <tr>
-      <th>電話番号1</th>
-      <td><%= @store_prop.phone_number_1 %></td>
-      <th>電話番号2</th>
-      <td><%= @store_prop.phone_number_2 %></td>
-    </tr>
-    <tr>
-      <th>メールアドレス1</th>
-      <td><%= @store_prop.mail_1 %></td>
-      <th>メールアドレス2</th>
-      <td><%= @store_prop.mail_2 %></td>
-    </tr>
-    <tr>
-    <th>備考</th>
-      <td colspan="2"><%= @store_prop.description %></td>
-      <td><%= link_to "編集", edit_store_prop_path(@store_prop.id), class: "link" %></td>
-    </tr>
-    </table>
-
-    <h1 >サミットエナジー</h1>
-    <table>
-    <tr>
-      <th>前電気会社</th>
-      <td><%= @summit_customer_prop.before_electric %></td>
-      <th>需要家名</th>
-      <td><%= @summit_customer_prop.claim_address %></td>
-    </tr>
-    <tr>
-      <th>請求宛名</th>
-      <td><%= @summit_customer_prop.claim_house %></td>
-      <th>契約者名</th>
-      <td><%= @summit_customer_prop.contract_name %></td>
-    </tr>
-    <tr>
-      <th>お客様番号</th>
-      <td><%= @summit_customer_prop.customer_num %></td>
-      <td><%= link_to '契約内容を追加する', summit_customer_prop_summits_new_path(@summit_customer_prop.id), class: "link" %></td>
-      <td><%= link_to "編集", edit_summit_customer_prop_path(@summit_customer_prop.id), class: "link" %></td>
-    </tr>
-  </table>
-  <% m_count = 0 %>
-  <% @summits.each do |summit| %>
-  <% m_count += 1 %>
-  <h1>契約情報<%= m_count %>件目</h1>
-  <table>
-    <tr>
-      <th>獲得者</th>
-      <td><%= summit.user.name %></td>
-      <th>獲得日</th>
-      <td><%= summit.get_date %></td>
-    </tr>
-    <tr>
-      <th>プラン名</th>
-      <td><%= summit.plan %></td>
-      <th>ステータス</th>
-      <td><%= summit.status %></td>
-    </tr>
-    <tr>
-      <th>供給地点番号</th>
-      <td><%= summit.supply_num %></td>
-      <th>メニュー</th>
-      <td><%= summit.menu %></td>
-    </tr>
-    <tr>
-      <th>契約種別</th>
-      <td><%= summit.contract_type %></td>
-      <th>契約容量</th>
-      <td><%= summit.contract_cap %><%= summit.contract_cap_unit %></td>
-    </tr>
-    <tr>
-      <th>使用量</th>
-      <td><%= summit.amount_use %>kWh</td>
-      <th>契約番号</th>
-      <td><%= summit.contract_num %></td>
-    </tr>
-    <tr>
-      <th>電力会社</th>
-      <td><%= summit.power_company %></td>
-      <th>利用開始日</th>
-      <td><%= summit.start %></td>
-    </tr>
-    <tr>
-      <th>入金月</th>
-      <td><%= summit.payment %></td>
-      <th>予想請求額</th>
-      <td><%= summit.claim_expected %></td>
-
-    </tr>
-    <tr>
-      <th>請求額</th>
-      <td><%= summit.claim %></td>
-      <td><%= link_to "編集", edit_summit_path(summit.id) , class: "link" %></td>
-    </tr>
-    <% end %>
-  </table>
 </div>
-
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div class="main">
+  <div data-scope-path="shares/show">
+    <h2><%= @summit_customer_prop.store_name %></h2>
+    <% @summit_customer_props.each do |summit_customer_prop| %>
+    <article class="section">
+    <h2>作成日：<%= summit_customer_prop.response_datetime %></h2>
+      <table>
+      <tr>
+      <th>対応種類</th>
+      <td><%= summit_customer_prop.history_class %></td>
+      </tr>
+      <tr>
+      <th>対応内容</th>
+      <td><%= summit_customer_prop.next_request %></td>
+      </tr>
+      <tr>
+      <th>次回対応依頼</th>
+      <td><%= summit_customer_prop.response_remarks %></td>
+      </tr>
+      </table>
+    </article>
+    <% end %>
+    </div>
+  </div>
+</div>

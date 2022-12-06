@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_11_08_084506) do
+ActiveRecord::Schema.define(version: 2022_12_03_091335) do
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "store_prop_id"
@@ -157,6 +157,33 @@ ActiveRecord::Schema.define(version: 2022_11_08_084506) do
     t.date "end_period_04"
     t.date "start_period_05"
     t.date "end_period_05"
+  end
+
+  create_table "dmer_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.date "date", null: false
+    t.integer "shift_schedule"
+    t.integer "shift_digestion"
+    t.integer "get_len"
+    t.integer "def_len"
+    t.integer "fin_len"
+    t.integer "valuation_current"
+    t.integer "valuation_fin"
+    t.integer "profit_current"
+    t.integer "profit_fin"
+    t.integer "wait_len"
+    t.integer "done_len"
+    t.integer "slmt_dead_len"
+    t.integer "result1_len"
+    t.integer "result2_len"
+    t.integer "result3_len"
+    t.integer "wait_len_prev"
+    t.integer "done_len_prev"
+    t.integer "result1_len_prev"
+    t.integer "result2_len_prev"
+    t.integer "result3_len_prev"
+    t.date "create_date", null: false
+    t.index ["user_id"], name: "index_dmer_date_progresses_on_user_id"
   end
 
   create_table "dmer_stocks", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1043,34 +1070,124 @@ ActiveRecord::Schema.define(version: 2022_11_08_084506) do
     t.string "description"
   end
 
+  create_table "summit_billing_amounts", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "billing_date"
+    t.string "store_name"
+    t.string "contract_type"
+    t.integer "total_use"
+    t.integer "billing_amount"
+    t.integer "commission"
+    t.integer "record_num"
+    t.bigint "user_id"
+    t.bigint "summit_id"
+    t.date "payment_date"
+    t.index ["summit_id"], name: "index_summit_billing_amounts_on_summit_id"
+    t.index ["user_id"], name: "index_summit_billing_amounts_on_user_id"
+  end
+
   create_table "summit_clients", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "summit_id"
+    t.string "area"
     t.date "start_use"
+    t.date "change_date"
     t.string "supply_num"
+    t.string "store_name"
+    t.string "low_voltage_contract_id"
     t.string "pay_menu"
     t.text "remarks"
+    t.string "summit_manger"
     t.date "create_date"
     t.date "update_date"
     t.integer "target_record_num"
+    t.string "updater"
+    t.string "creater"
+    t.string "contact_num"
     t.string "novice_menu"
+    t.string "start_status"
+    t.string "start_cancel_status"
+    t.string "agency_status"
+    t.date "contract_start"
+    t.date "contract_end"
+    t.string "customer_name"
     t.integer "rate"
-    t.date "cancel"
+    t.string "salesman_partner_id"
+    t.string "salesman_user_id"
+    t.string "partner_name"
+    t.string "contract_partner"
+    t.string "contact_name"
+    t.string "contact_phone"
+    t.string "contact_mail"
+    t.string "salesman"
+    t.string "start_app_company"
+    t.string "cancel_class"
     t.string "cancel_status"
+    t.date "cancel"
     t.string "cancel_app_company"
+    t.string "start_company_contract_num"
     t.text "error_contents"
     t.string "crepiko_num"
+    t.date "status_update"
     t.index ["summit_id"], name: "index_summit_clients_on_summit_id"
   end
 
   create_table "summit_customer_props", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "customer_num", null: false
-    t.string "client", null: false
-    t.bigint "store_prop_id"
-    t.string "claim_house", null: false
-    t.string "claim_address", null: false
-    t.string "contract_name", null: false
-    t.string "before_electric"
-    t.index ["store_prop_id"], name: "index_summit_customer_props_on_store_prop_id"
+    t.string "start_section"
+    t.integer "history_record_num"
+    t.string "store_name", null: false
+    t.string "history_class"
+    t.string "title"
+    t.string "status"
+    t.date "next_response"
+    t.text "response_remarks"
+    t.bigint "user_id"
+    t.string "next_response_user"
+    t.string "summit_user"
+    t.string "creater"
+    t.datetime "create_datetime"
+    t.datetime "response_datetime"
+    t.string "input_user"
+    t.string "response_method"
+    t.text "next_request"
+    t.string "updater"
+    t.datetime "update_datetime"
+    t.integer "target_record_num", null: false
+    t.string "supply_num"
+    t.index ["user_id"], name: "index_summit_customer_props_on_user_id"
+  end
+
+  create_table "summit_error_histories", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "start_section"
+    t.integer "error_record_num", null: false
+    t.string "store_name", null: false
+    t.string "status", null: false
+    t.string "error_class"
+    t.string "error_class2"
+    t.string "not_payment_month"
+    t.integer "price"
+    t.string "arrears_flag"
+    t.string "arrears_contains"
+    t.date "payment"
+    t.date "next_response"
+    t.text "response_remarks"
+    t.bigint "user_id"
+    t.string "next_response_user"
+    t.string "summit_user"
+    t.datetime "create_datetime"
+    t.integer "target_record_num", null: false
+    t.datetime "create_date"
+    t.string "input_user"
+    t.string "response_place"
+    t.string "response_method"
+    t.text "next_request"
+    t.index ["user_id"], name: "index_summit_error_histories_on_user_id"
+  end
+
+  create_table "summit_prices", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "summit_id"
+    t.integer "record_num"
+    t.integer "first_billing"
+    t.integer "last_billing"
+    t.index ["summit_id"], name: "index_summit_prices_on_summit_id"
   end
 
   create_table "summits", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1180,6 +1297,7 @@ ActiveRecord::Schema.define(version: 2022_11_08_084506) do
   add_foreign_key "comments", "store_props"
   add_foreign_key "demaekans", "store_props"
   add_foreign_key "demaekans", "users"
+  add_foreign_key "dmer_date_progresses", "users"
   add_foreign_key "dmers", "store_props"
   add_foreign_key "dmers", "users"
   add_foreign_key "dmers", "users", column: "settlementer_id"
@@ -1210,8 +1328,12 @@ ActiveRecord::Schema.define(version: 2022_11_08_084506) do
   add_foreign_key "st_insurances", "users"
   add_foreign_key "stock_histories", "stocks"
   add_foreign_key "stock_histories", "users"
+  add_foreign_key "summit_billing_amounts", "summits"
+  add_foreign_key "summit_billing_amounts", "users"
   add_foreign_key "summit_clients", "summits"
-  add_foreign_key "summit_customer_props", "store_props"
+  add_foreign_key "summit_customer_props", "users"
+  add_foreign_key "summit_error_histories", "users"
+  add_foreign_key "summit_prices", "summits"
   add_foreign_key "summits", "store_props"
   add_foreign_key "summits", "users"
   add_foreign_key "trouble_ns", "users"

@@ -1,0 +1,23 @@
+<script>
+  window.chubu_ary=<%= @chubu_ary.to_json.html_safe %>;
+  window.kansai_ary=<%= @kansai_ary.to_json.html_safe %>;
+  window.kanto_ary=<%= @kanto_ary.to_json.html_safe %>;
+  window.partner_ary=<%= @partner_ary.to_json.html_safe %>;
+  window.other_ary=<%= @other_ary.to_json.html_safe %>;
+</script>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>サミット利益表</h1>
+  <%= render "shared/header" %>
+</div>
+  <div class="main">
+    <div data-scope-path="results/index">
+        <h2>
+          <%= link_to "<<", base_profit_result_summits_path(month:@month.prev_month), class:"link","data-turbolinks": false %>
+          <%= @month.month %>月
+          <%= link_to ">>", base_profit_result_summits_path(month:@month.next_month), class:"link","data-turbolinks": false %>
+        </h2>
+    </div>
+  </div>
+  <%= javascript_pack_tag 'summit_profit' %>
+  <%= stylesheet_pack_tag 'summit_profit' %>

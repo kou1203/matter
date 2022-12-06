@@ -424,17 +424,18 @@
         <% end  %>
         </table>
       <% if current_user.name=="管理用" %>
-      <h2>サミット</h2>
+      <h2>サミット　<%= link_to "全体利益表", base_profit_result_summits_path,"data-turbolinks": false,class: "link" %></h2>
         <table class="user-tb">
       <% users_summit_data.each do |users| %>
         <tr>
           <th><%= users.first.base %></th>
         <% users.each do |user| %>
-          <td><%= link_to user.name, result_summit_path(user.id), class: "link" %></td>
+          <td><%= link_to user.name, result_summit_path(user.id),"data-turbolinks": false, class: "link" %></td>
         <% end %>
         </tr>
       <% end %>
         </table>
+        
       <% end %>
       <% if current_user.position_sub == "管理" %>
         <h2>利益表（基準値）インポート</h2>

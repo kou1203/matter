@@ -1,0 +1,55 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title">サミットエナジー</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/index">
+<div class="main">
+    <hr>
+      <h1>獲得日：<%= @sw_errors.minimum(:date) %>（<%= days[@sw_errors.minimum(:date).wday] %>）〜<%= @sw_errors.maximum(:date) %>（<%= days[@sw_errors.maximum(:date).wday] %>）</h1>
+    <table class="out-tb">
+      <thead>
+      <tr>
+        <th class="out-th">連携</th>
+        <th class="out-th">レコード番号</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">獲得日</th>
+        <th class="out-th">獲得者</th>
+        <th class="out-th">エラー内容</th>
+        <th class="out-th">詳細</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @sw_errors.each do |summit| %>
+      <tr >
+        <% if summit.summit_client.present? %>
+        <td class="out-td">連携済</td>
+        <% else %>
+        <% if current_user.name == "管理用" %>
+        <td class="out-td"><%= link_to "未連携", summit_path(summit.id), method: :delete,data: { confirm: "#{summit.store_prop.name}の自社サミット情報を削除してもよろしいですか？" } ,class: "link","data-turbolinks": false %></td>
+        <% else %>
+        <td class="out-td b-red">未連携</td>
+        <% end  %>
+        <% end %>
+        <td class="out-td"><%= summit.record_num %></td>
+        <td class="out-td"><%= summit.store_prop.name %></td>
+        <td class="out-td"><%= summit.date %></td>
+        <td class="out-td"><%= summit.user.name %></td>
+        <% if summit.summit_client.present? %>
+        <td class="out-td"><%= summit.summit_client.error_contents %></td>
+        <% else %>
+        <td class="out-td"></td>
+        <% end %>
+        <td class="out-td"><%= link_to "詳細", summit_path(summit.id),class: "link","data-turbolinks": false %></td>
+      <% end %>
+      </tbody>
+    </table>
+  <div class="kaminari-page">
+  </div>
+  </div>
+  </div>
+</div>

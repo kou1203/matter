@@ -78,6 +78,12 @@
                       <%= f.date_field :share_lteq, class: "s-input" %>
                     </td>
                   </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">上位店連携</td>
+                    <td class="s-td">
+                      <%= f.select :customer_num_null,{"未連携": true,"連携済": false},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
                   </tr>
                   <tr class="s-tr">
                     <td class="s-td">審査ステータス</td>
@@ -97,7 +103,7 @@
           </div><%# 検索フォーム %>
           <hr>
           <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "s-btn" %>
-          <button class="s-reset-btn"><%= link_to "解除", airpays_path, class: "reset-link" %></button>
+          <button class="s-reset-btn"><%= link_to "解除", rakuten_pays_path, class: "reset-link" %></button>
           <% end %>
         </div><%# /検索フォームの外枠 %>
         <div v-else>

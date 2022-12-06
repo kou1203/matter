@@ -13,6 +13,12 @@
   <div class="result-flex"><%# 大枠 %>
     <div class="right-frame"><%#日々進捗の区切り%>
       <h2>日々進捗</h2>
+    <div class="
+      content
+      scrollbar
+      scrollbar-thumb-rounded
+      scrollbar-thumb-gray
+    ">
       <table class="date-tb">
         <thead class="date-thead">
           <tr>
@@ -105,6 +111,9 @@
             <th class="date-th left"><span class="date-span">１０：解約金成約</span></th>
             <th class="date-th left"><span class="date-span">１１：ペロフル</span></th>
             <th class="date-th left"><span class="date-span">１１：ペロ成約</span></th>
+            <th class="date-th left"><span class="date-span">サミット（従量）</span></th>
+            <th class="date-th left"><span class="date-span">サミット（動力）</span></th>
+            <th class="date-th left"><span class="date-span">サミット（獲得母体数）</span></th>
             <th class="date-th left" colspan="3"><span class="date-span"></span></th>
           </tr>
         </thead>
@@ -154,17 +163,17 @@
             <td class="date-td race-border"><span class="date-span"><%= result.revisit_get rescue "NaN" %></span></td>
             <%# 電力会社 %>
             <th class="th-blank"></th>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company1_full_talk1 rescue "" %></span></td>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company1_full_talk2 rescue "" %></span></td>
+            <td class="date-td "><span class="date-span"><%= result.result_summit.power_company1_full_talk1 rescue "" %></span></td>
+            <td class="date-td "><span class="date-span"><%= result.result_summit.power_company1_full_talk2 rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company1_get rescue "" %></span></td>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company2_full_talk1 rescue "" %></span></td>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company2_full_talk2 rescue "" %></span></td>
+            <td class="date-td "><span class="date-span"><%= result.result_summit.power_company2_full_talk1 rescue "" %></span></td>
+            <td class="date-td "><span class="date-span"><%= result.result_summit.power_company2_full_talk2 rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company2_get rescue "" %></span></td>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company3_full_talk1 rescue "" %></span></td>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company3_full_talk2 rescue "" %></span></td>
+            <td class="date-td "><span class="date-span"><%= result.result_summit.power_company3_full_talk1 rescue "" %></span></td>
+            <td class="date-td "><span class="date-span"><%= result.result_summit.power_company3_full_talk2 rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company3_get rescue "" %></span></td>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company4_full_talk1 rescue "" %></span></td>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company4_full_talk2 rescue "" %></span></td>
+            <td class="date-td "><span class="date-span"><%= result.result_summit.power_company4_full_talk1 rescue "" %></span></td>
+            <td class="date-td "><span class="date-span"><%= result.result_summit.power_company4_full_talk2 rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.power_company4_get rescue "" %></span></td>
             <%# 店舗別基準値 %>
             <th class="th-blank"></th>
@@ -210,41 +219,51 @@
             <%# フル② %>
             <th class="th-blank"></th>
             <%# 切り返し１ %>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_full_talk_01.to_i rescue "" %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_01.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_01.to_i rescue "" %></span></td>
             <%# 切り返し２ %>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_full_talk_02.to_i rescue "" %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_02.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_02.to_i rescue "" %></span></td>
             <%# 切り返し３ %>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_full_talk_03.to_i rescue "" %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_03.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_03.to_i rescue "" %></span></td>
             <%# 切り返し４ %>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_full_talk_04.to_i rescue "" %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_04.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_04.to_i rescue "" %></span></td>
             <%# 切り返し５ %>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_full_talk_05.to_i rescue "" %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_05.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_05.to_i rescue "" %></span></td>
             <%# 切り返し６ %>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_full_talk_06.to_i rescue "" %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_06.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_06.to_i rescue "" %></span></td>
             <%# 切り返し７ %>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_full_talk_07.to_i rescue "" %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_07.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_07.to_i rescue "" %></span></td>
             <%# 切り返し８ %>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_full_talk_08.to_i rescue "" %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_08.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_08.to_i rescue "" %></span></td>
             <%# 切り返し９ %>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_full_talk_09.to_i rescue "" %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_09.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_09.to_i rescue "" %></span></td>
             <%# 切り返し１０ %>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_full_talk_10.to_i rescue "" %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_10.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_10.to_i rescue "" %></span></td>
             <%# 切り返し１１ %>
-            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_full_talk_11.to_i rescue "" %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_11.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_11.to_i rescue "" %></span></td>
+            <%# 獲得内訳 %>
+            <td class="date-td race-border"><span class="date-span"><%= @summits.where(date: result.date).where("contract_type LIKE ?","%従量%").length rescue "" %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= @summits.where(date: result.date).where(contract_type: "低圧電力").length rescue "" %></span></td>
+            <%# 獲得母体 %>
+            <td class="date-td race-border"><span class="date-span"><%= @summits.where(date: result.date).pluck(:store_prop_id).uniq.length rescue "" %></span></td>
+            <%# 編集, 削除 %>
           <td class="date-td race-border"><span class="date-span"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></span></td>
-          <% if result.shift == "サミット" %>
+          <% if result.shift == "電気" || result.shift == "設置電気" %>
+            <% if result.result_summit.present? %>
             <td class="date-td race-border" ><span class="date-span"><%= link_to "切り返し編集", edit_result_summit_path(result.result_summit.id),class: "link" rescue "error" %></span></td>
+            <% else %>
+            <td class="date-td race-border" ><span class="date-span"><%= link_to "切り返し入力", result_result_summits_new_path(result.id),class: "link" rescue "error" %></span></td>
+            <% end %>
           <% else %>
           <td class="total-td race-border"></td>
           <% end %>
@@ -270,7 +289,7 @@
               <% 22.times do %>
               <td class="date-td"><span class="date-span"></span></td>
               <% end %>
-              <% 3.times do %>
+              <% 6.times do %>
               <td class="date-td"><span class="date-span"></span></td>
               <% end %>
             <% end %>
@@ -278,6 +297,7 @@
           <% end %>
         </tbody>
       </table>
+    </div>
     </div><%#/日々進捗の区切り%>
     <div class="left-frame">
     <div><%#シフト/売上の区切り%>
@@ -290,10 +310,16 @@
           <th class="date-th">残シフト</th>
         </tr>
         <tr>
-          <td class="date-td">サミット</td>
-          <td class="date-td"><%= @shift_summit.length %></td>
-          <td class="date-td"><%= @result_summit.length %></td>
-          <td class="date-td"><%= @shift_summit.length - @result_summit.length %></td>
+          <td class="date-td">電気</td>
+          <td class="date-td"><%= @shift_summit_only.length %></td>
+          <td class="date-td"><%= @result_summit_only.length %></td>
+          <td class="date-td"><%= @shift_summit_only.length - @result_summit_only.length %></td>
+        </tr>
+        <tr>
+          <td class="date-td">設置電気</td>
+          <td class="date-td"><%= @shift_summit_and_put.length %></td>
+          <td class="date-td"><%= @result_summit_and_put.length %></td>
+          <td class="date-td"><%= @shift_summit_and_put.length - @result_summit_and_put.length %></td>
         </tr>
         <tr>
           <td class="date-td">帯同</td>
@@ -315,92 +341,690 @@
         </tr>
       </table> 
     </div><%#/シフト/売上の区切り%>
-    <% if @result_summit.present? %>
-      <div><%# 個人基準値 %>
-        <h2>基準値</h2>
-        <table class="total-tb">
-          <thead>
+
+    <script>
+    window.result_summit_only=<%= @result_summit_only_data.to_json.html_safe %>;
+    window.result_summit_and_put=<%= @result_summit_and_put_data.to_json.html_safe %>;
+    </script>
+    <%= javascript_pack_tag 'result_summit' %>
+    <article id="result-summit">
+        <h2>
+          基準値
+          <select @change="shiftSlct" class="standard-val">
+            <option value="電気">電気</option>
+            <option value="設置電気">設置電気</option>
+          </select>
+        </h2>
+          <table>
             <tr>
-              <th class="total-th">項目</th>
-              <th class="total-th">内訳</th>
-              <th class="total-th">合計</th>
-              <th class="total-th">平均</th>
-              <th class="total-th">比率</th>
+              <th class="date-th">項目</th>
+              <th class="date-th">内訳</th>
+              <th class="date-th">合計</th>
+              <th class="date-th">平均</th>
+              <th class="date-th">比率</th>
             </tr>
-          </thead>
-          <tbody>
-              
-            <% before_val = "" %>
-            <% @standard_label_ary.zip(@standard_val_ary) do |label, val| %>
-            <tr><%# 合計 %>
-              <% if before_val == "" %>
-              <th rowspan="5" class="total-th">合計</th>
-              <% end %>
-              <th class="total-th"><%= label %></th>
-              <td class="total-td"><%= val %></td>
-              <td class="total-td"><%= (val.to_f / @result_summit.length).to_f().round(1) rescue "-" %></td>
-              <% if before_val == "" %>
-              <td class="total-td">-</td>
-              <% else %>
-              <td class="total-td"><%= number_to_percentage(val.to_f / before_val.to_f * 100, precision: 1) rescue "-" %></td>
-              <% end %>
-              <% before_val = val %>
+            <tr>
+              <th class="date-th" rowspan="5">合計</th>
+              <th class="date-th">訪問</th>
+              <td class="date-td">{{ shiftItem["合計訪問"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["合計訪問"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
             </tr>
-            <% end %>
-            <% before_val = "" %>
-            <% @standard_label_ary.zip(@standard_val_ary_f) do |label, val| %>
-            <tr><%# 前半 %>
-              <% if before_val == "" %>
-              <th rowspan="5" class="total-th">前半</th>
-              <% end %>
-              <th class="total-th"><%= label %></th>
-              <td class="total-td"><%= val %></td>
-              <td class="total-td"><%= (val.to_f / @result_summit.length).to_f().round(1) rescue "-" %></td>
-              <% if before_val == "" %>
-              <td class="total-td">-</td>
-              <% else %>
-              <td class="total-td"><%= number_to_percentage(val.to_f / before_val.to_f * 100, precision: 1) rescue "-" %></td>
-              <% end %>
-              <% before_val = val %>
+            <tr>
+              <th class="date-th">対面</th>
+              <td class="date-td">{{ shiftItem["合計対面"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["合計対面"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["合計対面"] / shiftItem["合計訪問"] * 10) / 10 }}</td>
             </tr>
-            <% end %>
-            <% before_val = "" %>
-            <% @standard_label_ary.zip(@standard_val_ary_l) do |label, val| %>
-            <tr><%# 後半 %>
-              <% if before_val == "" %>
-              <th rowspan="5" class="total-th">後半</th>
-              <% end %>
-              <th class="total-th"><%= label %></th>
-              <td class="total-td"><%= val %></td>
-              <td class="total-td"><%= (val.to_f / @result_summit.length).to_f().round(1) rescue "-" %></td>
-              <% if before_val == "" %>
-              <td class="total-td">-</td>
-              <% else %>
-              <td class="total-td"><%= number_to_percentage(val.to_f / before_val.to_f * 100, precision: 1) rescue "-" %></td>
-              <% end %>
-              <% before_val = val %>
+            <tr>
+              <th class="date-th">フル①</th>
+              <td class="date-td">{{ shiftItem["合計フル①"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["合計フル①"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["合計フル①"] / shiftItem["合計対面"] * 10) / 10 }}</td>
             </tr>
-            <% end %>
-            <% before_val = "" %>
-            <% @revisit_label_ary.zip(@revisit_val_ary) do |label, val| %>
-            <tr><%# 再訪 %>
-              <% if before_val == "" %>
-              <th rowspan="2" class="total-th">再訪</th>
-              <% end %>
-              <th class="total-th"><%= label %></th>
-              <td class="total-td"><%= val %></td>
-              <td class="total-td"><%= (val.to_f / @result_summit.length).to_f().round(1) rescue "-" %></td>
-              <% if before_val == "" %>
-              <td class="total-td">-</td>
-              <% else %>
-              <td class="total-td"><%= number_to_percentage(val.to_f / before_val.to_f * 100, precision: 1) rescue "-" %></td>
-              <% end %>
-              <% before_val = val %>
+            <tr>
+              <th class="date-th">フル②</th>
+              <td class="date-td">{{ shiftItem["合計フル②"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["合計フル②"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["合計フル②"] / shiftItem["合計フル①"] * 10) / 10 }}</td>
             </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div><%# /個人基準値 %>
-    <% end %>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["合計成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["合計成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["合計成約"] / shiftItem["合計フル②"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="5">前半</th>
+              <th class="date-th">訪問</th>
+              <td class="date-td">{{ shiftItem["前半訪問"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["前半訪問"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">対面</th>
+              <td class="date-td">{{ shiftItem["前半対面"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["前半対面"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["前半対面"] / shiftItem["前半訪問"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル①</th>
+              <td class="date-td">{{ shiftItem["前半フル①"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["前半フル①"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["前半フル①"] / shiftItem["前半対面"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル②</th>
+              <td class="date-td">{{ shiftItem["前半フル②"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["前半フル②"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["前半フル②"] / shiftItem["前半フル①"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["前半成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["前半成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["前半成約"] / shiftItem["前半フル②"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="5">後半</th>
+              <th class="date-th">訪問</th>
+              <td class="date-td">{{ shiftItem["後半訪問"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["後半訪問"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">対面</th>
+              <td class="date-td">{{ shiftItem["後半対面"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["後半対面"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["後半対面"] / shiftItem["後半訪問"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル①</th>
+              <td class="date-td">{{ shiftItem["後半フル①"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["後半フル①"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["後半フル①"] / shiftItem["後半対面"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル②</th>
+              <td class="date-td">{{ shiftItem["後半フル②"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["後半フル②"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["後半フル②"] / shiftItem["後半フル①"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["後半成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["後半成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["後半成約"] / shiftItem["後半フル②"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">再訪</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル（再訪）"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル（再訪）"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["成約（再訪）"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["成約（再訪）"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["成約（再訪）"] / shiftItem["フル（再訪）"] * 10) / 10 }}</td>
+            </tr>
+          </table>
+          <div class="result-flex"><%# foot-frame %>
+          <div>
+          <h2>電力会社</h2>
+          <table>
+            <tr>
+              <th class="date-th">項目</th>
+              <th class="date-th">内訳</th>
+              <th class="date-th">合計</th>
+              <th class="date-th">平均</th>
+              <th class="date-th">比率</th>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="3">地域電力</th>
+              <th class="date-th">フル①</th>
+              <td class="date-td">{{ shiftItem["地域電力フル①"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["地域電力フル①"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル②</th>
+              <td class="date-td">{{ shiftItem["地域電力フル②"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["地域電力フル②"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["地域電力フル②"] / shiftItem["地域電力フル①"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["地域電力成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["地域電力成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["地域電力成約"] / shiftItem["地域電力フル②"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="3">地域ガス</th>
+              <th class="date-th">フル①</th>
+              <td class="date-td">{{ shiftItem["地域ガスフル①"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["地域ガスフル①"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル②</th>
+              <td class="date-td">{{ shiftItem["地域ガスフル②"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["地域ガスフル②"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["地域ガスフル②"] / shiftItem["地域ガスフル①"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["地域ガス成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["地域ガス成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["地域ガス成約"] / shiftItem["地域ガスフル②"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="3">ハルエネ</th>
+              <th class="date-th">フル①</th>
+              <td class="date-td">{{ shiftItem["ハルエネフル①"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["ハルエネフル①"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル②</th>
+              <td class="date-td">{{ shiftItem["ハルエネフル②"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["ハルエネフル②"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["ハルエネフル②"] / shiftItem["ハルエネフル①"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["ハルエネ成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["ハルエネ成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["ハルエネ成約"] / shiftItem["ハルエネフル②"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="3">その他</th>
+              <th class="date-th">フル①</th>
+              <td class="date-td">{{ shiftItem["その他フル①"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["その他フル①"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル②</th>
+              <td class="date-td">{{ shiftItem["その他フル②"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["その他フル②"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["その他フル②"] / shiftItem["その他フル①"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["その他成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["その他成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["その他成約"] / shiftItem["その他フル②"] * 10) / 10 }}</td>
+            </tr>
+          </table>
+          </div>
+          <div>
+          <h2>店舗業種</h2>
+          <table>
+            <tr>
+              <th class="date-th">項目</th>
+              <th class="date-th">内訳</th>
+              <th class="date-th">合計</th>
+              <th class="date-th">平均</th>
+              <th class="date-th">比率</th>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">飲食</th>
+              <th class="date-th">訪問</th>
+              <td class="date-td">{{ shiftItem["飲食訪問"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["飲食訪問"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["飲食成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["飲食成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["飲食成約"] / shiftItem["飲食訪問"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">小売</th>
+              <th class="date-th">訪問</th>
+              <td class="date-td">{{ shiftItem["小売訪問"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["小売訪問"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["小売成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["小売成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["小売成約"] / shiftItem["小売訪問"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">サービス</th>
+              <th class="date-th">訪問</th>
+              <td class="date-td">{{ shiftItem["サービス訪問"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["サービス訪問"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["サービス成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["サービス成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["サービス成約"] / shiftItem["サービス訪問"] * 10) / 10 }}</td>
+            </tr>
+          </table>
+          </div>
+          </div>
+          <div class="result-flex"><%# foot-frame %>
+          <div>
+          <h2>切り返し（フル①）</h2>
+          <table>
+            <tr>
+              <th class="date-th">項目</th>
+              <th class="date-th">内訳</th>
+              <th class="date-th">合計</th>
+              <th class="date-th">平均</th>
+              <th class="date-th">比率</th>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="3">何故見せないと</th>
+              <th class="date-th">対面</th>
+              <td class="date-td">{{ shiftItem["何故見せないと対面"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["何故見せないと対面"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["何故見せないとフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["何故見せないとフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["何故見せないとフル"] / shiftItem["何故見せないと対面"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["何故見せないと成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["何故見せないと成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["何故見せないと成約"] / shiftItem["何故見せないとフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="3">君は誰</th>
+              <th class="date-th">対面</th>
+              <td class="date-td">{{ shiftItem["君は誰対面"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["君は誰対面"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["君は誰フル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["君は誰フル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["君は誰フル"] / shiftItem["君は誰対面"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["君は誰成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["君は誰成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["君は誰成約"] / shiftItem["君は誰フル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="3">明細ない</th>
+              <th class="date-th">対面</th>
+              <td class="date-td">{{ shiftItem["明細ない対面"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["明細ない対面"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["明細ないフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["明細ないフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["明細ないフル"] / shiftItem["明細ない対面"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["明細ない成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["明細ない成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["明細ない成約"] / shiftItem["明細ないフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="3">探したが無い</th>
+              <th class="date-th">対面</th>
+              <td class="date-td">{{ shiftItem["探したが無い対面"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["探したが無い対面"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["探したが無いフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["探したが無いフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["探したが無いフル"] / shiftItem["探したが無い対面"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["探したが無い成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["探したが無い成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["探したが無い成約"] / shiftItem["探したが無いフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="3">忙しい</th>
+              <th class="date-th">対面</th>
+              <td class="date-td">{{ shiftItem["忙しい対面"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["忙しい対面"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["忙しいフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["忙しいフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["忙しいフル"] / shiftItem["忙しい対面"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["忙しい成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["忙しい成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["忙しい成約"] / shiftItem["忙しいフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="3">電気断ってる</th>
+              <th class="date-th">対面</th>
+              <td class="date-td">{{ shiftItem["電気断ってる対面"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["電気断ってる対面"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["電気断ってるフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["電気断ってるフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["電気断ってるフル"] / shiftItem["電気断ってる対面"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["電気断ってる成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["電気断ってる成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["電気断ってる成約"] / shiftItem["電気断ってるフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="3">ペロ</th>
+              <th class="date-th">対面</th>
+              <td class="date-td">{{ shiftItem["ペロ対面"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["ペロ対面"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["ペロフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["ペロフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["ペロフル"] / shiftItem["ペロ対面"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["ペロ成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["ペロ成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["ペロ成約"] / shiftItem["ペロフル"] * 10) / 10 }}</td>
+            </tr>
+          </table>
+          </div>
+          <div>
+          <h2>切り返し（フル②）</h2>
+          <table>
+            <tr>
+              <th class="date-th">項目</th>
+              <th class="date-th">内訳</th>
+              <th class="date-th">合計</th>
+              <th class="date-th">平均</th>
+              <th class="date-th">比率</th>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">口座拒否</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル②口座拒否フル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②口座拒否フル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["フル②口座拒否成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②口座拒否成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②口座拒否成約"] / shiftItem["フル②口座拒否フル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">クレがいい</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル②クレがいいフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②クレがいいフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["フル②クレがいい成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②クレがいい成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②クレがいい成約"] / shiftItem["フル②クレがいいフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">忙しい</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル②忙しいフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②忙しいフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["フル②忙しい成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②忙しい成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②忙しい成約"] / shiftItem["フル②忙しいフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">怪しい</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル②怪しいフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②怪しいフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["フル②怪しい成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②怪しい成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②怪しい成約"] / shiftItem["フル②怪しいフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">検討する</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル②検討するフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②検討するフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["フル②検討する成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②検討する成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②検討する成約"] / shiftItem["フル②検討するフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">既存のまま</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル②既存のままフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②既存のままフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["フル②既存のまま成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②既存のまま成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②既存のまま成約"] / shiftItem["フル②既存のままフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">メアドなし</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル②メアドなしフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②メアドなしフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["フル②メアドなし成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②メアドなし成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②メアドなし成約"] / shiftItem["フル②メアドなしフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">確認書なし</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル②確認書なしフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②確認書なしフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["フル②確認書なし成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②確認書なし成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②確認書なし成約"] / shiftItem["フル②確認書なしフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">口座印なし</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル②口座印なしフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②口座印なしフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["フル②口座印なし成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②口座印なし成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②口座印なし成約"] / shiftItem["フル②口座印なしフル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">解約金</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル②解約金フル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②解約金フル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["フル②解約金成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②解約金成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②解約金成約"] / shiftItem["フル②解約金フル"] * 10) / 10 }}</td>
+            </tr>
+            <tr>
+              <th class="date-th" rowspan="2">ペロ</th>
+              <th class="date-th">フル</th>
+              <td class="date-td">{{ shiftItem["フル②ペロフル"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②ペロフル"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">-</td>
+            </tr>
+            <tr>
+              <th class="date-th">成約</th>
+              <td class="date-td">{{ shiftItem["フル②ペロ成約"] }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②ペロ成約"] / shiftItem["消化シフト数"] * 10) / 10 }}</td>
+              <td class="date-td">{{ Math.round(shiftItem["フル②ペロ成約"] / shiftItem["フル②ペロフル"] * 10) / 10 }}</td>
+            </tr>
+          </table>
+          </div>
+          </div>
+    </article>
+    </div>
   </div><%# 大枠 %>
+  <div class="result-flex"><%# 大枠 %>
+    <% if @result_summit.present? %>
+    <div><%# 週間基準値 %>
+      <% weeks = [@results_week1, @results_week2,@results_week3, @results_week4, @results_week5] %>
+      <h2>週間基準値</h2>
+      <% if @result_summit.present? %>
+      <table>
+        <tr>
+          <th class="date-th" colspan="2">期間</th>
+          <th class="date-th">消化シフト</th>
+          <th class="date-th">従量生産性</th>
+          <th class="date-th" colspan="">訪問</th>
+          <th class="date-th" colspan="2">面会</th>
+          <th class="date-th" colspan="2">フル①</th>
+          <th class="date-th" colspan="2">フル②</th>
+          <th class="date-th" colspan="2">成約</th>
+        </tr>
+        <% cnt = 0 %>
+        <% weeks.each do |week| %>
+          <% cnt += 1 %>
+          <% if week.present? %>
+          <tr>
+            <td class="date-td"><%= cnt %>週目</td>
+            <td class="date-td">
+              <%= week.minimum(:date).strftime("%m月%d日") %>〜
+              <%= week.maximum(:date).strftime("%m月%d日")  %>
+            </td>
+            <td class="date-td">
+              <%= week_shift = @result_summit.where(date: week.minimum(:date)..week.maximum(:date)).length %>
+            </td>
+            <td class="date-td">
+              <%=( (@summits.where(date: week.minimum(:date)..week.maximum(:date)).where("contract_type LIKE ?","%従量%").length).to_f() / week_shift).round(1) %>
+            </td>
+            <td class="date-td">
+              <%= week_visit = ((week.sum(:first_visit) + week.sum(:latter_visit)).to_f() / week_shift).round(1) %>
+            </td>
+            <td class="date-td">
+              <%= week_interview = ((week.sum(:first_interview) + week.sum(:latter_interview)).to_f() / week_shift).round(1) %>
+            </td>
+            <td class="date-td">
+              （<%= number_to_percentage(week_interview / week_visit * 100, precision: 1) %>）
+            </td>
+            <td class="date-td">
+              <%= week_full_talk = ((week.sum(:first_full_talk) + week.sum(:latter_full_talk)).to_f() / week_shift).round(1) %>
+            </td>
+            <td class="date-td">
+              （<%= number_to_percentage(week_full_talk / week_interview * 100, precision: 1) %>）
+            </td>
+            <td class="date-td">
+              <%= week_full_talk2 = ((week.sum(:first_full_talk2) + week.sum(:latter_full_talk2)).to_f() / week_shift).round(1) %>
+            </td>
+            <td class="date-td">
+              （<%= number_to_percentage(week_full_talk2 / week_full_talk * 100, precision: 1) %>）
+            </td>
+            <td class="date-td">
+              <%= week_get = ((week.sum(:first_get) + week.sum(:latter_get)).to_f() / week_shift).round(1) %>
+            </td>
+            <td class="date-td">
+              （<%= number_to_percentage(week_get / week_full_talk2 * 100, precision: 1) %>）
+            </td>
+          </tr>
+          <% end %>
+        <% end %>
+      </table>
+      <% end %>
+    </div><%# /週間基準値 %>
+    <% end %>
+    <div><%# 獲得内訳 %>
+      <% if @summits.present? && @shift_summit.present? && @result_summit.present? %>
+      <h2>獲得内訳</h2>
+      <table>
+        <tr>
+        <th class="date-th">商材</th>
+        <th class="date-th">獲得</th>
+        <th class="date-th">SWエラー</th>
+        <th class="date-th">キャンセル</th>
+        <th class="date-th">獲得Ave</th>
+        <th class="date-th">獲得終着</th>
+        </tr>
+        <tr>
+        <td class="date-td">サミット新電力　従量</td>
+        <% metered_light = @summits.where("contract_type LIKE ?","%従量%") %>
+        <td class="date-td"><%= metered_light.length %></td>
+        <td class="date-td"><%= metered_light.where(status: "SWエラー").length %></td>
+        <td class="date-td"><%= metered_light.where(status: "キャンセル").length %></td>
+        <td class="date-td"><%= metered_light_ave = (metered_light.length.to_f / @result_summit.length).round(1) %></td>
+        <td class="date-td"><%= (metered_light_ave * @shift_summit.length).round() %></td>
+
+        </tr>
+        <tr>
+        <%  low_voltage = @summits.where(contract_type: "低圧電力") %>
+        <td class="date-td">サミット新電力　動力</td>
+        <td class="date-td"><%= low_voltage.length %></td>
+        <td class="date-td"><%= low_voltage.where(status: "SWエラー").length %></td>
+        <td class="date-td"><%= low_voltage.where(status: "キャンセル").length %></td>
+        <td class="date-td"><%= low_voltage_ave = (low_voltage.length.to_f / @result_summit.length).round(1) %></td>
+        <td class="date-td"><%= (low_voltage_ave * @shift_summit.length).round() %></td>
+        </tr>
+        <tr>
+        <% store_uniq = @summits.pluck(:store_prop_id).uniq %>
+        <td class="date-td">サミット新電力　獲得母体数</td>
+        <td class="date-td"><%= store_uniq.length %></td>
+        <td class="date-td"><%=  %></td>
+        <td class="date-td"><%=  %></td>
+        <td class="date-td"><%= store_uniq_ave = (store_uniq.length.to_f / @result_summit.length).round(1) %></td>
+        <td class="date-td"><%= (store_uniq_ave * @shift_summit.length).round() %></td>
+        </tr>
+      </table>
+      <% end %>
+    </div><%# /獲得内訳 %>
+  </div>
 </div><%# users/showスコープ頭 %>
