@@ -437,6 +437,7 @@
         </table>
         
       <% end %>
+      <%= link_to "日々獲得内容確認",date_progress_results_path,class: "link" %>
       <% if current_user.position_sub == "管理" %>
         <h2>利益表（基準値）インポート</h2>
         <%= form_with url: import_results_path do |f| %>
@@ -455,7 +456,7 @@
               <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
             </tr>
           </table>
-          <%= link_to "日々獲得内容確認",date_progress_results_path,class: "link" %>
+
         <% end %>
       <% end %>
         </div>
