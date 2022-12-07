@@ -46,13 +46,13 @@
                 <td class="base-td">{{ item["名前"] }}</td>
                 <td class="base-td">{{ item["役職"] }}</td>
                 <td class="base-td">{{ item["従量獲得"] }}</td>
-                <td class="base-td"></td>
+                <td class="base-td">{{ item["現状予想売上"] }}</td>
                 <td class="base-td">{{ item["従量獲得Ave"] }}</td>
                 <td class="base-td">{{ item["従量獲得終着見込"] }}</td>
-                <td class="base-td">{{  }}</td>
+                <td class="base-td">{{ item["当月終着見込"] }}</td>
                 <td class="base-td">{{ item["切換完了済み"] }}</td>
-                <td class="base-td">{{ item["first数"] }}</td>
-                <td class="base-td">{{ item["last数"] }}</td>
+                <td class="base-td">{{ item["単価"] }}</td>
+                <td class="base-td">{{ item["当月売上"] }}</td>
                 <td class="base-td">{{ item["予定シフト"] }}</td>
                 <td class="base-td">{{ item["消化シフト"] }}</td>
                 <td class="base-td">{{ item["予定シフト"] - item["消化シフト"] }}</td>

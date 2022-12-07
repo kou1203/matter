@@ -212,11 +212,15 @@
         <th class="search-th">不備・保留</th>
         <th class="search-th">キャンセル</th>
         <th class="search-th">廃止</th>
+        <th class="search-th">月間予想売上</th>
+        <th class="search-th">月間予想売上（SW完了してから30日未満含）</th>
       </tr>
       <tr>
         <td><%= @summits.where(status: "不備・保留").length %></td>
         <td><%= @summits.where(status: "キャンセル").length %></td>
         <td><%= @summits.where(status: "廃止").length %></td>
+        <td><%= @summits.includes(:summit_price,:summit_client).where(summit_client: {contract_start: ..Date.today.ago(30.days)}).where(status: "SW完了").sum(:last_billing).to_s(:delimited) %></td>
+        <td><%= @summits.includes(:summit_price,:summit_client).where(status: "SW完了").sum(:last_billing).to_s(:delimited) %></td>
       </tr>
     </table>
     <table class="out-tb">

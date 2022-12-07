@@ -245,22 +245,19 @@ class ResultSummitsController < ApplicationController
         user_summit_sw_done = 
           user_summit_all.includes(:summit_client,:summit_price).where(status: "SW完了")
           .where(summit_client: {contract_start: ..Date.today.ago(30.days)}).where("contract_type LIKE ?","%従量%")
-        
-        first_price = 
-          user_summit_all.includes(:summit_client,:summit_price)
-          .where(status: "SW完了")
-          .where(summit_client: {contract_start: ..Date.today}).select('summits.*', 'count(summit_billing_amounts.id) AS billings')
-          .left_joins(:summit_billing_amounts)
-          .group('summits.id')
-          .having('billings < 2').sum(:first_billing).values.inject(:+)
-        last_price = 
-          user_summit_all.includes(:summit_client,:summit_price).where(status: "SW完了")
-          .where(summit_client: {contract_start: ..Date.today}).select('summits.*', 'count(summit_billing_amounts.id) AS billings')
-        .left_joins(:summit_billing_amounts)
-        .group('summits.id')
-        .having('billings >= 2').sum(:last_billing).values.inject(:+)
-        person_hash["first数"] = first_price
-        person_hash["last数"] = last_price
+        # user_summit_all.includes(:summit_client,:summit_price)
+        # .where(status: "SW完了")
+        #   .where(summit_client: {contract_start: ..Date.today}).select('summits.*', 'count(summit_billing_amounts.id) AS billings')
+        #   .left_joins(:summit_billing_amounts)
+        #   .group('summits.id')
+        #   .having('billings < 2').length
+          # .sum(:last_billing).values.inject(:+)
+        sw_done = user_summit_all.includes(:summit_client,:summit_price).where(status: "SW完了")
+        .where(summit_client: {contract_start: ..Date.today.ago(30.days)})
+        this_month_profit = sw_done.sum(:last_billing)
+        price_ave = (this_month_profit / user_summit_all.where(status: "SW完了").where("contract_type LIKE ?","%従量%").length).round() rescue 0
+          person_hash["当月売上"] = this_month_profit
+          person_hash["単価"] = price_ave
         person_hash["切換完了済み"] = user_summit_sw_done.length
         # 明細の数が２個あるものとそうでないものと分ける
         
@@ -269,6 +266,8 @@ class ResultSummitsController < ApplicationController
         person_hash["従量獲得"] = metered_light.length
         person_hash["従量獲得Ave"] = (person_hash["従量獲得"].to_f / person_hash["消化シフト"]).round(1) rescue 0
         person_hash["従量獲得終着見込"] = (person_hash["従量獲得Ave"] * person_hash["予定シフト"]).round() rescue 0
+        person_hash["当月終着見込"] = person_hash["従量獲得終着見込"] * person_hash["単価"]
+        person_hash["現状予想売上"] = person_hash["従量獲得"] * person_hash["単価"]
 
       # 基準値
         person_hash["訪問"] = (
