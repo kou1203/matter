@@ -9,6 +9,7 @@ class SummitCustomerPropsController < ApplicationController
         @q.result(distinct: false)
       end
       @summit_customer_props_data = @summit_customer_props.page(params[:page]).per(100)
+      @users = User.where(base_sub: "サミット")
   end 
 
   def show 

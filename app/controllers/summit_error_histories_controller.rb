@@ -9,6 +9,7 @@ class SummitErrorHistoriesController < ApplicationController
         @q.result(distinct: false)
       end
       @summit_errors_data = @summit_errors.page(params[:page]).per(100)
+      @users = User.where(base_sub: "サミット")
   end 
 
   def show 

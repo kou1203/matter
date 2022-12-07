@@ -1,5 +1,29 @@
+    <h2 class="">商材項目一覧</h2>
+<div class="summit-link-flex">
+    <div class="summit-section">
     <p class="link-text"><%= link_to "サミット一覧", summits_path ,"data-turbolinks": false, class: "summit-link" %></p>
     <p class="link-text"><%= link_to "支払遅延一覧", summit_error_histories_path,"data-turbolinks": false, class: "summit-link" %></p>
+    </div>
+    <div class="summit-section">
     <p class="link-text"><%= link_to "対応履歴", summit_customer_props_path,"data-turbolinks": false, class: "summit-link" %></p>
-    <p class="link-text"><%= link_to "SWエラー", sw_error_summits_path,"data-turbolinks": false, class: "summit-link" %></p>
     <p class="link-text"><%= link_to "支払明細", summit_billing_amounts_path,"data-turbolinks": false, class: "summit-link" %></p>
+    </div>
+    <%# link_to "SWエラー", sw_error_summits_path,"data-turbolinks": false, class: "summit-link" %>
+</div>
+<hr>
+<div>
+    <%= javascript_pack_tag 'base_slct' %>
+    <% bases = ["中部SS", "関西SS", "関東SS"] %>
+
+        <div class="summit-link-flex">
+            <% bases.each do |base| %>
+            <div>
+            <h2><%= link_to "#{base}利益表", base_profit_result_summits_path,"data-turbolinks": false,class: "link" %></h2>
+                    <% @users.where(base: base).each do |user| %>
+                        <p class="link-text"><%= link_to "#{user.name}",result_summit_path(user.id),"data-turbolinks": false, class: "summit-link" %></p>
+                    <% end %>            
+            </div>
+            <% end %>
+        </div>
+    </div>
+<hr>

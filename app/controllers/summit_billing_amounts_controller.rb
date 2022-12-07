@@ -9,6 +9,7 @@ class SummitBillingAmountsController < ApplicationController
         @q.result(distinct: false)
       end
       @summits_data = @summits.page(params[:page]).per(100)
+      @users = User.where(base_sub: "サミット")
   end 
 
   def import

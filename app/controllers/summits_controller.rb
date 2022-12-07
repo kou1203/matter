@@ -9,6 +9,7 @@ class SummitsController < ApplicationController
         @q.result(distinct: false)
       end
       @summits_data = @summits.page(params[:page]).per(100)
+    @users = User.where(base_sub: "サミット")
   end
 
 
@@ -17,7 +18,6 @@ class SummitsController < ApplicationController
   end 
   
   def create 
-    @users = User.all
     @summit = Summit.new(summit_params)
     @summit.save 
     if @summit.save
