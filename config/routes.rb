@@ -195,7 +195,7 @@ Rails.application.routes.draw do
   resources :calc_periods
 
   resources :dmer_date_progresses do 
-    collection {post :progress_create}
+    collection {get :progress_create}
   end 
 
 end

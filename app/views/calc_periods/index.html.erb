@@ -13,8 +13,14 @@
 <div data-scope-path="shares/index">
   <div class="main">
   <p class="s-text"><%= alert %></p>
-  <h2><%= Date.today.month %>月利益表設定内容<button class="new-btn"><%= link_to "新規登録", new_calc_period_path,class: "reg-link" %></button></h2>
+  <h2>
+    <%= link_to "<<",calc_periods_path(month: @month.ago(1.month)), class:"link" %>
+    <%= @month.month %>月利益表設定内容
+    <%= link_to ">>",calc_periods_path(month: @month.since(1.month)), class:"link" %>
+    <button class="new-btn"><%= link_to "新規登録", new_calc_period_path,class: "reg-link" %></button>
+  </h2>
   <hr>
+  <%= link_to "dメル売上保存", progress_create_dmer_date_progresses_path(month: @month), class: "link" %>
   <% calc_periods_ary.each do |calc_periods| %>
   <% if tb_cnt == 0 %>
   <h2>◆評価売</h2>

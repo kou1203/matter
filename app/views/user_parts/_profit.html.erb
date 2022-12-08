@@ -454,46 +454,44 @@
         <% dmer_slmt2nd_date_len = @dmer_slmter.where(settlement_second: result.date).length rescue 0 %>
         <% aupay_slmt_date_len = @aupay_user.where(status_settlement: "完了").where(picture: result.date).length rescue 0 %>
         <td class="date-td race-border">
-        <span class="date-span">
         <% if result.result_cash.present? %>
           <% if result.result_cash.dmer.present? %>
-            dメル<%= result.result_cash.dmer %><br>
+            <span class="date-span">dメル<%= result.result_cash.dmer %></span><br>
           <% end %>
           <% if result.result_cash.aupay.present? %>
-            auPay<%= result.result_cash.aupay %><br>
+            <span class="date-span">auPay<%= result.result_cash.aupay %></span><br>
           <% end %>
           <% if result.result_cash.paypay.present? %>
-            PayPay<%= result.result_cash.paypay %><br>
+            <span class="date-span">PayPay<%= result.result_cash.paypay %></span><br>
           <% end %>
           <% if result.result_cash.rakuten_pay.present? %>
-            楽天ペイ<%= result.result_cash.rakuten_pay %><br>
+            <span class="date-span">楽天ペイ<%= result.result_cash.rakuten_pay %></span><br>
           <% end %>
           <% if result.result_cash.airpay.present? %>
-            Airay<%= result.result_cash.airpay %><br>
+            <span class="date-span">Airay<%= result.result_cash.airpay %></span><br>
           <% end %>
           <% if dmax_slmt_date_len != 0 %>
-            dマックス通常決済<%= dmax_slmt_date_len %><br>
+            <span class="date-span">dマックス通常決済<%= dmax_slmt_date_len %></span><br>
           <% end %>
           <% if dmax_mer_slmt_date_len != 0 %>
-            d即時（メル）決済<%= dmax_mer_slmt_date_len %><br>
+            <span class="date-span">d即時（メル）決済<%= dmax_mer_slmt_date_len %></span><br>
           <% end %>
           <% if dmax_d_slmt_date_len != 0 %>
-            d即時（d）決済<%= dmax_d_slmt_date_len %><br>
+            <span class="date-span">d即時（d）決済<%= dmax_d_slmt_date_len %></span><br>
           <% end %>
           <% if dpias_slmt_date_len != 0 %>
-            dピアズ決済<%= dpias_slmt_date_len %><br>
+            <span class="date-span">dピアズ決済<%= dpias_slmt_date_len %></span><br>
           <% end %>
           <% if dusen_slmt_date_len != 0 %>
-            dメル決済USEN<%= dusen_slmt_date_len %><br>
+            <span class="date-span">dメル決済USEN<%= dusen_slmt_date_len %></span><br>
           <% end %>
           <% if dmer_slmt2nd_date_len != 0 %>
-            dメル2回目決済<%= dmer_slmt2nd_date_len %><br>
+            <span class="date-span">dメル2回目決済<%= dmer_slmt2nd_date_len %></span><br>
           <% end %>
           <% if aupay_slmt_date_len != 0 %>
-            auPay決済<%= aupay_slmt_date_len %><br>
+            <span class="date-span">auPay決済<%= aupay_slmt_date_len %></span><br>
           <% end %>
         <% end %>
-        </span>
         </td>
       <%# 編集や削除 %>
         <td class="date-td race-border"><span class="date-span"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></span></td>
