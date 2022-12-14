@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_03_091335) do
+ActiveRecord::Schema.define(version: 2022_12_13_104402) do
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "store_prop_id"
@@ -645,6 +645,10 @@ ActiveRecord::Schema.define(version: 2022_12_03_091335) do
     t.date "payment"
     t.integer "profit", null: false
     t.integer "valuation", null: false
+    t.date "registration"
+    t.date "payment_schedule"
+    t.date "payment_deadline"
+    t.string "payment_flag"
     t.index ["store_prop_id"], name: "index_rakuten_pays_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_rakuten_pays_on_user_id"
   end
