@@ -34,6 +34,7 @@
       <% cnt = 0 %>
       <%= month_calendar do |date| %>
         <% r_data = @results.find_by(date: date).shift rescue "" %>
+        <%= r_user = @results.find_by(date: date).user.name rescue "" %>
         <input name="shift-check" type="checkbox" , class="shiftcheckbox">
         <%= date.day %><br>
         <% shift = @current_shifts.find_or_initialize_by(start_time: date) %>

@@ -35,10 +35,9 @@ class ShiftsController < ApplicationController
   
   def show 
     @user = User.find(params[:id])
-    @results = Result.where(user_id: @user.id)
-    @current_shifts = Shift.where(user_id: @user.id)
+    @results = Result.where(user_id: params[:id])
+    @current_shifts = Shift.where(user_id: params[:id])
     @shift = Shift.new
-    @results = Result.all
   end 
 
   def edit 
