@@ -32,6 +32,7 @@
 
     <%# カレンダー部分 %>
       <% cnt = 0 %>
+      <div class="scroll-form">
       <%= month_calendar do |date| %>
         <input name="shift-check" type="checkbox" , class="shiftcheckbox">
         <%= date.day %><br>
@@ -73,6 +74,7 @@
       <% end %>
       <%= submit_tag "登録",class: "submit-btn" %>
     <% end %>
+    </div>
     <div class="shift-form">
     <h2>全シフト検索</h2>
     <%= search_form_for @q do |f| %>
@@ -116,7 +118,8 @@
       表示範囲：
       <%= @shifts.minimum(:start_time).to_date %>（<%= days[@shifts.minimum(:start_time).wday] %>）〜<%= @shifts.maximum(:start_time).to_date %>（<%= days[@shifts.maximum(:start_time).wday] %>）
     </h1>
-      <table>
+    <div class="scroll-form">
+      <table class="shift-tb">
         <tr>
         </tr>
         <tr>
@@ -237,6 +240,7 @@
         </tr>
     <% end %>
       </table>
+      </div>
   <% end %>
   </div>
 </div>
