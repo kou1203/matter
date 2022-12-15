@@ -13,6 +13,13 @@ class ShiftsController < ApplicationController
         @q.result(distinct: false)
       end
     @results = Result.all
+    @result_list = @results.where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time))
+    @result_list = 
+      @result_list.where(shift: "キャッシュレス新規")
+      .or(
+        @result_list.where(shift: "キャッシュレス決済")
+
+      )
     session[:previous_url] = request.referer
   end 
 
