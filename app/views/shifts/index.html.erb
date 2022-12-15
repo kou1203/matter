@@ -140,7 +140,7 @@
         </tr>
         <% not_shift_cnt = 0 %>
     <% @shifts.group(:user_id).each do |shift| %>
-      <% if @users_cash.exists?(id: shift.user_id) %>
+      <% if (@users_cash.exists?(id: shift.user_id)) || (shift.user.base_sub != "キャッシュレス") %>
       <% else %>
         <% if not_shift_cnt == 0 %>
         <p>シフト未申請者一覧</p>
