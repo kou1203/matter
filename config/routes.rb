@@ -88,11 +88,13 @@ Rails.application.routes.draw do
     collection {put :comment_update}
   end
 
-  resources :shifts do 
+  resources :shifts,expect: [:show] do 
     collection do
       post :update_month
     end
   end 
+
+  resources :shifts, only: :show,param: :user_id
 
   resources :panda_profits, only: :index
 

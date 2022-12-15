@@ -1,0 +1,85 @@
+<div data-scope-path="shared/header">
+  <h1>シフト一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shifts/index">
+  <p class="shift-alert"><%= notice %></p>
+    <div class="cal-form">
+    <%= form_for :shift, url: update_month_shifts_path , html: { method: :post } do %>
+      <h2><%= @user.name %>予定シフト</h2>
+      <p class="text">チェックボックスにレ点をつけてから下のシフトを選択することで一括入力ができるようになっています。</p>
+      <div class="slct-form">
+      <input type="button" id="check-all" class="check-btn"  value="全選択">
+      <input type="button" id="uncheck-all" class="uncheck-btn" value="解除" >
+      <select id="shift-select" class="shift-slct">
+        <option value="">シフトを選択</option>
+        <option value="キャッシュレス新規">キャッシュレス新規</option>
+        <option value="キャッシュレス決済">キャッシュレス決済</option>
+        <option value="楽天フェムト新規">楽天フェムト新規</option>
+        <option value="楽天フェムト設置">楽天フェムト設置</option>
+        <option value="電気">電気</option>
+        <option value="設置電気">設置電気</option>
+        <option value="帯同">帯同</option>
+        <option value="内勤">内勤</option>
+        <option value="休み">休み</option>
+      </select>
+    </div>
+    
+
+    <%# カレンダー部分 %>
+      <% cnt = 0 %>
+      <%= month_calendar do |date| %>
+        <% r_data = @results.find_by(date: date).shift rescue "" %>
+        <input name="shift-check" type="checkbox" , class="shiftcheckbox">
+        <%= date.day %><br>
+        <% shift = @current_shifts.find_or_initialize_by(start_time: date) %>
+        <% if shift.id.nil? %>
+        <span class="r-shift"><%= r_data.slice(-2,2) %></span>
+        <%= hidden_field_tag "shift[#{date}][start_time]", date %>
+        <%= hidden_field_tag "shift[#{date}][user_id]", @user.id %>
+        <%= select "shift[#{date}]", :shift,
+          [ ["新規", "キャッシュレス新規"],
+          ["決済", "キャッシュレス決済"],
+          ["フェムト", "楽天フェムト新規"],
+          ["設置", "楽天フェムト設置"],
+          ["電気", "電気"],
+          ["設置電気", "設置電気"],
+          ["帯同", "帯同"],
+          ["内勤", "内勤"],
+          ["休み", "休み"],
+          ["欠勤", "欠勤"] ] , {:prompt => "選択してください"}, {:class => "input",:id => "shift-set#{cnt}"} %>
+        <% cnt += 1 %>
+        <% else %>
+          <%= fields_for "shift[]", shift do |s| %>
+            <%= s.hidden_field :start_time %>
+            <%= s.hidden_field :user_id, value: @user.id %>
+            <%# s.text_field :shift, {:class => "input",:id => "shift-set#{cnt}"} %>
+            <% if r_data == shift.shift %>
+            ○
+            <% else %>
+            <span class="r-shift"><%= r_data.slice(-2,2) %></span>
+            <% end %>
+            <%= s.select :shift, 
+              { "新規": "キャッシュレス新規",
+              "決済": "キャッシュレス決済",
+              "フェムト": "楽天フェムト新規",
+              "設置": "楽天フェムト設置",
+              "電気": "電気",
+              "設置": "設置",
+              "帯同": "帯同",
+              "内勤": "内勤",
+              "休み": "休み",
+              "欠勤": "欠勤" }, {prompt: "選択"}, {class: "input",:id => "shift-set#{cnt}"} %>
+            <% cnt += 1 %>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%= submit_tag "登録",class: "submit-btn" %>
+      <button class="back-btn"><%= link_to "戻る", shifts_path, class: "reset-link" %></button>
+    <% end %>
+  </div>
+</div>

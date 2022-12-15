@@ -10,7 +10,7 @@
   <p class="shift-alert"><%= notice %></p>
     <div class="cal-form">
     <%= form_for :shift, url: update_month_shifts_path , html: { method: :post } do %>
-      <h2><%= current_user.name %>予定シフト</h2>
+      <h2><%= @user.name %>予定シフト</h2>
       <p class="text">チェックボックスにレ点をつけてから下のシフトを選択することで一括入力ができるようになっています。</p>
       <div class="slct-form">
       <input type="button" id="check-all" class="check-btn"  value="全選択">
@@ -38,7 +38,7 @@
         <% shift = @current_shifts.find_or_initialize_by(start_time: date) %>
         <% if shift.id.nil? %>
         <%= hidden_field_tag "shift[#{date}][start_time]", date %>
-        <%= hidden_field_tag "shift[#{date}][user_id]", current_user.id %>
+        <%= hidden_field_tag "shift[#{date}][user_id]", @user.id %>
         <%= select "shift[#{date}]", :shift,
           [ ["新規", "キャッシュレス新規"],
           ["決済", "キャッシュレス決済"],
@@ -54,6 +54,7 @@
         <% else %>
           <%= fields_for "shift[]", shift do |s| %>
             <%= s.hidden_field :start_time %>
+            <%= s.hidden_field :user_id, value: @user.id %>
             <%# s.text_field :shift, {:class => "input",:id => "shift-set#{cnt}"} %>
             <%= s.select :shift, 
               { "新規": "キャッシュレス新規",
@@ -134,7 +135,16 @@
           <th>合計</th>
           <th>シフト変更</th>
         </tr>
+        <% not_shift_cnt = 0 %>
     <% @shifts.group(:user_id).each do |shift| %>
+      <% if @users_cash.exists?(id: shift.user_id) %>
+      <% else %>
+        <% if not_shift_cnt == 0 %>
+        <p>シフト未申請者一覧</p>
+        <% end %>
+        <% not_shift_cnt += 1%>
+        <p><%= link_to shift.user.name,shift_path(shift.user.id), class: "link" %></p>
+      <% end %>
       <%# 変数 %>
         <%# 予定シフト %>
           <% 
@@ -166,7 +176,7 @@
           cash_new_p !=  cash_new_d ||
           cash_slmt_p != cash_slmt_d 
         %>
-          <td rowspan="2" style="vertical-align:middle; background:red; color:white;" ><%= shift.user.name %></td>
+          <td rowspan="2" style="vertical-align:middle; background:red; color:white;" ><%= link_to shift.user.name, shift_path(shift.user.id),class: "show-link" %></td>
         <% else %>
           <td rowspan="2" style="vertical-align:middle;"><%= shift.user.name %></td>
         <% end %>

@@ -1,7 +1,9 @@
 class ShiftsController < ApplicationController
 
   def index 
-    @current_shifts = Shift.where(user_id: current_user.id)
+    @user = current_user
+    @users_cash = User.where(base_sub: "キャッシュレス")
+    @current_shifts = Shift.where(user_id: @user.id)
     @shift = Shift.new
     @q = Shift.includes(:user).ransack(params[:q])
     @shifts = 
@@ -11,6 +13,7 @@ class ShiftsController < ApplicationController
         @q.result(distinct: false)
       end
     @results = Result.all
+    session[:previous_url] = request.referer
   end 
 
   def new 
@@ -31,6 +34,11 @@ class ShiftsController < ApplicationController
   end 
   
   def show 
+    @user = User.find(params[:id])
+    @results = Result.where(user_id: @user.id)
+    @current_shifts = Shift.where(user_id: @user.id)
+    @shift = Shift.new
+    @results = Result.all
   end 
 
   def edit 
@@ -46,11 +54,18 @@ class ShiftsController < ApplicationController
 
   def update_month
     month_shifts_params.keys.each do |key|
-      @shifts_all = Shift.where(user_id: current_user.id).find_or_initialize_by(start_time: month_shifts_params[key][:start_time].to_date)
-      @shifts_all.update(month_shifts_params[key])
+      if month_shifts_params[key][:user_id].present?
+        @u_id = month_shifts_params[key][:user_id]
+        @shifts_all = Shift.where(user_id: @u_id).find_or_initialize_by(start_time: month_shifts_params[key][:start_time].to_date)
+        @shifts_all.update(month_shifts_params[key])
+      end
     end
     flash[:notice] = "複数件の申請をしました"
-    redirect_to shifts_path shifts_path 
+    if @u_id.present? && (@u_id != current_user.id)
+      redirect_to shift_path(@u_id)  
+    else
+      redirect_to shifts_path shifts_path 
+    end 
   end 
 
   def destroy 
