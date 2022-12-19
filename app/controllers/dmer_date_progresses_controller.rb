@@ -2,38 +2,146 @@ class DmerDateProgressesController < ApplicationController
 
   def index 
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @create_date = params[:create_d]
     @date_group = DmerDateProgress.pluck(:date).uniq
     @create_group = DmerDateProgress.pluck(:create_date).uniq
+    @users = User.all
     if params[:date].present?
       @month = params[:date].to_date
-      @dmer_date_progresses_month = DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
-      @current_progress = 
-        @dmer_date_progresses_month.where(date: params[:date].to_date)
-        .where(create_date: @dmer_date_progresses_month.maximum(:create_date))
+    elsif params[:search_date].present?
+      @month = params[:search_date].to_date  
     else
-      if params[:search_date].present?
-        @month = params[:search_date].to_date
-      end 
-      @dmer_date_progresses_month = DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
-      @current_progress = 
-        @dmer_date_progresses_month.where(date: @dmer_date_progresses_month.maximum(:date))
-        .where(create_date: @dmer_date_progresses_month.maximum(:create_date))
+      @month = DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
     end 
+
+    @current_progress = 
+    DmerDateProgress.includes(:user).where(date: @month)
+    if params[:create_d].present?
+      @current_progress = 
+        @current_progress.where(create_date: params[:create_d].to_date)
+    else
+      @current_progress = 
+      @current_progress.where(date: @month)
+        .where(create_date: @current_progress.maximum(:create_date))
+    end 
+    # 拠点別現状売上
+    @current_data_chubu = @current_progress.where(base: "中部SS")
+    @current_data_kansai = @current_progress.where(base: "関西SS")
+    @current_data_kanto = @current_progress.where(base: "関東SS")
+    @current_data_kyushu = @current_progress.where(base: "九州SS")
+    @current_data_partner = @current_progress.where(base: "2次店")
+    @current_data_femto = @current_progress.where(base: "フェムト")
+    @current_data_summit = @current_progress.where(base: "サミット")
+    @current_data_retire = @current_progress.where(base: "退職")
+    @current_arry = [
+      @current_data_chubu,@current_data_kansai, @current_data_kanto, @current_data_kyushu,
+      @current_data_partner,@current_data_femto, @current_data_summit, @current_data_retire
+    ]
+    if  @current_progress.present?
+      @data_fin = [
+        {
+          name: "中部SS終着", data: DmerDateProgress.where(base: "中部SS").group(:date,:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
+        },
+        {
+          name: "関西SS終着", data: DmerDateProgress.where(base: "関西SS").group(:date,:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
+        },
+        {
+          name: "関東SS終着", data: DmerDateProgress.where(base: "関東SS").group(:date,:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
+        },
+        {
+          name: "九州SS終着", data: DmerDateProgress.where(base: "九州SS").group(:date,:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
+        },
+      ]
+      @data_current = [
+        {
+          name: "中部SS現状売上", data: DmerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_current)
+        },
+        {
+          name: "関西SS現状売上", data: DmerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_current)
+        },
+        {
+          name: "関東SS現状売上", data: DmerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_current)
+        },
+        {
+          name: "九州SS現状売上", data: DmerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_current)
+        },
+      ]
+      @result1_graph = [
+        {
+          name: "中部SS一次成果通過件数", data: DmerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:result1_len)
+        },
+        {
+          name: "関西SS一次成果通過件数", data: DmerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:result1_len)
+        },
+        {
+          name: "関東SS一次成果通過件数", data: DmerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:result1_len)
+        },
+        {
+          name: "九州SS一次成果通過件数", data: DmerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:result1_len)
+        },
+      ]
+      @result2_graph = [
+        {
+          name: "中部SS二次成果通過件数", data: DmerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:result2_len)
+        },
+        {
+          name: "関西SS二次成果通過件数", data: DmerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:result2_len)
+        },
+        {
+          name: "関東SS二次成果通過件数", data: DmerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:result2_len)
+        },
+        {
+          name: "九州SS二次成果通過件数", data: DmerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:result2_len)
+        },
+      ]
+      @result3_graph = [
+        {
+          name: "中部SS三次成果通過件数", data: DmerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:result3_len)
+        },
+        {
+          name: "関西SS三次成果通過件数", data: DmerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:result3_len)
+        },
+        {
+          name: "関東SS三次成果通過件数", data: DmerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:result3_len)
+        },
+        {
+          name: "九州SS三次成果通過件数", data: DmerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:result3_len)
+        },
+      ]
+    else
+      @data = DmerDateProgress.none
+    end
+
+    # 比較対象
     if params[:comparison_date].present?
       @comparison_date = params[:comparison_date].to_date
-      @dmer_comparison = 
+      @comparison = 
         DmerDateProgress.where(date: @comparison_date)
-      @dmer_comparison =
-        @dmer_comparison.where(create_date: @dmer_comparison.maximum(:create_date))
+      @comparison =
+        @comparison.where(create_date: @comparison.maximum(:create_date))
     else  
       if @current_progress.present?
-        @dmer_comparison = 
-          DmerDateProgress.where(date: @current_progress.first.date.prev_month..@current_progress.first.date.prev_month)
-          .where(create_date: @dmer_date_progresses_month.maximum(:create_date))
+        @comparison = 
+          DmerDateProgress.where(date: @current_progress.first.date.prev_month)
+        @comparison = 
+          @comparison.where(create_date: @comparison.maximum(:create_date))
       else  
-        @dmer_comparison = DmerDateProgress.none
+        @comparison = DmerDateProgress.none
       end 
     end 
+    # 拠点別現状売上
+    @comparison_data_chubu = @comparison.where(base: "中部SS")
+    @comparison_data_kansai = @comparison.where(base: "関西SS")
+    @comparison_data_kanto = @comparison.where(base: "関東SS")
+    @comparison_data_kyushu = @comparison.where(base: "九州SS")
+    @comparison_data_partner = @comparison.where(base: "2次店")
+    @comparison_data_femto = @comparison.where(base: "フェムト")
+    @comparison_data_summit = @comparison.where(base: "サミット")
+    @comparison_data_retire = @comparison.where(base: "退職")
+    @comparison_arry = [
+      @comparison_data_chubu,@comparison_data_kansai, @comparison_data_kanto, @comparison_data_kyushu,
+      @comparison_data_partner,@comparison_data_femto, @comparison_data_summit, @comparison_data_retire
+    ]
   end 
 
  def progress_create
@@ -48,7 +156,8 @@ class DmerDateProgressesController < ApplicationController
   @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
   @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
   cnt = 0
-  @results.group(:user_id).each do |r|
+  @dmers_group = Dmer.where(date: @start_date.prev_month..@end_date).group(:user_id)
+  @dmers_group.group(:user_id).each do |r|
     @calc_periods = CalcPeriod.where(sales_category: "実売")
     calc_period_and_per
     user_id = r.user_id
@@ -175,8 +284,13 @@ class DmerDateProgressesController < ApplicationController
       result_tgt_prev2 = dmer_slmt_tgt_prev.where(status_update_settlement: nil)
       
       # 実売終着1（期内）
-      profit_fin1_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer1_this_month_per).round()
-      profit_fin1_period = (@dmer1_price * profit_fin1_period_len) - already_done1.sum(:profit_new)
+      if shift_digestion == 0 || shift_schedule == 0
+        profit_fin1_period_len = 0
+        profit_fin1_period = 0
+      else  
+        profit_fin1_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer1_this_month_per).round()
+        profit_fin1_period = (@dmer1_price * profit_fin1_period_len) - already_done1.sum(:profit_new)
+      end 
       # 実売終着1（過去）
       profit_fin1_prev = 
         (@dmer1_price * ( result_tgt_prev1.length * @dmer1_prev_month_per).round()) +
@@ -186,8 +300,13 @@ class DmerDateProgressesController < ApplicationController
           profit_fin1 = profit_current1_price
         end 
       # 実売終着2（期内）
-      profit_fin2_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer2_this_month_per).round()
-      profit_fin2_period = (@dmer2_price * profit_fin2_period_len) - already_done2.sum(:profit_settlement)
+      if shift_digestion == 0 || shift_schedule == 0
+        profit_fin2_period_len = 0
+        profit_fin2_period = 0
+      else  
+        profit_fin2_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer2_this_month_per).round()
+        profit_fin2_period = (@dmer2_price * profit_fin2_period_len) - already_done2.sum(:profit_settlement)
+      end  
       # 実売終着2（過去）
       profit_fin2_prev = 
         (@dmer2_price * (result_tgt_prev2.length * @dmer2_prev_month_per).round()) +
@@ -197,8 +316,13 @@ class DmerDateProgressesController < ApplicationController
           profit_fin2 = profit_current2_price
         end 
       # 実売終着3（期内）
-      profit_fin3_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer3_this_month_per).round()
-      profit_fin3_period = (@dmer3_price * profit_fin3_period_len) - already_done3.sum(:profit_settlement)
+      if shift_digestion == 0 || shift_schedule == 0
+        profit_fin3_period_len = 0
+        profit_fin3_period = 0
+      else  
+        profit_fin3_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer3_this_month_per).round()
+        profit_fin3_period = (@dmer3_price * profit_fin3_period_len) - already_done3.sum(:profit_settlement)
+      end 
       # 実売終着3（過去）
       # 26~次の月の月末までに成果になっている案件
       slmt2nd26_next_month_end_of_month_done = 
@@ -223,8 +347,13 @@ class DmerDateProgressesController < ApplicationController
       valuation_current2_price = dmer_slmt_done.sum(:valuation_settlement)
       valuation_current3_price = dmer_slmt2nd_done.sum(:valuation_second_settlement)
       # 実売終着1（期内）
-      valuation_fin1_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer1_this_month_per).round()
-      valuation_fin1_period = (@dmer1_price * valuation_fin1_period_len) - already_done1.sum(:valuation_new)
+      if shift_digestion == 0 || shift_schedule == 0
+        valuation_fin1_period_len = 0
+        valuation_fin1_period = 0
+      else  
+        valuation_fin1_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer1_this_month_per).round()
+        valuation_fin1_period = (@dmer1_price * valuation_fin1_period_len) - already_done1.sum(:valuation_new)
+      end  
       # 実売終着1（過去）
       valuation_fin1_prev = 
         (@dmer1_price * (dmer_wait_prev.length * @dmer1_prev_month_per).round()) +
@@ -234,8 +363,13 @@ class DmerDateProgressesController < ApplicationController
           valuation_fin1 = valuation_current1_price
         end 
       # 実売終着2（期内）
-      valuation_fin2_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer2_this_month_per).round()
-      valuation_fin2_period = (@dmer2_price * valuation_fin2_period_len) - already_done2.sum(:valuation_settlement)
+      if shift_digestion == 0 || shift_schedule == 0
+        valuation_fin2_period_len = 0
+        valuation_fin2_period = 0
+      else  
+        valuation_fin2_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer2_this_month_per).round()
+        valuation_fin2_period = (@dmer2_price * valuation_fin2_period_len) - already_done2.sum(:valuation_settlement)
+      end 
       # 実売終着2（過去）
       valuation_fin2_prev = 
         (@dmer2_price * (result_tgt_prev2.length * @dmer2_prev_month_per).round()) +
@@ -245,8 +379,13 @@ class DmerDateProgressesController < ApplicationController
           valuation_fin2 = valuation_current2_price
         end 
       # 実売終着3（期内）
-      valuation_fin3_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer3_this_month_per).round()
-      valuation_fin3_period = (@dmer3_price * valuation_fin3_period_len) - already_done3.sum(:valuation_settlement)
+      if shift_digestion == 0 || shift_schedule == 0
+        valuation_fin3_period_len = 0
+        valuation_fin3_period = 0
+      else  
+        valuation_fin3_period_len = (@dmers_len / shift_digestion * shift_schedule * @dmer3_this_month_per).round()
+        valuation_fin3_period = (@dmer3_price * valuation_fin3_period_len) - already_done3.sum(:valuation_settlement)
+      end  
       # 実売終着3（過去）
       # 26~次の月の月末までに成果になっている案件
       slmt2nd26_next_month_end_of_month_done = 
@@ -266,10 +405,17 @@ class DmerDateProgressesController < ApplicationController
   # 合計
     profit_current = profit_current1_price + profit_current2_price + profit_current3_price
     valuation_current = valuation_current1_price + valuation_current2_price + valuation_current3_price
+    if r.user.position == "退職"
+      user_base = r.user.position
+    elsif r.user.base_sub == "キャッシュレス"
+      user_base = r.user.base
+    else  
+      user_base = r.user.base_sub
+    end 
   # dメルの売上の中身
     dmer_progress_params = {
       user_id: user_id                                   ,
-      base: r.user.base                                  ,
+      base: user_base                                  ,
       date: @month                                       ,
       shift_schedule: shift_schedule                     ,
       shift_digestion: shift_digestion                   ,
