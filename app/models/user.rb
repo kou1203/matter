@@ -21,9 +21,10 @@ class User < ApplicationRecord
   has_many :result_sales
   has_many :other_products
   has_many :demaekans
-  has_many :dmer_date_progress
-  has_many :aupay_date_progress
   has_many :summit_error_histories
   has_many :summit_customer_props
   has_many :summit_billing_amounts
+  has_many :dmer_date_progress
+  has_many :aupay_date_progress
+  has_many :paypay_date_progress
 end

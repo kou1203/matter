@@ -204,4 +204,8 @@ Rails.application.routes.draw do
     collection {get :progress_create}
   end 
 
+  resources :paypay_date_progresses do 
+    collection {get :progress_create}
+  end 
+
 end

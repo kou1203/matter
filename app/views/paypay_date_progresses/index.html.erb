@@ -2,7 +2,7 @@
 <% calc_periods_ary = [@calc_periods_val, @calc_periods_prof] %>
 <% tb_cnt = 0 %>
 <div data-scope-path="shared/header">
-  <h1 class="sub-title">auPay日々進捗データ</h1>
+  <h1 class="sub-title">PayPay日々進捗データ</h1>
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;"><%# サイドバーとメインバーを分ける %>
@@ -13,13 +13,13 @@
     <div class="date-head"><%# 日付切替 %>
       <h2>
 
-        <%= link_to "<<",aupay_date_progresses_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
+        <%= link_to "<<",paypay_date_progresses_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
         <%= @month.month %>月（<%= @current_progress.first.date rescue "データなし" %>）進捗
-        <%= link_to ">>",aupay_date_progresses_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>
+        <%= link_to ">>",paypay_date_progresses_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>
       </h2>
     </div><%# 日付切替 %>
     <hr>
-    <%= javascript_pack_tag 'aupay_date_progress' %>
+    <%= javascript_pack_tag 'paypay_date_progress' %>
     <script>
       window.profit_price=<%= @profit_price.to_json.html_safe %>;
       window.date_group=<%= @date_group.to_json.html_safe %>;
@@ -46,10 +46,10 @@
       window.comparison_data_retire=<%= @comparison_data_retire.to_json.html_safe %>;
       window.users=<%= @users.to_json.html_safe %>;
     </script>
-    <article id="aupay-progress">
+    <article id="paypay-progress">
       <div class="head-form"><%# ヘッド部分 %>
         <div><%# 検索 %>
-          <%= form_with url: aupay_date_progresses_path, local: true, method: :get do |f| %>
+          <%= form_with url: paypay_date_progresses_path, local: true, method: :get do |f| %>
                 <%= f.hidden_field :search_date, value: @month %>
               <table class="s-tb">
                 <tr>
@@ -60,7 +60,7 @@
                 <tr>
                   <th class="s-th">比較する日付</th>
                   <td class="s-td"><%= f.date_field :comparison_date,class:"s-input" %></td>
-                  <td class="s-reset"><%= link_to "リセット",aupay_date_progresses_path(month: @month),class:"reset-link","data-turbolinks": false %></td>
+                  <td class="s-reset"><%= link_to "リセット",paypay_date_progresses_path(month: @month),class:"reset-link","data-turbolinks": false %></td>
                 </tr>
               </table>
           <% end %>
@@ -73,17 +73,17 @@
         </div><%# 切替ボタン %>
       </div><%# ヘッド部分 %>
       <% if @current_progress.present? %><%# @current_progressがあるか判別 %>
-        <% if AupayDateProgress.where(date: @current_progress.first.date).group(:create_date).length > 1 %>
+        <% if PaypayDateProgress.where(date: @current_progress.first.date).group(:create_date).length > 1 %>
           <h2 class="caution-txt">※現状（<%= @current_progress.first.date %>）は違う日付に作成された進捗データがあります。</h2>
-          <div class="create-path-form"><%# 作成日を変更するためのリンク %>
-          <% AupayDateProgress.where(date: @current_progress.first.date).group(:create_date).each do |d_date| %>
+        <div class="create-path-form"><%# 作成日を変更するためのリンク %>
+          <% PaypayDateProgress.where(date: @current_progress.first.date).group(:create_date).each do |d_date| %>
             <% if @comparison.present? %>
-            <p class="create-data"><%= link_to "#{d_date.create_date}で表示", aupay_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date,comparison_date: @comparison.first.date),class: "create-link","data-turbolinks": false %></p>
+              <p class="create-data"><%= link_to "#{d_date.create_date}で表示", paypay_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date,comparison_date: @comparison.first.date),class: "create-link","data-turbolinks": false %></p>
             <% else %>
-            <p class="create-data"><%= link_to "#{d_date.create_date}で表示", aupay_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),class: "create-link","data-turbolinks": false %></p>
+              <p class="create-data"><%= link_to "#{d_date.create_date}で表示", paypay_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),class: "create-link","data-turbolinks": false %></p>
             <% end %>
           <% end %>
-          </div><%# 作成日を変更するためのリンク %>
+        </div><%# 作成日を変更するためのリンク %>
         <% end %>
         <div v-if="!isActive" class="s-form"><%# 獲得切替 %>
           <h2>◆全体獲得内訳</h2>
@@ -91,9 +91,8 @@
           <table class="progress-tb">
             <tr>
               <th class="progress-th1" colspan="5">基本情報</th>
-              <th class="progress-th1" colspan="3">獲得内訳</th>
+              <th class="progress-th1" colspan="2">獲得内訳</th>
               <th class="progress-th1" colspan="2">成果内訳</th>
-              <th class="progress-th1" colspan="2">前月決済</th>
             </tr>
             <tr>
               <th class="progress-th2">比較対象</th>
@@ -102,12 +101,9 @@
               <th class="progress-th2">予定シフト</th>
               <th class="progress-th2">消化シフト</th>
               <th class="progress-th2">獲得数</th>
-              <th class="progress-th2">不備・NG</th>
               <th class="progress-th2">獲得終着見込</th>
               <th class="progress-th2">現状</th>
               <th class="progress-th2">終着</th>
-              <th class="progress-th2">過去月の母体</th>
-              <th class="progress-th2">期限切れ</th>
             </tr>
             <tr v-if="isDifActive">
               <td class="progress-td">現状</td>
@@ -116,12 +112,9 @@
               <td class="progress-td"><%= @current_progress.sum(:shift_schedule) %></td>
               <td class="progress-td"><%= @current_progress.sum(:shift_digestion) %></td>
               <td class="progress-td"><%= @current_progress.sum(:get_len) %></td>
-              <td class="progress-td"><%= @current_progress.sum(:def_len) %></td>
               <td class="progress-td"><%= @current_progress.sum(:fin_len) %></td>
               <td class="progress-td"><%= @current_progress.sum(:result_len) %></td>
               <td class="progress-td"><%= @current_progress.sum(:result_fin_len) %></td>
-              <td class="progress-td"><%= @current_progress.sum(:slmt_tgt_prev) %></td>
-              <td class="progress-td"><%= @current_progress.sum(:slmt_dead_len) %></td>
             </tr>
             <% if @comparison.present? %>
             <tr v-if="isDifActive">
@@ -131,35 +124,27 @@
               <td class="progress-td"><%= @comparison.sum(:shift_schedule) %></td>
               <td class="progress-td"><%= @comparison.sum(:shift_digestion) %></td>
               <td class="progress-td"><%= @comparison.sum(:get_len) %></td>
-              <td class="progress-td"><%= @comparison.sum(:def_len) %></td>
               <td class="progress-td"><%= @comparison.sum(:fin_len) %></td>
               <td class="progress-td"><%= @comparison.sum(:result_len) %></td>
               <td class="progress-td"><%= @comparison.sum(:result_fin_len) %></td>
-              <td class="progress-td"><%= @comparison.sum(:slmt_tgt_prev) %></td>
-              <td class="progress-td"><%= @comparison.sum(:slmt_dead_len) %></td>
             </tr>
             <tr>
               <td class="difference-td" colspan="3">差異</td>
               <td class="difference-td"><%= @current_progress.sum(:shift_schedule) - @comparison.sum(:shift_schedule) %></td>
               <td class="difference-td"><%= @current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion) %></td>
               <td class="difference-td"><%= @current_progress.sum(:get_len) - @comparison.sum(:get_len) %></td>
-              <td class="difference-td"><%= @current_progress.sum(:def_len) - @comparison.sum(:def_len) %></td>
               <td class="difference-td"><%= @current_progress.sum(:fin_len) - @comparison.sum(:fin_len) %></td>
               <td class="difference-td"><%= @current_progress.sum(:result_len) -  @comparison.sum(:result_len) %></td>
               <td class="difference-td"><%= @current_progress.sum(:result_fin_len) -  @comparison.sum(:result_fin_len) %></td>
-              <td class="difference-td"><%= @current_progress.sum(:slmt_tgt_prev) - @comparison.sum(:slmt_tgt_prev) %></td>
-              <td class="difference-td"><%= @current_progress.sum(:slmt_dead_len) - @comparison.sum(:slmt_dead_len) %></td>
             </tr>
             <% end %>
           </table>
-
           <h2>◆拠点別獲得内訳</h2>
           <table class="progress-tb">
             <tr>
               <th class="progress-th1" colspan="5">基本情報</th>
-              <th class="progress-th1" colspan="3">獲得内訳</th>
+              <th class="progress-th1" colspan="2">獲得内訳</th>
               <th class="progress-th1" colspan="2">成果内訳</th>
-              <th class="progress-th1" colspan="2">前月決済</th>
             </tr>
           <tr>
             <th class="progress-th2">拠点</th>
@@ -168,12 +153,9 @@
             <th class="progress-th2">予定シフト</th>
             <th class="progress-th2">消化シフト</th>
             <th class="progress-th2">獲得数</th>
-            <th class="progress-th2">不備・NG</th>
             <th class="progress-th2">獲得終着見込</th>
             <th class="progress-th2">現状</th>
             <th class="progress-th2">終着</th>
-            <th class="progress-th2">母体</th>
-            <th class="progress-th2">期限切れ</th>
           </tr>
           <% @current_arry.zip(@comparison_arry).each do |current,comparison| %><%# 配列繰返 %>
             <% if current.present? %><%# currentデータがあるか判別 %>
@@ -184,12 +166,9 @@
                 <td class="progress-td"><%= current.sum(:shift_schedule) %></td>
                 <td class="progress-td"><%= current.sum(:shift_digestion) %></td>
                 <td class="progress-td"><%= current.sum(:get_len) %></td>
-                <td class="progress-td"><%= current.sum(:def_len) %></td>
                 <td class="progress-td"><%= current.sum(:fin_len) %></td>
                 <td class="progress-td"><%= current.sum(:result_len) %></td>
                 <td class="progress-td"><%= current.sum(:result_fin_len) %></td>
-                <td class="progress-td"><%= current.sum(:slmt_tgt_prev) %></td>
-                <td class="progress-td"><%= current.sum(:slmt_dead_len) %></td>
             </tr>
             <% if comparison.present? %><%# comparisonデータがあるか判別 %>
             <tr v-if="isDifActive">
@@ -199,30 +178,25 @@
               <td class="progress-td"><%= comparison.sum(:shift_schedule) %></td>
               <td class="progress-td"><%= comparison.sum(:shift_digestion) %></td>
               <td class="progress-td"><%= comparison.sum(:get_len) %></td>
-              <td class="progress-td"><%= comparison.sum(:def_len) %></td>
               <td class="progress-td"><%= comparison.sum(:fin_len) %></td>
               <td class="progress-td"><%= comparison.sum(:result_len) %></td>
               <td class="progress-td"><%= comparison.sum(:result_fin_len) %></td>
-              <td class="progress-td"><%= comparison.sum(:slmt_tgt_prev) %></td>
-              <td class="progress-td"><%= comparison.sum(:slmt_dead_len) %></td>
             </tr>
             <tr>
               <td class="difference-td" colspan="3"><%= current.first.base %>比較差異</td>
               <td class="difference-td"><%= current.sum(:shift_schedule) - comparison.sum(:shift_schedule) %></td>
               <td class="difference-td"><%= current.sum(:shift_digestion) - comparison.sum(:shift_digestion) %></td>
               <td class="difference-td"><%= current.sum(:get_len) - comparison.sum(:get_len) %></td>
-              <td class="difference-td"><%= current.sum(:def_len) - comparison.sum(:def_len) %></td>
               <td class="difference-td"><%= current.sum(:fin_len) - comparison.sum(:fin_len) %></td>
               <td class="difference-td"><%= current.sum(:result_len) - comparison.sum(:result_len) %></td>
               <td class="difference-td"><%= current.sum(:result_fin_len) - comparison.sum(:result_fin_len) %></td>
-              <td class="difference-td"><%= current.sum(:slmt_tgt_prev) - comparison.sum(:slmt_tgt_prev) %></td>
-              <td class="difference-td"><%= current.sum(:slmt_dead_len) - comparison.sum(:slmt_dead_len) %></td>
             </tr>
             <% end %><%# comparisonデータがあるか判別 %>
             <% end %><%# currentデータがあるか判別 %>
           <% end %><%# 配列繰返 %>
           </table>
         </div><%# 獲得切替 %>
+
         <div v-if="isActive" class="s-form"><%# 売上切替 %>
           <h2>◆全体売上内訳</h2>
           <table class="progress-tb">
@@ -274,7 +248,6 @@
             </tr>
             <% end %>
           </table>
-
           <h2>◆拠点別売上内訳</h2>
           <table class="progress-tb">
             <tr>
@@ -345,9 +318,8 @@
         <table class="progress-tb">
           <tr>
             <th class="progress-th1" colspan="5">基本情報</th>
-            <th class="progress-th1" colspan="3">獲得内訳</th>
+            <th class="progress-th1" colspan="2">獲得内訳</th>
             <th class="progress-th1" colspan="2">成果内訳</th>
-            <th class="progress-th1" colspan="2">前月決済</th>
           </tr>
           <tr>
             <th class="progress-th2">名前</th>
@@ -356,12 +328,9 @@
             <th class="progress-th2">予定シフト</th>
             <th class="progress-th2">消化シフト</th>
             <th class="progress-th2">獲得数</th>
-            <th class="progress-th2">不備・NG</th>
             <th class="progress-th2">獲得終着見込</th>
             <th class="progress-th2">現状</th>
             <th class="progress-th2">終着</th>
-            <th class="progress-th2">母体</th>
-            <th class="progress-th2">期限切れ</th>
           </tr>
           <tr v-for="item in currentItems" :key="item" class="progress-tr">
             <td class="progress-td">{{ users.find((u) => u.id == item.user_id).name }}</td>
@@ -370,36 +339,27 @@
             <td class="progress-td">{{ item.shift_schedule }}</td>
             <td class="progress-td">{{ item.shift_digestion }}</td>
             <td class="progress-td">{{ item.get_len }}</td>
-            <td class="progress-td">{{ item.def_len }}</td>
             <td class="progress-td">{{ item.fin_len }}</td>
             <td class="progress-td">{{ item.result_len }}</td>
             <td class="progress-td">{{ item.result_fin_len }}</td>
-            <td class="progress-td">{{ item.slmt_tgt_prev }}</td>
-            <td class="progress-td">{{ item.slmt_dead_len }}</td>
           </tr>
           <tr class="sum-tr">
             <td class="progress-td" colspan="3">合計（現状）</td>
             <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.shift_schedule,0) }}</td>
             <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.shift_digestion,0) }}</td>
             <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.get_len,0) }}</td>
-            <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.def_len,0) }}</td>
             <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.fin_len,0) }}</td>
             <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.result_len,0) }}</td>
             <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.result_fin_len,0) }}</td>
-            <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.slmt_tgt_prev,0) }}</td>
-            <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.slmt_dead_len,0) }}</td>
           </tr>
           <tr v-if="comparisonItems.length != 0" class="difference-tr">
             <td class="progress-td" colspan="3">合計（比較対象{{ comparisonItems[0].date }}）</td>
             <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.shift_schedule,0) }}</td>
             <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.shift_digestion,0) }}</td>
             <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.get_len,0) }}</td>
-            <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.def_len,0) }}</td>
             <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.fin_len,0) }}</td>
             <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.result_len,0) }}</td>
             <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.result_fin_len,0) }}</td>
-            <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.slmt_tgt_prev,0) }}</td>
-            <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.slmt_dead_len,0) }}</td>
           </tr>
           <tr v-if="comparisonItems.length != 0">
             <td class="difference-td" colspan="3">比較対象との差異</td>
@@ -416,10 +376,6 @@
               comparisonItems.reduce((sum,element)=> sum +element.get_len,0)
               }}</td>
             <td class="difference-td">{{ 
-              currentItems.reduce((sum,element)=> sum +element.def_len,0) -
-              comparisonItems.reduce((sum,element)=> sum +element.def_len,0)
-              }}</td>
-            <td class="difference-td">{{ 
               currentItems.reduce((sum,element)=> sum +element.fin_len,0) -
               comparisonItems.reduce((sum,element)=> sum +element.fin_len,0) 
               }}</td>
@@ -430,14 +386,6 @@
             <td class="difference-td">{{ 
               currentItems.reduce((sum,element)=> sum +element.result_fin_len,0) -
               comparisonItems.reduce((sum,element)=> sum +element.result_fin_len,0) 
-              }}</td>
-            <td class="difference-td">{{ 
-              currentItems.reduce((sum,element)=> sum +element.slmt_tgt_prev,0) -
-              comparisonItems.reduce((sum,element)=> sum +element.slmt_tgt_prev,0) 
-              }}</td>
-            <td class="difference-td">{{ 
-              currentItems.reduce((sum,element)=> sum +element.slmt_dead_len,0) -
-              comparisonItems.reduce((sum,element)=> sum +element.slmt_dead_len,0) 
               }}</td>
           </tr>
         </table>
@@ -511,7 +459,7 @@
         </table>
       <% else %>
       <p class="caution-txt">進捗データがありません、作成してください。</p>
-      <% end %><%# @current_progressがあるか判別 %>
+      <% end %>
     </article>
   <h2>
   グラフ：

@@ -9,6 +9,8 @@ class CalcPeriodsController < ApplicationController
     @dmer_date_progresses_last_update =  @dmer_date_progresses.maximum(:create_date)
     @aupay_date_progresses = AupayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @aupay_date_progresses_last_update = @aupay_date_progresses.maximum(:create_date)
+    @paypay_date_progresses = PaypayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    @paypay_date_progresses_last_update = @paypay_date_progresses.maximum(:create_date)
 
   end 
 
