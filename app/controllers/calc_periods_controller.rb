@@ -6,7 +6,10 @@ class CalcPeriodsController < ApplicationController
     @calc_periods_val = CalcPeriod.where(sales_category: "評価売")
     @calc_periods_prof = CalcPeriod.where(sales_category: "実売")
     @dmer_date_progresses = DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
-    @dmer_date_progresses_last_update = @dmer_date_progresses.maximum(:create_date)
+    @dmer_date_progresses_last_update =  @dmer_date_progresses.maximum(:create_date)
+    @aupay_date_progresses = AupayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    @aupay_date_progresses_last_update = @aupay_date_progresses.maximum(:create_date)
+
   end 
 
   def new 

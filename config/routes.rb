@@ -199,5 +199,9 @@ Rails.application.routes.draw do
   resources :dmer_date_progresses do 
     collection {get :progress_create}
   end 
+  
+  resources :aupay_date_progresses do 
+    collection {get :progress_create}
+  end 
 
 end

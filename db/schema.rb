@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_13_104402) do
+ActiveRecord::Schema.define(version: 2022_12_19_104904) do
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "store_prop_id"
@@ -38,6 +38,33 @@ ActiveRecord::Schema.define(version: 2022_12_13_104402) do
     t.date "status_update"
     t.index ["store_prop_id"], name: "index_airpays_on_store_prop_id"
     t.index ["user_id"], name: "index_airpays_on_user_id"
+  end
+
+  create_table "aupay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "base"
+    t.date "date", null: false
+    t.integer "shift_schedule"
+    t.integer "shift_digestion"
+    t.integer "get_len"
+    t.integer "def_len"
+    t.integer "fin_len"
+    t.integer "valuation_current"
+    t.integer "valuation_fin"
+    t.integer "valuation_fin_prev"
+    t.integer "profit_current"
+    t.integer "profit_fin"
+    t.integer "profit_fin_prev"
+    t.integer "wait_len"
+    t.integer "done_len"
+    t.integer "slmt_dead_len"
+    t.integer "result_len"
+    t.integer "result_fin_len"
+    t.integer "slmt_tgt_prev"
+    t.integer "done_len_prev"
+    t.integer "result_len_prev"
+    t.date "create_date", null: false
+    t.index ["user_id"], name: "index_aupay_date_progresses_on_user_id"
   end
 
   create_table "aupays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1306,6 +1333,7 @@ ActiveRecord::Schema.define(version: 2022_12_13_104402) do
 
   add_foreign_key "airpays", "store_props"
   add_foreign_key "airpays", "users"
+  add_foreign_key "aupay_date_progresses", "users"
   add_foreign_key "aupays", "store_props"
   add_foreign_key "aupays", "users"
   add_foreign_key "aupays", "users", column: "settlementer_id"

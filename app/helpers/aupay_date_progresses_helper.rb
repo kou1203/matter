@@ -1,0 +1,2 @@
+module AupayDateProgressesHelper
+end

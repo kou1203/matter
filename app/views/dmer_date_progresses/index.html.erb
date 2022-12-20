@@ -5,7 +5,6 @@
   <h1 class="sub-title">dメル日々進捗データ</h1>
   <%= render "shared/header" %>
 </div>
-
 <div style="display:flex;">
 <div data-scope-path="shared/side_bar">
   <%= render "shared/sidebar" %>
@@ -13,6 +12,7 @@
 <div data-scope-path="shares/date-progress">
   <div class="date-head"><%# 日付切替 %>
     <h2>
+
       <%= link_to "<<",dmer_date_progresses_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
       <%= @month.month %>月（<%= @current_progress.first.date rescue "データなし" %>）進捗
       <%= link_to ">>",dmer_date_progresses_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>
@@ -21,6 +21,9 @@
   <hr>
   <%= javascript_pack_tag 'dmer_date_progress' %>
   <script>
+    window.profit_price1=<%= @profit_price1.to_json.html_safe %>;
+    window.profit_price2=<%= @profit_price2.to_json.html_safe %>;
+    window.profit_price3=<%= @profit_price3.to_json.html_safe %>;
     window.date_group=<%= @date_group.to_json.html_safe %>;
     window.create_group=<%= @create_group.to_json.html_safe %>;
     window.current_arry=<%= @current_arry.to_json.html_safe %>;
@@ -46,7 +49,7 @@
     window.users=<%= @users.to_json.html_safe %>;
   </script>
   <article id="dmer-progress">
-    <div class="head-form">
+    <div class="head-form"><%# ヘッド部分 %>
       <div><%# 検索 %>
         <%= form_with url: dmer_date_progresses_path, local: true, method: :get do |f| %>
               <%= f.hidden_field :search_date, value: @month %>
@@ -70,20 +73,20 @@
         <button @click="difActive" v-if="isDifActive" class="active-btn">差異のみ表示させる</button>
         <button @click="difActive" v-if="!isDifActive" class="active-btn">全て表示</button>
       </div><%# 切替ボタン %>
-    </div>
+    </div><%# ヘッド部分 %>
     <% if @current_progress.present? %>
       <% if DmerDateProgress.where(date: @current_progress.first.date).group(:create_date).length > 1 %>
       <h2 class="caution-txt">※現状（<%= @current_progress.first.date %>）は違う日付に作成された進捗データがあります。</h2>
-      <div class="create-path-form">
-      <% DmerDateProgress.where(date: @current_progress.first.date).group(:create_date).each do |d_date| %>
-        <% if @comparison.present? %>
-        <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmer_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date,comparison_date: @comparison.first.date),class: "create-link","data-turbolinks": false %></p>
-        <% else %>
-        <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmer_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),class: "create-link","data-turbolinks": false %></p>
+        <div class="create-path-form">
+        <% DmerDateProgress.where(date: @current_progress.first.date).group(:create_date).each do |d_date| %>
+          <% if @comparison.present? %>
+          <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmer_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date,comparison_date: @comparison.first.date),class: "create-link","data-turbolinks": false %></p>
+          <% else %>
+          <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmer_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),class: "create-link","data-turbolinks": false %></p>
+          <% end %>
         <% end %>
+        </div>
       <% end %>
-      </div>
-    <% end %>
   <div v-if="!isActive" class="s-form">
     <h2>◆全体獲得内訳</h2>
     <%= @create_date %>
@@ -234,7 +237,7 @@
   </div>
 
   <% else %>
-  <p class="caution-text">進捗データがありません、作成してください。</p>
+  <p class="caution-txt">進捗データがありません、作成してください。</p>
   <% end %>
   <% if @current_progress.present? %>
   <div v-if="isActive" class="s-form">
@@ -266,14 +269,14 @@
         <td class="progress-td"><%= @current_progress.first.create_date %></td>
         <td class="progress-td"><%= @current_progress.sum(:shift_schedule) %></td>
         <td class="progress-td"><%= @current_progress.sum(:shift_digestion) %></td>
-        <td class="progress-td"><%= (@current_progress.sum(:result1_len) * 9000).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (@current_progress.sum(:result2_len) * 5000).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (@current_progress.sum(:result3_len) * 5000).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (@current_progress.sum(:result1_len) * @profit_price1).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (@current_progress.sum(:result2_len) * @profit_price2).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (@current_progress.sum(:result3_len) * @profit_price3).to_s(:delimited) %></td>
         <td class="progress-td"><%= 
           (
-            (@current_progress.sum(:result1_len) * 9000) +
-            (@current_progress.sum(:result3_len) * 5000) + 
-            (@current_progress.sum(:result2_len) * 5000)
+            (@current_progress.sum(:result1_len) * @profit_price1) +
+            (@current_progress.sum(:result2_len) * @profit_price2) + 
+            (@current_progress.sum(:result3_len) * @profit_price3)
           ).to_s(:delimited) 
         %></td>
         <td class="progress-td"><%= @current_progress.sum(:profit_fin1).to_s(:delimited) %></td>
@@ -293,14 +296,14 @@
         <td class="progress-td"><%= @comparison.first.create_date %></td>
         <td class="progress-td"><%= @comparison.sum(:shift_schedule) %></td>
         <td class="progress-td"><%= @comparison.sum(:shift_digestion) %></td>
-        <td class="progress-td"><%= (@comparison.sum(:result1_len) * 9000).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (@comparison.sum(:result2_len) * 5000).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (@comparison.sum(:result3_len) * 5000).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (@comparison.sum(:result1_len) * @profit_price1).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (@comparison.sum(:result2_len) * @profit_price2).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (@comparison.sum(:result3_len) * @profit_price3).to_s(:delimited) %></td>
         <td class="progress-td"><%= 
           (
-            (@comparison.sum(:result1_len) * 9000) +
-            (@comparison.sum(:result3_len) * 5000) + 
-            (@comparison.sum(:result2_len) * 5000)
+            (@comparison.sum(:result1_len) * @profit_price1) +
+            (@comparison.sum(:result2_len) * @profit_price2) + 
+            (@comparison.sum(:result3_len) * @profit_price3)
           ).to_s(:delimited) 
         %></td>
         <td class="progress-td"><%= @comparison.sum(:profit_fin1).to_s(:delimited) %></td>
@@ -319,34 +322,34 @@
         <td class="difference-td"><%= @current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion) %></td>
         <td class="difference-td"><%= 
           (
-            (@current_progress.sum(:result1_len) * 9000) -
-            (@comparison.sum(:result1_len) * 9000)
+            (@current_progress.sum(:result1_len) * @profit_price1) -
+            (@comparison.sum(:result1_len) * @profit_price1)
 
           ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= 
           (
-            (@current_progress.sum(:result2_len) * 5000) -
-            (@comparison.sum(:result2_len) * 5000)
+            (@current_progress.sum(:result2_len) * @profit_price2) -
+            (@comparison.sum(:result2_len) * @profit_price2)
             ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= 
           (
-            (@current_progress.sum(:result3_len) * 5000) - 
-            (@comparison.sum(:result3_len) * 5000)
+            (@current_progress.sum(:result3_len) * @profit_price3) - 
+            (@comparison.sum(:result3_len) * @profit_price3)
           ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= 
           (
             (
-              (@current_progress.sum(:result1_len) * 9000) +
-              (@current_progress.sum(:result3_len) * 5000) + 
-              (@current_progress.sum(:result2_len) * 5000)
+              (@current_progress.sum(:result1_len) * @profit_price1) +
+              (@current_progress.sum(:result2_len) * @profit_price2) + 
+              (@current_progress.sum(:result3_len) * @profit_price3)
             ) - 
             (
-              (@comparison.sum(:result1_len) * 9000) +
-              (@comparison.sum(:result3_len) * 5000) + 
-              (@comparison.sum(:result2_len) * 5000)
+              (@comparison.sum(:result1_len) * @profit_price1) +
+              (@comparison.sum(:result2_len) * @profit_price2) + 
+              (@comparison.sum(:result3_len) * @profit_price3)
             )
           ).to_s(:delimited) 
         %></td>
@@ -400,14 +403,14 @@
         <td class="progress-td"><%= current.first.create_date %></td>
         <td class="progress-td"><%= current.sum(:shift_schedule) %></td>
         <td class="progress-td"><%= current.sum(:shift_digestion) %></td>
-        <td class="progress-td"><%= (current.sum(:result1_len) * 9000).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (current.sum(:result2_len) * 5000).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (current.sum(:result3_len) * 5000).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (current.sum(:result1_len) * @profit_price1).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (current.sum(:result2_len) * @profit_price2).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (current.sum(:result3_len) * @profit_price3).to_s(:delimited) %></td>
         <td class="progress-td"><%= 
           (
-            (current.sum(:result1_len) * 9000) +
-            (current.sum(:result3_len) * 5000) + 
-            (current.sum(:result2_len) * 5000)
+            (current.sum(:result1_len) * @profit_price1) +
+            (current.sum(:result2_len) * @profit_price2) + 
+            (current.sum(:result3_len) * @profit_price3)
           ).to_s(:delimited) 
         %></td>
         <td class="progress-td"><%= current.sum(:profit_fin1).to_s(:delimited) %></td>
@@ -427,14 +430,14 @@
         <td class="progress-td"><%= comparison.first.create_date %></td>
         <td class="progress-td"><%= comparison.sum(:shift_schedule) %></td>
         <td class="progress-td"><%= comparison.sum(:shift_digestion) %></td>
-        <td class="progress-td"><%= (comparison.sum(:result1_len) * 9000).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (comparison.sum(:result2_len) * 5000).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (comparison.sum(:result3_len) * 5000).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (comparison.sum(:result1_len) * @profit_price1).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (comparison.sum(:result2_len) * @profit_price2).to_s(:delimited) %></td>
+        <td class="progress-td"><%= (comparison.sum(:result3_len) * @profit_price3).to_s(:delimited) %></td>
         <td class="progress-td"><%= 
           (
-            (comparison.sum(:result1_len) * 9000) +
-            (comparison.sum(:result3_len) * 5000) + 
-            (comparison.sum(:result2_len) * 5000)
+            (comparison.sum(:result1_len) * @profit_price1) +
+            (comparison.sum(:result2_len) * @profit_price2) + 
+            (comparison.sum(:result3_len) * @profit_price3)
           ).to_s(:delimited) 
         %></td>
         <td class="progress-td"><%= comparison.sum(:profit_fin1).to_s(:delimited) %></td>
@@ -453,34 +456,34 @@
         <td class="difference-td"><%= current.sum(:shift_digestion) - comparison.sum(:shift_digestion) %></td>
         <td class="difference-td"><%= 
           (
-            (current.sum(:result1_len) * 9000) -
-            (comparison.sum(:result1_len) * 9000)
+            (current.sum(:result1_len) * @profit_price1) -
+            (comparison.sum(:result1_len) * @profit_price1)
 
           ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= 
           (
-            (current.sum(:result2_len) * 5000) -
-            (comparison.sum(:result2_len) * 5000)
+            (current.sum(:result2_len) * @profit_price2) -
+            (comparison.sum(:result2_len) * @profit_price2)
             ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= 
           (
-            (current.sum(:result3_len) * 5000) - 
-            (comparison.sum(:result3_len) * 5000)
+            (current.sum(:result3_len) * @profit_price3) - 
+            (comparison.sum(:result3_len) * @profit_price3)
           ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= 
           (
             (
-              (current.sum(:result1_len) * 9000) +
-              (current.sum(:result3_len) * 5000) + 
-              (current.sum(:result2_len) * 5000)
+              (current.sum(:result1_len) * @profit_price1) +
+              (current.sum(:result2_len) * @profit_price2) + 
+              (current.sum(:result3_len) * @profit_price3)
             ) - 
             (
-              (comparison.sum(:result1_len) * 9000) +
-              (comparison.sum(:result3_len) * 5000) + 
-              (comparison.sum(:result2_len) * 5000)
+              (comparison.sum(:result1_len) * @profit_price1) +
+              (comparison.sum(:result2_len) * @profit_price2) + 
+              (comparison.sum(:result3_len) * @profit_price3)
             )
           ).to_s(:delimited) 
         %></td>
@@ -630,7 +633,6 @@
     </tr>
   </table>
   <% else %>
-  <p class="caution-text">進捗データがありません、作成してください。</p>
   <% end %>
   <% if @current_progress.present? %>
   <h2>◆売上内訳</h2>
@@ -661,14 +663,14 @@
       <td class="progress-td">{{ item.create_date }}</td>
       <td class="progress-td">{{ item.shift_schedule }}</td>
       <td class="progress-td">{{ item.shift_digestion }}</td>
-      <td class="progress-td">{{ (item.result1_len * 9000).toLocaleString() }}</td>
-      <td class="progress-td">{{ (item.result2_len * 5000).toLocaleString() }}</td>
-      <td class="progress-td">{{ (item.result3_len * 5000).toLocaleString() }}</td>
+      <td class="progress-td">{{ (item.result1_len * profit_price1).toLocaleString() }}</td>
+      <td class="progress-td">{{ (item.result2_len * profit_price2).toLocaleString() }}</td>
+      <td class="progress-td">{{ (item.result3_len * profit_price3).toLocaleString() }}</td>
       <td class="progress-td">{{ 
         (
-          (item.result1_len * 9000) + 
-          (item.result2_len * 5000) + 
-          (item.result3_len * 5000)
+          (item.result1_len * profit_price1) + 
+          (item.result2_len * profit_price2) + 
+          (item.result3_len * profit_price3)
         ).toLocaleString()
         }}</td>
       <td class="progress-td">{{ item.profit_fin1.toLocaleString() }}</td>
@@ -686,14 +688,14 @@
       <td class="progress-td" colspan="3">合計（現状）</td>
       <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.shift_schedule,0)) }}</td>
       <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.shift_digestion,0)) }}</td>
-      <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.result1_len,0) * 9000).toLocaleString() }}</td>
-      <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.result2_len,0) * 5000).toLocaleString() }}</td>
-      <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.result3_len,0) * 5000).toLocaleString() }}</td>
+      <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.result1_len,0) * profit_price1).toLocaleString() }}</td>
+      <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.result2_len,0) * profit_price2).toLocaleString() }}</td>
+      <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.result3_len,0) * profit_price3).toLocaleString() }}</td>
       <td class="progress-td">{{ 
         (
-          (currentItems.reduce((sum,element)=> sum +element.result1_len,0) * 9000) +
-          (currentItems.reduce((sum,element)=> sum +element.result2_len,0) * 5000) +
-          (currentItems.reduce((sum,element)=> sum +element.result3_len,0) * 5000)
+          (currentItems.reduce((sum,element)=> sum +element.result1_len,0) * profit_price1) +
+          (currentItems.reduce((sum,element)=> sum +element.result2_len,0) * profit_price2) +
+          (currentItems.reduce((sum,element)=> sum +element.result3_len,0) * profit_price3)
         ).toLocaleString() 
         }}</td>
       <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.profit_fin1,0)).toLocaleString() }}</td>
@@ -712,14 +714,14 @@
       <td class="progress-td" colspan="3">合計（比較対象{{ comparisonItems[0].date }}）</td>
       <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.shift_schedule,0)) }}</td>
       <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.shift_digestion,0)) }}</td>
-      <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.result1_len,0) * 9000).toLocaleString() }}</td>
-      <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.result2_len,0) * 5000).toLocaleString() }}</td>
-      <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.result3_len,0) * 5000).toLocaleString() }}</td>
+      <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.result1_len,0) * profit_price1).toLocaleString() }}</td>
+      <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.result2_len,0) * profit_price2).toLocaleString() }}</td>
+      <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.result3_len,0) * profit_price3).toLocaleString() }}</td>
       <td class="progress-td">{{ 
         (
-          (comparisonItems.reduce((sum,element)=> sum +element.result1_len,0) * 9000) +
-          (comparisonItems.reduce((sum,element)=> sum +element.result2_len,0) * 5000) +
-          (comparisonItems.reduce((sum,element)=> sum +element.result3_len,0) * 5000)
+          (comparisonItems.reduce((sum,element)=> sum +element.result1_len,0) * profit_price1) +
+          (comparisonItems.reduce((sum,element)=> sum +element.result2_len,0) * profit_price2) +
+          (comparisonItems.reduce((sum,element)=> sum +element.result3_len,0) * profit_price3)
         ).toLocaleString() 
         }}</td>
       <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.profit_fin1,0)).toLocaleString() }}</td>
@@ -749,33 +751,33 @@
         }}</td>
       <td class="difference-td">{{ 
         (
-          (currentItems.reduce((sum,element)=> sum +element.result1_len,0) * 9000) - 
-          (comparisonItems.reduce((sum,element)=> sum +element.result1_len,0) * 9000)
+          (currentItems.reduce((sum,element)=> sum +element.result1_len,0) * profit_price1) - 
+          (comparisonItems.reduce((sum,element)=> sum +element.result1_len,0) * profit_price1)
         ).toLocaleString() 
         }}</td>
       <td class="difference-td">{{ 
         (
-          (currentItems.reduce((sum,element)=> sum +element.result2_len,0) * 5000) -
-          (comparisonItems.reduce((sum,element)=> sum +element.result2_len,0) * 5000)
+          (currentItems.reduce((sum,element)=> sum +element.result2_len,0) * profit_price2) -
+          (comparisonItems.reduce((sum,element)=> sum +element.result2_len,0) * profit_price2)
         ).toLocaleString() 
         }}</td>
       <td class="difference-td">{{ 
         (
-          (currentItems.reduce((sum,element)=> sum +element.result3_len,0) * 5000) -
-          (comparisonItems.reduce((sum,element)=> sum +element.result3_len,0) * 5000)
+          (currentItems.reduce((sum,element)=> sum +element.result3_len,0) * profit_price3) -
+          (comparisonItems.reduce((sum,element)=> sum +element.result3_len,0) * profit_price3)
           ).toLocaleString() 
         }}</td>
       <td class="difference-td">{{ 
         (
           (
-            (currentItems.reduce((sum,element)=> sum +element.result1_len,0) * 9000) +
-            (currentItems.reduce((sum,element)=> sum +element.result2_len,0) * 5000) +
-            (currentItems.reduce((sum,element)=> sum +element.result3_len,0) * 5000)
+            (currentItems.reduce((sum,element)=> sum +element.result1_len,0) * profit_price1) +
+            (currentItems.reduce((sum,element)=> sum +element.result2_len,0) * profit_price2) +
+            (currentItems.reduce((sum,element)=> sum +element.result3_len,0) * profit_price3)
           ) - 
           (
-            (comparisonItems.reduce((sum,element)=> sum +element.result1_len,0) * 9000) +
-            (comparisonItems.reduce((sum,element)=> sum +element.result2_len,0) * 5000) +
-            (comparisonItems.reduce((sum,element)=> sum +element.result3_len,0) * 5000)
+            (comparisonItems.reduce((sum,element)=> sum +element.result1_len,0) * profit_price1) +
+            (comparisonItems.reduce((sum,element)=> sum +element.result2_len,0) * profit_price2) +
+            (comparisonItems.reduce((sum,element)=> sum +element.result3_len,0) * profit_price3)
           )
         ).toLocaleString() 
         }}</td>
@@ -815,13 +817,13 @@
   <% end %>
   </table>
   <% else %>
-  <p class="caution-text">進捗データがありません、作成してください。</p>
   <% end %>
   </article>
   <hr>
+  <% if @current_progress.present? %>
   <h2>
   グラフ：
-  <select class="graph-slct" id="dmer-graph-change" >
+  <select class="graph-slct" id="graph-change" >
     <option value="終着売上推移">終着売上</option>
     <option value="現状実売推移">現状実売</option>
     <option value="一次成果推移">一次成果（審査完了+決済）</option>
@@ -829,39 +831,40 @@
     <option value="三次成果推移">三次成果（アクセプタンス審査通過）</option>
   </select>
   </h2>
-  <div class="graph-form-first" id="dmer-fin-graph">
+  <div class="graph-form-first" id="fin-graph">
   <h2>◆終着実売</h2><br>
   <%= line_chart @data_fin,options = {
     thousands: ","
   } 
   %>
   </div>
-  <div class="graph-form" id="dmer-current-graph">
+  <div class="graph-form" id="current-graph">
   <h2>◆現状実売推移</h2><br>
   <%= line_chart @data_current,options = {
     thousands: ","
   } 
   %>
   </div>
-  <div class="graph-form" id="dmer-result1-graph">
+  <div class="graph-form" id="result1-graph">
   <h2>◆一次成果推移（審査完了+決済）</h2><br>
   <%= line_chart @result1_graph,options = {
     thousands: ","
   }  
   %>
   </div>
-  <div class="graph-form" id="dmer-result2-graph">
+  <div class="graph-form" id="result2-graph">
   <h2>◆二次成果推移（アクセプタンス審査通過）</h2><br>
   <%= line_chart @result2_graph,options = {
     thousands: ","
   }  
   %>
   </div>
-  <div class="graph-form" id="dmer-result3-graph">
+  <div class="graph-form" id="result3-graph">
   <h2>◆三次成果推移（アクセプタンス審査通過）</h2><br>
   <%= line_chart @result3_graph,options = {
     thousands: ","
   }  
   %>
   </div>
+  <% end %>
 </div>

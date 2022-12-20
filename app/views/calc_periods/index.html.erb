@@ -32,6 +32,11 @@
       <td><%= link_to "詳細", dmer_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
       <td><%= @dmer_date_progresses_last_update %></td>
     </tr>
+    <tr>
+      <td><%= link_to "auPay", progress_create_aupay_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+      <td><%= link_to "詳細", aupay_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+      <td><%= @aupay_date_progresses_last_update %></td>
+    </tr>
   </table>
   
   <% calc_periods_ary.each do |calc_periods| %>

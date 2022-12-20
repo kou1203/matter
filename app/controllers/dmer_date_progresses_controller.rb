@@ -1,6 +1,9 @@
 class DmerDateProgressesController < ApplicationController
 
   def index 
+    @profit_price1 = CalcPeriod.where(sales_category: "実売").find_by(name: "dメル成果1").price
+    @profit_price2 = CalcPeriod.where(sales_category: "実売").find_by(name: "dメル成果2").price
+    @profit_price3 = CalcPeriod.where(sales_category: "実売").find_by(name: "dメル成果3").price
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @create_date = params[:create_d]
     @date_group = DmerDateProgress.pluck(:date).uniq
@@ -10,8 +13,10 @@ class DmerDateProgressesController < ApplicationController
       @month = params[:date].to_date
     elsif params[:search_date].present?
       @month = params[:search_date].to_date  
-    else
+    elsif DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
       @month = DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
+    else
+      @month = params[:month].to_date
     end 
 
     @current_progress = 

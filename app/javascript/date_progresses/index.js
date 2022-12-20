@@ -1,11 +1,11 @@
 window.addEventListener('load', () => {
 
-  const graphChange = document.getElementById('dmer-graph-change');
-  const finGraph = document.getElementById('dmer-fin-graph');
-  const currentGraph = document.getElementById('dmer-current-graph');
-  const result1Graph = document.getElementById('dmer-result1-graph');
-  const result2Graph = document.getElementById('dmer-result2-graph');
-  const result3Graph = document.getElementById('dmer-result3-graph');
+  const graphChange = document.getElementById('graph-change');
+  const finGraph = document.getElementById('fin-graph');
+  const currentGraph = document.getElementById('current-graph');
+  const result1Graph = document.getElementById('result1-graph');
+  const result2Graph = document.getElementById('result2-graph');
+  const result3Graph = document.getElementById('result3-graph');
 
   graphChange.addEventListener("change", function(){
     if(this.value == '終着売上推移'){

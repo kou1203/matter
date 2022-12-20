@@ -4,13 +4,11 @@ import Vue from 'vue/dist/vue.esm'
 Vue.use(TurbolinksAdapter)
 
 document.addEventListener('turbolinks:load', () => {
-  const element = document.getElementById("dmer-progress");
+  const element = document.getElementById("aupay-progress");
   const date_group = window.date_group
   const create_group = window.create_group
 
-  const profit_price1 = window.profit_price1
-  const profit_price2 = window.profit_price2
-  const profit_price3 = window.profit_price3
+  const profit_price = window.profit_price
   const current_arry = window.current_arry
   const comparison_arry = window.comparison_arry
 
@@ -38,9 +36,7 @@ document.addEventListener('turbolinks:load', () => {
     const vueapp = new Vue({
       el: element,
       data: {
-        profit_price1: profit_price1,
-        profit_price2: profit_price2,
-        profit_price3: profit_price3,
+        profit_price: profit_price,
         dateGroup: date_group,
         createGroup: create_group,
         currentItems: current_data_chubu,
