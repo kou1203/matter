@@ -10,7 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_20_082305) do
+ActiveRecord::Schema.define(version: 2022_12_22_082821) do
+
+  create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "base"
+    t.date "date", null: false
+    t.integer "shift_schedule"
+    t.integer "shift_digestion"
+    t.integer "get_len"
+    t.integer "fin_len"
+    t.integer "valuation_current"
+    t.integer "valuation_fin"
+    t.integer "profit_current"
+    t.integer "profit_fin"
+    t.integer "result_len"
+    t.integer "result_fin_len"
+    t.integer "max_get_len"
+    t.integer "max_fin_len"
+    t.integer "max_result_len"
+    t.date "create_date", null: false
+    t.index ["user_id"], name: "index_airpay_date_progresses_on_user_id"
+  end
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "store_prop_id"
@@ -156,6 +177,24 @@ ActiveRecord::Schema.define(version: 2022_12_20_082305) do
     t.integer "travel_stock", null: false
     t.integer "other", null: false
     t.date "update_date"
+  end
+
+  create_table "demaekan_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "base"
+    t.date "date", null: false
+    t.integer "shift_schedule"
+    t.integer "shift_digestion"
+    t.integer "get_len"
+    t.integer "fin_len"
+    t.integer "valuation_current"
+    t.integer "valuation_fin"
+    t.integer "profit_current"
+    t.integer "profit_fin"
+    t.integer "result_len"
+    t.integer "result_fin_len"
+    t.date "create_date", null: false
+    t.index ["user_id"], name: "index_demaekan_date_progresses_on_user_id"
   end
 
   create_table "demaekans", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -670,6 +709,25 @@ ActiveRecord::Schema.define(version: 2022_12_20_082305) do
     t.index ["putter_id"], name: "index_rakuten_casas_on_putter_id"
     t.index ["store_prop_id"], name: "index_rakuten_casas_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_rakuten_casas_on_user_id"
+  end
+
+  create_table "rakuten_pay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "base"
+    t.date "date", null: false
+    t.integer "shift_schedule"
+    t.integer "shift_digestion"
+    t.integer "get_len"
+    t.integer "share_len"
+    t.integer "fin_len"
+    t.integer "valuation_current"
+    t.integer "valuation_fin"
+    t.integer "profit_current"
+    t.integer "profit_fin"
+    t.integer "result_len"
+    t.integer "result_fin_len"
+    t.date "create_date", null: false
+    t.index ["user_id"], name: "index_rakuten_pay_date_progresses_on_user_id"
   end
 
   create_table "rakuten_pays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1349,6 +1407,7 @@ ActiveRecord::Schema.define(version: 2022_12_20_082305) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "airpay_date_progresses", "users"
   add_foreign_key "airpays", "store_props"
   add_foreign_key "airpays", "users"
   add_foreign_key "aupay_date_progresses", "users"
@@ -1356,6 +1415,7 @@ ActiveRecord::Schema.define(version: 2022_12_20_082305) do
   add_foreign_key "aupays", "users"
   add_foreign_key "aupays", "users", column: "settlementer_id"
   add_foreign_key "comments", "store_props"
+  add_foreign_key "demaekan_date_progresses", "users"
   add_foreign_key "demaekans", "store_props"
   add_foreign_key "demaekans", "users"
   add_foreign_key "dmer_date_progresses", "users"
@@ -1376,6 +1436,7 @@ ActiveRecord::Schema.define(version: 2022_12_20_082305) do
   add_foreign_key "rakuten_casas", "users"
   add_foreign_key "rakuten_casas", "users", column: "adjustmenter_id"
   add_foreign_key "rakuten_casas", "users", column: "putter_id"
+  add_foreign_key "rakuten_pay_date_progresses", "users"
   add_foreign_key "rakuten_pays", "store_props"
   add_foreign_key "rakuten_pays", "users"
   add_foreign_key "result_casas", "results"

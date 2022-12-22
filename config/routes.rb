@@ -208,4 +208,16 @@ Rails.application.routes.draw do
     collection {get :progress_create}
   end 
 
+  resources :rakuten_pay_date_progresses do 
+    collection {get :progress_create}
+  end 
+
+  resources :airpay_date_progresses do 
+    collection {get :progress_create}
+  end 
+
+  resources :demaekan_date_progresses do 
+    collection {get :progress_create}
+  end 
+
 end

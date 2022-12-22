@@ -1,0 +1,2 @@
+module AirpayDateProgressesHelper
+end

@@ -161,7 +161,7 @@ class DmerDateProgressesController < ApplicationController
   @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
   @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
   cnt = 0
-  @dmers_group = Dmer.where(date: @start_date.prev_month..@end_date).group(:user_id)
+  @dmers_group = Dmer.group(:user_id)
   @dmers_group.group(:user_id).each do |r|
     @calc_periods = CalcPeriod.where(sales_category: "実売")
     calc_period_and_per

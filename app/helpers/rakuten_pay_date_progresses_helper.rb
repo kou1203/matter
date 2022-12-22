@@ -1,0 +1,2 @@
+module RakutenPayDateProgressesHelper
+end

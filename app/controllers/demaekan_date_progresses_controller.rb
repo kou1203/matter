@@ -1,23 +1,24 @@
-class PaypayDateProgressesController < ApplicationController
+class DemaekanDateProgressesController < ApplicationController
+
   def index 
-    @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "PayPay成果1").price
+    @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "出前館成果1").price
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @create_date = params[:create_d]
-    @date_group = PaypayDateProgress.pluck(:date).uniq
-    @create_group = PaypayDateProgress.pluck(:create_date).uniq
+    @date_group = DemaekanDateProgress.pluck(:date).uniq
+    @create_group = DemaekanDateProgress.pluck(:create_date).uniq
     @users = User.all
     if params[:date].present?
       @month = params[:date].to_date
     elsif params[:search_date].present?
       @month = params[:search_date].to_date  
-    elsif PaypayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
-      @month = PaypayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
+    elsif DemaekanDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
+      @month = DemaekanDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
     else
       @month = params[:month].to_date
     end 
 
     @current_progress = 
-    PaypayDateProgress.includes(:user).where(date: @month)
+    DemaekanDateProgress.includes(:user).where(date: @month)
     if params[:create_d].present?
       @current_progress = 
         @current_progress.where(create_date: params[:create_d].to_date)
@@ -42,51 +43,51 @@ class PaypayDateProgressesController < ApplicationController
     if  @current_progress.present?
       @data_fin = [
         {
-          name: "中部SS終着", data: PaypayDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_fin)
+          name: "中部SS終着", data: DemaekanDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_fin)
         },
         {
-          name: "関西SS終着", data: PaypayDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_fin)
+          name: "関西SS終着", data: DemaekanDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_fin)
         },
         {
-          name: "関東SS終着", data: PaypayDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_fin)
+          name: "関東SS終着", data: DemaekanDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_fin)
         },
         {
-          name: "九州SS終着", data: PaypayDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_fin)
+          name: "九州SS終着", data: DemaekanDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_fin)
         },
       ]
       @data_current = [
         {
-          name: "中部SS現状売上", data: PaypayDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_current)
+          name: "中部SS現状売上", data: DemaekanDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_current)
         },
         {
-          name: "関西SS現状売上", data: PaypayDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_current)
+          name: "関西SS現状売上", data: DemaekanDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_current)
         },
         {
-          name: "関東SS現状売上", data: PaypayDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_current)
+          name: "関東SS現状売上", data: DemaekanDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_current)
         },
         {
-          name: "九州SS現状売上", data: PaypayDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_current)
+          name: "九州SS現状売上", data: DemaekanDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_current)
         },
       ]
     else
-      @data = PaypayDateProgress.none
+      @data = DemaekanDateProgress.none
     end
 
     # 比較対象
     if params[:comparison_date].present?
       @comparison_date = params[:comparison_date].to_date
       @comparison = 
-        PaypayDateProgress.where(date: @comparison_date)
+        DemaekanDateProgress.where(date: @comparison_date)
       @comparison =
         @comparison.where(create_date: @comparison.maximum(:create_date))
     else  
       if @current_progress.present?
         @comparison = 
-          PaypayDateProgress.where(date: @current_progress.first.date.prev_month)
+          DemaekanDateProgress.where(date: @current_progress.first.date.prev_month)
         @comparison = 
           @comparison.where(create_date: @comparison.maximum(:create_date))
       else  
-        @comparison = PaypayDateProgress.none
+        @comparison = DemaekanDateProgress.none
       end 
     end 
     # 拠点別現状売上
@@ -116,34 +117,34 @@ class PaypayDateProgressesController < ApplicationController
     @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
     @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     cnt = 0
-    @paypays_group = Paypay.group(:user_id)
-    @paypays_group.group(:user_id).each do |r|
+    @demaekans_group = Demaekan.group(:user_id)
+    @demaekans_group.group(:user_id).each do |r|
       @calc_periods = CalcPeriod.where(sales_category: "実売")
       calc_period_and_per
       user_id = r.user_id
-      @paypay_progress_data = PaypayDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
+      @demaekan_progress_data = DemaekanDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       shift_schedule = @shifts.where(user_id: user_id).length
       shift_digestion = @results.where(user_id: user_id).length
     # 獲得内訳
-      @paypays_user = Paypay.where(user_id: user_id)
-      @paypays_user_period = @paypays_user.where(date: @start_date..@end_date)
-      @paypays_fin_len = (@paypays_user_period.length.to_f / shift_digestion * shift_schedule).round() rescue 0
+      @demaekans_user = Demaekan.where(user_id: user_id)
+      @demaekans_user_period = @demaekans_user.where(date: @start_date..@end_date)
+      @demaekans_fin_len = (@demaekans_user_period.length.to_f / shift_digestion * shift_schedule).round() rescue 0
       # 審査完了
-      paypay_done = 
-        @paypays_user.where(result_point: @paypay1_start_date..@paypay1_end_date)
-        .where(status: "60審査可決")
+      demaekan_done = 
+        @demaekans_user.where(first_cs_contract: @demaekan1_start_date..@demaekan1_end_date)
+        .where(status: "完了")
     # 現状売上
       valuation_current = 0
       profit_current = 0
     # 実売
-      profit_current = paypay_done.sum(:profit)
-      paypay_result_len = paypay_done.length 
+      profit_current = demaekan_done.sum(:profit)
+      demaekan_result_len = demaekan_done.length 
     # 終着
         profit_fin = profit_current
       
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
-      valuation_current = paypay_done.sum(:valuation)
+      valuation_current = demaekan_done.sum(:valuation)
       valuation_fin = valuation_current
 
       if r.user.position == "退職"
@@ -153,37 +154,37 @@ class PaypayDateProgressesController < ApplicationController
       else  
         user_base = r.user.base_sub
       end 
-    # PayPayの売上の中身
-      paypay_progress_params = {
+    # 出前館の売上の中身
+      demaekan_progress_params = {
         user_id: user_id                                    ,
         base: user_base                                     ,
         date: @month                                        ,
         shift_schedule: shift_schedule                      ,
         shift_digestion: shift_digestion                    ,
-        get_len: @paypays_user_period.length                ,
-        fin_len: @paypays_fin_len                           ,
+        get_len: @demaekans_user_period.length                ,
+        fin_len: @demaekans_fin_len                           ,
         valuation_current: valuation_current                ,
         valuation_fin: valuation_fin                        ,
         profit_fin: profit_fin                              ,
         profit_current: profit_current                      ,
-        result_len: paypay_done.length                      ,
-        result_fin_len: paypay_done.length                      ,
+        result_len: demaekan_done.length                      ,
+        result_fin_len: demaekan_done.length                      ,
         create_date: Date.today
       }
     # 日付とユーザー名が一致しているデータの場合更新、新しいデータの場合保存
-      if @paypay_progress_data.present?
-        @paypay_progress_data.update(
-          paypay_progress_params
+      if @demaekan_progress_data.present?
+        @demaekan_progress_data.update(
+          demaekan_progress_params
         )
       else  
-        @paypay_date_progress = PaypayDateProgress.new(
-          paypay_progress_params
+        @demaekan_date_progress = DemaekanDateProgress.new(
+          demaekan_progress_params
         )
-        @paypay_date_progress.save
+        @demaekan_date_progress.save
       end
       cnt += 1    
     end 
-    redirect_to calc_periods_path(month: @month) ,alert: "#{cnt}件PayPay売上結果を作成しました"
+    redirect_to calc_periods_path(month: @month) ,alert: "#{cnt}件出前館売上結果を作成しました"
 
 
   end   

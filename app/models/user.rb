@@ -27,4 +27,7 @@ class User < ApplicationRecord
   has_many :dmer_date_progress
   has_many :aupay_date_progress
   has_many :paypay_date_progress
+  has_many :rakuten_pay_date_progress
+  has_many :airpay_date_progress
+  has_many :demaekan_date_progress
 end

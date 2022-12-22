@@ -11,6 +11,12 @@ class CalcPeriodsController < ApplicationController
     @aupay_date_progresses_last_update = @aupay_date_progresses.maximum(:create_date)
     @paypay_date_progresses = PaypayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @paypay_date_progresses_last_update = @paypay_date_progresses.maximum(:create_date)
+    @rakuten_pay_date_progresses = RakutenPayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    @rakuten_pay_date_progresses_last_update = @rakuten_pay_date_progresses.maximum(:create_date)
+    @airpay_date_progresses = AirpayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    @airpay_date_progresses_last_update = @airpay_date_progresses.maximum(:create_date)
+    @demaekan_date_progresses = DemaekanDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    @demaekan_date_progresses_last_update = @demaekan_date_progresses.maximum(:create_date)
 
   end 
 

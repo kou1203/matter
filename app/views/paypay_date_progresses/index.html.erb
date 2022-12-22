@@ -19,7 +19,7 @@
       </h2>
     </div><%# 日付切替 %>
     <hr>
-    <%= javascript_pack_tag 'paypay_date_progress' %>
+    <%= javascript_pack_tag 'date_progress' %>
     <script>
       window.profit_price=<%= @profit_price.to_json.html_safe %>;
       window.date_group=<%= @date_group.to_json.html_safe %>;
@@ -46,7 +46,7 @@
       window.comparison_data_retire=<%= @comparison_data_retire.to_json.html_safe %>;
       window.users=<%= @users.to_json.html_safe %>;
     </script>
-    <article id="paypay-progress">
+    <article id="date-progress">
       <div class="head-form"><%# ヘッド部分 %>
         <div><%# 検索 %>
           <%= form_with url: paypay_date_progresses_path, local: true, method: :get do |f| %>
@@ -461,25 +461,28 @@
       <p class="caution-txt">進捗データがありません、作成してください。</p>
       <% end %>
     </article>
-  <h2>
-  グラフ：
-  <select class="graph-slct" id="graph-change" >
-    <option value="終着売上推移">終着売上</option>
-    <option value="現状実売推移">現状実売</option>
-  </select>
-  <div class="graph-form-first" id="fin-graph">
-  <h2>◆終着実売</h2><br>
-  <%= line_chart @data_fin,options = {
-    thousands: ","
-  } 
-  %>
-  </div>
-  <div class="graph-form" id="current-graph">
-  <h2>◆現状実売推移</h2><br>
-  <%= line_chart @data_current,options = {
-    thousands: ","
-  } 
-  %>
-  </div>
+      <% if @current_progress.present? %><%# @current_progressがあるか判別 %>
+      <h2>
+      グラフ：
+      <select class="graph-slct" id="graph-change" >
+        <option value="終着売上推移">終着売上</option>
+        <option value="現状実売推移">現状実売</option>
+      </select>
+      </h2>
+      <div class="graph-form-first" id="fin-graph">
+      <h2>◆終着実売</h2><br>
+      <%= line_chart @data_fin,options = {
+        thousands: ","
+      } 
+      %>
+      </div>
+      <div class="graph-form" id="current-graph">
+      <h2>◆現状実売推移</h2><br>
+      <%= line_chart @data_current,options = {
+        thousands: ","
+      } 
+      %>
+      </div>
+    <% end %>
   </div><%# メインバー %>
 </div><%# サイドバーとメインバーを分ける %>

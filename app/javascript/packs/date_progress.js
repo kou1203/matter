@@ -4,7 +4,7 @@ import Vue from 'vue/dist/vue.esm'
 Vue.use(TurbolinksAdapter)
 
 document.addEventListener('turbolinks:load', () => {
-  const element = document.getElementById("aupay-progress");
+  const element = document.getElementById("date-progress");
   const date_group = window.date_group
   const create_group = window.create_group
 
