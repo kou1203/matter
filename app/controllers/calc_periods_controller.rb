@@ -17,7 +17,12 @@ class CalcPeriodsController < ApplicationController
     @airpay_date_progresses_last_update = @airpay_date_progresses.maximum(:create_date)
     @demaekan_date_progresses = DemaekanDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @demaekan_date_progresses_last_update = @demaekan_date_progresses.maximum(:create_date)
-
+    
+    @austicker_date_progresses = AustickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    @austicker_date_progresses_last_update = @austicker_date_progresses.maximum(:create_date)
+    
+    @dmersticker_date_progresses = DmerstickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    @dmersticker_date_progresses_last_update = @dmersticker_date_progresses.maximum(:create_date)
   end 
 
   def new 

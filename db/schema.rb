@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_22_082821) do
+ActiveRecord::Schema.define(version: 2022_12_22_091759) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -123,6 +123,24 @@ ActiveRecord::Schema.define(version: 2022_12_22_082821) do
     t.index ["settlementer_id"], name: "index_aupays_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_aupays_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_aupays_on_user_id"
+  end
+
+  create_table "austicker_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "base"
+    t.date "date", null: false
+    t.integer "shift_schedule"
+    t.integer "shift_digestion"
+    t.integer "get_len"
+    t.integer "fin_len"
+    t.integer "valuation_current"
+    t.integer "valuation_fin"
+    t.integer "profit_current"
+    t.integer "profit_fin"
+    t.integer "result_len"
+    t.integer "result_fin_len"
+    t.date "create_date", null: false
+    t.index ["user_id"], name: "index_austicker_date_progresses_on_user_id"
   end
 
   create_table "calc_periods", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -309,6 +327,24 @@ ActiveRecord::Schema.define(version: 2022_12_22_082821) do
     t.index ["settlementer_id"], name: "index_dmers_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_dmers_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_dmers_on_user_id"
+  end
+
+  create_table "dmersticker_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "base"
+    t.date "date", null: false
+    t.integer "shift_schedule"
+    t.integer "shift_digestion"
+    t.integer "get_len"
+    t.integer "fin_len"
+    t.integer "valuation_current"
+    t.integer "valuation_fin"
+    t.integer "profit_current"
+    t.integer "profit_fin"
+    t.integer "result_len"
+    t.integer "result_fin_len"
+    t.date "create_date", null: false
+    t.index ["user_id"], name: "index_dmersticker_date_progresses_on_user_id"
   end
 
   create_table "n_results", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1414,6 +1450,7 @@ ActiveRecord::Schema.define(version: 2022_12_22_082821) do
   add_foreign_key "aupays", "store_props"
   add_foreign_key "aupays", "users"
   add_foreign_key "aupays", "users", column: "settlementer_id"
+  add_foreign_key "austicker_date_progresses", "users"
   add_foreign_key "comments", "store_props"
   add_foreign_key "demaekan_date_progresses", "users"
   add_foreign_key "demaekans", "store_props"
@@ -1422,6 +1459,7 @@ ActiveRecord::Schema.define(version: 2022_12_22_082821) do
   add_foreign_key "dmers", "store_props"
   add_foreign_key "dmers", "users"
   add_foreign_key "dmers", "users", column: "settlementer_id"
+  add_foreign_key "dmersticker_date_progresses", "users"
   add_foreign_key "n_results", "users"
   add_foreign_key "other_products", "users"
   add_foreign_key "pandas", "store_props"

@@ -219,5 +219,11 @@ Rails.application.routes.draw do
   resources :demaekan_date_progresses do 
     collection {get :progress_create}
   end 
+  resources :austicker_date_progresses do 
+    collection {get :progress_create}
+  end 
+  resources :dmersticker_date_progresses do 
+    collection {get :progress_create}
+  end 
 
 end
