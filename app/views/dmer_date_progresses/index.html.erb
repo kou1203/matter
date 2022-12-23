@@ -96,6 +96,7 @@
         <th class="progress-th1" colspan="5">基本情報</th>
         <th class="progress-th1" colspan="3">獲得内訳</th>
         <th class="progress-th1" colspan="3">成果内訳</th>
+        <th class="progress-th1" colspan="3">終着内訳</th>
         <th class="progress-th1" colspan="2">前月決済</th>
       </tr>
       <tr>
@@ -107,6 +108,9 @@
         <th class="progress-th2">獲得数</th>
         <th class="progress-th2">不備・NG</th>
         <th class="progress-th2">獲得終着見込</th>
+        <th class="progress-th2">決済＋審査完了</th>
+        <th class="progress-th2">アクセプタンス</th>
+        <th class="progress-th2">２回目決済</th>
         <th class="progress-th2">決済＋審査完了</th>
         <th class="progress-th2">アクセプタンス</th>
         <th class="progress-th2">２回目決済</th>
@@ -125,6 +129,9 @@
         <td class="progress-td"><%= @current_progress.sum(:result1_len) %></td>
         <td class="progress-td"><%= @current_progress.sum(:result2_len) %></td>
         <td class="progress-td"><%= @current_progress.sum(:result3_len) %></td>
+        <td class="progress-td"><%= @current_progress.sum(:result1_fin_len) %></td>
+        <td class="progress-td"><%= @current_progress.sum(:result2_fin_len) %></td>
+        <td class="progress-td"><%= @current_progress.sum(:result3_fin_len) %></td>
         <td class="progress-td"><%= @current_progress.sum(:slmt_tgt_prev) %></td>
         <td class="progress-td"><%= @current_progress.sum(:slmt_dead_len) %></td>
         
@@ -142,6 +149,9 @@
         <td class="progress-td"><%= @comparison.sum(:result1_len) %></td>
         <td class="progress-td"><%= @comparison.sum(:result2_len) %></td>
         <td class="progress-td"><%= @comparison.sum(:result3_len) %></td>
+        <td class="progress-td"><%= @comparison.sum(:result1_fin_len) %></td>
+        <td class="progress-td"><%= @comparison.sum(:result2_fin_len) %></td>
+        <td class="progress-td"><%= @comparison.sum(:result3_fin_len) %></td>
         <td class="progress-td"><%= @comparison.sum(:slmt_tgt_prev) %></td>
         <td class="progress-td"><%= @comparison.sum(:slmt_dead_len) %></td>
       </tr>
@@ -155,6 +165,9 @@
         <td class="difference-td"><%= @current_progress.sum(:result1_len) -  @comparison.sum(:result1_len) %></td>
         <td class="difference-td"><%= @current_progress.sum(:result2_len) -  @comparison.sum(:result2_len) %></td>
         <td class="difference-td"><%= @current_progress.sum(:result3_len) - @comparison.sum(:result3_len) %></td>
+        <td class="difference-td"><%= @current_progress.sum(:result1_fin_len) -  @comparison.sum(:result1_fin_len) %></td>
+        <td class="difference-td"><%= @current_progress.sum(:result2_fin_len) -  @comparison.sum(:result2_fin_len) %></td>
+        <td class="difference-td"><%= @current_progress.sum(:result3_fin_len) - @comparison.sum(:result3_fin_len) %></td>
         <td class="difference-td"><%= @current_progress.sum(:slmt_tgt_prev) - @comparison.sum(:slmt_tgt_prev) %></td>
         <td class="difference-td"><%= @current_progress.sum(:slmt_dead_len) - @comparison.sum(:slmt_dead_len) %></td>
       </tr>
@@ -167,6 +180,7 @@
         <th class="progress-th1" colspan="5">基本情報</th>
         <th class="progress-th1" colspan="3">獲得内訳</th>
         <th class="progress-th1" colspan="3">成果内訳</th>
+        <th class="progress-th1" colspan="3">終着内訳</th>
         <th class="progress-th1" colspan="2">前月決済</th>
       </tr>
     <tr>
@@ -178,6 +192,9 @@
       <th class="progress-th2">獲得数</th>
       <th class="progress-th2">不備・NG</th>
       <th class="progress-th2">獲得終着見込</th>
+      <th class="progress-th2">決済＋審査完了</th>
+      <th class="progress-th2">アクセプタンス</th>
+      <th class="progress-th2">２回目決済</th>
       <th class="progress-th2">決済＋審査完了</th>
       <th class="progress-th2">アクセプタンス</th>
       <th class="progress-th2">２回目決済</th>
@@ -198,6 +215,9 @@
         <td class="progress-td"><%= current.sum(:result1_len) %></td>
         <td class="progress-td"><%= current.sum(:result2_len) %></td>
         <td class="progress-td"><%= current.sum(:result3_len) %></td>
+        <td class="progress-td"><%= current.sum(:result1_fin_len) %></td>
+        <td class="progress-td"><%= current.sum(:result2_fin_len) %></td>
+        <td class="progress-td"><%= current.sum(:result3_fin_len) %></td>
         <td class="progress-td"><%= current.sum(:slmt_tgt_prev) %></td>
         <td class="progress-td"><%= current.sum(:slmt_dead_len) %></td>
     </tr>
@@ -214,6 +234,9 @@
         <td class="progress-td"><%= comparison.sum(:result1_len) %></td>
         <td class="progress-td"><%= comparison.sum(:result2_len) %></td>
         <td class="progress-td"><%= comparison.sum(:result3_len) %></td>
+        <td class="progress-td"><%= comparison.sum(:result1_fin_len) %></td>
+        <td class="progress-td"><%= comparison.sum(:result2_fin_len) %></td>
+        <td class="progress-td"><%= comparison.sum(:result3_fin_len) %></td>
         <td class="progress-td"><%= comparison.sum(:slmt_tgt_prev) %></td>
         <td class="progress-td"><%= comparison.sum(:slmt_dead_len) %></td>
     </tr>
@@ -227,6 +250,10 @@
         <td class="difference-td"><%= current.sum(:result1_len) - comparison.sum(:result1_len) %></td>
         <td class="difference-td"><%= current.sum(:result2_len) - comparison.sum(:result2_len) %></td>
         <td class="difference-td"><%= current.sum(:result3_len) - comparison.sum(:result3_len) %></td>
+        <td class="difference-td"><%= current.sum(:slmt_tgt_prev) - comparison.sum(:slmt_tgt_prev) %></td>
+        <td class="difference-td"><%= current.sum(:result1_fin_len) - comparison.sum(:result1_fin_len) %></td>
+        <td class="difference-td"><%= current.sum(:result2_fin_len) - comparison.sum(:result2_fin_len) %></td>
+        <td class="difference-td"><%= current.sum(:result3_fin_len) - comparison.sum(:result3_fin_len) %></td>
         <td class="difference-td"><%= current.sum(:slmt_tgt_prev) - comparison.sum(:slmt_tgt_prev) %></td>
         <td class="difference-td"><%= current.sum(:slmt_dead_len) - comparison.sum(:slmt_dead_len) %></td>
     </tr>
@@ -269,16 +296,10 @@
         <td class="progress-td"><%= @current_progress.first.create_date %></td>
         <td class="progress-td"><%= @current_progress.sum(:shift_schedule) %></td>
         <td class="progress-td"><%= @current_progress.sum(:shift_digestion) %></td>
-        <td class="progress-td"><%= (@current_progress.sum(:result1_len) * @profit_price1).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (@current_progress.sum(:result2_len) * @profit_price2).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (@current_progress.sum(:result3_len) * @profit_price3).to_s(:delimited) %></td>
-        <td class="progress-td"><%= 
-          (
-            (@current_progress.sum(:result1_len) * @profit_price1) +
-            (@current_progress.sum(:result2_len) * @profit_price2) + 
-            (@current_progress.sum(:result3_len) * @profit_price3)
-          ).to_s(:delimited) 
-        %></td>
+        <td class="progress-td"><%= @current_progress.sum(:profit_current1).to_s(:delimited) %></td>
+        <td class="progress-td"><%= @current_progress.sum(:profit_current2).to_s(:delimited) %></td>
+        <td class="progress-td"><%= @current_progress.sum(:profit_current3).to_s(:delimited) %></td>
+        <td class="progress-td"><%= @current_progress.sum(:profit_current).to_s(:delimited) %></td>
         <td class="progress-td"><%= @current_progress.sum(:profit_fin1).to_s(:delimited) %></td>
         <td class="progress-td"><%= @current_progress.sum(:profit_fin2).to_s(:delimited) %></td>
         <td class="progress-td"><%= @current_progress.sum(:profit_fin3).to_s(:delimited) %></td>
@@ -296,16 +317,10 @@
         <td class="progress-td"><%= @comparison.first.create_date %></td>
         <td class="progress-td"><%= @comparison.sum(:shift_schedule) %></td>
         <td class="progress-td"><%= @comparison.sum(:shift_digestion) %></td>
-        <td class="progress-td"><%= (@comparison.sum(:result1_len) * @profit_price1).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (@comparison.sum(:result2_len) * @profit_price2).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (@comparison.sum(:result3_len) * @profit_price3).to_s(:delimited) %></td>
-        <td class="progress-td"><%= 
-          (
-            (@comparison.sum(:result1_len) * @profit_price1) +
-            (@comparison.sum(:result2_len) * @profit_price2) + 
-            (@comparison.sum(:result3_len) * @profit_price3)
-          ).to_s(:delimited) 
-        %></td>
+        <td class="progress-td"><%= @comparison.sum(:profit_current1).to_s(:delimited) %></td>
+        <td class="progress-td"><%= @comparison.sum(:profit_current2).to_s(:delimited) %></td>
+        <td class="progress-td"><%= @comparison.sum(:profit_current3).to_s(:delimited) %></td>
+        <td class="progress-td"><%= @comparison.sum(:profit_current).to_s(:delimited) %></td>
         <td class="progress-td"><%= @comparison.sum(:profit_fin1).to_s(:delimited) %></td>
         <td class="progress-td"><%= @comparison.sum(:profit_fin2).to_s(:delimited) %></td>
         <td class="progress-td"><%= @comparison.sum(:profit_fin3).to_s(:delimited) %></td>
@@ -322,35 +337,27 @@
         <td class="difference-td"><%= @current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion) %></td>
         <td class="difference-td"><%= 
           (
-            (@current_progress.sum(:result1_len) * @profit_price1) -
-            (@comparison.sum(:result1_len) * @profit_price1)
+            @current_progress.sum(:profit_current1) -
+            @comparison.sum(:profit_current1)
 
           ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= 
           (
-            (@current_progress.sum(:result2_len) * @profit_price2) -
-            (@comparison.sum(:result2_len) * @profit_price2)
+            @current_progress.sum(:profit_current2) -
+            @comparison.sum(:profit_current2)
             ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= 
           (
-            (@current_progress.sum(:result3_len) * @profit_price3) - 
-            (@comparison.sum(:result3_len) * @profit_price3)
+            @current_progress.sum(:profit_current3) - 
+            @comparison.sum(:profit_current3)
           ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= 
           (
-            (
-              (@current_progress.sum(:result1_len) * @profit_price1) +
-              (@current_progress.sum(:result2_len) * @profit_price2) + 
-              (@current_progress.sum(:result3_len) * @profit_price3)
-            ) - 
-            (
-              (@comparison.sum(:result1_len) * @profit_price1) +
-              (@comparison.sum(:result2_len) * @profit_price2) + 
-              (@comparison.sum(:result3_len) * @profit_price3)
-            )
+            @current_progress.sum(:profit_current) - 
+            @comparison.sum(:profit_current)
           ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= (@current_progress.sum(:profit_fin1) - @comparison.sum(:profit_fin1)).to_s(:delimited) %></td>
@@ -403,16 +410,10 @@
         <td class="progress-td"><%= current.first.create_date %></td>
         <td class="progress-td"><%= current.sum(:shift_schedule) %></td>
         <td class="progress-td"><%= current.sum(:shift_digestion) %></td>
-        <td class="progress-td"><%= (current.sum(:result1_len) * @profit_price1).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (current.sum(:result2_len) * @profit_price2).to_s(:delimited) %></td>
-        <td class="progress-td"><%= (current.sum(:result3_len) * @profit_price3).to_s(:delimited) %></td>
-        <td class="progress-td"><%= 
-          (
-            (current.sum(:result1_len) * @profit_price1) +
-            (current.sum(:result2_len) * @profit_price2) + 
-            (current.sum(:result3_len) * @profit_price3)
-          ).to_s(:delimited) 
-        %></td>
+        <td class="progress-td"><%= current.sum(:profit_current1).to_s(:delimited) %></td>
+        <td class="progress-td"><%= current.sum(:profit_current2).to_s(:delimited) %></td>
+        <td class="progress-td"><%= current.sum(:profit_current3).to_s(:delimited) %></td>
+        <td class="progress-td"><%= current.sum(:profit_current).to_s(:delimited) %></td>
         <td class="progress-td"><%= current.sum(:profit_fin1).to_s(:delimited) %></td>
         <td class="progress-td"><%= current.sum(:profit_fin2).to_s(:delimited) %></td>
         <td class="progress-td"><%= current.sum(:profit_fin3).to_s(:delimited) %></td>
@@ -456,35 +457,26 @@
         <td class="difference-td"><%= current.sum(:shift_digestion) - comparison.sum(:shift_digestion) %></td>
         <td class="difference-td"><%= 
           (
-            (current.sum(:result1_len) * @profit_price1) -
-            (comparison.sum(:result1_len) * @profit_price1)
-
+            current.sum(:profit_current1) -
+            comparison.sum(:profit_current1)
           ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= 
           (
-            (current.sum(:result2_len) * @profit_price2) -
-            (comparison.sum(:result2_len) * @profit_price2)
-            ).to_s(:delimited) 
-        %></td>
-        <td class="difference-td"><%= 
-          (
-            (current.sum(:result3_len) * @profit_price3) - 
-            (comparison.sum(:result3_len) * @profit_price3)
+            current.sum(:profit_current2) -
+            comparison.sum(:profit_current2)
           ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= 
           (
-            (
-              (current.sum(:result1_len) * @profit_price1) +
-              (current.sum(:result2_len) * @profit_price2) + 
-              (current.sum(:result3_len) * @profit_price3)
-            ) - 
-            (
-              (comparison.sum(:result1_len) * @profit_price1) +
-              (comparison.sum(:result2_len) * @profit_price2) + 
-              (comparison.sum(:result3_len) * @profit_price3)
-            )
+            current.sum(:profit_current3) -
+            comparison.sum(:profit_current3)
+          ).to_s(:delimited) 
+        %></td>
+        <td class="difference-td"><%= 
+          (
+            current.sum(:profit_current) - 
+            comparison.sum(:profit_current)
           ).to_s(:delimited) 
         %></td>
         <td class="difference-td"><%= (current.sum(:profit_fin1) - comparison.sum(:profit_fin1)).to_s(:delimited) %></td>

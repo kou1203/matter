@@ -345,6 +345,10 @@ class DmerDateProgressesController < ApplicationController
           profit_fin3 = profit_current3_price
         end 
 
+       result1_fin_len = profit_fin1 / @dmer1_price
+       result2_fin_len = profit_fin2 / @dmer2_price
+       result3_fin_len = profit_fin3 / @dmer3_price
+
       # 評価売
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
@@ -418,6 +422,7 @@ class DmerDateProgressesController < ApplicationController
       user_base = r.user.base_sub
     end 
   # dメルの売上の中身
+  
     dmer_progress_params = {
       user_id: user_id                                   ,
       base: user_base                                  ,
@@ -425,12 +430,14 @@ class DmerDateProgressesController < ApplicationController
       shift_schedule: shift_schedule                     ,
       shift_digestion: shift_digestion                   ,
       get_len: @dmers_user_period.length                 ,
-      wait_len: dmer_wait.length                         ,
       done_len: dmer_done.length                         ,
       slmt_dead_len: dmer_slmt_dead_len                  ,
       def_len: @dmers_user_def.length                    ,
       fin_len: @dmers_fin_len                            ,
       valuation_current: valuation_current               ,
+      valuation_current1: valuation_current1_price               ,
+      valuation_current2: valuation_current2_price               ,
+      valuation_current3: valuation_current3_price               ,
       valuation_fin1: valuation_fin1                     ,
       valuation_fin2: valuation_fin2                     ,
       valuation_fin3: valuation_fin3                     ,
@@ -438,6 +445,9 @@ class DmerDateProgressesController < ApplicationController
       valuation_fin2_prev: valuation_fin2_prev           ,
       valuation_fin3_prev: valuation_fin3_prev           ,
       profit_current: profit_current                     ,
+      profit_current1: profit_current1_price                     ,
+      profit_current2: profit_current2_price                     ,
+      profit_current3: profit_current3_price                     ,
       profit_fin1: profit_fin1                           ,
       profit_fin2: profit_fin2                           ,
       profit_fin3: profit_fin3                           ,
@@ -447,6 +457,9 @@ class DmerDateProgressesController < ApplicationController
       result1_len: dmer_result1.length                   ,
       result2_len: dmer_slmt_done.length                 ,
       result3_len: dmer_slmt2nd_done.length              ,
+      result1_fin_len: result1_fin_len                   ,
+      result2_fin_len: result2_fin_len                   ,
+      result3_fin_len: result3_fin_len                   ,
       slmt_tgt_prev: dmer_slmt_tgt_prev_len              ,
       done_len_prev: dmer_done_prev.length               ,
       result1_len_prev: dmer_result1_prev.length         ,
@@ -471,36 +484,5 @@ class DmerDateProgressesController < ApplicationController
  end 
 
   private
-
-  def dmer_progress_param 
-    params.require(:dmer_date_progress).permit(
-      :user                        ,
-      :base                        ,
-      :date                        ,
-      :shift_schedule              ,
-      :shift_digestion             ,
-      :get_len                     ,
-      :def_len                     ,
-      :fin_len                     ,
-      :valuation_current           ,
-      :valuation_fin               ,
-      :profit_current              ,
-      :profit_fin                  ,
-      # 各種獲得数
-      :wait_len                    ,
-      :done_len                    ,
-      :slmt_dead_len               ,
-      :result1_len                 ,
-      :result2_len                 ,
-      :result3_len                 ,
-      # 各種獲得数（過去月）
-      :slmt_tgt_prev               ,
-      :done_len_prev               ,
-      :result1_len_prev            ,
-      :result2_len_prev            ,
-      :result3_len_prev            ,
-      :create_date
-    )
-  end 
 
 end
