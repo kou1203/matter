@@ -1,7 +1,7 @@
 class AirpayDateProgressesController < ApplicationController
 
   def index 
-    @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "楽天ペイ成果1").price
+    @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "AirPay成果1").price
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @create_date = params[:create_d]
     @date_group = AirpayDateProgress.pluck(:date).uniq
@@ -114,19 +114,20 @@ class AirpayDateProgressesController < ApplicationController
     end 
     @calc_periods = CalcPeriod.where(sales_category: "実売")
     calc_period_and_per
-    @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
+    @results = Result.includes(:result_cash).where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
     @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     # 全体終着獲得数
     @airpays_all_len_fin = 
       (@results.sum(:airpay).to_f / @results.length * @shifts.length).round() rescue 0
     # 実売単価
-    if @airpays_all_len_fin >= @airpay_bonus2_len
-      @profit_price = @airpay_bonus2_price
-    elsif @airpays_all_len_fin >= @airpay_bonus1_len
-      @profit_price = @airpay_bonus1_price
-    else  
-      @profit_price = @airpay_price
-    end 
+    @profit_price =
+      if @airpays_all_len_fin >= @airpay_bonus2_len
+        @airpay_bonus2_price
+      elsif @airpays_all_len_fin >= @airpay_bonus1_len
+        @airpay_bonus1_price
+      else  
+        @airpay_price
+      end
     cnt = 0
     @airpays_group = Airpay.group(:user_id)
     @airpays_group.group(:user_id).each do |r|
@@ -197,11 +198,11 @@ class AirpayDateProgressesController < ApplicationController
       else  
         valuation_price = @airpay_price
       end 
-      valuation_current = @airpay_price * result_len
-      period_fin = @profit_price * period_fin_len
+      valuation_current = valuation_price * result_len
+      period_fin = valuation_price * period_fin_len
       prev_fin = 
-      (@profit_price * prev_len) + 
-      (@profit_price * prev_done.length)
+      (valuation_price * prev_len) + 
+      (valuation_price * prev_done.length)
       valuation_fin = period_fin + prev_fin
 
 
