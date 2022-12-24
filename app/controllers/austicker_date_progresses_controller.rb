@@ -153,7 +153,8 @@ class AustickerDateProgressesController < ApplicationController
         shift_digestion: shift_digestion                    ,
         get_len: get_len                                    ,
         valuation_current: valuation_current                ,
-        profit_current: profit_current                      ,
+        valuation_fin: valuation_current                    ,
+        profit_fin: profit_current                          ,
         create_date: Date.today
       }
     # 日付とユーザー名が一致しているデータの場合更新、新しいデータの場合保存
