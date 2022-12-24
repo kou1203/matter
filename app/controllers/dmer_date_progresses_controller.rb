@@ -275,14 +275,13 @@ class DmerDateProgressesController < ApplicationController
       profit_current3_price = dmer_slmt2nd_done.sum(:profit_second_settlement)
       # 26~25までの獲得で前月中に成果に至っているデータ
       already_done1 = 
-        @dmers_user_period.where(result_point: ...@dmer1_start_date)
+        @dmers_user_period.where(result_point: ..@dmer1_start_date)
         .where(settlement: ...@dmer1_start_date)
         .where(status: "審査OK")
         .where.not(industry_status: "NG")
         .where.not(industry_status: "×")
         .where.not(industry_status: "要確認")
-        .where(status_settlement: "完了")
-      already_done2 = already_done1.where(status_update_settlement: ...@dmer2_start_date)
+      already_done2 = already_done1.where(status_settlement: "完了").where(status_update_settlement: ...@dmer2_start_date)
       already_done3 = already_done2.where(settlement_second: ...@dmer3_start_date)
       # 過去月の成果対象母体
       result_tgt_prev1 = dmer_slmt_tgt_prev.where(settlement: nil)
