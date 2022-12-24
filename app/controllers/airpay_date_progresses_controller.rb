@@ -177,7 +177,7 @@ class AirpayDateProgressesController < ApplicationController
         prev_len = 
           (Airpay.where(user_id: user_id)
           .where(status: "審査中")
-          .where("? > date",@start_date).length.to_f * 
+          .where(date: ...@start_date).length.to_f * 
           @airpay1_prev_month_per).round()
         prev_done = @airpays_user.where(status: "審査完了").where(date: ...@start_date)
         prev_fin = 
@@ -185,7 +185,7 @@ class AirpayDateProgressesController < ApplicationController
           (@profit_price * prev_done.length)
         profit_fin = period_fin + prev_fin - (2000 * @max_result_len)
         result_fin_len =  ((period_fin + prev_fin) / @profit_price).round() rescue 0
-        if profit_current > profit_fin
+        if (profit_current > profit_fin) || (Date.today > @closing_date)
           profit_fin = profit_current
           result_fin_len = result_len
         end 
