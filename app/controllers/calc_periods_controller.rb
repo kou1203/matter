@@ -1,5 +1,5 @@
 class CalcPeriodsController < ApplicationController
-
+  require 'csv'
   def index 
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @calc_periods = CalcPeriod.all
@@ -23,6 +23,9 @@ class CalcPeriodsController < ApplicationController
     
     @dmersticker_date_progresses = DmerstickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @dmersticker_date_progresses_last_update = @dmersticker_date_progresses.maximum(:create_date)
+    @cash_date_progresses = CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    @cash_date_progresses_last_update = @cash_date_progresses.maximum(:create_date)
+    
   end 
 
   def new 
@@ -54,7 +57,58 @@ class CalcPeriodsController < ApplicationController
 
   end 
 
+  def cash_csv_export 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @cash_date_progress = CashDateProgress.where(date: @month)
+    @cash_date_progress = @cash_date_progress.where(create_date: @cash_date_progress.maximum(:create_date))
+    @dmer_date_progress = DmerDateProgress.where(date: @month)
+    @dmer_date_progress = @dmer_date_progress.where(create_date: @dmer_date_progress.maximum(:create_date))
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    head :no_content
+    filename = "実売資料#{@month}"
+    columns_ja = [
+      "拠点", "Ave","現状実売", "終着実売", "dメル一次成果現状実売","dメル一次成果終着実売"
+    ]
+    columns = [
+      "base","average","profit_current","profit_fin","dmer1_profit_current","dmer1_profit_fin"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      bases.each do |base|
+        dmer_progress = @dmer_date_progress.where(base: base)
+        cash_date_progress = @cash_date_progress.where(base: base)
+        result_attributes = {}
+        result_attributes["base"] = base
+        if (cash_date_progress.sum(:profit_fin) == 0) || (cash_date_progress.sum(:shift_schedule) == 0)
+          result_attributes["average"] = 0
+        else  
+          result_attributes["average"] = 
+            (
+              cash_date_progress.sum(:profit_fin).to_f / cash_date_progress.sum(:shift_schedule)
+            ).round()
+        end 
+        result_attributes["profit_current"] = cash_date_progress.sum(:profit_current)
+        result_attributes["profit_fin"] = cash_date_progress.sum(:profit_fin)
+        result_attributes["dmer1_profit_current"] = dmer_progress.sum(:profit_current)
+        result_attributes["dmer1_profit_fin"] = dmer_progress.sum(:profit_fin1)
+        csv << result_attributes.values_at(*columns)
+      end
+    end 
+    create_csv(filename,csv)
+  end 
   private 
+
+  def create_csv(filename, csv1)
+    #ファイル書き込み
+    File.open("./#{filename}.csv", "w") do |file|
+      file.write(csv1)
+    end
+    #send_fileを使ってCSVファイル作成後に自動でダウンロードされるようにする
+    stat = File::stat("./#{filename}.csv")
+    send_file("./#{filename}.csv", filename: "#{filename}.csv", length: stat.size)
+  end
+
   def calc_period_params 
     params.require(:calc_period).permit(
       :name                                           ,
@@ -99,6 +153,7 @@ class CalcPeriodsController < ApplicationController
       :price                                          ,
     )
   end 
+
 
   # パーセントを / 100 してFloat値にする ex) 60 => 0.6, set_month_per_floatはmodelにて格納されている
   def set_percent_params

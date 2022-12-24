@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_22_091759) do
+ActiveRecord::Schema.define(version: 2022_12_23_051954) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -159,6 +159,52 @@ ActiveRecord::Schema.define(version: 2022_12_22_091759) do
     t.integer "bonus2_len"
     t.integer "bonus1_price"
     t.integer "bonus2_price"
+  end
+
+  create_table "cash_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "base"
+    t.date "date", null: false
+    t.integer "shift_schedule"
+    t.integer "shift_digestion"
+    t.integer "dmer_profit_current"
+    t.integer "aupay_profit_current"
+    t.integer "paypay_profit_current"
+    t.integer "rakuten_pay_profit_current"
+    t.integer "airpay_profit_current"
+    t.integer "demaekan_profit_current"
+    t.integer "austicker_profit_current"
+    t.integer "dmersticker_profit_current"
+    t.integer "profit_current"
+    t.integer "dmer_valuation_current"
+    t.integer "aupay_valuation_current"
+    t.integer "paypay_valuation_current"
+    t.integer "rakuten_pay_valuation_current"
+    t.integer "airpay_valuation_current"
+    t.integer "demaekan_valuation_current"
+    t.integer "austicker_valuation_current"
+    t.integer "dmersticker_valuation_current"
+    t.integer "valuation_current"
+    t.integer "dmer_profit_fin"
+    t.integer "aupay_profit_fin"
+    t.integer "paypay_profit_fin"
+    t.integer "rakuten_pay_profit_fin"
+    t.integer "airpay_profit_fin"
+    t.integer "demaekan_profit_fin"
+    t.integer "austicker_profit_fin"
+    t.integer "dmersticker_profit_fin"
+    t.integer "profit_fin"
+    t.integer "dmer_valuation_fin"
+    t.integer "aupay_valuation_fin"
+    t.integer "paypay_valuation_fin"
+    t.integer "rakuten_pay_valuation_fin"
+    t.integer "airpay_valuation_fin"
+    t.integer "demaekan_valuation_fin"
+    t.integer "austicker_valuation_fin"
+    t.integer "dmersticker_valuation_fin"
+    t.integer "valuation_fin"
+    t.date "create_date", null: false
+    t.index ["user_id"], name: "index_cash_date_progresses_on_user_id"
   end
 
   create_table "comments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1459,6 +1505,7 @@ ActiveRecord::Schema.define(version: 2022_12_22_091759) do
   add_foreign_key "aupays", "users"
   add_foreign_key "aupays", "users", column: "settlementer_id"
   add_foreign_key "austicker_date_progresses", "users"
+  add_foreign_key "cash_date_progresses", "users"
   add_foreign_key "comments", "store_props"
   add_foreign_key "demaekan_date_progresses", "users"
   add_foreign_key "demaekans", "store_props"

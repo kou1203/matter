@@ -1,0 +1,494 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<% calc_periods_ary = [@calc_periods_val, @calc_periods_prof] %>
+<% tb_cnt = 0 %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title">キャッシュ合計日々進捗データ</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;"><%# サイドバーとメインバーを分ける %>
+  <div data-scope-path="shared/side_bar"><%# サイドバー %>
+    <%= render "shared/sidebar" %>
+  </div><%# サイドバー %>
+  <div data-scope-path="shares/date-progress"><%# メインバー %>
+    <div class="date-head"><%# 日付切替 %>
+      <h2>
+
+        <%= link_to "<<",cash_date_progresses_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
+        <%= @month.month %>月（<%= @current_progress.first.date rescue "データなし" %>）進捗
+        <%= link_to ">>",cash_date_progresses_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>
+      </h2>
+    </div><%# 日付切替 %>
+    <hr>
+    <%= javascript_pack_tag 'date_progress' %>
+    <script>
+      window.profit_price=<%= @profit_price.to_json.html_safe %>;
+      window.date_group=<%= @date_group.to_json.html_safe %>;
+      window.create_group=<%= @create_group.to_json.html_safe %>;
+      window.current_arry=<%= @current_arry.to_json.html_safe %>;
+      window.comparison_arry=<%= @comparison_arry.to_json.html_safe %>;
+      window.current_progress=<%= @current_progress.to_json.html_safe %>;
+      window.comparison=<%= @comparison.to_json.html_safe %>;
+      window.current_data_chubu=<%= @current_data_chubu.to_json.html_safe %>;
+      window.current_data_kansai=<%= @current_data_kansai.to_json.html_safe %>;
+      window.current_data_kanto=<%= @current_data_kanto.to_json.html_safe %>;
+      window.current_data_kyushu=<%= @current_data_kyushu.to_json.html_safe %>;
+      window.current_data_partner=<%= @current_data_partner.to_json.html_safe %>;
+      window.current_data_femto=<%= @current_data_femto.to_json.html_safe %>;
+      window.current_data_summit=<%= @current_data_summit.to_json.html_safe %>;
+      window.current_data_retire=<%= @current_data_retire.to_json.html_safe %>;
+      window.comparison_data_chubu=<%= @comparison_data_chubu.to_json.html_safe %>;
+      window.comparison_data_kansai=<%= @comparison_data_kansai.to_json.html_safe %>;
+      window.comparison_data_kanto=<%= @comparison_data_kanto.to_json.html_safe %>;
+      window.comparison_data_kyushu=<%= @comparison_data_kyushu.to_json.html_safe %>;
+      window.comparison_data_partner=<%= @comparison_data_partner.to_json.html_safe %>;
+      window.comparison_data_femto=<%= @comparison_data_femto.to_json.html_safe %>;
+      window.comparison_data_summit=<%= @comparison_data_summit.to_json.html_safe %>;
+      window.comparison_data_retire=<%= @comparison_data_retire.to_json.html_safe %>;
+      window.users=<%= @users.to_json.html_safe %>;
+    </script>
+    <article id="date-progress">
+    
+      <div class="head-form"><%# ヘッド部分 %>
+        <div><%# 検索 %>
+          <%= form_with url: cash_date_progresses_path, local: true, method: :get do |f| %>
+                <%= f.hidden_field :search_date, value: @month %>
+              <table class="s-tb">
+                <tr>
+                  <th class="s-th">日付</th>
+                  <td class="s-td"><%= f.date_field :date,class:"s-input" %></td>
+                  <td class="s-submit"><%= f.submit "絞込み",class: "s-btn" %></td>
+                </tr>
+                <tr>
+                  <th class="s-th">比較する日付</th>
+                  <td class="s-td"><%= f.date_field :comparison_date,class:"s-input" %></td>
+                  <td class="s-reset"><%= link_to "リセット",cash_date_progresses_path(month: @month),class:"reset-link","data-turbolinks": false %></td>
+                </tr>
+              </table>
+          <% end %>
+        </div><%# 検索 %>
+        <div class="btn-form"><%# 切替ボタン %>
+          <button @click="difActive" v-if="isDifActive" class="active-btn">差異のみ表示させる</button>
+          <button @click="difActive" v-if="!isDifActive" class="active-btn">全て表示</button>
+        </div><%# 切替ボタン %>
+      </div><%# ヘッド部分 %>
+      <% if @current_progress.present? %><%# @current_progressがあるか判別 %>
+        <% if CashDateProgress.where(date: @current_progress.first.date).group(:create_date).length > 1 %>
+          <h2 class="caution-txt">※現状（<%= @current_progress.first.date %>）は違う日付に作成された進捗データがあります。</h2>
+        <div class="create-path-form"><%# 作成日を変更するためのリンク %>
+          <% CashDateProgress.where(date: @current_progress.first.date).group(:create_date).each do |d_date| %>
+            <% if @comparison.present? %>
+              <p class="create-data"><%= link_to "#{d_date.create_date}で表示", cash_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date,comparison_date: @comparison.first.date),class: "create-link","data-turbolinks": false %></p>
+            <% else %>
+              <p class="create-data"><%= link_to "#{d_date.create_date}で表示", cash_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),class: "create-link","data-turbolinks": false %></p>
+            <% end %>
+          <% end %>
+        </div><%# 作成日を変更するためのリンク %>
+      <% end %>
+        <div v-if="isActive" class="s-form"><%# 売上切替 %>
+          <h2>◆全体売上内訳</h2>
+          <table class="progress-tb">
+            <tr>
+              <th class="progress-th1" colspan="5">基本情報</th>
+              <th class="progress-th1" colspan="2">dメル</th>
+              <th class="progress-th1" colspan="2">auPay</th>
+              <th class="progress-th1" colspan="2">PayPay</th>
+              <th class="progress-th1" colspan="2">楽天ペイ</th>
+              <th class="progress-th1" colspan="2">AirPay</th>
+              <th class="progress-th1" colspan="2">その他</th>
+              <th class="progress-th1" colspan="3">合計実売</th>
+            </tr>
+            <tr>
+              <th class="progress-th2">比較対象</th>
+              <th class="progress-th2">日付</th>
+              <th class="progress-th2">作成日</th>
+              <th class="progress-th2">予定シフト</th>
+              <th class="progress-th2">消化シフト</th>
+              <% 6.times do %>
+              <th class="progress-th2">現状</th>
+              <th class="progress-th2">終着</th>
+              <% end %>
+              <th class="progress-th2">Ave</th>
+              <th class="progress-th2">現状</th>
+              <th class="progress-th2">終着</th>
+            </tr>
+            <tr v-if="isDifActive">
+              <td class="progress-td">現状</td>
+              <td class="progress-td"><%= @current_progress.first.date %></td>
+              <td class="progress-td"><%= @current_progress.first.create_date %></td>
+              <td class="progress-td"><%= @current_progress.sum(:shift_schedule).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:shift_digestion).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:dmer_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:dmer_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:aupay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:aupay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:paypay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:paypay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:rakuten_pay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:rakuten_pay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:airpay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:airpay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= 
+                (
+                  @current_progress.sum(:demaekan_profit_current) +
+                  @current_progress.sum(:austicker_profit_current) + 
+                  @current_progress.sum(:dmersticker_profit_current)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="progress-td"><%= 
+                (
+                  @current_progress.sum(:demaekan_profit_fin) +
+                  @current_progress.sum(:austicker_profit_fin) + 
+                  @current_progress.sum(:dmersticker_profit_fin)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="progress-td"><%= (@current_progress.sum(:profit_fin).to_f / @current_progress.sum(:shift_schedule)).round().to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:profit_fin).to_s(:delimited) %></td>
+            </tr>
+            <% if @comparison.present? %>
+            <tr v-if="isDifActive">
+              <td class="progress-td">比較対象</td>
+              <td class="progress-td"><%= @comparison.first.date %></td>
+              <td class="progress-td"><%= @comparison.first.create_date %></td>
+              <td class="progress-td"><%= @comparison.sum(:shift_schedule).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:shift_digestion).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:dmer_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:dmer_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:aupay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:aupay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:paypay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:paypay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:rakuten_pay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:rakuten_pay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:airpay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:airpay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= 
+                (
+                  @comparison.sum(:demaekan_profit_current) +
+                  @comparison.sum(:austicker_profit_current) +
+                  @comparison.sum(:dmersticker_profit_current)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="progress-td"><%= 
+                (
+                  @comparison.sum(:demaekan_profit_fin) +
+                  @comparison.sum(:austicker_profit_fin) +
+                  @comparison.sum(:dmersticker_profit_fin)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="progress-td"><%= (@comparison.sum(:profit_fin).to_f / @comparison.sum(:shift_schedule)).round().to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:profit_fin).to_s(:delimited) %></td>
+            </tr>
+            <tr>
+              <td class="difference-td" colspan="3">差異</td>
+              <td class="difference-td"><%= (@current_progress.sum(:shift_schedule) - @comparison.sum(:shift_schedule)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (@current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (@current_progress.sum(:dmer_profit_current) - @comparison.sum(:dmer_profit_current)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (@current_progress.sum(:dmer_profit_fin) - @comparison.sum(:dmer_profit_fin)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (@current_progress.sum(:aupay_profit_current) - @comparison.sum(:aupay_profit_current)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (@current_progress.sum(:aupay_profit_fin) - @comparison.sum(:aupay_profit_fin)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (@current_progress.sum(:paypay_profit_current) - @comparison.sum(:paypay_profit_current)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (@current_progress.sum(:paypay_profit_fin) - @comparison.sum(:paypay_profit_fin)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (@current_progress.sum(:rakuten_pay_profit_current) - @comparison.sum(:rakuten_pay_profit_current)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (@current_progress.sum(:rakuten_pay_profit_fin) - @comparison.sum(:rakuten_pay_profit_fin)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (@current_progress.sum(:airpay_profit_current) - @comparison.sum(:airpay_profit_current)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (@current_progress.sum(:airpay_profit_fin) - @comparison.sum(:airpay_profit_fin)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= 
+                (
+                  (
+                    @current_progress.sum(:demaekan_profit_current) +
+                    @current_progress.sum(:austicker_profit_current) +
+                    @current_progress.sum(:dmersticker_profit_current)
+                  ) - 
+                  (
+                    @comparison.sum(:demaekan_profit_current) +
+                    @comparison.sum(:austicker_profit_current) +
+                    @comparison.sum(:dmersticker_profit_current)
+                  )
+                ).to_s(:delimited) 
+              %></td>
+              <td class="difference-td"><%= 
+                (
+                  (
+                    @current_progress.sum(:demaekan_profit_fin) +
+                    @current_progress.sum(:austicker_profit_fin) +
+                    @current_progress.sum(:dmersticker_profit_fin)
+                  ) - 
+                  (
+                    @comparison.sum(:demaekan_profit_fin) +
+                    @comparison.sum(:austicker_profit_fin) +
+                    @comparison.sum(:dmersticker_profit_fin)
+                  )
+                ).to_s(:delimited) 
+              %></td>
+              <td class="difference-td"><%= 
+                (
+                  (@current_progress.sum(:profit_fin).to_f / @current_progress.sum(:shift_schedule)).round() -
+                  (@comparison.sum(:profit_fin).to_f / @comparison.sum(:shift_schedule)).round()
+                ).to_s(:delimited) 
+              %></td>
+              <td class="difference-td"><%= 
+                (
+                  @current_progress.sum(:profit_current) -
+                  @comparison.sum(:profit_current)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="difference-td"><%= (
+                @current_progress.sum(:profit_fin) - @comparison.sum(:profit_fin)
+                ).to_s(:delimited) %></td>
+            </tr>
+            <% end %>
+          </table>
+          <h2>◆拠点別売上内訳</h2>
+          <table class="progress-tb">
+            <tr>
+              <th class="progress-th1" colspan="5">基本情報</th>
+              <th class="progress-th1" colspan="2">dメル</th>
+              <th class="progress-th1" colspan="2">auPay</th>
+              <th class="progress-th1" colspan="2">PayPay</th>
+              <th class="progress-th1" colspan="2">楽天ペイ</th>
+              <th class="progress-th1" colspan="2">AirPay</th>
+              <th class="progress-th1" colspan="2">その他</th>
+              <th class="progress-th1" colspan="2">合計実売</th>
+            </tr>
+            <tr>
+              <th class="progress-th2">比較対象</th>
+              <th class="progress-th2">日付</th>
+              <th class="progress-th2">作成日</th>
+              <th class="progress-th2">予定シフト</th>
+              <th class="progress-th2">消化シフト</th>
+              <% 7.times do %>
+              <th class="progress-th2">現状</th>
+              <th class="progress-th2">終着</th>
+              <% end %>
+            </tr>
+          <% @current_arry.zip(@comparison_arry).each do |current,comparison| %>
+          <% if current.present? %>
+          <tr v-if="isDifActive">
+              <td class="progress-td"><%= current.first.base %>（現状）</td>
+              <td class="progress-td"><%= current.first.date %></td>
+              <td class="progress-td"><%= current.first.create_date %></td>
+              <td class="progress-td"><%= current.sum(:shift_schedule).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:shift_digestion).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:dmer_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:dmer_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:aupay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:aupay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:paypay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:paypay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:rakuten_pay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:rakuten_pay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:airpay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:airpay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= 
+                (
+                  current.sum(:demaekan_profit_current) + 
+                  current.sum(:austicker_profit_current) + 
+                  current.sum(:dmersticker_profit_current)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="progress-td"><%= 
+                (
+                  current.sum(:demaekan_profit_fin) + 
+                  current.sum(:austicker_profit_fin) + 
+                  current.sum(:dmersticker_profit_fin)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="progress-td"><%= current.sum(:profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:profit_fin).to_s(:delimited) %></td>
+          </tr>
+          <% if comparison.present? %>
+          <tr v-if="isDifActive">
+              <td class="progress-td"><%= comparison.first.base %>（比較）</td>
+              <td class="progress-td"><%= comparison.first.date %></td>
+              <td class="progress-td"><%= comparison.first.create_date %></td>
+              <td class="progress-td"><%= comparison.sum(:shift_schedule).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:shift_digestion).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:dmer_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:dmer_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:aupay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:aupay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:paypay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:paypay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:rakuten_pay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:rakuten_pay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:airpay_profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:airpay_profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= 
+                (
+                  comparison.sum(:demaekan_profit_current) +
+                  comparison.sum(:austicker_profit_current) +
+                  comparison.sum(:dmersticker_profit_current)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="progress-td"><%= 
+                (
+                  comparison.sum(:demaekan_profit_fin) +
+                  comparison.sum(:austicker_profit_fin) +
+                  comparison.sum(:dmersticker_profit_fin)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="progress-td"><%= comparison.sum(:profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:profit_fin).to_s(:delimited) %></td>
+          </tr>
+            <tr>
+              <td class="difference-td" colspan="3"><%= current.first.base %>差異</td>
+              <td class="difference-td"><%= (current.sum(:shift_schedule) - comparison.sum(:shift_schedule)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (current.sum(:shift_digestion) - comparison.sum(:shift_digestion)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (current.sum(:dmer_profit_current) - comparison.sum(:dmer_profit_current)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (current.sum(:dmer_profit_fin) - comparison.sum(:dmer_profit_fin)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (current.sum(:aupay_profit_current) - comparison.sum(:aupay_profit_current)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (current.sum(:aupay_profit_fin) - comparison.sum(:aupay_profit_fin)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (current.sum(:paypay_profit_current) - comparison.sum(:paypay_profit_current)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (current.sum(:paypay_profit_fin) - comparison.sum(:paypay_profit_fin)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (current.sum(:rakuten_pay_profit_current) - comparison.sum(:rakuten_pay_profit_current)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (current.sum(:rakuten_pay_profit_fin) - comparison.sum(:rakuten_pay_profit_fin)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (current.sum(:airpay_profit_current) - comparison.sum(:airpay_profit_current)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (current.sum(:airpay_profit_fin) - comparison.sum(:airpay_profit_fin)).to_s(:delimited) %></td>
+              <td class="difference-td"><%= (
+                (
+                  current.sum(:demaekan_profit_current) +
+                  current.sum(:austicker_profit_current) +
+                  current.sum(:dmersticker_profit_current)
+                ) - 
+                (
+                  comparison.sum(:demaekan_profit_current) +
+                  comparison.sum(:austicker_profit_current) +
+                  comparison.sum(:dmersticker_profit_current)
+                )
+                ).to_s(:delimited) 
+              %></td>
+              <td class="difference-td"><%= (
+                (
+                  current.sum(:demaekan_profit_fin) +
+                  current.sum(:austicker_profit_fin) +
+                  current.sum(:dmersticker_profit_fin)
+                ) - 
+                (
+                  comparison.sum(:demaekan_profit_fin) +
+                  comparison.sum(:austicker_profit_fin) +
+                  comparison.sum(:dmersticker_profit_fin)
+                )
+                ).to_s(:delimited) 
+              %></td>
+              <td class="difference-td"><%= 
+                (
+                  current.sum(:profit_current) - comparison.sum(:profit_current)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="difference-td"><%= (current.sum(:profit_fin) - comparison.sum(:profit_fin)).to_s(:delimited) %></td>
+            </tr>
+          <% end %>
+          <% end %>
+          <% end %>
+          </table>
+        </div><%# 売上切替 %>
+        <h2>
+          ◆
+          <select @change="baseSlct" class="base-slcter">
+                <option value="中部SS">中部SS</option>
+                <option value="関西SS">関西SS</option>
+                <option value="関東SS">関東SS</option>
+                <option value="2次店">２次店</option>
+                <option value="フェムト">フェムト</option>
+                <option value="サミット">サミット</option>
+                <option value="その他">その他</option>
+          </select>
+          売上内訳
+        </h2>
+        <table class="progress-tb">
+          <tr>
+            <th class="progress-th1" colspan="3">基本情報</th>
+            <th class="progress-th1" colspan="2">実売内訳</th>
+          </tr>
+          <tr>
+            <th class="progress-th2">名前</th>
+            <th class="progress-th2">日付</th>
+            <th class="progress-th2">作成日</th>
+            <th class="progress-th2">現状</th>
+            <th class="progress-th2">終着</th>
+          </tr>
+          <tr v-for="item in currentItems" :key="item" class="progress-tr">
+            <td class="progress-td">{{ users.find((u) => u.id == item.user_id).name }}</td>
+            <td class="progress-td">{{ item.date }}</td>
+            <td class="progress-td">{{ item.create_date }}</td>
+            <td class="progress-td">{{ item.profit_current.toLocaleString() }}</td>
+            <td class="progress-td">{{ item.profit_fin.toLocaleString() }}</td>
+          </tr>
+          <tr class="sum-tr">
+            <td class="progress-td" colspan="3">合計（現状）</td>
+            <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.profit_current,0)).toLocaleString() }}</td>
+            <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.profit_fin,0)).toLocaleString() }}</td>
+          </tr>
+          <% if @comparison.present? %>
+          <tr class="difference-tr">
+            <td class="progress-td" colspan="3">合計（比較対象{{ comparisonItems[0].date }}）</td>
+            <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.profit_current,0)).toLocaleString() }}</td>
+            <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.profit_fin,0)).toLocaleString() }}</td>
+          </tr>
+          <tr >
+            <td class="difference-td" colspan="3">比較対象との差異</td>
+            <td class="difference-td">{{ 
+              (
+                (currentItems.reduce((sum,element)=> sum +element.profit_current,0)) - 
+                (comparisonItems.reduce((sum,element)=> sum +element.profit_current,0))
+              ).toLocaleString() 
+              }}</td>
+            <td class="difference-td">{{ 
+              (
+                currentItems.reduce((sum,element)=> sum +element.profit_fin,0) -
+                comparisonItems.reduce((sum,element)=> sum +element.profit_fin,0)
+              ).toLocaleString() 
+              }}</td>
+          </tr>
+        <% end %>
+        </table>
+    </article>
+  <% else %>
+  <% end %>
+      <% if @current_progress.present? %><%# @current_progressがあるか判別 %>
+      <h2>
+      グラフ：
+      <select class="graph-slct" id="graph-change" >
+        <option value="終着売上推移">終着売上</option>
+        <option value="現状実売推移">現状実売</option>
+      </select>
+      </h2>
+      <div class="graph-form-first" id="fin-graph">
+      <h2>◆終着実売</h2><br>
+      <%= line_chart @data_fin,options = {
+        thousands: ","
+      } 
+      %>
+      </div>
+      <div class="graph-form" id="current-graph">
+      <h2>◆現状実売</h2><br>
+      <%= line_chart @data_current,options = {
+        thousands: ","
+      } 
+      %>
+      </div>
+      <hr>
+      <div class="pie-graph">
+        <div class="pie-graph-section" id="current-pie-graph1">
+        <h2>◆拠点別現状実売比率</h2>
+        <%= pie_chart @current_progress.group(:base).sum(:profit_current),options = {
+          label: "現状売上",
+          thousands: ","
+        } 
+        %>
+        </div>
+        <div class="pie-graph-section" id="current-pie-graph2">
+        <h2>◆商材別現状実売比率</h2>
+        <%= pie_chart @product_profit_current_graph,options = {
+          label: "現状売上",
+          thousands: ","
+        } 
+        %>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</div>

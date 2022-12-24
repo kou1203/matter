@@ -32,4 +32,5 @@ class User < ApplicationRecord
   has_many :demaekan_date_progress
   has_many :austicker_date_progress
   has_many :dmersticker_date_progress
+  has_many :cash_date_progress
 end
