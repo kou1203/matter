@@ -148,7 +148,7 @@ class AirpayDateProgressesController < ApplicationController
       @airpays_user_max = @airpays_user.where(client: "マックス").where(date: @start_date..@end_date)
       @airpays_user_max_fin_len = (@airpays_user_max.length.to_f / shift_digestion * shift_schedule).round() rescue 0
       result_len = @airpays_user.where(status: "審査完了").where(result_point: @airpay1_start_date..@airpay1_end_date).length
-      @max_result_len = @airpays_user_max.where(status: "審査完了").where(result_point: @airpay1_start_date..@airpay1_end_date).length
+      @max_result_len = @airpays_user.where(client: "マックス").where(status: "審査完了").where(result_point: @airpay1_start_date..@airpay1_end_date).length
       @result_airpay_sum = @results.where(user_id: user_id).sum(:airpay) rescue 0
       @result_airpay_fin = (@result_airpay_sum.to_f / shift_digestion * shift_schedule).round() rescue 0
     # 現状売上

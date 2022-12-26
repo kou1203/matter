@@ -55,6 +55,8 @@ document.addEventListener('turbolinks:load', () => {
             return this.currentItems = current_data_kansai, this.comparisonItems = comparison_data_kansai
           } else if (this.val == '関東SS') {
             return this.currentItems = current_data_kanto, this.comparisonItems = comparison_data_kanto
+          } else if (this.val == '九州SS') {
+            return this.currentItems = current_data_kyushu, this.comparisonItems = comparison_data_kyushu
           } else if (this.val == '2次店') {
             return this.currentItems = current_data_partner, this.comparisonItems = comparison_data_partner
           } else if (this.val == 'フェムト') {
