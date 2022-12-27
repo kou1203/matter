@@ -487,6 +487,19 @@ class DmerDateProgressesController < ApplicationController
   redirect_to calc_periods_path(month: @month) ,alert: "#{cnt}件dメル売上結果を作成しました"
  end 
 
+
+
+
   private
+
+  def create_csv(filename, csv1)
+    #ファイル書き込み
+    File.open("./#{filename}.csv", "w") do |file|
+      file.write(csv1)
+    end
+    #send_fileを使ってCSVファイル作成後に自動でダウンロードされるようにする
+    stat = File::stat("./#{filename}.csv")
+    send_file("./#{filename}.csv", filename: "#{filename}.csv", length: stat.size)
+  end
 
 end

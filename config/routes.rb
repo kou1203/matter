@@ -196,15 +196,25 @@ Rails.application.routes.draw do
 
   resources :calc_periods do 
     collection {get :cash_csv_export}
+    collection {get :cash_valuation_csv_export}
     collection {get :dmer_csv_export}
+    collection {get :aupay_csv_export}
+    collection {get :paypay_csv_export}
+    collection {get :rakuten_pay_csv_export}
+    collection {get :airpay_csv_export}
+    collection {get :demaekan_csv_export}
+    collection {get :austicker_csv_export}
+    collection {get :dmersticker_csv_export}
   end 
 
   resources :dmer_date_progresses do 
     collection {get :progress_create}
+    collection {get :csv_export}
   end 
   
   resources :aupay_date_progresses do 
     collection {get :progress_create}
+    collection {get :csv_export}
   end 
 
   resources :paypay_date_progresses do 

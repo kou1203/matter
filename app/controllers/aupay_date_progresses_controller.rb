@@ -247,4 +247,55 @@ class AupayDateProgressesController < ApplicationController
 
 
   end 
+
+
+
+  def aupay_csv_export 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @aupay_date_progress = AupayDateProgress.where(date: @month)
+    @aupay_date_progress = @aupay_date_progress.where(create_date: @aupay_date_progress.maximum(:create_date))
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    head :no_content
+    filename = "dメル実売資料#{@month}"
+    columns_ja = [
+      "拠点", "ユーザー", "役職","予定シフト", "消化シフト","獲得", "獲得Ave", "終着獲得","実売Ave","現状実売", "終着実売"
+    ]
+    columns = [
+      "base", "user_name", "user_post", "shift_schedule","shift_digestion", "get_len", "get_ave", "get_fin","profit_ave","profit_current", "profit_fin"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      bases.each do |base|
+        @aupay_date_progress.where(base: base).each do |aupay_progress|
+          result_attributes = {}
+          result_attributes["base"] = base
+          result_attributes["user_name"] = aupay_progress.user.name
+          result_attributes["user_post"] = aupay_progress.user.position_sub
+          result_attributes["shift_schedule"] = aupay_progress.shift_schedule
+          result_attributes["shift_digestion"] = aupay_progress.shift_digestion
+          result_attributes["get_len"] = aupay_progress.get_len - aupay_progress.def_len
+          result_attributes["get_ave"] = (aupay_progress.fin_len.to_f / aupay_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_fin"] = aupay_progress.fin_len
+          result_attributes["profit_current"] = aupay_progress.profit_current
+          result_attributes["profit_fin"] = aupay_progress.profit_fin
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / aupay_progress.shift_digestion).round() rescue 0
+          csv << result_attributes.values_at(*columns)
+        end 
+      end
+    end 
+    create_csv(filename,csv)
+  end 
+  
+    private
+  
+    def create_csv(filename, csv1)
+      #ファイル書き込み
+      File.open("./#{filename}.csv", "w") do |file|
+        file.write(csv1)
+      end
+      #send_fileを使ってCSVファイル作成後に自動でダウンロードされるようにする
+      stat = File::stat("./#{filename}.csv")
+      send_file("./#{filename}.csv", filename: "#{filename}.csv", length: stat.size)
+    end
 end

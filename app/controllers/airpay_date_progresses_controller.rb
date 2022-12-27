@@ -192,23 +192,30 @@ class AirpayDateProgressesController < ApplicationController
           profit_fin = profit_current
           result_fin_len = result_len
         end 
+
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
-      if result_fin_len >= @airpay_bonus2_len
-        valuation_price = @airpay_bonus2_price
-      elsif result_fin_len >= @airpay_bonus1_len
-        valuation_price = @airpay_bonus1_price
-      else  
-        valuation_price = @airpay_price
-      end 
+      valuation_price =
+        if result_fin_len >= @airpay_bonus2_len
+          @airpay_bonus2_price
+        elsif result_fin_len >= @airpay_bonus1_len
+          @airpay_bonus1_price
+        else  
+          @airpay_price
+        end 
+
       valuation_current = valuation_price * result_len
       period_fin = valuation_price * period_fin_len
+
       prev_fin = 
       (valuation_price * prev_len) + 
       (valuation_price * prev_done.length)
+
       valuation_fin = period_fin + prev_fin
 
-
+      if valuation_current > valuation_fin
+        valuation_fin = valuation_current
+      end 
 
       if r.user.position == "退職"
         user_base = r.user.position
@@ -217,7 +224,8 @@ class AirpayDateProgressesController < ApplicationController
       else  
         user_base = r.user.base_sub
       end 
-    # AirPayの売上の中身
+
+      # AirPayの売上の中身
       airpay_progress_params = {
         user_id: user_id                                    ,
         base: user_base                                     ,
@@ -232,7 +240,7 @@ class AirpayDateProgressesController < ApplicationController
         valuation_fin: valuation_fin                        ,
         profit_current: profit_current                      ,
         profit_fin: profit_fin                              ,
-        result_len: result_len                             ,
+        result_len: result_len                              ,
         result_fin_len: result_fin_len                      ,
         max_result_len: @max_result_len                     ,
         create_date: Date.today
@@ -251,7 +259,6 @@ class AirpayDateProgressesController < ApplicationController
       cnt += 1    
     end 
     redirect_to calc_periods_path(month: @month) ,alert: "#{cnt}件AirPay売上結果を作成しました"
-
 
   end
 end

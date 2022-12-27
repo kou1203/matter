@@ -59,9 +59,9 @@ class CalcPeriodsController < ApplicationController
 
   def cash_csv_export 
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @cash_date_progress = CashDateProgress.where(date: @month)
+    @cash_date_progress = CashDateProgress.where(date: @month.in_time_zone.all_month)
     @cash_date_progress = @cash_date_progress.where(create_date: @cash_date_progress.maximum(:create_date))
-    @dmer_date_progress = DmerDateProgress.where(date: @month)
+    @dmer_date_progress = DmerDateProgress.where(date: @month.in_time_zone.all_month)
     @dmer_date_progress = @dmer_date_progress.where(create_date: @dmer_date_progress.maximum(:create_date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
     head :no_content
@@ -96,16 +96,96 @@ class CalcPeriodsController < ApplicationController
       end
     end 
     create_csv(filename,csv)
-  end 
+  end
 
+  def cash_valuation_csv_export 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @cash_date_progress = CashDateProgress.where(date: @month.in_time_zone.all_month)
+    @cash_date_progress = @cash_date_progress.where(create_date: @cash_date_progress.maximum(:create_date))
+    @dmer_date_progress = DmerDateProgress.where(date: @month.in_time_zone.all_month)
+    @dmer_date_progress = @dmer_date_progress.where(create_date: @dmer_date_progress.maximum(:create_date))
+    @aupay_date_progress = AupayDateProgress.where(date: @month.in_time_zone.all_month)
+    @aupay_date_progress = @aupay_date_progress.where(create_date: @aupay_date_progress.maximum(:create_date))
+    @paypay_date_progress = PaypayDateProgress.where(date: @month.in_time_zone.all_month)
+    @paypay_date_progress = @paypay_date_progress.where(create_date: @paypay_date_progress.maximum(:create_date))
+    @rakuten_pay_date_progress = RakutenPayDateProgress.where(date: @month.in_time_zone.all_month)
+    @rakuten_pay_date_progress = @rakuten_pay_date_progress.where(create_date: @rakuten_pay_date_progress.maximum(:create_date))
+    @airpay_date_progress = AirpayDateProgress.where(date: @month.in_time_zone.all_month)
+    @airpay_date_progress = @airpay_date_progress.where(create_date: @airpay_date_progress.maximum(:create_date))
+    @demaekan_date_progress = DemaekanDateProgress.where(date: @month.in_time_zone.all_month)
+    @demaekan_date_progress = @demaekan_date_progress.where(create_date: @demaekan_date_progress.maximum(:create_date))
+    @austicker_date_progress = AustickerDateProgress.where(date: @month.in_time_zone.all_month)
+    @austicker_date_progress = @austicker_date_progress.where(create_date: @austicker_date_progress.maximum(:create_date))
+    @dmersticker_date_progress = AustickerDateProgress.where(date: @month.in_time_zone.all_month)
+    @dmersticker_date_progress = @austicker_date_progress.where(create_date: @austicker_date_progress.maximum(:create_date))
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    head :no_content
+    filename = "評価売資料#{@month}"
+    columns_ja = [
+      "拠点", "ユーザー","役職", "予定シフト", "消化シフト", "現状売上","終着実売",
+      "dメル審査通過+決済（終着）","dメルアクセプタンス審査通過（終着）","dメル２回目決済（終着）","auPay（終着）", "PayPay（終着）",
+      "楽天ペイ（終着）","AirPay（終着）","出前館（終着）","auステッカー（終着）","dメルステッカー（終着）" 
+    ]
+    columns = [
+      "base", "user_name","post","shift_schedule", "shift_digestion", "valuation_current", "valuation_fin", 
+      "dmer1_valuation_fin", "dmer2_valuation_fin", "dmer3_valuation_fin", "aupay_valuation_fin","paypay_valuation_fin",
+      "rakuten_pay_valuation_fin","airpay_valuation_fin","demaekan_valuation_fin","austicker_valuation_fin","dmersticker_valuation_fin"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      bases.each do |base|
+        CashDateProgress.where(base: base).group(:user_id).each do |cash_progress|
+          result_attributes = {}
+          result_attributes["base"] = base
+          result_attributes["user_name"] = cash_progress.user.name
+          result_attributes["post"] = cash_progress.user.position_sub
+          result_attributes["shift_schedule"] = cash_progress.shift_schedule
+          result_attributes["shift_digestion"] = cash_progress.shift_digestion
+          result_attributes["valuation_current"] = 
+            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
+            @aupay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
+            @paypay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
+            @rakuten_pay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
+            @airpay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
+            @demaekan_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
+            @austicker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
+            @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current)
+          result_attributes["valuation_fin"] = 
+            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin1) + 
+            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin2) + 
+            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin3) + 
+            @aupay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
+            @paypay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
+            @rakuten_pay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
+            @airpay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
+            @demaekan_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
+            @austicker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
+            @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          result_attributes["dmer1_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin1)
+          result_attributes["dmer2_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin2)
+          result_attributes["dmer3_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin3)
+          result_attributes["aupay_valuation_fin"] = @aupay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          result_attributes["paypay_valuation_fin"] = @paypay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          result_attributes["rakuten_pay_valuation_fin"] = @rakuten_pay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          result_attributes["airpay_valuation_fin"] = @airpay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          result_attributes["demaekan_valuation_fin"] = @demaekan_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          result_attributes["austicker_valuation_fin"] = @austicker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          result_attributes["dmersticker_valuation_fin"] = @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          csv << result_attributes.values_at(*columns)
+        end 
+      end
+    end 
+    create_csv(filename,csv)
+  end 
 
   def dmer_csv_export 
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @dmer_date_progress = DmerDateProgress.where(date: @month)
+    @dmer_date_progress = DmerDateProgress.where(date: @month.in_time_zone.all_month)
     @dmer_date_progress = @dmer_date_progress.where(create_date: @dmer_date_progress.maximum(:create_date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
     head :no_content
-    filename = "dメル実売資料#{@month}"
+    filename = "dメル実売資料#{@dmer_date_progress.first.date}"
     columns_ja = [
       "拠点", "ユーザー", "役職","予定シフト", "消化シフト","獲得", "獲得Ave", "終着獲得","実売Ave","現状実売", "終着実売"
     ]
@@ -136,6 +216,265 @@ class CalcPeriodsController < ApplicationController
     create_csv(filename,csv)
   end 
 
+
+  def aupay_csv_export 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @aupay_date_progress = AupayDateProgress.where(date: @month.in_time_zone.all_month)
+    @aupay_date_progress = @aupay_date_progress.where(create_date: @aupay_date_progress.maximum(:create_date))
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    head :no_content
+    filename = "auPay実売資料#{@aupay_date_progress.first.date}"
+    columns_ja = [
+      "拠点", "ユーザー", "役職","予定シフト", "消化シフト","獲得", "獲得Ave", "終着獲得","実売Ave","現状実売", "終着実売"
+    ]
+    columns = [
+      "base", "user_name", "user_post", "shift_schedule","shift_digestion", "get_len", "get_ave", "get_fin","profit_ave","profit_current", "profit_fin"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      bases.each do |base|
+        @aupay_date_progress.where(base: base).each do |aupay_progress|
+          result_attributes = {}
+          result_attributes["base"] = base
+          result_attributes["user_name"] = aupay_progress.user.name
+          result_attributes["user_post"] = aupay_progress.user.position_sub
+          result_attributes["shift_schedule"] = aupay_progress.shift_schedule
+          result_attributes["shift_digestion"] = aupay_progress.shift_digestion
+          result_attributes["get_len"] = aupay_progress.get_len - aupay_progress.def_len
+          result_attributes["get_ave"] = (aupay_progress.fin_len.to_f / aupay_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_fin"] = aupay_progress.fin_len
+          result_attributes["profit_current"] = aupay_progress.profit_current
+          result_attributes["profit_fin"] = aupay_progress.profit_fin
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / aupay_progress.shift_digestion).round() rescue 0
+          csv << result_attributes.values_at(*columns)
+        end 
+      end
+    end 
+    create_csv(filename,csv)
+  end 
+
+  def paypay_csv_export 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @paypay_date_progress = PaypayDateProgress.where(date: @month.in_time_zone.all_month)
+    @paypay_date_progress = @paypay_date_progress.where(create_date: @paypay_date_progress.maximum(:create_date))
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    head :no_content
+    filename = "PayPay実売資料#{@paypay_date_progress.first.date}"
+    columns_ja = [
+      "拠点", "ユーザー", "役職","予定シフト", "消化シフト","獲得", "獲得Ave", "終着獲得","実売Ave","現状実売", "終着実売"
+    ]
+    columns = [
+      "base", "user_name", "user_post", "shift_schedule","shift_digestion", "get_len", "get_ave", "get_fin","profit_ave","profit_current", "profit_fin"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      bases.each do |base|
+        @paypay_date_progress.where(base: base).each do |paypay_progress|
+          result_attributes = {}
+          result_attributes["base"] = base
+          result_attributes["user_name"] = paypay_progress.user.name
+          result_attributes["user_post"] = paypay_progress.user.position_sub
+          result_attributes["shift_schedule"] = paypay_progress.shift_schedule
+          result_attributes["shift_digestion"] = paypay_progress.shift_digestion
+          result_attributes["get_len"] = paypay_progress.get_len
+          result_attributes["get_ave"] = (paypay_progress.fin_len.to_f / paypay_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_fin"] = paypay_progress.fin_len
+          result_attributes["profit_current"] = paypay_progress.profit_current
+          result_attributes["profit_fin"] = paypay_progress.profit_fin
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / paypay_progress.shift_digestion).round() rescue 0
+          csv << result_attributes.values_at(*columns)
+        end 
+      end
+    end 
+    create_csv(filename,csv)
+  end 
+
+  def rakuten_pay_csv_export 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @rakuten_pay_date_progress = RakutenPayDateProgress.where(date: @month.in_time_zone.all_month)
+    @rakuten_pay_date_progress = @rakuten_pay_date_progress.where(create_date: @rakuten_pay_date_progress.maximum(:create_date))
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    head :no_content
+    filename = "楽天ペイ実売資料#{@rakuten_pay_date_progress.first.date}"
+    columns_ja = [
+      "拠点", "ユーザー", "役職","予定シフト", "消化シフト","獲得", "獲得Ave", "終着獲得","実売Ave","現状実売", "終着実売"
+    ]
+    columns = [
+      "base", "user_name", "user_post", "shift_schedule","shift_digestion", "get_len", "get_ave", "get_fin","profit_ave","profit_current", "profit_fin"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      bases.each do |base|
+        @rakuten_pay_date_progress.where(base: base).each do |rakuten_pay_progress|
+          result_attributes = {}
+          result_attributes["base"] = base
+          result_attributes["user_name"] = rakuten_pay_progress.user.name
+          result_attributes["user_post"] = rakuten_pay_progress.user.position_sub
+          result_attributes["shift_schedule"] = rakuten_pay_progress.shift_schedule
+          result_attributes["shift_digestion"] = rakuten_pay_progress.shift_digestion
+          result_attributes["get_len"] = rakuten_pay_progress.get_len
+          result_attributes["get_ave"] = (rakuten_pay_progress.fin_len.to_f / rakuten_pay_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_fin"] = rakuten_pay_progress.fin_len
+          result_attributes["profit_current"] = rakuten_pay_progress.profit_current
+          result_attributes["profit_fin"] = rakuten_pay_progress.profit_fin
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / rakuten_pay_progress.shift_digestion).round() rescue 0
+          csv << result_attributes.values_at(*columns)
+        end 
+      end
+    end 
+    create_csv(filename,csv)
+  end 
+
+  def airpay_csv_export 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @airpay_date_progress = AirpayDateProgress.where(date: @month.in_time_zone.all_month)
+    @airpay_date_progress = @airpay_date_progress.where(create_date: @airpay_date_progress.maximum(:create_date))
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    head :no_content
+    filename = "AirPay実売資料#{@airpay_date_progress.first.date}"
+    columns_ja = [
+      "拠点", "ユーザー", "役職","予定シフト", "消化シフト","獲得", "獲得Ave", "終着獲得","実売Ave","現状実売", "終着実売"
+    ]
+    columns = [
+      "base", "user_name", "user_post", "shift_schedule","shift_digestion", "get_len", "get_ave", "get_fin","profit_ave","profit_current", "profit_fin"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      bases.each do |base|
+        @airpay_date_progress.where(base: base).each do |airpay_progress|
+          result_attributes = {}
+          result_attributes["base"] = base
+          result_attributes["user_name"] = airpay_progress.user.name
+          result_attributes["user_post"] = airpay_progress.user.position_sub
+          result_attributes["shift_schedule"] = airpay_progress.shift_schedule
+          result_attributes["shift_digestion"] = airpay_progress.shift_digestion
+          result_attributes["get_len"] = airpay_progress.get_len
+          result_attributes["get_ave"] = (airpay_progress.fin_len.to_f / airpay_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_fin"] = airpay_progress.fin_len
+          result_attributes["profit_current"] = airpay_progress.profit_current
+          result_attributes["profit_fin"] = airpay_progress.profit_fin
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / airpay_progress.shift_digestion).round() rescue 0
+          csv << result_attributes.values_at(*columns)
+        end 
+      end
+    end 
+    create_csv(filename,csv)
+  end 
+
+  def demaekan_csv_export 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @demaekan_date_progress = DemaekanDateProgress.where(date: @month.in_time_zone.all_month)
+    @demaekan_date_progress = @demaekan_date_progress.where(create_date: @demaekan_date_progress.maximum(:create_date))
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    head :no_content
+    filename = "出前館実売資料#{@demaekan_date_progress.first.date}"
+    columns_ja = [
+      "拠点", "ユーザー", "役職","予定シフト", "消化シフト","獲得", "獲得Ave", "終着獲得","実売Ave","現状実売", "終着実売"
+    ]
+    columns = [
+      "base", "user_name", "user_post", "shift_schedule","shift_digestion", "get_len", "get_ave", "get_fin","profit_ave","profit_current", "profit_fin"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      bases.each do |base|
+        @demaekan_date_progress.where(base: base).each do |demaekan_progress|
+          result_attributes = {}
+          result_attributes["base"] = base
+          result_attributes["user_name"] = demaekan_progress.user.name
+          result_attributes["user_post"] = demaekan_progress.user.position_sub
+          result_attributes["shift_schedule"] = demaekan_progress.shift_schedule
+          result_attributes["shift_digestion"] = demaekan_progress.shift_digestion
+          result_attributes["get_len"] = demaekan_progress.get_len
+          result_attributes["get_ave"] = (demaekan_progress.fin_len.to_f / demaekan_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_fin"] = demaekan_progress.fin_len
+          result_attributes["profit_current"] = demaekan_progress.profit_current
+          result_attributes["profit_fin"] = demaekan_progress.profit_fin
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / demaekan_progress.shift_digestion).round() rescue 0
+          csv << result_attributes.values_at(*columns)
+        end 
+      end
+    end 
+    create_csv(filename,csv)
+  end 
+
+  def austicker_csv_export 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @austicker_date_progress = AustickerDateProgress.where(date: @month.in_time_zone.all_month)
+    @austicker_date_progress = @austicker_date_progress.where(create_date: @austicker_date_progress.maximum(:create_date))
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    head :no_content
+    filename = "auステッカー実売資料#{@austicker_date_progress.first.date}"
+    columns_ja = [
+      "拠点", "ユーザー", "役職","予定シフト", "消化シフト","獲得", "獲得Ave", "終着獲得","実売Ave","現状実売", "終着実売"
+    ]
+    columns = [
+      "base", "user_name", "user_post", "shift_schedule","shift_digestion", "get_len", "get_ave", "get_fin","profit_ave","profit_current", "profit_fin"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      bases.each do |base|
+        @austicker_date_progress.where(base: base).each do |austicker_progress|
+          result_attributes = {}
+          result_attributes["base"] = base
+          result_attributes["user_name"] = austicker_progress.user.name
+          result_attributes["user_post"] = austicker_progress.user.position_sub
+          result_attributes["shift_schedule"] = austicker_progress.shift_schedule
+          result_attributes["shift_digestion"] = austicker_progress.shift_digestion
+          result_attributes["get_len"] = austicker_progress.get_len
+          result_attributes["get_ave"] = (austicker_progress.fin_len.to_f / austicker_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_fin"] = austicker_progress.fin_len
+          result_attributes["profit_current"] = austicker_progress.profit_current
+          result_attributes["profit_fin"] = austicker_progress.profit_fin
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / austicker_progress.shift_digestion).round() rescue 0
+          csv << result_attributes.values_at(*columns)
+        end 
+      end
+    end 
+    create_csv(filename,csv)
+  end 
+
+  def dmersticker_csv_export 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @dmersticker_date_progress = DmerstickerDateProgress.where(date: @month.in_time_zone.all_month)
+    @dmersticker_date_progress = @dmersticker_date_progress.where(create_date: @dmersticker_date_progress.maximum(:create_date))
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    head :no_content
+    filename = "dメルステッカー実売資料#{@dmersticker_date_progress.first.date}"
+    columns_ja = [
+      "拠点", "ユーザー", "役職","予定シフト", "消化シフト","獲得", "獲得Ave", "終着獲得","実売Ave","現状実売", "終着実売"
+    ]
+    columns = [
+      "base", "user_name", "user_post", "shift_schedule","shift_digestion", "get_len", "get_ave", "get_fin","profit_ave","profit_current", "profit_fin"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      bases.each do |base|
+        @dmersticker_date_progress.where(base: base).each do |dmersticker_progress|
+          result_attributes = {}
+          result_attributes["base"] = base
+          result_attributes["user_name"] = dmersticker_progress.user.name
+          result_attributes["user_post"] = dmersticker_progress.user.position_sub
+          result_attributes["shift_schedule"] = dmersticker_progress.shift_schedule
+          result_attributes["shift_digestion"] = dmersticker_progress.shift_digestion
+          result_attributes["get_len"] = dmersticker_progress.get_len
+          result_attributes["get_ave"] = (dmersticker_progress.fin_len.to_f / dmersticker_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_fin"] = dmersticker_progress.fin_len
+          result_attributes["profit_current"] = dmersticker_progress.profit_current
+          result_attributes["profit_fin"] = dmersticker_progress.profit_fin
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / dmersticker_progress.shift_digestion).round() rescue 0
+          csv << result_attributes.values_at(*columns)
+        end 
+      end
+    end 
+    create_csv(filename,csv)
+  end 
 
   private 
 
