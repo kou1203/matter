@@ -345,9 +345,9 @@ class DmerDateProgressesController < ApplicationController
       profit_fin3_prev = 
         (@dmer3_price * profit_fin3_len) + dmer_slmt2nd_done_prev.sum(:profit_second_settlement)
         profit_fin3 = profit_fin3_period + profit_fin3_prev
-        # if (Date.today > @closing_date) || (profit_current3_price > profit_fin3)
-        #   profit_fin3 = profit_current3_price
-        # end 
+        if (Date.today > @closing_date) || (profit_current3_price > profit_fin3)
+          profit_fin3 = profit_current3_price
+        end 
 
        result1_fin_len = profit_fin1 / @dmer1_price
        result2_fin_len = profit_fin2 / @dmer2_price
