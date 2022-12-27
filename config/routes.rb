@@ -196,6 +196,7 @@ Rails.application.routes.draw do
 
   resources :calc_periods do 
     collection {get :cash_csv_export}
+    collection {get :dmer_csv_export}
   end 
 
   resources :dmer_date_progresses do 

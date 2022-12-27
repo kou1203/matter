@@ -97,6 +97,46 @@ class CalcPeriodsController < ApplicationController
     end 
     create_csv(filename,csv)
   end 
+
+
+  def dmer_csv_export 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @dmer_date_progress = DmerDateProgress.where(date: @month)
+    @dmer_date_progress = @dmer_date_progress.where(create_date: @dmer_date_progress.maximum(:create_date))
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    head :no_content
+    filename = "dメル実売資料#{@month}"
+    columns_ja = [
+      "拠点", "ユーザー", "役職","予定シフト", "消化シフト","獲得", "獲得Ave", "終着獲得","実売Ave","現状実売", "終着実売"
+    ]
+    columns = [
+      "base", "user_name", "user_post", "shift_schedule","shift_digestion", "get_len", "get_ave", "get_fin","profit_ave","profit_current", "profit_fin"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      bases.each do |base|
+        @dmer_date_progress.where(base: base).each do |dmer_progress|
+          result_attributes = {}
+          result_attributes["base"] = base
+          result_attributes["user_name"] = dmer_progress.user.name
+          result_attributes["user_post"] = dmer_progress.user.position_sub
+          result_attributes["shift_schedule"] = dmer_progress.shift_schedule
+          result_attributes["shift_digestion"] = dmer_progress.shift_digestion
+          result_attributes["get_len"] = dmer_progress.get_len - dmer_progress.def_len
+          result_attributes["get_ave"] = (dmer_progress.fin_len.to_f / dmer_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_fin"] = dmer_progress.fin_len
+          result_attributes["profit_current"] = dmer_progress.profit_current
+          result_attributes["profit_fin"] = dmer_progress.profit_fin1 + dmer_progress.profit_fin2  + dmer_progress.profit_fin3
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / dmer_progress.shift_digestion).round() rescue 0
+          csv << result_attributes.values_at(*columns)
+        end 
+      end
+    end 
+    create_csv(filename,csv)
+  end 
+
+
   private 
 
   def create_csv(filename, csv1)

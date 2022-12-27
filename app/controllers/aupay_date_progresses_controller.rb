@@ -155,6 +155,7 @@ class AupayDateProgressesController < ApplicationController
       .where(date: ...@start_date)
       .where(status: "審査通過")
       .where(status_update_settlement: nil)
+      .where.not(status_settlement: "期限切れ")
       aupay_slmt_tgt_prev_len = aupay_slmt_tgt_prev.length rescue 0
     # 決済期限切れ
       aupay_slmt_dead_len = aupay_slmt_tgt_prev.where(status_settlement: "期限切れ").length
