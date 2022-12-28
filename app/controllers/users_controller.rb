@@ -445,7 +445,7 @@ class UsersController < ApplicationController
     # 関東基準値
     # 予定シフト変数 
       @result_shift = 
-        @shift.where(start_time: @start_date..@end_date) rescue nil
+        @shift.where(start_time: @start_date..@end_date)
       if @result_shift.blank?
       else
       @result_shift_min = @result_shift.minimum(:start_time)

@@ -22,7 +22,7 @@
     <td>
       <%= @dmer1_price %> * 
       <%= @dmer_result1_fin_prev_month_len %>
-      <%= @dmer1_price %> * <%= @dmer1_tgt_prev.length %> + 
+      <%= @dmer1_price %> * <%= @dmer1_tgt_prev.length rescue 0 %> + 
       <%= @dmer1_price %> * <%= @dmer1_done_prev_len %></td>
     <td><%= @dmer1_this_month_per  %> - <%= @dmer1_dec_per %></td>
     <td><%= @dmer1_prev_month_per  %> - <%= @dmer1_prev_dec_per %></td>
@@ -38,7 +38,7 @@
     <td><%= @dmer_result2_fin %></td>
     <td><%= @dmer2_price %> * <%= @dmer_result2_fin_this_month_len %>（<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @dmer2_this_month_per - @dmer2_dec_per %>） - <%= @dmer_val2_period_profit %></td>
     <td><%= @dmer2_price %> * <%= @dmer_result2_fin_prev_month_len %>
-    （<%= @dmer2_slmt_tgt_prev.length %> - <%= @dmer2_prev_val_len %> * <%= @dmer2_prev_month_per - @dmer2_prev_dec_per %>）
+    （<%= @dmer2_slmt_tgt_prev.length rescue 0 %> - <%= @dmer2_prev_val_len %> * <%= @dmer2_prev_month_per - @dmer2_prev_dec_per %>）
     + <%= @dmer2_price %> * <%= @dmer2_done_prev_len %></td>
     <td><%= @dmer2_this_month_per  %> - <%= @dmer2_dec_per %></td>
     <td><%= @dmer2_prev_month_per  %> - <%= @dmer2_prev_dec_per %></td>
@@ -57,8 +57,8 @@
     </td>
     <td>
       <%= @dmer3_price %> * <%= @dmer_result3_fin_prev_month_len %>
-    （<%= @dmer3_slmt_tgt_prev.length %> - <%= @dmer3_val_prev_len %> - <%= @dmer_slmt_dead_len %>）+
-     <%= @dmer_slmt2nd_done.where("? > date",@start_date).sum(:valuation_second_settlement) %>
+    （<%= @dmer3_slmt_tgt_prev.length rescue 0 %> - <%= @dmer3_val_prev_len %> - <%= @dmer_slmt_dead_len %>）+
+     <%= @dmer_slmt2nd_done.where("? > date",@start_date).sum(:valuation_second_settlement) rescue 0 %>
     </td>
     <td><%= @dmer3_this_month_per  %> - <%= @dmer3_dec_per %></td>
     <td></td>
@@ -72,7 +72,7 @@
   </tr>
   <tr>
     <td><%= @airpay_result1_fin %></td>
-    <td><%= @airpay_price %> * <%= @airpays_result_len_fin %>（<%= @airpays_result_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @airpay1_this_month_per - @airpay_dec_per %>） - （<%= @airpay_price %> * <%= @airpay26_end_done.length %> ）</td>
+    <td><%= @airpay_price %> * <%= @airpays_result_len_fin %>（<%= @airpays_result_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @airpay1_this_month_per - @airpay_dec_per %>） - （<%= @airpay_price %> * <%= @airpay26_end_done.length rescue 0 %> ）</td>
     <td>
       <%= @airpay_price %> * （<%= @airpay_prev_len %> * 
       <%= @airpay1_prev_month_per - @airpay_prev_dec_per %> ）+
@@ -557,8 +557,8 @@
           <% paypay_r_len = @paypay_done.length rescue 0 %>
         <%# 楽天ペイ %>
         <%# 合計売上 %>
-          <% sum_profit_new = dmer_valuations.to_i + aupay_valuations.to_i + @paypay_done.sum(:valuation).to_i + @rakuten_pay_done_val.to_i + @airpay_done_val.to_i + @aupay_pic_val.to_i %>
-          <% sum_profit_slmt = dmer_slmt_valuations.to_i + dmer_slmt2nd_valuations.to_i + aupay_slmt_valuations.to_i %>
+          <% sum_profit_new = dmer_valuations.to_i + aupay_valuations.to_i + @paypay_done.sum(:valuation).to_i + @rakuten_pay_done_val.to_i + @airpay_done_val.to_i + @aupay_pic_val.to_i rescue 0 %>
+          <% sum_profit_slmt = dmer_slmt_valuations.to_i + dmer_slmt2nd_valuations.to_i + aupay_slmt_valuations.to_i rescue 0 %>
           <% sum_profit = sum_profit_new.to_i + sum_profit_slmt.to_i rescue 0 %>
         <%# 平均売上 %>
           <% ave_profit_new = sum_profit_new.to_f / @digestion_new rescue 0 %>

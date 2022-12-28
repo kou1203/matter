@@ -28,12 +28,15 @@
       <%= render "user_parts/deficiency" %>
     </div>
     <div class="main" id="result-page">
-      <% if @result_shift.present? && @results_date.present? %>
+      <% if @result_shift.where(shift: "キャッシュレス新規").present? && @results_date.where(shift: "キャッシュレス新規").present? %>
       <%= render "user_parts/profit" %>
       <% else %>
-      <p class="caution-text">予定シフト、もしくは終着が入力されておりません</p>
       <% end %>
     </div>
+    <% if @result_shift.where(shift: "キャッシュレス新規").present? && @results_date.where(shift: "キャッシュレス新規").present? %>
+    <% else %>
+        <p class="caution-text">予定シフト、もしくは終着が入力されておりません</p>
+    <% end %>
     <div class="main" id="valuation-page">
       <%= render "user_parts/valuation" %>
     </div>
