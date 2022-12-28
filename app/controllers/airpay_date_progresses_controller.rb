@@ -167,12 +167,7 @@ class AirpayDateProgressesController < ApplicationController
         @airpays_user.where(date: @start_date..@end_date).where(status: "審査完了")
         .where(result_point: @start_date..@airpay1_end_date).length
         period_fin_len = 
-          (
-            (
-              (@result_airpay_fin - airpays_done_result26_end_of_month_len).to_f / shift_digestion * shift_schedule
-            ) *
-            @airpay1_this_month_per
-        ).round() rescue 0
+          ((@result_airpay_fin - airpays_done_result26_end_of_month_len).to_f * @airpay1_this_month_per).round() rescue 0
         # 期間内終着
         period_fin = @profit_price * period_fin_len
         # 過去月終着
@@ -207,9 +202,7 @@ class AirpayDateProgressesController < ApplicationController
         end 
         period_fin_len = 
           (
-            (
-              (@result_airpay_fin - airpays_done_result26_end_of_month_len).to_f / shift_digestion * shift_schedule
-            ) *
+            (@result_airpay_fin - airpays_done_result26_end_of_month_len).to_f *
             (@airpay1_this_month_per - @airpay_dec_per)
         ).round() rescue 0
         # 期間内終着
