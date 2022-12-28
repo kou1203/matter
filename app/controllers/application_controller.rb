@@ -628,7 +628,9 @@ class ApplicationController < ActionController::Base
       # AirPay
       @airpay_inc_per = 0
       @airpay_prev_inc_per = 0
+      
       # 減少率
+
       # dメル
       @dmer1_dec_per = 0
       @dmer2_dec_per = 0

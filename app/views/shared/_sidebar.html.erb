@@ -26,17 +26,14 @@
             <li id="lists1"><%= link_to "過去獲得店舗一覧", product_checkers_path, class: "side-link","data-turbolinks": false %></li>
             <li id="lists1"><%= link_to "不備一覧", def_respondings_path, class: "side-link","data-turbolinks": false %></li>
             <li id="lists1"><%= link_to "決済一覧", settlements_path, class: "side-link","data-turbolinks": false %></li>
-            <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "稲熊彩加") %>
-            <li id="lists1"><%= link_to "即時在庫一覧", dmer_stocks_path, class: "side-link" %></li>
-            <% end %>
             <li id="lists1"><%= link_to "サミットエナジー", summits_path, class: "side-link","data-turbolinks": false %></li>
           </ul>
         <label class="header-label" id="lists2">利益表</label>
           <ul class="dropdown" id="pull-down2">
             <li id="lists2"><%= link_to "利益表", results_path,class: "side-link","data-turbolinks": false %></li>
             <li id="lists2"><%= link_to "帯同資料", ojts_path,class: "side-link" %></li>
-            <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "稲熊彩加") %>
-            <li id="lists2"><span data-turbolinks="false"><%= link_to "会議資料", profits_path,class: "side-link" %></span></li>
+            <% if (current_user.position == "権限①") %>
+            <%# <li id="lists2"><span data-turbolinks="false">link_to "会議資料", profits_path,class: "side-link"</span></li> %>
             <li id="lists2"><span data-turbolinks="false"><%= link_to "利益計算期間", calc_periods_path,class: "side-link" %></span></li>
             <% end %>
             <li id="lists2"><%= link_to "評価売上結果一覧", result_sales_path,class: "side-link"%></li>

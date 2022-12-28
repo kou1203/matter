@@ -117,7 +117,7 @@ class DemaekanDateProgressesController < ApplicationController
     @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
     @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     cnt = 0
-    @demaekans_group = Demaekan.group(:user_id)
+    @demaekans_group = Shift.group(:user_id)
     @demaekans_group.group(:user_id).each do |r|
       @calc_periods = CalcPeriod.where(sales_category: "実売")
       calc_period_and_per

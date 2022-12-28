@@ -118,7 +118,7 @@ class RakutenPayDateProgressesController < ApplicationController
     @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
     @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     cnt = 0
-    @rakuten_pays_group = RakutenPay.group(:user_id)
+    @rakuten_pays_group = Shift.group(:user_id)
     @rakuten_pays_group.group(:user_id).each do |r|
       @calc_periods = CalcPeriod.where(sales_category: "実売")
       calc_period_and_per

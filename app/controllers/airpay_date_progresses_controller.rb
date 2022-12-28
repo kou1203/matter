@@ -129,7 +129,7 @@ class AirpayDateProgressesController < ApplicationController
         @airpay_price
       end
     cnt = 0
-    @airpays_group = Airpay.group(:user_id)
+    @airpays_group = Shift.group(:user_id)
     @airpays_group.group(:user_id).each do |r|
       @calc_periods = CalcPeriod.where(sales_category: "実売")
       calc_period_and_per
@@ -203,6 +203,25 @@ class AirpayDateProgressesController < ApplicationController
         else  
           @airpay_price
         end 
+        period_fin_len = 
+          (
+            (
+              (@result_airpay_fin - airpays_done_result26_end_of_month_len).to_f / shift_digestion * shift_schedule
+            ) *
+            (@airpay1_this_month_per - @airpay_dec_per)
+        ).round() rescue 0
+        # 期間内終着
+        period_fin = @profit_price * period_fin_len
+        # 過去月終着
+        prev_len = (
+            @airpays_user.where(status: "審査中")
+            .where(date: ...@start_date).length.to_f * 
+            (@airpay1_prev_month_per - @airpay_prev_dec_per)
+        ).round()
+        prev_done = 
+          @airpays_user.where(status: "審査完了")
+          .where(date: ...@start_date)
+          .where(result_point: @airpay1_start_date..@airpay1_end_date)
 
       valuation_current = valuation_price * result_len
       period_fin = valuation_price * period_fin_len

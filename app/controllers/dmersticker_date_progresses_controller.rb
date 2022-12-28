@@ -115,7 +115,7 @@ class DmerstickerDateProgressesController < ApplicationController
     @calc_periods = CalcPeriod.where(sales_category: "実売")
     calc_period_and_per
     cnt = 0
-    @dmerstickers_group = OtherProduct.where(product_name: "dメルステッカー").group(:user_id)
+    @dmerstickers_group = Shift.group(:user_id)
     @dmerstickers_group.group(:user_id).each do |r|
       @calc_periods = CalcPeriod.where(sales_category: "実売")
       calc_period_and_per

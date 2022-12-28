@@ -115,7 +115,7 @@ class AustickerDateProgressesController < ApplicationController
     @calc_periods = CalcPeriod.where(sales_category: "実売")
     calc_period_and_per
     cnt = 0
-    @austickers_group = OtherProduct.where(product_name: "auPay写真").group(:user_id)
+    @austickers_group = Shift.group(:user_id)
     @austickers_group.group(:user_id).each do |r|
       @calc_periods = CalcPeriod.where(sales_category: "実売")
       calc_period_and_per

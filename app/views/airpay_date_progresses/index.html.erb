@@ -140,14 +140,30 @@
             </tr>
             <tr>
               <td class="difference-td" colspan="3">差異</td>
-              <td class="difference-td"><%= @current_progress.sum(:shift_schedule) - @comparison.sum(:shift_schedule) %></td>
-              <td class="difference-td"><%= @current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion) %></td>
-              <td class="difference-td"><%= @current_progress.sum(:get_len) - @comparison.sum(:get_len) %></td>
-              <td class="difference-td"><%= @current_progress.sum(:fin_len) - @comparison.sum(:fin_len) %></td>
-              <td class="difference-td"><%= @current_progress.sum(:max_get_len) - @comparison.sum(:max_get_len) %></td>
-              <td class="difference-td"><%= @current_progress.sum(:max_fin_len) - @comparison.sum(:max_fin_len) %></td>
-              <td class="difference-td"><%= @current_progress.sum(:max_result_len) -  @comparison.sum(:max_result_len) %></td>
-              <td class="difference-td"><%= @current_progress.sum(:result_len) -  @comparison.sum(:result_len) %></td>
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:shift_schedule) - @comparison.sum(:shift_schedule) %>">
+                <%= @current_progress.sum(:shift_schedule) - @comparison.sum(:shift_schedule) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion) %> ">
+                <%= @current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:get_len) - @comparison.sum(:get_len) %>">
+                <%= @current_progress.sum(:get_len) - @comparison.sum(:get_len) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:fin_len) - @comparison.sum(:fin_len) %> ">
+                <%= @current_progress.sum(:fin_len) - @comparison.sum(:fin_len) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:max_get_len) - @comparison.sum(:max_get_len) %>">
+                <%= @current_progress.sum(:max_get_len) - @comparison.sum(:max_get_len) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:max_fin_len) - @comparison.sum(:max_fin_len) %>">
+                <%= @current_progress.sum(:max_fin_len) - @comparison.sum(:max_fin_len) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:max_result_len) - @comparison.sum(:max_result_len) %>">
+                <%= @current_progress.sum(:max_result_len) -  @comparison.sum(:max_result_len) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:result_len) - @comparison.sum(:result_len) %>">
+                <%= @current_progress.sum(:result_len) -  @comparison.sum(:result_len) %>
+              </td>
               <td class="difference-td"><%= @current_progress.sum(:result_fin_len) -  @comparison.sum(:result_fin_len) %></td>
             </tr>
             <% end %>
@@ -207,15 +223,33 @@
             </tr>
             <tr>
               <td class="difference-td" colspan="3"><%= current.first.base %>比較差異</td>
-              <td class="difference-td"><%= current.sum(:shift_schedule) - comparison.sum(:shift_schedule) %></td>
-              <td class="difference-td"><%= current.sum(:shift_digestion) - comparison.sum(:shift_digestion) %></td>
-              <td class="difference-td"><%= current.sum(:get_len) - comparison.sum(:get_len) %></td>
-              <td class="difference-td"><%= current.sum(:fin_len) - comparison.sum(:fin_len) %></td>
-              <td class="difference-td"><%= current.sum(:max_get_len) - comparison.sum(:max_get_len) %></td>
-              <td class="difference-td"><%= current.sum(:max_result_len) - comparison.sum(:max_fin_len) %></td>
-              <td class="difference-td"><%= current.sum(:max_result_len) - comparison.sum(:max_fin_len) %></td>
-              <td class="difference-td"><%= current.sum(:result_len) - comparison.sum(:result_len) %></td>
-              <td class="difference-td"><%= current.sum(:result_fin_len) - comparison.sum(:result_fin_len) %></td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:shift_schedule) - comparison.sum(:shift_schedule) %>">
+                <%= current.sum(:shift_schedule) - comparison.sum(:shift_schedule) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:shift_digestion) - comparison.sum(:shift_digestion) %>">
+                <%= current.sum(:shift_digestion) - comparison.sum(:shift_digestion) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:get_len) - comparison.sum(:get_len) %>">
+                <%= current.sum(:get_len) - comparison.sum(:get_len) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:fin_len) - comparison.sum(:fin_len) %>">
+                <%= current.sum(:fin_len) - comparison.sum(:fin_len) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:max_get_len) - comparison.sum(:max_get_len) %>">
+                <%= current.sum(:max_get_len) - comparison.sum(:max_get_len) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:max_fin_len) - comparison.sum(:max_fin_len) %>">
+                <%= current.sum(:max_result_len) - comparison.sum(:max_fin_len) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:max_result_len) - comparison.sum(:max_result_len) %>">
+                <%= current.sum(:max_result_len) - comparison.sum(:max_result_len) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:result_len) - comparison.sum(:result_len) %>">
+                <%= current.sum(:result_len) - comparison.sum(:result_len) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:result_fin_len) - comparison.sum(:result_fin_len) %>">
+                <%= current.sum(:result_fin_len) - comparison.sum(:result_fin_len) %>
+              </td>
             </tr>
             <% end %><%# comparisonデータがあるか判別 %>
             <% end %><%# currentデータがあるか判別 %>
@@ -260,15 +294,19 @@
             </tr>
             <tr>
               <td class="difference-td" colspan="3">差異</td>
-              <td class="difference-td"><%= @current_progress.sum(:shift_schedule) - @comparison.sum(:shift_schedule) %></td>
-              <td class="difference-td"><%= @current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion) %></td>
-              <td class="difference-td"><%= 
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:shift_schedule) - @comparison.sum(:shift_schedule) %>">
+                <%= @current_progress.sum(:shift_schedule) - @comparison.sum(:shift_schedule) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion) %>">
+                <%= @current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:profit_current) - @comparison.sum(:profit_current) %>"><%= 
                 (
                   @current_progress.sum(:profit_current) -
                   @comparison.sum(:profit_current)
                 ).to_s(:delimited) 
               %></td>
-              <td class="difference-td"><%= (
+              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:profit_fin) - @comparison.sum(:profit_fin) %>"><%= (
                 @current_progress.sum(:profit_fin) - @comparison.sum(:profit_fin)
                 ).to_s(:delimited) %></td>
             </tr>
@@ -312,14 +350,20 @@
           </tr>
             <tr>
               <td class="difference-td" colspan="3"><%= current.first.base %>差異</td>
-              <td class="difference-td"><%= current.sum(:shift_schedule) - comparison.sum(:shift_schedule) %></td>
-              <td class="difference-td"><%= current.sum(:shift_digestion) - comparison.sum(:shift_digestion) %></td>
-              <td class="difference-td"><%= 
+              <td class="difference-td <%= "red" if 0 > current.sum(:shift_schedule) - comparison.sum(:shift_schedule) %>">
+                <%= current.sum(:shift_schedule) - comparison.sum(:shift_schedule) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:shift_digestion) - comparison.sum(:shift_digestion) %>">
+                <%= current.sum(:shift_digestion) - comparison.sum(:shift_digestion) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:profit_current) - comparison.sum(:profit_current) %> "><%= 
                 (
                   current.sum(:profit_current) - comparison.sum(:profit_current)
                 ).to_s(:delimited) 
               %></td>
-              <td class="difference-td"><%= (current.sum(:profit_fin) - comparison.sum(:profit_fin)).to_s(:delimited) %></td>
+              <td class="difference-td <%= "red" if 0 > current.sum(:profit_fin) - comparison.sum(:profit_fin) %>">
+                <%= (current.sum(:profit_fin) - comparison.sum(:profit_fin)).to_s(:delimited) %>
+              </td>
             </tr>
           <% end %>
           <% end %>
