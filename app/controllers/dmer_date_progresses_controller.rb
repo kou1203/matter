@@ -153,6 +153,8 @@ class DmerDateProgressesController < ApplicationController
   @month = params[:month].to_date
   if Date.today > @month
     @month = @month.end_of_month
+  elsif Date.today < @month
+    @month = @month.beginning_of_month
   else 
     @month = Date.today
   end 
