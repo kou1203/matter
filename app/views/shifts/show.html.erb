@@ -58,10 +58,14 @@
             <%= s.hidden_field :start_time %>
             <%= s.hidden_field :user_id, value: @user.id %>
             <%# s.text_field :shift, {:class => "input",:id => "shift-set#{cnt}"} %>
-            <% if r_data == shift.shift %>
+            <% if @results.where(date: date).length > 1 %>
+            <span class="r-shift">重複</span>
+            <% elsif r_data == shift.shift %>
             ○
+            <% elsif r_data.present? %>
+            <span class="r-shift"><%=link_to r_data.slice(-2,2),edit_result_path(@results.find_by(date: date).id),class:"link" %></span>
             <% else %>
-            <span class="r-shift"><%= r_data.slice(-2,2) %></span>
+            ×
             <% end %>
             <%= s.select :shift, 
               { "新規": "キャッシュレス新規",
