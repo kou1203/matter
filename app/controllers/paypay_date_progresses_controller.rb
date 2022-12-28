@@ -189,4 +189,12 @@ class PaypayDateProgressesController < ApplicationController
 
 
   end   
+
+  def date_destroy
+    @date_progress = PaypayDateProgress.where(date: params[:month]).where(create_date: params[:create_d])
+    @date_progress.destroy_all
+    redirect_to paypay_date_progresses_path(month: params[:month]), alert: "#{params[:create_d]}に作成した進捗を削除しました。"
+   end
+
+
 end

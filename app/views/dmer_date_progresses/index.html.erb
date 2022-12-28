@@ -11,6 +11,7 @@
 </div>
 <div data-scope-path="shares/date-progress">
   <div class="date-head"><%# 日付切替 %>
+  <p class="caution-txt"><%= alert %></p>
     <h2>
 
       <%= link_to "<<",dmer_date_progresses_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
@@ -80,9 +81,9 @@
         <div class="create-path-form">
         <% DmerDateProgress.where(date: @current_progress.first.date).group(:create_date).each do |d_date| %>
           <% if @comparison.present? %>
-          <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmer_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date,comparison_date: @comparison.first.date),class: "create-link","data-turbolinks": false %></p>
+          <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmer_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date,comparison_date: @comparison.first.date),class: "create-link","data-turbolinks": false %><%= link_to "削除",date_destroy_dmer_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),data: {confirm: "#{d_date.create_date}に作成した進捗を削除してもよろしいですか？"},class: "destroy-link"  %></p>
           <% else %>
-          <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmer_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),class: "create-link","data-turbolinks": false %></p>
+          <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmer_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),class: "create-link","data-turbolinks": false %><%= link_to "削除",date_destroy_dmer_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),data: {confirm: "#{d_date.create_date}に作成した進捗を削除してもよろしいですか？"},class: "destroy-link"  %></p>
           <% end %>
         <% end %>
         </div>

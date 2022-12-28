@@ -210,36 +210,45 @@ Rails.application.routes.draw do
   resources :dmer_date_progresses do 
     collection {get :progress_create}
     collection {get :csv_export}
+    collection {get :date_destroy}
   end 
   
   resources :aupay_date_progresses do 
     collection {get :progress_create}
     collection {get :csv_export}
+    collection {get :date_destroy}
   end 
 
   resources :paypay_date_progresses do 
     collection {get :progress_create}
+    collection {get :date_destroy}
   end 
 
   resources :rakuten_pay_date_progresses do 
     collection {get :progress_create}
+    collection {get :date_destroy}
   end 
 
   resources :airpay_date_progresses do 
     collection {get :progress_create}
+    collection {get :date_destroy}
   end 
 
   resources :demaekan_date_progresses do 
     collection {get :progress_create}
+    collection {get :date_destroy}
   end 
   resources :austicker_date_progresses do 
     collection {get :progress_create}
+    collection {get :date_destroy}
   end 
   resources :dmersticker_date_progresses do 
     collection {get :progress_create}
+    collection {get :date_destroy}
   end 
   resources :cash_date_progresses do 
     collection {get :progress_create}
+    collection {get :date_destroy}
   end 
 
 end

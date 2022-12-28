@@ -130,41 +130,6 @@ class CashDateProgressesController < ApplicationController
       "中部SS", "関西SS", "関東SS", "九州SS",
       "フェムト", "サミット", "2次店", "退職"
     ]
-    # @users = User.includes(
-    #   :dmer_date_progress,
-    #   :aupay_date_progress,
-    #   :paypay_date_progress,
-    #   :rakuten_pay_date_progress,
-    #   :airpay_date_progress,
-    #   :austicker_date_progress,
-    #   :dmersticker_date_progress
-    # )
-    # @users = 
-    #   @users.where.not(dmer_date_progresses: {id: nil})
-    #   .or(
-    #     @users.where.not(aupay_date_progresses: {id: nil})
-        
-    #   )
-    #   .or(
-    #     @users.where.not(paypay_date_progresses: {id: nil})
-        
-    #   )
-    #   .or(
-    #     @users.where.not(rakuten_pay_date_progresses: {id: nil})
-        
-    #   )
-    #   .or(
-    #     @users.where.not(airpay_date_progresses: {id: nil})
-        
-    #   )
-    #   .or(
-    #     @users.where.not(austicker_date_progresses: {id: nil})
-        
-    #   )
-    #   .or(
-    #     @users.where.not(dmersticker_date_progresses: {id: nil})
-        
-    #   )
     @shifts = Shift.where(start_time: @start_date..@end_date)
     @results = Result.where(date: @start_date..@end_date)
     # @users = User.all
@@ -280,4 +245,11 @@ class CashDateProgressesController < ApplicationController
 
 
   end  
+
+  def date_destroy
+    @date_progress = CashDateProgress.where(date: params[:month]).where(create_date: params[:create_d])
+    @date_progress.destroy_all
+    redirect_to cash_date_progresses_path(month: params[:month]), alert: "#{params[:create_d]}に作成した進捗を削除しました。"
+   end
+
 end

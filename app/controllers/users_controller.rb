@@ -777,6 +777,7 @@ class UsersController < ApplicationController
         @rakuten_pay_dec.sum(:valuation) - 
         @rakuten_pay_def.sum(:valuation) + 
         @rakuten_pay_inc.sum(:valuation)
+        
       @rakuten_pay_done_len = 
         @rakuten_pay_uq.length - 
         @rakuten_pay_dec.length - 

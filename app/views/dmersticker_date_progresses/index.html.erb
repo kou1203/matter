@@ -10,6 +10,7 @@
     <%= render "shared/sidebar" %>
   </div><%# サイドバー %>
   <div data-scope-path="shares/date-progress"><%# メインバー %>
+  <p class="caution-txt"><%= alert %></p>
     <div class="date-head"><%# 日付切替 %>
       <h2>
 
@@ -73,14 +74,14 @@
         </div><%# 切替ボタン %>
       </div><%# ヘッド部分 %>
       <% if @current_progress.present? %><%# @current_progressがあるか判別 %>
-        <% if PaypayDateProgress.where(date: @current_progress.first.date).group(:create_date).length > 1 %>
+        <% if DmerstickerDateProgress.where(date: @current_progress.first.date).group(:create_date).length > 1 %>
           <h2 class="caution-txt">※現状（<%= @current_progress.first.date %>）は違う日付に作成された進捗データがあります。</h2>
         <div class="create-path-form"><%# 作成日を変更するためのリンク %>
-          <% PaypayDateProgress.where(date: @current_progress.first.date).group(:create_date).each do |d_date| %>
+          <% DmerstickerDateProgress.where(date: @current_progress.first.date).group(:create_date).each do |d_date| %>
             <% if @comparison.present? %>
-              <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmersticker_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date,comparison_date: @comparison.first.date),class: "create-link","data-turbolinks": false %></p>
+            <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmersticker_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date,comparison_date: @comparison.first.date),class: "create-link","data-turbolinks": false %><%= link_to "削除",date_destroy_dmersticker_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),data: {confirm: "#{d_date.create_date}に作成した進捗を削除してもよろしいですか？"},class: "destroy-link"  %></p>
             <% else %>
-              <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmersticker_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),class: "create-link","data-turbolinks": false %></p>
+            <p class="create-data"><%= link_to "#{d_date.create_date}で表示", dmersticker_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),class: "create-link","data-turbolinks": false %><%= link_to "削除",date_destroy_dmersticker_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),data: {confirm: "#{d_date.create_date}に作成した進捗を削除してもよろしいですか？"},class: "destroy-link"  %></p>
             <% end %>
           <% end %>
         </div><%# 作成日を変更するためのリンク %>

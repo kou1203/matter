@@ -489,6 +489,12 @@ class DmerDateProgressesController < ApplicationController
   redirect_to calc_periods_path(month: @month) ,alert: "#{cnt}件dメル売上結果を作成しました"
  end 
 
+ def date_destroy
+  @date_progress = DmerDateProgress.where(date: params[:month]).where(create_date: params[:create_d])
+  @date_progress.destroy_all
+  redirect_to dmer_date_progresses_path(month: params[:month]), alert: "#{params[:create_d]}に作成した進捗を削除しました。"
+ end
+
 
 
 

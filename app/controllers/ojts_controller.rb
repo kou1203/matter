@@ -4,7 +4,7 @@ class OjtsController < ApplicationController
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @start_date = @month.beginning_of_month
     @end_date = @month.end_of_month
-    if params[:word].present?
+    if (params[:word].present?) && (User.where("name LIKE?","%#{params[:word]}%").length != 0)
       @start_date = params[:search_date].to_date.prev_month.beginning_of_month.since(25.days)
       @end_date = params[:search_date].to_date.beginning_of_month.since(24.days)
       @month = params[:search_date].to_date

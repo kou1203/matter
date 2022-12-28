@@ -164,6 +164,10 @@ class RakutenPayDateProgressesController < ApplicationController
       @rakuten_pay_def = 
         @rakuten_pays_user_period.where(status: "自社不備")
         .or(@rakuten_pays_user_period.where(status: "自社NG"))
+        .or(
+          @rakuten_pays_user_period.where(deficiency: @start_date..@end_date)
+          .where.not(deficiency_solution: @start_date..@end_date)
+        )
       @rakuten_pay_inc = 
         @rakuten_pays_user_period.where.not(date: @start_date..@end_date)
         .where(share: @start_date..@end_date)
@@ -229,4 +233,10 @@ class RakutenPayDateProgressesController < ApplicationController
     redirect_to calc_periods_path(month: @month) ,alert: "#{cnt}件楽天ペイ売上結果を作成しました"
 
   end   
+
+  def date_destroy
+    @date_progress = RakutenPayDateProgress.where(date: params[:month]).where(create_date: params[:create_d])
+    @date_progress.destroy_all
+    redirect_to rakuten_pay_date_progresses_path(month: params[:month]), alert: "#{params[:create_d]}に作成した進捗を削除しました。"
+   end
 end
