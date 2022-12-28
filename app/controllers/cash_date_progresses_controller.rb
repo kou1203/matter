@@ -176,6 +176,7 @@ class CashDateProgressesController < ApplicationController
       @cash_progress_data = 
         CashDateProgress.find_by(date: @month, user_id: shift.user_id,create_date: Date.today)
       dmer_date_progresses = DmerDateProgress.where(user_id: shift.user_id).where(date: @month)
+      dmer_date_progresses = dmer_date_progresses.where(create_date: dmer_date_progresses.maximum(:create_date))
       dmer_profit_current = dmer_date_progresses.sum(:profit_current)
       dmer_profit_fin = 
         dmer_date_progresses.sum(:profit_fin1) +
@@ -183,31 +184,38 @@ class CashDateProgressesController < ApplicationController
         dmer_date_progresses.sum(:profit_fin3)
       
       aupay_date_progresses = AupayDateProgress.where(user_id: shift.user_id).where(date: @month)
+      aupay_date_progresses = aupay_date_progresses.where(create_date: aupay_date_progresses.maximum(:create_date))
       aupay_profit_current = aupay_date_progresses.sum(:profit_current)
       aupay_profit_fin = 
         aupay_date_progresses.sum(:profit_fin)
       
       paypay_date_progresses = PaypayDateProgress.where(user_id: shift.user_id).where(date: @month)
+      paypay_date_progresses = paypay_date_progresses.where(create_date: paypay_date_progresses.maximum(:create_date))
       paypay_profit_current = paypay_date_progresses.sum(:profit_current)
       paypay_profit_fin = paypay_date_progresses.sum(:profit_fin)
 
       rakuten_pay_date_progresses = RakutenPayDateProgress.where(user_id: shift.user_id).where(date: @month)
+      rakuten_pay_date_progresses = rakuten_pay_date_progresses.where(create_date: rakuten_pay_date_progresses.maximum(:create_date))
       rakuten_pay_profit_current = rakuten_pay_date_progresses.sum(:profit_current)
       rakuten_pay_profit_fin = rakuten_pay_date_progresses.sum(:profit_fin)
 
       airpay_date_progresses = AirpayDateProgress.where(user_id: shift.user_id).where(date: @month)
+      airpay_date_progresses = airpay_date_progresses.where(create_date: airpay_date_progresses.maximum(:create_date))
       airpay_profit_current = airpay_date_progresses.sum(:profit_current)
       airpay_profit_fin = airpay_date_progresses.sum(:profit_fin)
 
       demaekan_date_progresses = DemaekanDateProgress.where(user_id: shift.user_id).where(date: @month)
+      demaekan_date_progresses = demaekan_date_progresses.where(create_date: demaekan_date_progresses.maximum(:create_date))
       demaekan_profit_current = demaekan_date_progresses.sum(:profit_current)
       demaekan_profit_fin = demaekan_date_progresses.sum(:profit_fin)
 
       austicker_date_progresses = AustickerDateProgress.where(user_id: shift.user_id).where(date: @month)
+      austicker_date_progresses = austicker_date_progresses.where(create_date: austicker_date_progresses.maximum(:create_date))
       austicker_profit_current = austicker_date_progresses.sum(:profit_current)
       austicker_profit_fin = austicker_date_progresses.sum(:profit_fin)
 
       dmersticker_date_progresses = DmerstickerDateProgress.where(user_id: shift.user_id).where(date: @month)
+      dmersticker_date_progresses = dmersticker_date_progresses.where(create_date: dmersticker_date_progresses.maximum(:create_date))
       dmersticker_profit_current = dmersticker_date_progresses.sum(:profit_current)
       dmersticker_profit_fin = dmersticker_date_progresses.sum(:profit_fin)
 
