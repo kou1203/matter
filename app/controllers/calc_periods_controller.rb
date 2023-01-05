@@ -63,9 +63,9 @@ class CalcPeriodsController < ApplicationController
     @cash_date_progress = @cash_date_progress.where(create_date: @cash_date_progress.maximum(:create_date))
     @dmer_date_progress = DmerDateProgress.where(date: @month.in_time_zone.all_month)
     @dmer_date_progress = @dmer_date_progress.where(create_date: @dmer_date_progress.maximum(:create_date))
-    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職","2次店"]
     head :no_content
-    filename = "実売資料#{@month}"
+    filename = "#{@month.month}月実売資料"
     columns_ja = [
       "拠点", "Ave","現状実売", "終着実売", "dメル一次成果現状実売","dメル一次成果終着実売"
     ]
@@ -90,7 +90,7 @@ class CalcPeriodsController < ApplicationController
         end 
         result_attributes["profit_current"] = cash_date_progress.sum(:profit_current)
         result_attributes["profit_fin"] = cash_date_progress.sum(:profit_fin)
-        result_attributes["dmer1_profit_current"] = dmer_progress.sum(:profit_current)
+        result_attributes["dmer1_profit_current"] = dmer_progress.sum(:profit_current1)
         result_attributes["dmer1_profit_fin"] = dmer_progress.sum(:profit_fin1)
         csv << result_attributes.values_at(*columns)
       end
