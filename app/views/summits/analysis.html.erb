@@ -1,0 +1,165 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title">サミットエナジー</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="summits/analysis">
+  <p class="caution-txt"><%= alert %></p>
+  <h2>
+    <%= link_to "<<",analysis_summits_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
+    <%= @month.month %>月（<%= @month.beginning_of_month.to_date %>〜<%= @month.end_of_month.to_date %>）
+    <%= link_to ">>",analysis_summits_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>
+  </h2>
+  <% if @billings.present? %>
+    <h2>◆明細結果(全体)</h2>
+    <table class="analysis-tb">
+      <thead>
+        <tr>
+          <th class="analysis-th1" colspan="3">基本情報</th>
+          <th class="analysis-th1" colspan="3">合計件数</th>
+          <th class="analysis-th1" colspan="3">合計使用量</th>
+          <th class="analysis-th1" colspan="3">請求額</th>
+          <th class="analysis-th1" colspan="3">合計手数料</th>
+          <th class="analysis-th1" colspan="3">増加数</th>
+        </tr>
+        <tr>
+          <th class="analysis-th2">拠点</th>
+          <th class="analysis-th2">ユーザー名</th>
+          <th class="analysis-th2">役職</th>
+          <th class="analysis-th2">店舗数</th>
+          <th class="analysis-th2">従量</th>
+          <th class="analysis-th2">低圧</th>
+          <% 3.times do %>
+          <th class="analysis-th2">従量</th>
+          <th class="analysis-th2">低圧</th>
+          <th class="analysis-th2">従量＋低圧</th>
+          <% end %>
+          <th class="analysis-th2">店舗</th>
+          <th class="analysis-th2">従量</th>
+          <th class="analysis-th2">低圧</th>
+        </tr>
+      </thead>
+      <tbody>
+      <% @billings.includes(:user).order("users.base ASC").group(:user_id).each do |billing_user| %>
+        <tr class="analysis-tr">
+          <td class="analysis-td"><%= billing_user.user.base %></td>
+          <td class="analysis-td"><%= billing_user.user.name %></td>
+          <td class="analysis-td"><%= billing_user.user.position_sub %></td>
+          <%# 件数 %>
+          <td class="analysis-td"><%= store_len = @billings.where(user_id: billing_user.user_id).select(:store_name).distinct(:store_name).length %></td>
+          <td class="analysis-td"><%= metered_len = @billings.where(user_id: billing_user.user_id).where("contract_type LIKE ?", "%従量%").length %></td>
+          <td class="analysis-td"><%= low_voltage_len = @billings.where(user_id: billing_user.user_id).where(contract_type: "低圧電力").length %></td>
+          <%# 使用量 %>
+          <td class="analysis-td"><%= @billings.where(user_id: billing_user.user_id).where("contract_type LIKE ?", "%従量%").sum(:total_use).to_s(:delimited) %></td>
+          <td class="analysis-td"><%= @billings.where(user_id: billing_user.user_id).where(contract_type: "低圧電力").sum(:total_use).to_s(:delimited) %></td>
+          <td class="analysis-td"><%= @billings.where(user_id: billing_user.user_id).sum(:total_use).to_s(:delimited) %></td>
+          <%# 請求額 %>
+          <td class="analysis-td"><%= @billings.where(user_id: billing_user.user_id).where("contract_type LIKE ?", "%従量%").sum(:billing_amount).to_s(:delimited) %></td>
+          <td class="analysis-td"><%= @billings.where(user_id: billing_user.user_id).where(contract_type: "低圧電力").sum(:billing_amount).to_s(:delimited) %></td>
+          <td class="analysis-td"><%= @billings.where(user_id: billing_user.user_id).sum(:billing_amount).to_s(:delimited) %></td>
+          <%# 手数料 %>
+          <td class="analysis-td"><%= @billings.where(user_id: billing_user.user_id).where("contract_type LIKE ?", "%従量%").sum(:commission).to_s(:delimited) %></td>
+          <td class="analysis-td"><%= @billings.where(user_id: billing_user.user_id).where(contract_type: "低圧電力").sum(:commission).to_s(:delimited) %></td>
+          <td class="analysis-td"><%= @billings.where(user_id: billing_user.user_id).sum(:commission).to_s(:delimited) %></td>
+          <%# 増加数 %>
+          <td class="analysis-td <%= "red" if 0 > store_len - @billings_prev.where(user_id: billing_user.user_id).select(:store_name).distinct(:store_name).length %>"><%= store_len - @billings_prev.where(user_id: billing_user.user_id).select(:store_name).distinct(:store_name).length %></td>
+          <td class="
+            analysis-td 
+            <%= "red" if 0 > metered_len - @billings_prev.where(user_id: billing_user.user_id).where("contract_type LIKE ?", "%従量%").length %>
+          ">
+            <%= metered_len - @billings_prev.where(user_id: billing_user.user_id).where("contract_type LIKE ?", "%従量%").length %>
+          </td>
+          <td class="
+            analysis-td
+            <%= "red" if 0 > low_voltage_len - @billings_prev.where(user_id: billing_user.user_id).where(contract_type: "低圧電力").length %>
+          ">
+            <%= low_voltage_len - @billings_prev.where(user_id: billing_user.user_id).where(contract_type: "低圧電力").length %>
+          </td>
+        </tr>
+      <% end %>
+      <tr>
+        <td colspan="3" class="sum-td">合計</td>
+          <%# 件数 %>
+          <td class="sum-td"><%= store_len = @billings.select(:store_name).distinct(:store_name).length %></td>
+          <td class="sum-td"><%= metered_len = @billings.where("contract_type LIKE ?", "%従量%").length %></td>
+          <td class="sum-td"><%= low_voltage_len = @billings.where(contract_type: "低圧電力").length %></td>
+          <%# 使用量 %>
+          <td class="sum-td"><%= @billings.where("contract_type LIKE ?", "%従量%").sum(:total_use).to_s(:delimited) %></td>
+          <td class="sum-td"><%= @billings.where(contract_type: "低圧電力").sum(:total_use).to_s(:delimited) %></td>
+          <td class="sum-td"><%= @billings.sum(:total_use).to_s(:delimited) %></td>
+          <%# 請求額 %>
+          <td class="sum-td"><%= @billings.where("contract_type LIKE ?", "%従量%").sum(:billing_amount).to_s(:delimited) %></td>
+          <td class="sum-td"><%= @billings.where(contract_type: "低圧電力").sum(:billing_amount).to_s(:delimited) %></td>
+          <td class="sum-td"><%= @billings.sum(:billing_amount).to_s(:delimited) %></td>
+          <%# 手数料 %>
+          <td class="sum-td"><%= @billings.where("contract_type LIKE ?", "%従量%").sum(:commission).to_s(:delimited) %></td>
+          <td class="sum-td"><%= @billings.where(contract_type: "低圧電力").sum(:commission).to_s(:delimited) %></td>
+          <td class="sum-td"><%= @billings.sum(:commission).to_s(:delimited) %></td>
+          <td class="
+            sum-td
+            <%= "red" if 0 > store_len - @billings_prev.select(:store_name).distinct(:store_name).length %>
+          ">
+            <%= store_len - @billings_prev.select(:store_name).distinct(:store_name).length %>
+          </td>
+          <td class="
+            sum-td
+            <%= "red" if 0 > metered_len - @billings_prev.where("contract_type LIKE ?", "%従量%").length %>
+          ">
+            <%= metered_len - @billings_prev.where("contract_type LIKE ?", "%従量%").length %>
+          </td>
+          <td class="
+            sum-td
+            <%= "red" if 0 > low_voltage_len - @billings_prev.where(contract_type: "低圧電力").length %>
+          ">
+            <%= low_voltage_len - @billings_prev.where(contract_type: "低圧電力").length %>
+          </td>
+      </tr>
+      </tbody>
+    </table>
+  <% end %>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

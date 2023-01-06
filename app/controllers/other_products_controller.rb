@@ -1,5 +1,15 @@
 class OtherProductsController < ApplicationController
 
+  def index 
+    @q = OtherProduct.ransack(params[:q])
+    @other_products = 
+      if params[:q].nil?
+        OtherProduct.none 
+      else
+        @q.result(distinct: false)
+      end
+      @other_products_data = @other_products.page(params[:page]).per(100)
+  end 
 
   def new
     @other_product = OtherProduct.new

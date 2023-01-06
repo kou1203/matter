@@ -35,6 +35,7 @@ Rails.application.routes.draw do
     collection { post :import }
     collection { post :import_price }
     collection { get :sw_error }
+    collection { get :analysis }
   end
 
   resources :summit_customer_props do 

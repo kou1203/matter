@@ -75,6 +75,13 @@ class SummitsController < ApplicationController
     @summit.destroy 
     redirect_to summits_path
   end 
+
+  def analysis
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @summits = Summit.where(date: @month.beginning_of_month..@month.end_of_month)
+    @billings = SummitBillingAmount.where(payment_date: @month.beginning_of_month..@month.end_of_month)
+    @billings_prev = SummitBillingAmount.where(payment_date: @month.prev_month.beginning_of_month..@month.prev_month.end_of_month)
+  end 
   private 
 
   def summit_params 
