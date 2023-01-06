@@ -149,9 +149,19 @@ class RakutenPayDateProgressesController < ApplicationController
       profit_prev = @rakuten_pays_user.where(result_point: @rakuten_pay1_start_date.prev_month..@rakuten_pay1_end_date.prev_month)
       .where(status: "OK")
       .where.not(payment_flag: "NG")
+    # 全体現状売と終着
+      profit_all_current = 
+        RakutenPay.where(result_point: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
+        .where(status: "OK")
+        .where.not(payment_flag: "NG").length
+      profit_all_fin = 
+        RakutenPay.where(result_point: @rakuten_pay1_start_date.prev_month..@rakuten_pay1_end_date.prev_month)
+        .where(status: "OK")
+        .where.not(payment_flag: "NG").length
+
       result_fin_len = (profit_prev.length.to_f * @rakuten_pay1_this_month_per).round()
       profit_fin = @rakuten_pay_price * result_fin_len
-      if (profit_current > profit_fin) || (Date.today > @closing_date)
+      if (profit_all_current > profit_all_fin) || (Date.today > @closing_date)
         profit_fin = profit_current
         result_fin_len = rakuten_pay_result_len
       end 
