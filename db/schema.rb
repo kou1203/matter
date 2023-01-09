@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_23_051954) do
+ActiveRecord::Schema.define(version: 2023_01_09_035325) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -332,6 +332,8 @@ ActiveRecord::Schema.define(version: 2022_12_23_051954) do
     t.integer "result2_len_prev"
     t.integer "result3_len_prev"
     t.date "create_date", null: false
+    t.integer "shift_schedule_slmt"
+    t.integer "shift_digestion_slmt"
     t.index ["user_id"], name: "index_dmer_date_progresses_on_user_id"
   end
 

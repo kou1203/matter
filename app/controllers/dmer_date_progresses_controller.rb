@@ -161,7 +161,9 @@ class DmerDateProgressesController < ApplicationController
   @calc_periods = CalcPeriod.where(sales_category: "実売")
   calc_period_and_per
   @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
+  @results_slmt = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス決済")
   @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
+  @shifts_slmt = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス決済")
   cnt = 0
   @dmers_group = Shift.group(:user_id)
   @dmers_group.group(:user_id).each do |r|
@@ -171,6 +173,8 @@ class DmerDateProgressesController < ApplicationController
     @dmer_progress_data = DmerDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
     shift_schedule = @shifts.where(user_id: user_id).length
     shift_digestion = @results.where(user_id: user_id).length
+    shift_schedule_slmt = @shifts_slmt.where(user_id: user_id).length
+    shift_digestion_slmt = @results_slmt.where(user_id: user_id).length
   # 獲得内訳
     @dmers_user = Dmer.where(user_id: user_id)
     @dmers_slmter = Dmer.where(settlementer_id: user_id)
@@ -431,19 +435,21 @@ class DmerDateProgressesController < ApplicationController
   
     dmer_progress_params = {
       user_id: user_id                                   ,
-      base: user_base                                  ,
+      base: user_base                                    ,
       date: @month                                       ,
       shift_schedule: shift_schedule                     ,
       shift_digestion: shift_digestion                   ,
+      shift_schedule_slmt: shift_schedule_slmt           ,
+      shift_digestion_slmt: shift_digestion_slmt         ,
       get_len: @dmers_user_period.length                 ,
       done_len: dmer_done.length                         ,
       slmt_dead_len: dmer_slmt_dead_len                  ,
       def_len: @dmers_user_def.length                    ,
       fin_len: @dmers_fin_len                            ,
       valuation_current: valuation_current               ,
-      valuation_current1: valuation_current1_price               ,
-      valuation_current2: valuation_current2_price               ,
-      valuation_current3: valuation_current3_price               ,
+      valuation_current1: valuation_current1_price       ,
+      valuation_current2: valuation_current2_price       ,
+      valuation_current3: valuation_current3_price       ,
       valuation_fin1: valuation_fin1                     ,
       valuation_fin2: valuation_fin2                     ,
       valuation_fin3: valuation_fin3                     ,

@@ -57,7 +57,7 @@ class CalcPeriodsController < ApplicationController
 
   end 
 
-  def cash_csv_export 
+  def cash_csv_export
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @cash_date_progress = CashDateProgress.where(date: @month.in_time_zone.all_month)
     @cash_date_progress = @cash_date_progress.where(create_date: @cash_date_progress.maximum(:create_date))
@@ -94,6 +94,17 @@ class CalcPeriodsController < ApplicationController
         result_attributes["dmer1_profit_fin"] = dmer_progress.sum(:profit_fin1)
         csv << result_attributes.values_at(*columns)
       end
+      # 全拠点
+      result_attributes = {}
+      result_attributes["base"] = "全拠点"
+      result_attributes["average"] = 
+        (@cash_date_progress.where("base LIKE ?","%SS%").sum(:profit_fin).to_f / 
+        @cash_date_progress.where("base LIKE ?","%SS%").sum(:shift_schedule)).round()
+      result_attributes["profit_current"] = @cash_date_progress.sum(:profit_current)
+      result_attributes["profit_fin"] = @cash_date_progress.sum(:profit_fin)
+      result_attributes["dmer1_profit_current"] = @dmer_date_progress.sum(:profit_current1)
+      result_attributes["dmer1_profit_fin"] = @dmer_date_progress.sum(:profit_fin1)
+      csv << result_attributes.values_at(*columns)
     end 
     create_csv(filename,csv)
   end
@@ -201,14 +212,14 @@ class CalcPeriodsController < ApplicationController
           result_attributes["base"] = base
           result_attributes["user_name"] = dmer_progress.user.name
           result_attributes["user_post"] = dmer_progress.user.position_sub
-          result_attributes["shift_schedule"] = dmer_progress.shift_schedule
-          result_attributes["shift_digestion"] = dmer_progress.shift_digestion
+          result_attributes["shift_schedule"] = dmer_progress.shift_schedule + dmer_progress.shift_schedule_slmt
+          result_attributes["shift_digestion"] = dmer_progress.shift_digestion + dmer_progress.shift_digestion_slmt
           result_attributes["get_len"] = dmer_progress.get_len - dmer_progress.def_len
-          result_attributes["get_ave"] = (dmer_progress.fin_len.to_f / dmer_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_ave"] = (dmer_progress.fin_len.to_f / result_attributes["shift_schedule"]).round(1) rescue 0
           result_attributes["get_fin"] = dmer_progress.fin_len
           result_attributes["profit_current"] = dmer_progress.profit_current
           result_attributes["profit_fin"] = dmer_progress.profit_fin1 + dmer_progress.profit_fin2  + dmer_progress.profit_fin3
-          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / dmer_progress.shift_digestion).round() rescue 0
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / result_attributes["shift_schedule"]).round() rescue 0
           csv << result_attributes.values_at(*columns)
         end 
       end
@@ -242,11 +253,11 @@ class CalcPeriodsController < ApplicationController
           result_attributes["shift_schedule"] = aupay_progress.shift_schedule
           result_attributes["shift_digestion"] = aupay_progress.shift_digestion
           result_attributes["get_len"] = aupay_progress.get_len - aupay_progress.def_len
-          result_attributes["get_ave"] = (aupay_progress.fin_len.to_f / aupay_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_ave"] = (aupay_progress.fin_len.to_f / result_attributes["shift_schedule"]).round(1) rescue 0
           result_attributes["get_fin"] = aupay_progress.fin_len
           result_attributes["profit_current"] = aupay_progress.profit_current
           result_attributes["profit_fin"] = aupay_progress.profit_fin
-          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / aupay_progress.shift_digestion).round() rescue 0
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / result_attributes["shift_schedule"]).round() rescue 0
           csv << result_attributes.values_at(*columns)
         end 
       end
@@ -279,11 +290,11 @@ class CalcPeriodsController < ApplicationController
           result_attributes["shift_schedule"] = paypay_progress.shift_schedule
           result_attributes["shift_digestion"] = paypay_progress.shift_digestion
           result_attributes["get_len"] = paypay_progress.get_len
-          result_attributes["get_ave"] = (paypay_progress.fin_len.to_f / paypay_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_ave"] = (paypay_progress.fin_len.to_f / result_attributes["shift_schedule"]).round(1) rescue 0
           result_attributes["get_fin"] = paypay_progress.fin_len
           result_attributes["profit_current"] = paypay_progress.profit_current
           result_attributes["profit_fin"] = paypay_progress.profit_fin
-          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / paypay_progress.shift_digestion).round() rescue 0
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / result_attributes["shift_schedule"]).round() rescue 0
           csv << result_attributes.values_at(*columns)
         end 
       end
@@ -316,11 +327,11 @@ class CalcPeriodsController < ApplicationController
           result_attributes["shift_schedule"] = rakuten_pay_progress.shift_schedule
           result_attributes["shift_digestion"] = rakuten_pay_progress.shift_digestion
           result_attributes["get_len"] = rakuten_pay_progress.get_len
-          result_attributes["get_ave"] = (rakuten_pay_progress.fin_len.to_f / rakuten_pay_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_ave"] = (rakuten_pay_progress.fin_len.to_f / result_attributes["shift_schedule"]).round(1) rescue 0
           result_attributes["get_fin"] = rakuten_pay_progress.fin_len
           result_attributes["profit_current"] = rakuten_pay_progress.profit_current
           result_attributes["profit_fin"] = rakuten_pay_progress.profit_fin
-          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / rakuten_pay_progress.shift_digestion).round() rescue 0
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / result_attributes["shift_schedule"]).round() rescue 0
           csv << result_attributes.values_at(*columns)
         end 
       end
@@ -353,11 +364,11 @@ class CalcPeriodsController < ApplicationController
           result_attributes["shift_schedule"] = airpay_progress.shift_schedule
           result_attributes["shift_digestion"] = airpay_progress.shift_digestion
           result_attributes["get_len"] = airpay_progress.get_len
-          result_attributes["get_ave"] = (airpay_progress.fin_len.to_f / airpay_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_ave"] = (airpay_progress.fin_len.to_f / result_attributes["shift_schedule"]).round(1) rescue 0
           result_attributes["get_fin"] = airpay_progress.fin_len
           result_attributes["profit_current"] = airpay_progress.profit_current
           result_attributes["profit_fin"] = airpay_progress.profit_fin
-          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / airpay_progress.shift_digestion).round() rescue 0
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / result_attributes["shift_schedule"]).round() rescue 0
           csv << result_attributes.values_at(*columns)
         end 
       end
@@ -390,11 +401,11 @@ class CalcPeriodsController < ApplicationController
           result_attributes["shift_schedule"] = demaekan_progress.shift_schedule
           result_attributes["shift_digestion"] = demaekan_progress.shift_digestion
           result_attributes["get_len"] = demaekan_progress.get_len
-          result_attributes["get_ave"] = (demaekan_progress.fin_len.to_f / demaekan_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_ave"] = (demaekan_progress.fin_len.to_f / result_attributes["shift_schedule"]).round(1) rescue 0
           result_attributes["get_fin"] = demaekan_progress.fin_len
           result_attributes["profit_current"] = demaekan_progress.profit_current
           result_attributes["profit_fin"] = demaekan_progress.profit_fin
-          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / demaekan_progress.shift_digestion).round() rescue 0
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / result_attributes["shift_schedule"]).round() rescue 0
           csv << result_attributes.values_at(*columns)
         end 
       end
@@ -427,11 +438,11 @@ class CalcPeriodsController < ApplicationController
           result_attributes["shift_schedule"] = austicker_progress.shift_schedule
           result_attributes["shift_digestion"] = austicker_progress.shift_digestion
           result_attributes["get_len"] = austicker_progress.get_len
-          result_attributes["get_ave"] = (austicker_progress.fin_len.to_f / austicker_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_ave"] = (austicker_progress.fin_len.to_f / result_attributes["shift_schedule"]).round(1) rescue 0
           result_attributes["get_fin"] = austicker_progress.fin_len
           result_attributes["profit_current"] = austicker_progress.profit_current
           result_attributes["profit_fin"] = austicker_progress.profit_fin
-          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / austicker_progress.shift_digestion).round() rescue 0
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / result_attributes["shift_schedule"]).round() rescue 0
           csv << result_attributes.values_at(*columns)
         end 
       end
@@ -464,11 +475,11 @@ class CalcPeriodsController < ApplicationController
           result_attributes["shift_schedule"] = dmersticker_progress.shift_schedule
           result_attributes["shift_digestion"] = dmersticker_progress.shift_digestion
           result_attributes["get_len"] = dmersticker_progress.get_len
-          result_attributes["get_ave"] = (dmersticker_progress.fin_len.to_f / dmersticker_progress.shift_digestion).round(1) rescue 0
+          result_attributes["get_ave"] = (dmersticker_progress.fin_len.to_f / result_attributes["shift_schedule"]).round(1) rescue 0
           result_attributes["get_fin"] = dmersticker_progress.fin_len
           result_attributes["profit_current"] = dmersticker_progress.profit_current
           result_attributes["profit_fin"] = dmersticker_progress.profit_fin
-          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / dmersticker_progress.shift_digestion).round() rescue 0
+          result_attributes["profit_ave"] = (result_attributes["profit_fin"].to_f / result_attributes["shift_schedule"]).round() rescue 0
           csv << result_attributes.values_at(*columns)
         end 
       end

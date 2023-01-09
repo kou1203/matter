@@ -136,8 +136,8 @@ class CashDateProgressesController < ApplicationController
     profit_current = 0
     profit_fin = 0
     Shift.group(:user_id).each do |shift|
-      shift_schedule = @shifts.where(shift: "キャッシュレス新規").where(user_id: shift.user_id).length
-      shift_digestion = @results.where(shift: "キャッシュレス新規").where(user_id: shift.user_id).length
+      shift_schedule = @shifts.where(shift: "キャッシュレス新規").where(user_id: shift.user_id).length + @shifts.where(shift: "キャッシュレス決済").where(user_id: shift.user_id).length
+      shift_digestion = @results.where(shift: "キャッシュレス新規").where(user_id: shift.user_id).length + @results.where(shift: "キャッシュレス決済").where(user_id: shift.user_id).length
       @cash_progress_data = 
         CashDateProgress.find_by(date: @month, user_id: shift.user_id,create_date: Date.today)
       dmer_date_progresses = DmerDateProgress.where(user_id: shift.user_id).where(date: @month)
