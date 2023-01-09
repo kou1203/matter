@@ -50,6 +50,10 @@ Rails.application.routes.draw do
     collection { post :import }
   end 
 
+  resources :summit_date_progresses, only: [:index]
+
+  resources :summit_date_progresses, only: :show,param: :user_id
+
 
   resources :pranesses, expect: [:new, :create] do 
     collection { post :import }

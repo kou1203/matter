@@ -1,0 +1,218 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title">サミットエナジー</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/date-progress">
+  <p class="caution-txt"><%= alert %></p>
+  <h2>
+    <%= link_to "<<",summit_date_progresses_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
+    <%= @month.month %>月（<%= @month.beginning_of_month.to_date %>〜<%= @month.end_of_month.to_date %>）
+    <%= link_to ">>",summit_date_progresses_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>
+  </h2>
+
+    <%= javascript_pack_tag 'summit_date_progress' %>
+    <script>
+      window.billings=<%= @billings.to_json.html_safe %>;
+      window.billings_chubu=<%= @billings_chubu.to_json.html_safe %>;
+      window.billings_kansai=<%= @billings_kansai.to_json.html_safe %>;
+      window.billings_kanto=<%= @billings_kanto.to_json.html_safe %>;
+      window.billings_kyushu=<%= @billings_kyushu.to_json.html_safe %>;
+      window.current_arry=<%= @current_arry.to_json.html_safe %>;
+      // 前月
+      window.billings_prev=<%= @billings_prev.to_json.html_safe %>;
+      window.billings_prev_chubu=<%= @billings_prev_chubu.to_json.html_safe %>;
+      window.billings_prev_kansai=<%= @billings_prev_kansai.to_json.html_safe %>;
+      window.billings_prev_kanto=<%= @billings_prev_kanto.to_json.html_safe %>;
+      window.billings_prev_kyushu=<%= @billings_prev_kyushu.to_json.html_safe %>;
+      window.prev_arry=<%= @prev_arry.to_json.html_safe %>;
+      window.users=<%= @users.to_json.html_safe %>;
+      window.summit_users=<%= @summit_users.to_json.html_safe %>;
+      window.users_all=<%= @users_all.to_json.html_safe %>;
+      window.users_chubu=<%= @users_chubu.to_json.html_safe %>;
+      window.users_kansai=<%= @users_kansai.to_json.html_safe %>;
+      window.users_kanto=<%= @users_kanto.to_json.html_safe %>;
+      window.users_kyushu=<%= @users_kyushu.to_json.html_safe %>;
+    </script>
+  <hr>
+  <article id="summit-date-progress">
+    <h2>
+      ◆
+      <select @change="baseSlct" class="base-slcter">
+            <option value="中部SS">中部SS</option>
+            <option value="関西SS">関西SS</option>
+            <option value="関東SS">関東SS</option>
+            <option value="九州SS">九州SS</option>
+            <option value="">全拠点</option>
+      </select>
+      明細結果
+    </h2>
+
+    <table class="progress-tb">
+      <thead>
+        <tr>
+          <th class="progress-th1" colspan="3">基本情報</th>
+          <th class="progress-th1" colspan="2">合計件数</th>
+          <th class="progress-th1" colspan="3">合計使用量</th>
+          <th class="progress-th1" colspan="3">請求額</th>
+          <th class="progress-th1" colspan="3">合計手数料</th>
+          <th class="progress-th1" colspan="2">増加数</th>
+        </tr>
+        <tr>
+          <th class="progress-th2">拠点</th>
+          <th class="progress-th2">ユーザー名</th>
+          <th class="progress-th2">役職</th>
+          <th class="progress-th2">従量</th>
+          <th class="progress-th2">低圧</th>
+          <% 3.times do %>
+          <th class="progress-th2">従量</th>
+          <th class="progress-th2">低圧</th>
+          <th class="progress-th2">従量＋低圧</th>
+          <% end %>
+          <th class="progress-th2">従量</th>
+          <th class="progress-th2">低圧</th>
+        </tr>
+      </thead>
+      <tbody>
+      
+        <tr v-for="s_user in currentItems" :key="s_user" class="progress-tr">
+          <td class="progress-td">{{ users.find((u) => u.id == s_user.user_id).base }}</td>
+          <td class="progress-td">{{ users.find((u) => u.id == s_user.user_id).name }}</td>
+          <td class="progress-td">{{ users.find((u) => u.id == s_user.user_id).position_sub }}</td>
+          <%# 件数 %>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').length 
+          }}</td>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type === '低圧電力').length 
+          }}</td>
+          <%# 合計使用量 %>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.total_use,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.total_use,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id).reduce((sum, element) => sum + element.total_use,0).toLocaleString()
+          }}</td>
+          <%# 合計請求額 %>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id).reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
+          }}</td>
+          <%# 手数料 %>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.commission,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.commission,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id).reduce((sum, element) => sum + element.commission,0).toLocaleString()
+          }}</td>
+          <%# 増加数 %>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').length -
+            billingsPrevBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').length
+          }}</td>
+          <td class="progress-td">{{ 
+            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type === '低圧電力').length -
+            billingsPrevBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type === '低圧電力').length
+          }}</td>
+        </tr>
+        <tr class="progress-tr">
+          <td class="progress-td" colspan="3">合計</td>
+          <%# 件数 %>
+          <td class="progress-td">{{ 
+            billingsBase.filter(billing => billing.contract_type != '低圧電力').length 
+          }}</td>
+          <td class="progress-td">{{ 
+            billingsBase.filter(billing => billing.contract_type === '低圧電力').length 
+          }}</td>
+          <%# 合計使用量 %>
+          <td class="progress-td">{{ 
+            billingsBase.filter(billing => billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.total_use,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billingsBase.filter(billing => billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.total_use,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billingsBase.reduce((sum, element) => sum + element.total_use,0).toLocaleString()
+          }}</td>
+          <%# 合計請求額 %>
+          <td class="progress-td">{{ 
+            billingsBase.filter(billing => billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billingsBase.filter(billing => billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billingsBase.reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
+          }}</td>
+          <%# 手数料 %>
+          <td class="progress-td">{{ 
+            billingsBase.filter(billing => billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.commission,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billingsBase.filter(billing => billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.commission,0).toLocaleString()
+          }}</td>
+          <td class="progress-td">{{ 
+            billingsBase.reduce((sum, element) => sum + element.commission,0).toLocaleString()
+          }}</td>
+          <%# 増加数 %>
+          <td class="progress-td">{{ 
+            billingsBase.filter(billing => billing.contract_type != '低圧電力').length -
+            billingsPrevBase.filter(billing => billing.contract_type != '低圧電力').length
+          }}</td>
+          <td class="progress-td">{{ 
+            billingsBase.filter(billing => billing.contract_type === '低圧電力').length -
+            billingsPrevBase.filter(billing => billing.contract_type === '低圧電力').length
+          }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </article>
+      <% if @billings.present? %><%# @current_progressがあるか判別 %>
+      <h2>
+      グラフ：
+      <select class="graph-slct" id="summit-graph-change" >
+        <option value="手数料">手数料</option>
+        <option value="従量電灯（件数）">従量電灯（件数）</option>
+        <option value="低圧電灯（件数）">低圧電灯（件数）</option>
+      </select>
+      </h2>
+      <div class="graph-form-first" id="commission-graph">
+        <h2>◆<%= @month.year %>年：手数料推移</h2><br>
+        <%= line_chart @billings_commission,options = {
+          thousands: ","
+        } 
+        %>
+      </div>
+      <div class="graph-form" id="metered-graph">
+        <h2>◆<%= @month.year %>年：従量電灯（件数）</h2><br>
+        <%= line_chart @billings_metered ,options = {
+          thousands: ",",
+          suffix: "件",
+          } %>
+      </div>
+      <div class="graph-form" id="low-voltage-graph">
+        <h2>◆<%= @month.year %>年：低圧電力（件数）</h2><br>
+        <%= line_chart @billings_low_voltage ,options = {
+          thousands: ",",
+          suffix: "件",
+          } %>
+      </div>
+    <% end %>
+    
+</div>
+

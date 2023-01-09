@@ -22,6 +22,8 @@ window.addEventListener('load', () => {
       chubuForm.style.display = "none";
       kansaiForm.style.display = "none";
       kantoForm.style.display = "block";
+  }else {
+
   }
   });
 
