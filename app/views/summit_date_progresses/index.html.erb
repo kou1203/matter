@@ -130,7 +130,7 @@
             billingsPrevBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type === '低圧電力').length
           }}</td>
         </tr>
-        <tr class="progress-tr">
+        <tr class="sum-tr">
           <td class="progress-td" colspan="3">合計</td>
           <%# 件数 %>
           <td class="progress-td">{{ 
@@ -210,6 +210,30 @@
         <%= line_chart @billings_low_voltage ,options = {
           thousands: ",",
           suffix: "件",
+          } %>
+      </div>
+      <div class="graph-form-first">
+        <h2>◆<%= @month.year %>年：従量電灯平均手数料</h2><br>
+        <%= line_chart @metered_ave ,options = {
+          thousands: ",",
+          label: "平均手数料",
+          suffix: "円",
+          } %>
+      </div>
+      <div class="graph-form-first">
+        <h2>◆<%= @month.year %>年：平均請求額</h2><br>
+        <%= line_chart @metered_billing_amount_ave ,options = {
+          thousands: ",",
+          label: "平均請求額",
+          suffix: "円",
+          } %>
+      </div>
+      <div class="graph-form-first">
+        <h2>◆<%= @month.year %>年：従量電灯平均使用量</h2><br>
+        <%= line_chart @metered_total_use_ave ,options = {
+          thousands: ",",
+          label: "平均使用量",
+          suffix: "",
           } %>
       </div>
     <% end %>

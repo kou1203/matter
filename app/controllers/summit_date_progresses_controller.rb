@@ -3,6 +3,7 @@ class SummitDateProgressesController < ApplicationController
   def index 
     # 大元
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @year_parse = @month.to_date.all_year
     @summits = Summit.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
     @billings = SummitBillingAmount.where(payment_date: @month.beginning_of_month..@month.end_of_month)
     @billings_prev = SummitBillingAmount.where(payment_date: @month.prev_month.beginning_of_month..@month.prev_month.end_of_month)
@@ -16,6 +17,7 @@ class SummitDateProgressesController < ApplicationController
     @billings_kyushu = @billings.includes(:user).where(user: {base: "九州SS"})
     @current_arry = [@billings_chubu,@billings_kansai,@billings_kanto,@billings_kyushu]
     
+
     @users_all = @billings.includes(:user).group(:user_id)
     @users_chubu = @billings.includes(:user).where(user: {base: "中部SS"}).group(:user_id)
     @users_kansai = @billings.includes(:user).where(user: {base: "関西SS"}).group(:user_id)
@@ -28,9 +30,12 @@ class SummitDateProgressesController < ApplicationController
     @billings_prev_kyushu = @billings_prev.includes(:user).where(user: {base: "九州SS"})
     @prev_arry = [@billings_prev_chubu,@billings_prev_kansai,@billings_prev_kanto,@billings_prev_kyushu]
 
+    
+    @metered_ave = SummitBillingAmount.where(payment_date: @year_parse).where("contract_type LIKE ?","%従量%").group("Month(payment_date)").average(:commission)
+    @metered_billing_amount_ave = SummitBillingAmount.where(payment_date: @year_parse).where("contract_type LIKE ?","%従量%").group("Month(payment_date)").average(:billing_amount)
+    @metered_total_use_ave = SummitBillingAmount.where(payment_date: @year_parse).where("contract_type LIKE ?","%従量%").group("Month(payment_date)").average(:total_use)
 
     if  @billings.present?
-      @year_parse = @month.to_date.all_year
       @billings_commission = [
         {
           name: "全体手数料", data: SummitBillingAmount.where(payment_date: @year_parse).group("Month(payment_date)").sum(:commission)

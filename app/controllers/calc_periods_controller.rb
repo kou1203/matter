@@ -11,6 +11,7 @@ class CalcPeriodsController < ApplicationController
 
     @aupay_date_progresses = AupayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @aupay_date_progresses_last_update = @aupay_date_progresses.maximum(:create_date)
+    @aupay_date_progresses = @aupay_date_progresses.where(create_date: @aupay_date_progresses_last_update)
 
     @paypay_date_progresses = PaypayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @paypay_date_progresses_last_update = @paypay_date_progresses.maximum(:create_date)
@@ -22,9 +23,11 @@ class CalcPeriodsController < ApplicationController
     @airpay_date_progresses = AirpayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @airpay_date_progresses_last_update = @airpay_date_progresses.maximum(:create_date)
     @airpay_date_progresses = @airpay_date_progresses.where(create_date: @airpay_date_progresses_last_update)
+
     @demaekan_date_progresses = DemaekanDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @demaekan_date_progresses_last_update = @demaekan_date_progresses.maximum(:create_date)
-    
+    @demaekan_date_progresses = @demaekan_date_progresses.where(create_date: @demaekan_date_progresses_last_update)
+
     @austicker_date_progresses = AustickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @austicker_date_progresses_last_update = @austicker_date_progresses.maximum(:create_date)
     
@@ -36,13 +39,13 @@ class CalcPeriodsController < ApplicationController
 
     @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "2次店","退職"]
 
-    @products = ["合計","dメル", "楽天ペイ","AirPay"]
+    @products = ["合計","dメル", "auPay", "PayPay", "楽天ペイ","AirPay", "出前館"]
     
     respond_to do |format|
       format.html
       format.xlsx do
         # ファイル名をここで指定する（動的にファイル名を変更できる）
-        response.headers['Content-Disposition'] = "attachment; filename=実売資料#{Date.today}.xlsx"
+        response.headers['Content-Disposition'] = "attachment; filename=#{@cash_date_progresses.maximum(:date).month}月実売資料.xlsx"
       end
     end
 

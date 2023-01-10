@@ -4,6 +4,8 @@ window.addEventListener('load', () => {
   const commissionGraph = document.getElementById('commission-graph');
   const meteredGraph = document.getElementById('metered-graph');
   const lowVoltageGraph = document.getElementById('low-voltage-graph');
+  const commissionAveGraph = document.getElementById('commission-ave-graph');
+  const totalUseAveGraph = document.getElementById('total-use-ave-graph');
 
   summitGraphChange.addEventListener("change", function(){
     if(this.value == '手数料'){
