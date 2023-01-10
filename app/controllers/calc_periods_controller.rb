@@ -34,7 +34,7 @@ class CalcPeriodsController < ApplicationController
     @cash_date_progresses_last_update = @cash_date_progresses.maximum(:create_date)
     @cash_date_progresses = @cash_date_progresses.where(create_date: @cash_date_progresses_last_update)
 
-    @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+    @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "2次店","退職"]
 
     @products = ["合計","dメル", "楽天ペイ","AirPay"]
     
