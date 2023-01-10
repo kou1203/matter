@@ -7,14 +7,21 @@ class CalcPeriodsController < ApplicationController
     @calc_periods_prof = CalcPeriod.where(sales_category: "実売")
     @dmer_date_progresses = DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @dmer_date_progresses_last_update =  @dmer_date_progresses.maximum(:create_date)
+    @dmer_date_progresses = @dmer_date_progresses.where(create_date: @dmer_date_progresses_last_update)
+
     @aupay_date_progresses = AupayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @aupay_date_progresses_last_update = @aupay_date_progresses.maximum(:create_date)
+
     @paypay_date_progresses = PaypayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @paypay_date_progresses_last_update = @paypay_date_progresses.maximum(:create_date)
+
     @rakuten_pay_date_progresses = RakutenPayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @rakuten_pay_date_progresses_last_update = @rakuten_pay_date_progresses.maximum(:create_date)
+    @rakuten_pay_date_progresses = @rakuten_pay_date_progresses.where(create_date: @rakuten_pay_date_progresses_last_update)
+
     @airpay_date_progresses = AirpayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @airpay_date_progresses_last_update = @airpay_date_progresses.maximum(:create_date)
+    @airpay_date_progresses = @airpay_date_progresses.where(create_date: @airpay_date_progresses_last_update)
     @demaekan_date_progresses = DemaekanDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @demaekan_date_progresses_last_update = @demaekan_date_progresses.maximum(:create_date)
     
@@ -25,7 +32,20 @@ class CalcPeriodsController < ApplicationController
     @dmersticker_date_progresses_last_update = @dmersticker_date_progresses.maximum(:create_date)
     @cash_date_progresses = CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @cash_date_progresses_last_update = @cash_date_progresses.maximum(:create_date)
+    @cash_date_progresses = @cash_date_progresses.where(create_date: @cash_date_progresses_last_update)
+
+    @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
+
+    @products = ["合計","dメル", "楽天ペイ","AirPay"]
     
+    respond_to do |format|
+      format.html
+      format.xlsx do
+        # ファイル名をここで指定する（動的にファイル名を変更できる）
+        response.headers['Content-Disposition'] = "attachment; filename=実売資料#{Date.today}.xlsx"
+      end
+    end
+
   end 
 
   def new 

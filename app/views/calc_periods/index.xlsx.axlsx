@@ -1,0 +1,79 @@
+wb = xlsx_package.workbook
+
+@products.each do |product|
+  wb.add_worksheet(name: product) do |sheet|
+    if product == "合計"
+      sheet.add_row [ "拠点", "Ave", "現状実売", "終着実売", "dメル一次成果現状実売", "dメル一次成果終着実売"]
+      @bases.each do |base|
+        dmer_date_progress = @dmer_date_progresses.where(base: base)
+        cash_date_progress = @cash_date_progresses.where(base: base)
+        if (cash_date_progress.sum(:profit_fin) == 0) || (cash_date_progress.sum(:shift_schedule) == 0)
+          average = 0
+        else  
+          average = 
+            (
+              cash_date_progress.sum(:profit_fin).to_f / cash_date_progress.sum(:shift_schedule)
+            ).round()
+        end 
+        
+        sheet.add_row [
+          base, average, cash_date_progress.sum(:profit_current), cash_date_progress.sum(:profit_fin), 
+          dmer_date_progress.sum(:profit_current1),dmer_date_progress.sum(:profit_fin1)
+        ]
+      end 
+        sum_average = (@cash_date_progresses.where("base LIKE ?", "%SS%").sum(:profit_fin) / @cash_date_progresses.where("base LIKE ?", "%SS%").sum(:shift_schedule)).round()
+        sheet.add_row [
+          "全拠点", sum_average, @cash_date_progresses.sum(:profit_current), @cash_date_progresses.sum(:profit_fin),
+          @dmer_date_progresses.sum(:profit_current1), @dmer_date_progresses.sum(:profit_fin1)
+        ]
+
+    elsif product == "dメル"
+      sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
+      @bases.each do |base|
+        @dmer_date_progresses.where(base: base).each do |date_progress|
+          val_len = date_progress.get_len - date_progress.def_len
+          ave_len = (date_progress.fin_len / date_progress.shift_schedule).round() rescue 0
+          ave_profit = (profit_fin / date_progress.shift_schedule).round() rescue 0
+          profit_fin = date_progress.profit_fin1 + date_progress.profit_fin2 + date_progress.profit_fin3
+          sheet.add_row [
+            date_progress.base, date_progress.user.name, date_progress.user.position_sub, 
+            date_progress.shift_schedule, date_progress.shift_digestion,
+            val_len, ave_len,date_progress.fin_len,
+            ave_profit, date_progress.profit_current, profit_fin
+
+          ]
+        end 
+      end
+      
+    elsif product == "楽天ペイ"
+      sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
+      @bases.each do |base|
+        @rakuten_pay_date_progresses.where(base: base).each do |date_progress|
+          ave_len = (date_progress.fin_len / date_progress.shift_schedule).round() rescue 0
+          ave_profit = (date_progress.profit_fin / date_progress.shift_schedule).round() rescue 0
+          sheet.add_row [
+            date_progress.base, date_progress.user.name, date_progress.user.position_sub, 
+            date_progress.shift_schedule, date_progress.shift_digestion,
+            date_progress.get_len, ave_len,date_progress.fin_len,
+            ave_profit, date_progress.profit_current, date_progress.profit_fin
+          ]
+        end 
+      end
+
+    else
+      sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
+      @bases.each do |base|
+        @airpay_date_progresses.where(base: base).each do |date_progress|
+          ave_len = (date_progress.fin_len / date_progress.shift_schedule).round() rescue 0
+          ave_profit = (date_progress.profit_fin / date_progress.shift_schedule).round() rescue 0
+          sheet.add_row [
+            date_progress.base, date_progress.user.name, date_progress.user.position_sub, 
+            date_progress.shift_schedule, date_progress.shift_digestion,
+            date_progress.get_len, ave_len,date_progress.fin_len,
+            ave_profit, date_progress.profit_current, date_progress.profit_fin
+          ]
+        end 
+      end
+    end 
+  end
+end

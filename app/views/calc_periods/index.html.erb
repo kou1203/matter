@@ -81,6 +81,7 @@
       <td><%= link_to "詳細", cash_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
       <td><%= @cash_date_progresses_last_update %></td>
       <td><%= link_to "実売資料(合計)",cash_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
+      <td><%= link_to "Excelで出力(合計)",calc_periods_path(format: :xlsx,month: @month), data: {confirm: "Excelを出力しますか？"}, class: "link",id:'download-csv' %></td>
     </tr>
     <tr>
       <td></td>

@@ -97,3 +97,5 @@ gem 'render_async'
 
 gem 'google_drive'
 
+gem 'axlsx_rails'
+
