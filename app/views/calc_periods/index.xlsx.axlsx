@@ -66,7 +66,7 @@ wb = xlsx_package.workbook
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
       @bases.each do |base|
         @paypay_date_progresses.where(base: base).each do |date_progress|
-          ave_len = (date_progress.get_len.to_f / date_progress.shift_schedule).round(1) rescue 0
+          ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
           ave_profit = (profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
           sheet.add_row [
             date_progress.base, date_progress.user.name, date_progress.user.position_sub, 
