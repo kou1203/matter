@@ -15,7 +15,7 @@ class CalcPeriodsController < ApplicationController
 
     @paypay_date_progresses = PaypayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @paypay_date_progresses_last_update = @paypay_date_progresses.maximum(:create_date)
-
+    @paypay_date_progresses = @paypay_date_progresses.where(create_date: @paypay_date_progresses_last_update)
     @rakuten_pay_date_progresses = RakutenPayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @rakuten_pay_date_progresses_last_update = @rakuten_pay_date_progresses.maximum(:create_date)
     @rakuten_pay_date_progresses = @rakuten_pay_date_progresses.where(create_date: @rakuten_pay_date_progresses_last_update)
