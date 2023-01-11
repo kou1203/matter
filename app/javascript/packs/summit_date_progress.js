@@ -28,7 +28,7 @@ document.addEventListener('turbolinks:load', () => {
   const billings_prev_kyushu = window.billings_prev_kyushu
   const prev_arry = window.prev_arry
   
-  const month_metered_len = window.month_metered_len
+  const month_metered = window.month_metered
 
   if (element != null) {
     const vueapp = new Vue({
@@ -45,7 +45,7 @@ document.addEventListener('turbolinks:load', () => {
         users: users,
         isActive: true,
         isDifActive: true,
-        month_metered_len: month_metered_len,
+        month_metered: month_metered,
         userId: ''
       },
       methods: {

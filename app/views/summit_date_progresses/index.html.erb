@@ -1,6 +1,6 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <div data-scope-path="shared/header">
-  <h1 class="sub-title">サミットエナジー</h1>
+  <h1 class="sub-title">サミットエナジー明細分析</h1>
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;">
@@ -39,7 +39,7 @@
       window.users_kanto=<%= @users_kanto.to_json.html_safe %>;
       window.users_kyushu=<%= @users_kyushu.to_json.html_safe %>;
       // 詳細用の変数
-      window.month_metered_len=<%= @month_metered_len.to_json.html_safe %>;
+      window.month_metered=<%= @month_metered.to_json.html_safe %>;
       
     </script>
   <hr>
@@ -192,27 +192,24 @@
         </tr>
         <tr>
           <th class="progress-th2">項目</th>
-          <% cnt = 1 %>
-        <% 12.times do %>
-          <th class="progress-th2"><%= cnt %>月</th>
-          <% cnt += 1 %>
-        <% end %> 
+          <th class="progress-th2" v-for="n of 12" key="n">{{ n }}月</th>
         </tr>
         <tr class="progress-tr">
           <td class="progress-td">従量(件数)</td>
-          <td class="progress-td">{{ month_metered_len.filter(m => m.user_id == userId).length }}</td>
+          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1 ).length }}</td>
+
         </tr>
         <tr class="progress-tr">
           <td class="progress-td">従量(使用量)</td>
-          <td class="progress-td"></td>
+          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1 ).reduce((sum, element) => sum + element.total_use,0).toLocaleString() }}</td>
         </tr>
         <tr class="progress-tr">
           <td class="progress-td">従量(請求額)</td>
-          <td class="progress-td"></td>
+          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1 ).reduce((sum, element) => sum + element.billing_amount,0).toLocaleString() }}</td>
         </tr>
         <tr class="progress-tr">
           <td class="progress-td">従量(手数料)</td>
-          <td class="progress-td"></td>
+          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1 ).reduce((sum, element) => sum + element.commission,0).toLocaleString() }}</td>
         </tr>
       </table>
     </div>

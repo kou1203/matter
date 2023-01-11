@@ -84,4 +84,8 @@ class SummitBillingAmount < ApplicationRecord
   "新規登録#{new_cnt}件, 更新#{update_cnt}件, 変更なし#{nochange_cnt}件 "
   end
 
+  def payment_month
+    self.payment_date.month
+  end 
+
 end
