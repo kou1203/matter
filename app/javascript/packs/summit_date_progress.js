@@ -6,6 +6,7 @@ Vue.use(TurbolinksAdapter)
 document.addEventListener('turbolinks:load', () => {
   const element = document.getElementById("summit-date-progress");
   // 当月
+  const month = window.month
   const billings = window.billings
   const billings_chubu = window.billings_chubu
   const billings_kansai = window.billings_kansai
@@ -26,11 +27,14 @@ document.addEventListener('turbolinks:load', () => {
   const billings_prev_kanto = window.billings_prev_kanto
   const billings_prev_kyushu = window.billings_prev_kyushu
   const prev_arry = window.prev_arry
+  
+  const month_metered_len = window.month_metered_len
 
   if (element != null) {
     const vueapp = new Vue({
       el: element,
       data: {
+        month: month,
         billings: billings,
         billingsPrev: billings_prev,
         billingsBase: billings_chubu,
@@ -40,7 +44,9 @@ document.addEventListener('turbolinks:load', () => {
         prev_arry: prev_arry,
         users: users,
         isActive: true,
-        isDifActive: true
+        isDifActive: true,
+        month_metered_len: month_metered_len,
+        userId: ''
       },
       methods: {
         baseSlct: function(e) {
@@ -69,6 +75,7 @@ document.addEventListener('turbolinks:load', () => {
         difActive: function() {
           this.isDifActive = !this.isDifActive;
         }
+
       }
       // components: { App }
     });

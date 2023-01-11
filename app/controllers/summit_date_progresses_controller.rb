@@ -10,6 +10,8 @@ class SummitDateProgressesController < ApplicationController
     @users = User.all
     @summit_users = Summit.includes(:user).group(:user_id)
 
+    @month_metered_len = SummitBillingAmount.where(payment_date: @year_parse).group(:user_id,"Month(payment_date)")
+
     # 拠点別当月
     @billings_chubu = @billings.includes(:user).where(user: {base: "中部SS"})
     @billings_kansai = @billings.includes(:user).where(user: {base: "関西SS"})

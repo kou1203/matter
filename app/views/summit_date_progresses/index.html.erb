@@ -17,6 +17,7 @@
 
     <%= javascript_pack_tag 'summit_date_progress' %>
     <script>
+      window.month=<%= @month.to_json.html_safe %>;
       window.billings=<%= @billings.to_json.html_safe %>;
       window.billings_chubu=<%= @billings_chubu.to_json.html_safe %>;
       window.billings_kansai=<%= @billings_kansai.to_json.html_safe %>;
@@ -37,6 +38,9 @@
       window.users_kansai=<%= @users_kansai.to_json.html_safe %>;
       window.users_kanto=<%= @users_kanto.to_json.html_safe %>;
       window.users_kyushu=<%= @users_kyushu.to_json.html_safe %>;
+      // 詳細用の変数
+      window.month_metered_len=<%= @month_metered_len.to_json.html_safe %>;
+      
     </script>
   <hr>
   <article id="summit-date-progress">
@@ -81,7 +85,7 @@
       
         <tr v-for="s_user in currentItems" :key="s_user" class="progress-tr">
           <td class="progress-td">{{ users.find((u) => u.id == s_user.user_id).base }}</td>
-          <td class="progress-td">{{ users.find((u) => u.id == s_user.user_id).name }}</td>
+          <td class="progress-td click" @click="userId = users.find((u) => u.id == s_user.user_id).id">{{ users.find((u) => u.id == s_user.user_id).name }}</td>
           <td class="progress-td">{{ users.find((u) => u.id == s_user.user_id).position_sub }}</td>
           <%# 件数 %>
           <td class="progress-td">{{ 
@@ -181,20 +185,55 @@
         </tr>
       </tbody>
     </table>
+    <div v-if="userId != '' ">
+      <h2 ><%= @month.year %>年{{ users.find((u) => u.id == userId).name }}詳細</h2>
+      <table class="progress-tb">
+        <tr>
+        </tr>
+        <tr>
+          <th class="progress-th2">項目</th>
+          <% cnt = 1 %>
+        <% 12.times do %>
+          <th class="progress-th2"><%= cnt %>月</th>
+          <% cnt += 1 %>
+        <% end %> 
+        </tr>
+        <tr class="progress-tr">
+          <td class="progress-td">従量(件数)</td>
+          <td class="progress-td">{{ month_metered_len.filter(m => m.user_id == userId).length }}</td>
+        </tr>
+        <tr class="progress-tr">
+          <td class="progress-td">従量(使用量)</td>
+          <td class="progress-td"></td>
+        </tr>
+        <tr class="progress-tr">
+          <td class="progress-td">従量(請求額)</td>
+          <td class="progress-td"></td>
+        </tr>
+        <tr class="progress-tr">
+          <td class="progress-td">従量(手数料)</td>
+          <td class="progress-td"></td>
+        </tr>
+      </table>
+    </div>
   </article>
-      <% if @billings.present? %><%# @current_progressがあるか判別 %>
+    <% if @billings.present? %><%# @current_progressがあるか判別 %>
       <h2>
       グラフ：
       <select class="graph-slct" id="summit-graph-change" >
         <option value="手数料">手数料</option>
         <option value="従量電灯（件数）">従量電灯（件数）</option>
         <option value="低圧電灯（件数）">低圧電灯（件数）</option>
+        <option value="従量電灯手数料（平均）">従量電灯手数料（平均）</option>
+        <option value="請求額（平均）">請求額（平均）</option>
+        <option value="従量電灯使用量（平均）">従量電灯使用量（平均）</option>
       </select>
       </h2>
       <div class="graph-form-first" id="commission-graph">
         <h2>◆<%= @month.year %>年：手数料推移</h2><br>
         <%= line_chart @billings_commission,options = {
-          thousands: ","
+          thousands: ",",
+          suffix: "円",
         } 
         %>
       </div>
@@ -212,24 +251,24 @@
           suffix: "件",
           } %>
       </div>
-      <div class="graph-form-first">
-        <h2>◆<%= @month.year %>年：従量電灯平均手数料</h2><br>
+      <div class="graph-form" id="metered-billings-ave-graph">
+        <h2>◆<%= @month.year %>年：従量電灯手数料（平均）</h2><br>
         <%= line_chart @metered_ave ,options = {
           thousands: ",",
           label: "平均手数料",
           suffix: "円",
           } %>
       </div>
-      <div class="graph-form-first">
-        <h2>◆<%= @month.year %>年：平均請求額</h2><br>
+      <div class="graph-form" id="commission-ave-graph">
+        <h2>◆<%= @month.year %>年：請求額（平均）</h2><br>
         <%= line_chart @metered_billing_amount_ave ,options = {
           thousands: ",",
           label: "平均請求額",
           suffix: "円",
           } %>
       </div>
-      <div class="graph-form-first">
-        <h2>◆<%= @month.year %>年：従量電灯平均使用量</h2><br>
+      <div class="graph-form" id="total-use-ave-graph">
+        <h2>◆<%= @month.year %>年：従量電灯使用量（平均）</h2><br>
         <%= line_chart @metered_total_use_ave ,options = {
           thousands: ",",
           label: "平均使用量",
