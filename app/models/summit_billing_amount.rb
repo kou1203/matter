@@ -14,12 +14,16 @@ class SummitBillingAmount < ApplicationRecord
       errors << "#{index}行目の担当者名が存在しません。#{row["パートナー営業担当"]}" if user.blank? && errors.length < 5
 
         summit_billing_amount = new(
+          first_flag: row["初回明細フラグ"],
+          base: row["拠点"],
+          prefecture: row["都道府県"],
           billing_date: row["請求対象年月"],
-          store_name: row["請求先名称"],
+          store_name: row["屋号名"],
           contract_type: row["低圧料金メニュー"],
           total_use: row["当月使用量合計"],
           billing_amount: row["請求金額税込み（円"],
-          commission: row["手数料（円・税込）"],
+          commission: row["税抜"],
+          commission_tax_included: row["手数料（円・税込）"],
           record_num: row["レコード番号"],
           payment_date: row["入金日"],
           user_id: u_id,
@@ -47,12 +51,16 @@ class SummitBillingAmount < ApplicationRecord
         SummitBillingAmount.find_by(billing_date: row["請求対象年月"],record_num: row["レコード番号"])
     if summit_billing_amount.present? 
       summit_billing_amount.assign_attributes(
+        first_flag: row["初回明細フラグ"],
+        base: row["拠点"],
+        prefecture: row["都道府県"],
         billing_date: row["請求対象年月"],
-        store_name: row["請求先名称"],
+        store_name: row["屋号名"],
         contract_type: row["低圧料金メニュー"],
         total_use: row["当月使用量合計"],
         billing_amount: row["請求金額税込み（円"],
-        commission: row["手数料（円・税込）"],
+        commission: row["税抜"],
+        commission_tax_included: row["手数料（円・税込）"],
         record_num: row["レコード番号"],
         payment_date: row["入金日"],
         user_id: u_id,
@@ -66,12 +74,16 @@ class SummitBillingAmount < ApplicationRecord
       end 
     else  
       summit_billing_amount = new(
+        first_flag: row["初回明細フラグ"],
+        base: row["拠点"],
+        prefecture: row["都道府県"],
         billing_date: row["請求対象年月"],
-        store_name: row["請求先名称"],
+        store_name: row["屋号名"],
         contract_type: row["低圧料金メニュー"],
         total_use: row["当月使用量合計"],
         billing_amount: row["請求金額税込み（円"],
-        commission: row["手数料（円・税込）"],
+        commission: row["税抜"],
+        commission_tax_included: row["手数料（円・税込）"],
         record_num: row["レコード番号"],
         payment_date: row["入金日"],
         user_id: u_id,

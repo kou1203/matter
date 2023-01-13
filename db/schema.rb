@@ -1281,12 +1281,16 @@ ActiveRecord::Schema.define(version: 2023_01_09_035325) do
   end
 
   create_table "summit_billing_amounts", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "first_flag"
+    t.string "base"
+    t.string "prefecture"
     t.string "billing_date"
     t.string "store_name"
     t.string "contract_type"
     t.integer "total_use"
     t.integer "billing_amount"
     t.integer "commission"
+    t.integer "commission_tax_included"
     t.integer "record_num"
     t.bigint "user_id"
     t.bigint "summit_id"

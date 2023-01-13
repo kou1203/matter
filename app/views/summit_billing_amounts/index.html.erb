@@ -34,8 +34,12 @@
             <div class="user-form"><%# ユーザー情報 %>
               <p class="s-label">獲得者</p>
               <p class="s-text-field"><%= f.text_field :user_name_cont, class: "s-text-input" %></p>
-              <p class="s-label">拠点</p>
+              <p class="s-label">拠点（獲得者）</p>
               <p class="s-slct-field"><%= f.select :user_base_cont,{"中部SS": "中部SS","関東SS": "関東SS","関西SS": "関西SS","2次店": "2次店"},{include_blank: true},{ class: "s-slct-input"} %></p>
+              <p class="s-label">拠点（地域）</p>
+              <p class="s-slct-field"><%= f.select :base_cont,{"中部SS": "中部SS","関東SS": "関東SS","関西SS": "関西SS"},{include_blank: true},{ class: "s-slct-input"} %></p>
+              <p class="s-label">都道府県</p>
+              <p class="s-text-field"><%= f.text_field :prefecture_cont, class: "s-text-input" %></p>
             </div><%# ユーザー情報 %>
             <div class="product-form"><%# 商材情報 %>
               <table class="s-tb">
@@ -116,20 +120,24 @@
       <thead>
       <tr>
         <th class="out-th">レコード番号</th>
+        <th class="out-th">明細フラグ</th>
         <th class="out-th">請求対象年月</th>
         <th class="out-th">店舗名</th>
         <th class="out-th">獲得者</th>
         <th class="out-th">契約種別</th>
         <th class="out-th">当月合計使用料</th>
         <th class="out-th">請求金額(税込)</th>
-        <th class="out-th">手数料(税込)</th>
+        <th class="out-th">手数料(税抜)</th>
         <th class="out-th">入金日</th>
+        <th class="out-th">拠点</th>
+        <th class="out-th">都道府県</th>
       </tr>
       </thead>
       <tbody>
       <% @summits_data.each do |summit| %>
       <tr >
         <td class="out-td"><%= summit.record_num %></td>
+        <td class="out-td"><%= summit.first_flag %></td>
         <td class="out-td"><%= summit.billing_date %></td>
         <td class="out-td"><%= summit.store_name rescue "不明" %></td>
         <td class="out-td"><%= summit.user.name %></td>
@@ -138,6 +146,8 @@
         <td class="out-td"><%= summit.billing_amount.to_s(:delimited) rescue "不明"%></td>
         <td class="out-td"><%= summit.commission.to_s(:delimited) %></td>
         <td class="out-td"><%= summit.payment_date %></td>
+        <td class="out-td"><%= summit.base %></td>
+        <td class="out-td"><%= summit.prefecture %></td>
       <% end %>
       </tbody>
     </table>

@@ -40,6 +40,7 @@
       window.users_kyushu=<%= @users_kyushu.to_json.html_safe %>;
       // 詳細用の変数
       window.month_metered=<%= @month_metered.to_json.html_safe %>;
+      window.month_metered_all=<%= @month_metered_all.to_json.html_safe %>;
       
     </script>
   <hr>
@@ -53,7 +54,7 @@
             <option value="九州SS">九州SS</option>
             <option value="">全拠点</option>
       </select>
-      明細結果
+      明細結果（地域参照）
     </h2>
 
     <table class="progress-tb">
@@ -67,7 +68,7 @@
           <th class="progress-th1" colspan="2">増加数</th>
         </tr>
         <tr>
-          <th class="progress-th2">拠点</th>
+          <th class="progress-th2">所属拠点</th>
           <th class="progress-th2">ユーザー名</th>
           <th class="progress-th2">役職</th>
           <th class="progress-th2">従量</th>
@@ -89,48 +90,48 @@
           <td class="progress-td">{{ users.find((u) => u.id == s_user.user_id).position_sub }}</td>
           <%# 件数 %>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').length 
+            billingsBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力' ).length 
           }}</td>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type === '低圧電力').length 
+            billingsBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type === '低圧電力').length 
           }}</td>
           <%# 合計使用量 %>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.total_use,0).toLocaleString()
+            billingsBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.total_use,0).toLocaleString()
           }}</td>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.total_use,0).toLocaleString()
+            billingsBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.total_use,0).toLocaleString()
           }}</td>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id).reduce((sum, element) => sum + element.total_use,0).toLocaleString()
+            billingsBase.filter(billing => billing.user_id == s_user.user_id).reduce((sum, element) => sum + element.total_use,0).toLocaleString()
           }}</td>
           <%# 合計請求額 %>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
+            billingsBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
           }}</td>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
+            billingsBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
           }}</td>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id).reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
+            billingsBase.filter(billing => billing.user_id == s_user.user_id).reduce((sum, element) => sum + element.billing_amount,0).toLocaleString()
           }}</td>
           <%# 手数料 %>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.commission,0).toLocaleString()
+            billingsBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').reduce((sum, element) => sum + element.commission,0).toLocaleString()
           }}</td>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.commission,0).toLocaleString()
+            billingsBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type == '低圧電力').reduce((sum, element) => sum + element.commission,0).toLocaleString()
           }}</td>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id).reduce((sum, element) => sum + element.commission,0).toLocaleString()
+            billingsBase.filter(billing => billing.user_id == s_user.user_id).reduce((sum, element) => sum + element.commission,0).toLocaleString()
           }}</td>
           <%# 増加数 %>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').length -
+            billingsBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').length -
             billingsPrevBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type != '低圧電力').length
           }}</td>
           <td class="progress-td">{{ 
-            billings.filter(billing => billing.user_id == s_user.user_id && billing.contract_type === '低圧電力').length -
+            billingsBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type === '低圧電力').length -
             billingsPrevBase.filter(billing => billing.user_id == s_user.user_id && billing.contract_type === '低圧電力').length
           }}</td>
         </tr>
@@ -186,7 +187,7 @@
       </tbody>
     </table>
     <div v-if="userId != '' ">
-      <h2 ><%= @month.year %>年{{ users.find((u) => u.id == userId).name }}詳細</h2>
+      <h2 ><%= @month.year %>年：{{ users.find((u) => u.id == userId).name }}詳細</h2>
       <table class="progress-tb">
         <tr>
         </tr>
@@ -196,20 +197,20 @@
         </tr>
         <tr class="progress-tr">
           <td class="progress-td">従量(件数)</td>
-          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1 ).length }}</td>
+          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered_all.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1 ).length }}</td>
 
         </tr>
         <tr class="progress-tr">
           <td class="progress-td">従量(使用量)</td>
-          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1 ).reduce((sum, element) => sum + element.total_use,0).toLocaleString() }}</td>
+          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered_all.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1).reduce((sum, element) => sum + element.total_use,0).toLocaleString() }}</td>
         </tr>
         <tr class="progress-tr">
           <td class="progress-td">従量(請求額)</td>
-          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1 ).reduce((sum, element) => sum + element.billing_amount,0).toLocaleString() }}</td>
+          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered_all.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1).reduce((sum, element) => sum + element.billing_amount,0).toLocaleString() }}</td>
         </tr>
         <tr class="progress-tr">
           <td class="progress-td">従量(手数料)</td>
-          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1 ).reduce((sum, element) => sum + element.commission,0).toLocaleString() }}</td>
+          <td class="progress-td" v-for="n of 12" key="n">{{ month_metered_all.filter(m => m.user_id == userId && new Date(m.payment_date).getMonth() == n -1).reduce((sum, element) => sum + element.commission,0).toLocaleString() }}</td>
         </tr>
       </table>
     </div>
@@ -231,6 +232,7 @@
         <%= line_chart @billings_commission,options = {
           thousands: ",",
           suffix: "円",
+          xtitle: "入金月",
         } 
         %>
       </div>
@@ -239,6 +241,8 @@
         <%= line_chart @billings_metered ,options = {
           thousands: ",",
           suffix: "件",
+          xtitle: "入金月",
+
           } %>
       </div>
       <div class="graph-form" id="low-voltage-graph">
@@ -246,31 +250,221 @@
         <%= line_chart @billings_low_voltage ,options = {
           thousands: ",",
           suffix: "件",
-          } %>
-      </div>
-      <div class="graph-form" id="metered-billings-ave-graph">
-        <h2>◆<%= @month.year %>年：従量電灯手数料（平均）</h2><br>
-        <%= line_chart @metered_ave ,options = {
-          thousands: ",",
-          label: "平均手数料",
-          suffix: "円",
+          xtitle: "入金月",
           } %>
       </div>
       <div class="graph-form" id="commission-ave-graph">
+        <h2>◆<%= @month.year %>年：従量電灯手数料（平均）</h2><br>
+        <%= line_chart @commission_ave ,options = {
+          thousands: ",",
+          label: "平均手数料",
+          suffix: "円",
+          xtitle: "入金月",
+          round: 0
+          } %>
+        <h2>従量手数料（平均）</h2>
+        <table class="progress-tb">
+          <tr>
+            <th class="progress-th2">拠点</th>
+            <% cnt = 1 %>
+            <% 12.times do %>
+              <th class="progress-th2"><%= cnt %>月</th>
+              <% cnt += 1 %>
+            <% end %>
+          </tr>
+          <% @bases.each do |base| %>
+          <tr class="progress-tr">
+            <td class="progress-td"><%= base %></td>
+              <% cnt = 0 %>
+              <% empty_data_len = 0 %>
+              <% @month_metered.where(base: base).group("Month(payment_date)").average(:commission).each do |c|  %>
+              <% if cnt == 0 && c[0] != 1 %>
+                <% empty_data_len = c[0] - 1 %>
+                <% empty_data_len.times do %>
+                <td class="progress-td"></td>
+                <% end %>
+              <% end %>
+              <td class="progress-td"><%= c[1].round().to_s(:delimited) %></td>
+              <% cnt += 1 %>
+              <% end %>
+              <% (12 - @month_metered.where(base: base).group("Month(payment_date)").length - empty_data_len).times do %>
+              <td class="progress-td"></td>
+              <% end  %>
+          </tr>
+          <% end %>
+          <tr class="progress-tr">
+            <td class="progress-td">全体</td>
+              <% cnt = 0 %>
+              <% @month_metered.group("Month(payment_date)").average(:commission).each do |c|  %>
+              <% if cnt == 0 && c[0] != 1 %>
+                <% empty_data_len = c[0] - 1 %>
+                <% empty_data_len.times do %>
+                <td class="progress-td"></td>
+                <% end %>
+              <% end %>
+              <td class="progress-td"><%= c[1].round().to_s(:delimited) %></td>
+              <% cnt += 1 %>
+              <% end %>
+          </tr>
+        </table>
+        <h2>低圧電力手数料（平均）</h2>
+        <table class="progress-tb">
+          <tr>
+            <th class="progress-th2">拠点</th>
+            <% cnt = 1 %>
+            <% 12.times do %>
+              <th class="progress-th2"><%= cnt %>月</th>
+              <% cnt += 1 %>
+            <% end %>
+          </tr>
+          <% @bases.each do |base| %>
+          <tr class="progress-tr">
+            <td class="progress-td"><%= base %></td>
+              <% cnt = 0 %>
+              <% empty_data_len = 0 %>
+              <% @month_low_voltage.where(base: base).group("Month(payment_date)").average(:commission).each do |c|  %>
+              <% if cnt == 0 && c[0] != 1 %>
+                <% empty_data_len = c[0] - 1 %>
+                <% empty_data_len.times do %>
+                <td class="progress-td"></td>
+                <% end %>
+              <% end %>
+              <td class="progress-td"><%= c[1].round().to_s(:delimited) %></td>
+              <% cnt += 1 %>
+              <% end %>
+              <% (12 - @month_low_voltage.where(base: base).group("Month(payment_date)").length - empty_data_len).times do %>
+              <td class="progress-td"></td>
+              <% end  %>
+          </tr>
+          <% end %>
+          <tr class="progress-tr">
+            <td class="progress-td">全体</td>
+              <% cnt = 0 %>
+              <% @month_low_voltage.group("Month(payment_date)").average(:commission).each do |c|  %>
+              <% if cnt == 0 && c[0] != 1 %>
+                <% empty_data_len = c[0] - 1 %>
+                <% empty_data_len.times do %>
+                <td class="progress-td"></td>
+                <% end %>
+              <% end %>
+              <td class="progress-td"><%= c[1].round().to_s(:delimited) %></td>
+              <% cnt += 1 %>
+              <% end %>
+          </tr>
+        </table>
+
+      </div>
+
+      <div class="graph-form" id="billings-ave-graph">
         <h2>◆<%= @month.year %>年：請求額（平均）</h2><br>
-        <%= line_chart @metered_billing_amount_ave ,options = {
+        <%= line_chart @billing_amount_ave ,options = {
           thousands: ",",
           label: "平均請求額",
           suffix: "円",
+          xtitle: "入金月",
+          round: 0
           } %>
       </div>
       <div class="graph-form" id="total-use-ave-graph">
-        <h2>◆<%= @month.year %>年：従量電灯使用量（平均）</h2><br>
-        <%= line_chart @metered_total_use_ave ,options = {
+        <h2>◆<%= @month.year %>年：使用量（平均）</h2><br>
+        <%= line_chart @tota_use_ave_graph ,options = {
           thousands: ",",
           label: "平均使用量",
-          suffix: "",
+          suffix: "kWh",
+          xtitle: "入金月",
+          round: 1
           } %>
+
+        <h2>従量使用料（平均）</h2>
+        <table class="progress-tb">
+          <tr>
+            <th class="progress-th2">拠点</th>
+            <% cnt = 1 %>
+            <% 12.times do %>
+              <th class="progress-th2"><%= cnt %>月</th>
+              <% cnt += 1 %>
+            <% end %>
+          </tr>
+          <% @bases.each do |base| %>
+          <tr class="progress-tr">
+            <td class="progress-td"><%= base %></td>
+              <% cnt = 0 %>
+              <% empty_data_len = 0 %>
+              <% @month_metered.where(base: base).group("Month(payment_date)").average(:total_use).each do |c|  %>
+              <% if cnt == 0 && c[0] != 1 %>
+                <% empty_data_len = c[0] - 1 %>
+                <% empty_data_len.times do %>
+                <td class="progress-td"></td>
+                <% end %>
+              <% end %>
+              <td class="progress-td"><%= c[1].round(1).to_s(:delimited) %>kWh</td>
+              <% cnt += 1 %>
+              <% end %>
+              <% (12 - @month_metered.where(base: base).group("Month(payment_date)").length - empty_data_len).times do %>
+              <td class="progress-td"></td>
+              <% end  %>
+          </tr>
+          <% end %>
+          <tr class="progress-tr">
+            <td class="progress-td">全体</td>
+              <% cnt = 0 %>
+              <% @month_metered.group("Month(payment_date)").average(:total_use).each do |c|  %>
+              <% if cnt == 0 && c[0] != 1 %>
+                <% empty_data_len = c[0] - 1 %>
+                <% empty_data_len.times do %>
+                <td class="progress-td"></td>
+                <% end %>
+              <% end %>
+              <td class="progress-td"><%= c[1].round(1).to_s(:delimited) %>kWh</td>
+              <% cnt += 1 %>
+              <% end %>
+          </tr>
+        </table>
+        <h2>低圧電力使用料（平均）</h2>
+        <table class="progress-tb">
+          <tr>
+            <th class="progress-th2">拠点</th>
+            <% cnt = 1 %>
+            <% 12.times do %>
+              <th class="progress-th2"><%= cnt %>月</th>
+              <% cnt += 1 %>
+            <% end %>
+          </tr>
+          <% @bases.each do |base| %>
+          <tr class="progress-tr">
+            <td class="progress-td"><%= base %></td>
+              <% cnt = 0 %>
+              <% empty_data_len = 0 %>
+              <% @month_low_voltage.where(base: base).group("Month(payment_date)").average(:total_use).each do |c|  %>
+              <% if cnt == 0 && c[0] != 1 %>
+                <% empty_data_len = c[0] - 1 %>
+                <% empty_data_len.times do %>
+                <td class="progress-td"></td>
+                <% end %>
+              <% end %>
+              <td class="progress-td"><%= c[1].round(1).to_s(:delimited) %>kWh</td>
+              <% cnt += 1 %>
+              <% end %>
+              <% (12 - @month_low_voltage.where(base: base).group("Month(payment_date)").length - empty_data_len).times do %>
+              <td class="progress-td"></td>
+              <% end  %>
+          </tr>
+          <% end %>
+          <tr class="progress-tr">
+            <td class="progress-td">全体</td>
+              <% cnt = 0 %>
+              <% @month_low_voltage.group("Month(payment_date)").average(:total_use).each do |c|  %>
+              <% if cnt == 0 && c[0] != 1 %>
+                <% empty_data_len = c[0] - 1 %>
+                <% empty_data_len.times do %>
+                <td class="progress-td"></td>
+                <% end %>
+              <% end %>
+              <td class="progress-td"><%= c[1].round(1).to_s(:delimited) %>kWh</td>
+              <% cnt += 1 %>
+              <% end %>
+          </tr>
+        </table>
       </div>
     <% end %>
     
