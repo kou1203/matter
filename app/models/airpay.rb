@@ -17,11 +17,16 @@ class Airpay < ApplicationRecord
   def self.csv_check(file)
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
+      airpay_store = Airpay.find_by(customer_num: row["店舗番号"]) 
       user = User.find_by(name: row["獲得者"])
       store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
-      store_id = store_prop.id if store_prop.present? 
-      errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
-      errors << "#{index}行目店舗名が不正です" if store_prop.blank? && errors.length < 5
+      if airpay_store.present?
+        store_id = airpay_store.store_prop_id if airpay_store.present?
+      else
+        store_id = store_prop.id if store_prop.present? 
+      end 
+      errors << "#{index}行目獲得者#{row["獲得者"]}が不正です" if user.blank? && errors.length < 5
+      errors << "#{index}行目店舗名が不正です" if store_id.blank? && errors.length < 5
         airpay = new(
           store_prop_id: store_id,
           user_id: user.id,
