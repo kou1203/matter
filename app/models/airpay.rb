@@ -21,12 +21,13 @@ class Airpay < ApplicationRecord
       user = User.find_by(name: row["獲得者"])
       store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
       if airpay_store.present?
-        store_id = airpay_store.store_prop_id if airpay_store.present?
-      else
-        store_id = store_prop.id if store_prop.present? 
+        store_id = airpay_store.store_prop_id
+      elsif store_prop.present? 
+        store_id = store_prop.id
+      else  
+        errors << "#{index}行目店舗名が不正です" if store_id.blank? && errors.length < 5
       end 
       errors << "#{index}行目獲得者#{row["獲得者"]}が不正です" if user.blank? && errors.length < 5
-      errors << "#{index}行目店舗名が不正です" if store_id.blank? && errors.length < 5
         airpay = new(
           store_prop_id: store_id,
           user_id: user.id,

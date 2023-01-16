@@ -17,14 +17,14 @@ class AirpaysController < ApplicationController
 
   def import
     if params[:file].present?
-      if Airpay.csv_check(params[:file]).present?
-        redirect_to airpays_path , alert: "エラーが発生したため中断しました#{Airpay.csv_check(params[:file])}"
-      else
-        message = Airpay.import(params[:file]) 
-        redirect_to airpays_path, alert: "インポート処理を完了しました#{message}"
-      end
+      # if Airpay.csv_check(params[:file]).present?
+      #   redirect_to airpays_path , alert: "エラーが発生したため中断しました#{Airpay.csv_check(params[:file])}"
+      # else
+      message = Airpay.import(params[:file]) 
+      redirect_to airpays_path, alert: "インポート処理を完了しました#{message}"
+      # end
     else
-      redirect_to airpays_path, alert: "インポートに失敗しました。ファイルを選択してください"
+      redirect_to airpays_path, alert: "インポートに失敗しました。ファイルの中身に問題ないか確認してください。"
     end
   end 
 
