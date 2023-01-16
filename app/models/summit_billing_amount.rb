@@ -31,7 +31,7 @@ class SummitBillingAmount < ApplicationRecord
           
           
         )
-        errors << "#{index}行目,屋号名「#{row["請求先名称"]}」保存できませんでした" if summit_billing_amount.invalid? && errors.length < 5
+        errors << "#{index}行目,屋号名「#{row["屋号名"]}」保存できませんでした" if summit_billing_amount.invalid? && errors.length < 5
     end
     errors
   end

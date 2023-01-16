@@ -4,16 +4,26 @@ class SummitDateProgressesController < ApplicationController
     # 大元
     @bases = ["中部SS", "関西SS", "関東SS"]
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @billing_year = @month.year
+
+    @year_month = @month.strftime("%Y年%m月")
+
+    @year_month_prev = @month.prev_month.strftime("%Y年%m月")
+
     @year_parse = @month.to_date.all_year
-    @summits = Summit.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
-    @billings = SummitBillingAmount.where(payment_date: @month.beginning_of_month..@month.end_of_month)
-    @billings_prev = SummitBillingAmount.where(payment_date: @month.prev_month.beginning_of_month..@month.prev_month.end_of_month)
+
+    @billings = SummitBillingAmount.where(billing_date: @year_month)
+    @billings_prev = SummitBillingAmount.where(billing_date: @year_month_prev)
     @users = User.all
     @summit_users = Summit.includes(:user).group(:user_id)
 
-    @month_metered_all = SummitBillingAmount.where("contract_type LIKE ?","%従量%").where(payment_date: @year_parse).includes(:user)
-    @month_metered = SummitBillingAmount.where(first_flag: "過去発行済").where("contract_type LIKE ?","%従量%").where(payment_date: @year_parse).includes(:user)
-    @month_low_voltage = SummitBillingAmount.where(first_flag: "過去発行済").where(contract_type: "低圧電力").where(payment_date: @year_parse).includes(:user)
+    @month_metered_all = 
+      SummitBillingAmount.where("contract_type LIKE ?","%従量%").where("billing_date LIKE ?","%#{@billing_year}%")
+      .select(
+        :first_flag,:base,:billing_date, :contract_type, :total_use, :billing_amount, :commission,:user_id
+      )
+    @month_metered = SummitBillingAmount.where(first_flag: "過去発行済").where("contract_type LIKE ?","%従量%").where("billing_date LIKE ?","%#{@billing_year}%")
+    @month_low_voltage = SummitBillingAmount.where(first_flag: "過去発行済").where(contract_type: "低圧電力").where("billing_date LIKE ?","%#{@billing_year}%")
 
     # 拠点別当月
     @billings_chubu = @billings.includes(:user).where(base: "中部SS")
@@ -38,28 +48,28 @@ class SummitDateProgressesController < ApplicationController
     
     @commission_ave = [
       {
-        name: "従量電灯", data: SummitBillingAmount.where(first_flag: "過去発行済").where(payment_date: @year_parse).where("contract_type LIKE ?","%従量%").group("Month(payment_date)").average(:commission)
+        name: "従量電灯", data: SummitBillingAmount.where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where("contract_type LIKE ?","%従量%").group(:billing_date).average(:commission)
       },
       {
-        name: "低圧電力", data: SummitBillingAmount.where(first_flag: "過去発行済").where(payment_date: @year_parse).where(contract_type: "低圧電力").group("Month(payment_date)").average(:commission)
+        name: "低圧電力", data: SummitBillingAmount.where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where(contract_type: "低圧電力").group(:billing_date).average(:commission)
       },
     ]
 
     @billing_amount_ave = [
       {
-        name: "従量電灯", data: SummitBillingAmount.where(first_flag: "過去発行済").where(payment_date: @year_parse).where("contract_type LIKE ?","%従量%").group("Month(payment_date)").average(:billing_amount)
+        name: "従量電灯", data: SummitBillingAmount.where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where("contract_type LIKE ?","%従量%").group(:billing_date).average(:billing_amount)
       },
       {
-        name: "低圧電力", data: SummitBillingAmount.where(first_flag: "過去発行済").where(payment_date: @year_parse).where(contract_type: "低圧電力").group("Month(payment_date)").average(:billing_amount)
+        name: "低圧電力", data: SummitBillingAmount.where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where(contract_type: "低圧電力").group(:billing_date).average(:billing_amount)
       },
     ]
     @metered_billing_amount_ave = 
     @tota_use_ave_graph = [
       {
-        name: "従量電灯", data: SummitBillingAmount.where(first_flag: "過去発行済").where(payment_date: @year_parse).where("contract_type LIKE ?","%従量%").group("Month(payment_date)").average(:total_use)
+        name: "従量電灯", data: SummitBillingAmount.where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where("contract_type LIKE ?","%従量%").group(:billing_date).average(:total_use)
       },
       {
-        name: "低圧電力", data: SummitBillingAmount.where(first_flag: "過去発行済").where(payment_date: @year_parse).where(contract_type: "低圧電力").group("Month(payment_date)").average(:total_use)
+        name: "低圧電力", data: SummitBillingAmount.where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where(contract_type: "低圧電力").group(:billing_date).average(:total_use)
       },
     ]
 
@@ -68,55 +78,55 @@ class SummitDateProgressesController < ApplicationController
     if  @billings.present?
       @billings_commission = [
         {
-          name: "全体手数料", data: SummitBillingAmount.where(payment_date: @year_parse).group("Month(payment_date)").sum(:commission)
+          name: "全体手数料", data: SummitBillingAmount.where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).sum(:commission)
         },
         {
-          name: "中部SS手数料", data: SummitBillingAmount.where(base: "中部SS").where(payment_date: @year_parse).group("Month(payment_date)").sum(:commission)
+          name: "中部SS手数料", data: SummitBillingAmount.where(base: "中部SS").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).sum(:commission)
         },
         {
-          name: "関西SS手数料", data: SummitBillingAmount.where(base: "関西SS").where(payment_date: @year_parse).group("Month(payment_date)").sum(:commission)
+          name: "関西SS手数料", data: SummitBillingAmount.where(base: "関西SS").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).sum(:commission)
         },
         {
-          name: "関東SS手数料", data: SummitBillingAmount.where(base: "関東SS").where(payment_date: @year_parse).group("Month(payment_date)").sum(:commission)
+          name: "関東SS手数料", data: SummitBillingAmount.where(base: "関東SS").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).sum(:commission)
         },
         {
-          name: "九州SS手数料", data: SummitBillingAmount.where(base: "九州SS").where(payment_date: @year_parse).group("Month(payment_date)").sum(:commission)
+          name: "九州SS手数料", data: SummitBillingAmount.where(base: "九州SS").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).sum(:commission)
         },
       ]
 
       @billings_metered = [
         {
-          name: "全体従量件数", data: SummitBillingAmount.where("contract_type LIKE ?", "%従量%").where(payment_date: @year_parse).group("Month(payment_date)").count
+          name: "全体従量件数", data: SummitBillingAmount.where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
         },
         {
-          name: "中部SS従量件数", data: SummitBillingAmount.where(base: "中部SS").where("contract_type LIKE ?", "%従量%").where(payment_date: @year_parse).group("Month(payment_date)").count
+          name: "中部SS従量件数", data: SummitBillingAmount.where(base: "中部SS").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
         },
         {
-          name: "関西SS従量件数", data: SummitBillingAmount.where(base: "関西SS").where("contract_type LIKE ?", "%従量%").where(payment_date: @year_parse).group("Month(payment_date)").count
+          name: "関西SS従量件数", data: SummitBillingAmount.where(base: "関西SS").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
         },
         {
-          name: "関東SS従量件数", data: SummitBillingAmount.where(base: "関東SS").where("contract_type LIKE ?", "%従量%").where(payment_date: @year_parse).group("Month(payment_date)").count
+          name: "関東SS従量件数", data: SummitBillingAmount.where(base: "関東SS").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
         },
         {
-          name: "九州SS従量件数", data: SummitBillingAmount.where(base: "九州SS").where("contract_type LIKE ?", "%従量%").where(payment_date: @year_parse).group("Month(payment_date)").count
+          name: "九州SS従量件数", data: SummitBillingAmount.where(base: "九州SS").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
         },
       ]
 
       @billings_low_voltage = [
         {
-          name: "全体低圧電力件数", data: SummitBillingAmount.where(contract_type: "低圧電力").where(payment_date: @year_parse).group("Month(payment_date)").count
+          name: "全体低圧電力件数", data: SummitBillingAmount.where(contract_type: "低圧電力").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
         },
         {
-          name: "中部SS低圧電力件数", data: SummitBillingAmount.where(base: "中部SS").where(contract_type: "低圧電力").where(payment_date: @year_parse).group("Month(payment_date)").count
+          name: "中部SS低圧電力件数", data: SummitBillingAmount.where(base: "中部SS").where(contract_type: "低圧電力").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
         },
         {
-          name: "関西SS低圧電力件数", data: SummitBillingAmount.where(base: "関西SS").where(contract_type: "低圧電力").where(payment_date: @year_parse).group("Month(payment_date)").count
+          name: "関西SS低圧電力件数", data: SummitBillingAmount.where(base: "関西SS").where(contract_type: "低圧電力").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
         },
         {
-          name: "関東SS低圧電力件数", data: SummitBillingAmount.where(base: "関東SS").where(contract_type: "低圧電力").where(payment_date: @year_parse).group("Month(payment_date)").count
+          name: "関東SS低圧電力件数", data: SummitBillingAmount.where(base: "関東SS").where(contract_type: "低圧電力").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
         },
         {
-          name: "九州SS低圧電力件数", data: SummitBillingAmount.where(base: "九州SS").where(contract_type: "低圧電力").where(payment_date: @year_parse).group("Month(payment_date)").count
+          name: "九州SS低圧電力件数", data: SummitBillingAmount.where(base: "九州SS").where(contract_type: "低圧電力").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
         },
       ]
     else

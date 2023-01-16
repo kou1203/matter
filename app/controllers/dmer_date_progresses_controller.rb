@@ -196,7 +196,7 @@ class DmerDateProgressesController < ApplicationController
     @dmers_fin_len = (@dmers_len.to_f / shift_digestion * shift_schedule).round() rescue 0
     # 審査待ち
     dmer_wait = @dmers_user_period.where(status: "審査待ち")
-    dmer_wait_prev = dmer_wait.where(date: ...@start_date)
+    dmer_wait_prev = @dmers_user.where(status: "審査待ち").where(date: @start_date.prev_month...@start_date)
     # 審査完了
     dmer_done = 
       @dmers_user.where(result_point: @dmer1_start_date..@dmer1_end_date)
@@ -365,13 +365,18 @@ class DmerDateProgressesController < ApplicationController
       valuation_current1_price = dmer_done.sum(:valuation_new)
       valuation_current2_price = dmer_slmt_done.sum(:valuation_settlement)
       valuation_current3_price = dmer_slmt2nd_done.sum(:valuation_second_settlement)
+
+      already_val_done1 = 
+        @dmers_user_period.where(result_point: @start_date..@dmer1_start_date)
+        .where(status: "審査OK").where.not(industry_status: "NG")
+        .where.not(industry_status: "×").where.not(industry_status: "要確認")     
       # 実売終着1（期内）
       if shift_digestion == 0 || shift_schedule == 0
         valuation_fin1_period_len = 0
         valuation_fin1_period = 0
       else  
         valuation_fin1_period_len = (@dmers_len.to_f / shift_digestion * shift_schedule * (@dmer1_this_month_per - @dmer1_dec_per)).round()
-        valuation_fin1_period = (@dmer1_price * valuation_fin1_period_len) - already_done1.sum(:valuation_new)
+        valuation_fin1_period = (@dmer1_price * valuation_fin1_period_len) - already_val_done1.sum(:valuation_new)
       end  
       # 実売終着1（過去）
       valuation_fin1_prev = 

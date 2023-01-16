@@ -6,7 +6,7 @@ Vue.use(TurbolinksAdapter)
 document.addEventListener('turbolinks:load', () => {
   const element = document.getElementById("summit-date-progress");
   // 当月
-  const month = window.month
+  const billing_year = window.billing_year
   const billings = window.billings
   const billings_chubu = window.billings_chubu
   const billings_kansai = window.billings_kansai
@@ -35,7 +35,7 @@ document.addEventListener('turbolinks:load', () => {
     const vueapp = new Vue({
       el: element,
       data: {
-        month: month,
+        billing_year: billing_year,
         billings: billings,
         billingsPrev: billings_prev,
         billingsBase: billings_chubu,
