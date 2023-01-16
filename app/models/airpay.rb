@@ -69,7 +69,7 @@ class Airpay < ApplicationRecord
     airpay = find_by(customer_num: row["店舗番号"])
     if airpay.present? 
       airpay.assign_attributes(
-        store_prop_id: store_id,
+        store_prop_id: airpay.store_prop_id,
         user_id: user.id,
         date: row["申込日"],
         client: row["商流"],
