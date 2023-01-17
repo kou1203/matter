@@ -464,6 +464,7 @@
       <select class="graph-slct" id="graph-change" >
         <option value="終着売上推移">終着売上</option>
         <option value="現状実売推移">現状実売</option>
+        <option value="一次成果推移">評価売終着</option>
       </select>
       </h2>
       <div class="graph-form-first" id="fin-graph">
@@ -498,6 +499,14 @@
         } 
         %>
         </div>
+      <div class="graph-form" id="result1-graph">
+      <h2>◆終着評価売</h2><br>
+      <%= line_chart @data_fin_val,options = {
+        label: "評価売",
+        thousands: ","
+      } 
+      %>
+      </div>
       </div>
     <% end %>
 

@@ -22,6 +22,8 @@ class SummitDateProgressesController < ApplicationController
       .select(
         :first_flag,:base,:billing_date, :contract_type, :total_use, :billing_amount, :commission,:user_id
       )
+    @metered_group = @month_metered_all.group_by {|m| m[:user_id]}
+    # @commission_group = @month_metered_all.group(:user_id,:billing_date).sum(:commission)
     @month_metered = SummitBillingAmount.where(first_flag: "過去発行済").where("contract_type LIKE ?","%従量%").where("billing_date LIKE ?","%#{@billing_year}%")
     @month_low_voltage = SummitBillingAmount.where(first_flag: "過去発行済").where(contract_type: "低圧電力").where("billing_date LIKE ?","%#{@billing_year}%")
 

@@ -219,8 +219,8 @@
         <td><%= @summits.where(status: "不備・保留").length %></td>
         <td><%= @summits.where(status: "キャンセル").length %></td>
         <td><%= @summits.where(status: "廃止").length %></td>
-        <td><%= @summits.includes(:summit_price,:summit_client).where(summit_client: {contract_start: ..Date.today.ago(30.days)}).where(status: "SW完了").sum(:last_billing).to_s(:delimited) %></td>
-        <td><%= @summits.includes(:summit_price,:summit_client).where(status: "SW完了").sum(:last_billing).to_s(:delimited) %></td>
+        <td><%= @summits.includes(:summit_price,:summit_client).where(summit_client: {contract_start: ..Date.today.ago(30.days)}).where(status: "SW完了").sum(:last_billing).to_s(:delimited) rescue 0 %></td>
+        <td><%= @summits.includes(:summit_price,:summit_client).where(status: "SW完了").sum(:last_billing).to_s(:delimited) rescue 0 %></td>
       </tr>
     </table>
     <table class="out-tb">

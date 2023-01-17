@@ -174,8 +174,12 @@ class CalcPeriodsController < ApplicationController
           result_attributes["base"] = base
           result_attributes["user_name"] = cash_progress.user.name
           result_attributes["post"] = cash_progress.user.position_sub
-          result_attributes["shift_schedule"] = cash_progress.shift_schedule
-          result_attributes["shift_digestion"] = cash_progress.shift_digestion
+          result_attributes["shift_schedule"] = 
+            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule).to_i + 
+            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule_slmt).to_i
+          result_attributes["shift_digestion"] = 
+            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion).to_i + 
+            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion).to_i
           result_attributes["valuation_current"] = 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
             @aupay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 

@@ -30,6 +30,7 @@ document.addEventListener('turbolinks:load', () => {
   
   const month_metered = window.month_metered
   const month_metered_all = window.month_metered_all
+  const metered_group = window.metered_group
 
   if (element != null) {
     const vueapp = new Vue({
@@ -48,6 +49,7 @@ document.addEventListener('turbolinks:load', () => {
         isDifActive: true,
         month_metered: month_metered,
         month_metered_all: month_metered_all,
+        metered_group: metered_group,
         userId: ''
       },
       methods: {

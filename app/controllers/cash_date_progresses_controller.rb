@@ -64,6 +64,20 @@ class CashDateProgressesController < ApplicationController
           name: "九州SS終着", data: CashDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_fin)
         },
       ]
+      @data_fin_val = [
+        {
+          name: "中部SS終着", data: CashDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:valuation_fin)
+        },
+        {
+          name: "関西SS終着", data: CashDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:valuation_fin)
+        },
+        {
+          name: "関東SS終着", data: CashDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:valuation_fin)
+        },
+        {
+          name: "九州SS終着", data: CashDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:valuation_fin)
+        },
+      ]
       @data_current = [
         {
           name: "中部SS現状売上", data: CashDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_current)
@@ -147,42 +161,62 @@ class CashDateProgressesController < ApplicationController
         dmer_date_progresses.sum(:profit_fin1) +
         dmer_date_progresses.sum(:profit_fin2) +
         dmer_date_progresses.sum(:profit_fin3)
+      dmer_valuation_current = dmer_date_progresses.sum(:valuation_current)
+      dmer_valuation_fin = 
+        dmer_date_progresses.sum(:valuation_fin1) +
+        dmer_date_progresses.sum(:valuation_fin2) +
+        dmer_date_progresses.sum(:valuation_fin3)
       
       aupay_date_progresses = AupayDateProgress.where(user_id: shift.user_id).where(date: @month)
       aupay_date_progresses = aupay_date_progresses.where(create_date: aupay_date_progresses.maximum(:create_date))
       aupay_profit_current = aupay_date_progresses.sum(:profit_current)
       aupay_profit_fin = 
         aupay_date_progresses.sum(:profit_fin)
+      aupay_valuation_current = aupay_date_progresses.sum(:valuation_current)
+      aupay_valuation_fin = 
+        aupay_date_progresses.sum(:valuation_fin)
       
       paypay_date_progresses = PaypayDateProgress.where(user_id: shift.user_id).where(date: @month)
       paypay_date_progresses = paypay_date_progresses.where(create_date: paypay_date_progresses.maximum(:create_date))
       paypay_profit_current = paypay_date_progresses.sum(:profit_current)
       paypay_profit_fin = paypay_date_progresses.sum(:profit_fin)
+      paypay_valuation_current = paypay_date_progresses.sum(:valuation_current)
+      paypay_valuation_fin = paypay_date_progresses.sum(:valuation_fin)
 
       rakuten_pay_date_progresses = RakutenPayDateProgress.where(user_id: shift.user_id).where(date: @month)
       rakuten_pay_date_progresses = rakuten_pay_date_progresses.where(create_date: rakuten_pay_date_progresses.maximum(:create_date))
       rakuten_pay_profit_current = rakuten_pay_date_progresses.sum(:profit_current)
       rakuten_pay_profit_fin = rakuten_pay_date_progresses.sum(:profit_fin)
+      rakuten_pay_valuation_current = rakuten_pay_date_progresses.sum(:valuation_current)
+      rakuten_pay_valuation_fin = rakuten_pay_date_progresses.sum(:valuation_fin)
 
       airpay_date_progresses = AirpayDateProgress.where(user_id: shift.user_id).where(date: @month)
       airpay_date_progresses = airpay_date_progresses.where(create_date: airpay_date_progresses.maximum(:create_date))
       airpay_profit_current = airpay_date_progresses.sum(:profit_current)
       airpay_profit_fin = airpay_date_progresses.sum(:profit_fin)
+      airpay_valuation_current = airpay_date_progresses.sum(:valuation_current)
+      airpay_valuation_fin = airpay_date_progresses.sum(:valuation_fin)
 
       demaekan_date_progresses = DemaekanDateProgress.where(user_id: shift.user_id).where(date: @month)
       demaekan_date_progresses = demaekan_date_progresses.where(create_date: demaekan_date_progresses.maximum(:create_date))
       demaekan_profit_current = demaekan_date_progresses.sum(:profit_current)
       demaekan_profit_fin = demaekan_date_progresses.sum(:profit_fin)
+      demaekan_valuation_current = demaekan_date_progresses.sum(:valuation_current)
+      demaekan_valuation_fin = demaekan_date_progresses.sum(:valuation_fin)
 
       austicker_date_progresses = AustickerDateProgress.where(user_id: shift.user_id).where(date: @month)
       austicker_date_progresses = austicker_date_progresses.where(create_date: austicker_date_progresses.maximum(:create_date))
       austicker_profit_current = austicker_date_progresses.sum(:profit_current)
       austicker_profit_fin = austicker_date_progresses.sum(:profit_fin)
+      austicker_valuation_current = austicker_date_progresses.sum(:valuation_current)
+      austicker_valuation_fin = austicker_date_progresses.sum(:valuation_fin)
 
       dmersticker_date_progresses = DmerstickerDateProgress.where(user_id: shift.user_id).where(date: @month)
       dmersticker_date_progresses = dmersticker_date_progresses.where(create_date: dmersticker_date_progresses.maximum(:create_date))
       dmersticker_profit_current = dmersticker_date_progresses.sum(:profit_current)
       dmersticker_profit_fin = dmersticker_date_progresses.sum(:profit_fin)
+      dmersticker_valuation_current = dmersticker_date_progresses.sum(:valuation_current)
+      dmersticker_valuation_fin = dmersticker_date_progresses.sum(:valuation_fin)
 
       profit_current = 
         dmer_profit_current + aupay_profit_current + paypay_profit_current +
@@ -192,6 +226,14 @@ class CashDateProgressesController < ApplicationController
         dmer_profit_fin + aupay_profit_fin + paypay_profit_fin +
         rakuten_pay_profit_fin + airpay_profit_fin + demaekan_profit_fin +
         austicker_profit_fin + dmersticker_profit_fin
+      valuation_current = 
+        dmer_valuation_current + aupay_valuation_current + paypay_valuation_current +
+        rakuten_pay_valuation_current + airpay_valuation_current + demaekan_valuation_current +
+        austicker_valuation_current + dmersticker_valuation_current
+      valuation_fin = 
+        dmer_valuation_fin + aupay_valuation_fin + paypay_valuation_fin +
+        rakuten_pay_valuation_fin + airpay_valuation_fin + demaekan_valuation_fin +
+        austicker_valuation_fin + dmersticker_valuation_fin
 
 
         if shift.user.position == "退職"
@@ -208,6 +250,7 @@ class CashDateProgressesController < ApplicationController
         date: @month                                              ,
         shift_schedule: shift_schedule                            ,
         shift_digestion: shift_digestion                          ,
+        # 実売
         dmer_profit_current: dmer_profit_current                  ,
         aupay_profit_current: aupay_profit_current                ,
         paypay_profit_current: paypay_profit_current              ,
@@ -226,6 +269,25 @@ class CashDateProgressesController < ApplicationController
         austicker_profit_fin: austicker_profit_current                ,
         dmersticker_profit_fin: dmersticker_profit_current            ,
         profit_fin: profit_fin                                    ,
+        # 評価売
+        dmer_valuation_current: dmer_valuation_current                  ,
+        aupay_valuation_current: aupay_valuation_current                ,
+        paypay_valuation_current: paypay_valuation_current              ,
+        rakuten_pay_valuation_current: rakuten_pay_valuation_current    ,
+        airpay_valuation_current: airpay_valuation_current              ,
+        demaekan_valuation_current: demaekan_valuation_current          ,
+        austicker_valuation_current: austicker_valuation_current        ,
+        dmersticker_valuation_current: dmersticker_valuation_current    ,
+        valuation_current: valuation_current                            ,
+        dmer_valuation_fin: dmer_valuation_fin                          ,
+        aupay_valuation_fin: aupay_valuation_fin                        ,
+        paypay_valuation_fin: paypay_valuation_fin                      ,
+        rakuten_pay_valuation_fin: rakuten_pay_valuation_fin            ,
+        airpay_valuation_fin: airpay_valuation_fin                      ,
+        demaekan_valuation_fin: demaekan_valuation_current                  ,
+        austicker_valuation_fin: austicker_valuation_current                ,
+        dmersticker_valuation_fin: dmersticker_valuation_current            ,
+        valuation_fin: valuation_fin                                    ,
         create_date: Date.today
       }
     # 日付とユーザー名が一致しているデータの場合更新、新しいデータの場合保存

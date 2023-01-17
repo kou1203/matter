@@ -15,6 +15,7 @@
     <%= link_to ">>",summit_date_progresses_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>
   </h2>
 
+
     <%= javascript_pack_tag 'summit_date_progress' %>
     <script>
       window.billing_year=<%= @billing_year.to_json.html_safe %>;
@@ -41,6 +42,7 @@
       // 詳細用の変数
       window.month_metered=<%= @month_metered.to_json.html_safe %>;
       window.month_metered_all=<%= @month_metered_all.to_json.html_safe %>;
+      window.metered_group=<%= @metered_group.to_json.html_safe %>;
       
     </script>
   <hr>
@@ -83,6 +85,7 @@
         </tr>
       </thead>
       <tbody>
+
       
         <tr v-for="s_user in currentItems" :key="s_user" class="progress-tr">
           <td class="progress-td">{{ users.find((u) => u.id == s_user.user_id).base }}</td>
@@ -189,8 +192,7 @@
     <div v-if="userId != '' ">
       <h2 ><%= @month.year %>年：{{ users.find((u) => u.id == userId).name }}詳細</h2>
       <table class="progress-tb">
-        <tr>
-        </tr>
+
         <tr>
           <th class="progress-th2">項目</th>
           <th class="progress-th2" v-for="n of 9" key="n">{{ billing_year + '年' + '0' + n + '月' }}</th>
