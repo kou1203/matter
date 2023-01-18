@@ -1292,6 +1292,7 @@ ActiveRecord::Schema.define(version: 2023_01_09_035325) do
     t.integer "commission"
     t.integer "commission_tax_included"
     t.integer "record_num"
+    t.integer "rate"
     t.bigint "user_id"
     t.bigint "summit_id"
     t.date "payment_date"

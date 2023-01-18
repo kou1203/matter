@@ -81,6 +81,30 @@
                       %>
                     </td>
                   </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">明細フラグ</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :first_flag_eq,
+                        options_from_collection_for_select(SummitBillingAmount.select(:first_flag)
+                        .distinct,:first_flag, :first_flag),
+                        {include_blank: true},
+                        {class: "t-input"}
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">報酬率</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :rate_eq,
+                        options_from_collection_for_select(SummitBillingAmount.select(:rate)
+                        .distinct,:rate, :rate),
+                        {include_blank: true},
+                        {class: "t-input"}
+                      %>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div><%# 商材情報 %>
@@ -128,6 +152,7 @@
         <th class="out-th">当月合計使用料</th>
         <th class="out-th">請求金額(税込)</th>
         <th class="out-th">手数料(税抜)</th>
+        <th class="out-th">報酬率</th>
         <th class="out-th">入金日</th>
         <th class="out-th">拠点</th>
         <th class="out-th">都道府県</th>
@@ -145,6 +170,7 @@
         <td class="out-td"><%= summit.total_use.to_s(:delimited) %></td>
         <td class="out-td"><%= summit.billing_amount.to_s(:delimited) rescue "不明"%></td>
         <td class="out-td"><%= summit.commission.to_s(:delimited) %></td>
+        <td class="out-td"><%= summit.rate %>％</td>
         <td class="out-td"><%= summit.payment_date %></td>
         <td class="out-td"><%= summit.base %></td>
         <td class="out-td"><%= summit.prefecture %></td>

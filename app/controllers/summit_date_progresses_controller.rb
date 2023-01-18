@@ -50,10 +50,28 @@ class SummitDateProgressesController < ApplicationController
     
     @commission_ave = [
       {
-        name: "従量電灯", data: SummitBillingAmount.where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where("contract_type LIKE ?","%従量%").group(:billing_date).average(:commission)
+        name: "従量電灯（合計）", data: SummitBillingAmount.where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where("contract_type LIKE ?","%従量%").group(:billing_date).average(:commission)
       },
       {
-        name: "低圧電力", data: SummitBillingAmount.where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where(contract_type: "低圧電力").group(:billing_date).average(:commission)
+        name: "従量電灯（5%）", data: SummitBillingAmount.where(rate: 5).where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where("contract_type LIKE ?","%従量%").group(:billing_date).average(:commission)
+      },
+      {
+        name: "従量電灯（7%）", data: SummitBillingAmount.where(rate: 7).where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where("contract_type LIKE ?","%従量%").group(:billing_date).average(:commission)
+      },
+      {
+        name: "低圧電力", data: SummitBillingAmount.where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where(contract_type: "低圧電力").group(:billing_date).order(:billing_date).average(:commission)
+      },
+    ]
+    
+    @commission_ave_area = [
+      {
+        name: "従量電灯（関西SS）", data: SummitBillingAmount.where(base: "関西SS").where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where("contract_type LIKE ?","%従量%").group(:billing_date).average(:commission)
+      },
+      {
+        name: "従量電灯（関東SS）", data: SummitBillingAmount.where(base: "関東SS").where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where("contract_type LIKE ?","%従量%").group(:billing_date).average(:commission)
+      },
+      {
+        name: "従量電灯（中部SS）", data: SummitBillingAmount.where(base: "中部SS").where(first_flag: "過去発行済").where("billing_date LIKE ?","%#{@billing_year}%").where("contract_type LIKE ?","%従量%").group(:billing_date).average(:commission)
       },
     ]
 
@@ -96,21 +114,22 @@ class SummitDateProgressesController < ApplicationController
         },
       ]
 
+      @billings_metered_data = SummitBillingAmount.where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year}%")
       @billings_metered = [
         {
-          name: "全体従量件数", data: SummitBillingAmount.where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
+          name: "全体従量件数", data: @billings_metered_data.group(:billing_date).count
         },
         {
-          name: "中部SS従量件数", data: SummitBillingAmount.where(base: "中部SS").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
+          name: "中部SS従量件数", data: @billings_metered_data.where(base: "中部SS").group(:billing_date).count
         },
         {
-          name: "関西SS従量件数", data: SummitBillingAmount.where(base: "関西SS").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
+          name: "関西SS従量件数", data: @billings_metered_data.where(base: "関西SS").group(:billing_date).count
         },
         {
-          name: "関東SS従量件数", data: SummitBillingAmount.where(base: "関東SS").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
+          name: "関東SS従量件数", data: @billings_metered_data.where(base: "関東SS").group(:billing_date).count
         },
         {
-          name: "九州SS従量件数", data: SummitBillingAmount.where(base: "九州SS").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year}%").group(:billing_date).count
+          name: "九州SS従量件数", data: @billings_metered_data.where(base: "九州SS").group(:billing_date).count
         },
       ]
 

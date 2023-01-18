@@ -7,11 +7,12 @@ class SummitBillingAmount < ApplicationRecord
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
       user = User.find_by(name: row["獲得者"])
-      u_id = user.id rescue ''
+      u_id = user.id rescue 0
 
       summit = Summit.find_by(record_num: row["レコード番号"].to_i)
-      s_id = summit.id rescue ''
+      s_id = summit.id rescue 0
       errors << "#{index}行目の担当者名が存在しません。#{row["パートナー営業担当"]}" if user.blank? && errors.length < 5
+      errors << "#{index}行目の店舗情報が存在しません。#{row["屋号名"]}" if summit.blank? && errors.length < 5
 
         summit_billing_amount = new(
           first_flag: row["初回明細フラグ"],
@@ -25,13 +26,12 @@ class SummitBillingAmount < ApplicationRecord
           commission: row["税抜"],
           commission_tax_included: row["手数料（円・税込）"],
           record_num: row["レコード番号"],
+          rate: row["報酬率"],
           payment_date: row["入金日"],
           user_id: u_id,
           summit_id: s_id,
-          
-          
         )
-        errors << "#{index}行目,屋号名「#{row["屋号名"]}」保存できませんでした" if summit_billing_amount.invalid? && errors.length < 5
+        errors << "#{index}行目,屋号名「#{row["屋号名"]}」保存に失敗しました。" if summit_billing_amount.invalid? && errors.length < 5
     end
     errors
   end
@@ -62,6 +62,7 @@ class SummitBillingAmount < ApplicationRecord
         commission: row["税抜"],
         commission_tax_included: row["手数料（円・税込）"],
         record_num: row["レコード番号"],
+        rate: row["報酬率"],
         payment_date: row["入金日"],
         user_id: u_id,
         summit_id: s_id,
@@ -85,6 +86,7 @@ class SummitBillingAmount < ApplicationRecord
         commission: row["税抜"],
         commission_tax_included: row["手数料（円・税込）"],
         record_num: row["レコード番号"],
+        rate: row["報酬率"],
         payment_date: row["入金日"],
         user_id: u_id,
         summit_id: s_id,

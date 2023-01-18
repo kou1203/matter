@@ -12,6 +12,7 @@ class CreateSummitBillingAmounts < ActiveRecord::Migration[6.1]
       t.integer :commission
       t.integer :commission_tax_included
       t.integer :record_num
+      t.integer :rate
       t.references :user             ,foreign_key: true
       t.references :summit           ,foreign_key: true
       t.date :payment_date
