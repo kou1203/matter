@@ -39,10 +39,12 @@ wb = xlsx_package.workbook
             ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
             ave_profit = (profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
           end 
+          shift_schedule = date_progress.shift_schedule + date_progress.shift_schedule_slmt
+          shift_digestion = date_progress.shift_digestion + date_progress.shift_digestion_slmt
           profit_fin = date_progress.profit_fin1 + date_progress.profit_fin2 + date_progress.profit_fin3
           sheet.add_row [
             date_progress.base, date_progress.user.name, date_progress.user.position_sub, 
-            date_progress.shift_schedule, date_progress.shift_digestion,
+            shift_schedule, shift_digestion,
             val_len, ave_len,date_progress.fin_len,
             ave_profit, date_progress.profit_current, profit_fin
 

@@ -76,9 +76,34 @@ class SummitsController < ApplicationController
     redirect_to summits_path
   end 
 
-  def analysis
+  def cancel
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @summits = Summit.where(date: @month.beginning_of_month..@month.end_of_month)
+    @year_parse = @month.to_date.all_year
+    @areas = ["中部","関西","東京","中国"]
+    @summits_monthly = 
+      Summit.includes(:store_prop, :user,:summit_client,:summit_billing_amounts)
+      .where(summit_client: {cancel: @month.beginning_of_month..@month.end_of_month})
+    # グラフ
+
+    @summit_clients = SummitClient.where(cancel: @year_parse)
+    @summits_line_graph = [
+      {
+        name: "全体廃止件数", data: @summit_clients.group("MONTH(cancel)").count
+      },
+      {
+        name: "中部廃止件数", data: @summit_clients.where(area: "中部").group("MONTH(cancel)").count
+      },
+      {
+        name: "関西廃止件数", data: @summit_clients.where(area: "関西").group("MONTH(cancel)").count
+      },
+      {
+        name: "東京廃止件数", data: @summit_clients.where(area: "東京").group("MONTH(cancel)").count
+      },
+      {
+        name: "中国廃止件数", data: @summit_clients.where(area: "中国").group("MONTH(cancel)").count
+      },
+    ]
+    @campany_pie_graph = SummitClient.where(cancel: @year_parse).group(:cancel_app_company).count
     @billings = SummitBillingAmount.where(payment_date: @month.beginning_of_month..@month.end_of_month)
     @billings_prev = SummitBillingAmount.where(payment_date: @month.prev_month.beginning_of_month..@month.prev_month.end_of_month)
   end 

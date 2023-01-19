@@ -1,0 +1,167 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title">サミット廃止一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="summits/cancel">
+  <p class="caution-txt"><%= alert %></p>
+  <h2>
+    <%= link_to "<<",cancel_summits_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
+    <%= @month.month %>月（<%= @month.beginning_of_month.to_date %>〜<%= @month.end_of_month.to_date %>）
+    <%= link_to ">>",cancel_summits_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>
+  </h2>
+  <hr>
+
+  <h2>◆<%= @month.month %>月廃止一覧（<%= @summits_monthly.length %>件）</h2>
+  <table class="cancel-tb">
+    <tr>
+      <th class="cancel-th2">No.</th>
+      <th class="cancel-th2">地域</th>
+      <th class="cancel-th2">レコード番号</th>
+      <th class="cancel-th2">店舗名</th>
+      <th class="cancel-th2">獲得日</th>
+      <th class="cancel-th2">獲得者</th>
+      <th class="cancel-th2">契約種別</th>
+      <th class="cancel-th2">解約申込（異動日）</th>
+      <th class="cancel-th2">解約ステータス</th>
+      <th class="cancel-th2">解約申込（小売事業者名）</th>
+      <th class="cancel-th2">請求回数</th>
+    </tr>
+    <% @summits_monthly.order(:user_id).each_with_index do |summit, i| %>
+    <tr class="cancel-tr">
+      <td class="cancel-td"><%= i + 1 %></td>
+      <td class="cancel-td"><%= summit.summit_client.area %></td>
+      <td class="cancel-td"><%= summit.record_num %></td>
+      <td class="cancel-td"><%= summit.store_prop.name %></td>
+      <td class="cancel-td"><%= summit.date %></td>
+      <td class="cancel-td"><%= summit.user.name %></td>
+      <td class="cancel-td"><%= summit.contract_type %></td>
+      <td class="cancel-td"><%= summit.summit_client.cancel %></td>
+      <td class="cancel-td"><%= summit.summit_client.cancel_class %></td>
+      <td class="cancel-td"><%= summit.summit_client.cancel_app_company %></td>
+      <td class="cancel-td"><%= summit.summit_billing_amounts.length %></td>
+    </tr>
+    <% end %>
+  </table>
+
+  <hr>
+
+
+  <h2>◆廃止件数（<%= @month.year %>年）</h2><br>
+  <%# line_chart,@summits_parse_year %>
+        <%= line_chart @summits_line_graph ,options = {
+          thousands: ",",
+          label: "廃止件数",
+          suffix: "件",
+          xtitle: "解約月",
+
+          } %>
+        <table class="cancel-tb">
+          <tr>
+            <th class="cancel-th2">拠点</th>
+            <% @summit_clients.group("MONTH(cancel)").each do |c|  %>
+              <th class="cancel-th2"><%= c.cancel.month %>月</th>
+            <% end %>
+          </tr>
+          <% @areas.each do |area| %>
+          <tr class="cancel-tr">
+            <td class="cancel-td"><%= area %></td>
+              <% if @summit_clients.where(area: area).group("MONTH(cancel)").length == 0 %>
+                <% @summit_clients.group("MONTH(cancel)").length.times do %>
+                <td class="cancel-td"></td>
+                <% end %>
+              <% else @summit_clients.where(area: area).group("MONTH(cancel)").length != @summit_clients.group("MONTH(cancel)").length %>
+                <% (@summit_clients.group("MONTH(cancel)").length - @summit_clients.where(area: area).group("MONTH(cancel)").length).times do %>
+                  <td class="cancel-td"></td>
+                <% end %>
+              <% end %>
+              <% @summit_clients.where(area: area).group("MONTH(cancel)").count.each do |c|  %>
+              <td class="cancel-td"><%= c[1].round().to_s(:delimited) %></td>
+              <% end %>
+          </tr>
+          <% end %>
+          <tr class="cancel-tr">
+            <td class="sum-td">全体</td>
+              <% (@summit_clients.group("MONTH(cancel)").length - @summit_clients.group("MONTH(cancel)").length).times do %>
+              <td class="sum-td"></td>
+              <% end %>
+              <% @summit_clients.group("MONTH(cancel)").count.each do |c|  %>
+              <td class="sum-td"><%= c[1].round().to_s(:delimited) %></td>
+              <% end %>
+          </tr>
+        </table>
+  <hr>
+  <h2>◆業者別廃止内訳（<%= @month.year %>年）</h2><br>
+  <div class="factory">
+  <div class="section">
+    <table class="section-tb">
+      <tr>
+        <th class="cancel-th2">会社名</th>
+        <th class="cancel-th2">廃止件数</th>
+      </tr>
+      <% @summit_clients.group(:cancel_app_company).order('count(cancel_app_company) desc').count.each do |s| %>
+      <tr class="cancel-tr">
+        <td class="cancel-td"><%= s[0] %></td>
+        <td class="cancel-td"><%= s[1] %></td>
+      </tr>
+      <% end %>
+        <td class="sum-td">合計</td>
+        <td class="sum-td"><%= @summit_clients.length %></td>
+    </table>
+  </div>
+  <div class="section">
+        <%= pie_chart @campany_pie_graph ,options = {
+          thousands: ",",
+          label: "廃止件数",
+          suffix: "件",
+          xtitle: "解約月",
+
+          } %>
+  </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
