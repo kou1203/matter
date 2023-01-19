@@ -85,10 +85,12 @@
       <tr>
         <th class="search-th">au写真</th>
         <th class="search-th">dメルステッカー</th>
+        <th class="search-th">AirPayステッカー</th>
       </tr>
       <tr>
         <td><%= @other_products.where(product_name: "au写真").sum(:product_len) %></td>
         <td><%= @other_products.where(product_name: "dメルステッカー").sum(:product_len) %></td>
+        <td><%= @other_products.where(product_name: "AirPayステッカー").sum(:product_len) %></td>
       </tr>
     </table>
     <table class="out-tb">
@@ -101,6 +103,7 @@
         <th class="out-th">評価売</th>
         <% if current_user.position == "権限①" %>
         <th class="out-th">実売</th>
+        <th class="out-th">編集</th>
         <% end %>
       </tr>
       </thead>
@@ -114,6 +117,7 @@
         <td class="out-td"><%= other_product.valuation.to_s(:delimited) %></td>
         <% if current_user.position == "権限①" %>
         <td class="out-td"><%= other_product.profit.to_s(:delimited) %></td>
+        <td class="out-td"><%= link_to "編集", edit_other_product_path(other_product.id), class: "link" %></td>
         <% end %>
       <% end %>
       </tbody>

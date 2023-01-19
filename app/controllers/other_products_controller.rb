@@ -24,6 +24,9 @@ class OtherProductsController < ApplicationController
     elsif @other_product.product_name == "dメルステッカー"
       @other_product[:valuation] = @other_product.product_len * 2000
       @other_product[:profit] = @other_product.product_len * 3000
+    elsif @other_product.product_name == "AirPayステッカー"
+      @other_product[:valuation] = @other_product.product_len * 1500
+      @other_product[:profit] = @other_product.product_len * 10000
     end
     if @other_product.save 
       redirect_to results_path, alert: "入力された獲得情報が保存されました。"
@@ -46,6 +49,10 @@ class OtherProductsController < ApplicationController
     elsif @other_product.product_name == "dメルステッカー"
       @other_product.update(other_product_params)
       @other_product.update(set_dmersticker_product_params)
+      redirect_to session[:previous_url], alert: "入力された獲得情報が編集されました。"
+    elsif @other_product.product_name == "AirPayステッカー"
+      @other_product.update(other_product_params)
+      @other_product.update(set_airpaysticker_product_params)
       redirect_to session[:previous_url], alert: "入力された獲得情報が編集されました。"
     else  
       render :edit
@@ -81,6 +88,10 @@ class OtherProductsController < ApplicationController
 
   def set_dmersticker_product_params
     other_product_params.merge(@other_product.set_dmer_pic_params)
+  end 
+
+  def set_airpaysticker_product_params
+    other_product_params.merge(@other_product.set_airpay_pic_params)
   end 
   
 end
