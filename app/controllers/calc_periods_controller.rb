@@ -33,6 +33,10 @@ class CalcPeriodsController < ApplicationController
     
     @dmersticker_date_progresses = DmerstickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @dmersticker_date_progresses_last_update = @dmersticker_date_progresses.maximum(:create_date)
+
+    @airpaysticker_date_progresses = AirpaystickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    @airpaysticker_date_progresses_last_update = @airpaysticker_date_progresses.maximum(:create_date)
+    
     @cash_date_progresses = CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @cash_date_progresses_last_update = @cash_date_progresses.maximum(:create_date)
     @cash_date_progresses = @cash_date_progresses.where(create_date: @cash_date_progresses_last_update)

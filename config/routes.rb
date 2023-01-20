@@ -210,6 +210,7 @@ Rails.application.routes.draw do
     collection {get :demaekan_csv_export}
     collection {get :austicker_csv_export}
     collection {get :dmersticker_csv_export}
+    collection {get :airpaysticker_csv_export}
   end 
 
   resources :dmer_date_progresses do 
@@ -248,6 +249,10 @@ Rails.application.routes.draw do
     collection {get :date_destroy}
   end 
   resources :dmersticker_date_progresses do 
+    collection {get :progress_create}
+    collection {get :date_destroy}
+  end 
+  resources :airpaysticker_date_progresses do 
     collection {get :progress_create}
     collection {get :date_destroy}
   end 

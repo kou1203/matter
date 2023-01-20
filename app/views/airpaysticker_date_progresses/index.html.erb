@@ -1,0 +1,490 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<% calc_periods_ary = [@calc_periods_val, @calc_periods_prof] %>
+<% tb_cnt = 0 %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title">AirPayステッカー日々進捗データ</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;"><%# サイドバーとメインバーを分ける %>
+  <div data-scope-path="shared/side_bar"><%# サイドバー %>
+    <%= render "shared/sidebar" %>
+  </div><%# サイドバー %>
+  <div data-scope-path="shares/date-progress"><%# メインバー %>
+    <p class="caution-txt"><%= alert %></p>
+    <div class="date-head"><%# 日付切替 %>
+      <h2>
+
+        <%= link_to "<<",airpaysticker_date_progresses_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
+        <%= @month.month %>月（<%= @current_progress.first.date rescue "データなし" %>）進捗
+        <%= link_to ">>",airpaysticker_date_progresses_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>
+      </h2>
+    </div><%# 日付切替 %>
+    <hr>
+    <%= javascript_pack_tag 'date_progress' %>
+    <script>
+      window.profit_price=<%= @profit_price.to_json.html_safe %>;
+      window.date_group=<%= @date_group.to_json.html_safe %>;
+      window.create_group=<%= @create_group.to_json.html_safe %>;
+      window.current_arry=<%= @current_arry.to_json.html_safe %>;
+      window.comparison_arry=<%= @comparison_arry.to_json.html_safe %>;
+      window.current_progress=<%= @current_progress.to_json.html_safe %>;
+      window.comparison=<%= @comparison.to_json.html_safe %>;
+      window.current_data_chubu=<%= @current_data_chubu.to_json.html_safe %>;
+      window.current_data_kansai=<%= @current_data_kansai.to_json.html_safe %>;
+      window.current_data_kanto=<%= @current_data_kanto.to_json.html_safe %>;
+      window.current_data_kyushu=<%= @current_data_kyushu.to_json.html_safe %>;
+      window.current_data_partner=<%= @current_data_partner.to_json.html_safe %>;
+      window.current_data_femto=<%= @current_data_femto.to_json.html_safe %>;
+      window.current_data_summit=<%= @current_data_summit.to_json.html_safe %>;
+      window.current_data_retire=<%= @current_data_retire.to_json.html_safe %>;
+      window.comparison_data_chubu=<%= @comparison_data_chubu.to_json.html_safe %>;
+      window.comparison_data_kansai=<%= @comparison_data_kansai.to_json.html_safe %>;
+      window.comparison_data_kanto=<%= @comparison_data_kanto.to_json.html_safe %>;
+      window.comparison_data_kyushu=<%= @comparison_data_kyushu.to_json.html_safe %>;
+      window.comparison_data_partner=<%= @comparison_data_partner.to_json.html_safe %>;
+      window.comparison_data_femto=<%= @comparison_data_femto.to_json.html_safe %>;
+      window.comparison_data_summit=<%= @comparison_data_summit.to_json.html_safe %>;
+      window.comparison_data_retire=<%= @comparison_data_retire.to_json.html_safe %>;
+      window.users=<%= @users.to_json.html_safe %>;
+    </script>
+    <article id="date-progress">
+      <div class="head-form"><%# ヘッド部分 %>
+        <div><%# 検索 %>
+          <%= form_with url: airpaysticker_date_progresses_path, local: true, method: :get do |f| %>
+                <%= f.hidden_field :search_date, value: @month %>
+              <table class="s-tb">
+                <tr>
+                  <th class="s-th">日付</th>
+                  <td class="s-td"><%= f.date_field :date,class:"s-input" %></td>
+                  <td class="s-submit"><%= f.submit "絞込み",class: "s-btn" %></td>
+                </tr>
+                <tr>
+                  <th class="s-th">比較する日付</th>
+                  <td class="s-td"><%= f.date_field :comparison_date,class:"s-input" %></td>
+                  <td class="s-reset"><%= link_to "リセット",airpaysticker_date_progresses_path(month: @month),class:"reset-link","data-turbolinks": false %></td>
+                </tr>
+              </table>
+          <% end %>
+        </div><%# 検索 %>
+        <div class="btn-form"><%# 切替ボタン %>
+          <button @click="active" v-if="isActive" class="active-btn">獲得内訳に切替</button>
+          <button @click="active" v-if="!isActive" class="active-btn">売上内訳に切替</button>
+          <button @click="difActive" v-if="isDifActive" class="active-btn">差異のみ表示させる</button>
+          <button @click="difActive" v-if="!isDifActive" class="active-btn">全て表示</button>
+        </div><%# 切替ボタン %>
+      </div><%# ヘッド部分 %>
+      <% if @current_progress.present? %><%# @current_progressがあるか判別 %>
+        <% if AustickerDateProgress.where(date: @current_progress.first.date).group(:create_date).length > 1 %>
+          <h2 class="caution-txt">※現状（<%= @current_progress.first.date %>）は違う日付に作成された進捗データがあります。</h2>
+        <div class="create-path-form"><%# 作成日を変更するためのリンク %>
+          <% AustickerDateProgress.where(date: @current_progress.first.date).group(:create_date).each do |d_date| %>
+            <% if @comparison.present? %>
+            <p class="create-data"><%= link_to "#{d_date.create_date}で表示", airpaysticker_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date,comparison_date: @comparison.first.date),class: "create-link","data-turbolinks": false %><%= link_to "削除",date_destroy_airpaysticker_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),data: {confirm: "#{d_date.create_date}に作成した進捗を削除してもよろしいですか？"},class: "destroy-link"  %></p>
+            <% else %>
+            <p class="create-data"><%= link_to "#{d_date.create_date}で表示", airpaysticker_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),class: "create-link","data-turbolinks": false %><%= link_to "削除",date_destroy_airpaysticker_date_progresses_path(month: @current_progress.first.date,create_d: d_date.create_date),data: {confirm: "#{d_date.create_date}に作成した進捗を削除してもよろしいですか？"},class: "destroy-link"  %></p>
+            <% end %>
+          <% end %>
+        </div><%# 作成日を変更するためのリンク %>
+        <% end %>
+        <div v-if="!isActive" class="s-form"><%# 獲得切替 %>
+          <h2>◆全体獲得内訳</h2>
+          <%= @create_date %>
+          <table class="progress-tb">
+            <tr>
+              <th class="progress-th1" colspan="5">基本情報</th>
+              <th class="progress-th1" colspan="2">獲得内訳</th>
+              <th class="progress-th1" colspan="2">成果内訳</th>
+            </tr>
+            <tr>
+              <th class="progress-th2">比較対象</th>
+              <th class="progress-th2">日付</th>
+              <th class="progress-th2">作成日</th>
+              <th class="progress-th2">予定シフト</th>
+              <th class="progress-th2">消化シフト</th>
+              <th class="progress-th2">獲得数</th>
+              <th class="progress-th2">獲得終着見込</th>
+              <th class="progress-th2">現状</th>
+              <th class="progress-th2">終着</th>
+            </tr>
+            <tr v-if="isDifActive">
+              <td class="progress-td">現状</td>
+              <td class="progress-td"><%= @current_progress.first.date %></td>
+              <td class="progress-td"><%= @current_progress.first.create_date %></td>
+              <td class="progress-td"><%= @current_progress.sum(:shift_schedule) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:shift_digestion) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:get_len) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:fin_len) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:result_len) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:result_fin_len) %></td>
+            </tr>
+            <% if @comparison.present? %>
+            <tr v-if="isDifActive">
+              <td class="progress-td">比較対象</td>
+              <td class="progress-td"><%= @comparison.first.date %></td>
+              <td class="progress-td"><%= @comparison.first.create_date %></td>
+              <td class="progress-td"><%= @comparison.sum(:shift_schedule) %></td>
+              <td class="progress-td"><%= @comparison.sum(:shift_digestion) %></td>
+              <td class="progress-td"><%= @comparison.sum(:get_len) %></td>
+              <td class="progress-td"><%= @comparison.sum(:fin_len) %></td>
+              <td class="progress-td"><%= @comparison.sum(:result_len) %></td>
+              <td class="progress-td"><%= @comparison.sum(:result_fin_len) %></td>
+            </tr>
+            <tr>
+              <td class="difference-td" colspan="3">差異</td>
+              <td class="difference-td"><%= @current_progress.sum(:shift_schedule) - @comparison.sum(:shift_schedule) %></td>
+              <td class="difference-td"><%= @current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion) %></td>
+              <td class="difference-td"><%= @current_progress.sum(:get_len) - @comparison.sum(:get_len) %></td>
+              <td class="difference-td"><%= @current_progress.sum(:fin_len) - @comparison.sum(:fin_len) %></td>
+              <td class="difference-td"><%= @current_progress.sum(:result_len) -  @comparison.sum(:result_len) %></td>
+              <td class="difference-td"><%= @current_progress.sum(:result_fin_len) -  @comparison.sum(:result_fin_len) %></td>
+            </tr>
+            <% end %>
+          </table>
+          <h2>◆拠点別獲得内訳</h2>
+          <table class="progress-tb">
+            <tr>
+              <th class="progress-th1" colspan="5">基本情報</th>
+              <th class="progress-th1" colspan="2">獲得内訳</th>
+              <th class="progress-th1" colspan="2">成果内訳</th>
+            </tr>
+          <tr>
+            <th class="progress-th2">拠点</th>
+            <th class="progress-th2">日付</th>
+            <th class="progress-th2">作成日</th>
+            <th class="progress-th2">予定シフト</th>
+            <th class="progress-th2">消化シフト</th>
+            <th class="progress-th2">獲得数</th>
+            <th class="progress-th2">獲得終着見込</th>
+            <th class="progress-th2">現状</th>
+            <th class="progress-th2">終着</th>
+          </tr>
+          <% @current_arry.zip(@comparison_arry).each do |current,comparison| %><%# 配列繰返 %>
+            <% if current.present? %><%# currentデータがあるか判別 %>
+            <tr v-if="isDifActive">
+                <td class="progress-td"><%= current.first.base %>（現状）</td>
+                <td class="progress-td"><%= current.first.date %></td>
+                <td class="progress-td"><%= current.first.create_date %></td>
+                <td class="progress-td"><%= current.sum(:shift_schedule) %></td>
+                <td class="progress-td"><%= current.sum(:shift_digestion) %></td>
+                <td class="progress-td"><%= current.sum(:get_len) %></td>
+                <td class="progress-td"><%= current.sum(:fin_len) %></td>
+                <td class="progress-td"><%= current.sum(:result_len) %></td>
+                <td class="progress-td"><%= current.sum(:result_fin_len) %></td>
+            </tr>
+            <% if comparison.present? %><%# comparisonデータがあるか判別 %>
+            <tr v-if="isDifActive">
+              <td class="progress-td"><%= comparison.first.base %>（比較対象）</td>
+              <td class="progress-td"><%= comparison.first.date %></td>
+              <td class="progress-td"><%= comparison.first.create_date %></td>
+              <td class="progress-td"><%= comparison.sum(:shift_schedule) %></td>
+              <td class="progress-td"><%= comparison.sum(:shift_digestion) %></td>
+              <td class="progress-td"><%= comparison.sum(:get_len) %></td>
+              <td class="progress-td"><%= comparison.sum(:fin_len) %></td>
+              <td class="progress-td"><%= comparison.sum(:result_len) %></td>
+              <td class="progress-td"><%= comparison.sum(:result_fin_len) %></td>
+            </tr>
+            <tr>
+              <td class="difference-td" colspan="3"><%= current.first.base %>比較差異</td>
+              <td class="difference-td"><%= current.sum(:shift_schedule) - comparison.sum(:shift_schedule) %></td>
+              <td class="difference-td"><%= current.sum(:shift_digestion) - comparison.sum(:shift_digestion) %></td>
+              <td class="difference-td"><%= current.sum(:get_len) - comparison.sum(:get_len) %></td>
+              <td class="difference-td"><%= current.sum(:fin_len) - comparison.sum(:fin_len) %></td>
+              <td class="difference-td"><%= current.sum(:result_len) - comparison.sum(:result_len) %></td>
+              <td class="difference-td"><%= current.sum(:result_fin_len) - comparison.sum(:result_fin_len) %></td>
+            </tr>
+            <% end %><%# comparisonデータがあるか判別 %>
+            <% end %><%# currentデータがあるか判別 %>
+          <% end %><%# 配列繰返 %>
+          </table>
+        </div><%# 獲得切替 %>
+
+        <div v-if="isActive" class="s-form"><%# 売上切替 %>
+          <h2>◆全体売上内訳</h2>
+          <table class="progress-tb">
+            <tr>
+              <th class="progress-th1" colspan="5">基本情報</th>
+              <th class="progress-th1" colspan="2">売上</th>
+            </tr>
+            <tr>
+              <th class="progress-th2">比較対象</th>
+              <th class="progress-th2">日付</th>
+              <th class="progress-th2">作成日</th>
+              <th class="progress-th2">予定シフト</th>
+              <th class="progress-th2">消化シフト</th>
+              <th class="progress-th2">現状</th>
+              <th class="progress-th2">終着</th>
+            </tr>
+            <tr v-if="isDifActive">
+              <td class="progress-td">現状</td>
+              <td class="progress-td"><%= @current_progress.first.date %></td>
+              <td class="progress-td"><%= @current_progress.first.create_date %></td>
+              <td class="progress-td"><%= @current_progress.sum(:shift_schedule) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:shift_digestion) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:profit_fin).to_s(:delimited) %></td>
+            </tr>
+            <% if @comparison.present? %>
+            <tr v-if="isDifActive">
+              <td class="progress-td">比較対象</td>
+              <td class="progress-td"><%= @comparison.first.date %></td>
+              <td class="progress-td"><%= @comparison.first.create_date %></td>
+              <td class="progress-td"><%= @comparison.sum(:shift_schedule) %></td>
+              <td class="progress-td"><%= @comparison.sum(:shift_digestion) %></td>
+              <td class="progress-td"><%= @comparison.sum(:profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison.sum(:profit_fin).to_s(:delimited) %></td>
+            </tr>
+            <tr>
+              <td class="difference-td" colspan="3">差異</td>
+              <td class="difference-td"><%= @current_progress.sum(:shift_schedule) - @comparison.sum(:shift_schedule) %></td>
+              <td class="difference-td"><%= @current_progress.sum(:shift_digestion) - @comparison.sum(:shift_digestion) %></td>
+              <td class="difference-td"><%= 
+                (
+                  @current_progress.sum(:profit_current) -
+                  @comparison.sum(:profit_current)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="difference-td"><%= (
+                @current_progress.sum(:profit_fin) - @comparison.sum(:profit_fin)
+                ).to_s(:delimited) %></td>
+            </tr>
+            <% end %>
+          </table>
+          <h2>◆拠点別売上内訳</h2>
+          <table class="progress-tb">
+            <tr>
+              <th class="progress-th1" colspan="5">基本情報</th>
+              <th class="progress-th1" colspan="2">売上</th>
+            </tr>
+            <tr>
+              <th class="progress-th2">比較対象</th>
+              <th class="progress-th2">日付</th>
+              <th class="progress-th2">作成日</th>
+              <th class="progress-th2">予定シフト</th>
+              <th class="progress-th2">消化シフト</th>
+              <th class="progress-th2">現状</th>
+              <th class="progress-th2">終着</th>
+            </tr>
+          <% @current_arry.zip(@comparison_arry).each do |current,comparison| %>
+          <% if current.present? %>
+          <tr v-if="isDifActive">
+              <td class="progress-td"><%= current.first.base %>（現状）</td>
+              <td class="progress-td"><%= current.first.date %></td>
+              <td class="progress-td"><%= current.first.create_date %></td>
+              <td class="progress-td"><%= current.sum(:shift_schedule) %></td>
+              <td class="progress-td"><%= current.sum(:shift_digestion) %></td>
+              <td class="progress-td"><%= current.sum(:profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= current.sum(:profit_fin).to_s(:delimited) %></td>
+          </tr>
+          <% if comparison.present? %>
+          <tr v-if="isDifActive">
+              <td class="progress-td"><%= comparison.first.base %>（比較）</td>
+              <td class="progress-td"><%= comparison.first.date %></td>
+              <td class="progress-td"><%= comparison.first.create_date %></td>
+              <td class="progress-td"><%= comparison.sum(:shift_schedule) %></td>
+              <td class="progress-td"><%= comparison.sum(:shift_digestion) %></td>
+              <td class="progress-td"><%= comparison.sum(:profit_current).to_s(:delimited) %></td>
+              <td class="progress-td"><%= comparison.sum(:profit_fin).to_s(:delimited) %></td>
+          </tr>
+            <tr>
+              <td class="difference-td" colspan="3"><%= current.first.base %>差異</td>
+              <td class="difference-td"><%= current.sum(:shift_schedule) - comparison.sum(:shift_schedule) %></td>
+              <td class="difference-td"><%= current.sum(:shift_digestion) - comparison.sum(:shift_digestion) %></td>
+              <td class="difference-td"><%= 
+                (
+                  current.sum(:profit_current) - comparison.sum(:profit_current)
+                ).to_s(:delimited) 
+              %></td>
+              <td class="difference-td"><%= (current.sum(:profit_fin) - comparison.sum(:profit_fin)).to_s(:delimited) %></td>
+            </tr>
+          <% end %>
+          <% end %>
+          <% end %>
+          </table>
+        </div><%# 売上切替 %>
+        <hr>
+
+        <h2>
+          ◆
+          <select @change="baseSlct" class="base-slcter">
+                <option value="中部SS">中部SS</option>
+                <option value="関西SS">関西SS</option>
+                <option value="関東SS">関東SS</option>
+                <option value="九州SS">九州SS</option>
+                <option value="2次店">２次店</option>
+                <option value="フェムト">フェムト</option>
+                <option value="サミット">サミット</option>
+                <option value="その他">その他</option>
+          </select>
+          獲得内訳
+        </h2>
+        <table class="progress-tb">
+          <tr>
+            <th class="progress-th1" colspan="5">基本情報</th>
+            <th class="progress-th1" colspan="2">獲得内訳</th>
+            <th class="progress-th1" colspan="2">成果内訳</th>
+          </tr>
+          <tr>
+            <th class="progress-th2">名前</th>
+            <th class="progress-th2">日付</th>
+            <th class="progress-th2">作成日</th>
+            <th class="progress-th2">予定シフト</th>
+            <th class="progress-th2">消化シフト</th>
+            <th class="progress-th2">獲得数</th>
+            <th class="progress-th2">獲得終着見込</th>
+            <th class="progress-th2">現状</th>
+            <th class="progress-th2">終着</th>
+          </tr>
+          <tr v-for="item in currentItems" :key="item" class="progress-tr">
+            <td class="progress-td">{{ users.find((u) => u.id == item.user_id).name }}</td>
+            <td class="progress-td">{{ item.date }}</td>
+            <td class="progress-td">{{ item.create_date }}</td>
+            <td class="progress-td">{{ item.shift_schedule }}</td>
+            <td class="progress-td">{{ item.shift_digestion }}</td>
+            <td class="progress-td">{{ item.get_len }}</td>
+            <td class="progress-td">{{ item.fin_len }}</td>
+            <td class="progress-td">{{ item.result_len }}</td>
+            <td class="progress-td">{{ item.result_fin_len }}</td>
+          </tr>
+          <tr class="sum-tr">
+            <td class="progress-td" colspan="3">合計（現状）</td>
+            <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.shift_schedule,0) }}</td>
+            <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.shift_digestion,0) }}</td>
+            <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.get_len,0) }}</td>
+            <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.fin_len,0) }}</td>
+            <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.result_len,0) }}</td>
+            <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.result_fin_len,0) }}</td>
+          </tr>
+          <tr v-if="comparisonItems.length != 0" class="difference-tr">
+            <td class="progress-td" colspan="3">合計（比較対象{{ comparisonItems[0].date }}）</td>
+            <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.shift_schedule,0) }}</td>
+            <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.shift_digestion,0) }}</td>
+            <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.get_len,0) }}</td>
+            <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.fin_len,0) }}</td>
+            <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.result_len,0) }}</td>
+            <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.result_fin_len,0) }}</td>
+          </tr>
+          <tr v-if="comparisonItems.length != 0">
+            <td class="difference-td" colspan="3">比較対象との差異</td>
+            <td class="difference-td">{{
+              currentItems.reduce((sum,element)=> sum +element.shift_schedule,0) -
+              comparisonItems.reduce((sum,element)=> sum +element.shift_schedule,0)
+              }}</td>
+            <td class="difference-td">{{
+              currentItems.reduce((sum,element)=> sum +element.shift_digestion,0) -
+              comparisonItems.reduce((sum,element)=> sum +element.shift_digestion,0)
+              }}</td>
+            <td class="difference-td">{{ 
+              currentItems.reduce((sum,element)=> sum +element.get_len,0) -
+              comparisonItems.reduce((sum,element)=> sum +element.get_len,0)
+              }}</td>
+            <td class="difference-td">{{ 
+              currentItems.reduce((sum,element)=> sum +element.fin_len,0) -
+              comparisonItems.reduce((sum,element)=> sum +element.fin_len,0) 
+              }}</td>
+            <td class="difference-td">{{ 
+              currentItems.reduce((sum,element)=> sum +element.result_len,0) -
+              comparisonItems.reduce((sum,element)=> sum +element.result_len,0) 
+              }}</td>
+            <td class="difference-td">{{ 
+              currentItems.reduce((sum,element)=> sum +element.result_fin_len,0) -
+              comparisonItems.reduce((sum,element)=> sum +element.result_fin_len,0) 
+              }}</td>
+          </tr>
+        </table>
+        <h2>◆売上内訳</h2>
+        <table class="progress-tb">
+          <tr>
+            <th class="progress-th1" colspan="5">基本情報</th>
+            <th class="progress-th1" colspan="2">実売内訳</th>
+          </tr>
+          <tr>
+            <th class="progress-th2">名前</th>
+            <th class="progress-th2">日付</th>
+            <th class="progress-th2">作成日</th>
+            <th class="progress-th2">予定シフト</th>
+            <th class="progress-th2">消化シフト</th>
+            <th class="progress-th2">現状</th>
+            <th class="progress-th2">終着</th>
+          </tr>
+          <tr v-for="item in currentItems" :key="item" class="progress-tr">
+            <td class="progress-td">{{ users.find((u) => u.id == item.user_id).name }}</td>
+            <td class="progress-td">{{ item.date }}</td>
+            <td class="progress-td">{{ item.create_date }}</td>
+            <td class="progress-td">{{ item.shift_schedule }}</td>
+            <td class="progress-td">{{ item.shift_digestion }}</td>
+            <td class="progress-td">{{ item.profit_current.toLocaleString() }}</td>
+            <td class="progress-td">{{ item.profit_fin.toLocaleString() }}</td>
+          </tr>
+          <tr class="sum-tr">
+            <td class="progress-td" colspan="3">合計（現状）</td>
+            <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.shift_schedule,0)) }}</td>
+            <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.shift_digestion,0)) }}</td>
+            <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.profit_current,0)).toLocaleString() }}</td>
+            <td class="progress-td">{{ (currentItems.reduce((sum,element)=> sum +element.profit_fin,0)).toLocaleString() }}</td>
+          </tr>
+          <% if @comparison.present? %>
+          <tr class="difference-tr">
+            <td class="progress-td" colspan="3">合計（比較対象{{ comparisonItems[0].date }}）</td>
+            <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.shift_schedule,0)) }}</td>
+            <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.shift_digestion,0)) }}</td>
+            <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.profit_current,0)).toLocaleString() }}</td>
+            <td class="progress-td">{{ (comparisonItems.reduce((sum,element)=> sum +element.profit_fin,0)).toLocaleString() }}</td>
+          </tr>
+          <tr >
+            <td class="difference-td" colspan="3">比較対象との差異</td>
+            <td class="difference-td">{{ 
+              (
+                currentItems.reduce((sum,element)=> sum +element.shift_schedule,0) - 
+                comparisonItems.reduce((sum,element)=> sum +element.shift_schedule,0)
+              )
+              }}</td>
+            <td class="difference-td">{{ 
+              (
+                currentItems.reduce((sum,element)=> sum +element.shift_digestion,0) -
+                comparisonItems.reduce((sum,element)=> sum +element.shift_digestion,0)
+              ) 
+              }}</td>
+            <td class="difference-td">{{ 
+              (
+                (currentItems.reduce((sum,element)=> sum +element.profit_current,0)) - 
+                (comparisonItems.reduce((sum,element)=> sum +element.profit_current,0))
+              ).toLocaleString() 
+              }}</td>
+            <td class="difference-td">{{ 
+              (
+                currentItems.reduce((sum,element)=> sum +element.profit_fin,0) -
+                comparisonItems.reduce((sum,element)=> sum +element.profit_fin,0)
+              ).toLocaleString() 
+              }}</td>
+          </tr>
+        <% end %>
+        </table>
+      <% else %>
+      <p class="caution-txt">進捗データがありません、作成してください。</p>
+      <% end %>
+    </article>
+      <% if @current_progress.present? %><%# @current_progressがあるか判別 %>
+      <h2>
+      グラフ：
+      <select class="graph-slct" id="graph-change" >
+        <option value="終着売上推移">終着売上</option>
+        <option value="現状実売推移">現状実売</option>
+      </select>
+      </h2>
+      <div class="graph-form-first" id="fin-graph">
+      <h2>◆終着実売</h2><br>
+      <%= line_chart @data_fin,options = {
+        thousands: ","
+      } 
+      %>
+      </div>
+      <div class="graph-form" id="current-graph">
+      <h2>◆現状実売推移</h2><br>
+      <%= line_chart @data_current,options = {
+        thousands: ","
+      } 
+      %>
+      </div>
+    <% end %>
+  </div><%# メインバー %>
+</div><%# サイドバーとメインバーを分ける %>

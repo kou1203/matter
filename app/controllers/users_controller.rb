@@ -694,11 +694,14 @@ class UsersController < ApplicationController
       @other_products = OtherProduct.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
       @aupay_pic = @other_products.where(product_name: "auPay写真")
       @dmer_pic = @other_products.where(product_name: "dメルステッカー")
+      @airpay_pic = @other_products.where(product_name: "AirPayステッカー")
       @other_products_val = @other_products.sum(:valuation)
       @dmer_pic_len = @dmer_pic.sum(:product_len)
       @dmer_pic_val = @dmer_pic.sum(:valuation)
       @aupay_pic_len = @aupay_pic.sum(:product_len)
       @aupay_pic_val = @aupay_pic.sum(:valuation)
+      @airpay_pic_len = @airpay_pic.sum(:product_len)
+      @airpay_pic_val = @airpay_pic.sum(:valuation)
       @aupay_user = 
         Aupay.includes(:store_prop).where(user_id: @results.first.user_id)
       @aupay_uq = 
@@ -860,6 +863,7 @@ class UsersController < ApplicationController
         @airpay_done_val +
         @aupay_pic_val + 
         @dmer_pic_val + 
+        @airpay_pic_val + 
         @demaekan.sum(:valuation)
       # 成果売上終着
       # dメル
@@ -1063,6 +1067,7 @@ class UsersController < ApplicationController
             @airpay_result1_fin +
             @aupay_pic_val +
             @dmer_pic_val +
+            @airpay_pic_val +
             @demaekan.sum(:valuation)
           ).to_i
         if (@valuation_sum > @result_fin) || (Date.today >= @start_date.next_month.end_of_month)

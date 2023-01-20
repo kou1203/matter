@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_09_035325) do
+ActiveRecord::Schema.define(version: 2023_01_19_092217) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -59,6 +59,24 @@ ActiveRecord::Schema.define(version: 2023_01_09_035325) do
     t.date "status_update"
     t.index ["store_prop_id"], name: "index_airpays_on_store_prop_id"
     t.index ["user_id"], name: "index_airpays_on_user_id"
+  end
+
+  create_table "airpaysticker_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "base"
+    t.date "date", null: false
+    t.integer "shift_schedule"
+    t.integer "shift_digestion"
+    t.integer "get_len"
+    t.integer "fin_len"
+    t.integer "valuation_current"
+    t.integer "valuation_fin"
+    t.integer "profit_current"
+    t.integer "profit_fin"
+    t.integer "result_len"
+    t.integer "result_fin_len"
+    t.date "create_date", null: false
+    t.index ["user_id"], name: "index_airpaysticker_date_progresses_on_user_id"
   end
 
   create_table "aupay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -204,6 +222,10 @@ ActiveRecord::Schema.define(version: 2023_01_09_035325) do
     t.integer "dmersticker_valuation_fin"
     t.integer "valuation_fin"
     t.date "create_date", null: false
+    t.integer "other_profit_current"
+    t.integer "other_valuation_current"
+    t.integer "other_profit_fin"
+    t.integer "other_valuation_fin"
     t.index ["user_id"], name: "index_cash_date_progresses_on_user_id"
   end
 
@@ -1507,6 +1529,7 @@ ActiveRecord::Schema.define(version: 2023_01_09_035325) do
   add_foreign_key "airpay_date_progresses", "users"
   add_foreign_key "airpays", "store_props"
   add_foreign_key "airpays", "users"
+  add_foreign_key "airpaysticker_date_progresses", "users"
   add_foreign_key "aupay_date_progresses", "users"
   add_foreign_key "aupays", "store_props"
   add_foreign_key "aupays", "users"

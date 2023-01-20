@@ -180,6 +180,117 @@
   <% if @summits.empty? %>
     <div class="warning"><%= alert %></div>
     <%= render 'shared/summit_links' %>
+  <h2>
+    <%= link_to "<<",summits_path(month: @month.ago(1.month)), class:"link" %>
+    <%= @month.month %>月サミット一覧
+    <%= link_to ">>",summits_path(month: @month.since(1.month)), class:"link" %>
+  </h2>
+
+    <table >
+      <tr>
+        <th class="search-th">獲得数</th>
+        <th class="search-th">SW完了</th>
+        <th class="search-th">SW完了待ち</th>
+        <th class="search-th">SWエラー</th>
+        <th class="search-th">処理待ち</th>
+        
+      </tr>
+      <tr>
+        <td><%= @summit_month.length %></td>
+        <td><%= @summit_month.where(status: "SW完了").length %></td>
+        <td><%= @summit_month.where(status: "SW完了待ち").length %></td>
+        <td><%= @summit_month.where(status: "SWエラー").length %></td>
+        <td><%= @summit_month.where(status: "処理待ち").length %></td>
+      </tr>
+      <tr>
+        <th class="search-th">不備・保留</th>
+        <th class="search-th">キャンセル</th>
+        <th class="search-th">廃止</th>
+        <th class="search-th">月間予想売上</th>
+        <th class="search-th">月間予想売上（SW完了してから30日未満含）</th>
+      </tr>
+      <tr>
+        <td><%= @summit_month.where(status: "不備・保留").length %></td>
+        <td><%= @summit_month.where(status: "キャンセル").length %></td>
+        <td><%= @summit_month.where(status: "廃止").length %></td>
+        <td><%= @summit_month.includes(:summit_price,:summit_client).where(summit_client: {contract_start: ..Date.today.ago(30.days)}).where(status: "SW完了").sum(:last_billing).to_s(:delimited) rescue 0 %></td>
+        <td><%= @summit_month.includes(:summit_price,:summit_client).where(status: "SW完了").sum(:last_billing).to_s(:delimited) rescue 0 %></td>
+      </tr>
+    </table>
+    <table class="out-tb">
+      <thead>
+      <tr>
+        <th class="out-th">kintone連携</th>
+        <th class="out-th">レコード番号</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">獲得日</th>
+        <th class="out-th">獲得者</th>
+        <th class="out-th">処理状況</th>
+        <th class="out-th">現状ステータス</th>
+        <th class="out-th">電力エリア</th>
+        <th class="out-th">契約種別</th>
+        <th class="out-th">契約容量（数量）</th>
+        <th class="out-th">使用量（kWh）</th>
+        <th class="out-th">事務処理日</th>
+        <th class="out-th">サミット到着日</th>
+        <th class="out-th">利用開始日</th>
+        <th class="out-th">単価連携</th>
+        <th class="out-th">初回明細料金</th>
+        <th class="out-th">最新明細料金</th>
+        <th class="out-th">エラー内容</th>
+        <th class="out-th">契約開始</th>
+        <th class="out-th">契約終了</th>
+        <th class="out-th">支払件数</th>
+        <th class="out-th">詳細</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @summit_month_data.each do |summit| %>
+      <tr >
+        <% if summit.summit_client.present? %>
+        <td class="out-td">連携済</td>
+        <% else %>
+          <% if current_user.name == "管理用" %>
+          <td class="out-td"><%= link_to "未連携", summit_path(summit.id), method: :delete,data: { confirm: "#{summit.store_prop.name}の自社サミット情報を削除してもよろしいですか？" } ,class: "link","data-turbolinks": false %></td>
+          <% else %>
+          <td class="out-td b-red">未連携</td>
+          <% end  %>
+        <% end %>
+        <td class="out-td"><%= summit.record_num %></td>
+        <td class="out-td"><%= summit.store_prop.name %></td>
+        <td class="out-td"><%= summit.date %></td>
+        <td class="out-td"><%= summit.user.name %></td>
+        <td class="out-td"><%= summit.processing_status %></td>
+        <td class="out-td"><%= summit.status %></td>
+        <td class="out-td"><%= summit.power_area %></td>
+        <td class="out-td"><%= summit.contract_type %></td>
+        <td class="out-td"><%= summit.contract_cap %><%= summit.contract_cap_unit %></td>
+        <td class="out-td"><%= summit.amount_use %>kWh</td>
+        <td class="out-td"><%= summit.processing_date %></td>
+        <td class="out-td"><%= summit.arrival_date %></td>
+        <td class="out-td"><%= summit.summit_start %></td>
+        <% if summit.summit_price.present? %>
+        <td class="out-td">連携済</td>
+        <% else %>
+          <% if current_user.name == "管理用" %>
+          <td class="out-td"><%= link_to "未連携", summit_path(summit.id), method: :delete,data: { confirm: "#{summit.store_prop.name}の自社サミット情報を削除してもよろしいですか？" } ,class: "link","data-turbolinks": false %></td>
+          <% else %>
+          <td class="out-td b-red">未連携</td>
+          <% end  %>
+        <% end %>
+        <td class="out-td"><%= summit.summit_price.first_billing.to_s(:delimited) rescue "" %></td>
+        <td class="out-td"><%= summit.summit_price.last_billing.to_s(:delimited) rescue "" %></td>
+        <td class="out-td"><%= summit.summit_client.error_contents rescue "" %></td>
+        <td class="out-td"><%= summit.summit_client.contract_start rescue "" %></td>
+        <td class="out-td"><%= summit.summit_client.contract_end rescue "" %></td>
+        <td class="out-td"><%= summit.summit_billing_amounts.length rescue 0 %></td>
+        <td class="out-td"><%= link_to "詳細", summit_path(summit.id),class: "link","data-turbolinks": false %></td>
+      <% end %>
+      </tbody>
+    </table>
+  <div class="kaminari-page">
+    <%= paginate @summit_month_data %>
+  </div>
   <% else %>
       <h1>獲得日：<%= @summits.minimum(:date) %>（<%= days[@summits.minimum(:date).wday] %>）〜<%= @summits.maximum(:date) %>（<%= days[@summits.maximum(:date).wday] %>）</h1>
       <%# 重複確認 %>

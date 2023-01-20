@@ -1,31 +1,29 @@
-class AustickerDateProgressesController < ApplicationController
+class AirpaystickerDateProgressesController < ApplicationController
 
   def index 
-    @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "auステッカー成果1").price
+    @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "AirPayステッカー成果1").price
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @create_date = params[:create_d]
-    @date_group = AustickerDateProgress.pluck(:date).uniq
-    @create_group = AustickerDateProgress.pluck(:create_date).uniq
+    @date_group = AirpaystickerDateProgress.pluck(:date).uniq
+    @create_group = AirpaystickerDateProgress.pluck(:create_date).uniq
     @users = User.all
     if params[:date].present?
       @month = params[:date].to_date
     elsif params[:search_date].present?
       @month = params[:search_date].to_date  
-    elsif AustickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
-      @month = AustickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
+    elsif AirpaystickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
+      @month = AirpaystickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
     else
       @month = params[:month].to_date
     end 
 
-    @current_progress = 
-    AustickerDateProgress.includes(:user).where(date: @month)
+    @current_progress = AirpaystickerDateProgress.includes(:user).where(date: @month)
     if params[:create_d].present?
       @current_progress = 
         @current_progress.where(create_date: params[:create_d].to_date)
     else
       @current_progress = 
-      @current_progress.where(date: @month)
-        .where(create_date: @current_progress.maximum(:create_date))
+        @current_progress.where(date: @month).where(create_date: @current_progress.maximum(:create_date))
     end 
     # 拠点別現状売上
     @current_data_chubu = @current_progress.where(base: "中部SS")
@@ -43,51 +41,51 @@ class AustickerDateProgressesController < ApplicationController
     if  @current_progress.present?
       @data_fin = [
         {
-          name: "中部SS終着", data: AustickerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_fin)
+          name: "中部SS終着", data: AirpaystickerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_fin)
         },
         {
-          name: "関西SS終着", data: AustickerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_fin)
+          name: "関西SS終着", data: AirpaystickerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_fin)
         },
         {
-          name: "関東SS終着", data: AustickerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_fin)
+          name: "関東SS終着", data: AirpaystickerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_fin)
         },
         {
-          name: "九州SS終着", data: AustickerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_fin)
+          name: "九州SS終着", data: AirpaystickerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_fin)
         },
       ]
       @data_current = [
         {
-          name: "中部SS現状売上", data: AustickerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_current)
+          name: "中部SS現状売上", data: AirpaystickerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_current)
         },
         {
-          name: "関西SS現状売上", data: AustickerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_current)
+          name: "関西SS現状売上", data: AirpaystickerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_current)
         },
         {
-          name: "関東SS現状売上", data: AustickerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_current)
+          name: "関東SS現状売上", data: AirpaystickerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_current)
         },
         {
-          name: "九州SS現状売上", data: AustickerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_current)
+          name: "九州SS現状売上", data: AirpaystickerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_current)
         },
       ]
     else
-      @data = AustickerDateProgress.none
+      @data = AirpaystickerDateProgress.none
     end
 
     # 比較対象
     if params[:comparison_date].present?
       @comparison_date = params[:comparison_date].to_date
       @comparison = 
-        AustickerDateProgress.where(date: @comparison_date)
+        AirpaystickerDateProgress.where(date: @comparison_date)
       @comparison =
         @comparison.where(create_date: @comparison.maximum(:create_date))
     else  
       if @current_progress.present?
         @comparison = 
-          AustickerDateProgress.where(date: @current_progress.first.date.prev_month)
+          AirpaystickerDateProgress.where(date: @current_progress.first.date.prev_month)
         @comparison = 
           @comparison.where(create_date: @comparison.maximum(:create_date))
       else  
-        @comparison = AustickerDateProgress.none
+        @comparison = AirpaystickerDateProgress.none
       end 
     end 
     # 拠点別現状売上
@@ -117,28 +115,28 @@ class AustickerDateProgressesController < ApplicationController
     @calc_periods = CalcPeriod.where(sales_category: "実売")
     calc_period_and_per
     cnt = 0
-    @austickers_group = Shift.group(:user_id)
-    @austickers_group.group(:user_id).each do |r|
+    @airpaystickers_group = Shift.group(:user_id)
+    @airpaystickers_group.group(:user_id).each do |r|
       @calc_periods = CalcPeriod.where(sales_category: "実売")
       calc_period_and_per
       user_id = r.user_id
-      @austicker_progress_data = AustickerDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
+      @airpaysticker_progress_data = AirpaystickerDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       # 獲得内訳
-      @austickers_user = OtherProduct.where(product_name: "auPay写真").where(user_id: user_id)
-      @austickers_user_period = @austickers_user.where(date: @austicker1_start_date..@austicker1_end_date)
-      shift_digestion = @austickers_user_period.length
-      get_len = @austickers_user_period.sum(:product_len)
+      @airpaystickers_user = OtherProduct.where(product_name: "auPay写真").where(user_id: user_id)
+      @airpaystickers_user_period = @airpaystickers_user.where(date: @airpaysticker1_start_date..@airpaysticker1_end_date)
+      shift_digestion = @airpaystickers_user_period.length
+      get_len = @airpaystickers_user_period.sum(:product_len)
     # 現状売上
       valuation_current = 0
       profit_current = 0
     # 実売
-      profit_current = @austickers_user_period.sum(:profit)
+      profit_current = @airpaystickers_user_period.sum(:profit)
     # 終着
         profit_fin = profit_current
       
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
-      valuation_current = @austickers_user_period.sum(:valuation)
+      valuation_current = @airpaystickers_user_period.sum(:valuation)
 
       if r.user.position == "退職"
         user_base = r.user.position
@@ -148,7 +146,7 @@ class AustickerDateProgressesController < ApplicationController
         user_base = r.user.base_sub
       end 
     # Auステッカーの売上の中身
-      austicker_progress_params = {
+      airpaysticker_progress_params = {
         user_id: user_id                                    ,
         base: user_base                                     ,
         date: @month                                        ,
@@ -156,20 +154,20 @@ class AustickerDateProgressesController < ApplicationController
         get_len: get_len                                    ,
         valuation_current: valuation_current                ,
         valuation_fin: valuation_current                    ,
-        profit_current: profit_current                      ,
+        profit_current: profit_current                          ,
         profit_fin: profit_current                          ,
         create_date: Date.today
       }
     # 日付とユーザー名が一致しているデータの場合更新、新しいデータの場合保存
-      if @austicker_progress_data.present?
-        @austicker_progress_data.update(
-          austicker_progress_params
+      if @airpaysticker_progress_data.present?
+        @airpaysticker_progress_data.update(
+          airpaysticker_progress_params
         )
       else  
-        @austicker_date_progress = AustickerDateProgress.new(
-          austicker_progress_params
+        @airpaysticker_date_progress = AirpaystickerDateProgress.new(
+          airpaysticker_progress_params
         )
-        @austicker_date_progress.save
+        @airpaysticker_date_progress.save
       end
       cnt += 1    
     end 
@@ -179,8 +177,8 @@ class AustickerDateProgressesController < ApplicationController
   end  
 
   def date_destroy
-    @date_progress = AustickerDateProgress.where(date: params[:month]).where(create_date: params[:create_d])
+    @date_progress = AirpaystickerDateProgress.where(date: params[:month]).where(create_date: params[:create_d])
     @date_progress.destroy_all
-    redirect_to austicker_date_progresses_path(month: params[:month]), alert: "#{params[:create_d]}に作成した進捗を削除しました。"
+    redirect_to airpaysticker_date_progresses_path(month: params[:month]), alert: "#{params[:create_d]}に作成した進捗を削除しました。"
    end
 end

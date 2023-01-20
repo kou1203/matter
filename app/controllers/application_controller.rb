@@ -23,6 +23,7 @@ class ApplicationController < ActionController::Base
       @demaekan1_calc_data = @calc_periods.find_by(name: "出前館成果1")
       @austicker1_calc_data = @calc_periods.find_by(name: "auステッカー成果1")
       @dmersticker1_calc_data = @calc_periods.find_by(name: "dメルステッカー成果1")
+      @airpaysticker1_calc_data = @calc_periods.find_by(name: "AirPayステッカー成果1")
       # 期間
       @basic_start_date_year_and_month = @month.since(@basic_calc_data.start_date_month.month)
       if @basic_calc_data.start_date_day == 0
@@ -565,6 +566,55 @@ class ApplicationController < ActionController::Base
         )
 
       end
+      # 期間
+      @airpaysticker1_start_date_year_and_month = @month.since(@airpaysticker1_calc_data.start_date_month.month)
+      if @airpaysticker1_calc_data.start_date_day == 0
+        @airpaysticker1_start_date = Date.new(
+          @airpaysticker1_start_date_year_and_month.year,
+          @airpaysticker1_start_date_year_and_month.month,
+          @airpaysticker1_start_date_year_and_month.end_of_month.day,
+        )
+      else
+        @airpaysticker1_start_date = Date.new(
+          @airpaysticker1_start_date_year_and_month.year,
+          @airpaysticker1_start_date_year_and_month.month,
+          @airpaysticker1_calc_data.start_date_day,
+        )
+
+      end 
+
+      @airpaysticker1_end_date_year_and_month = @month.since(@airpaysticker1_calc_data.end_date_month.month)
+      if @airpaysticker1_calc_data.end_date_day == 0
+        @airpaysticker1_end_date = Date.new(
+          @airpaysticker1_end_date_year_and_month.year,
+          @airpaysticker1_end_date_year_and_month.month,
+          @airpaysticker1_end_date_year_and_month.end_of_month.day,
+        )
+      else
+        @airpaysticker1_end_date = Date.new(
+          @airpaysticker1_end_date_year_and_month.year,
+          @airpaysticker1_end_date_year_and_month.month,
+          @airpaysticker1_calc_data.end_date_day,
+        )
+
+      end
+
+      # 締め日
+      @airpaysticker1_closing_date_year_and_month = @month.since(@airpaysticker1_calc_data.closing_date_month.month)
+      if @airpaysticker1_calc_data.closing_date_day == 0
+        @airpaysticker1_closing_date = Date.new(
+          @airpaysticker1_closing_date_year_and_month.year,
+          @airpaysticker1_closing_date_year_and_month.month,
+          @airpaysticker1_closing_date_year_and_month.end_of_month.day,
+        )
+      else
+        @airpaysticker1_closing_date = Date.new(
+          @airpaysticker1_closing_date_year_and_month.year,
+          @airpaysticker1_closing_date_year_and_month.month,
+          @airpaysticker1_calc_data.closing_date_day,
+        )
+
+      end
       
       # 成約率
       @dmer1_this_month_per = @dmer1_calc_data.this_month_per
@@ -586,6 +636,8 @@ class ApplicationController < ActionController::Base
       @austicker1_prev_month_per = @austicker1_calc_data.prev_month_per
       @dmersticker1_this_month_per = @dmersticker1_calc_data.this_month_per
       @dmersticker1_prev_month_per = @dmersticker1_calc_data.prev_month_per
+      @airpaysticker1_this_month_per = @airpaysticker1_calc_data.this_month_per
+      @airpaysticker1_prev_month_per = @airpaysticker1_calc_data.prev_month_per
 
       # 大元の成約率
       @closing_span = (@closing_date.to_date - @end_date.to_date).to_i

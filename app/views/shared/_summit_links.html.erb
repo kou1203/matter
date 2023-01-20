@@ -1,4 +1,4 @@
-    <h2 class="">商材項目一覧</h2>
+    <h2 class="">項目一覧</h2>
 <div class="summit-link-flex">
     <div class="summit-section">
     <p class="link-text"><%= link_to "サミット一覧", summits_path ,"data-turbolinks": false, class: "summit-link" %></p>
@@ -10,10 +10,7 @@
     <p class="link-text"><%= link_to "支払明細", summit_billing_amounts_path,"data-turbolinks": false, class: "summit-link" %></p>
     <p class="link-text"><%= link_to "明細分析", summit_date_progresses_path(month: Date.today.ago(2.month)),"data-turbolinks": false,class: "summit-link" %></p>
     </div>
-    <%# link_to "SWエラー", sw_error_summits_path,"data-turbolinks": false, class: "summit-link" %>
-</div>
-<hr>
-<div>
+
     <%= javascript_pack_tag 'base_slct' %>
     <% bases = ["中部SS", "関西SS", "関東SS"] %>
 
@@ -27,6 +24,7 @@
             </div>
             <% end %>
         </div>
-    </div>
+    <%# link_to "SWエラー", sw_error_summits_path,"data-turbolinks": false, class: "summit-link" %>
+</div>
 <hr>
     

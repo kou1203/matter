@@ -1,6 +1,7 @@
 class SummitsController < ApplicationController
 
   def index 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @q = Summit.includes(:user, :store_prop,:summit_client,:summit_price).ransack(params[:q])
     @summits = 
       if params[:q].nil?
@@ -10,6 +11,9 @@ class SummitsController < ApplicationController
       end
       @summits_data = @summits.page(params[:page]).per(100)
     @users = User.where(base_sub: "サミット")
+
+    @summit_month = Summit.includes(:user, :store_prop,:summit_client,:summit_price).where(date: @month.beginning_of_month..@month.end_of_month)
+    @summit_month_data = @summit_month.page(params[:page]).per(100)
   end
 
 
