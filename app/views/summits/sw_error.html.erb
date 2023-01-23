@@ -10,10 +10,16 @@
 <div data-scope-path="shares/index">
 <div class="main">
     <hr>
-      <h1>獲得日：<%= @sw_errors.minimum(:date) %>（<%= days[@sw_errors.minimum(:date).wday] %>）〜<%= @sw_errors.maximum(:date) %>（<%= days[@sw_errors.maximum(:date).wday] %>）</h1>
+        <%= render 'shared/summit_links' %>
+  <h2>
+    <%= link_to "<<",sw_error_summits_path(month: @month.ago(1.month)), class:"link" %>
+    <%= @month.month %>月サミットSWエラー一覧
+    <%= link_to ">>",sw_error_summits_path(month: @month.since(1.month)), class:"link" %>
+  </h2>
     <table class="out-tb">
       <thead>
       <tr>
+        <th class="out-th">No</th>
         <th class="out-th">連携</th>
         <th class="out-th">レコード番号</th>
         <th class="out-th">店舗名</th>
@@ -24,8 +30,9 @@
       </tr>
       </thead>
       <tbody>
-      <% @sw_errors.each do |summit| %>
+      <% @sw_errors.order(:user_id).each_with_index do |summit,i| %>
       <tr >
+        <td class="out-td"><%= i + 1 %></td>
         <% if summit.summit_client.present? %>
         <td class="out-td">連携済</td>
         <% else %>

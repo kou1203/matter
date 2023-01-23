@@ -135,6 +135,7 @@ Rails.application.routes.draw do
   resources :result_casas, expect: [:new, :create]
   resources :result_summits, expect: :show do 
     collection { get :base_profit }
+    collection { get :person_data }
   end 
   resources :result_summits, only: :show,param: :user_id
   

@@ -122,9 +122,57 @@
         </div>
       </article><%# /検索フォーム %>
     <hr>
-  <% if @summit_errors.empty? %>
     <div class="warning"><%= alert %></div>
     <%= render "shared/summit_links" %>
+  <% if @summit_errors.empty? %>
+  <h2>
+    <%= link_to "<<",summit_error_histories_path(month: @month.ago(1.month)), class:"link" %>
+    <%= @month.month %>月サミット明細一覧
+    <%= link_to ">>",summit_error_histories_path(month: @month.since(1.month)), class:"link" %>
+  </h2>
+    <table class="out-tb">
+      <thead>
+      <tr>
+        <th class="out-th">件数</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">営業担当者</th>
+        <th class="out-th">エラー区分②</th>
+        <th class="out-th">未入金対象月</th>
+        <th class="out-th">次回対応日</th>
+        <th class="out-th">対応内容・次回依頼</th>
+        <th class="out-th">次回対応メモ</th>
+        <th class="out-th">次回対応者</th>
+        <th class="out-th">対応手段</th>
+        <th class="out-th">電気料金</th>
+        <th class="out-th">作成</th>
+        <th class="out-th">履歴</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% num = 1 %>
+      <% @summits_index_data.group(:error_record_num).order(:user_id).select("*, MAX(create_date) AS create_date").each do |summit_error| %>
+      <tr >
+        <td class="out-td"><%= num %></td>
+        <td class="out-td"><%= summit_error.store_name %></td>
+        <td class="out-td"><%= summit_error.user.name %></td>
+        <td class="out-td"><%= summit_error.error_class2 %></td>
+        <td class="out-td"><%= summit_error.not_payment_month %></td>
+        <td class="out-td"><%= summit_error.next_response %></td>
+        <td class="remarks-td"><%= summit_error.response_remarks %></td>
+        <td class="remarks-td"><%= summit_error.next_request %></td>
+        <td class="out-td"><%= summit_error.next_response_user %></td>
+        <td class="out-td"><%= summit_error.response_method %></td>
+        <td class="out-td"><%= summit_error.price.to_s(:delimited) %></td>
+        <td class="out-td"><%= summit_error.create_date %></td>
+        <td class="out-td"><%= link_to "詳細", summit_error_history_path(summit_error.id) ,class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+      </tbody>
+    </table>
+  <div class="kaminari-page">
+    <%= paginate @summits_index_data %>
+  </div>
   <% else %>
       <h1>作成日：<%= @summit_errors.minimum(:create_date).to_date %>（<%= days[@summit_errors.minimum(:create_date).wday] %>）〜<%= @summit_errors.maximum(:create_date).to_date %>（<%= days[@summit_errors.maximum(:create_date).wday] %>）</h1>
     <table class="out-tb">

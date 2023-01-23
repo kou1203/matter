@@ -175,6 +175,12 @@ class ResultSummitsController < ApplicationController
 
   end 
 
+  def person_data 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @user = User.find(params[:user_id])
+    @summits = Summit.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
+  end 
+
   def edit 
     @result_summit = ResultSummit.find(params[:id])
   end 

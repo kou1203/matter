@@ -1,6 +1,8 @@
 class SummitErrorHistoriesController < ApplicationController
 
   def index 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @summits_index_data = SummitErrorHistory.where(create_datetime: @month.beginning_of_month..@month.end_of_month).page(params[:page]).per(100)
     @q = SummitErrorHistory.includes(:user).ransack(params[:q])
     @summit_errors = 
       if params[:q].nil?

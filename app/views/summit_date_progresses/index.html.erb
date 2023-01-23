@@ -9,6 +9,7 @@
 </div>
 <div data-scope-path="shares/date-progress">
   <p class="caution-txt"><%= alert %></p>
+  <%= render 'shared/summit_links' %>
   <h2>
     <%= link_to "<<",summit_date_progresses_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
     <%= @month.month %>月（<%= @month.beginning_of_month.to_date %>〜<%= @month.end_of_month.to_date %>）
@@ -33,7 +34,7 @@
       window.billings_prev_kanto=<%= @billings_prev_kanto.to_json.html_safe %>;
       window.billings_prev_kyushu=<%= @billings_prev_kyushu.to_json.html_safe %>;
       window.prev_arry=<%= @prev_arry.to_json.html_safe %>;
-      window.users=<%= @users.to_json.html_safe %>;
+      window.users=<%= @users_data.to_json.html_safe %>;
       window.summit_users=<%= @summit_users.to_json.html_safe %>;
       window.users_all=<%= @users_all.to_json.html_safe %>;
       window.users_chubu=<%= @users_chubu.to_json.html_safe %>;

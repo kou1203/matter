@@ -10,6 +10,7 @@
       <%= @month.year %>年<%= @month.month %>月 詳細
       <%= link_to ">>",result_summit_path(@user.id,month:@month.next_month), class:"link" %>
     </h2><br>
+    <%= render "shared/summit_result_links" %>
   <div class="result-flex"><%# 大枠 %>
     <div class="right-frame"><%#日々進捗の区切り%>
       <h2>日々進捗</h2>

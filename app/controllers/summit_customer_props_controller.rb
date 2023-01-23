@@ -1,6 +1,8 @@
 class SummitCustomerPropsController < ApplicationController
 
   def index 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @summit_customer_prop_index = SummitCustomerProp.where(create_datetime: @month.ago(2.month)..@month.end_of_month).page(params[:page]).per(50)
     @q = SummitCustomerProp.includes(:user).ransack(params[:q])
     @summit_customer_props = 
       if params[:q].nil?

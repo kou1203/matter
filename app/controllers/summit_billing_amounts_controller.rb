@@ -1,6 +1,8 @@
 class SummitBillingAmountsController < ApplicationController
 
   def index 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @summit_month_data = SummitBillingAmount.page(params[:page]).per(100)
     @q = SummitBillingAmount.includes(:user).ransack(params[:q])
     @summits = 
       if params[:q].nil?

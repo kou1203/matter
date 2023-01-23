@@ -129,9 +129,57 @@
         </div>
       </article><%# /検索フォーム %>
     <hr>
+    <%= render "shared/summit_links" %>
   <% if @summit_customer_props.empty? %>
     <div class="warning"><%= alert %></div>
-    <%= render "shared/summit_links" %>
+    <h2>
+      <%= link_to "<<",summit_customer_props_path(month: @month.ago(1.month)), class:"link" %>
+      <%= @month.month %>月対応履歴一覧
+      <%= link_to ">>",summit_customer_props_path(month: @month.since(1.month)), class:"link" %>
+    </h2>
+    <table class="out-tb">
+      <thead>
+      <tr>
+        <th class="out-th">件数</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">営業担当者</th>
+        <th class="out-th">対応種類</th>
+        <th class="out-th">件名</th>
+        <th class="out-th">次回対応日</th>
+        <th class="out-th">次回対応メモ</th>
+        <th class="out-th">次回対応者</th>
+        <th class="out-th">対応手段</th>
+        <th class="out-th">対応内容・次回依頼</th>
+        <th class="out-th">作成日時</th>
+        <th class="out-th">対応日時</th>
+        <th class="out-th">履歴</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% num = 1 %>
+      <% @summit_customer_prop_index.group(:history_record_num).order(:user_id).select("*, MAX(response_datetime) AS response_datetime").each do |summit| %>
+      <tr >
+        <td class="out-td"><%= num %></td>
+        <td class="out-td"><%= summit.store_name %></td>
+        <td class="out-td"><%= summit.user.name %></td>
+        <td class="out-td"><%= summit.history_class %></td>
+        <td class="out-td"><%= summit.title %></td>
+        <td class="out-td"><%= summit.next_response %></td>
+        <td class="remarks-td"><%= summit.response_remarks %></td>
+        <td class="out-td"><%= summit.next_response_user %></td>
+        <td class="out-td"><%= summit.response_method %></td>
+        <td class="remarks-td"><%= summit.next_request %></td>
+        <td class="out-td"><%= summit.create_datetime %></td>
+        <td class="out-td"><%= summit.response_datetime %></td>
+        <td class="out-td"><%= link_to "詳細", summit_customer_prop_path(summit.id) ,class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+      </tbody>
+    </table>
+  <div class="kaminari-page">
+    <%= paginate @summit_customer_prop_index %>
+  </div>
   <% else %>
       <h1>作成日：<%= @summit_customer_props.minimum(:create_datetime).to_date %>（<%= days[@summit_customer_props.minimum(:create_datetime).wday] %>）〜<%= @summit_customer_props.maximum(:create_datetime).to_date %>（<%= days[@summit_customer_props.maximum(:create_datetime).wday] %>）</h1>
     <table class="out-tb">

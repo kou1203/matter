@@ -57,7 +57,9 @@ class SummitsController < ApplicationController
   end 
 
   def sw_error
-    @sw_errors = Summit.includes(:summit_client).where(status: "SWエラー")
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @users = User.where(base_sub: "サミット")
+    @sw_errors = Summit.includes(:summit_client).where(status: "SWエラー").where(date: @month.beginning_of_month..@month.end_of_month)
   end 
 
   def show 
@@ -81,6 +83,7 @@ class SummitsController < ApplicationController
   end 
 
   def cancel
+    @users = User.where(base_sub: "サミット")
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @year_parse = @month.to_date.all_year
     @areas = ["中部","関西","東京","中国"]

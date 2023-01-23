@@ -122,9 +122,56 @@
         </div><%# /キーワード検索 %>
       </article><%# /検索フォーム %>
     <hr>
+    <%= render 'shared/summit_links' %>
   <% if @summits_data.empty? %>
     <div class="warning"><%= alert %></div>
-    <%= render 'shared/summit_links' %>
+  <h2>
+    <%= link_to "<<",summit_billing_amounts_path(month: @month.ago(1.month)), class:"link" %>
+    <%= @month.month %>月サミット明細一覧
+    <%= link_to ">>",summit_billing_amounts_path(month: @month.since(1.month)), class:"link" %>
+  </h2>
+    <table class="out-tb">
+      <thead>
+      <tr>
+        <th class="out-th">No</th>
+        <th class="out-th">レコード番号</th>
+        <th class="out-th">明細フラグ</th>
+        <th class="out-th">請求対象年月</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">獲得者</th>
+        <th class="out-th">契約種別</th>
+        <th class="out-th">当月合計使用料</th>
+        <th class="out-th">請求金額(税込)</th>
+        <th class="out-th">手数料(税抜)</th>
+        <th class="out-th">報酬率</th>
+        <th class="out-th">入金日</th>
+        <th class="out-th">拠点</th>
+        <th class="out-th">都道府県</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @summit_month_data.order(:user_id).each_with_index do |summit,i| %>
+      <tr >
+        <td class="out-td"><%= i + 1 %></td>
+        <td class="out-td"><%= summit.record_num %></td>
+        <td class="out-td"><%= summit.first_flag %></td>
+        <td class="out-td"><%= summit.billing_date %></td>
+        <td class="out-td"><%= summit.store_name rescue "不明" %></td>
+        <td class="out-td"><%= summit.user.name %></td>
+        <td class="out-td"><%= summit.contract_type rescue "不明" %></td>
+        <td class="out-td"><%= summit.total_use.to_s(:delimited) %></td>
+        <td class="out-td"><%= summit.billing_amount.to_s(:delimited) rescue "不明"%></td>
+        <td class="out-td"><%= summit.commission.to_s(:delimited) %></td>
+        <td class="out-td"><%= summit.rate %>％</td>
+        <td class="out-td"><%= summit.payment_date %></td>
+        <td class="out-td"><%= summit.base %></td>
+        <td class="out-td"><%= summit.prefecture %></td>
+      <% end %>
+      </tbody>
+    </table>
+    <div class="kaminari-page">
+      <%= paginate @summit_month_data %>
+    </div>
   <% else %>
     <table>
       <tr>
@@ -159,7 +206,7 @@
       </tr>
       </thead>
       <tbody>
-      <% @summits_data.each do |summit| %>
+      <% @summits_data.order(:user_id).each do |summit| %>
       <tr >
         <td class="out-td"><%= summit.record_num %></td>
         <td class="out-td"><%= summit.first_flag %></td>

@@ -1,6 +1,7 @@
 class SummitDateProgressesController < ApplicationController
 
   def index 
+    @users = User.where(base_sub: "サミット")
     # 大元
     @bases = ["中部SS", "関西SS", "関東SS"]
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
@@ -14,7 +15,7 @@ class SummitDateProgressesController < ApplicationController
 
     @billings = SummitBillingAmount.where(billing_date: @year_month)
     @billings_prev = SummitBillingAmount.where(billing_date: @year_month_prev)
-    @users = User.all
+    @users_data = User.all
     @summit_users = Summit.includes(:user).group(:user_id)
 
     @month_metered_all = 

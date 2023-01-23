@@ -9,6 +9,7 @@
 </div>
 <div data-scope-path="summits/cancel">
   <p class="caution-txt"><%= alert %></p>
+  <%= render 'shared/summit_links' %>
   <h2>
     <%= link_to "<<",cancel_summits_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
     <%= @month.month %>月（<%= @month.beginning_of_month.to_date %>〜<%= @month.end_of_month.to_date %>）
