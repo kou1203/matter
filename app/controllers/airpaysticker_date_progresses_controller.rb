@@ -122,7 +122,7 @@ class AirpaystickerDateProgressesController < ApplicationController
       user_id = r.user_id
       @airpaysticker_progress_data = AirpaystickerDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       # 獲得内訳
-      @airpaystickers_user = OtherProduct.where(product_name: "auPay写真").where(user_id: user_id)
+      @airpaystickers_user = OtherProduct.where(product_name: "AirPayステッカー").where(user_id: user_id)
       @airpaystickers_user_period = @airpaystickers_user.where(date: @airpaysticker1_start_date..@airpaysticker1_end_date)
       shift_digestion = @airpaystickers_user_period.length
       get_len = @airpaystickers_user_period.sum(:product_len)
@@ -171,7 +171,7 @@ class AirpaystickerDateProgressesController < ApplicationController
       end
       cnt += 1    
     end 
-    redirect_to calc_periods_path(month: @month) ,alert: "#{cnt}件Auステッカー売上結果を作成しました"
+    redirect_to calc_periods_path(month: @month) ,alert: "#{cnt}件AirPayステッカー売上結果を作成しました"
 
 
   end  

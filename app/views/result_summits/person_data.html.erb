@@ -129,12 +129,12 @@
           <% if @metered_month_group_ave[cnt].nil? %>
             <td class="date-td">0kWh</td>
           <% else %>
-            <td class="date-td"><%= @metered_month_group_ave[cnt].round() %>kWh</td>
-            <% metered_sum += @metered_month_group_ave[cnt].round() %>
+            <td class="date-td"><%= @metered_month_group_ave[cnt].round() rescue 0 %>kWh</td>
+            <% metered_sum += @metered_month_group_ave[cnt].round() rescue 0 %>
           <% end %>
           <% cnt += 1 %>
           <% end %>
-          <td class="date-td"><%= (metered_sum.to_f / @metered_month_group_ave.length).round() %>kWh</td>
+          <td class="date-td"><%= (metered_sum.to_f / @metered_month_group_ave.length).round() rescue 0 %>kWh</td>
         </tr>
         <tr>
           <td class="date-td">低圧電力</td>
@@ -144,12 +144,12 @@
           <% if @low_voltage_month_group_ave[cnt].nil? %>
             <td class="date-td">0kWh</td>
           <% else %>
-            <td class="date-td"><%= @low_voltage_month_group_ave[cnt].round() %>kWh</td>
-            <% low_voltage_sum += @low_voltage_month_group_ave[cnt].round() %>
+            <td class="date-td"><%= @low_voltage_month_group_ave[cnt].round() rescue 0 %>kWh</td>
+            <% low_voltage_sum += @low_voltage_month_group_ave[cnt].round() rescue 0 %>
           <% end %>
           <% cnt += 1 %>
           <% end %>
-          <td class="date-td"><%= (low_voltage_sum.to_f / @low_voltage_month_group_ave.length).round() %>kWh</td>
+          <td class="date-td"><%= (low_voltage_sum.to_f / @low_voltage_month_group_ave.length).round() rescue 0 %>kWh</td>
         </tr>
       </table>
 </div>
