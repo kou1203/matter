@@ -34,9 +34,9 @@
       <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%低圧%").length %></td>
       <td class="date-td"><%= @summits.where(status: "SWエラー").length %></td>
       <td class="date-td"><%= @summits.where(status: "キャンセル").length %></td>
-      <td class="date-td"><%= @summits.average(:amount_use).round().to_s(:delimited) %>kWh</td>
-      <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%従量%").average(:amount_use).round().to_s(:delimited) %>kWh</td>
-      <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%低圧%").average(:amount_use).round().to_s(:delimited) %>kWh</td>
+      <td class="date-td"><%= @summits.average(:amount_use).round().to_s(:delimited) rescue 0 %>kWh</td>
+      <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%従量%").average(:amount_use).round().to_s(:delimited) rescue 0 %>kWh</td>
+      <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%低圧%").average(:amount_use).round().to_s(:delimited) rescue 0 %>kWh</td>
     </tr>
   </table>
 
