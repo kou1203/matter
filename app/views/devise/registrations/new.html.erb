@@ -9,21 +9,17 @@
         <%= f.text_field :name, class: "form-input" %>
       </th>
       <th>
-        <label class="form-text">拠点①</label>
-        <%= f.select :base, {"中部SS": "中部SS", "関西SS": "関西SS","関東SS": "関東SS"},{include_blank: true},{class: "form-input"} %>
+        <label class="form-text">拠点</label>
+        <%= f.select :base, {"中部SS": "中部SS", "関西SS": "関西SS","関東SS": "関東SS", "九州SS": "九州SS", "2次店": "2次店"},{include_blank: true},{class: "form-input"} %>
       </th>
       <th>
-        <label class="form-text">拠点②(N)</label>
-        <%= f.select :base_sub, {"一宮": "一宮", "豊田": "豊田","広域": "広域", "三重": "三重", "豊橋": "豊橋","岡崎": "岡崎", "多治見": "多治見", "名古屋中央": "名古屋中央", "阪神": "阪神", "大阪中央": "大阪中央", "守口公募": "守口公募", "北大阪エリア": "北大阪エリア", "北大阪公募": "北大阪公募" },{include_blank: true}, {class: "form-input"} %>
-      </th>
-      <th>
-        <label class="form-text">拠点②(SS)</label>
-        <%= f.select :base_sub, {"キャッシュレス": "キャッシュレス", "キャッシュ・パンダ": "キャッシュ・パンダ","フェムト": "フェムト", "サミット": "サミット"},{include_blank: true}, {class: "form-input"} %>
+        <label class="form-text">担当商材</label>
+        <%= f.select :base_sub, {"キャッシュレス": "キャッシュレス","フェムト": "フェムト", "サミット": "サミット"},{include_blank: true}, {class: "form-input"} %>
       </th>
     </tr>
     <tr>
       <th>
-      <label class="form-text">グループ</label>
+      <label class="form-text">所属会社</label>
       <%= f.text_field :group, class: "form-input" %>
       </th>
       <th>

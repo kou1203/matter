@@ -12,50 +12,50 @@ window.addEventListener('load', () => {
     if(this.value == '手数料'){
       commissionGraph.style.display = "block";
       meteredGraph.style.display = "none";
-      lowVoltageGraph.style.display = "none";
       commissionAveGraph.style.display = "none";
-      meteredBillingsAveGraph.style.display = "none";
       totalUseAveGraph.style.display = "none";
+      meteredBillingsAveGraph.style.display = "none";
+      lowVoltageGraph.style.display = "none";
   
   }else if(this.value == '従量電灯（件数）'){
     commissionGraph.style.display = "none";
     meteredGraph.style.display = "block";
+    commissionAveGraph.style.display = "none";
+    totalUseAveGraph.style.display = "none";
+    meteredBillingsAveGraph.style.display = "none";
     lowVoltageGraph.style.display = "none";
-    commissionAveGraph.style.display = "none";
-    meteredBillingsAveGraph.style.display = "none";
-    totalUseAveGraph.style.display = "none";
-
-  }else if(this.value == '低圧電灯（件数）'){
-    commissionGraph.style.display = "none";
-    meteredGraph.style.display = "none";
-    lowVoltageGraph.style.display = "block";
-    commissionAveGraph.style.display = "none";
-    meteredBillingsAveGraph.style.display = "none";
-    totalUseAveGraph.style.display = "none";
 
   }else if(this.value == '従量電灯手数料（平均）'){
     commissionGraph.style.display = "none";
     meteredGraph.style.display = "none";
-    lowVoltageGraph.style.display = "none";
     commissionAveGraph.style.display = "block";
+    totalUseAveGraph.style.display = "none";
     meteredBillingsAveGraph.style.display = "none";
-    totalUseAveGraph.style.display = "none";
-
-  }else if(this.value == '請求額（平均）'){
-    commissionGraph.style.display = "none";
-    meteredGraph.style.display = "none";
     lowVoltageGraph.style.display = "none";
-    commissionAveGraph.style.display = "none";
-    meteredBillingsAveGraph.style.display = "block";
-    totalUseAveGraph.style.display = "none";
 
   }else if(this.value == '従量電灯使用量（平均）'){
     commissionGraph.style.display = "none";
     meteredGraph.style.display = "none";
-    lowVoltageGraph.style.display = "none";
     commissionAveGraph.style.display = "none";
-    meteredBillingsAveGraph.style.display = "none";
     totalUseAveGraph.style.display = "block";
+    meteredBillingsAveGraph.style.display = "none";
+    lowVoltageGraph.style.display = "none";
+  }else if(this.value == '低圧電灯（件数）'){
+    commissionGraph.style.display = "none";
+    meteredGraph.style.display = "none";
+    commissionAveGraph.style.display = "none";
+    totalUseAveGraph.style.display = "none";
+    meteredBillingsAveGraph.style.display = "none";
+    lowVoltageGraph.style.display = "block";
+
+  }else if(this.value == '請求額（平均）'){
+    commissionGraph.style.display = "none";
+    meteredGraph.style.display = "none";
+    commissionAveGraph.style.display = "none";
+    totalUseAveGraph.style.display = "none";
+    meteredBillingsAveGraph.style.display = "block";
+    lowVoltageGraph.style.display = "none";
+
   }
   });
 });

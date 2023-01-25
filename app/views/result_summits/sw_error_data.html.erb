@@ -1,0 +1,41 @@
+<%# サミット個別獲得案件一覧 %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>SWエラー</h1>
+  <%= render "shared/header" %>
+</div>
+<div data-scope-path="users/show"><%# users/showスコープ頭 %>
+    <h2><%= @user.name %>：SWエラー</h2><br>
+    <%= render "shared/summit_result_links" %>
+
+  <table>
+    <tr>
+      <th class="date-th">No</th>
+      <th class="date-th">kintone連携</th>
+      <th class="date-th">店舗名</th>
+      <th class="date-th">獲得日</th>
+      <th class="date-th">自社ステータス</th>
+      <th class="date-th">申込ステータス</th>
+      <th class="date-th">エラー内容</th>
+      <th class="date-th">契約種別</th>
+      <th class="date-th">詳細</th>
+    </tr>
+    <% @summits.each_with_index do |s, i| %>
+    <tr>
+      <td class="date-td"><%= i + 1 %></td>
+      <% if s.summit_client.present? %>
+      <td class="date-td">連携済</td>
+      <% else %>
+      <td class="date-td red">未携済</td>
+      <% end %>
+      <td class="date-td"><%= s.store_prop.name %></td>
+      <td class="date-td"><%= s.date %></td>
+      <td class="date-td"><%= s.status %></td>
+      <td class="date-td"><%= s.summit_client.start_status rescue "" %></td>
+      <td class="date-td"><%= s.summit_client.error_contents rescue "" %></td>
+      <td class="date-td"><%= s.contract_type %></td>
+      <td class="date-td"><%= link_to "詳細", summit_path(s.id), "data-turbolinks": false, class: "link" %></td>
+    </tr>
+    <% end %>
+  </table>
+</div>

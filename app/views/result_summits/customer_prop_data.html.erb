@@ -1,0 +1,41 @@
+<%# サミット個別獲得案件一覧 %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>個別対応履歴</h1>
+  <%= render "shared/header" %>
+</div>
+<div data-scope-path="users/show"><%# users/showスコープ頭 %>
+    <h2>
+      <%= @user.name %>
+      <%= link_to "<<",customer_prop_data_result_summits_path(user_id: @user.id,month:@month.prev_month), class:"link" %>
+      <%= @month.year %>年<%= @month.month %>月 対応履歴
+      <%= link_to ">>",customer_prop_data_result_summits_path(user_id: @user.id,month:@month.next_month), class:"link" %>
+    </h2><br>
+    <%= render "shared/summit_result_links" %>
+
+  <table>
+    <tr>
+      <th class="date-th">No</th>
+      <th class="date-th">店舗名</th>
+      <th class="date-th">作成日時</th>
+      <th class="date-th">タイトル</th>
+      <th class="date-th">ステータス</th>
+      <th class="date-th">対応依頼内容</th>
+      <th class="date-th">次回対応依頼</th>
+      <th class="date-th">詳細</th>
+    </tr>
+    <% @summits.each_with_index do |s, i| %>
+    <tr>
+      <td class="date-td"><%= i + 1 %></td>
+      <td class="date-td"><%= s.store_name %></td>
+      <td class="date-td"><%= s.create_datetime.to_date %></td>
+      <td class="date-td"><%= s.title %></td>
+      <td class="date-td"><%= s.status %></td>
+      <td class="remarks-td"><%= s.next_request %></td>
+      <td class="remarks-td"><%= s.response_remarks %></td>
+      <td class="date-td"><%= link_to "詳細", summit_customer_prop_path(s.id), "data-turbolinks": false, class: "link" %></td>
+    </tr>
+    <% end %>
+  </table>
+
+</div>

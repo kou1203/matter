@@ -71,6 +71,9 @@
           <button @click="difActive" v-if="isDifActive" class="active-btn">差異のみ表示させる</button>
           <button @click="difActive" v-if="!isDifActive" class="active-btn">全て表示</button>
         </div><%# 切替ボタン %>
+        <% if @current_progress.present? %>
+        <button class="active-btn"><%= link_to "Excel出力",calc_periods_path(format: :xlsx,month: @month), data: {confirm: "#{@month.strftime('%m月%d日')}の実売資料をExcelで出力しますか？"}, class: "link",id:'download-csv' %></button>
+        <% end %>
       </div><%# ヘッド部分 %>
       <% if @current_progress.present? %><%# @current_progressがあるか判別 %>
         <% if CashDateProgress.where(date: @current_progress.first.date).group(:create_date).length > 1 %>

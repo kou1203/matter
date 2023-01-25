@@ -1,0 +1,33 @@
+<%# サミット個別獲得案件一覧 %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>SWエラー</h1>
+  <%= render "shared/header" %>
+</div>
+<div data-scope-path="users/show"><%# users/showスコープ頭 %>
+    <h2><%= @user.name %>：支払遅延案件一覧</h2><br>
+    <%= render "shared/summit_result_links" %>
+
+  <table>
+    <tr>
+      <th class="date-th">No</th>
+      <th class="date-th">店舗名</th>
+      <th class="date-th">未入金対象月</th>
+      <th class="date-th">エラー区分2</th>
+      <th class="date-th">対応内容・次回依頼</th>
+      <th class="date-th">次回対応メモ</th>
+      <th class="date-th">詳細</th>
+    </tr>
+    <% @summits.each_with_index do |s, i| %>
+    <tr>
+      <td class="date-td"><%= i + 1 %></td>
+      <td class="date-td"><%= s.store_name %></td>
+      <td class="date-td"><%= s.not_payment_month %></td>
+      <td class="date-td"><%= s.error_class2 %></td>
+      <td class="date-td remarks-td"><%= s.next_request %></td>
+      <td class="date-td remarks-td"><%= s.response_remarks %></td>
+      <td class="date-td"><%= link_to "詳細", summit_error_history_path(s.id), "data-turbolinks": false, class: "link" %></td>
+    </tr>
+    <% end %>
+  </table>
+</div>

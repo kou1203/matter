@@ -175,10 +175,105 @@ class ResultSummitsController < ApplicationController
 
   end 
 
+  # 獲得詳細 
   def person_data 
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @user = User.find(params[:user_id])
+    @year_parse = @month.in_time_zone.all_year
     @summits = Summit.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
+    @month_group = Summit.where(user_id: @user.id).where(date: @year_parse)
+    @metered_month_group = @month_group.where("contract_type LIKE ?", "%従量%").group("MONTH(date)").count
+    @low_voltage_month_group = @month_group.where("contract_type LIKE ?", "%低圧電力%").group("MONTH(date)").count
+    @metered_month_group_ave = @month_group.where("contract_type LIKE ?", "%従量%").group("MONTH(date)").average(:amount_use)
+    @low_voltage_month_group_ave = @month_group.where("contract_type LIKE ?", "%低圧電力%").group("MONTH(date)").average(:amount_use)
+  end 
+
+  # 廃止案件一覧
+  def repeal_data
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @year_parse = @month.in_time_zone.all_year
+    @user = User.find(params[:user_id])
+    @summits = Summit.includes(:summit_client).where(user_id: @user.id).where(summit_client: {cancel: @month.beginning_of_month..@month.end_of_month})
+    @month_group = SummitClient.includes(:summit).where(summit: {user_id: @user.id}).where(cancel: @year_parse)
+    @metered_month_group = @month_group.where("pay_menu LIKE ?", "%従量%").group("MONTH(cancel)").count
+    @low_voltage_month_group = @month_group.where("pay_menu LIKE ?", "%低圧電力%").group("MONTH(cancel)").count
+
+  end 
+
+  # SWエラーデータ一覧
+  def sw_error_data
+    @user = User.find(params[:user_id])
+    @summits = Summit.includes(:summit_client).where(user_id: @user.id).where(status: "SWエラー")
+
+  end 
+
+  # 支払遅延
+  def error_history_data
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @year_parse = @month.in_time_zone.all_year
+    @user = User.find(params[:user_id])
+    @summits = SummitErrorHistory.includes(:user).where(user_id: @user.id).where(start_section: "*")
+
+  end 
+
+  # 対応履歴
+  def customer_prop_data
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @year_parse = @month.in_time_zone.all_year
+    @user = User.find(params[:user_id])
+    @summits = SummitCustomerProp.includes(:user).where(user_id: @user.id).where(create_datetime: @month.beginning_of_month..@month.end_of_month).where(start_section: "*")
+
+  end 
+
+  # 明細
+  def billing_data
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @year_parse = @month.year
+    @billing_month = @month.strftime("%Y年%m月")
+    @user = User.find(params[:user_id])
+    @summits = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(billing_date: @billing_month)
+
+
+    @count_chart = [
+      {
+        name: "従量電灯", data: @summits_group = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).count
+      },
+      {
+        name: "低圧電力", data: @summits_group = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).count
+      },
+    ]
+
+    @commission_chart = [
+      {
+        name: "合計", data: @summits_group = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).sum(:commission)
+      },
+      {
+        name: "従量電灯", data: @summits_group = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).sum(:commission)
+      },
+      {
+        name: "低圧電力", data: @summits_group = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).sum(:commission)
+      },
+    ]
+
+    @commission_ave_chart = [
+      {
+        name: "従量電灯", data: @summits_group = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:commission)
+      },
+      {
+        name: "低圧電力", data: @summits_group = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:commission)
+      },
+    ]
+
+    @total_use_ave_chart = [
+      {
+        name: "従量電灯", data: @summits_group = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:total_use)
+      },
+      {
+        name: "低圧電力", data: @summits_group = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:total_use)
+      },
+    ]
+    
+
   end 
 
   def edit 

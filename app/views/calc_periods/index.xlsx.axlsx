@@ -30,18 +30,18 @@ wb = xlsx_package.workbook
     elsif product == "dメル"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
       @bases.each do |base|
-        @dmer_date_progresses.where(base: base).each do |date_progress|
+          @dmer_date_progresses.where(base: base).each do |date_progress|
           val_len = date_progress.get_len - date_progress.def_len
+          shift_schedule = date_progress.shift_schedule.to_i + date_progress.shift_schedule_slmt.to_i
+          shift_digestion = date_progress.shift_digestion.to_i + date_progress.shift_digestion_slmt.to_i
+          profit_fin = date_progress.profit_fin1 + date_progress.profit_fin2 + date_progress.profit_fin3
           if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
             ave_len = 0
             ave_profit = 0
           else
             ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
-            ave_profit = (profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
+            ave_profit = (profit_fin.to_f / shift_schedule).round() rescue 0
           end 
-          shift_schedule = date_progress.shift_schedule + date_progress.shift_schedule_slmt
-          shift_digestion = date_progress.shift_digestion + date_progress.shift_digestion_slmt
-          profit_fin = date_progress.profit_fin1 + date_progress.profit_fin2 + date_progress.profit_fin3
           sheet.add_row [
             date_progress.base, date_progress.user.name, date_progress.user.position_sub, 
             shift_schedule, shift_digestion,
@@ -62,7 +62,7 @@ wb = xlsx_package.workbook
             ave_profit = 0
           else
             ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
-            ave_profit = (profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
+            ave_profit = (date_progress.profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
           end 
 
           sheet.add_row [
@@ -84,7 +84,7 @@ wb = xlsx_package.workbook
             ave_profit = 0
           else
             ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
-            ave_profit = (profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
+            ave_profit = (date_progress.profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
           end 
           sheet.add_row [
             date_progress.base, date_progress.user.name, date_progress.user.position_sub, 

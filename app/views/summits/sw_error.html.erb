@@ -25,7 +25,9 @@
         <th class="out-th">店舗名</th>
         <th class="out-th">獲得日</th>
         <th class="out-th">獲得者</th>
+        <th class="out-th">ステータス</th>
         <th class="out-th">エラー内容</th>
+        <th class="out-th">備考</th>
         <th class="out-th">詳細</th>
       </tr>
       </thead>
@@ -46,11 +48,9 @@
         <td class="out-td"><%= summit.store_prop.name %></td>
         <td class="out-td"><%= summit.date %></td>
         <td class="out-td"><%= summit.user.name %></td>
-        <% if summit.summit_client.present? %>
-        <td class="out-td"><%= summit.summit_client.error_contents %></td>
-        <% else %>
-        <td class="out-td"></td>
-        <% end %>
+        <td class="out-td"><%= summit.summit_client.start_status rescue "" %></td>
+        <td class="out-td"><%= summit.summit_client.error_contents rescue "" %></td>
+        <td class="remarks-td"><%= summit.summit_client.remarks rescue "" %></td>
         <td class="out-td"><%= link_to "詳細", summit_path(summit.id),class: "link","data-turbolinks": false %></td>
       <% end %>
       </tbody>

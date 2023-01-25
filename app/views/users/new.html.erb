@@ -4,15 +4,15 @@
   <table>
     <tr>
       <th><label class="form-text">名前</label></th>
-      <th><label class="form-text">拠点①</label></th>
-      <th><label class="form-text">拠点②(SS)</label></th>
+      <th><label class="form-text">拠点</label></th>
+      <th><label class="form-text">担当商材</label></th>
     </tr>
       <td><%= f.text_field :name, class: "form-input" %></td>
-      <td><%= f.select :base, {"中部SS": "中部SS", "関西SS": "関西SS","関東SS": "関東SS","九州SS": "九州SS"},{include_blank: true},{class: "form-input"} %></td>
+      <td><%= f.select :base, {"中部SS": "中部SS", "関西SS": "関西SS","関東SS": "関東SS","九州SS": "九州SS","2次店": "2次店"},{include_blank: true},{class: "form-input"} %></td>
       <td><%= f.select :base_sub, {"キャッシュレス": "キャッシュレス","フェムト": "フェムト", "サミット": "サミット"},{include_blank: true}, {class: "form-input"} %></td>
     </tr>
     <tr>
-      <th><label class="form-text">グループ</label></th>
+      <th><label class="form-text">所属会社</label></th>
       <th><label class="form-text">チーム</label></th>
       <th><label class="form-text">メールアドレス</label></th>
       <th><label class="form-text">パススワード</label></th>

@@ -136,6 +136,11 @@ Rails.application.routes.draw do
   resources :result_summits, expect: :show do 
     collection { get :base_profit }
     collection { get :person_data }
+    collection { get :repeal_data }
+    collection { get :sw_error_data }
+    collection { get :error_history_data }
+    collection { get :customer_prop_data }
+    collection { get :billing_data }
   end 
   resources :result_summits, only: :show,param: :user_id
   

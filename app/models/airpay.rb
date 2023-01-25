@@ -23,7 +23,7 @@ class Airpay < ApplicationRecord
       if airpay_store.present?
         store_id = airpay_store.store_prop_id
       elsif store_prop.present? 
-        store_id = store_prop.id
+        store_id = store_prop.id rescue 0
       else  
         errors << "#{index}行目店舗名が不正です" if store_id.blank? && errors.length < 5
       end 
@@ -64,7 +64,7 @@ class Airpay < ApplicationRecord
     nochange_cnt = 0
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
     user = User.find_by(name: row["獲得者"])
-    store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
+    store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"]) rescue 0
     store_id = store_prop.id if store_prop.present? 
     airpay = find_by(customer_num: row["店舗番号"])
     if airpay.present? 

@@ -15,6 +15,33 @@
 
   <table>
     <tr>
+      <th class="date-th" colspan="5">獲得数</th>
+      <th class="date-th" colspan="3">平均使用量</th>
+    </tr>
+    <tr>
+      <th class="date-th">合計</th>
+      <th class="date-th">従量電灯獲得数</th>
+      <th class="date-th">低圧電力獲得数</th>
+      <th class="date-th">SWエラー</th>
+      <th class="date-th">キャンセル</th>
+      <th class="date-th">合計</th>
+      <th class="date-th">従量電灯獲得数</th>
+      <th class="date-th">低圧電力獲得数</th>
+    </tr>
+    <tr>
+      <td class="date-td"><%= @summits.length %></td>
+      <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%従量%").length %></td>
+      <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%低圧%").length %></td>
+      <td class="date-td"><%= @summits.where(status: "SWエラー").length %></td>
+      <td class="date-td"><%= @summits.where(status: "キャンセル").length %></td>
+      <td class="date-td"><%= @summits.average(:amount_use).round().to_s(:delimited) %>kWh</td>
+      <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%従量%").average(:amount_use).round().to_s(:delimited) %>kWh</td>
+      <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%低圧%").average(:amount_use).round().to_s(:delimited) %>kWh</td>
+    </tr>
+  </table>
+
+  <table>
+    <tr>
       <th class="date-th">No</th>
       <th class="date-th">kintone連携</th>
       <th class="date-th">店舗名</th>
@@ -43,4 +70,86 @@
     </tr>
     <% end %>
   </table>
+    <h2>◆<%= @month.year %>年：獲得数</h2>
+      <table>
+        <tr>
+          <th class="date-th">契約種別</th>
+          <% cnt = 0 %>
+          <% 12.times do  %>
+          <th class="date-th"><%= cnt += 1 %>月</th>
+          <% end %>
+          <th class="date-th">合計</th>
+        </tr>
+        <tr>
+          <td class="date-td">従量電灯</td>
+          <% cnt = 1 %>
+          <% metered_sum = 0 %>
+          <% 12.times do %>
+          <% if @metered_month_group[cnt].nil? %>
+            <td class="date-td">0</td>
+          <% else %>
+            <td class="date-td"><%= @metered_month_group[cnt] %></td>
+            <% metered_sum += @metered_month_group[cnt] %>
+          <% end %>
+          <% cnt += 1 %>
+          <% end %>
+          <td class="date-td"><%= metered_sum %></td>
+        </tr>
+        <tr>
+          <td class="date-td">低圧電力</td>
+          <% cnt = 1 %>
+          <% low_voltage_sum = 0 %>
+          <% 12.times do %>
+          <% if @low_voltage_month_group[cnt].nil? %>
+            <td class="date-td">0</td>
+          <% else %>
+            <td class="date-td"><%= @low_voltage_month_group[cnt] %></td>
+            <% low_voltage_sum += @low_voltage_month_group[cnt] %>
+          <% end %>
+          <% cnt += 1 %>
+          <% end %>
+          <td class="date-td"><%= low_voltage_sum %></td>
+        </tr>
+      </table>
+    <h2>◆<%= @month.year %>年：平均使用量</h2>
+      <table>
+        <tr>
+          <th class="date-th">契約種別</th>
+          <% cnt = 0 %>
+          <% 12.times do  %>
+          <th class="date-th"><%= cnt += 1 %>月</th>
+          <% end %>
+          <th class="date-th"><%= @month.year %>年平均</th>
+        </tr>
+        <tr>
+          <td class="date-td">従量電灯</td>
+          <% cnt = 1 %>
+          <% metered_sum = 0 %>
+          <% 12.times do %>
+          <% if @metered_month_group_ave[cnt].nil? %>
+            <td class="date-td">0kWh</td>
+          <% else %>
+            <td class="date-td"><%= @metered_month_group_ave[cnt].round() %>kWh</td>
+            <% metered_sum += @metered_month_group_ave[cnt].round() %>
+          <% end %>
+          <% cnt += 1 %>
+          <% end %>
+          <td class="date-td"><%= (metered_sum.to_f / @metered_month_group_ave.length).round() %>kWh</td>
+        </tr>
+        <tr>
+          <td class="date-td">低圧電力</td>
+          <% cnt = 1 %>
+          <% low_voltage_sum = 0 %>
+          <% 12.times do %>
+          <% if @low_voltage_month_group_ave[cnt].nil? %>
+            <td class="date-td">0kWh</td>
+          <% else %>
+            <td class="date-td"><%= @low_voltage_month_group_ave[cnt].round() %>kWh</td>
+            <% low_voltage_sum += @low_voltage_month_group_ave[cnt].round() %>
+          <% end %>
+          <% cnt += 1 %>
+          <% end %>
+          <td class="date-td"><%= (low_voltage_sum.to_f / @low_voltage_month_group_ave.length).round() %>kWh</td>
+        </tr>
+      </table>
 </div>

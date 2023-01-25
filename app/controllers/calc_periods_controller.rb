@@ -5,39 +5,76 @@ class CalcPeriodsController < ApplicationController
     @calc_periods = CalcPeriod.all
     @calc_periods_val = CalcPeriod.where(sales_category: "評価売")
     @calc_periods_prof = CalcPeriod.where(sales_category: "実売")
-    @dmer_date_progresses = DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    if DmerDateProgress.where(date: @month).exists?
+      @dmer_date_progresses = DmerDateProgress.includes(:user).where(date: @month)
+    else
+      @dmer_date_progresses = DmerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
     @dmer_date_progresses_last_update =  @dmer_date_progresses.maximum(:create_date)
     @dmer_date_progresses = @dmer_date_progresses.where(create_date: @dmer_date_progresses_last_update)
 
-    @aupay_date_progresses = AupayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    if AupayDateProgress.where(date: @month).exists?
+      @aupay_date_progresses = AupayDateProgress.includes(:user).where(date: @month)
+    else  
+      @aupay_date_progresses = AupayDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
     @aupay_date_progresses_last_update = @aupay_date_progresses.maximum(:create_date)
     @aupay_date_progresses = @aupay_date_progresses.where(create_date: @aupay_date_progresses_last_update)
 
-    @paypay_date_progresses = PaypayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    if PaypayDateProgress.where(date: @month).exists?
+      @paypay_date_progresses = PaypayDateProgress.includes(:user).where(date: @month)
+    else  
+      @paypay_date_progresses = PaypayDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
     @paypay_date_progresses_last_update = @paypay_date_progresses.maximum(:create_date)
     @paypay_date_progresses = @paypay_date_progresses.where(create_date: @paypay_date_progresses_last_update)
-    @rakuten_pay_date_progresses = RakutenPayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+
+    if RakutenPayDateProgress.where(date: @month).exists?
+      @rakuten_pay_date_progresses = RakutenPayDateProgress.includes(:user).where(date: @month)
+    else  
+      @rakuten_pay_date_progresses = RakutenPayDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
     @rakuten_pay_date_progresses_last_update = @rakuten_pay_date_progresses.maximum(:create_date)
     @rakuten_pay_date_progresses = @rakuten_pay_date_progresses.where(create_date: @rakuten_pay_date_progresses_last_update)
 
-    @airpay_date_progresses = AirpayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    if AirpayDateProgress.where(date: @month).exists?
+      @airpay_date_progresses = AirpayDateProgress.includes(:user).where(date: @month)
+    else  
+      @airpay_date_progresses = AirpayDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
     @airpay_date_progresses_last_update = @airpay_date_progresses.maximum(:create_date)
     @airpay_date_progresses = @airpay_date_progresses.where(create_date: @airpay_date_progresses_last_update)
 
-    @demaekan_date_progresses = DemaekanDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+
+    if DemaekanDateProgress.where(date: @month).exists?
+      @demaekan_date_progresses = DemaekanDateProgress.includes(:user).where(date: @month)
+    else  
+      @demaekan_date_progresses = DemaekanDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
     @demaekan_date_progresses_last_update = @demaekan_date_progresses.maximum(:create_date)
     @demaekan_date_progresses = @demaekan_date_progresses.where(create_date: @demaekan_date_progresses_last_update)
 
-    @austicker_date_progresses = AustickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    if AustickerDateProgress.where(date: @month).exists?
+      @austicker_date_progresses = AustickerDateProgress.includes(:user).where(date: @month)
+    else  
+      @austicker_date_progresses = AustickerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
     @austicker_date_progresses_last_update = @austicker_date_progresses.maximum(:create_date)
     
     @dmersticker_date_progresses = DmerstickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @dmersticker_date_progresses_last_update = @dmersticker_date_progresses.maximum(:create_date)
 
-    @airpaysticker_date_progresses = AirpaystickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    if AirpaystickerDateProgress.where(date: @month).exists?
+      @airpaysticker_date_progresses = AirpaystickerDateProgress.includes(:user).where(date: @month)
+    else  
+      @airpaysticker_date_progresses = AirpaystickerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
     @airpaysticker_date_progresses_last_update = @airpaysticker_date_progresses.maximum(:create_date)
-    
-    @cash_date_progresses = CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    if CashDateProgress.where(date: @month).exists?
+      @cash_date_progresses = CashDateProgress.where(date: @month)
+    else  
+      @cash_date_progresses = CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
     @cash_date_progresses_last_update = @cash_date_progresses.maximum(:create_date)
     @cash_date_progresses = @cash_date_progresses.where(create_date: @cash_date_progresses_last_update)
 
@@ -49,7 +86,7 @@ class CalcPeriodsController < ApplicationController
       format.html
       format.xlsx do
         # ファイル名をここで指定する（動的にファイル名を変更できる）
-        response.headers['Content-Disposition'] = "attachment; filename=#{@cash_date_progresses.maximum(:date).month}月実売資料.xlsx"
+        response.headers['Content-Disposition'] = "attachment; filename=#{@cash_date_progresses.first.date}月実売資料.xlsx"
       end
     end
 

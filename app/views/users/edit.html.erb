@@ -8,11 +8,11 @@
       <tr>
         <th><%= f.label :base, "拠点", class: "form-text" %></th>
         <th><%= f.label :base_sub, "担当商材", class: "form-text" %></th>
-        <th><%= f.label :group, "グループ①", class: "form-text" %></th>
+        <th><%= f.label :group, "所属会社", class: "form-text" %></th>
         <th><%= f.label :team, "グループ②",class: "form-text" %></th>
       </tr>
-        <td><%= f.select :base, {"中部SS": "中部SS", "関西SS": "関西SS","関東SS": "関東SS","中部N": "中部N","関西N": "関西N"} ,{include_blank: true}, {class: "form-input"} %></td>
-        <td><%= f.select :base_sub, {"キャッシュレス": "キャッシュレス", "サミット": "サミット", "パンダ": "パンダ", "フェムト": "フェムト" }, {include_blank: true}, {class: "form-input"} %></td>
+        <td><%= f.select :base, {"中部SS": "中部SS", "関西SS": "関西SS","関東SS": "関東SS","九州SS": "九州SS","2次店": "2次店"} ,{include_blank: true}, {class: "form-input"} %></td>
+        <td><%= f.select :base_sub, {"キャッシュレス": "キャッシュレス", "サミット": "サミット", "フェムト": "フェムト" }, {include_blank: true}, {class: "form-input"} %></td>
         <td><%= f.text_field :group ,class: "form-input" %></td>
         <td><%= f.text_field :team ,class: "form-input" %></td>
       </tr>
