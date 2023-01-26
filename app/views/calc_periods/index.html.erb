@@ -138,18 +138,18 @@
       <% calc_periods.each do |calc_period| %>
         <%# 獲得期間の日付 %>
         <% if calc_period.start_date_day == 0 %>
-          <% start_date_day = Date.today.end_of_month.day %>
+          <% start_date_day = @month.end_of_month.day %>
         <% else %>
           <% start_date_day = "#{calc_period.start_date_day}日" %>
         <% end %>
         <% if calc_period.end_date_day == 0 %>
-          <% end_date_day = Date.today.end_of_month.day %>
+          <% end_date_day = @month.end_of_month.day %>
         <% else %>
           <% end_date_day = "#{calc_period.end_date_day}日" %>
         <% end %>
         <%# 締め日の日付 %>
         <% if calc_period.closing_date_day == 0 %>
-          <% closing_date_day = Date.today.end_of_month.day %>
+          <% closing_date_day = @month.end_of_month.day %>
         <% else %>
           <% closing_date_day = "#{calc_period.closing_date_day}日" %>
         <% end %>
@@ -157,10 +157,10 @@
         <td><%= calc_period.name %></td>
         <td><%= calc_period.sales_category %></td>
         <%# 獲得期間 %>
-          <td><%= Date.today.since(calc_period.start_date_month.month).month %>月<%= start_date_day %></td>
-          <td><%= Date.today.since(calc_period.end_date_month.month).month %>月<%= end_date_day %></td>
+          <td><%= @month.since(calc_period.start_date_month.month).month %>月<%= start_date_day %></td>
+          <td><%= @month.since(calc_period.end_date_month.month).month %>月<%= end_date_day %></td>
         <%# 締め日 %>
-          <td><%= Date.today.since(calc_period.closing_date_month.month).month %>月<%= closing_date_day %></td>
+          <td><%= @month.since(calc_period.closing_date_month.month).month %>月<%= closing_date_day %></td>
           <td><%= (calc_period.this_month_per * 100).to_i %>%</td>
           <td><%= (calc_period.prev_month_per * 100).to_i %>%</td>
           <td><%= calc_period.price.to_s(:delimited) rescue "" %></td>

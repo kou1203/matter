@@ -103,7 +103,7 @@ Rails.application.routes.draw do
 
   resources :panda_profits, only: :index
 
-  resources :results do 
+  resources :results,expect: [:show]  do 
     get 'result_cashes/new'
     post 'result_cashes/create'
     get 'result_casas/new'
@@ -119,6 +119,8 @@ Rails.application.routes.draw do
       get :profit
     }
   end  
+
+  resources :results, only: :show, param: :result_id
   
   resources :ojts, only: :index do 
     collection { get :export }

@@ -1,10 +1,7 @@
 class ResultsController < ApplicationController
   before_action :authenticate_user!
   def index
-
-  # 商材情報
-
-
+    # 商材情報
     @dmers = 
       Dmer.eager_load(:store_prop).select("dmers.id,dmers.user_id,dmers.store_prop_id")
       .where(store_prop: {head_store: nil})
@@ -17,7 +14,7 @@ class ResultsController < ApplicationController
       .where.not(status: "自社NG")
     @paypays = Paypay.select("paypays.id,paypays.user_id")
     @rakuten_pays = RakutenPay.select("rakuten_pays.id,rakuten_pays.user_id")
-  # ユーザー情報
+    # ユーザー情報
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
     @users_cash = @users.where(base_sub: "キャッシュレス").order(base: "DESC")
@@ -35,9 +32,9 @@ class ResultsController < ApplicationController
     @users_kyushu_cash = @users_kyushu.where(base_sub: "キャッシュレス")
     @users_partner = @users.where(base: "2次店")
     @user_partner_cash = @users_partner.where(base_sub: "キャッシュレス")
-  # 終着データ
-  @result_category = "拠点別終着"
-  @q = Result.ransack(params[:q])
+    # 終着データ
+    @result_category = "拠点別終着"
+    @q = Result.ransack(params[:q])
     @results = 
     if params[:q].nil?
       Result.none 
@@ -64,7 +61,7 @@ class ResultsController < ApplicationController
       end
       @cash_result_out = @cash_result.includes(:result_cash).select(:result_cash_id, :user_id)
     end
-  # 日々獲得進捗
+    # 日々獲得進捗
     @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today.yesterday #当日日付
     @dmer_monthly = 
         Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
@@ -94,15 +91,15 @@ class ResultsController < ApplicationController
       Result.includes(:user)
       .where(date: @month_daily.beginning_of_month..@month_daily)
       .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-  # 即時在庫
+    # 即時在庫
     @dmer_stock = DmerStock.where(date:@month_daily.all_month)
-  # 目標獲得数
+    # 目標獲得数
     @product_targets = ProductTarget.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
     @dmer_target = @product_targets.where(product: "dメル")
     @aupay_target = @product_targets.where(product: "auPay")
     @rakuten_pay_target = @product_targets.where(product: "楽天ペイ")
     @airpay_target = @product_targets.where(product: "AirPay")
-  # 月間決済率
+    # 月間決済率
     # 当月
     @dmer_slmt_this_month = 
       @dmer_monthly.where(status: "審査OK")
@@ -172,7 +169,7 @@ class ResultsController < ApplicationController
       end
     end
 
-  # 現状売上
+    # 現状売上
     if @month_daily.day >= 26
       @result_monthly = 
         Result.where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
@@ -197,7 +194,7 @@ class ResultsController < ApplicationController
           Shift.where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
         )
     end
-  # 当日獲得数・売上
+    # 当日獲得数・売上
     @dmer_today_data = Dmer.where(date: @month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
     @aupay_today_data = Aupay.where(date: @month_daily).includes(:user).includes(:user).select(:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
     @paypay_today_data = Paypay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
@@ -321,6 +318,253 @@ class ResultsController < ApplicationController
       render :new 
     end
   end
+
+  def show 
+    @calc_periods = CalcPeriod.where(sales_category: "評価売")
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    # calc_period_and_perは"@calc_periods"と"@month"の配置を先にするのが必須
+    calc_period_and_per
+    @user = User.find(params[:id])
+    # 月間増減
+    @before_airpay_bonus_date = Date.new(2022,10,01)
+    # dメル
+    @dmers = Dmer.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id).where(store_prop: {head_store: nil})
+    @dmers_inc = 
+      Dmer.includes(:store_prop).where.not(date: @month.all_month)
+      .where(user_id: @user.id).where(store_prop: {head_store: nil})
+      .where(status: "審査OK").where.not(industry_status: "×").where.not(industry_status: "NG")
+      .where(result_point: @month.all_month)
+    @dmers_dec = 
+      Dmer.includes(:store_prop).where(date: @month.all_month)
+      .where(user_id: @user.id).where(store_prop: {head_store: nil})
+      .where(status: "審査OK").where.not(industry_status: "×").where.not(industry_status: "NG")
+      .where.not(result_point: @month.all_month)
+    @dmers_db = Dmer.includes(:store_prop).where.not(store_prop: {head_store: nil}).where(date: @month.all_month).where(user_id: @user.id)
+
+    @aupays = Aupay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id).where(store_prop: {head_store: nil})
+    @aupays_inc = 
+      Aupay.includes(:store_prop).where(result_point: @month.all_month).where(user_id: @user.id)
+      .where(store_prop: {head_store: nil}).where.not(date: @month.all_month).where(status: "審査通過")
+    @aupays_dec = 
+      Aupay.includes(:store_prop).where.not(result_point: @month.all_month).where(user_id: @user.id)
+      .where(store_prop: {head_store: nil}).where(date: @month.all_month).where(status: "審査通過")
+      @aupays_db = Aupay.includes(:store_prop).where(date: @month.all_month).where.not(store_prop: {head_store: nil}).where(user_id: @user.id)
+    @rakuten_pays = RakutenPay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
+    @rakuten_pays_inc = 
+      RakutenPay.includes(:store_prop)
+      .where.not(date: @month.all_month).where(user_id: @user.id)
+      .where(share: @month.all_month).where.not(deficiency: nil)
+    @rakuten_pays_dec = RakutenPay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
+    .where.not(share: @month.all_month).where.not(deficiency: nil)
+
+    @airpays = Airpay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
+    @airpay_def_ng = @airpays.where(status: "審査NG")
+    .or(
+      @airpays.where(status: "代表者情報不備")
+      )
+    .or(
+      @airpays.where(status: "店舗情報不備")
+      )
+    .or(
+      @airpays.where(status: "口座情報不備")
+      )
+    # 決済リスト
+    @slmts = 
+      StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})
+      .or(
+        StoreProp.includes(:dmer, :aupay, :comments).where(dmer: {share: Date.today.ago(3.month)..Date.today})
+      ).order(:id)
+    # 不備リスト
+    @dmers_def = 
+      Dmer.includes(:store_prop, :user)
+      .where(status: "不備対応中")
+      .where(date: Date.today.ago(2.month)..Date.today)
+      .where(user_id: @user.id)
+
+    @aupays_def = 
+      Aupay.includes(:store_prop, :user)
+      .where(status: "差し戻し")
+      .where.not(deficiency_remarks: "既存auPAY加盟店の登録がすでにあるため、差し戻しさせていただきます。")
+      .where(date: Date.today.ago(3.month)..Date.today)
+      .where(user_id: @user.id)
+
+    @rakuten_pays_def = 
+      RakutenPay.includes(:store_prop, :user)
+      .where(status: "自社不備")
+      .where(user_id: @user.id)
+      .or(
+        RakutenPay.includes(:store_prop, :user)
+        .where(status: "1次審査不備")
+        .where(user_id: @user.id)
+      ) 
+
+    @comment = Comment.new
+    session[:previous_url] = user_path(@user.id)
+    @comments = Comment.select(:id,:status, :content,:store_prop_id,:request_show,:request)
+
+    # 利益表
+      @date_period = (@start_date..@end_date)
+      @results = Result.includes(:user, :result_cash).where(user_id: @user.id).where(date: @start_date..@end_date)
+      @shifts = Shift.where(user_id: @user.id).where(start_time: @start_date..@end_date)
+    # シフト
+      @shift_schedule_new = @shifts.where(shift: "キャッシュレス新規").length
+      @shift_schedule_slmt = @shifts.where(shift: "キャッシュレス決済").length
+      @shift_schedule_ojt = @shifts.where(shift: "帯同").length
+      @shift_digestion_new = @results.where(shift: "キャッシュレス新規").length
+      @shift_digestion_slmt = @results.where(shift: "キャッシュレス決済").length
+      @shift_digestion_ojt = @results.where(shift: "帯同").length
+    if @shift_digestion_new.present?
+    #  合計変数 
+      @sum_total_visit = @results.where(shift: "キャッシュレス新規").sum(:first_total_visit) + @results.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
+      @sum_visit = @results.where(shift: "キャッシュレス新規").sum(:first_visit) + @results.where(shift: "キャッシュレス新規").sum(:latter_visit) 
+      @sum_interview = @results.where(shift: "キャッシュレス新規").sum(:first_interview) + @results.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+      @sum_full_talk = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk) + @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+      @sum_get = @results.where(shift: "キャッシュレス新規").sum(:first_get) + @results.where(shift: "キャッシュレス新規").sum(:latter_get)
+    #  前半変数 
+      @sum_total_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_total_visit) 
+      @sum_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_visit) 
+      @sum_interview_f = @results.where(shift: "キャッシュレス新規").sum(:first_interview) 
+      @sum_full_talk_f = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk) 
+      @sum_get_f = @results.where(shift: "キャッシュレス新規").sum(:first_get) 
+    # 後半変数 
+      @sum_total_visit_l = @results.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
+      @sum_visit_l = @results.where(shift: "キャッシュレス新規").sum(:latter_visit) 
+      @sum_interview_l = @results.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+      @sum_full_talk_l = @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+      @sum_get_l = @results.where(shift: "キャッシュレス新規").sum(:latter_get) 
+    # 店舗別合計変数 
+      @cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit) 
+      @cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get) 
+      @other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit) 
+      @other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get) 
+      @car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit) 
+      @car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get) 
+      @other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit) 
+      @other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get) 
+      @hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit) 
+      @hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get) 
+      @manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit) 
+      @manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get) 
+      @other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit) 
+      @other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get) 
+    # 全店舗合計変数 
+      @store_visit_sum = @cafe_visit_sum +  @other_food_visit_sum + @car_visit_sum + @other_retail_visit_sum + @hair_salon_visit_sum + @manipulative_visit_sum + @other_service_visit_sum 
+      @store_get_sum = @cafe_get_sum +  @other_food_get_sum + @car_get_sum + @other_retail_get_sum + @hair_salon_get_sum + @manipulative_get_sum + @other_service_get_sum 
+    # 時間別基準値合計
+      @visit10_sum = @results.sum(:visit10)
+      @visit10_ave = (@visit10_sum.to_f / @shift_digestion_new).round(1)
+      @get10_sum = @results.sum(:get10)
+      @get10_ave = (@get10_sum.to_f / @shift_digestion_new).round(1)
+
+      @visit11_sum = @results.sum(:visit11)
+      @visit11_ave = (@visit11_sum.to_f / @shift_digestion_new).round(1)
+      @get11_sum = @results.sum(:get11)
+      @get11_ave = (@get11_sum.to_f / @shift_digestion_new).round(1)
+
+      @visit12_sum = @results.sum(:visit12)
+      @visit12_ave = (@visit12_sum.to_f / @shift_digestion_new).round(1)
+      @get12_sum = @results.sum(:get12)
+      @get12_ave = (@get12_sum.to_f / @shift_digestion_new).round(1)
+
+      @visit13_sum = @results.sum(:visit13)
+      @visit13_ave = (@visit13_sum.to_f / @shift_digestion_new).round(1)
+      @get13_sum = @results.sum(:get13)
+      @get13_ave = (@get13_sum.to_f / @shift_digestion_new).round(1)
+
+      @visit14_sum = @results.sum(:visit14)
+      @visit14_ave = (@visit14_sum.to_f / @shift_digestion_new).round(1)
+      @get14_sum = @results.sum(:get14)
+      @get14_ave = (@get14_sum.to_f / @shift_digestion_new).round(1)
+
+      @visit15_sum = @results.sum(:visit15)
+      @visit15_ave = (@visit15_sum.to_f / @shift_digestion_new).round(1)
+      @get15_sum = @results.sum(:get15)
+      @get15_ave = (@get15_sum.to_f / @shift_digestion_new).round(1)
+
+      @visit16_sum = @results.sum(:visit16)
+      @visit16_ave = (@visit16_sum.to_f / @shift_digestion_new).round(1)
+      @get16_sum = @results.sum(:get16)
+      @get16_ave = (@get16_sum.to_f / @shift_digestion_new).round(1)
+
+      @visit17_sum = @results.sum(:visit17)
+      @visit17_ave = (@visit17_sum.to_f / @shift_digestion_new).round(1)
+      @get17_sum = @results.sum(:get17)
+      @get17_ave = (@get17_sum.to_f / @shift_digestion_new).round(1)
+
+      @visit18_sum = @results.sum(:visit18)
+      @visit18_ave = (@visit18_sum.to_f / @shift_digestion_new).round(1)
+      @get18_sum = @results.sum(:get18)
+      @get18_ave = (@get18_sum.to_f / @shift_digestion_new).round(1)
+
+      @visit19_sum = @results.sum(:visit19)
+      @visit19_ave = (@visit19_sum.to_f / @shift_digestion_new).round(1)
+      @get19_sum = @results.sum(:get19)
+      @get19_ave = (@get19_sum.to_f / @shift_digestion_new).round(1)
+
+      @time_visit_sum = [@visit10_sum,@visit11_sum,@visit12_sum,@visit13_sum,@visit14_sum,@visit15_sum,@visit16_sum,@visit17_sum,@visit18_sum,@visit19_sum]
+      @time_visit_ave = [@visit10_ave,@visit11_ave,@visit12_ave,@visit13_ave,@visit14_ave,@visit15_ave,@visit16_ave,@visit17_ave,@visit18_ave,@visit19_ave]
+      @time_get_sum = [@get10_sum,@get11_sum,@get12_sum,@get13_sum,@get14_sum,@get15_sum,@get16_sum,@get17_sum,@get18_sum,@get19_sum]
+      @time_get_ave = [@get10_ave,@get11_ave,@get12_ave,@get13_ave,@get14_ave,@get15_ave,@get16_ave,@get17_ave,@get18_ave,@get19_ave]
+    # 拠点別基準値
+      @result_base = Result.includes(:user, :result_cash).where(date: @start_date..@end_date)
+      @result_chubu = @result_base.where(user: {base: "中部SS"})
+      @result_kansai = @result_base.where(user: {base: "関西SS"})
+      @result_kanto = @result_base.where(user: {base: "関東SS"})
+      @result_kyushu = @result_base.where(user: {base: "九州SS"})
+      @result_partner = @result_base.where(user: {base: "2次店"})
+      # 拠点別切り返し
+      @result_cash_base = ResultCash.includes(:result,result: :user).where(result: {date: @start_date..@end_date})
+      @result_cash_chubu = @result_cash_base.where(user: {base: "中部SS"})
+      @result_cash_kansai = @result_cash_base.where(user: {base: "関西SS"})
+      @result_cash_kanto = @result_cash_base.where(user: {base: "関東SS"})
+      @result_cash_kyushu = @result_cash_base.where(user: {base: "九州SS"})
+      @result_cash_partner = @result_cash_base.where(user: {base: "2次店"})
+      @hour_visit_chubu = []
+      @hour_get_chubu = []
+      @hour_visit_kansai = []
+      @hour_get_kansai = []
+      @hour_visit_kanto = []
+      @hour_get_kanto = []
+      @hour_visit_kyushu = []
+      @hour_get_kyushu = []
+      @hour_visit_partner = []
+      @hour_get_partner = []
+      10.times do |i|
+        @hour_visit_chubu << @result_chubu.sum("visit#{i + 10}") rescue 0
+        @hour_get_chubu << @result_chubu.sum("get#{i + 10}") rescue 0
+        @hour_visit_kansai << @result_kansai.sum("visit#{i + 10}") rescue 0
+        @hour_get_kansai << @result_kansai.sum("get#{i + 10}") rescue 0
+        @hour_visit_kanto << @result_kanto.sum("visit#{i + 10}") rescue 0
+        @hour_get_kanto << @result_kanto.sum("get#{i + 10}") rescue 0
+        @hour_visit_kyuhsu << @result_kyuhsu.sum("visit#{i + 10}") rescue 0
+        @hour_get_kyuhsu << @result_kyuhsu.sum("get#{i + 10}") rescue 0
+        @hour_visit_partner << @result_partner.sum("visit#{i + 10}") rescue 0
+        @hour_get_partner << @result_partner.sum("get#{i + 10}") rescue 0
+      end 
+    end 
+
+
+
+
+  end
+
+  def comment_new 
+      @comment = Comment.new(comment_params)
+      if @comment.save 
+        flash[:notice] = "対応結果を登録しました。"
+        redirect_to request.referer
+      else  
+        flash[:notice] = "登録できませんでした。"
+        redirect_to session[:previous_url]
+      end 
+  end 
+
+  def comment_update
+    @comment = Comment.find(comment_params[:id])
+    @comment.update(comment_params)
+    flash[:notice] = "対応結果を更新しました。"
+    redirect_to request.referer
+  end  
 
   def import 
     if params[:file].present?

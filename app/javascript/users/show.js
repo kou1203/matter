@@ -23,85 +23,6 @@ window.addEventListener('turbolinks:load', function(){
   const kantoTimesForm = document.getElementById('kanto-times-form');
 
 
-  // 基準値
-  standardValChange.addEventListener("change", function(){
-    if(this.value == 'chubu-slct'){
-      console.log(this.value);
-      chubuStandardForm.style.display = "block";
-      kansaiStandardForm.style.display = "none";
-      kantoStandardForm.style.display = "none";
-  }else if(this.value == 'kansai-slct'){
-      console.log(this.value);
-      chubuStandardForm.style.display = "none";
-      kansaiStandardForm.style.display = "block";
-      kantoStandardForm.style.display = "none";
-  }else if(this.value == 'kanto-slct'){
-      console.log(this.value);
-      chubuStandardForm.style.display = "none";
-      kansaiStandardForm.style.display = "none";
-      kantoStandardForm.style.display = "block";
-  }
-  });
-
-  // 店舗別基準値
-  storeValChange.addEventListener("change", function(){
-    if(this.value == 'store-chubu-slct'){
-      console.log(this.value);
-      chubuStoreForm.style.display = "block";
-      kansaiStoreForm.style.display = "none";
-      kantoStoreForm.style.display = "none";
-  }else if(this.value == 'store-kansai-slct'){
-      console.log(this.value);
-      chubuStoreForm.style.display = "none";
-      kansaiStoreForm.style.display = "block";
-      kantoStoreForm.style.display = "none";
-  }else if(this.value == 'store-kanto-slct'){
-      console.log(this.value);
-      chubuStoreForm.style.display = "none";
-      kansaiStoreForm.style.display = "none";
-      kantoStoreForm.style.display = "block";
-  }
-  });
-
-  // 切り返し基準値
-  outValChange.addEventListener("change", function(){
-    if(this.value == 'out-chubu-slct'){
-      console.log(this.value);
-      chubuOutForm.style.display = "block";
-      kansaiOutForm.style.display = "none";
-      kantoOutForm.style.display = "none";
-  }else if(this.value == 'out-kansai-slct'){
-      console.log(this.value);
-      chubuOutForm.style.display = "none";
-      kansaiOutForm.style.display = "block";
-      kantoOutForm.style.display = "none";
-  }else if(this.value == 'out-kanto-slct'){
-      console.log(this.value);
-      chubuOutForm.style.display = "none";
-      kansaiOutForm.style.display = "none";
-      kantoOutForm.style.display = "block";
-  }
-  });
-
-  // 時間別基準値
-  timesValChange.addEventListener("change", function(){
-    if(this.value == 'times-chubu-slct'){
-      console.log(this.value);
-      chubuTimesForm.style.display = "block";
-      kansaiTimesForm.style.display = "none";
-      kantoTimesForm.style.display = "none";
-  }else if(this.value == 'times-kansai-slct'){
-      console.log(this.value);
-      chubuTimesForm.style.display = "none";
-      kansaiTimesForm.style.display = "block";
-      kantoTimesForm.style.display = "none";
-  }else if(this.value == 'times-kanto-slct'){
-      console.log(this.value);
-      chubuTimesForm.style.display = "none";
-      kansaiTimesForm.style.display = "none";
-      kantoTimesForm.style.display = "block";
-  }
-  });
 
   // standardValChange
   // 決済
@@ -242,6 +163,87 @@ window.addEventListener('turbolinks:load', function(){
 
     
   })
+
+  // 切り返し基準値
+  outValChange.addEventListener("change", function(){
+    if(this.value == 'out-chubu-slct'){
+      console.log(this.value);
+      chubuOutForm.style.display = "block";
+      kansaiOutForm.style.display = "none";
+      kantoOutForm.style.display = "none";
+  }else if(this.value == 'out-kansai-slct'){
+      console.log(this.value);
+      chubuOutForm.style.display = "none";
+      kansaiOutForm.style.display = "block";
+      kantoOutForm.style.display = "none";
+  }else if(this.value == 'out-kanto-slct'){
+      console.log(this.value);
+      chubuOutForm.style.display = "none";
+      kansaiOutForm.style.display = "none";
+      kantoOutForm.style.display = "block";
+  }
+  });
+
+
+  // 基準値
+  standardValChange.addEventListener("change", function(){
+    if(this.value == 'chubu-slct'){
+      console.log(this.value);
+      chubuStandardForm.style.display = "block";
+      kansaiStandardForm.style.display = "none";
+      kantoStandardForm.style.display = "none";
+  }else if(this.value == 'kansai-slct'){
+      console.log(this.value);
+      chubuStandardForm.style.display = "none";
+      kansaiStandardForm.style.display = "block";
+      kantoStandardForm.style.display = "none";
+  }else if(this.value == 'kanto-slct'){
+      console.log(this.value);
+      chubuStandardForm.style.display = "none";
+      kansaiStandardForm.style.display = "none";
+      kantoStandardForm.style.display = "block";
+  }
+  });
+
+  // 店舗別基準値
+  storeValChange.addEventListener("change", function(){
+    if(this.value == 'store-chubu-slct'){
+      console.log(this.value);
+      chubuStoreForm.style.display = "block";
+      kansaiStoreForm.style.display = "none";
+      kantoStoreForm.style.display = "none";
+  }else if(this.value == 'store-kansai-slct'){
+      console.log(this.value);
+      chubuStoreForm.style.display = "none";
+      kansaiStoreForm.style.display = "block";
+      kantoStoreForm.style.display = "none";
+  }else if(this.value == 'store-kanto-slct'){
+      console.log(this.value);
+      chubuStoreForm.style.display = "none";
+      kansaiStoreForm.style.display = "none";
+      kantoStoreForm.style.display = "block";
+  }
+  });
+
+  // 時間別基準値
+  timesValChange.addEventListener("change", function(){
+    if(this.value == 'times-chubu-slct'){
+      console.log(this.value);
+      chubuTimesForm.style.display = "block";
+      kansaiTimesForm.style.display = "none";
+      kantoTimesForm.style.display = "none";
+  }else if(this.value == 'times-kansai-slct'){
+      console.log(this.value);
+      chubuTimesForm.style.display = "none";
+      kansaiTimesForm.style.display = "block";
+      kantoTimesForm.style.display = "none";
+  }else if(this.value == 'times-kanto-slct'){
+      console.log(this.value);
+      chubuTimesForm.style.display = "none";
+      kansaiTimesForm.style.display = "none";
+      kantoTimesForm.style.display = "block";
+  }
+  });
 
   // 決済率（％）を取得
   const priceDmerInput = document.getElementById('slmt-dmer');

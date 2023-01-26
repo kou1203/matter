@@ -1073,17 +1073,6 @@ class UsersController < ApplicationController
         if (@valuation_sum > @result_fin) || (Date.today >= @start_date.next_month.end_of_month)
           @result_fin = @valuation_sum
         end
-
-      # 帯同Ave
-      @ojt_val_ave = @result_fin / (@new_shift + @settlement_shift) rescue 0
-      @ojt_val_sum = @ojt_val_ave * @digestion_ojt rescue 0
-      @ojt_val_fin = @ojt_val_ave * @ojt_shift
-        # 成果平均
-        if @new_shift.present?
-          @result_ave = @result_fin / (@new_shift + @settlement_shift)
-        else  
-          @result_ave = 0
-        end
         
 
       @comment = Comment.new

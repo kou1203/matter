@@ -1,1 +1,1502 @@
-<h1>Hello world</h1>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div class="result-flex"><%# 大枠 %>
+  <div class="left-frame"><%#日々進捗の区切り%>
+    <h2 class="date-title">日々進捗（<%= @start_date %>〜<%= @end_date %>）</h2>
+    <div class="
+      content
+      scrollbar
+      scrollbar-thumb-rounded
+      scrollbar-thumb-gray
+    "><%# スクロールバー %>
+      <table class="date-tb">
+        <thead class="date-thead">
+          <tr>
+          <%# 大枠基準値（見出し） %>
+              <th class="date-th"><span class="date-span">日付</span></th>
+              <th class="date-th"><span class="date-span">曜日</span></th>
+              <th class="date-th"><span class="date-span">予定シフト</span></th>
+              <th class="date-th"><span class="date-span">消化シフト</span></th>
+              <th class="date-th"><span class="date-span">帯同</span></th>
+              <th class="date-th"><span class="date-span">エリア</span></th>
+              <th class="date-th"><span class="date-span">営業予想売上</span></th>
+              <th class="date-th"><span class="date-span">売上</span></th>
+              <th class="date-th"><span class="date-span">合計訪問</span></th>
+              <th class="date-th"><span class="date-span">合計対応</span></th>
+              <th class="date-th"><span class="date-span">合計対面</span></th>
+              <th class="date-th"><span class="date-span">合計フル</span></th>
+              <th class="date-th"><span class="date-span">合計成約</span></th>
+              <th class="date-th"><span class="date-span">前半訪問</span></th>
+              <th class="date-th"><span class="date-span">前半対応</span></th>
+              <th class="date-th"><span class="date-span">前半対面</span></th>
+              <th class="date-th"><span class="date-span">前半フル</span></th>
+              <th class="date-th"><span class="date-span">前半成約</span></th>
+              <th class="date-th"><span class="date-span">後半訪問</span></th>
+              <th class="date-th"><span class="date-span">後半対応</span></th>
+              <th class="date-th"><span class="date-span">後半対面</span></th>
+              <th class="date-th"><span class="date-span">後半フル</span></th>
+              <th class="date-th"><span class="date-span">後半成約</span></th>
+          <%# 店舗別基準値（見出し） %>
+            <th class="date-th head-th"><span class="date-span">店舗別基準値</span></th>
+            <th class="date-th"><span class="date-span">喫茶・カフェ訪問数</span></th>
+            <th class="date-th"><span class="date-span">喫茶・カフェ獲得数</span></th>
+            <th class="date-th"><span class="date-span">その他飲食訪問数</span></th>
+            <th class="date-th"><span class="date-span">その他飲食獲得数</span></th>
+            <th class="date-th"><span class="date-span">車屋訪問数</span></th>
+            <th class="date-th"><span class="date-span">車屋獲得数</span></th>
+            <th class="date-th"><span class="date-span">その他小売訪問数</span></th>
+            <th class="date-th"><span class="date-span">その他小売獲得数</span></th>
+            <th class="date-th"><span class="date-span">理容・美容訪問数</span></th>
+            <th class="date-th"><span class="date-span">理容・美容獲得数</span></th>
+            <th class="date-th"><span class="date-span">整体・鍼灸訪問数</span></th>
+            <th class="date-th"><span class="date-span">整体・鍼灸獲得数</span></th>
+            <th class="date-th"><span class="date-span">その他サービス訪問数</span></th>
+            <th class="date-th"><span class="date-span">その他サービス獲得数</span></th>
+              <th class="head-th date-th"><span class="date-span">切り返し<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">０１：どういうこと？対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">０１：どういうこと？フル数</span></th>
+              <th class="date-th"><span class="date-span">０１：どういうこと？成約数</span></th>
+              <th class="date-th"><span class="date-span">０２：君は誰？協会？対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">０２：君は誰？協会？フル数</span></th>
+              <th class="date-th"><span class="date-span">０２：君は誰？協会？成約数</span></th>
+              <th class="date-th"><span class="date-span">０３：もらうだけでいいの？対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">０３：もらうだけでいいの？フル数</span></th>
+              <th class="date-th"><span class="date-span">０３：もらうだけでいいの？成約数</span></th>
+              <th class="date-th"><span class="date-span">０４：PayPayのみ対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">０４：PayPayのみフル数</span></th>
+              <th class="date-th"><span class="date-span">０４：PayPayのみ成約数</span></th>
+              <th class="date-th"><span class="date-span">０５：AirPayのみ対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">０５：AirPayのみフル数</span></th>
+              <th class="date-th"><span class="date-span">０５：AirPayのみ成約数</span></th>
+              <th class="date-th"><span class="date-span">０６：カードのみ対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">０６：カードのみフル数</span></th>
+              <th class="date-th"><span class="date-span">０６：カードのみ成約数</span></th>
+              <th class="date-th"><span class="date-span">０７：先延ばし対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">０７：先延ばしフル数</span></th>
+              <th class="date-th"><span class="date-span">０７：先延ばし成約数</span></th>
+              <th class="date-th"><span class="date-span">０８：現金のみ対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">０８：現金のみフル数</span></th>
+              <th class="date-th"><span class="date-span">０８：現金のみ成約数</span></th>
+              <th class="date-th"><span class="date-span">０９：忙しい対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">０９：忙しいフル数</span></th>
+              <th class="date-th"><span class="date-span">０９：忙しい成約数</span></th>
+              <th class="date-th"><span class="date-span">１０：面倒くさい対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">１０：面倒くさいフル数</span></th>
+              <th class="date-th"><span class="date-span">１０：面倒くさい成約数</span></th>
+              <th class="date-th"><span class="date-span">１１：情報不足対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">１１：情報不足フル数</span></th>
+              <th class="date-th"><span class="date-span">１１：情報不足成約数</span></th>
+              <th class="date-th"><span class="date-span">１２：ペロ対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">１２：ペロフル数</span></th>
+              <th class="date-th"><span class="date-span">１２：ペロ成約数</span></th>
+              <th class="date-th"><span class="date-span">１３：その他対面数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">１３：その他フル数</span></th>
+              <th class="date-th"><span class="date-span">１３：その他成約数</span></th>
+              <th class="date-th"><span class="date-span">１９：全導入AirPay入り訪問数<span class="date-span"></th>
+              <th class="date-th"><span class="date-span">１９：全導入AirPay入り対面数</span></th>
+              <th class="date-th"><span class="date-span">１９：全導入AirPay入り成約数</span></th>
+              <th class="date-th"><span class="date-span">２０：出前館フル数</span></th>
+              <th class="date-th"><span class="date-span">２０：出前館成約数</span></th>
+              <th class="head-th date-th"><span class="date-span">時間別基準値</span></th>
+              <th class="date-th"><span class="date-span">10時訪問</span></th>
+              <th class="date-th"><span class="date-span">10時成約</span></th>
+              <th class="date-th"><span class="date-span">11時訪問</span></th>
+              <th class="date-th"><span class="date-span">11時成約</span></th>
+              <th class="date-th"><span class="date-span">12時訪問</span></th>
+              <th class="date-th"><span class="date-span">12時成約</span></th>
+              <th class="date-th"><span class="date-span">13時訪問</span></th>
+              <th class="date-th"><span class="date-span">13時成約</span></th>
+              <th class="date-th"><span class="date-span">14時訪問</span></th>
+              <th class="date-th"><span class="date-span">14時成約</span></th>
+              <th class="date-th"><span class="date-span">15時訪問</span></th>
+              <th class="date-th"><span class="date-span">15時成約</span></th>
+              <th class="date-th"><span class="date-span">16時訪問</span></th>
+              <th class="date-th"><span class="date-span">16時成約</span></th>
+              <th class="date-th"><span class="date-span">17時訪問</span></th>
+              <th class="date-th"><span class="date-span">17時成約</span></th>
+              <th class="date-th"><span class="date-span">18時訪問</span></th>
+              <th class="date-th"><span class="date-span">18時成約</span></th>
+              <th class="date-th"><span class="date-span">19時訪問</span></th>
+              <th class="date-th"><span class="date-span">19時成約</span></th>
+              <th class="date-th"><span class="date-span">獲得商材</span></th>
+              <th class="date-th" colspan=""><span class="date-span">切り返し入力/編集</span></th>
+              <th class="date-th"><span class="date-span">削除</span></th>
+          </tr>
+        </thead>
+        <tbody>
+        <% @date_period.each do |d| %>
+          <tr class="date-tr">
+          <%#日付%>
+            <th class="date-th"><span class="date-span"><%= d.month %>月<%= d.day %>日</span></th>
+            <% if days[d.wday] == "日" %>
+            <th class="date-th" style="color:red;"><span class="date-span"><%= days[d.wday] %></span></th>
+            <% else %>
+            <th class="date-th"><span class="date-span"><%= days[d.wday] %></span></th>
+            <% end %>
+            <%# その日の予定シフト %>
+            <% shift = Shift.find_by(user_id: @user.id,start_time: d) %>
+            <% if shift.present? %>
+            <td class="date-td"><span class="date-span"><%= link_to shift.shift.slice(-2,2), edit_shift_path(shift.id), class: "link" %></span></td>
+            <% else %>
+            <td class="date-td"><span class="date-span"><%= link_to "未申請", new_shift_path(user_id: @user.id, date: d),class: "link"  %></span></td>
+            <% end %>
+            <%# その日の消化シフト %>
+            <% result = Result.includes(:result_cash).find_by(user_id: @user.id,date: d)  %>
+            <% if result.present? %><%# 消化シフトが入力されている場合 %>
+            <td class="date-td race-border"><span class="date-span"><%= link_to result.shift.slice(-2,2), edit_result_path(result.id),class: "link" %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.ojt.name rescue "" %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.area rescue "" %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= date_profit.round().to_s(:delimited) rescue 0 %></td><%# 営業予想 %>
+            <td class="date-td race-border"><span class="date-span"><%=  %></td><%# 実際の売上 %>
+          <%# 合計 %>
+            <td class="date-td"><span class="date-span"><%= result.first_total_visit.to_i + result.latter_total_visit.to_i %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.first_visit.to_i + result.latter_visit.to_i %></td>
+            <td class="date-td"><span class="date-span"><%= result.first_interview.to_i + result.latter_interview.to_i %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.first_full_talk.to_i + result.latter_full_talk.to_i %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.first_get.to_i + result.latter_get.to_i %></td>
+          <%#前半%>
+            <td class="date-td"><span class="date-span"><%= result.first_total_visit.to_i %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.first_visit.to_i  %></td>
+            <td class="date-td"><span class="date-span"><%= result.first_interview.to_i  %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.first_full_talk.to_i  %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.first_get.to_i %></td>
+          <%# 後半 %>
+            <td class="date-td"><span class="date-span"><%= result.latter_total_visit.to_i %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.latter_visit.to_i %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.latter_interview.to_i %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.latter_full_talk.to_i %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.latter_get.to_i %></span></td>
+          <%# 店舗別基準値(値) %>
+            <th class="th-blank"></th>
+            <%# 喫茶・カフェ %>
+            <td class="date-td"><span class="date-span"><%= result.cafe_visit.to_i %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.cafe_get.to_i %></span></td>
+            <%#その他飲食%>
+            <td class="date-td"><span class="date-span"><%= result.other_food_visit.to_i %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.other_food_get.to_i %></span></td>
+            <%#車屋%>
+            <td class="date-td"><span class="date-span"><%= result.car_visit.to_i %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.car_get.to_i %></span></td>
+            <%#その他小売%>
+            <td class="date-td"><span class="date-span"><%= result.other_retail_visit.to_i %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.other_retail_get.to_i %></span></td>
+            <%#理容・美容%>
+            <td class="date-td"><span class="date-span"><%= result.hair_salon_visit.to_i %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.hair_salon_get.to_i %></span></td>
+            <%#整体・鍼灸%>
+            <td class="date-td"><span class="date-span"><%= result.manipulative_visit.to_i %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.manipulative_get.to_i %></span></td>
+            <%#その他・サービス%>
+            <td class="date-td"><span class="date-span"><%= result.other_service_visit.to_i %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.other_service_get.to_i %></span></td>
+          <%# キャッシュレス切り返し %>
+            <th class="th-blank"></th>
+            <%#どういうこと？%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_01.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_01.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_01.to_i rescue 0 %></span></td>
+            <%#君は誰？%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_02.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_02.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_02.to_i rescue 0 %></span></td>
+            <%#もうらだけでいいの？%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_03.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_03.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_03.to_i rescue 0 %></span></td>
+            <%#PayPayのみ%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_04.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_04.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_04.to_i rescue 0 %></span></td>
+            <%#AirPayのみ%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_05.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_05.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_05.to_i rescue 0 %></span></td>
+            <%#カードのみ%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_06.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_06.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_06.to_i rescue 0 %></span></td>
+            <%#先延ばし%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_07.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_07.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_07.to_i rescue 0 %></span></td>
+            <%#現金のみ%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_08.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_08.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_08.to_i rescue 0 %></span></td>
+            <%#忙しい%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_09.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_09.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_09.to_i rescue 0 %></span></td>
+            <%#面倒くさい%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_10.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_10.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_10.to_i rescue 0 %></span></td>
+            <%#情報不足%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_11.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_11.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_11.to_i rescue 0 %></span></td>
+            <%#ペロ%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_12.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_12.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_12.to_i rescue 0 %></span></td>
+            <%#その他%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_13.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_13.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_13.to_i rescue 0 %></td>
+            <%#全導入AirPay入り%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_19.to_i rescue 0 %></span></td>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_19.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_19.to_i rescue 0 %></td>
+            <%#出前館%>
+            <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_20.to_i rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_20.to_i rescue 0 %></td>
+          <%# 時間別基準値 %>
+          <th class="blank-th"></th>
+          <td class="date-td"><span class="date-span">
+            <%= result.visit10.to_i %>
+          </span></td>
+          <td class="date-td race-border"><span class="date-span">
+            <%= result.get10.to_i %>
+          </span></td>
+          <td class="date-td"><span class="date-span">
+            <%= result.visit11.to_i %>
+          </span></td>
+          <td class="date-td race-border"><span class="date-span">
+            <%= result.get11.to_i %>
+          </span></td>
+          <td class="date-td"><span class="date-span">
+            <%= result.visit12.to_i %>
+          </span></td>
+          <td class="date-td race-border"><span class="date-span">
+            <%= result.get12.to_i %>
+          </span></td>
+          <td class="date-td"><span class="date-span">
+            <%= result.visit13.to_i %>
+          </span></td>
+          <td class="date-td race-border"><span class="date-span">
+            <%= result.get13.to_i %>
+          </span></td>
+          <td class="date-td"><span class="date-span">
+            <%= result.visit14.to_i %>
+          </span></td>
+          <td class="date-td race-border"><span class="date-span">
+            <%= result.get14.to_i %>
+          </span></td>
+          <td class="date-td"><span class="date-span">
+            <%= result.visit15.to_i %>
+          </span></td>
+          <td class="date-td race-border"><span class="date-span">
+            <%= result.get15.to_i %>
+          </span></td>
+          <td class="date-td"><span class="date-span">
+            <%= result.visit16.to_i %>
+          </span></td>
+          <td class="date-td race-border"><span class="date-span">
+            <%= result.get16.to_i %>
+          </span></td>
+          <td class="date-td"><span class="date-span">
+            <%= result.visit17.to_i %>
+          </span></td>
+          <td class="date-td race-border"><span class="date-span">
+            <%= result.get17.to_i %>
+          </span></td>
+          <td class="date-td"><span class="date-span">
+            <%= result.visit18.to_i %>
+          </span></td>
+          <td class="date-td race-border"><span class="date-span">
+            <%= result.get18.to_i %>
+          </span></td>
+          <td class="date-td"><span class="date-span">
+            <%= result.visit19.to_i %>
+          </span></td>
+          <td class="date-td race-border"><span class="date-span">
+            <%= result.get19.to_i %>
+          </span></td>
+          <%# /時間別基準値 %>
+          <%# 獲得商材 %>
+          <td class="date-td race-border"><span class="date-span"></span></td>
+          <%# 編集や削除 %>
+          <% if result.shift == "キャッシュレス新規" || result.shift == "キャッシュレス決済" %>
+            <% if result.result_cash.present? %>
+            <td class="date-td race-border" ><span class="date-span"><%= link_to "切り返し編集", edit_result_cash_path(result.result_cash.id),class: "link" rescue "error" %></span></td>
+            <% else %>
+            <td class="date-td race-border" ><span class="date-span"><%= link_to "切り返し入力", result_result_cashes_new_path(result.id),class: "link" rescue "error" %></span></td>
+            <% end %>
+          <% else %>
+          <td class="total-td race-border"></td>
+          <% end %>
+          <td class="date-td race-border"><span class="date-span"><%= link_to "削除", result_path(result.id),method: :delete,data: {confirm: "#{result.date.strftime("%Y年%m月%d日")}の終着を削除してもよろしいですか？"},class: "link" %></span></td>
+          <% else %><%# 消化シフトが未入力の場合 %>
+              <td class="date-td"><span class="date-span"><%= link_to "未申請", new_result_path(user_id: @user.id, date: d),class: "link"  %></span></td>
+              <% 19.times do %><%# 消化シフトより下 %>
+              <td class="date-td"><span class="date-span"></span></td>
+              <% end %>
+              <th class="th-blank"></th>
+              <% 14.times do %><%# 店舗別基準値 %>
+              <td class="date-td"><span class="date-span"></span></td>
+              <% end %>
+              <th class="th-blank"></th>
+              <% 44.times do %><%# 切り返し %>
+              <td class="date-td"><span class="date-span"></span></td>
+              <% end %>
+              <th class="th-blank"></th>
+              <% 20.times do %><%# 時間別基準値 %>
+              <td class="date-td"><span class="date-span"></span></td>
+              <% end %>
+              <% 3.times do %>
+              <td class="date-td"><span class="date-span"></span></td>
+              <% end %>
+            <% end %>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div><%# スクロールバー %>
+  </div><%#/日々進捗の区切り%>
+  <div class="right-frame"><%# 右側の区切り %>
+    <div><%#シフト/売上の区切り%>
+      <h2 class="shift-h2"><%= @start_date.strftime('%Y-%m-%d') %>（<%= days[@start_date.wday] %>）〜<%= @end_date.strftime('%Y-%m-%d') %>（<%= days[@end_date.wday] %>）</h2>
+      <table>
+        <tr>
+          <th class="date-th">シフト（内訳）</th>
+          <th class="date-th">予定</th>
+          <th class="date-th">消化</th>
+          <th class="date-th">残シフト</th>
+          <th class="date-th">現状売上</th>
+          <th class="date-th">Ave</th>
+          <th class="date-th">予測終着</th>
+          <th class="date-th">帯同加味</th>
+        </tr>
+        <tr>
+          <td class="date-td">キャッシュレス新規</td><%# 欠勤 %>
+          <td class="date-td"><%= @shift_schedule_new rescue 0 %></td>
+          <td class="date-td"><%= @shift_digestion_new rescue 0 %></td>
+          <td class="date-td"><%= @shift_schedule_new - @shift_digestion_new rescue 0 %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"></td>
+        </tr>
+        <tr>
+          <td class="date-td">キャッシュレス決済</td>
+          <td class="date-td"><%= @shift_schedule_slmt rescue 0 %></td>
+          <td class="date-td"><%= @shift_digestion_slmt rescue 0 %></td>
+          <td class="date-td"><%= @shift_schedule_slmt - @shift_digestion_slmt rescue 0 %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"></td>
+        </tr>
+        <tr>
+          <td class="date-td">帯同</td>
+          <td class="date-td"><%= @shift_schedule_ojt rescue 0 %></td>
+          <td class="date-td"><%= @shift_digestion_ojt rescue 0 %></td>
+          <td class="date-td"><%= @shift_schedule_ojt - @shift_digestion_ojt rescue 0 %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"></td>
+        </tr>
+        <tr>
+          <td class="date-td">合計</td>
+          <td class="date-td"><%= shift_sum = @shift_schedule_new + @shift_schedule_slmt + @shift_schedule_ojt rescue 0 %></td>
+              <td class="date-td"><%= digestion_sum = @shift_digestion_new + @shift_digestion_slmt + @shift_digestion_ojt %></td>
+          <td class="date-td"><%= shift_sum - digestion_sum %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"></td>
+        </tr>
+      </table> 
+    </div><%#/シフト/売上の区切り%>
+    <script>
+    window.result_chubu=<%= @result_chubu.to_json.html_safe %>;
+    window.result_kansai=<%= @result_kansai.to_json.html_safe %>;
+    window.result_kanto=<%= @result_kanto.to_json.html_safe %>;
+    window.result_kyushu=<%= @result_kyushu.to_json.html_safe %>;
+    window.result_partner=<%= @result_partner.to_json.html_safe %>;
+    window.result_cash_chubu=<%= @result_cash_chubu.to_json.html_safe %>;
+    window.result_cash_kansai=<%= @result_cash_kansai.to_json.html_safe %>;
+    window.result_cash_kanto=<%= @result_cash_kanto.to_json.html_safe %>;
+    window.result_cash_kyuhsu=<%= @result_cash_kyuhsu.to_json.html_safe %>;
+    window.result_cash_partner=<%= @result_cash_partner.to_json.html_safe %>;
+    window.hour_visit_chubu=<%= @hour_visit_chubu.to_json.html_safe %>;
+    window.hour_get_chubu=<%= @hour_get_chubu.to_json.html_safe %>;
+    window.hour_visit_kansai=<%= @hour_visit_kansai.to_json.html_safe %>;
+    window.hour_get_kansai=<%= @hour_get_kansai.to_json.html_safe %>;
+    window.hour_visit_kanto=<%= @hour_visit_kanto.to_json.html_safe %>;
+    window.hour_get_kanto=<%= @hour_get_kanto.to_json.html_safe %>;
+    window.hour_visit_kyushu=<%= @hour_visit_kyushu.to_json.html_safe %>;
+    window.hour_get_kyushu=<%= @hour_get_kyushu.to_json.html_safe %>;
+    window.hour_visit_partner=<%= @hour_visit_partner.to_json.html_safe %>;
+    window.hour_get_partner=<%= @hour_get_partner.to_json.html_safe %>;
+    </script>
+    <%= javascript_pack_tag 'result_cash' %>
+    <div  id="result-cash"><%# vueの適用範囲 %>
+      <div class="result-flex"><%#基準値区切り%>
+        <div><%# 個人基準値 %>
+          <h2>基準値</h2>
+          <table class="total-tb">
+            <thead>
+              <tr>
+                <th class="total-th">項目</th>
+                <th class="total-th">内訳</th>
+                <th class="total-th">合計</th>
+                <th class="total-th">平均</th>
+                <th class="total-th">比率</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th rowspan="5" class="total-th">合計</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit %></td>
+                <td class="total-td"><%= (@sum_total_visit.to_f / @shift_digestion_new).to_f().round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit %></td>
+                <td class="total-td"><%= (@sum_visit.to_f / @shift_digestion_new).to_f().round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit.to_f / @sum_total_visit.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview %></td>
+                <td class="total-td"><%= (@sum_interview.to_f / @shift_digestion_new).to_f().round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview.to_f / @sum_visit.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk %></td>
+                <td class="total-td"><%= (@sum_full_talk.to_f / @shift_digestion_new).to_f.round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk.to_f / @sum_interview.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get %></td>
+                <td class="total-td"><%= (@sum_get.to_f / @shift_digestion_new).to_f.round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get.to_f / @sum_full_talk.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th rowspan="5" class="total-th">前半</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit_f %></td>
+                <td class="total-td"><%= (@sum_total_visit_f.to_f / @shift_digestion_new).round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit_f %></td>
+                <td class="total-td"><%= (@sum_visit_f.to_f / @shift_digestion_new).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_f.to_f / @sum_total_visit_f.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview_f %></td>
+                <td class="total-td"><%= (@sum_interview_f.to_f / @shift_digestion_new).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview_f.to_f / @sum_visit_f.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk_f %></td>
+                <td class="total-td"><%= (@sum_full_talk_f.to_f / @shift_digestion_new).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk_f.to_f / @sum_interview_f.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get_f %></td>
+                <td class="total-td"><%= (@sum_get_f.to_f / @shift_digestion_new).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_f.to_f / @sum_full_talk_f.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th rowspan="5" class="total-th">後半</th>
+                <th class="total-th">訪問</th>
+                <td class="total-td"><%= @sum_total_visit_l %></td>
+                <td class="total-td"><%= (@sum_total_visit_l.to_f / @shift_digestion_new).round(1) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答</th>
+                <td class="total-td"><%= @sum_visit_l %></td>
+                <td class="total-td"><%= (@sum_visit_l.to_f / @shift_digestion_new).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_l.to_f / @sum_total_visit_l.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">面会</th>
+                <td class="total-td"><%= @sum_interview_l %></td>
+                <td class="total-td"><%= (@sum_interview_l.to_f / @shift_digestion_new).round(1)  rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_interview_l.to_f / @sum_visit_l.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">フル</th>
+                <td class="total-td"><%= @sum_full_talk_l %></td>
+                <td class="total-td"><%= (@sum_full_talk_l.to_f / @shift_digestion_new).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_full_talk_l.to_f / @sum_interview_l.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">成約</th>
+                <td class="total-td"><%= @sum_get_l %></td>
+                <td class="total-td"><%= (@sum_get_l.to_f / @shift_digestion_new).round(1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_l.to_f / @sum_full_talk_l.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+            </tbody>
+          </table>
+        </div><%# /個人基準値 %>
+        <div><%#拠点別基準値%>
+            <h2>
+              拠点別基準値
+              <select @change="shiftSlct" class="standard-val">
+                <option value="中部SS">中部SS</option>
+                <option value="関西SS">関西SS</option>
+                <option value="関東SS">関東SS</option>
+                <option value="九州SS">九州SS</option>
+                <option value="2次店">2次店SS</option>
+              </select>
+            </h2>
+            <table>
+              <tr>
+                <th class="date-th">項目</th>
+                <th class="date-th">内訳</th>
+                <th class="date-th">合計</th>
+                <th class="date-th">平均</th>
+                <th class="date-th">比率</th>
+              </tr>
+              <tr>
+                <th class="date-th" rowspan="5">合計</th>
+                <th class="date-th">訪問</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">-</td>
+              </tr>
+              <tr>
+                <th class="date-th">応答</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th">対面</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) / shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th">フル</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) / shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th">成約</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_get + element.latter_get, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get + element.latter_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get + element.latter_get, 0) / shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th" rowspan="5">前半</th>
+                <th class="date-th">訪問</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_total_visit , 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_total_visit , 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">-</td>
+              </tr>
+              <tr>
+                <th class="date-th">応答</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit, 0) / shiftItem.reduce((sum, element) => sum + element.first_total_visit , 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th">対面</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_interview , 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview , 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview , 0) / shiftItem.reduce((sum, element) => sum + element.first_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th">フル</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) / shiftItem.reduce((sum, element) => sum + element.first_interview , 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th">成約</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_get , 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get , 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get , 0) / shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th" rowspan="5">後半</th>
+                <th class="date-th">訪問</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.latter_total_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_total_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">-</td>
+              </tr>
+              <tr>
+                <th class="date-th">応答</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) / shiftItem.reduce((sum, element) => sum + element.latter_total_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th">対面</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) / shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th">フル</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) / shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th">成約</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.latter_get, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_get, 0) / shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) * 100)}} %</td>
+              </tr>
+            </table>
+        </div><%#拠点別基準値%>
+      </div><%#基準値区切り%>
+      <div class="result-flex"><%# 店舗別基準値 %>
+        <div><%# 個人 %>
+          <h2>店舗別基準値</h2>
+          <table class="out-tb">
+            <thead>
+              <tr>
+              <th class="total-th">項目</th>
+              <th class="total-th">内訳</th>
+              <th class="total-th">合計</th>
+              <th class="total-th">平均</th>
+              <th class="total-th">成約率</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th rowspan="2" class="total-th">喫茶・カフェ</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= @cafe_visit_sum %></td>
+              <td class="total-td"><%= (@cafe_visit_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= @cafe_get_sum %></td>
+              <td class="total-td"><%= (@cafe_get_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td"><%= number_to_percentage(@cafe_get_sum.to_f / @cafe_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">その他飲食</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= @other_food_visit_sum %></td>
+              <td class="total-td"><%= (@other_food_visit_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= @other_food_get_sum %></td>
+              <td class="total-td"><%= (@other_food_get_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td"><%= number_to_percentage(@other_food_get_sum.to_f / @other_food_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">車屋</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= @car_visit_sum %></td>
+              <td class="total-td"><%= (@car_visit_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td">-</td>
+
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= @car_get_sum %></td>
+              <td class="total-td"><%= (@car_get_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td"><%= number_to_percentage(@car_get_sum.to_f / @car_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">その他小売</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= @other_retail_visit_sum %></td>
+              <td class="total-td"><%= (@other_retail_visit_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= @other_retail_get_sum %></td>
+              <td class="total-td"><%= (@other_retail_get_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td"><%= number_to_percentage(@other_retail_get_sum.to_f / @other_retail_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">理容・美容</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= @hair_salon_visit_sum %></td>
+              <td class="total-td"><%= (@hair_salon_visit_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= @hair_salon_get_sum %></td>
+              <td class="total-td"><%= (@hair_salon_get_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td"><%= number_to_percentage(@hair_salon_get_sum.to_f / @hair_salon_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">整体・鍼灸</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= @manipulative_visit_sum %></td>
+              <td class="total-td"><%= (@manipulative_visit_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= @manipulative_get_sum %></td>
+              <td class="total-td"><%= (@manipulative_get_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td"><%= number_to_percentage(@manipulative_get_sum.to_f / @manipulative_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">その他サービス</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= @other_service_visit_sum %></td>
+              <td class="total-td"><%= (@other_service_visit_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= @other_service_get_sum %></td>
+              <td class="total-td"><%= (@other_service_get_sum.to_f / @shift_digestion_new).round(1) %></td>
+              <td class="total-td"><%= number_to_percentage(@other_service_get_sum.to_f / @other_service_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            </tbody>
+          </table>
+        </div><%# /個人 %>
+        <div><%# 拠点別店舗基準値 %>
+            <h2>
+              拠点別店舗基準値（{{ val }}）
+            </h2>
+            <table>
+              <tr>
+                <th class="date-th">項目</th>
+                <th class="date-th">内訳</th>
+                <th class="date-th">合計</th>
+                <th class="date-th">平均</th>
+                <th class="date-th">比率</th>
+              </tr>
+              <tr>
+                <th class="date-th" rowspan="2">喫茶・カフェ</th>
+                <th class="date-th">訪問</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.cafe_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.cafe_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">-</td>
+              </tr>
+              <tr>
+                <th class="date-th">成約</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.cafe_get, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.cafe_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.cafe_get, 0) / shiftItem.reduce((sum, element) => sum + element.cafe_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th" rowspan="2">その他飲食</th>
+                <th class="date-th">訪問</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_food_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_food_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">-</td>
+              </tr>
+              <tr>
+                <th class="date-th">成約</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_food_get, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_food_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_food_get, 0) / shiftItem.reduce((sum, element) => sum + element.other_food_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th" rowspan="2">車屋</th>
+                <th class="date-th">訪問</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.car_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.car_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">-</td>
+              </tr>
+              <tr>
+                <th class="date-th">成約</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.car_get, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.car_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.car_get, 0) / shiftItem.reduce((sum, element) => sum + element.car_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th" rowspan="2">その他小売</th>
+                <th class="date-th">訪問</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_retail_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_retail_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">-</td>
+              </tr>
+              <tr>
+                <th class="date-th">成約</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_retail_get, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_retail_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_retail_get, 0) / shiftItem.reduce((sum, element) => sum + element.other_retail_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th" rowspan="2">理容・美容</th>
+                <th class="date-th">訪問</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.hair_salon_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.hair_salon_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">-</td>
+              </tr>
+              <tr>
+                <th class="date-th">成約</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.hair_salon_get, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.hair_salon_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.hair_salon_get, 0) / shiftItem.reduce((sum, element) => sum + element.hair_salon_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th" rowspan="2">整体・鍼灸</th>
+                <th class="date-th">訪問</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.manipulative_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.manipulative_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">-</td>
+              </tr>
+              <tr>
+                <th class="date-th">成約</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.manipulative_get, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.manipulative_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.manipulative_get, 0) / shiftItem.reduce((sum, element) => sum + element.manipulative_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="date-th" rowspan="2">その他サービス</th>
+                <th class="date-th">訪問</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_service_visit, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_service_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">-</td>
+              </tr>
+              <tr>
+                <th class="date-th">成約</th>
+                <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_service_get, 0) }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_service_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_service_get, 0) / shiftItem.reduce((sum, element) => sum + element.other_service_visit, 0) * 100)}} %</td>
+              </tr>
+            </table>
+        </div><%# 拠点別店舗基準値 %>
+    </div><%# 店舗別基準値 %>
+    <div class="result-flex"><%# 切り返し区切り %>
+      <% if @shift_digestion_new == 0 %>
+      <% else %>
+      <div><%# 個人 %>
+        <h2>切り返し</h2>
+        <table class="total-tb">
+          <thead>
+          <tr>
+            <th class="total-th">切り返し内容</th>
+            <th class="total-th">内訳</th>
+            <th class="total-th">合計</th>
+            <th class="total-th">平均</th>
+            <th class="total-th">成約率</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <th rowspan="3" class="total-th">０１：どういうこと？</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_01) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_01).to_f / @shift_digestion_new).round(1) rescue 0 %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_01) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_01).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_01).to_f / @results.sum(:out_interview_01).to_f * 100,precision: 1) %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_01) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_01).to_f/ @shift_digestion_new).round(1)%></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_01).to_f / @results.sum(:out_full_talk_01).to_f * 100,precision: 1) %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">０２：君は誰？協会？</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_02) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_02).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_02) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_02).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_02).to_f / @results.sum(:out_interview_02).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_02) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_02).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_02).to_f / @results.sum(:out_full_talk_02).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">０３：もらうだけでいいの？</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_03) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_03).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_03) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_03).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_03).to_f / @results.sum(:out_interview_03).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_03) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_03).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_03).to_f / @results.sum(:out_full_talk_03).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">０４：PayPayのみ</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_04) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_04).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_04) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_04).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_04).to_f / @results.sum(:out_interview_04).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_04) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_04).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_04).to_f / @results.sum(:out_full_talk_04).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">０５：AirPayのみ</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_05) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_05).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_05) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_05).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_05).to_f / @results.sum(:out_interview_05).to_f * 100,precision: 1) %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_05) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_05).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_05).to_f / @results.sum(:out_full_talk_05).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">０６：カードのみ</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_06) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_06) / @shift_digestion_new).to_f.round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_06) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_06).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_06).to_f / @results.sum(:out_interview_06).to_f * 100,precision: 1) rescue 0 %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_06) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_06).to_f / @shift_digestion_new).round(1) rescue 0 %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_06).to_f / @results.sum(:out_full_talk_06).to_f * 100,precision: 1) rescue 0 %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">０７：先延ばし</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_07) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_07).to_f / @shift_digestion_new).round(1) rescue 0 %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_07) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_07).to_f / @shift_digestion_new).to_f.round(1) rescue 0 %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_07).to_f / @results.sum(:out_interview_07).to_f * 100,precision: 1) rescue 0 %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_07) rescue 0 %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_07).to_f / @shift_digestion_new).round(1) rescue 0 %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_07).to_f / @results.sum(:out_full_talk_07).to_f * 100,precision: 1) rescue 0 %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">０８：現金のみ</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_08) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_08).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_08) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_08).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_08).to_f / @results.sum(:out_interview_08).to_f * 100,precision: 1) %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_08) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_08).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_08).to_f / @results.sum(:out_full_talk_08).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">０９：忙しい</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_09) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_09).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_09) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_09).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_09).to_f / @results.sum(:out_interview_09).to_f * 100,precision: 1) %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_09) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_09).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_09).to_f / @results.sum(:out_full_talk_09).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">１０：面倒くさい</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_10) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_10).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_10) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_10).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_10).to_f / @results.sum(:out_interview_10).to_f * 100,precision: 1) %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_10) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_10).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_10).to_f / @results.sum(:out_full_talk_10).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">１１：情報不足</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_11) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_11).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_11) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_11).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_11).to_f / @results.sum(:out_interview_11).to_f * 100,precision: 1) %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_11) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_11).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_11).to_f / @results.sum(:out_full_talk_11).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">１２：ペロ</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_12) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_12).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_12) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_12).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_12).to_f / @results.sum(:out_interview_12).to_f * 100,precision: 1) %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_12) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_12).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_12).to_f / @results.sum(:out_full_talk_12).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">１３：その他</th>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_interview_13) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_13).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_13) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_13).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_13).to_f / @results.sum(:out_interview_13).to_f * 100,precision: 1) %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_13) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_13).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_13).to_f / @results.sum(:out_full_talk_13).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <tr>
+          <th rowspan="3" class="total-th">１９：AirPay導入</th>
+            <th class="total-th">訪問数</th>
+            <td class="total-td"><%= @results.sum(:out_interview_19) %></td>
+            <td class="total-td"><%= (@results.sum(:out_interview_19).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">決済者面会</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_19) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_19).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_19).to_f / @results.sum(:out_interview_19).to_f * 100,precision: 1) %></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_19) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_19).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_19).to_f / @results.sum(:out_full_talk_19).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <% if @results.sum(:out_full_talk_20) != 0 %>
+          <tr>
+            <th rowspan="3" class="total-th">２０：出前館</th>
+            <th class="total-th">フル数</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_20) %></td>
+            <td class="total-td"><%= (@results.sum(:out_full_talk_20).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"></td>
+          </tr>
+          <tr>
+            <th class="total-th">成約数</th>
+            <td class="total-td"><%= @results.sum(:out_get_20) %></td>
+            <td class="total-td"><%= (@results.sum(:out_get_20).to_f / @shift_digestion_new).round(1) %></td>
+            <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_20).to_f / @results.sum(:out_full_talk_20).to_f * 100,precision: 1)  %></td>
+          </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div><%# /個人 %>
+      <% end %>
+      <div><%# 拠点別切り返し %>
+            <h2>
+              拠点別切り返し{{ val }}
+            </h2>
+            <table>
+              <tr>
+                <th class="total-th">切り返し内容</th>
+                <th class="total-th">内訳</th>
+                <th class="total-th">合計</th>
+                <th class="total-th">平均</th>
+                <th class="total-th">成約率</th>
+              </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">０１：どういうこと？</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_01, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_01, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_01, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_01, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_01, 0) / out.reduce((sum, element) => sum + element.out_interview_01, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_01, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_01, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_01, 0) / out.reduce((sum, element) => sum + element.out_interview_01, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">０２：君は誰？協会？</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_02, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_02, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_02, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_02, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_02, 0) / out.reduce((sum, element) => sum + element.out_interview_02, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_02, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_02, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_02, 0) / out.reduce((sum, element) => sum + element.out_interview_02, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">０３：もらうだけでいいの？</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_03, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_03, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_03, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_03, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_03, 0) / out.reduce((sum, element) => sum + element.out_interview_03, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_03, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_03, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_03, 0) / out.reduce((sum, element) => sum + element.out_interview_03, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">０４：PayPayのみ</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_04, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_04, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_04, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_04, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_04, 0) / out.reduce((sum, element) => sum + element.out_interview_04, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_04, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_04, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_04, 0) / out.reduce((sum, element) => sum + element.out_interview_04, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">０５：AirPayのみ</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_05, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_05, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_05, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_05, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_05, 0) / out.reduce((sum, element) => sum + element.out_interview_05, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_05, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_05, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_05, 0) / out.reduce((sum, element) => sum + element.out_interview_05, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">０６：カードのみ</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_06, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_06, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_06, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_06, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_06, 0) / out.reduce((sum, element) => sum + element.out_interview_06, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_06, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_06, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_06, 0) / out.reduce((sum, element) => sum + element.out_interview_06, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">０７：先延ばし</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_07, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_07, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_07, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_07, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_07, 0) / out.reduce((sum, element) => sum + element.out_interview_07, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_07, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_07, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_07, 0) / out.reduce((sum, element) => sum + element.out_interview_07, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">０８：現金のみ</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_08, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_08, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_08, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_08, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_08, 0) / out.reduce((sum, element) => sum + element.out_interview_08, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_08, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_08, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_08, 0) / out.reduce((sum, element) => sum + element.out_interview_08, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">０９：忙しい</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_09, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_09, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_09, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_09, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_09, 0) / out.reduce((sum, element) => sum + element.out_interview_09, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_09, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_09, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_09, 0) / out.reduce((sum, element) => sum + element.out_interview_09, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">１０：面倒くさい</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_10, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_10, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_10, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_10, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_10, 0) / out.reduce((sum, element) => sum + element.out_interview_10, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_10, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_10, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_10, 0) / out.reduce((sum, element) => sum + element.out_interview_10, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">１１：情報不足</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_11, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_11, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_11, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_11, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_11, 0) / out.reduce((sum, element) => sum + element.out_interview_11, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_11, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_11, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_11, 0) / out.reduce((sum, element) => sum + element.out_interview_11, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">１２：ペロ</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_12, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_12, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_12, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_12, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_12, 0) / out.reduce((sum, element) => sum + element.out_interview_12, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_12, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_12, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_12, 0) / out.reduce((sum, element) => sum + element.out_interview_12, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th" rowspan="3">１３：その他</th>
+                  <th class="date-th">対面</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_13, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_13, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">-</td>
+                </tr>
+                <tr>
+                  <th class="date-th">フル</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_13, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_13, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_13, 0) / out.reduce((sum, element) => sum + element.out_interview_13, 0) * 100)}} %</td>
+                </tr>
+                <tr>
+                  <th class="date-th">成約</th>
+                  <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_13, 0) }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_13, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_13, 0) / out.reduce((sum, element) => sum + element.out_interview_13, 0) * 100)}} %</td>
+                </tr>
+              </table>
+      </div>
+    </div><%# 切り返し区切り %>
+    <div class="result-flex"><%# 時間別基準値 %>
+      <div><%# 個人 %>
+        <h2>時間別基準値</h2>
+        <table class="out-tb">
+          <thead>
+            <th class="total-th">訪問時間</th>
+            <th class="total-th">内訳</th>
+            <th class="total-th">合計</th>
+            <th class="total-th">平均</th>
+            <th class="total-th">成約率</th>
+          </thead>
+          <tbody>
+          <% time = 10 %>
+          <% cnt = 0 %>
+          <% 10.times do %>
+          <tr>
+            <th rowspan="2" class="total-th"><%= time %>時</th>
+            <th class="total-th">訪問</th>
+            <td class="total-td"><%= @time_visit_sum[cnt] %></td>
+            <td class="total-td"><%= @time_visit_ave[cnt] %></td>
+            <td class="total-td">-</td>
+          </tr>
+          <tr>
+            <th class="total-th">成約</th>
+            <td class="total-td"><%= @time_get_sum[cnt] %></td>
+            <td class="total-td"><%= @time_get_ave[cnt] %></td>
+            <td class="total-td"><%= number_to_percentage(@time_get_sum[cnt].to_f / @time_visit_sum[cnt].to_f * 100, precision: 1) %></td>
+          </tr>
+          <% time += 1 %>
+          <% cnt += 1 %>
+          <% end %>
+          </tbody>
+        </table>
+      </div><%# /個人 %>
+      <div><%# 拠点別 %>
+        <h2>拠点別時間別基準値（{{ val }}）</h2>
+        <table class="out-tb">
+          <thead>
+            <th class="total-th">訪問時間</th>
+            <th class="total-th">内訳</th>
+            <th class="total-th">合計</th>
+            <th class="total-th">平均</th>
+            <th class="total-th">成約率</th>
+          </thead>
+          <tbody v-for=" i in 10 ">
+          <tr>
+            <th rowspan="2" class="total-th">{{ i + 9 }}時</th>
+            <th class="total-th">訪問</th>
+            <td class="total-td">{{ hourVisit[i - 1] }}</td>
+            <td class="total-td">{{ Math.round(hourVisit[i - 1] / shiftItem.length * 10) / 10 }}</td>
+            <td class="total-td">-</td>
+          </tr>
+          <tr>
+            <th class="total-th">成約</th>
+            <td class="total-td">{{ hourGet[i - 1] }}</td>
+            <td class="total-td">{{ Math.round(hourGet[i - 1] / shiftItem.length * 10) / 10 }}</td>
+            <td class="total-td">{{  Math.round(hourGet[i - 1] / hourVisit[i - 1] * 100 ) }}%</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    </div><%# vueの適用範囲 %>
+  </div><%# /右側の区切り %>
+</div><%#/大枠%>

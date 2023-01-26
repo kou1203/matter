@@ -410,7 +410,7 @@
         <p class="caution-text">※当月決済率は<%= @month_daily.beginning_of_month %>〜<%= @month_daily.end_of_month %>のものを対象としています。</p>
         <p class="caution-text">※過去月決済は前月以前に獲得したもので決済期限が<%= @month_daily.beginning_of_month %>以降のものを対象としています。</p>
       <h2>キャッシュレス</h2>
-      <% users_summit_data = [@users_chubu_summit, @users_kansai_summit, @users_kanto_summit] %>
+      
       <div class="user-form">
         <div>
         <table class="user-tb">
@@ -423,7 +423,24 @@
           </tr>
         <% end  %>
         </table>
+
+
       <% if current_user.name=="管理用" %>
+
+        <h2>キャッシュレス（2023年2月〜）</h2>
+        <table class="user-tb">
+        <% @users_cash.group(:base).each do |base| %>
+          <tr>
+          <th><%= base.base %></th>
+          <% @users_cash.where(base: base.base).each do |user| %>
+          <td><%= link_to user.name, result_path(user.id), class: "link" %></td>
+          <% end %>
+          </tr>
+        <% end %>
+        </table>
+
+
+      <% users_summit_data = [@users_chubu_summit, @users_kansai_summit, @users_kanto_summit] %>
       <h2>サミット　<%= link_to "全体利益表", base_profit_result_summits_path,"data-turbolinks": false,class: "link" %></h2>
         <table class="user-tb">
       <% users_summit_data.each do |users| %>
@@ -438,27 +455,6 @@
         
       <% end %>
       <%= link_to "日々獲得内容確認",date_progress_results_path,class: "link" %>
-      <% if current_user.position_sub == "管理" %>
-        <h2>利益表（基準値）インポート</h2>
-        <%= form_with url: import_results_path do |f| %>
-          <table class="csv-tb">
-            <tr>
-              <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
-              <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
-            </tr>
-          </table>
-        <% end %>
-        <h2>利益表（切り返し）インポート</h2>
-        <%= form_with url: import_result_cashes_path do |f| %>
-          <table class="csv-tb">
-            <tr>
-              <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
-              <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
-            </tr>
-          </table>
-
-        <% end %>
-      <% end %>
         </div>
       </div>
     </div>
