@@ -760,9 +760,6 @@ class UsersController < ApplicationController
         RakutenPay.includes(:store_prop).where(user_id: @results.first.user_id)
       @rakuten_pay_uq =
         @rakuten_pay_user.where(date: @start_date..@end_date)
-      @rakuten_pay_dec = 
-        @rakuten_pay_uq.where.not(deficiency: nil)
-        .where.not(share: @start_date..@end_date)
       @rakuten_pay_def =  
         @rakuten_pay_uq.where(status: "自社不備")
         .or(@rakuten_pay_uq.where(status: "自社NG"))
@@ -786,13 +783,11 @@ class UsersController < ApplicationController
         
       @rakuten_pay_done_val = 
         @rakuten_pay_uq.sum(:valuation) - 
-        @rakuten_pay_dec.sum(:valuation) - 
         @rakuten_pay_def.sum(:valuation) + 
         @rakuten_pay_inc.sum(:valuation)
         
       @rakuten_pay_done_len = 
         @rakuten_pay_uq.length - 
-        @rakuten_pay_dec.length - 
         @rakuten_pay_def.length +
         @rakuten_pay_inc.length
  
