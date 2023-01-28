@@ -16,7 +16,8 @@
           @dmers.where.not(status: "審査OK")
           .where.not(status: "審査NG")
           .where.not(status: "申込取消")
-          .where.not(status: "申込取消（不備）").length 
+          .where.not(status: "申込取消（不備）")
+          .where.not(status: "不備対応中").length 
     %></td>
     <td class="valuation-td"><%= 
           @dmers.where(status: "審査OK")
@@ -28,6 +29,7 @@
           .or(@dmers.where(industry_status: "NG"))
           .or(@dmers.where(industry_status: "×"))
           .or(@dmers.where(status: "申込取消"))
+          .or(@dmers.where(status: "不備対応中"))
           .or(@dmers.where(status: "申込取消（不備）")).length 
     %></td>
   </tr>

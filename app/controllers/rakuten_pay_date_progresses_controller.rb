@@ -168,29 +168,25 @@ class RakutenPayDateProgressesController < ApplicationController
 
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
-      @rakuten_pay_dec = 
-        @rakuten_pays_user_period.where.not(deficiency: nil)
-        .where.not(share: @start_date..@end_date)
+      @rakuten_pays_user_period = @rakuten_pays_user.where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
       @rakuten_pay_def = 
         @rakuten_pays_user_period.where(status: "自社不備")
         .or(@rakuten_pays_user_period.where(status: "自社NG"))
         .or(
-          @rakuten_pays_user_period.where(deficiency: @start_date..@end_date)
-          .where.not(deficiency_solution: @start_date..@end_date)
+          @rakuten_pays_user_period.where.not(deficiency: nil)
+          .where.not(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
         )
       @rakuten_pay_inc = 
-        @rakuten_pays_user_period.where.not(date: @start_date..@end_date)
-        .where(share: @start_date..@end_date)
+        @rakuten_pays_user_period.where.not(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
+        .where(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
         .where.not(deficiency: nil)
       valuation_current = 
         @rakuten_pays_user_period.sum(:valuation) - 
-        @rakuten_pay_def.sum(:valuation) -
-        @rakuten_pay_dec.sum(:valuation) +
+        @rakuten_pay_def.sum(:valuation) +
         @rakuten_pay_inc.sum(:valuation)
       rakuten_val_len = 
         @rakuten_pays_user_period.length - 
-        @rakuten_pay_def.length -
-        @rakuten_pay_dec.length +
+        @rakuten_pay_def.length +
         @rakuten_pay_inc.length
       rakuten_val_len_fin = 
         (rakuten_val_len.to_f / shift_digestion * shift_schedule * @rakuten_pay1_this_month_per).round() rescue 0

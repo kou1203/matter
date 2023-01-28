@@ -26,14 +26,14 @@
       @dmer_slmt2nd_done.sum(:valuation_second_settlement) +
       @aupay_slmt_done.sum(:valuation_settlement) +
       @paypay_done.sum(:valuation) +
-      @rakuten_pay_done_val +
+      @rakuten_pay_val.sum(:valuation) +
       @airpay_done.sum(:valuation) +
       airpay_bonus +
       @demaekan.sum(:valuation) +
       # その他商材
-      @aupay_pic_val +
-      @dmer_pic_val +
-      @airpay_pic_val
+      @aupay_pic.sum(:valuation) +
+      @dmer_pic.sum(:valuation) +
+      @airpay_pic.sum(:valuation)
     ).to_s(:delimited) rescue 0
   %></h2>
   <table>
@@ -73,10 +73,10 @@
   </tr>
   <tr>
     <td class="valuation-td">楽天ペイ</td>
-    <td class="valuation-td"><%= @rakuten_pay_done_len rescue 0 %></td>
+    <td class="valuation-td"><%= @rakuten_pay_val.length rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
-    <td class="valuation-td"><%= @rakuten_pay_done_val.to_s(:delimited) rescue 0 %></td>
+    <td class="valuation-td"><%= @rakuten_pay_val.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
   <tr>
     <td class="valuation-td">AirPay</td>
@@ -94,33 +94,33 @@
   <% if @aupay_pic.present? && @aupay_pic.exists?(user_id: @user.id) %>
   <tr>
     <td class="valuation-td">auPay写真</td>
-    <td class="valuation-td"><%= @aupay_pic_len rescue 0 %></td>
+    <td class="valuation-td"><%= @aupay_pic.sum(:product_len) rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
-    <td class="valuation-td"><%= @aupay_pic_val.to_s(:delimited) rescue 0 %></td>
+    <td class="valuation-td"><%= @aupay_pic.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
   <% end %>
   <% if @dmer_pic.present? && @dmer_pic.exists?(user_id: @user.id) %>
   <tr>
     <td class="valuation-td">dメルステッカー</td>
-    <td class="valuation-td"><%= @dmer_pic_len rescue 0 %></td>
+    <td class="valuation-td"><%= @dmer_pic.sum(:product_len) rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
-    <td class="valuation-td"><%= @dmer_pic_val.to_s(:delimited) rescue 0 %></td>
+    <td class="valuation-td"><%= @dmer_pic.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
   <% end %>
   <% if @airpay_pic.present? && @airpay_pic.exists?(user_id: @user.id) %>
   <tr>
     <td class="valuation-td">AirPayステッカー</td>
-    <td class="valuation-td"><%= @airpay_pic_len rescue 0 %></td>
+    <td class="valuation-td"><%= @airpay_pic.sum(:product_len) rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
-    <td class="valuation-td"><%= @airpay_pic_val.to_s(:delimited) rescue 0 %></td>
+    <td class="valuation-td"><%= @airpay_pic.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
   <% end %>
   <tr>
     <td class="valuation-td">出前館</td>
-    <td class="valuation-td"><%= @demaekan_len rescue 0 %></td>
+    <td class="valuation-td"><%= @demaekan.length rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @demaekan.sum(:valuation).to_s(:delimited) rescue 0 %></td>
@@ -296,31 +296,21 @@
       <th class="valuation-th">店舗名</th>
       <th class="valuation-th">獲得日</th>
       <th class="valuation-th">審査ステータス</th>
-      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">自社不備発生日</th>
+      <th class="valuation-th">上位店連携日</th>
       <th class="valuation-th">評価売上</th>
       <th class="valuation-th"></th>
     </thead>
     <tbody>
-      <% if @rakuten_pay_uq.present? %>
-      <% 
-        rakutenpay_uq = 
-          @rakuten_pay_uq.where.not(status: "自社NG").where.not(status: "自社不備")
-          .where(deficiency: nil)
-          .or(
-            @rakuten_pay_uq.where.not(status: "自社NG").where.not(status: "自社不備")
-            .where.not(deficiency: nil)
-            .where(share: @results_date.minimum(:date)..@results_date.maximum(:date))
-            )
-      %>
-      <% 
-        
-        rakutenpay_uq.each do |rakuten_pay| %>
+      <% if @rakuten_pay_val.present? %>
+      <% @rakuten_pay_val.each do |rakuten_pay| %>
       <tr>
       <td class="valuation-td "><%= num %></td>
       <td class="valuation-td "><%= rakuten_pay.store_prop.name %></td>
       <td class="valuation-td "><%= rakuten_pay.date %></td>
       <td class="valuation-td "><%= rakuten_pay.status %></td>
-      <td class="valuation-td "><%= rakuten_pay.result_point %></td>
+      <td class="valuation-td "><%= rakuten_pay.deficiency %></td>
+      <td class="valuation-td "><%= rakuten_pay.share %></td>
       <td class="valuation-td "><%= rakuten_pay.valuation %></td>
       <td class="valuation-td "><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
       </tr>
@@ -334,7 +324,8 @@
       <td class="valuation-td "><%= rakuten_pay.store_prop.name %></td>
       <td class="valuation-td "><%= rakuten_pay.date %></td>
       <td class="valuation-td "><%= rakuten_pay.status %></td>
-      <td class="valuation-td "><%= rakuten_pay.result_point %></td>
+      <td class="valuation-td "><%= rakuten_pay.deficiency %></td>
+      <td class="valuation-td "><%= rakuten_pay.share %></td>
       <td class="valuation-td "><%= rakuten_pay.valuation %></td>
       <td class="valuation-td "><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
       </tr>

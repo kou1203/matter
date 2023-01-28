@@ -135,14 +135,16 @@
                 (
                   @current_progress.sum(:demaekan_profit_current) +
                   @current_progress.sum(:austicker_profit_current) + 
-                  @current_progress.sum(:dmersticker_profit_current)
+                  @current_progress.sum(:dmersticker_profit_current) +
+                  @current_progress.sum(:other_profit_current)
                 ).to_s(:delimited) 
               %></td>
               <td class="progress-td"><%= 
                 (
                   @current_progress.sum(:demaekan_profit_fin) +
                   @current_progress.sum(:austicker_profit_fin) + 
-                  @current_progress.sum(:dmersticker_profit_fin)
+                  @current_progress.sum(:dmersticker_profit_fin) +
+                  @current_progress.sum(:other_profit_fin)
                 ).to_s(:delimited) 
               %></td>
               <td class="progress-td"><%= (@current_progress.sum(:profit_fin).to_f / @current_progress.sum(:shift_schedule)).round().to_s(:delimited) %></td>
@@ -178,7 +180,8 @@
                 (
                   @comparison.sum(:demaekan_profit_fin) +
                   @comparison.sum(:austicker_profit_fin) +
-                  @comparison.sum(:dmersticker_profit_fin)
+                  @comparison.sum(:dmersticker_profit_fin) +
+                  @comparison.sum(:other_profit_current)
                 ).to_s(:delimited) 
               %></td>
               <td class="progress-td"><%= (@comparison.sum(:profit_fin).to_f / @comparison.sum(:shift_schedule)).round().to_s(:delimited) %></td>

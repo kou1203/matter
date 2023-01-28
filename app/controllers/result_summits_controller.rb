@@ -202,6 +202,7 @@ class ResultSummitsController < ApplicationController
 
   # SWエラーデータ一覧
   def sw_error_data
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @user = User.find(params[:user_id])
     @summits = Summit.includes(:summit_client).where(user_id: @user.id).where(status: "SWエラー")
 

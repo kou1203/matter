@@ -6,9 +6,9 @@
 <div data-scope-path="users/show"><%# users/showスコープ頭 %>
     <h2>
       <%= @user.name %>
-      <%= link_to "<<",result_summit_path(@user.id,month:@month.prev_month), class:"link" %>
+      <%= link_to "<<",result_summit_path(@user.id,month:@month.prev_month),"data-turbolinks": false, class:"link" %>
       <%= @month.year %>年<%= @month.month %>月 詳細
-      <%= link_to ">>",result_summit_path(@user.id,month:@month.next_month), class:"link" %>
+      <%= link_to ">>",result_summit_path(@user.id,month:@month.next_month),"data-turbolinks": false, class:"link" %>
     </h2><br>
     <%= render "shared/summit_result_links" %>
   <div class="result-flex"><%# 大枠 %>

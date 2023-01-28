@@ -433,7 +433,7 @@
           <tr>
           <th><%= base.base %></th>
           <% @users_cash.where(base: base.base).each do |user| %>
-          <td><%= link_to user.name, result_path(user.id), class: "link" %></td>
+          <td><%= link_to user.name, result_path(user.id),"data-turbolinks": false, class: "link" %></td>
           <% end %>
           </tr>
         <% end %>

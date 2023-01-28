@@ -770,6 +770,15 @@ class UsersController < ApplicationController
           @rakuten_pay_uq.where(deficiency: @start_date..@end_date)
           .where.not(deficiency_solution: @start_date..@end_date)
         )
+        @rakuten_pays = RakutenPay.includes(:store_prop).where(date: @start_date..@end_date).where(user_id: @user.id)
+        @rakuten_pay_val = 
+          @rakuten_pays.where.not(status: "自社NG").where.not(status: "自社不備")
+          .where(deficiency: nil)
+          .or(
+            RakutenPay.where(user_id: @user.id).where.not(status: "自社NG").where.not(status: "自社不備")
+            .where.not(deficiency: nil)
+            .where(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
+            )
       @rakuten_pay_inc = 
         @rakuten_pay_user.where.not(date: @start_date..@end_date)
         .where(share: @start_date..@end_date)

@@ -7,9 +7,9 @@
 <div data-scope-path="users/show"><%# users/showスコープ頭 %>
     <h2>
       <%= @user.name %>
-      <%= link_to "<<",billing_data_result_summits_path(user_id: @user.id,month:@month.prev_month), class:"link" %>
+      <%= link_to "<<",billing_data_result_summits_path(user_id: @user.id,month:@month.prev_month),"data-turbolinks": false, class:"link" %>
       <%= @billing_month %> 明細一覧
-      <%= link_to ">>",billing_data_result_summits_path(user_id: @user.id,month:@month.next_month), class:"link" %>
+      <%= link_to ">>",billing_data_result_summits_path(user_id: @user.id,month:@month.next_month),"data-turbolinks": false, class:"link" %>
     </h2><br>
     <%= render "shared/summit_result_links" %>
 
