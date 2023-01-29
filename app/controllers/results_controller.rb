@@ -158,11 +158,11 @@ class ResultsController < ApplicationController
       person_hash["auPay過去月決済完了率"] =( person_hash["auPay過去月決済完了数"].to_f / person_hash["auPay過去月決済対象"].to_f * 100).round() rescue 0
       # 拠点が増えた場合↓を追加
       if user.base == "中部SS"
-        @chubu_slmt << person_hash 
+        @chubu_slmt << person_hash
       elsif user.base == "関西SS"
-        @kansai_slmt << person_hash 
+        @kansai_slmt << person_hash
       elsif user.base == "関東SS"
-        @kanto_slmt << person_hash 
+        @kanto_slmt << person_hash
       elsif user.base == "九州SS"
         @kyushu_slmt << person_hash
       else
@@ -327,7 +327,6 @@ class ResultsController < ApplicationController
     calc_period_and_per
     @user = User.find(params[:id])
     # 月間増減
-    @before_airpay_bonus_date = Date.new(2022,10,01)
     # dメル
     @dmers = Dmer.includes(:store_prop).where(date: @start_date..@end_date).where(user_id: @user.id)
     @dmers_inc = 
@@ -368,7 +367,7 @@ class ResultsController < ApplicationController
     @dmers_slmt_def = @dmers_slmt.where(status_settlement: "決済不備")
     @dmers_slmt_pic_def = @dmers_slmt.where(status_settlement: "写真不備")
     @dmers_slmt2nd_done = @dmers_slmt.where(settlement_second: @start_date..@end_date).where(status_settlement: "完了")
-    @aupays = Aupay.includes(:store_prop).where(date: @start_date..@end_date).where(user_id: @user.id).where(store_prop: {head_store: nil})
+    @aupays = Aupay.includes(:store_prop).where(date: @start_date..@end_date).where(user_id: @user.id)
     @aupays_inc = 
       Aupay.includes(:store_prop).where(result_point: @start_date..@end_date).where(user_id: @user.id)
       .where(store_prop: {head_store: nil}).where.not(date: @start_date..@end_date).where(status: "審査通過")
@@ -427,25 +426,14 @@ class ResultsController < ApplicationController
   @airpay_done = 
     @airpay_user.where(status: "審査完了")
     .where(result_point: @airpay1_start_date..@airpay1_end_date)
-  if @start_date.next_month.beginning_of_month >= @before_airpay_bonus_date
     @airpay_bonus =
-    if @airpay_done.length >= @airpay_bonus2_len
-      @airpay_done.length * (@airpay_bonus2_price - @airpay_price)
-    elsif @airpay_done.length >= @airpay_bonus1_len
-      @airpay_done.length * (@airpay_bonus1_price - @airpay_price)
-    else  
-      0
-    end 
-  else  
-    @airpay_bonus =
-    if @airpay_done.length >= 20
-      @airpay_done.length * 3000
-    elsif @airpay_done.length >= 10
-      @airpay_done.length * 2000
-    else  
-      0
-    end 
-  end
+      if @airpay_done.length >= 20
+        @airpay_done.length * 3000
+      elsif @airpay_done.length >= 10
+        @airpay_done.length * 2000
+      else  
+        0
+      end 
   @airpay_done_val = @airpay_done.sum(:valuation) + @airpay_bonus
 
   # その他獲得商材
@@ -453,7 +441,7 @@ class ResultsController < ApplicationController
     @other_products = OtherProduct.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
     @aupay_pic = @other_products.where(product_name: "auPay写真")
     @dmer_pic = @other_products.where(product_name: "dメルステッカー")
-    @airpay_pic = @other_products.where(product_name: "AirPayステッカー")
+    @airpay_pic = @other_products.where("product_name LIKE ?", "%AirPayステッカー%")
     # 決済リスト
     @slmts = 
       StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})
@@ -667,6 +655,70 @@ class ResultsController < ApplicationController
           @results_week4 = @results_week.where(date: (week1.since(21.days))..(week1.since(27.days)))
           @results_week5 = @results_week.where(date: (week1.since(28.days))..(week1.since(34.days)))
       end
+
+      # 増減
+      @dmer_def = 
+      @dmers.where(status: "自社不備")
+      .or(@dmers.where(status: "審査NG"))
+      .or(@dmers.where(status: "不備対応中"))
+      .or(@dmers.where(status: "申込取消"))
+      .or(@dmers.where(status: "申込取消（不備）"))
+      .or(@dmers.where(status: "社内確認中"))
+      .or(@dmers.where(industry_status: "NG"))
+      .or(@dmers.where(industry_status: "×"))
+      .or(@dmers.where(industry_status: "要確認"))
+      @dmer_inc = 
+      Dmer.includes(:store_prop).where(user_id: @user.id).where.not(date: @dmer1_start_date..@dmer1_end_date)
+      .where(result_point: @dmer1_start_date..@dmer1_end_date)
+      .where(store_prop: {head_store: nil})
+      .where.not(industry_status: "NG")
+      .where.not(industry_status: "×")
+      .where.not(industry_status: "要確認")
+      .where(status: "審査OK")
+      @dmer_db_data = 
+      Dmer.includes(:store_prop).where(user_id: @user.id).where(share: @dmer1_start_date..@dmer1_end_date)
+        .where.not(store_prop: {head_store: nil})
+        .where.not(industry_status: "×")
+        .where.not(industry_status: "NG")
+        .where.not(industry_status: "要確認")
+        .where(status: "審査OK")
+      @aupay_def =  
+      @aupays.where(status: "自社不備")
+        .or(@aupays.where(status: "不合格"))
+        .or(@aupays.where(status: "差し戻し"))
+        .or(@aupays.where(status: "解約"))
+        .or(@aupays.where(status: "報酬対象外"))
+        .or(@aupays.where(status: "重複対象外"))
+      
+      @aupay_dec = 
+        Airpay.includes(:store_prop).where(user_id: @user.id).where(date: @start_date..@end_date)
+        .where(status: "審査通過")
+        .where(store_prop: {head_store: nil})
+        .where.not(result_point: @start_date..@end_date)
+
+      @aupay_inc = 
+        Airpay.includes(:store_prop).where(user_id: @user.id).where.not(date: @start_date..@end_date)
+        .where(result_point: @start_date..@end_date)
+        .where(status: "審査通過")
+        .where(store_prop: {head_store: nil})
+      
+        @aupay_db = 
+          Airpay.includes(:store_prop).where(user_id: @user.id).where(result_point: @start_date..@end_date)
+          .where.not(store_prop: {head_store: nil})
+          .where(status: "審査通過")
+
+        @rakuten_pay_def =  
+          @rakuten_pay_uq.where(status: "自社不備")
+          .or(@rakuten_pay_uq.where(status: "自社NG"))
+          .or(
+            @rakuten_pay_uq.where(deficiency: @start_date..@end_date)
+            .where.not(deficiency_solution: @start_date..@end_date)
+          )
+
+        @rakuten_pay_inc = 
+        RakutenPay.includes(:store_prop).where(user_id: @user.id)
+          .where.not(deficiency: @start_date..@end_date)
+          .where(deficiency_solution: @start_date..@end_date)
     end 
 
 

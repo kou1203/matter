@@ -143,6 +143,7 @@ Rails.application.routes.draw do
     collection { get :error_history_data }
     collection { get :customer_prop_data }
     collection { get :billing_data }
+    collection { get :prediction_data }
   end 
   resources :result_summits, only: :show,param: :user_id
   

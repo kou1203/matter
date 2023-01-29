@@ -42,8 +42,9 @@
     </tr>
   </table>
 
-
+  <% if @summits.present? %>
   <h2>◆明細一覧(<%= @summits.length %>件)</h2>
+  <div class="index-form">
   <table>
     <tr>
       <th class="date-th">No</th>
@@ -70,7 +71,10 @@
     </tr>
     <% end %>
   </table>
-
+  </div>
+  <% else %>
+  <p class="caution-text">※まだ<%= @month.month %>月はまだ明細が発行されておりません。</p>
+  <% end %>
 
     <p class="nav-text">
       グラフ：
@@ -84,6 +88,29 @@
     <div class="graph-form" id="metered-graph">
       <h2>◆<%= @month.year %>年：獲得推移</h2><br>
       <%= column_chart @count_chart %>
+      <table>
+        <tr>
+          <th class="date-th">項目</th>
+          <% @counter_m.each do |col| %>
+          <th class="date-th"><%= col[0] %></th>
+          <% end %>
+        </tr>
+        <tr>
+          <th class="date-th">従量電灯</th>
+          <% @counter_m.each do |count| %>
+          <td class="date-td"><%= count[1].round().to_s(:delimited) %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <th class="date-th">低圧電力</th>
+          <% (@counter_m.length - @counter_m.length).times do %>
+          <td class="date-td">0</td>
+          <% end %>
+          <% @counter_l.each do |count| %>
+          <td class="date-td"><%= count[1].round().to_s(:delimited) %></td>
+          <% end %>
+        </tr>
+      </table>
     </div>
   <div class="graph-form-first" id="commission-graph">
     <h2>◆<%= @month.year %>年：手数料（合計）</h2><br>
@@ -93,6 +120,29 @@
       xtitle: "請求月",
     } 
     %>
+      <table>
+        <tr>
+          <th class="date-th">項目</th>
+          <% @commission_sum_m.each do |col| %>
+          <th class="date-th"><%= col[0] %></th>
+          <% end %>
+        </tr>
+        <tr>
+          <th class="date-th">従量電灯</th>
+          <% @commission_sum_m.each do |commission| %>
+          <td class="date-td">¥<%= commission[1].round().to_s(:delimited) %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <th class="date-th">低圧電力</th>
+          <% (@commission_sum_m.length - @commission_sum_l.length).times do %>
+          <td class="date-td">0</td>
+          <% end %>
+          <% @commission_sum_l.each do |commission| %>
+          <td class="date-td">¥<%= commission[1].round().to_s(:delimited) %></td>
+          <% end %>
+        </tr>
+      </table>
   </div>
   <div class="graph-form" id="commission-ave-graph">
     <h2>◆<%= @month.year %>年：手数料（平均）</h2><br>
@@ -102,15 +152,62 @@
       xtitle: "請求月",
     } 
     %>
+  <table>
+    <tr>
+      <th class="date-th">項目</th>
+      <% @commission_m_ave.each do |col| %>
+      <th class="date-th"><%= col[0] %></th>
+      <% end %>
+    </tr>
+    <tr>
+      <th class="date-th">従量電灯</th>
+      <% @commission_m_ave.each do |commission_ave| %>
+      <td class="date-td">¥<%= commission_ave[1].round().to_s(:delimited) %></td>
+      <% end %>
+    </tr>
+    <tr>
+      <th class="date-th">低圧電力</th>
+      <% (@commission_m_ave.length - @commission_l_ave.length).times do %>
+      <td class="date-td">¥0</td>
+      <% end %>
+      <% @commission_l_ave.each do |commission_ave| %>
+      <td class="date-td">¥<%= commission_ave[1].round().to_s(:delimited) %></td>
+      <% end %>
+    </tr>
+  </table>
   </div>
   <div class="graph-form" id="total-use-ave-graph">
     <h2>◆<%= @month.year %>年：使用料（平均）</h2><br>
-    <%= column_chart   @commission_ave_chart,options = {
+    <%= column_chart   @total_use_ave_chart,options = {
       thousands: ",",
       suffix: "kWh",
       xtitle: "請求月",
     } 
     %>
+  
+  <table>
+    <tr>
+      <th class="date-th">項目</th>
+      <% @total_use_m_ave.each do |col| %>
+      <th class="date-th"><%= col[0] %></th>
+      <% end %>
+    </tr>
+    <tr>
+      <th class="date-th">従量電灯</th>
+      <% @total_use_m_ave.each do |total_use_ave| %>
+      <td class="date-td"><%= total_use_ave[1].round(1) %>kWh</td>
+      <% end %>
+    </tr>
+    <tr>
+      <th class="date-th">低圧電力</th>
+      <% (@total_use_m_ave.length - @total_use_m_ave.length).times do %>
+      <td class="date-td">0kWh</td>
+      <% end %>
+      <% @total_use_l_ave.each do |total_use_ave| %>
+      <td class="date-td"><%= total_use_ave[1].round(1) %>kWh</td>
+      <% end %>
+    </tr>
+  </table>
   </div>
 
 </div>

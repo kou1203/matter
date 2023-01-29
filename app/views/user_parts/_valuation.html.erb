@@ -64,10 +64,10 @@
       <td class="valuation-td red"><%= aupay.date %></td>
       <td class="valuation-td red"></td>
       <td class="valuation-td red"><%= aupay.status %></td>
-      <% if aupay.status == "自社NG" || "自社不備" %>
-      <td class="valuation-td red">自社不備・NG</td>
+      <% if (aupay.status == "自社NG") || (aupay.status == "自社不備") %>
+        <td class="valuation-td red">自社不備・NG</td>
       <% else %>
-      <td class="valuation-td red">上位店不備・NG</td>
+        <td class="valuation-td red">上位店不備・NG</td>
       <% end %>
       <td class="valuation-td red"><%= aupay.valuation_new %></td>
       <td class="valuation-td red"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>

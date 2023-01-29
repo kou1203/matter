@@ -116,6 +116,8 @@ class UsersController < ApplicationController
     # 利益表
     @start_done = @month.beginning_of_month
     @end_done = @month.end_of_month
+    @start_date = Date.new(@month.prev_month.year,@month.prev_month.month,26)
+    @end_date = Date.new(@month.year,@month.month,25)
     @results = Result.includes(:user,:result_cash).where(user_id: @user.id).where(date: @start_date..@end_date).order(:date)
     # 拠点別resultデータ
     @results_chubu = 
@@ -694,7 +696,7 @@ class UsersController < ApplicationController
       @other_products = OtherProduct.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
       @aupay_pic = @other_products.where(product_name: "auPay写真")
       @dmer_pic = @other_products.where(product_name: "dメルステッカー")
-      @airpay_pic = @other_products.where(product_name: "AirPayステッカー")
+      @airpay_pic = @other_products.where("product_name LIKE ?", "%AirPayステッカー%")
       @other_products_val = @other_products.sum(:valuation)
       @dmer_pic_len = @dmer_pic.sum(:product_len)
       @dmer_pic_val = @dmer_pic.sum(:valuation)
@@ -774,7 +776,7 @@ class UsersController < ApplicationController
           .or(
             RakutenPay.where(user_id: @user.id).where.not(status: "自社NG").where.not(status: "自社不備")
             .where.not(deficiency: nil)
-            .where(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
+            .where(share: @start_date..@end_date)
             )
       @rakuten_pay_inc = 
         @rakuten_pay_user.where.not(date: @start_date..@end_date)

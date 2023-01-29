@@ -85,12 +85,14 @@
       <tr>
         <th class="search-th">au写真</th>
         <th class="search-th">dメルステッカー</th>
-        <th class="search-th">AirPayステッカー</th>
+        <th class="search-th">AirPayステッカー（自社）</th>
+        <th class="search-th">AirPayステッカー（他社）</th>
       </tr>
       <tr>
         <td><%= @other_products.where(product_name: "au写真").sum(:product_len) %></td>
         <td><%= @other_products.where(product_name: "dメルステッカー").sum(:product_len) %></td>
-        <td><%= @other_products.where(product_name: "AirPayステッカー").sum(:product_len) %></td>
+        <td><%= @other_products.where(product_name: "AirPayステッカー（自社）").sum(:product_len) %></td>
+        <td><%= @other_products.where(product_name: "AirPayステッカー（他社）").sum(:product_len) %></td>
       </tr>
     </table>
     <table class="out-tb">

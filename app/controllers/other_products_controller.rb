@@ -24,7 +24,10 @@ class OtherProductsController < ApplicationController
     elsif @other_product.product_name == "dメルステッカー"
       @other_product[:valuation] = @other_product.product_len * 2000
       @other_product[:profit] = @other_product.product_len * 3000
-    elsif @other_product.product_name == "AirPayステッカー"
+    elsif @other_product.product_name == "AirPayステッカー（自社）"
+      @other_product[:valuation] = @other_product.product_len * 1500
+      @other_product[:profit] = @other_product.product_len * 10000
+    elsif @other_product.product_name == "AirPayステッカー（他社）"
       @other_product[:valuation] = @other_product.product_len * 1500
       @other_product[:profit] = @other_product.product_len * 10000
     end
@@ -50,9 +53,13 @@ class OtherProductsController < ApplicationController
       @other_product.update(other_product_params)
       @other_product.update(set_dmersticker_product_params)
       redirect_to session[:previous_url], alert: "入力された獲得情報が編集されました。"
-    elsif @other_product.product_name == "AirPayステッカー"
+    elsif @other_product.product_name == "AirPayステッカー（自社）"
       @other_product.update(other_product_params)
-      @other_product.update(set_airpaysticker_product_params)
+      @other_product.update(set_airpaysticker_mine_product_params)
+      redirect_to session[:previous_url], alert: "入力された獲得情報が編集されました。"
+    elsif @other_product.product_name == "AirPayステッカー（他社）"
+      @other_product.update(other_product_params)
+      @other_product.update(set_airpaysticker_other_product_params)
       redirect_to session[:previous_url], alert: "入力された獲得情報が編集されました。"
     else  
       render :edit
@@ -90,8 +97,11 @@ class OtherProductsController < ApplicationController
     other_product_params.merge(@other_product.set_dmer_pic_params)
   end 
 
-  def set_airpaysticker_product_params
-    other_product_params.merge(@other_product.set_airpay_pic_params)
+  def set_airpaysticker_mine_product_params
+    other_product_params.merge(@other_product.set_airpay_pic_mine_params)
+  end 
+  def set_airpaysticker_other_product_params
+    other_product_params.merge(@other_product.set_airpay_pic_other_params)
   end 
   
 end

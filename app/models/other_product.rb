@@ -30,13 +30,23 @@ class OtherProduct < ApplicationRecord
     {:profit => dmer_pic_profit, :valuation => dmer_pic_valuation}
   end
 
-  def airpay_pic_valuation
+  def airpay_pic_mine_valuation
     product_len * 1500
   end
-  def airpay_pic_profit
+  def airpay_pic_mine_profit
     product_len * 10000
   end
-  def set_airpay_pic_params
-    {:profit => airpay_pic_profit, :valuation => airpay_pic_valuation}
+  def set_airpay_pic_mine_params
+    {:profit => airpay_pic_mine_profit, :valuation => airpay_pic_mine_valuation}
+  end
+
+  def airpay_pic_other_valuation
+    product_len * 1500
+  end
+  def airpay_pic_other_profit
+    product_len * 10000
+  end
+  def set_airpay_pic_other_params
+    {:profit => airpay_pic_other_profit, :valuation => airpay_pic_other_valuation}
   end
 end

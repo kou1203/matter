@@ -428,12 +428,13 @@
     </tbody>
   </table>
 <% end %>
-<% if @dmer_pic.present? %>
+<% if @airpay_pic.present? %>
 <h2>AirPayステッカー（獲得）</h2>
   <% num = 1 %>
   <table>
     <thead>
       <th class="valuation-th">No</th>
+      <th class="valuation-th">商材</th>
       <th class="valuation-th">獲得日</th>
       <th class="valuation-th">獲得数</th>
       <th class="valuation-th">評価売上</th>
@@ -443,6 +444,7 @@
       <% @airpay_pic.each do |pic| %>
       <tr>
       <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= pic.product_name rescue "" %></td>
       <td class="valuation-td "><%= pic.date %></td>
       <td class="valuation-td "><%= pic.product_len %></td>
       <td class="valuation-td "><%= pic.valuation %></td>

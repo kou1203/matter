@@ -1,0 +1,78 @@
+<%# サミット個別獲得案件一覧 %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>終着予測</h1>
+  <%= render "shared/header" %>
+</div>
+<div data-scope-path="users/show"><%# users/showスコープ頭 %>
+    <h2>
+      <%= @user.name %>
+      <%= link_to "<<",prediction_data_result_summits_path(user_id: @user.id,month:@month.prev_month), class:"link" %>
+      <%= @month.year %>年<%= @month.month %>月 終着予測
+      <%= link_to ">>",prediction_data_result_summits_path(user_id: @user.id,month:@month.next_month), class:"link" %>
+    </h2><br>
+    <%= render "shared/summit_result_links" %>
+
+    <h2><%= @month.year %>年：成果率</h2>
+    <table>
+    <tr>
+      <th class="date-th">ステータス</th>
+    <% 12.times do |i| %>
+      <th class="date-th"><%= i +1 %>月</th>
+    <% end %>
+    </tr>
+    <tr>
+      <td class="date-td">処理待ち</td>
+      <% 12.times do |i| %>
+      <% month = Date.new(@month.year, i + 1,1) %>
+      <% if 
+        @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length == 0
+      %>
+      <td class="date-td"><%=
+        @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length
+      %></td>
+      <% else %>
+      <td class="date-td red"><%=
+        @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length
+      %></td>
+      <% end %>
+      <% end %>      
+    </tr>
+    <tr>
+      <td class="date-td">獲得</td>
+    <% 12.times do |i| %>
+      <% month = Date.new(@month.year, i + 1,1) %>
+      <td class="date-td"><%= @summits_user.where(date: month.beginning_of_month..month.end_of_month).length %></td>
+    <% end %>
+    </tr>
+    <tr>
+      <td class="date-td">SW完了</td>
+    <% 12.times do |i| %>
+      <% month = Date.new(@month.year, i + 1,1) %>
+      <td class="date-td"><%= @summits_done.where(date: month.beginning_of_month..month.end_of_month).length %></td>
+    <% end %>
+    </tr>
+    <tr>
+      <td class="date-td">不備・NG</td>
+    <% 12.times do |i| %>
+      <% month = Date.new(@month.year, i + 1,1) %>
+      <td class="date-td"><%= @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length %></td>
+    <% end %>
+    </tr>
+    <tr>
+      <td class="date-td">SW完了率</td>
+    <% 12.times do |i| %>
+      <% month = Date.new(@month.year, i + 1,1) %>
+      <% if (@summits_done.where(date: month.beginning_of_month..month.end_of_month).length == 0) || 
+          (@summits_user.where(date: month.beginning_of_month..month.end_of_month).length == 0) %>
+      <td class="date-td">0%</td>
+      <% else %>
+      <td class="date-td"><%= 
+        number_to_percentage((@summits_done.where(date: month.beginning_of_month..month.end_of_month).length).to_f / 
+        (@summits_user.where(date: month.beginning_of_month..month.end_of_month).length) * 100,precision: 0) rescue "0%"
+      %></td>
+      <% end %>
+    <% end %>
+    </tr>
+    </table>
+</div>
