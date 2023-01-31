@@ -434,6 +434,7 @@ class ResultsController < ApplicationController
       else  
         0
       end 
+
   @airpay_done_val = @airpay_done.sum(:valuation) + @airpay_bonus
 
   # その他獲得商材
@@ -442,6 +443,8 @@ class ResultsController < ApplicationController
     @aupay_pic = @other_products.where(product_name: "auPay写真")
     @dmer_pic = @other_products.where(product_name: "dメルステッカー")
     @airpay_pic = @other_products.where("product_name LIKE ?", "%AirPayステッカー%")
+    # ITSS
+    @itss = Itss.includes(:user).where(user_id: @user.id).where(construction_schedule: @itss1_start_date..@itss1_end_date)
     # 決済リスト
     @slmts = 
       StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})

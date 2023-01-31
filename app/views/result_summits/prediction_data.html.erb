@@ -12,67 +12,253 @@
       <%= link_to ">>",prediction_data_result_summits_path(user_id: @user.id,month:@month.next_month), class:"link" %>
     </h2><br>
     <%= render "shared/summit_result_links" %>
-
-    <h2><%= @month.year %>年：成果率</h2>
-    <table>
-    <tr>
-      <th class="date-th">ステータス</th>
-    <% 12.times do |i| %>
-      <th class="date-th"><%= i +1 %>月</th>
-    <% end %>
-    </tr>
-    <tr>
-      <td class="date-td">処理待ち</td>
+    
+  <div class="nav">
+    <div><%# 去年の成果率 %>
+      <h2><%= @billing_prev_year_parse %>年：成果率</h2>
+      <table>
+      <tr>
+        <th class="date-th">ステータス</th>
       <% 12.times do |i| %>
-      <% month = Date.new(@month.year, i + 1,1) %>
-      <% if 
-        @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length == 0
-      %>
-      <td class="date-td"><%=
-        @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length
-      %></td>
-      <% else %>
-      <td class="date-td red"><%=
-        @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length
-      %></td>
+        <th class="date-th"><%= i +1 %>月</th>
       <% end %>
-      <% end %>      
-    </tr>
-    <tr>
-      <td class="date-td">獲得</td>
-    <% 12.times do |i| %>
-      <% month = Date.new(@month.year, i + 1,1) %>
-      <td class="date-td"><%= @summits_user.where(date: month.beginning_of_month..month.end_of_month).length %></td>
-    <% end %>
-    </tr>
-    <tr>
-      <td class="date-td">SW完了</td>
-    <% 12.times do |i| %>
-      <% month = Date.new(@month.year, i + 1,1) %>
-      <td class="date-td"><%= @summits_done.where(date: month.beginning_of_month..month.end_of_month).length %></td>
-    <% end %>
-    </tr>
-    <tr>
-      <td class="date-td">不備・NG</td>
-    <% 12.times do |i| %>
-      <% month = Date.new(@month.year, i + 1,1) %>
-      <td class="date-td"><%= @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length %></td>
-    <% end %>
-    </tr>
-    <tr>
-      <td class="date-td">SW完了率</td>
-    <% 12.times do |i| %>
-      <% month = Date.new(@month.year, i + 1,1) %>
-      <% if (@summits_done.where(date: month.beginning_of_month..month.end_of_month).length == 0) || 
-          (@summits_user.where(date: month.beginning_of_month..month.end_of_month).length == 0) %>
-      <td class="date-td">0%</td>
-      <% else %>
-      <td class="date-td"><%= 
-        number_to_percentage((@summits_done.where(date: month.beginning_of_month..month.end_of_month).length).to_f / 
-        (@summits_user.where(date: month.beginning_of_month..month.end_of_month).length) * 100,precision: 0) rescue "0%"
-      %></td>
+      </tr>
+      <tr>
+        <td class="date-td">処理待ち</td>
+        <% 12.times do |i| %>
+        <% month = Date.new(@billing_prev_year_parse, i + 1,1) %>
+        <% if 
+          @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length == 0
+        %>
+        <td class="date-td"><%=
+          @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length
+        %></td>
+        <% else %>
+        <td class="date-td red"><%=
+          @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length
+        %></td>
+        <% end %>
+        <% end %>      
+      </tr>
+      <tr>
+        <td class="date-td">獲得</td>
+      <% 12.times do |i| %>
+        <% month = Date.new(@billing_prev_year_parse, i + 1,1) %>
+        <td class="date-td"><%= @summits_user.where(date: month.beginning_of_month..month.end_of_month).length %></td>
       <% end %>
-    <% end %>
-    </tr>
-    </table>
+      </tr>
+      <tr>
+        <td class="date-td">SW完了</td>
+      <% 12.times do |i| %>
+        <% month = Date.new(@billing_prev_year_parse, i + 1,1) %>
+        <td class="date-td"><%= @summits_done.where(date: month.beginning_of_month..month.end_of_month).length %></td>
+      <% end %>
+      </tr>
+      <tr>
+        <td class="date-td">その他</td>
+      <% 12.times do |i| %>
+        <% month = Date.new(@billing_prev_year_parse, i + 1,1) %>
+        <td class="date-td"><%= @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length %></td>
+      <% end %>
+      </tr>
+      <tr>
+        <td class="date-td">SW完了率</td>
+      <% 12.times do |i| %>
+        <% month = Date.new(@billing_prev_year_parse, i + 1,1) %>
+        <% if (@summits_done.where(date: month.beginning_of_month..month.end_of_month).length == 0) || 
+            (@summits_user.where(date: month.beginning_of_month..month.end_of_month).length == 0) %>
+        <td class="date-td">0%</td>
+        <% else %>
+        <td class="date-td"><%= 
+          number_to_percentage((@summits_done.where(date: month.beginning_of_month..month.end_of_month).length).to_f / 
+          (@summits_user.where(date: month.beginning_of_month..month.end_of_month).length) * 100,precision: 0) rescue "0%"
+        %></td>
+        <% end %>
+      <% end %>
+      </tr>
+      </table>
+    </div>
+    <div><%# 去年の平均手数料 %>
+      <h2><%= @billing_prev_year_parse %>年：平均手数料（去年）</h2>
+      <table>
+        <tr>
+          <th class="date-th">項目</th>
+          <% @commission_m_ave_prev.each do |col| %>
+          <th class="date-th"><%= col[0] %></th>
+          <% end %>
+          <th class="date-th">合計</th>
+        </tr>
+        <tr>
+          <th class="date-th">従量電灯</th>
+          <% @commission_m_ave_prev.each do |commission_ave| %>
+          <td class="date-td">¥<%= commission_ave[1].round().to_s(:delimited) rescue 0 %></td>
+          <% end %>
+          <td class="date-td">¥<%= @commission_m_ave_year.round().to_s(:delimited) rescue 0 %></td>
+        </tr>
+        <tr>
+          <th class="date-th">従量１月比</th>
+          <% prev_month_commission_ave_m = 0 %>
+          <% @commission_m_ave_prev.each_with_index do |commission_ave, i| %>
+            <% if i > 0 %>
+            <td class="date-td"><%= number_to_percentage(commission_ave[1].to_f / prev_month_commission_ave_m * 100, precision: 0) rescue 0 %></td>
+            <% else %>
+            <td class="date-td">-</td>
+            <% prev_month_commission_ave_m = commission_ave[1] %>
+            <% end %>
+          <% end %>
+          <td class="date-td">-</td>
+        </tr>
+        <tr>
+          <th class="date-th">低圧電力</th>
+          <% (@commission_m_ave.length - @commission_l_ave.length).times do %>
+          <td class="date-td">¥0</td>
+          <% end %>
+          <% @commission_l_ave_prev.each do |commission_ave| %>
+          <td class="date-td">¥<%= commission_ave[1].round().to_s(:delimited) rescue 0 %></td>
+          <% end %>
+          <td class="date-td">¥<%= @commission_l_ave_year.round().to_s(:delimited) rescue 0 %></td>
+        </tr>
+        <tr>
+          <th class="date-th">低圧１月比</th>
+          <% prev_month_commission_ave_l = 0 %>
+          <% @commission_l_ave_prev.each_with_index do |commission_ave, i| %>
+            <% if i > 0 %>
+            <td class="date-td"><%= number_to_percentage(commission_ave[1].to_f / prev_month_commission_ave_l * 100, precision: 0) rescue 0 %></td>
+            <% else %>
+            <td class="date-td">-</td>
+            <% prev_month_commission_ave_l = commission_ave[1] rescue 0 %>
+            <% end %>
+          <% end %>
+          <td class="date-td">-</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+  <div class="nav">
+    <div><%# 今年の成果率 %>
+      <h2><%= @month.year %>年：成果率</h2>
+      <table>
+      <tr>
+        <th class="date-th">ステータス</th>
+      <% 12.times do |i| %>
+        <th class="date-th"><%= i +1 %>月</th>
+      <% end %>
+      </tr>
+      <tr>
+        <td class="date-td">処理待ち</td>
+        <% 12.times do |i| %>
+        <% month = Date.new(@month.year, i + 1,1) %>
+        <% if 
+          @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length == 0
+        %>
+        <td class="date-td"><%=
+          @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length
+        %></td>
+        <% else %>
+        <td class="date-td red"><%=
+          @summits_user.where(date: month.beginning_of_month..month.end_of_month).length - @summits_done.where(date: month.beginning_of_month..month.end_of_month).length - @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length
+        %></td>
+        <% end %>
+        <% end %>      
+      </tr>
+      <tr>
+        <td class="date-td">獲得</td>
+      <% 12.times do |i| %>
+        <% month = Date.new(@month.year, i + 1,1) %>
+        <td class="date-td"><%= @summits_user.where(date: month.beginning_of_month..month.end_of_month).length %></td>
+      <% end %>
+      </tr>
+      <tr>
+        <td class="date-td">SW完了</td>
+      <% 12.times do |i| %>
+        <% month = Date.new(@month.year, i + 1,1) %>
+        <td class="date-td"><%= @summits_done.where(date: month.beginning_of_month..month.end_of_month).length %></td>
+      <% end %>
+      </tr>
+      <tr>
+        <td class="date-td">その他</td>
+      <% 12.times do |i| %>
+        <% month = Date.new(@month.year, i + 1,1) %>
+        <td class="date-td"><%= @summits_ng.where(date: month.beginning_of_month..month.end_of_month).length %></td>
+      <% end %>
+      </tr>
+      <tr>
+        <td class="date-td">SW完了率</td>
+      <% 12.times do |i| %>
+        <% month = Date.new(@month.year, i + 1,1) %>
+        <% if (@summits_done.where(date: month.beginning_of_month..month.end_of_month).length == 0) || 
+            (@summits_user.where(date: month.beginning_of_month..month.end_of_month).length == 0) %>
+        <td class="date-td">0%</td>
+        <% else %>
+        <td class="date-td"><%= 
+          number_to_percentage((@summits_done.where(date: month.beginning_of_month..month.end_of_month).length).to_f / 
+          (@summits_user.where(date: month.beginning_of_month..month.end_of_month).length) * 100,precision: 0) rescue "0%"
+        %></td>
+        <% end %>
+      <% end %>
+      </tr>
+      </table>
+    </div>
+    <div><%# 今年の平均手数料 %>
+      <h2><%= @month.year %>年：平均手数料（今年）</h2>
+      <table>
+        <tr>
+          <th class="date-th">項目</th>
+          <% @commission_m_ave.each do |col| %>
+          <th class="date-th"><%= col[0] %></th>
+          <% end %>
+          <th class="date-th">合計</th>
+        </tr>
+        <tr>
+          <th class="date-th">従量電灯</th>
+          <% @commission_m_ave.each do |commission_ave| %>
+          <td class="date-td">¥<%= commission_ave[1].round().to_s(:delimited) rescue 0 %></td>
+          <% end %>
+          <td class="date-td">¥<%= @commission_m_ave_year.round().to_s(:delimited) rescue 0 %></td>
+        </tr>
+        <tr>
+          <th class="date-th">従量１月比</th>
+          <% prev_month_commission_ave_m = 0 %>
+          <% @commission_m_ave.each_with_index do |commission_ave, i| %>
+            <% if i > 0 %>
+            <td class="date-td"><%= number_to_percentage(commission_ave[1].to_f / prev_month_commission_ave_m * 100, precision: 0) rescue 0 %></td>
+            <% else %>
+            <td class="date-td">-</td>
+            <% prev_month_commission_ave_m = commission_ave[1] %>
+            <% end %>
+          <% end %>
+          <td class="date-td">-</td>
+        </tr>
+        <tr>
+          <th class="date-th">低圧電力</th>
+          <% (@commission_m_ave.length - @commission_l_ave.length).times do %>
+          <td class="date-td">¥0</td>
+          <% end %>
+          <% @commission_l_ave.each do |commission_ave| %>
+          <td class="date-td">¥<%= commission_ave[1].round().to_s(:delimited) rescue 0 %></td>
+          <% end %>
+          <td class="date-td">¥<%= @commission_l_ave_year.round().to_s(:delimited) rescue 0 %></td>
+        </tr>
+        <tr>
+          <th class="date-th">低圧１月比</th>
+          <% prev_month_commission_ave_l = 0 %>
+          <% @commission_l_ave.each_with_index do |commission_ave, i| %>
+            <% if i > 0 %>
+            <td class="date-td"><%= number_to_percentage(commission_ave[1].to_f / prev_month_commission_ave_l * 100, precision: 0) rescue 0 %></td>
+            <% else %>
+            <td class="date-td">-</td>
+            <% prev_month_commission_ave_l = commission_ave[1] rescue 0 %>
+            <% end %>
+          <% end %>
+          <td class="date-td">-</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+    <form oninput="op1.value = Number(a.value) * Number(b.value);">
+    <input type="number" name="a" id="a" value="0" > 
+    *
+    <input type="number" name="b" id="b" value="0" > 
+    = <output name="op1" for="a b">0</output>
+    </form>
 </div>

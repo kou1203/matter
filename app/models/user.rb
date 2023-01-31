@@ -34,4 +34,5 @@ class User < ApplicationRecord
   has_many :dmersticker_date_progress
   has_many :airpaysticker_date_progress
   has_many :cash_date_progress
+  has_many :itsses
 end

@@ -2047,7 +2047,8 @@
             (
               @austicker_date_progress.valuation_current +
               @dmersticker_date_progress.valuation_current +
-              @airpaysticker_date_progress.valuation_current
+              @airpaysticker_date_progress.valuation_current +
+              @itss.sum(:valuation)
             ).to_s(:delimited) rescue 0 
           %></td>
           <td class="total-td"><%= @cash_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
@@ -2067,7 +2068,8 @@
             (
               @austicker_date_progress.valuation_fin +
               @dmersticker_date_progress.valuation_fin +
-              @airpaysticker_date_progress.valuation_fin
+              @airpaysticker_date_progress.valuation_fin +
+              @itss.sum(:valuation)
             ).to_s(:delimited) rescue 0 
           %></td>
           <td class="total-td"><%= @cash_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>

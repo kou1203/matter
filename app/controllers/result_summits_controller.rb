@@ -258,19 +258,19 @@ class ResultSummitsController < ApplicationController
 
     @commission_ave_chart = [
       {
-        name: "従量電灯", data: @commission_m_ave = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:commission)
+        name: "従量電灯", data: @commission_m_ave = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:commission)
       },
       {
-        name: "低圧電力", data: @commission_l_ave = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:commission)
+        name: "低圧電力", data: @commission_l_ave = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:commission)
       },
     ]
 
     @total_use_ave_chart = [
       {
-        name: "従量電灯", data: @total_use_m_ave = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:total_use)
+        name: "従量電灯", data: @total_use_m_ave = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:total_use)
       },
       {
-        name: "低圧電力", data: @total_use_l_ave = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:total_use)
+        name: "低圧電力", data: @total_use_l_ave = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).average(:total_use)
       },
     ]
     
@@ -281,6 +281,8 @@ class ResultSummitsController < ApplicationController
   def prediction_data
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @year_parse = @month.in_time_zone.all_year
+    @billing_year_parse = @month.year
+    @billing_prev_year_parse = @month.prev_year.year
     @prev_year = @month.prev_year.strftime("%Y年%m月")
     @user = User.find(params[:user_id])
     @billings = SummitBillingAmount.where(billing_date: @prev_year)
@@ -288,6 +290,16 @@ class ResultSummitsController < ApplicationController
     @summits_user = @summits.where(user_id: @user.id)
     @summits_done = @summits_user.where(status: "SW完了")
     @summits_ng = @summits_user.where.not(status: "SW待ち").where.not(status: "処理待ち").where.not(status: "SW完了")
+    # 今年の平均手数料
+    @commission_m_ave = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year_parse}%").group(:billing_date).average(:commission)
+    @commission_l_ave = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@billing_year_parse}%").group(:billing_date).average(:commission)
+    @commission_m_ave_year = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_year_parse}%").average(:commission)
+    @commission_l_ave_year = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@billing_year_parse}%").average(:commission)
+    # 去年の平均手数料
+    @commission_m_ave_prev = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_prev_year_parse}%").group(:billing_date).average(:commission)
+    @commission_l_ave_prev = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@billing_prev_year_parse}%").group(:billing_date).average(:commission)
+    @commission_m_ave_year_prev = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@billing_prev_year_parse}%").average(:commission)
+    @commission_l_ave_year_prev = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(first_flag: "過去発行済").where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@billing_prev_year_parse}%").average(:commission)
     
 
 

@@ -270,4 +270,8 @@ Rails.application.routes.draw do
     collection {get :date_destroy}
   end 
 
+  resources :itsses do 
+    collection {post :import}
+  end 
+
 end

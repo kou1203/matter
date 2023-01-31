@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_19_092217) do
+ActiveRecord::Schema.define(version: 2023_01_29_035437) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -423,6 +423,32 @@ ActiveRecord::Schema.define(version: 2023_01_19_092217) do
     t.integer "result_fin_len"
     t.date "create_date", null: false
     t.index ["user_id"], name: "index_dmersticker_date_progresses_on_user_id"
+  end
+
+  create_table "itsses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "client"
+    t.string "customer_num", null: false
+    t.string "east_or_west"
+    t.bigint "user_id"
+    t.date "date", null: false
+    t.string "contract_name"
+    t.string "prefecture"
+    t.date "after_call"
+    t.string "status_after_call", null: false
+    t.date "last_call"
+    t.date "after_call_ok"
+    t.string "p_num"
+    t.string "entry_user"
+    t.string "status_ntt1"
+    t.string "status_ntt2"
+    t.date "construction_schedule"
+    t.date "last_history"
+    t.string "status_last_history"
+    t.text "last_history_remarks"
+    t.date "status_update"
+    t.integer "profit"
+    t.integer "valuation"
+    t.index ["user_id"], name: "index_itsses_on_user_id"
   end
 
   create_table "n_results", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1545,6 +1571,7 @@ ActiveRecord::Schema.define(version: 2023_01_19_092217) do
   add_foreign_key "dmers", "users"
   add_foreign_key "dmers", "users", column: "settlementer_id"
   add_foreign_key "dmersticker_date_progresses", "users"
+  add_foreign_key "itsses", "users"
   add_foreign_key "n_results", "users"
   add_foreign_key "other_products", "users"
   add_foreign_key "pandas", "store_props"

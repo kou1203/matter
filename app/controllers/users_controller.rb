@@ -858,6 +858,9 @@ class UsersController < ApplicationController
         @demaekan = Demaekan.includes(:user).where(user_id: @user.id).where(first_cs_contract: @start_date..@end_date)
         @demaekan_len = @demaekan.length
 
+        # ITSS
+        @itss = Itss.includes(:user).where(user_id: @user.id).where(construction_schedule: @itss1_start_date..@itss1_end_date)
+
       # 合計成果売上
       @valuation_sum = 
         @dmer_done.sum(:valuation_new) + 
@@ -870,7 +873,8 @@ class UsersController < ApplicationController
         @aupay_pic_val + 
         @dmer_pic_val + 
         @airpay_pic_val + 
-        @demaekan.sum(:valuation)
+        @demaekan.sum(:valuation) +
+        @itss.sum(:valuation)
       # 成果売上終着
       # dメル
         # 過去の決済対象
@@ -1074,7 +1078,8 @@ class UsersController < ApplicationController
             @aupay_pic_val +
             @dmer_pic_val +
             @airpay_pic_val +
-            @demaekan.sum(:valuation)
+            @demaekan.sum(:valuation) +
+            @itss.sum(:valuation)
           ).to_i
         if (@valuation_sum > @result_fin) || (Date.today >= @start_date.next_month.end_of_month)
           @result_fin = @valuation_sum

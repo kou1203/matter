@@ -13,32 +13,43 @@
     </h2><br>
     <%= render "shared/summit_result_links" %>
 
+  <p class="caution-text">※平均手数料, 平均使用量に関しては初回発行された明細は除いて計算おります。</p>
   <table>
     <tr>
-      <th class="date-th" colspan="3">明細件数</th>
+      <th class="date-th" colspan="4">明細件数</th>
       <th class="date-th" colspan="2">平均使用量</th>
       <th class="date-th" colspan="2">平均手数料</th>
-      <th class="date-th" colspan="2">合計</th>
+      <th class="date-th" colspan="2">合計手数料（初回 + 過去）</th>
+      <th class="date-th" colspan="2">合計手数料（初回発行のみ）</th>
     </tr>
     <tr>
+      <th class="date-th">初回</th>
       <th class="date-th">合計</th>
       <% 3.times do %>
       <th class="date-th">従量</th>
       <th class="date-th">低圧</th>
       <% end %>
+      <% 2.times do %>
       <th class="date-th">使用量</th>
       <th class="date-th">手数料</th>
+      <% end %>
     </tr>
     <tr>
+      <td class="date-td"><%= @summits.where(first_flag: "初回").length %></td>
       <td class="date-td"><%= @summits.length %></td>
       <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%従量%").length %></td>
       <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%低圧%").length %></td>
-      <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%従量%").average(:total_use).round() rescue 0 %>kWh</td>
-      <td class="date-td"><%= @summits.where("contract_type LIKE ?", "%低圧%").average(:total_use).round() rescue 0 %>kWh</td>
-      <td class="date-td">¥<%= @summits.where("contract_type LIKE ?", "%従量%").average(:commission).round() rescue 0 %></td>
-      <td class="date-td">¥<%= @summits.where("contract_type LIKE ?", "%低圧%").average(:commission).round() rescue 0 %></td>
+      <td class="date-td"><%= @summits.where(first_flag: "過去発行済").where("contract_type LIKE ?", "%従量%").average(:total_use).round() rescue 0 %>kWh</td>
+      <td class="date-td"><%= @summits.where(first_flag: "過去発行済").where("contract_type LIKE ?", "%低圧%").average(:total_use).round() rescue 0 %>kWh</td>
+      <td class="date-td">¥<%= @summits.where(first_flag: "過去発行済").where("contract_type LIKE ?", "%従量%").average(:commission).round() rescue 0 %></td>
+      <td class="date-td">¥<%= @summits.where(first_flag: "過去発行済").where("contract_type LIKE ?", "%低圧%").average(:commission).round() rescue 0 %></td>
       <td class="date-td"><%= @summits.sum(:total_use).to_s(:delimited) rescue 0 %>kWh</td>
       <td class="date-td">¥<%= @summits.sum(:commission).to_s(:delimited) rescue 0 %></td>
+      <td class="date-td"><%= @summits.where(first_flag: "初回").sum(:total_use).to_s(:delimited) rescue 0 %>kWh</td>
+      <td class="date-td">
+        ¥<%= @summits.where(first_flag: "初回").sum(:commission).to_s(:delimited) rescue 0 %>
+        （合計の<%= number_to_percentage(@summits.where(first_flag: "初回").sum(:commission).to_f / @summits.sum(:commission) * 100,precision: 0) %>）
+      </td>
     </tr>
   </table>
 
@@ -209,5 +220,5 @@
     </tr>
   </table>
   </div>
-
+  <p class="caution-text">※平均手数料, 平均使用量に関しては初回発行された明細は除いて計算おります。</p>
 </div>

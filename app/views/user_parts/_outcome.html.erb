@@ -33,7 +33,8 @@
       # その他商材
       @aupay_pic.sum(:valuation) +
       @dmer_pic.sum(:valuation) +
-      @airpay_pic.sum(:valuation)
+      @airpay_pic.sum(:valuation) +
+      @itss.sum(:valuation)
     ).to_s(:delimited) rescue 0
   %></h2>
   <table>
@@ -124,6 +125,13 @@
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @demaekan.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <tr>
+    <td class="valuation-td">ITSS</td>
+    <td class="valuation-td"><%= @itss.length rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @itss.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
   </table>
 <% if @dmer_done.present? %>
@@ -479,3 +487,27 @@
     </tbody>
   </table>
 <% end %>
+<% if @itss.present? %>
+<h2>ITSS</h2>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">契約者名</th>
+      <th class="valuation-th">申込日</th>
+      <th class="valuation-th">工事予定日</th>
+      <th class="valuation-th">評価売上</th>
+    </thead>
+    <tbody>
+      <% @itss.each_with_index do |itss,i| %>
+      <tr>
+      <td class="valuation-td "><%= i + 1 %></td>
+      <td class="valuation-td "><%= itss.contract_name %></td>
+      <td class="valuation-td "><%= itss.date %></td>
+      <td class="valuation-td "><%= itss.construction_schedule %></td>
+      <td class="valuation-td "><%= itss.valuation %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+  <% end %>
