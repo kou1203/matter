@@ -1,7 +1,7 @@
 class ItssesController < ApplicationController
 
   def index 
-    @q = Itss.ransack(params[:q])
+    @q = Itss.includes(:user).ransack(params[:q])
     @itsses = 
       if params[:q].nil?
         Itss.none 

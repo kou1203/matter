@@ -101,9 +101,10 @@
           <% @commission_m_ave_prev.each_with_index do |commission_ave, i| %>
             <% if i > 0 %>
             <td class="date-td"><%= number_to_percentage(commission_ave[1].to_f / prev_month_commission_ave_m * 100, precision: 0) rescue 0 %></td>
-            <% else %>
-            <td class="date-td">-</td>
             <% prev_month_commission_ave_m = commission_ave[1] %>
+            <% else %>
+            <% prev_month_commission_ave_m = commission_ave[1] %>
+            <td class="date-td">-</td>
             <% end %>
           <% end %>
           <td class="date-td">-</td>
@@ -222,6 +223,7 @@
           <% @commission_m_ave.each_with_index do |commission_ave, i| %>
             <% if i > 0 %>
             <td class="date-td"><%= number_to_percentage(commission_ave[1].to_f / prev_month_commission_ave_m * 100, precision: 0) rescue 0 %></td>
+            <% prev_month_commission_ave_m = commission_ave[1] %>
             <% else %>
             <td class="date-td">-</td>
             <% prev_month_commission_ave_m = commission_ave[1] %>
@@ -245,6 +247,7 @@
           <% @commission_l_ave.each_with_index do |commission_ave, i| %>
             <% if i > 0 %>
             <td class="date-td"><%= number_to_percentage(commission_ave[1].to_f / prev_month_commission_ave_l * 100, precision: 0) rescue 0 %></td>
+            <% prev_month_commission_ave_l = commission_ave[1] rescue 0 %>
             <% else %>
             <td class="date-td">-</td>
             <% prev_month_commission_ave_l = commission_ave[1] rescue 0 %>
