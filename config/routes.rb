@@ -29,6 +29,7 @@ Rails.application.routes.draw do
 
   resources :summit_clients, only: [:index, :show] do
     collection { post :import }
+    collection { delete :all_delete }
   end
 
   resources :summits, expect: [:new, :create] do 
@@ -36,6 +37,7 @@ Rails.application.routes.draw do
     collection { post :import_price }
     collection { get :sw_error }
     collection { get :cancel }
+    collection { delete :not_share_delete }
   end
 
   resources :summit_customer_props do 
@@ -272,6 +274,10 @@ Rails.application.routes.draw do
 
   resources :itsses do 
     collection {post :import}
+  end 
+
+  resources :itss_date_progresses do 
+    collection {get :progress_create}
   end 
 
 end

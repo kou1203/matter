@@ -12,4 +12,9 @@ class SummitClientsController < ApplicationController
       redirect_to summits_path, alert: "インポートに失敗しました。ファイルを選択してください"
     end
   end 
+
+  def all_delete
+    SummitClient.destroy_all
+    redirect_to summits_path, alert: "クライアント情報を全て削除しました。"
+  end 
 end

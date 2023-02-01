@@ -47,7 +47,7 @@ class SummitsController < ApplicationController
     if params[:file].present?
       if SummitPrice.csv_check(params[:file]).present?
         redirect_to summits_path , alert: "エラーが発生したため中断しました#{SummitPrice.csv_check(params[:file])}"
-      else
+      # else
         message = SummitPrice.import(params[:file]) 
         redirect_to summits_path, alert: "インポート処理を完了しました#{message}"
       end
@@ -79,6 +79,11 @@ class SummitsController < ApplicationController
   def destroy 
     @summit = Summit.find(params[:id])
     @summit.destroy 
+    redirect_to summits_path
+  end 
+
+  def not_share_delete
+    Summit.includes(:summit_client).where(summit_client: {id: nil}).destroy_all
     redirect_to summits_path
   end 
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_29_035437) do
+ActiveRecord::Schema.define(version: 2023_01_31_103518) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -623,6 +623,24 @@ ActiveRecord::Schema.define(version: 2023_01_29_035437) do
     t.integer "breaking_tv_excavation"
     t.integer "breaking_tv_excavation_ng"
     t.index ["user_id"], name: "index_n_results_on_user_id"
+  end
+
+  create_table "other_product_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "product_name", null: false
+    t.bigint "user_id"
+    t.string "base"
+    t.date "date", null: false
+    t.integer "shift_digestion"
+    t.integer "get_len"
+    t.integer "fin_len"
+    t.integer "valuation_current"
+    t.integer "valuation_fin"
+    t.integer "profit_current"
+    t.integer "profit_fin"
+    t.integer "result_len"
+    t.integer "result_fin_len"
+    t.date "create_date", null: false
+    t.index ["user_id"], name: "index_other_product_date_progresses_on_user_id"
   end
 
   create_table "other_products", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1573,6 +1591,7 @@ ActiveRecord::Schema.define(version: 2023_01_29_035437) do
   add_foreign_key "dmersticker_date_progresses", "users"
   add_foreign_key "itsses", "users"
   add_foreign_key "n_results", "users"
+  add_foreign_key "other_product_date_progresses", "users"
   add_foreign_key "other_products", "users"
   add_foreign_key "pandas", "store_props"
   add_foreign_key "pandas", "users"

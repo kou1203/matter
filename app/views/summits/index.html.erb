@@ -37,6 +37,8 @@
       </tr>
     </table>
   <% end %>
+  <%= link_to "未連携案件をまとめて削除", not_share_delete_summits_path, method: :delete, class: "link" %>
+  <%= link_to "クライアント基本情報を全て削除", all_delete_summit_clients_path, method: :delete, class: "link" %>
 <% end %>
     <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
       <%= javascript_pack_tag 'search' %>
@@ -294,7 +296,7 @@
   <% else %>
       <h1>獲得日：<%= @summits.minimum(:date) %>（<%= days[@summits.minimum(:date).wday] %>）〜<%= @summits.maximum(:date) %>（<%= days[@summits.maximum(:date).wday] %>）</h1>
       <%# 重複確認 %>
-      <% summit_duplicate = @summits.where.not(record_num: nil).group(:record_num).having('count(*) >= 2') %>
+      <% summit_duplicate = @summits.where.not(record_num: nil).where.not(record_num: "-").group(:record_num).having('count(*) >= 2') %>
         <% if summit_duplicate.present? %>
         <p class="nav-text">管理番号重複</p>
         <% end %>
@@ -334,6 +336,7 @@
         <td><%= @summits.includes(:summit_price,:summit_client).where(status: "SW完了").sum(:last_billing).to_s(:delimited) rescue 0 %></td>
       </tr>
     </table>
+    
     <table class="out-tb">
       <thead>
       <tr>
