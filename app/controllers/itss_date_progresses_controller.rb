@@ -1,23 +1,23 @@
-class ItsssDateProgressesController < ApplicationController
+class ItssDateProgressesController < ApplicationController
 
   def index 
     @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "ITSS").price
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @create_date = params[:create_d]
-    @date_group = ItssDateProgress.pluck(:date).uniq
-    @create_group = ItssDateProgress.pluck(:create_date).uniq
+    @date_group = OtherProductDateProgress.where(product_name: "ITSS").pluck(:date).uniq
+    @create_group = OtherProductDateProgress.where(product_name: "ITSS").pluck(:create_date).uniq
     @users = User.all
     if params[:date].present?
       @month = params[:date].to_date
     elsif params[:search_date].present?
       @month = params[:search_date].to_date  
-    elsif ItssDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
-      @month = ItssDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
+    elsif OtherProductDateProgress.where(product_name: "ITSS").where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
+      @month = OtherProductDateProgress.where(product_name: "ITSS").where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
     else
       @month = params[:month].to_date
     end 
 
-    @current_progress = ItssDateProgress.includes(:user).where(date: @month)
+    @current_progress = OtherProductDateProgress.where(product_name: "ITSS").includes(:user).where(date: @month)
     if params[:create_d].present?
       @current_progress = 
         @current_progress.where(create_date: params[:create_d].to_date)
@@ -41,51 +41,51 @@ class ItsssDateProgressesController < ApplicationController
     if  @current_progress.present?
       @data_fin = [
         {
-          name: "中部SS終着", data: ItssDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_fin)
+          name: "中部SS終着", data: OtherProductDateProgress.where(product_name: "ITSS").where(base: "中部SS").group(:date,:create_date).sum(:profit_fin)
         },
         {
-          name: "関西SS終着", data: ItssDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_fin)
+          name: "関西SS終着", data: OtherProductDateProgress.where(product_name: "ITSS").where(base: "関西SS").group(:date,:create_date).sum(:profit_fin)
         },
         {
-          name: "関東SS終着", data: ItssDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_fin)
+          name: "関東SS終着", data: OtherProductDateProgress.where(product_name: "ITSS").where(base: "関東SS").group(:date,:create_date).sum(:profit_fin)
         },
         {
-          name: "九州SS終着", data: ItssDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_fin)
+          name: "九州SS終着", data: OtherProductDateProgress.where(product_name: "ITSS").where(base: "九州SS").group(:date,:create_date).sum(:profit_fin)
         },
       ]
       @data_current = [
         {
-          name: "中部SS現状売上", data: ItssDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_current)
+          name: "中部SS現状売上", data: OtherProductDateProgress.where(product_name: "ITSS").where(base: "中部SS").group(:date,:create_date).sum(:profit_current)
         },
         {
-          name: "関西SS現状売上", data: ItssDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_current)
+          name: "関西SS現状売上", data: OtherProductDateProgress.where(product_name: "ITSS").where(base: "関西SS").group(:date,:create_date).sum(:profit_current)
         },
         {
-          name: "関東SS現状売上", data: ItssDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_current)
+          name: "関東SS現状売上", data: OtherProductDateProgress.where(product_name: "ITSS").where(base: "関東SS").group(:date,:create_date).sum(:profit_current)
         },
         {
-          name: "九州SS現状売上", data: ItssDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_current)
+          name: "九州SS現状売上", data: OtherProductDateProgress.where(product_name: "ITSS").where(base: "九州SS").group(:date,:create_date).sum(:profit_current)
         },
       ]
     else
-      @data = ItssDateProgress.none
+      @data = OtherProductDateProgress.none
     end
 
     # 比較対象
     if params[:comparison_date].present?
       @comparison_date = params[:comparison_date].to_date
       @comparison = 
-      ItssDateProgress.where(date: @comparison_date)
+      OtherProductDateProgress.where(product_name: "ITSS").where(date: @comparison_date)
       @comparison =
         @comparison.where(create_date: @comparison.maximum(:create_date))
     else  
       if @current_progress.present?
         @comparison = 
-        ItssDateProgress.where(date: @current_progress.first.date.prev_month)
+        OtherProductDateProgress.where(product_name: "ITSS").where(date: @current_progress.first.date.prev_month)
         @comparison = 
           @comparison.where(create_date: @comparison.maximum(:create_date))
       else  
-        @comparison = ItssDateProgress.none
+        @comparison = OtherProductDateProgress.none
       end 
     end 
     # 拠点別現状売上
@@ -115,71 +115,72 @@ class ItsssDateProgressesController < ApplicationController
     @calc_periods = CalcPeriod.where(sales_category: "実売")
     calc_period_and_per
     cnt = 0
-    @airpaystickers_group = Itss.group(:user_id)
-    @airpaystickers_group.group(:user_id).each do |r|
+    @itsses_group = Itss.group(:user_id)
+    @itsses_group.group(:user_id).each do |i_user|
       @calc_periods = CalcPeriod.where(sales_category: "実売")
       calc_period_and_per
-      user_id = r.user_id
-      @airpaysticker_progress_data = ItssDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
+      user_id = i_user.user_id
+      @itss_progress_data = OtherProductDateProgress.where(product_name: "ITSS").find_by(user_id: user_id,date: @month,create_date: Date.today)
       # 獲得内訳
-      @airpaystickers_user = OtherProduct.where("product_name LIKE ?", "%AirPayステッカー%").where(user_id: user_id)
-      @airpaystickers_user_period = @airpaystickers_user.where(date: @airpaysticker1_start_date..@airpaysticker1_end_date)
-      shift_digestion = @airpaystickers_user_period.length
-      get_len = @airpaystickers_user_period.sum(:product_len)
+      @itss_user = Itss.where(user_id: user_id)
+      @itss_user_period = @itss_user.where(date: @start_date..@end_date)
+      get_len = @itss_user_period.length
+      @itss_user_result = @itss_user.where(construction_schedule: @itss1_start_date..@itss1_end_date)
+      result_len = @itss_user_result.length
     # 現状売上
       valuation_current = 0
       profit_current = 0
     # 実売
-      profit_current = @airpaystickers_user_period.sum(:profit)
+      profit_current = @itss_user_result.sum(:profit)
     # 終着
         profit_fin = profit_current
       
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
-      valuation_current = @airpaystickers_user_period.sum(:valuation)
+      valuation_current = @itss_user_result.sum(:valuation)
 
-      if r.user.position == "退職"
+      if i_user.user.position == "退職"
         user_base = r.user.position
-      elsif r.user.base_sub == "キャッシュレス"
-        user_base = r.user.base
+      elsif i_user.user.base_sub == "キャッシュレス"
+        user_base = i_user.user.base
       else  
-        user_base = r.user.base_sub
+        user_base = i_user.user.base_sub
       end 
     # ITSSの売上の中身
-      airpaysticker_progress_params = {
+      itss_progress_params = {
+        product_name: "ITSS"                                ,
         user_id: user_id                                    ,
         base: user_base                                     ,
         date: @month                                        ,
-        shift_digestion: shift_digestion                    ,
         get_len: get_len                                    ,
-        result_len: result_len                                    ,
+        result_len: result_len                              ,
         valuation_current: valuation_current                ,
         valuation_fin: valuation_current                    ,
-        profit_current: profit_current                          ,
+        profit_current: profit_current                      ,
         profit_fin: profit_current                          ,
         create_date: Date.today
       }
     # 日付とユーザー名が一致しているデータの場合更新、新しいデータの場合保存
-      if @airpaysticker_progress_data.present?
-        @airpaysticker_progress_data.update(
-          airpaysticker_progress_params
+      if @itss_progress_data.present?
+        @itss_progress_data.update(
+          itss_progress_params
         )
       else  
-        @airpaysticker_date_progress = ItssDateProgress.new(
-          airpaysticker_progress_params
+        @itss_date_progress = OtherProductDateProgress.new(
+          itss_progress_params
         )
-        @airpaysticker_date_progress.save
+        @itss_date_progress.save
       end
       cnt += 1    
     end 
-    redirect_to calc_periods_path(month: @month) ,alert: "#{cnt}件ITSSステッカー売上結果を作成しました"
+    redirect_to calc_periods_path(month: @month) ,alert: "#{cnt}件ITSS売上結果を作成しました"
 
 
   end  
 
   def date_destroy
-    @date_progress = ItssDateProgress.where(date: params[:month]).where(create_date: params[:create_d])
+    @date_progress = OtherProductDateProgress.where(product_name: "ITSS").where(date: params[:month]).where(create_date: params[:create_d])
     @date_progress.destroy_all
-    redirect_to airpaysticker_date_progresses_path(month: params[:month]), alert: "#{params[:create_d]}に作成した進捗を削除しました。"
+    redirect_to itss_date_progresses_path(month: params[:month]), alert: "#{params[:create_d]}に作成した進捗を削除しました。"
    end
 end

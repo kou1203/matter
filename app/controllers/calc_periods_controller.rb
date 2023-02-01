@@ -70,6 +70,12 @@ class CalcPeriodsController < ApplicationController
       @airpaysticker_date_progresses = AirpaystickerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
     end 
     @airpaysticker_date_progresses_last_update = @airpaysticker_date_progresses.maximum(:create_date)
+    if OtherProductDateProgress.where(product_name: "ITSS").where(date: @month).exists?
+      @itss_date_progresses = OtherProductDateProgress.where(product_name: "ITSS").includes(:user).where(date: @month)
+    else  
+      @itss_date_progresses = OtherProductDateProgress.where(product_name: "ITSS").includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
+    @itss_date_progresses_last_update = @itss_date_progresses.maximum(:create_date)
     if CashDateProgress.where(date: @month).exists?
       @cash_date_progresses = CashDateProgress.where(date: @month)
     else  

@@ -83,6 +83,12 @@
       <td><%= link_to "実売資料(AirPayステッカー)",airpaysticker_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
     </tr>
     <tr>
+      <td><%= link_to "ITSS", progress_create_itss_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+      <td><%= link_to "詳細", itss_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+      <td><%= @itss_date_progresses_last_update %></td>
+      <td><%= link_to "実売資料(AirPayステッカー)",airpaysticker_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
+    </tr>
+    <tr>
       <td><%= link_to "キャッシュ合計", progress_create_cash_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
       <td><%= link_to "詳細", cash_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
       <td><%= @cash_date_progresses_last_update %></td>

@@ -225,28 +225,40 @@ class CashDateProgressesController < ApplicationController
       airpaysticker_valuation_current = airpaysticker_date_progresses.sum(:valuation_current)
       airpaysticker_valuation_fin = airpaysticker_date_progresses.sum(:valuation_fin)
 
+      # その他商材
+      other_product_date_progresses = OtherProductDateProgress.where(user_id: shift.user_id).where(date: @month)
+      other_product_date_progresses = other_product_date_progresses.where(create_date: other_product_date_progresses.maximum(:create_date))
+      other_product_profit_current = other_product_date_progresses.sum(:profit_current)
+      other_product_profit_fin = other_product_date_progresses.sum(:profit_fin)
+      other_product_valuation_current = other_product_date_progresses.sum(:valuation_current)
+      other_product_valuation_fin = other_product_date_progresses.sum(:valuation_fin)
+
       profit_current = 
         dmer_profit_current + aupay_profit_current + paypay_profit_current +
         rakuten_pay_profit_current + airpay_profit_current + demaekan_profit_current +
-        austicker_profit_current + dmersticker_profit_current + airpaysticker_profit_current
+        austicker_profit_current + dmersticker_profit_current + airpaysticker_profit_current +
+        other_product_profit_current
       profit_fin = 
         dmer_profit_fin + aupay_profit_fin + paypay_profit_fin +
         rakuten_pay_profit_fin + airpay_profit_fin + demaekan_profit_fin +
-        austicker_profit_fin + dmersticker_profit_fin + airpaysticker_profit_fin
+        austicker_profit_fin + dmersticker_profit_fin + airpaysticker_profit_fin +
+        other_product_profit_fin
       valuation_current = 
         dmer_valuation_current + aupay_valuation_current + paypay_valuation_current +
         rakuten_pay_valuation_current + airpay_valuation_current + demaekan_valuation_current +
-        austicker_valuation_current + dmersticker_valuation_current + airpaysticker_valuation_current
+        austicker_valuation_current + dmersticker_valuation_current + airpaysticker_valuation_current +
+        other_product_valuation_current
       valuation_fin = 
         dmer_valuation_fin + aupay_valuation_fin + paypay_valuation_fin +
         rakuten_pay_valuation_fin + airpay_valuation_fin + demaekan_valuation_fin +
-        austicker_valuation_fin + dmersticker_valuation_fin + airpaysticker_valuation_fin
+        austicker_valuation_fin + dmersticker_valuation_fin + airpaysticker_valuation_fin +
+        other_product_valuation_fin
 
-      other_profit_current = airpaysticker_profit_current
-      other_profit_fin = airpaysticker_profit_fin
+      other_profit_current = airpaysticker_profit_current + other_product_profit_current
+      other_profit_fin = airpaysticker_profit_fin + other_product_profit_fin
 
-      other_valuation_current = airpaysticker_valuation_current
-      other_valuation_fin = airpaysticker_valuation_fin
+      other_valuation_current = airpaysticker_valuation_current + other_product_valuation_current
+      other_valuation_fin = airpaysticker_valuation_fin + other_product_valuation_fin
 
         if shift.user.position == "退職"
           user_base = shift.user.position
