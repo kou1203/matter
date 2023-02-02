@@ -161,7 +161,7 @@ class RakutenPayDateProgressesController < ApplicationController
 
       result_fin_len = (profit_prev.length.to_f * @rakuten_pay1_this_month_per).round()
       profit_fin = @rakuten_pay_price * result_fin_len
-      if (profit_all_current > profit_all_fin) || (Date.today > @closing_date)
+      if (profit_all_current > profit_all_fin) || (Date.today > @rakuten_pay1_closing_date)
         profit_fin = profit_current
         result_fin_len = rakuten_pay_result_len
       end 
@@ -192,7 +192,7 @@ class RakutenPayDateProgressesController < ApplicationController
         (rakuten_val_len.to_f / shift_digestion * shift_schedule * @rakuten_pay1_this_month_per).round() rescue 0
       valuation_fin = @rakuten_pay_price * rakuten_val_len_fin
 
-      if (valuation_current > valuation_fin) || (Date.today > @closing_date)
+      if (valuation_current > valuation_fin) || (Date.today > @rakuten_pay1_closing_date)
         valuation_fin = valuation_current
         rakuten_val_len_fin = rakuten_val_len
       end 
