@@ -40,8 +40,8 @@ class Itss < ApplicationRecord
           status_last_history: row["【最終履歴】対応内容"],
           last_history: row["【最終履歴】日時"],
           last_history_remarks: row["【最終履歴】対応詳細"],
-          profit: 1000,
-          valuation: 2000
+          profit: 14000,
+          valuation: 4000
         )
         if itss.has_changes_to_save? 
           itss.save!
