@@ -170,7 +170,8 @@ class RakutenPayDateProgressesController < ApplicationController
       calc_period_and_per
       @rakuten_pays_user_period = @rakuten_pays_user.where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
       @rakuten_val_shift_schedule = Shift.where(user_id: user_id).where(start_time: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(shift: "キャッシュレス新規").length
-      @rakuten_val_shift_digestion = @rakuten_pays_user_period.where(shift: "キャッシュレス新規").length
+
+      @rakuten_val_shift_digestion = Result.where(user_id: user_id).where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(shift: "キャッシュレス新規").length
       @rakuten_pay_def = 
         @rakuten_pays_user_period.where(status: "自社不備")
         .or(@rakuten_pays_user_period.where(status: "自社NG"))
@@ -212,9 +213,9 @@ class RakutenPayDateProgressesController < ApplicationController
         user_id: user_id                                       ,
         base: user_base                                        ,
         date: @month                                           ,
-        shift_schedule: shift_schedule                         ,
-        shift_digestion: shift_digestion                       ,
-        get_len: rakuten_val_len              ,
+        shift_schedule: @rakuten_val_shift_schedule            ,
+        shift_digestion: @rakuten_val_shift_digestion          ,
+        get_len: rakuten_val_len                               ,
         share_len: @rakuten_pays_user_share.length             ,
         fin_len: rakuten_val_len_fin                         ,
         valuation_current: valuation_current                   ,
