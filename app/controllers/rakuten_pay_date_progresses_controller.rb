@@ -169,6 +169,8 @@ class RakutenPayDateProgressesController < ApplicationController
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
       @rakuten_pays_user_period = @rakuten_pays_user.where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
+      @rakuten_val_shift_schedule = Shift.where(user_id: user_id).where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規").length
+      @rakuten_val_shift_digestion = @rakuten_pays_user_period.length
       @rakuten_pay_def = 
         @rakuten_pays_user_period.where(status: "自社不備")
         .or(@rakuten_pays_user_period.where(status: "自社NG"))
@@ -189,7 +191,7 @@ class RakutenPayDateProgressesController < ApplicationController
         @rakuten_pay_def.length +
         @rakuten_pay_inc.length
       rakuten_val_len_fin = 
-        (rakuten_val_len.to_f / shift_digestion * shift_schedule * @rakuten_pay1_this_month_per).round() rescue 0
+        (rakuten_val_len.to_f / @rakuten_val_shift_digestion * @rakuten_val_shift_schedule * @rakuten_pay1_this_month_per).round() rescue 0
       valuation_fin = @rakuten_pay_price * rakuten_val_len_fin
 
       if (valuation_current > valuation_fin) || (Date.today > @rakuten_pay1_closing_date)
