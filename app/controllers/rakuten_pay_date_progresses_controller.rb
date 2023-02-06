@@ -169,8 +169,8 @@ class RakutenPayDateProgressesController < ApplicationController
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
       @rakuten_pays_user_period = @rakuten_pays_user.where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
-      @rakuten_val_shift_schedule = Shift.where(user_id: user_id).where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規").length
-      @rakuten_val_shift_digestion = @rakuten_pays_user_period.length
+      @rakuten_val_shift_schedule = Shift.where(user_id: user_id).where(start_time: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(shift: "キャッシュレス新規").length
+      @rakuten_val_shift_digestion = @rakuten_pays_user_period.where(shift: "キャッシュレス新規").length
       @rakuten_pay_def = 
         @rakuten_pays_user_period.where(status: "自社不備")
         .or(@rakuten_pays_user_period.where(status: "自社NG"))
