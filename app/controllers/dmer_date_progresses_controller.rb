@@ -303,14 +303,14 @@ class DmerDateProgressesController < ApplicationController
         profit_fin1_period = 0
       else  
         profit_fin1_period_len = ((@dmers_len - dmer_result1_period.length).to_f / shift_digestion * shift_schedule * @dmer1_this_month_per).round()
-        profit_fin1_period = (@dmer1_price * profit_fin1_period_len) - already_done1.sum(:profit_new) + dmer_result1_period.sum(:profit_new)
+        profit_fin1_period = (@dmer1_price * profit_fin1_period_len) - already_done1.sum(:profit_new) + (@dmer1_price * (dmer_result1_period.length.to_f * @dmer1_this_month_per).to_i)
       end 
       # 実売終着1（過去）
       profit_fin1_prev = 
         (@dmer1_price * ( result_tgt_prev1.length.to_f * @dmer1_prev_month_per).round()) +
         dmer_result1_prev.sum(:profit_new)
       profit_fin1 = profit_fin1_period + profit_fin1_prev
-        if (Date.today > @closing_date) || (profit_current1_price > profit_fin1)
+        if (Date.today > @dmer1_closing_date) || (profit_current1_price > profit_fin1)
           profit_fin1 = profit_current1_price
         end 
       # 実売終着2（期内）
@@ -319,14 +319,14 @@ class DmerDateProgressesController < ApplicationController
         profit_fin2_period = 0
       else  
         profit_fin2_period_len = ((@dmers_len - dmer_slmt_done_period.length).to_f / shift_digestion * shift_schedule * @dmer2_this_month_per).round()
-        profit_fin2_period = (@dmer2_price * profit_fin2_period_len) - already_done2.sum(:profit_settlement) + dmer_slmt_done_period.sum(:profit_settlement)
+        profit_fin2_period = (@dmer2_price * profit_fin2_period_len) - already_done2.sum(:profit_settlement) + (@dmer2_price * (dmer_slmt_done_period.length.to_f * @dmer2_this_month_per).to_i)
       end  
       # 実売終着2（過去）
       profit_fin2_prev = 
         (@dmer2_price * (result_tgt_prev2.length.to_f * @dmer2_prev_month_per).round()) +
         dmer_slmt_done_prev.sum(:profit_settlement)
         profit_fin2 = profit_fin2_period + profit_fin2_prev
-        if (Date.today > @closing_date) || (profit_current2_price > profit_fin2)
+        if (Date.today > @dmer2_closing_date) || (profit_current2_price > profit_fin2)
           profit_fin2 = profit_current2_price
         end 
       # 実売終着3（期内）
@@ -335,7 +335,7 @@ class DmerDateProgressesController < ApplicationController
         profit_fin3_period = 0
       else  
         profit_fin3_period_len = ((@dmers_len - dmer_slmt2nd_done_period.length).to_f / shift_digestion * shift_schedule * @dmer3_this_month_per).round()
-        profit_fin3_period = (@dmer3_price * profit_fin3_period_len) - already_done3.sum(:profit_second_settlement) + dmer_slmt2nd_done_period.sum(:profit_second_settlement)
+        profit_fin3_period = (@dmer3_price * profit_fin3_period_len) - already_done3.sum(:profit_second_settlement) + (@dmer3_price * (dmer_slmt2nd_done_period.length.to_f * @dmer3_this_month_per).to_i)
       end 
       # 実売終着3（過去）
       # 26~次の月の月末までに成果になっている案件
@@ -355,7 +355,7 @@ class DmerDateProgressesController < ApplicationController
       profit_fin3_prev = 
         (@dmer3_price * profit_fin3_len) + dmer_slmt2nd_done_prev.sum(:profit_second_settlement)
         profit_fin3 = profit_fin3_period + profit_fin3_prev
-        if (Date.today > @closing_date) || (profit_current3_price > profit_fin3)
+        if (Date.today > @dmer3_closing_date) || (profit_current3_price > profit_fin3)
           profit_fin3 = profit_current3_price
         end 
 
@@ -387,7 +387,7 @@ class DmerDateProgressesController < ApplicationController
         (@dmer1_price * (dmer_wait_prev.length.to_f * (@dmer1_prev_month_per - @dmer1_prev_dec_per)).round()) +
         dmer_result1_prev.sum(:valuation_new)
         valuation_fin1 = valuation_fin1_period + valuation_fin1_prev
-        if (Date.today > @closing_date) || (valuation_current1_price > valuation_fin1)
+        if (Date.today > @dmer1_closing_date) || (valuation_current1_price > valuation_fin1)
           valuation_fin1 = valuation_current1_price
         end 
       # 実売終着2（期内）
@@ -403,7 +403,7 @@ class DmerDateProgressesController < ApplicationController
         (@dmer2_price * (result_tgt_prev2.length.to_f * (@dmer2_prev_month_per - @dmer2_prev_dec_per)).round()) +
         dmer_slmt_done_prev.sum(:valuation_settlement)
         valuation_fin2 = valuation_fin2_period + valuation_fin2_prev
-        if (Date.today > @closing_date) || (valuation_current2_price > valuation_fin2)
+        if (Date.today > @dmer2_closing_date) || (valuation_current2_price > valuation_fin2)
           valuation_fin2 = valuation_current2_price
         end 
       # 実売終着3（期内）
@@ -427,7 +427,7 @@ class DmerDateProgressesController < ApplicationController
       valuation_fin3_prev = 
         (@dmer3_price * valuation_fin3_len) + dmer_slmt2nd_done_prev.sum(:valuation_second_settlement)
         valuation_fin3 = valuation_fin3_period + valuation_fin3_prev
-        if (Date.today > @closing_date) || (valuation_current3_price > valuation_fin3)
+        if (Date.today > @dmer3_closing_date) || (valuation_current3_price > valuation_fin3)
           valuation_fin3 = valuation_current3_price
         end 
   # 合計

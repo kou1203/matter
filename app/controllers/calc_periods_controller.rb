@@ -60,9 +60,16 @@ class CalcPeriodsController < ApplicationController
       @austicker_date_progresses = AustickerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
     end 
     @austicker_date_progresses_last_update = @austicker_date_progresses.maximum(:create_date)
+    @austicker_date_progresses = @austicker_date_progresses.where(create_date: @austicker_date_progresses_last_update)
     
+    if DmerstickerDateProgress.where(date: @month).exists?
+      @austicker_date_progresses = DmerstickerDateProgress.includes(:user).where(date: @month)
+    else  
+      @austicker_date_progresses = DmerstickerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
     @dmersticker_date_progresses = DmerstickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @dmersticker_date_progresses_last_update = @dmersticker_date_progresses.maximum(:create_date)
+    @dmersticker_date_progresses = @dmersticker_date_progresses.where(create_date: @dmersticker_date_progresses_last_update)
 
     if AirpaystickerDateProgress.where(date: @month).exists?
       @airpaysticker_date_progresses = AirpaystickerDateProgress.includes(:user).where(date: @month)
@@ -70,12 +77,16 @@ class CalcPeriodsController < ApplicationController
       @airpaysticker_date_progresses = AirpaystickerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
     end 
     @airpaysticker_date_progresses_last_update = @airpaysticker_date_progresses.maximum(:create_date)
+    @airpaysticker_date_progresses = @airpaysticker_date_progresses.where(create_date: @airpaysticker_date_progresses_last_update)
+
     if OtherProductDateProgress.where(product_name: "ITSS").where(date: @month).exists?
       @itss_date_progresses = OtherProductDateProgress.where(product_name: "ITSS").includes(:user).where(date: @month)
     else  
       @itss_date_progresses = OtherProductDateProgress.where(product_name: "ITSS").includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
     end 
     @itss_date_progresses_last_update = @itss_date_progresses.maximum(:create_date)
+    @itss_date_progresses = @itss_date_progresses.where(create_date: @itss_date_progresses_last_update)
+
     if CashDateProgress.where(date: @month).exists?
       @cash_date_progresses = CashDateProgress.where(date: @month)
     else  
@@ -86,7 +97,7 @@ class CalcPeriodsController < ApplicationController
 
     @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "2次店","退職"]
 
-    @products = ["合計","dメル", "auPay", "PayPay", "楽天ペイ","AirPay", "出前館"]
+    @products = ["合計","dメル", "auPay", "PayPay", "楽天ペイ","AirPay", "出前館","auステッカー", "AirPayステッカー","ITSS"]
     
     respond_to do |format|
       format.html

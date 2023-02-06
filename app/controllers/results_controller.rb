@@ -828,10 +828,10 @@ class ResultsController < ApplicationController
       @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
       @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
       @maximum_date_cash = @month.beginning_of_month.since(24.days)
-      @dmers = Dmer.where(date: @minimum_date_cash..@maximum_date_cash)
-      @aupays = Aupay.where(date: @minimum_date_cash..@maximum_date_cash)
-      @rakuten_pays = RakutenPay.where(date: @minimum_date_cash..@maximum_date_cash)
-      @airpays = Airpay.where(date: @minimum_date_cash..@maximum_date_cash)
+      @dmers = Dmer.includes(:user).where.not(user: {base: "2次店"}).where(date: @minimum_date_cash..@maximum_date_cash)
+      @aupays = Aupay.includes(:user).where.not(user: {base: "2次店"}).where(date: @minimum_date_cash..@maximum_date_cash)
+      @rakuten_pays = RakutenPay.includes(:user).where.not(user: {base: "2次店"}).where(date: @minimum_date_cash..@maximum_date_cash)
+      @airpays = Airpay.includes(:user).where.not(user: {base: "2次店"}).where(date: @minimum_date_cash..@maximum_date_cash)
       @dmers_rank = {}
       @dmers.group(:user_id).each do |dmer| 
         @dmers_rank.store(dmer.user.name,@dmers.where(user_id: dmer.user_id).length)

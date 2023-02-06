@@ -181,7 +181,7 @@
                   @comparison.sum(:demaekan_profit_fin) +
                   @comparison.sum(:austicker_profit_fin) +
                   @comparison.sum(:dmersticker_profit_fin) +
-                  @comparison.sum(:other_profit_current)
+                  @comparison.sum(:other_profit_fin)
                 ).to_s(:delimited) 
               %></td>
               <td class="progress-td"><%= (@comparison.sum(:profit_fin).to_f / @comparison.sum(:shift_schedule)).round().to_s(:delimited) %></td>
@@ -226,13 +226,13 @@
               <td class="difference-td <%= "red" if 0 > @current_progress.sum(:airpay_profit_fin) - @comparison.sum(:airpay_profit_fin) %>">
                 <%= (@current_progress.sum(:airpay_profit_fin) - @comparison.sum(:airpay_profit_fin)).to_s(:delimited) %>
               </td>
-              <% all_other_current_sum = @current_progress.sum(:demaekan_profit_current) + @current_progress.sum(:austicker_profit_current) + @current_progress.sum(:dmersticker_profit_current) %>
-              <% all_other_comparison_sum = @comparison.sum(:demaekan_profit_current) + @comparison.sum(:austicker_profit_current) + @comparison.sum(:dmersticker_profit_current) %>
+              <% all_other_current_sum = @current_progress.sum(:demaekan_profit_current) + @current_progress.sum(:austicker_profit_current) + @current_progress.sum(:dmersticker_profit_current) + @current_progress.sum(:other_profit_current) %>
+              <% all_other_comparison_sum = @comparison.sum(:demaekan_profit_current) + @comparison.sum(:austicker_profit_current) + @comparison.sum(:dmersticker_profit_current) + @comparison.sum(:other_profit_current) %>
               <td class="difference-td <%= "red" if 0 > all_other_current_sum - all_other_comparison_sum %>">
                 <%= (all_other_current_sum - all_other_comparison_sum).to_s(:delimited) %>
               </td>
-              <% all_other_current_fin = @current_progress.sum(:demaekan_profit_fin) + @current_progress.sum(:austicker_profit_fin) + @current_progress.sum(:dmersticker_profit_fin) %>
-              <% all_other_comparison_fin = @comparison.sum(:demaekan_profit_fin) + @comparison.sum(:austicker_profit_fin) + @comparison.sum(:dmersticker_profit_fin) %>
+              <% all_other_current_fin = @current_progress.sum(:demaekan_profit_fin) + @current_progress.sum(:austicker_profit_fin) + @current_progress.sum(:dmersticker_profit_fin) + @current_progress.sum(:other_profit_fin) %>
+              <% all_other_comparison_fin = @comparison.sum(:demaekan_profit_fin) + @comparison.sum(:austicker_profit_fin) + @comparison.sum(:dmersticker_profit_fin) + @comparison.sum(:other_profit_fin) %>
               <td class="difference-td <%= "red" if 0 > all_other_current_fin - all_other_comparison_fin %>">
                 <%= (all_other_current_fin - all_other_comparison_fin).to_s(:delimited) %>
               </td>
@@ -294,14 +294,16 @@
                 (
                   current.sum(:demaekan_profit_current) + 
                   current.sum(:austicker_profit_current) + 
-                  current.sum(:dmersticker_profit_current)
+                  current.sum(:dmersticker_profit_current) +
+                  current.sum(:other_profit_current)
                 ).to_s(:delimited) 
               %></td>
               <td class="progress-td"><%= 
                 (
                   current.sum(:demaekan_profit_fin) + 
                   current.sum(:austicker_profit_fin) + 
-                  current.sum(:dmersticker_profit_fin)
+                  current.sum(:dmersticker_profit_fin) +
+                  current.sum(:other_profit_fin)
                 ).to_s(:delimited) 
               %></td>
               <td class="progress-td"><%= current.sum(:profit_current).to_s(:delimited) %></td>
@@ -328,14 +330,16 @@
                 (
                   comparison.sum(:demaekan_profit_current) +
                   comparison.sum(:austicker_profit_current) +
-                  comparison.sum(:dmersticker_profit_current)
+                  comparison.sum(:dmersticker_profit_current) +
+                  comparison.sum(:other_profit_current)
                 ).to_s(:delimited) 
               %></td>
               <td class="progress-td"><%= 
                 (
                   comparison.sum(:demaekan_profit_fin) +
                   comparison.sum(:austicker_profit_fin) +
-                  comparison.sum(:dmersticker_profit_fin)
+                  comparison.sum(:dmersticker_profit_fin) +
+                  comparison.sum(:other_profit_fin)
                 ).to_s(:delimited) 
               %></td>
               <td class="progress-td"><%= comparison.sum(:profit_current).to_s(:delimited) %></td>
@@ -379,13 +383,13 @@
               <td class="difference-td <%= "red" if 0 > current.sum(:airpay_profit_fin) - comparison.sum(:airpay_profit_fin) %>">
                 <%= (current.sum(:airpay_profit_fin) - comparison.sum(:airpay_profit_fin)).to_s(:delimited) %>
               </td>
-              <% base_other_current_sum = current.sum(:demaekan_profit_current) + current.sum(:austicker_profit_current) + current.sum(:dmersticker_profit_current) %>
-              <% base_other_comparison_sum = comparison.sum(:demaekan_profit_current) + comparison.sum(:austicker_profit_current) + comparison.sum(:dmersticker_profit_current) %>
+              <% base_other_current_sum = current.sum(:demaekan_profit_current) + current.sum(:austicker_profit_current) + current.sum(:dmersticker_profit_current) + current.sum(:other_profit_current) %>
+              <% base_other_comparison_sum = comparison.sum(:demaekan_profit_current) + comparison.sum(:austicker_profit_current) + comparison.sum(:dmersticker_profit_current) + comparison.sum(:other_profit_current) %>
               <td class="difference-td <%= "red" if 0 > base_other_current_sum - base_other_comparison_sum %>">
                 <%= (base_other_current_sum - base_other_comparison_sum).to_s(:delimited) %>
               </td>
-              <% base_other_current_fin = current.sum(:demaekan_profit_fin) + current.sum(:austicker_profit_fin) + current.sum(:dmersticker_profit_fin) %>
-              <% base_other_comparison_fin = comparison.sum(:demaekan_profit_fin) + comparison.sum(:austicker_profit_fin) + comparison.sum(:dmersticker_profit_fin) %>
+              <% base_other_current_fin = current.sum(:demaekan_profit_fin) + current.sum(:austicker_profit_fin) + current.sum(:dmersticker_profit_fin) + current.sum(:other_profit_fin) %>
+              <% base_other_comparison_fin = comparison.sum(:demaekan_profit_fin) + comparison.sum(:austicker_profit_fin) + comparison.sum(:dmersticker_profit_fin) + comparison.sum(:other_profit_fin) %>
               <td class="difference-td <%= "red" if 0 > base_other_current_fin - base_other_comparison_fin %>">
                 <%= (base_other_current_fin - base_other_comparison_fin).to_s(:delimited) %>
               </td>
