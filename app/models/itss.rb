@@ -1,6 +1,8 @@
 class Itss < ApplicationRecord
   require 'charlock_holmes'
+
   belongs_to :user
+
   with_options presence: true do 
     validates :customer_num
     validates :user_id

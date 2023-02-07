@@ -122,14 +122,14 @@
         <% bases = ["中部SS","関西SS","関東SS","九州SS"] %>
         <tr>
           <td class="search-td">全体</td>
-          <td class="search-td"><%= @itsses.length %></td>
-          <td class="search-td"><%= @itsses.where(status_ntt1: "工事完了").length %></td>
+          <td class="search-td"><%= @itsses.length rescue 0 %></td>
+          <td class="search-td"><%= @itsses.where(status_ntt1: "工事完了").length rescue 0 %></td>
         </tr>
         <% bases.each do |base| %>
         <tr>
           <td class="search-td"><%= base %></td>
-          <td class="search-td"><%= @itsses.where(user: {base: base}).length %></td>
-          <td class="search-td"><%= @itsses.where(user: {base: base}).where(status_ntt1: "工事完了").length %></td>
+          <td class="search-td"><%= @itsses.where(user: {base: base}).length rescue 0 %></td>
+          <td class="search-td"><%= @itsses.where(user: {base: base}).where(status_ntt1: "工事完了").length rescue 0 %></td>
         </tr>
         <% end %>
       </table>
