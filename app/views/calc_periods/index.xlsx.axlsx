@@ -30,7 +30,7 @@ wb = xlsx_package.workbook
     elsif product == "dメル"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
       @bases.each do |base|
-          @dmer_date_progresses.where(base: base).each do |date_progress|
+          @dmer_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           val_len = date_progress.get_len - date_progress.def_len
           shift_schedule = date_progress.shift_schedule.to_i + date_progress.shift_schedule_slmt.to_i
           shift_digestion = date_progress.shift_digestion.to_i + date_progress.shift_digestion_slmt.to_i
@@ -55,7 +55,7 @@ wb = xlsx_package.workbook
     elsif product == "auPay"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
       @bases.each do |base|
-        @aupay_date_progresses.where(base: base).each do |date_progress|
+        @aupay_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           val_len = date_progress.get_len - date_progress.def_len
           if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
             ave_len = 0
@@ -78,7 +78,7 @@ wb = xlsx_package.workbook
     elsif product == "PayPay"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
       @bases.each do |base|
-        @paypay_date_progresses.where(base: base).each do |date_progress|
+        @paypay_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
             ave_len = 0
             ave_profit = 0
@@ -99,7 +99,7 @@ wb = xlsx_package.workbook
     elsif product == "楽天ペイ"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
       @bases.each do |base|
-        @rakuten_pay_date_progresses.where(base: base).each do |date_progress|
+        @rakuten_pay_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
             ave_len = 0
             ave_profit = 0
@@ -119,7 +119,7 @@ wb = xlsx_package.workbook
     elsif product == "AirPay"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
       @bases.each do |base|
-        @airpay_date_progresses.where(base: base).each do |date_progress|
+        @airpay_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
             ave_len = 0
             ave_profit = 0
@@ -139,7 +139,7 @@ wb = xlsx_package.workbook
     elsif product == "出前館"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
       @bases.each do |base|
-        @demaekan_date_progresses.where(base: base).each do |date_progress|
+        @demaekan_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
             ave_len = 0
             ave_profit = 0
@@ -158,7 +158,7 @@ wb = xlsx_package.workbook
     elsif product == "auステッカー"
       sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
       @bases.each do |base|
-        @austicker_date_progresses.where(base: base).each do |date_progress|
+        @austicker_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           sheet.add_row [
             date_progress.base, date_progress.user.name, date_progress.user.position_sub, 
             date_progress.get_len,date_progress.profit_current
@@ -168,7 +168,7 @@ wb = xlsx_package.workbook
     elsif product == "AirPayステッカー"
       sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
       @bases.each do |base|
-        @airpaysticker_date_progresses.where(base: base).each do |date_progress|
+        @airpaysticker_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           sheet.add_row [
             date_progress.base, date_progress.user.name, date_progress.user.position_sub, 
             date_progress.get_len,date_progress.profit_current
@@ -178,7 +178,7 @@ wb = xlsx_package.workbook
     elsif product == "ITSS"
       sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
       @bases.each do |base|
-        @itss_date_progresses.where(base: base).each do |date_progress|
+        @itss_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           sheet.add_row [
             date_progress.base, date_progress.user.name, date_progress.user.position_sub, 
             date_progress.get_len,date_progress.profit_current
