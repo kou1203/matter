@@ -278,6 +278,7 @@ Rails.application.routes.draw do
 
   resources :itss_date_progresses do 
     collection {get :progress_create}
+    collection {get :date_destroy}
   end 
 
 end
