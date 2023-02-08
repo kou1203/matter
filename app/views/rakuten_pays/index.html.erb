@@ -31,6 +31,8 @@
             <hr>
           <div class="s-flex"><%# 検索フォーム %>
             <div class="user-form"><%# ユーザー情報 %>
+              <p class="s-label">店舗区分</p>
+              <p class="s-text-field"><%= f.select :store_prop_race_eq,{"個人": "個人", "法人": "法人"}, {include_blank: true},{class: "s-slct-input"} %></p>
               <p class="s-label">獲得者</p>
               <p class="s-text-field"><%= f.text_field :user_name_cont, class: "s-text-input" %></p>
               <p class="s-label">拠点</p>
