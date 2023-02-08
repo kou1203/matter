@@ -115,7 +115,7 @@ class ItssDateProgressesController < ApplicationController
     @calc_periods = CalcPeriod.where(sales_category: "実売")
     calc_period_and_per
     cnt = 0
-    @itsses_group = Itss.group(:user_id)
+    @itsses_group = Shift.group(:user_id)
     @itsses_group.group(:user_id).each do |i_user|
       @calc_periods = CalcPeriod.where(sales_category: "実売")
       calc_period_and_per

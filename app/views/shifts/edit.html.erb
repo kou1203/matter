@@ -12,7 +12,7 @@
       </div>
     <%= form_with(model: @shift, date: {remote: false}) do |f| %>
     <%= render "shared/error_messages", model: f.object %>
-    <h1>基本情報</h1>
+    <h1>シフト編集（<%= @shift.user.name %> ）</h1>
     <div class="form">
         <p><%= f.label :request, "日付", class: "form-text" %></p>
         <p><%= f.date_field :start_time , class: "date-input" %></p>

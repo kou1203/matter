@@ -63,11 +63,10 @@ class CalcPeriodsController < ApplicationController
     @austicker_date_progresses = @austicker_date_progresses.where(create_date: @austicker_date_progresses_last_update)
     
     if DmerstickerDateProgress.where(date: @month).exists?
-      @austicker_date_progresses = DmerstickerDateProgress.includes(:user).where(date: @month)
+      @dmersticker_date_progresses = DmerstickerDateProgress.includes(:user).where(date: @month)
     else  
-      @austicker_date_progresses = DmerstickerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @dmersticker_date_progresses = DmerstickerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
     end 
-    @dmersticker_date_progresses = DmerstickerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
     @dmersticker_date_progresses_last_update = @dmersticker_date_progresses.maximum(:create_date)
     @dmersticker_date_progresses = @dmersticker_date_progresses.where(create_date: @dmersticker_date_progresses_last_update)
 
@@ -103,7 +102,7 @@ class CalcPeriodsController < ApplicationController
       format.html
       format.xlsx do
         # ファイル名をここで指定する（動的にファイル名を変更できる）
-        response.headers['Content-Disposition'] = "attachment; filename=#{@cash_date_progresses.first.date}月実売資料.xlsx"
+        response.headers['Content-Disposition'] = "attachment; filename=#{@cash_date_progresses.first.date}実売資料.xlsx"
       end
     end
 

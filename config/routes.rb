@@ -119,6 +119,7 @@ Rails.application.routes.draw do
       get :ranking
       get :gross_profit
       get :profit
+      get :daily_report
     }
   end  
 

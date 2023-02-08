@@ -41,6 +41,10 @@
           当日獲得数・評価売上
           <%= link_to "ランキング", ranking_results_path,class: "rank_link" %>
           <%= link_to "利益計算用終着", gross_profit_results_path,class: "rank_link" %>
+          <%= link_to "中部SS日報", daily_report_results_path(month: @month_daily,base_category: "中部SS"),class: "rank_link" %>
+          <%= link_to "関西SS日報", daily_report_results_path(month: @month_daily,base_category: "関西SS"),class: "rank_link" %>
+          <%= link_to "関東SS日報", daily_report_results_path(month: @month_daily,base_category: "関東SS"),class: "rank_link" %>
+          <%= link_to "九州SS日報", daily_report_results_path(month: @month_daily,base_category: "九州SS"),class: "rank_link" %>
         </p>
         <table>
           <thead>
@@ -90,17 +94,6 @@
       <%# /日々売上 %>
       <%# 現状獲得早見 %>
         <p class="nav-text"><%= @month_daily.month %>月獲得数</p>
-        <h3>
-          【即時在庫】（総獲得数/在庫）【マックス（d）】：中部 <%= @dmer_monthly.where(client: "マックス即時（d）").where(user: {base: "中部SS"}).length %> / <%= @dmer_stock.where(client: "マックス（d）").where(base: "中部SS").sum(:stock_len) %>
-          , 関西 <%= @dmer_monthly.where(client: "マックス即時（d）").where(user: {base: "関西SS"}).length %> / <%= @dmer_stock.where(client: "マックス（d）").where(base: "関西SS").sum(:stock_len) %>
-          , 関東 <%= @dmer_monthly.where(client: "マックス即時（d）").where(user: {base: "関東SS"}).length %> / 
-          <%= @dmer_stock.where(client: "マックス（d）").where(base: "関東SS").sum(:stock_len) %>
-          , 【ピアズ（d）】：中部 <%= @dmer_monthly.where(client: "ピアズ即時").where(user: {base: "中部SS"}).length %> / <%= @dmer_stock.where(client: "ピアズ（d）").where(base: "中部SS").sum(:stock_len) %>
-          , 関西 <%= @dmer_monthly.where(client: "ピアズ即時").where(user: {base: "関西SS"}).length %> / <%= @dmer_stock.where(client: "ピアズ（d）").where(base: "関西SS").sum(:stock_len) %>
-          , 関東 <%= @dmer_monthly.where(client: "ピアズ即時").where(user: {base: "関東SS"}).length %> / <%= @dmer_stock.where(client: "ピアズ（d）").where(base: "関東SS").sum(:stock_len) %>
-          <%= link_to "在庫追加", new_dmer_stock_path,class: "link" %>
-          <%= link_to "目標獲得数入力", new_product_target_path,class: "link" %>
-        </h3>
         
         <table>
           <thead>

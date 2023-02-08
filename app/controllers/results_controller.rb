@@ -423,21 +423,21 @@ class ResultsController < ApplicationController
 
     @airpay_val_len = @airpays.length - @airpay_def_ng.length
     @airpay_user = Airpay.where(user_id: @user.id)
-  @airpay_done = 
-    @airpay_user.where(status: "審査完了")
-    .where(result_point: @airpay1_start_date..@airpay1_end_date)
-    @airpay_bonus =
-      if @airpay_done.length >= 20
-        @airpay_done.length * 3000
-      elsif @airpay_done.length >= 10
-        @airpay_done.length * 2000
-      else  
-        0
-      end 
+    @airpay_done = 
+      @airpay_user.where(status: "審査完了")
+      .where(result_point: @airpay1_start_date..@airpay1_end_date)
+      @airpay_bonus =
+        if @airpay_done.length >= 20
+          @airpay_done.length * 3000
+        elsif @airpay_done.length >= 10
+          @airpay_done.length * 2000
+        else  
+          0
+        end 
 
-  @airpay_done_val = @airpay_done.sum(:valuation) + @airpay_bonus
+    @airpay_done_val = @airpay_done.sum(:valuation) + @airpay_bonus
 
-  # その他獲得商材
+    # その他獲得商材
     @demaekan = Demaekan.where(user_id: @user.id).where(first_cs_contract: @demaekan1_start_date..@demaekan1_end_date)
     @other_products = OtherProduct.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
     @aupay_pic = @other_products.where(product_name: "auPay写真")
@@ -797,6 +797,39 @@ class ResultsController < ApplicationController
     @airpays = Airpay.eager_load(:store_prop).select("airpays.id, airpays.user_id,airpays.store_prop_id,airpays.status")
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
+  end 
+
+  def daily_report
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @calc_periods = CalcPeriod.where(sales_category: "評価売")
+    calc_period_and_per
+    @base_category = params[:base_category]
+    @results = Result.includes(:result_cash,:user).where(user: {base: @base_category}).where(date: @start_date..@month)
+    @shift_digestion = 
+      @results.where(shift: "キャッシュレス新規")
+      .or(
+        @results.where(shift: "キャッシュレス決済")
+      )
+    @shifts = 
+      Shift.includes(:user).where(start_time: @start_date..@month).where(user: {base: @base_category}).where(shift: "キャッシュレス新規").where(user: {base_sub: "キャッシュレス"})
+      .or(
+        Shift.includes(:user).where(start_time: @start_date..@month).where(user: {base: @base_category}).where(shift: "キャッシュレス決済").where(user: {base_sub: "キャッシュレス"})
+
+      ).order(position_sub: :asc)
+    @shift = 
+      Shift.includes(:user).where(start_time: @month..(@month.since(1.days) - 1.minutes)).where(user: {base: @base_category}).where(shift: "キャッシュレス新規").where(user: {base_sub: "キャッシュレス"})
+      .or(
+        Shift.includes(:user).where(start_time: @month..(@month.since(1.days) - 1.minutes)).where(user: {base: @base_category}).where(shift: "キャッシュレス決済").where(user: {base_sub: "キャッシュレス"})
+
+      ).order(position_sub: :asc)
+    @result = 
+      Result.includes(:user).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス新規")
+      .or(
+        Result.includes(:user).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス決済")
+
+      )
+    @users = User.where(base: @base_category).where(base_sub: "キャッシュレス").where.not(position: "退職").order(position_sub: :asc)
+
   end 
 
   def ranking
