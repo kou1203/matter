@@ -804,16 +804,22 @@ class ResultsController < ApplicationController
     @calc_periods = CalcPeriod.where(sales_category: "評価売")
     calc_period_and_per
     @base_category = params[:base_category]
-    @results = Result.includes(:result_cash,:user).where(user: {base: @base_category}).where(date: @start_date..@month)
+    @results = Result.includes(:result_cash,:user).where(user: {base: @base_category}).where(user: {base_sub: "キャッシュレス"}).where(date: @start_date..@month)
     @shift_digestion = 
       @results.where(shift: "キャッシュレス新規")
       .or(
         @results.where(shift: "キャッシュレス決済")
       )
     @shifts = 
-      Shift.includes(:user).where(start_time: @start_date..@month).where(user: {base: @base_category}).where(shift: "キャッシュレス新規").where(user: {base_sub: "キャッシュレス"})
+      Shift.includes(:user).where(start_time: @start_date..(@month.since(1.days) - 1.minutes)).where(user: {base: @base_category}).where(shift: "キャッシュレス新規").where(user: {base_sub: "キャッシュレス"})
       .or(
-        Shift.includes(:user).where(start_time: @start_date..@month).where(user: {base: @base_category}).where(shift: "キャッシュレス決済").where(user: {base_sub: "キャッシュレス"})
+        Shift.includes(:user).where(start_time: @start_date..(@month.since(1.days) - 1.minutes)).where(user: {base: @base_category}).where(shift: "キャッシュレス決済").where(user: {base_sub: "キャッシュレス"})
+
+      ).order(position_sub: :asc)
+    @shift_schedule = 
+      Shift.includes(:user).where(start_time: @start_date..@end_date).where(user: {base: @base_category}).where(shift: "キャッシュレス新規").where(user: {base_sub: "キャッシュレス"})
+      .or(
+        Shift.includes(:user).where(start_time: @start_date..@end_date).where(user: {base: @base_category}).where(shift: "キャッシュレス決済").where(user: {base_sub: "キャッシュレス"})
 
       ).order(position_sub: :asc)
     @shift = 
