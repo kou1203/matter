@@ -140,7 +140,7 @@ class ItssDateProgressesController < ApplicationController
       valuation_current = @itss_user_result.sum(:valuation)
 
       if i_user.user.position == "退職"
-        user_base = r.user.position
+        user_base = i_user.user.position
       elsif i_user.user.base_sub == "キャッシュレス"
         user_base = i_user.user.base
       else  
