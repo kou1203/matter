@@ -96,7 +96,7 @@ class CalcPeriodsController < ApplicationController
 
     @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "2次店","退職"]
 
-    @products = ["合計","dメル", "auPay", "PayPay", "楽天ペイ","AirPay", "出前館","auステッカー", "AirPayステッカー","ITSS"]
+    @products = ["合計","dメル", "auPay", "PayPay", "楽天ペイ","AirPay", "出前館","auステッカー", "dメルステッカー","AirPayステッカー","ITSS"]
     
     respond_to do |format|
       format.html

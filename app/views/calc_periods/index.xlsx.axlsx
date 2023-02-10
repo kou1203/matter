@@ -165,6 +165,16 @@ wb = xlsx_package.workbook
           ]
         end 
       end
+    elsif product == "dメルステッカー"
+      sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
+      @bases.each do |base|
+        @dmersticker_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
+          sheet.add_row [
+            date_progress.base, date_progress.user.name, date_progress.user.position_sub, 
+            date_progress.get_len,date_progress.profit_current
+          ]
+        end 
+      end
     elsif product == "AirPayステッカー"
       sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
       @bases.each do |base|
