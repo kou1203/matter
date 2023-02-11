@@ -154,6 +154,7 @@ class AirpaystickerDateProgressesController < ApplicationController
         date: @month                                        ,
         shift_digestion: shift_digestion                    ,
         get_len: get_len                                    ,
+        fin_len: get_len                                    ,
         valuation_current: valuation_current                ,
         valuation_fin: valuation_current                    ,
         profit_current: profit_current                          ,

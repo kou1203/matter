@@ -1,0 +1,301 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<%# calc_periods_ary = [@calc_periods_val, @calc_periods_prof] %>
+<% tb_cnt = 0 %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title"><%= @base %>利益表（評価売）</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;"><%# サイドバーとメインバーを分ける %>
+  <div data-scope-path="shared/side_bar"><%# サイドバー %>
+    <%= render "shared/sidebar" %>
+  </div><%# サイドバー %>
+  <div data-scope-path="shares/date-progress"><%# メインバー %>
+    <p class="caution-txt"><%= alert %></p>
+    <div class="date-head"><%# 日付切替 %>
+      <h2>
+        <%= link_to "<<",base_profit_results_path(month: @month.ago(1.month),base: @base), class:"link","data-turbolinks": false %>
+        <%= @month.month %>月(<%= @start_date %>〜<%= @end_date %>)進捗
+        <%= link_to ">>",base_profit_results_path(month: @month.since(1.month),base: @base), class:"link","data-turbolinks": false %>
+      </h2>
+    </div><%# 日付切替 %>
+    <hr>
+    <h2>◆<%= @base %>売上</h2>
+    <table class="progress-tb">
+      <tr>
+        <th class="progress-th1" colspan="2">基本情報</th>
+        <th class="progress-th1" colspan="2">合計シフト</th>
+        <th class="progress-th1" colspan="2">新規シフト</th>
+        <th class="progress-th1" colspan="2">決済シフト</th>
+        <th class="progress-th1" colspan="3">評価売上</th>
+      </tr>
+      <tr>
+        <th class="progress-th2">氏名</th>
+        <th class="progress-th2">役職</th>
+        <% 3.times do %>
+        <th class="progress-th2">予定</th>
+        <th class="progress-th2">消化</th>
+        <% end %>
+        <th class="progress-th2">Ave</th>
+        <th class="progress-th2">現状売上</th>
+        <th class="progress-th2">終着売上</th>
+      </tr>
+      <% @users.each do |user| %>
+      <% shift_schedule = @dmer_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %>
+      <% shift_digestion = @dmer_date_progress.find_by(user_id: user.id).shift_digestion rescue 0 %>
+      <tr>
+        <td class="progress-td"><%= user.name %></td>
+        <td class="progress-td"><%= user.position_sub %></td>
+        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %></td>
+        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_digestion rescue 0 %></td>
+        <td class="progress-td"><%= shift_schedule %></td>
+        <td class="progress-td"><%= shift_digestion %></td>
+        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).shift_schedule_slmt rescue 0 %></td>
+        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).shift_digestion_slmt rescue 0 %></td>
+        <td class="progress-td"><%= (@cash_date_progress.find_by(user_id: user.id).valuation_fin.to_f / @cash_date_progress.find_by(user_id: user.id).shift_schedule).round().to_s(:delimited) rescue 0 %></td>
+        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).valuation_current.to_s(:delimited) rescue 0 %></td>
+        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).valuation_fin.to_s(:delimited) rescue 0 %></td>
+      </tr>
+      <% end %>
+      <tr class=""> 
+        <td class="difference-td" colspan="2">合計</td>
+        <td class="difference-td"><%= @cash_date_progress.sum(:shift_schedule) rescue 0 %></td>
+        <td class="difference-td"><%= @cash_date_progress.sum(:shift_digestion) rescue 0 %></td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:shift_schedule) rescue 0 %></td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:shift_digestion) rescue 0 %></td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:shift_schedule_slmt) rescue 0 %></td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:shift_digestion_slmt) rescue 0 %></td>
+        <td class="difference-td"><%= (@cash_date_progress.sum(:valuation_fin).to_f / @cash_date_progress.sum(:shift_schedule)).round().to_s(:delimited) rescue 0 %></td>
+        <td class="difference-td"><%= @cash_date_progress.sum(:valuation_current).to_s(:delimited) rescue 0 %></td>
+        <td class="difference-td"><%= @cash_date_progress.sum(:valuation_fin).to_s(:delimited) rescue 0 %></td>
+      </tr>
+
+    </table>
+
+    <h2>◆<%= @base %>基準値</h2>
+    <table class="progress-tb">
+      <tr>
+        <th class="progress-th1" colspan="2">基本情報</th>
+        <th class="progress-th1" colspan="2">合計シフト</th>
+        <th class="progress-th1" colspan="2">新規シフト</th>
+        <th class="progress-th1" colspan="2">決済シフト</th>
+        <th class="progress-th1" colspan="9">基準値</th>
+        <th class="progress-th1" colspan="5">全導入AirPay入り</th><%# １９ %>
+      </tr>
+      <tr>
+        <th class="progress-th2">氏名</th>
+        <th class="progress-th2">役職</th>
+        <% 3.times do %>
+        <th class="progress-th2">予定</th>
+        <th class="progress-th2">消化</th>
+        <% end %>
+        <th class="progress-th2">訪問</th>
+        <th class="progress-th2">対応</th>
+        <th class="progress-th2">対応率</th>
+        <th class="progress-th2">対面</th>
+        <th class="progress-th2">対面率</th>
+        <th class="progress-th2">フル</th>
+        <th class="progress-th2">フル率</th>
+        <th class="progress-th2">成約</th>
+        <th class="progress-th2">成約率</th>
+        <th class="progress-th2">訪問</th>
+        <th class="progress-th2">対面</th>
+        <th class="progress-th2">対面率</th>
+        <th class="progress-th2">成約</th>
+        <th class="progress-th2">成約率</th>
+      </tr>
+      <% @users.each do |user| %>
+      <% result_user = @results.where(user_id: user.id) %>
+      <% shift_schedule = @dmer_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %>
+      <% shift_digestion = @dmer_date_progress.find_by(user_id: user.id).shift_digestion rescue 0 %>
+      <% total_visit = ((result_user.sum(:first_total_visit).to_f + result_user.sum(:latter_total_visit).to_f) / shift_digestion).round(1) rescue 0 %>
+      <% visit = ((result_user.sum(:first_visit).to_f + result_user.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
+      <% interview = ((result_user.sum(:first_interview).to_f + result_user.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>
+      <% full_talk = ((result_user.sum(:first_full_talk).to_f + result_user.sum(:latter_full_talk).to_f) / shift_digestion).round(1) rescue 0 %>
+      <% get = ((result_user.sum(:first_get).to_f + result_user.sum(:latter_get).to_f) / shift_digestion).round(1) rescue 0 %>
+<%# out_interview_19 %>
+      <% airpay_visit = result_user.sum(:out_interview_19) rescue 0 %>
+      <% airpay_interview = result_user.sum(:out_full_talk_19) rescue 0 %>
+      <% airpay_get = result_user.sum(:out_get_19) rescue 0 %>
+      <tr>
+        <td class="progress-td"><%= user.name %></td>
+        <td class="progress-td"><%= user.position_sub %></td>
+        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %></td>
+        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_digestion rescue 0 %></td>
+        <td class="progress-td"><%= shift_schedule %></td>
+        <td class="progress-td"><%= shift_digestion %></td>
+        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).shift_schedule_slmt rescue 0 %></td>
+        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).shift_digestion_slmt rescue 0 %></td>
+        <td class="progress-td"><%= total_visit %></td>
+        <td class="progress-td"><%= visit %></td>
+        <td class="progress-td"><%= number_to_percentage(visit / total_visit * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= interview %></td>
+        <td class="progress-td"><%= number_to_percentage(interview / visit * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= full_talk %></td>
+        <td class="progress-td"><%= number_to_percentage(full_talk / interview * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= get %></td>
+        <td class="progress-td"><%= number_to_percentage(get / full_talk * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= airpay_visit %></td>
+        <td class="progress-td"><%= airpay_interview %></td>
+        <td class="progress-td"><%= number_to_percentage(airpay_interview / airpay_visit * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= airpay_get %></td>
+        <td class="progress-td"><%= number_to_percentage(airpay_visit / airpay_get * 100,precision: 0) rescue 0 %></td>
+      </tr>
+      <% end %>
+      <tr>
+      <% shift_digestion = @dmer_date_progress.sum(:shift_schedule) rescue 0 %>
+      <% shift_schedule = @dmer_date_progress.sum(:shift_digestion) rescue 0 %>
+      <% total_visit = ((@results.sum(:first_total_visit).to_f + @results.sum(:latter_total_visit).to_f) / shift_digestion).round(1) rescue 0 %>
+      <% visit = ((@results.sum(:first_visit).to_f + @results.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
+      <% interview = ((@results.sum(:first_interview).to_f + @results.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>
+      <% full_talk = ((@results.sum(:first_full_talk).to_f + @results.sum(:latter_full_talk).to_f) / shift_digestion).round(1) rescue 0 %>
+      <% get = ((@results.sum(:first_get).to_f + @results.sum(:latter_get).to_f) / shift_digestion).round(1) rescue 0 %>
+      <% airpay_visit = @results.sum(:out_interview_19) rescue 0 %>
+      <% airpay_interview = @results.sum(:out_full_talk_19) rescue 0 %>
+      <% airpay_get = @results.sum(:out_get_19) rescue 0 %>
+      <tr class="">
+        <td class="difference-td" colspan="2">合計</td>
+        <td class="difference-td"><%= @cash_date_progress.sum(:shift_schedule) rescue 0 %></td>
+        <td class="difference-td"><%= @cash_date_progress.sum(:shift_digestion) rescue 0 %></td>
+        <td class="difference-td"><%= shift_schedule %></td>
+        <td class="difference-td"><%= shift_digestion %></td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:shift_schedule_slmt) rescue 0 %></td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:shift_digestion_slmt) rescue 0 %></td>
+        <td class="difference-td"><%= total_visit %></td>
+        <td class="difference-td"><%= visit %></td>
+        <td class="difference-td"><%= number_to_percentage(visit / total_visit * 100,precision: 0) %></td>
+        <td class="difference-td"><%= interview %></td>
+        <td class="difference-td"><%= number_to_percentage(interview / visit * 100,precision: 0) %></td>
+        <td class="difference-td"><%= full_talk %></td>
+        <td class="difference-td"><%= number_to_percentage(full_talk / interview * 100,precision: 0) %></td>
+        <td class="difference-td"><%= get %></td>
+        <td class="difference-td"><%= number_to_percentage(get / full_talk * 100,precision: 0) %></td>
+        <td class="difference-td"><%= airpay_visit %></td>
+        <td class="difference-td"><%= airpay_interview %></td>
+        <td class="difference-td"><%= number_to_percentage(airpay_interview / airpay_visit * 100,precision: 0) rescue 0 %></td>
+        <td class="difference-td"><%= airpay_get %></td>
+        <td class="difference-td"><%= number_to_percentage(airpay_visit / airpay_get * 100,precision: 0) rescue 0 %></td>
+      </tr>
+
+    </table>
+    <h2>◆<%= @base %>生産性</h2>
+    <table class="progress-tb">
+      <tr>
+        <th class="product-th1" colspan="2">基本情報</th>
+        <th class="product-th1" colspan="2">新規シフト</th>
+        <th class="product-th1" colspan="3">dメル</th>
+        <th class="product-th1" colspan="3">auPay</th>
+        <th class="product-th1" colspan="3">楽天ペイ</th>
+        <th class="product-th1" colspan="3">AirPay</th>
+        <th class="product-th1" colspan="">PayPay</th>
+      </tr>
+      <tr>
+        <th class="progress-th2">氏名</th>
+        <th class="progress-th2">役職</th>
+        <th class="progress-th2">予定</th>
+        <th class="progress-th2">消化</th>
+        <% 4.times do %>
+        <th class="progress-th2">獲得Ave</th>
+        <th class="progress-th2">獲得</th>
+        <th class="progress-th2">獲得終着</th>
+        <% end %>
+        <th class="progress-th2">獲得</th>
+      </tr>
+      <% @users.each do |user| %>
+      <tr>
+        <td class="progress-td"><%= user.name %></td>
+        <td class="progress-td"><%= user.position_sub %></td>
+        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %></td>
+        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_digestion rescue 0 %></td>
+        <td class="progress-td"><%= (@dmer_date_progress.find_by(user_id: user.id).fin_len.to_f / @dmer_date_progress.find_by(user_id: user.id).shift_schedule).round(1) rescue 0 %></td>
+        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
+        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).fin_len rescue 0 %></td>
+        <td class="progress-td"><%= (@aupay_date_progress.find_by(user_id: user.id).fin_len.to_f / @aupay_date_progress.find_by(user_id: user.id).shift_schedule).round(1) rescue 0 %></td>
+        <td class="progress-td"><%= @aupay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
+        <td class="progress-td"><%= @aupay_date_progress.find_by(user_id: user.id).fin_len rescue 0 %></td>
+        <td class="progress-td"><%= (@rakuten_pay_date_progress.find_by(user_id: user.id).fin_len.to_f / @rakuten_pay_date_progress.find_by(user_id: user.id).shift_schedule).round(1) rescue 0 %></td>
+        <td class="progress-td"><%= @rakuten_pay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
+        <td class="progress-td"><%= @rakuten_pay_date_progress.find_by(user_id: user.id).fin_len rescue 0 %></td>
+        <td class="progress-td"><%= (@airpay_date_progress.find_by(user_id: user.id).fin_len.to_f / @airpay_date_progress.find_by(user_id: user.id).shift_schedule).round(1) rescue 0 %></td>
+        <td class="progress-td"><%= @airpay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
+        <td class="progress-td"><%= @airpay_date_progress.find_by(user_id: user.id).fin_len rescue 0 %></td>
+        <td class="progress-td"><%= @paypay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
+      </tr>
+      <% end %>
+      <tr>
+        <td class="difference-td" colspan="2">合計</td>
+        <td class="difference-td"><%= @cash_date_progress.sum(:shift_schedule) rescue 0 %></td>
+        <td class="difference-td"><%= @cash_date_progress.sum(:shift_digestion) rescue 0 %></td>
+        <td class="difference-td"><%= (@dmer_date_progress.sum(:fin_len).to_f / @dmer_date_progress.sum(:shift_schedule)).round(1) rescue 0 %></td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:get_len) rescue 0 %></td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:fin_len) rescue 0 %></td>
+        <td class="difference-td"><%= (@aupay_date_progress.sum(:fin_len).to_f / @aupay_date_progress.sum(:shift_schedule)).round(1) rescue 0 %></td>
+        <td class="difference-td"><%= @aupay_date_progress.sum(:get_len) rescue 0 %></td>
+        <td class="difference-td"><%= @aupay_date_progress.sum(:fin_len) rescue 0 %></td>
+        <td class="difference-td"><%= (@rakuten_pay_date_progress.sum(:fin_len).to_f / @rakuten_pay_date_progress.sum(:shift_schedule)).round(1) rescue 0 %></td>
+        <td class="difference-td"><%= @rakuten_pay_date_progress.sum(:get_len) rescue 0 %></td>
+        <td class="difference-td"><%= @rakuten_pay_date_progress.sum(:fin_len) rescue 0 %></td>
+        <td class="difference-td"><%= (@airpay_date_progress.sum(:fin_len).to_f / @airpay_date_progress.shift_schedule).round(1) rescue 0 %></td>
+        <td class="difference-td"><%= @airpay_date_progress.sum(:get_len) rescue 0 %></td>
+        <td class="difference-td"><%= @airpay_date_progress.sum(:fin_len) rescue 0 %></td>
+        <td class="difference-td"><%= @paypay_date_progress.sum(:get_len) rescue 0 %></td>
+      </tr>
+    </table>
+    <h2>◆<%= @base %>現状成果になった件数</h2>
+    <table class="progress-tb">
+      <tr>
+        <th class="product-th1" colspan="2">基本情報</th>
+        <th class="product-th1" colspan="12">成果</th>
+      </tr>
+      <tr>
+        <th class="progress-th2">氏名</th>
+        <th class="progress-th2">役職</th>
+        <th class="progress-th2">dメル<br>（審査完了）</th>
+        <th class="progress-th2">dメル<br>（決済+アクセプタンス）</th>
+        <th class="progress-th2">dメル<br>（2回目決済）</th>
+        <th class="progress-th2">auPay<br>（決済+アクセプタンス）</th>
+        <th class="progress-th2">PayPay<br>（審査完了）</th>
+        <th class="progress-th2">楽天ペイ<br>（獲得）</th>
+        <th class="progress-th2">AirPay<br>（審査完了）</th>
+        <th class="progress-th2">AirPayステッカー<br>（営業報告）</th>
+        <th class="progress-th2">dメルステッカー<br>（営業報告）</th>
+        <th class="progress-th2">auステッカー<br>（営業報告）</th>
+        <th class="progress-th2">出前館<br>（審査完了）</th>
+        <th class="progress-th2">ITSS<br>（工事予定日<%= @month.month %>月）</th>
+      </tr>
+      <% @users.each do |user| %>
+      <tr>
+        <td class="progress-td"><%= user.name %></td>
+        <td class="progress-td"><%= user.position_sub %></td>
+        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).done_len.to_i rescue 0 %></td>
+        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).result2_len.to_i rescue 0 %></td>
+        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).result3_len.to_i rescue 0 %></td>
+        <td class="progress-td"><%= @aupay_date_progress.find_by(user_id: user.id).result_len.to_i rescue 0 %></td>
+        <td class="progress-td"><%= @paypay_date_progress.find_by(user_id: user.id).result_len.to_i rescue 0 %></td>
+        <td class="progress-td"><%= @rakuten_pay_date_progress.find_by(user_id: user.id).valuation_current / 4000 rescue 0 %></td>
+        <td class="progress-td"><%= @airpay_date_progress.find_by(user_id: user.id).result_len.to_i rescue 0 %></td>
+        <td class="progress-td"><%= @airpaysticker_date_progress.find_by(user_id: user.id).result_len.to_i rescue 0 %></td>
+        <td class="progress-td"><%= @austicker_date_progress.find_by(user_id: user.id).result_len.to_i rescue 0 %></td>
+        <td class="progress-td"><%= @dmersticker_date_progress.find_by(user_id: user.id).result_len.to_i rescue 0 %></td>
+        <td class="progress-td"><%= @demaekan_date_progress.find_by(user_id: user.id).result_len.to_i rescue 0 %></td>
+        <td class="progress-td"><%= @itss_date_progress.find_by(user_id: user.id).valuation_current / 4000 rescue 0 %></td>
+      </tr>
+      <% end %>
+      <tr>
+        <td class="difference-td" colspan="2">合計</td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:done_len) rescue 0 %></td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:result2_len) rescue 0 %></td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:result3_len) rescue 0 %></td>
+        <td class="difference-td"><%= @aupay_date_progress.sum(:result_len) rescue 0 %></td>
+        <td class="difference-td"><%= @paypay_date_progress.sum(:result_len) rescue 0 %></td>
+        <td class="difference-td"><%= @rakuten_pay_date_progress.sum(:valuation_current) / 4000 rescue 0 %></td>
+        <td class="difference-td"><%= @airpay_date_progress.sum(:result_len) rescue 0 %></td>
+        <td class="difference-td"><%= @airpaysticker_date_progress.sum(:get_len) rescue 0 %></td>
+        <td class="difference-td"><%= @austicker_date_progress.sum(:get_len) rescue 0 %></td>
+        <td class="difference-td"><%= @dmersticker_date_progress.sum(:get_len) rescue 0 %></td>
+        <td class="difference-td"><%= @demaekan_date_progress.sum(:result_len) rescue 0 %></td>
+        <td class="difference-td"><%= @itss_date_progress.sum(:valuation_current) / 4000 rescue 0 %></td>
+      </tr>
+    </table>
+  </div>
+
+</div>
