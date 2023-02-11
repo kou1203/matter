@@ -130,7 +130,9 @@ class AirpaystickerDateProgressesController < ApplicationController
       valuation_current = 0
       profit_current = 0
     # 実売
-      profit_current = @airpaystickers_user_period.sum(:profit)
+      @airpay_sticker_profit = AirpaySticker.where(user_id: user_id).where(form_send: @start_date..@end_date)
+
+      profit_current = @airpay_sticker_profit.where(sticker_ok: "〇").sum(:profit_sticker) + @airpay_sticker_profit.where(pop_ok: "〇").sum(:profit_pop)
     # 終着
         profit_fin = profit_current
       
