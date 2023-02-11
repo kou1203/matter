@@ -150,15 +150,16 @@ class RakutenPayDateProgressesController < ApplicationController
       rakuten_pay_person_this_month_len_fin = (rakuten_pay_person_this_month.length.to_f / shift_digestion * shift_schedule * @rakuten_pay1_this_month_per).round() rescue 0
       rakuten_pay_person_this_month_profit_fin = @rakuten_pay_price * rakuten_pay_person_this_month_len_fin
     # 終着（個人過去月）
-    # 過去の母体数（2ヶ月前と前月で成果になっていないもの）
-    rakuten_pay_person_prev1 = 
-      @rakuten_pays_user.where(date: ..@start_date.ago(2.month).end_of_month).where(share: @start_date.ago(1.month)..@end_date.ago(1.month).end_of_month).where(store_prop: {race: "個人"})
-    rakuten_pay_person_prev1_len = (rakuten_pay_person_prev1.length.to_f * @rakuten_pay1_prev_month_per).round() rescue 0
-    rakuten_pay_person_prev2 = 
-      @rakuten_pays_user.where(date: ..@start_date.ago(3.month).end_of_month).where(share: @start_date.ago(2.month)..@end_date.ago(2.month).end_of_month).where(store_prop: {race: "個人"})
-    rakuten_pay_person_prev2_len = (rakuten_pay_person_prev2.length.to_f * @rakuten_pay1_prev_month_per).round() rescue 0
-    rakuten_pay_person_prev_len = rakuten_pay_person_prev1_len + rakuten_pay_person_prev2_len
-    rakuten_pay_person_prev_profit_fin = @rakuten_pay_price * rakuten_pay_person_prev_len
+    # 過去の案件で今月成果になった件数
+    rakuten_pay_person_done_prev = rakuten_pay_done.where(date: ...@start_date).where(store_prop: {race: "個人"})
+    rakuten_pay_person_prev = @rakuten_pays_user.where(date: ...@start_date).where(store_prop: {race: "個人"})
+    rakuten_pay_person_prev = 
+      rakuten_pay_person_prev.where(status: "審査待ち")
+      .or(
+        rakuten_pay_person_prev.where(status: "審査中")
+      )
+    rakuten_pay_person_prev_len = (rakuten_pay_person_prev.length.to_f * @rakuten_pay1_prev_month_per).round()
+    rakuten_pay_person_prev_profit_fin = (@rakuten_pay_price * rakuten_pay_person_prev_len) + (@rakuten_pay_price * rakuten_pay_person_done_prev.length)
     # 終着（個人合計）
     rakuten_pay_person_profit_sum = rakuten_pay_person_this_month_profit_fin + rakuten_pay_person_prev_profit_fin
     # 終着（法人当月）
@@ -167,14 +168,15 @@ class RakutenPayDateProgressesController < ApplicationController
     rakuten_pay_company_this_month_len_fin = (rakuten_pay_company_this_month.length.to_f / shift_digestion * shift_schedule * rakuten_pay_company_calc.this_month_per).round() rescue 0
     rakuten_pay_company_this_month_profit_fin = @rakuten_pay_price * rakuten_pay_company_this_month_len_fin
     # 終着（法人過去月）
-    rakuten_pay_company_prev1 = 
-      @rakuten_pays_user.where(date: ..@start_date.ago(2.month).end_of_month).where(share: @start_date.ago(1.month).beginning_of_month..@start_date.ago(1.month).end_of_month).where(store_prop: {race: "法人"})
-    rakuten_pay_company_prev1_len = (rakuten_pay_company_prev1.length.to_f * rakuten_pay_company_calc.prev_month_per).round() rescue 0
-    rakuten_pay_company_prev2 = 
-      @rakuten_pays_user.where(date: ..@start_date.ago(3.month).end_of_month).where(share: @start_date.ago(2.month).beginning_of_month..@start_date.ago(2.month).end_of_month).where(store_prop: {race: "法人"})
-    rakuten_pay_company_prev2_len = (rakuten_pay_company_prev2.length.to_f * rakuten_pay_company_calc.prev_month_per).round() rescue 0
-    rakuten_pay_company_prev_len = rakuten_pay_company_prev1_len + rakuten_pay_company_prev2_len
-    rakuten_pay_company_prev_profit_fin = @rakuten_pay_price * rakuten_pay_company_prev_len
+    rakuten_pay_company_done_prev = rakuten_pay_done.where(date: ...@start_date).where(store_prop: {race: "法人"})
+    rakuten_pay_company_prev = @rakuten_pays_user.where(date: ...@start_date).where(store_prop: {race: "法人"})
+    rakuten_pay_company_prev = 
+      rakuten_pay_company_prev.where(status: "審査待ち")
+      .or(
+        rakuten_pay_company_prev.where(status: "審査中")
+      )
+    rakuten_pay_company_prev_len = (rakuten_pay_company_prev.length.to_f * rakuten_pay_company_calc.prev_month_per).round()
+    rakuten_pay_company_prev_profit_fin = (@rakuten_pay_price * rakuten_pay_company_prev_len) + (@rakuten_pay_price * rakuten_pay_company_done_prev.length)
     # 終着（法人合計）
     rakuten_pay_company_profit_sum = rakuten_pay_company_this_month_profit_fin + rakuten_pay_company_prev_profit_fin
     result_fin_len = rakuten_pay_person_this_month_len_fin + rakuten_pay_person_prev_len + rakuten_pay_company_this_month_len_fin + rakuten_pay_company_prev_len
@@ -184,7 +186,7 @@ class RakutenPayDateProgressesController < ApplicationController
         profit_fin = profit_current
         result_fin_len = rakuten_pay_result_len
       end
-    # profit_fin = rakuten_pay_company_prev_len
+    # profit_fin = rakuten_pay_company_prev_len + (rakuten_pay_company_done_prev.length.to_f * rakuten_pay_company_calc.prev_month_per).round()
 
 
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
@@ -243,7 +245,7 @@ class RakutenPayDateProgressesController < ApplicationController
         valuation_fin: valuation_fin                           ,
         profit_current: profit_current                         ,
         profit_fin: profit_fin                                 ,
-        result_len: rakuten_pay_result_len                    ,
+        result_len: rakuten_pay_result_len                     ,
         result_fin_len: result_fin_len                         ,
         create_date: Date.today
       }

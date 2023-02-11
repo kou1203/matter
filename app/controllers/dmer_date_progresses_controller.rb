@@ -303,7 +303,7 @@ class DmerDateProgressesController < ApplicationController
         profit_fin1_period = 0
       else  
         profit_fin1_period_len = ((@dmers_len - dmer_result1_period.length).to_f / shift_digestion * shift_schedule * @dmer1_this_month_per).round()
-        profit_fin1_period = (@dmer1_price * profit_fin1_period_len) - already_done1.sum(:profit_new) + (@dmer1_price * (dmer_result1_period.length.to_f * @dmer1_this_month_per).to_i)
+        profit_fin1_period = (@dmer1_price * profit_fin1_period_len) - already_done1.sum(:profit_new) + (@dmer1_price * (dmer_result1_period.length.to_f * @dmer1_this_month_per).round())
       end 
       # 実売終着1（過去）
       profit_fin1_prev = 
@@ -319,7 +319,7 @@ class DmerDateProgressesController < ApplicationController
         profit_fin2_period = 0
       else  
         profit_fin2_period_len = ((@dmers_len - dmer_slmt_done_period.length).to_f / shift_digestion * shift_schedule * @dmer2_this_month_per).round()
-        profit_fin2_period = (@dmer2_price * profit_fin2_period_len) - already_done2.sum(:profit_settlement) + (@dmer2_price * (dmer_slmt_done_period.length.to_f * @dmer2_this_month_per).to_i)
+        profit_fin2_period = (@dmer2_price * profit_fin2_period_len) - already_done2.sum(:profit_settlement) + (@dmer2_price * (dmer_slmt_done_period.length.to_f * @dmer2_this_month_per).round())
       end  
       # 実売終着2（過去）
       profit_fin2_prev = 
@@ -335,7 +335,7 @@ class DmerDateProgressesController < ApplicationController
         profit_fin3_period = 0
       else  
         profit_fin3_period_len = ((@dmers_len - dmer_slmt2nd_done_period.length).to_f / shift_digestion * shift_schedule * @dmer3_this_month_per).round()
-        profit_fin3_period = (@dmer3_price * profit_fin3_period_len) - already_done3.sum(:profit_second_settlement) + (@dmer3_price * (dmer_slmt2nd_done_period.length.to_f * @dmer3_this_month_per).to_i)
+        profit_fin3_period = (@dmer3_price * profit_fin3_period_len) - already_done3.sum(:profit_second_settlement) + (@dmer3_price * (dmer_slmt2nd_done_period.length.to_f * @dmer3_this_month_per).round())
       end 
       # 実売終着3（過去）
       # 26~次の月の月末までに成果になっている案件

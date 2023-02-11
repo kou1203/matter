@@ -21,7 +21,7 @@ class OtherProduct < ApplicationRecord
   end
 
   def dmer_pic_valuation
-    product_len * 2000
+    product_len * 1500
   end
   def dmer_pic_profit
     product_len * 3000

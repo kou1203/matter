@@ -1,0 +1,186 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title">AirPayステッカー一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/index">
+<div class="main">
+<% if current_user.position_sub == "管理" %>
+  <%= form_with url: import_airpay_stickers_path do |f| %>
+    <table class="csv-tb">
+      <tr>
+        <td class="csv-label" >CSV</td>
+        <td class=""><%= f.file_field :file, accept: ".csv", class: "input" %></td>
+        <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？',disable_with: "インポート中" } %></td>
+        </tr>
+      </table>
+    <% end %>
+<% end %>
+
+  <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
+      <%= javascript_pack_tag 'search' %>
+      <article id='search'><%# 検索フォーム %>
+        <button @click="active" v-if="!isActive" class="active-btn">詳細検索表示</button>
+        <button @click="active" v-if="isActive" class="active-btn">詳細検索表示中</button>
+        <div v-if="isActive" class="s-form"><%# 検索フォームの外枠 %>
+          <%= search_form_for @q do |f| %>
+            <p class="s-text">検索したい内容を入力してください。</p>
+            <hr>
+          <div class="s-flex"><%# 検索フォーム %>
+            <div class="user-form"><%# ユーザー情報 %>
+              <p class="s-label">AC対応者</p>
+              <p class="s-text-field"><%= f.text_field :user_name_cont, class: "s-text-input" %></p>
+              <p class="s-label">拠点</p>
+              <p class="s-slct-field"><%= f.select :user_base_cont,{"中部SS": "中部SS","関東SS": "関東SS","関西SS": "関西SS","2次店": "2次店"},{include_blank: true},{ class: "s-slct-input"} %></p>
+            </div><%# ユーザー情報 %>
+            <div class="product-form"><%# 商材情報 %>
+              <table class="s-tb">
+                <thead>
+                  <tr class="s-tr">
+                    <th class="s-th">項目</th>
+                    <th class="s-th">検索内容</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="s-tr">
+                    <td class="s-td">カテゴリー</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :category_eq,
+                        options_from_collection_for_select(AirpaySticker.select(:category)
+                        .distinct,:category, :category),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">フォーム送信月</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :form_send_month_eq,
+                        options_from_collection_for_select(AirpaySticker.select(:form_send_month)
+                        .distinct,:form_send_month, :form_send_month),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">フォーム送信日</td>
+                    <td class="s-td">
+                      <%= f.date_field :form_send_eq, class: "t-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">フォーム送信日（範囲）</td>
+                    <td class="s-td">
+                      <%= f.date_field :form_send_gteq, class: "s-input" %>〜
+                      <%= f.date_field :form_send_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">ステッカー両方OK</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :sticker_ok_eq,
+                        options_from_collection_for_select(AirpaySticker.select(:sticker_ok)
+                        .distinct,:sticker_ok, :sticker_ok),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">店頭ポップOK</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :pop_ok_eq,
+                        options_from_collection_for_select(AirpaySticker.select(:pop_ok)
+                        .distinct,:pop_ok, :pop_ok),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">不備確認</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :deficiency_eq,
+                        options_from_collection_for_select(AirpaySticker.select(:deficiency)
+                        .distinct,:deficiency, :deficiency),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div><%# 商材情報 %>
+          </div><%# 検索フォーム %>
+          <hr>
+          <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "s-btn" %>
+          <button class="s-reset-btn"><%= link_to "解除", airpays_path, class: "reset-link" %></button>
+          <% end %>
+        </div><%# /検索フォームの外枠 %>
+        <div v-else>
+          <%= search_form_for @q do |f| %>
+              <%= f.text_field :store_name_or_customer_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
+              <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "search-btn" %>
+          <% end %>
+        </div>
+      </article><%# /検索フォーム %>
+      <hr>
+  <% if @airpays.empty? %>
+    <div class="warning"><%= alert %></div>
+  <% else %>
+      <h1>獲得日：<%= @airpays.minimum(:form_send) %>（<%= days[@airpays.minimum(:form_send).wday] %>）〜<%= @airpays.maximum(:form_send) %>（<%= days[@airpays.maximum(:form_send).wday] %>）</h1>
+    <table class="out-tb">
+      <thead>
+      <tr>
+        <th class="out-th">カテゴリー</th>
+        <th class="out-th">店舗番号</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">AC対応者</th>
+        <th class="out-th">フォーム送信日</th>
+        <th class="out-th">ステッカー両方OK</th>
+        <th class="out-th">店頭ポップOK</th>
+        <th class="out-th">評価売上</th>
+        <% if current_user.position == "権限①" %>
+        <th class="out-th">ステッカー実売</th>
+        <th class="out-th">ポップ実売</th>
+        <% end %>
+        <th class="out-th">不備確認</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @airpays_data.each do |airpay| %>
+      <tr >
+        <td class="out-td"><%= airpay.category %></td>
+        <td class="out-td"><%= airpay.customer_num %></td>
+        <td class="out-td"><%= airpay.store_name %></td>
+        <td class="out-td"><%= airpay.user.name %></td>
+        <td class="out-td"><%= airpay.form_send %></td>
+        <td class="out-td"><%= airpay.sticker_ok %></td>
+        <td class="out-td"><%= airpay.pop_ok %></td>
+        <td class="out-td"><%= airpay.valuation %></td>
+        <% if current_user.position == "権限①" %>
+        <td class="out-td"><%= airpay.profit_sticker %></td>
+        <td class="out-td"><%= airpay.profit_pop %></td>
+        <% end %>
+        <td class="out-td"><%= airpay.deficiency %></td>
+      <% end %>
+      </tbody>
+    </table>
+  <div class="kaminari-page">
+    <%= paginate @airpays_data %>
+  </div>
+  <% end %>
+  </div>
+  </div>
+</div>

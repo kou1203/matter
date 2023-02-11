@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_31_103518) do
+ActiveRecord::Schema.define(version: 2023_02_10_051306) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -31,6 +31,23 @@ ActiveRecord::Schema.define(version: 2023_01_31_103518) do
     t.integer "max_result_len"
     t.date "create_date", null: false
     t.index ["user_id"], name: "index_airpay_date_progresses_on_user_id"
+  end
+
+  create_table "airpay_stickers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "category", null: false
+    t.bigint "user_id"
+    t.string "customer_num", null: false
+    t.string "store_name"
+    t.string "form_send_month", null: false
+    t.date "form_send", null: false
+    t.string "sticker_ok"
+    t.string "pop_ok"
+    t.string "deficiency"
+    t.integer "valuation", null: false
+    t.integer "profit_sticker", null: false
+    t.integer "profit_pop", null: false
+    t.text "remarks"
+    t.index ["user_id"], name: "index_airpay_stickers_on_user_id"
   end
 
   create_table "airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1571,6 +1588,7 @@ ActiveRecord::Schema.define(version: 2023_01_31_103518) do
   end
 
   add_foreign_key "airpay_date_progresses", "users"
+  add_foreign_key "airpay_stickers", "users"
   add_foreign_key "airpays", "store_props"
   add_foreign_key "airpays", "users"
   add_foreign_key "airpaysticker_date_progresses", "users"

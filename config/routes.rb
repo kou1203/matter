@@ -282,4 +282,8 @@ Rails.application.routes.draw do
     collection {get :date_destroy}
   end 
 
+  resources :airpay_stickers do 
+    collection {post :import}
+  end 
+
 end
