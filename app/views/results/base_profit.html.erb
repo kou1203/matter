@@ -42,7 +42,7 @@
       <% @users.each do |user| %>
       <% shift_schedule = @dmer_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %>
       <% shift_digestion = @dmer_date_progress.find_by(user_id: user.id).shift_digestion rescue 0 %>
-      <tr>
+      <tr class="progress-tr">
         <td class="progress-td"><%= user.name %></td>
         <td class="progress-td"><%= user.position_sub %></td>
         <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %></td>
@@ -125,7 +125,7 @@
       <% airpay_visit = result_user.sum(:out_interview_19) rescue 0 %>
       <% airpay_interview = result_user.sum(:out_full_talk_19) rescue 0 %>
       <% airpay_get = result_user.sum(:out_get_19) rescue 0 %>
-      <tr>
+      <tr class="progress-tr">
         <td class="progress-td"><%= user.name %></td>
         <td class="progress-td"><%= user.position_sub %></td>
         <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %></td>
@@ -224,7 +224,7 @@
         <th class="progress-th2">獲得</th>
       </tr>
       <% @users.each do |user| %>
-      <tr>
+      <tr class="progress-tr">
         <td class="progress-td"><%= user.name %></td>
         <td class="progress-td"><%= user.position_sub %></td>
         <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %></td>
@@ -288,7 +288,7 @@
         <th class="progress-th2">ITSS<br>（工事予定日<%= @month.month %>月）</th>
       </tr>
       <% @users.each do |user| %>
-      <tr>
+      <tr class="progress-tr">
         <td class="progress-td"><%= user.name %></td>
         <td class="progress-td"><%= user.position_sub %></td>
         <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).done_len.to_i rescue 0 %></td>
