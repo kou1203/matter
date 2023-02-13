@@ -182,7 +182,7 @@
       <tr>
         <th class="product-th1" colspan="2">基本情報</th>
         <th class="product-th1" colspan="2">新規シフト</th>
-        <th class="product-th1" colspan="3">dメル</th>
+        <th class="product-th1" colspan="4">dメル</th>
         <th class="product-th1" colspan="3">auPay</th>
         <th class="product-th1" colspan="3">楽天ペイ</th>
         <th class="product-th1" colspan="3">AirPay</th>
@@ -193,7 +193,11 @@
         <th class="progress-th2">役職</th>
         <th class="progress-th2">予定</th>
         <th class="progress-th2">消化</th>
-        <% 4.times do %>
+        <th class="progress-th2">獲得Ave</th>
+        <th class="progress-th2">獲得</th>
+        <th class="progress-th2">不備・NG</th>
+        <th class="progress-th2">獲得終着</th>
+        <% 3.times do %>
         <th class="progress-th2">獲得Ave</th>
         <th class="progress-th2">獲得</th>
         <th class="progress-th2">獲得終着</th>
@@ -208,6 +212,7 @@
         <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_digestion rescue 0 %></td>
         <td class="progress-td"><%= (@dmer_date_progress.find_by(user_id: user.id).fin_len.to_f / @dmer_date_progress.find_by(user_id: user.id).shift_schedule).round(1) rescue 0 %></td>
         <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
+        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).def_len rescue 0 %></td>
         <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).fin_len rescue 0 %></td>
         <td class="progress-td"><%= (@aupay_date_progress.find_by(user_id: user.id).fin_len.to_f / @aupay_date_progress.find_by(user_id: user.id).shift_schedule).round(1) rescue 0 %></td>
         <td class="progress-td"><%= @aupay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
@@ -227,6 +232,7 @@
         <td class="difference-td"><%= @cash_date_progress.sum(:shift_digestion) rescue 0 %></td>
         <td class="difference-td"><%= (@dmer_date_progress.sum(:fin_len).to_f / @dmer_date_progress.sum(:shift_schedule)).round(1) rescue 0 %></td>
         <td class="difference-td"><%= @dmer_date_progress.sum(:get_len) rescue 0 %></td>
+        <td class="difference-td"><%= @dmer_date_progress.sum(:def_len) rescue 0 %></td>
         <td class="difference-td"><%= @dmer_date_progress.sum(:fin_len) rescue 0 %></td>
         <td class="difference-td"><%= (@aupay_date_progress.sum(:fin_len).to_f / @aupay_date_progress.sum(:shift_schedule)).round(1) rescue 0 %></td>
         <td class="difference-td"><%= @aupay_date_progress.sum(:get_len) rescue 0 %></td>
