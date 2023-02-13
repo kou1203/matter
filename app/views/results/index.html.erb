@@ -99,7 +99,7 @@
           <thead>
             <tr>
               <th class="" colspan="6">シフト</th>
-              <th class="" colspan="5">現状獲得数/目標獲得数</th>
+              <th class="" colspan="5">現状獲得数</th>
               <th class="" colspan="5">終着獲得数</th>
             </tr>
             <tr>
@@ -167,36 +167,16 @@
               %></td>
               <%# 現状獲得 %>
               <td class="">
-                <%= @dmer_monthly.where(user: {base: base}).length %> / 
-                <% if @dmer_target.where(base: base).first.present? %>
-                <%= link_to @dmer_target.where(base: base).first.product_len, edit_product_target_path(@dmer_target.where(base: base).first.id),class: "link" %>
-                <% else %>
-                NaN
-                <% end %>
+                <%= @dmer_monthly.where(user: {base: base}).length %>
               </td>
               <td class="">
-                <%= @aupay_monthly.where(user: {base: base}).length %> / 
-                <% if @aupay_target.where(base: base).first.present? %>
-                <%= link_to @aupay_target.where(base: base).first.product_len, edit_product_target_path(@aupay_target.where(base: base).first.id),class: "link" %>
-                <% else %>
-                NaN
-                <% end %>
+                <%= @aupay_monthly.where(user: {base: base}).length %>
               </td>
               <td class="">
-                <%= @rakuten_pay_monthly.where(user: {base: base}).length %> / 
-                <% if @rakuten_pay_target.where(base: base).first.present? %>
-                <%= link_to @rakuten_pay_target.where(base: base).first.product_len, edit_product_target_path(@rakuten_pay_target.where(base: base).first.id),class: "link" %>
-                <% else %>
-                NaN
-                <% end %>
+                <%= @rakuten_pay_monthly.where(user: {base: base}).length %>
               </td>
               <td class="">
-                <%= @airpay_monthly.where(user: {base: base}).length %> / 
-                <% if @airpay_target.where(base: base).first.present? %>
-                <%= link_to @airpay_target.where(base: base).first.product_len, edit_product_target_path(@airpay_target.where(base: base).first.id),class: "link" %>
-                <% else %>
-                NaN
-                <% end %>
+                <%= @airpay_monthly.where(user: {base: base}).length %>
               </td>
               <td class="">
               <%= @demaekan_monthly.where(user: {base: base}).sum(:out_get_20) %>
@@ -227,20 +207,16 @@
                 @shift_monthly_digestion.length 
               %></td>
               <td class="">
-                <%= @dmer_monthly.length %> /
-                <%= @dmer_target.sum(:product_len) %>
+                <%= @dmer_monthly.length %>
               </td>
               <td class="">
-                <%= @aupay_monthly.length %> / 
-                <%= @aupay_target.sum(:product_len) %>
+                <%= @aupay_monthly.length %>
               </td>
               <td class="">
-                <%= @rakuten_pay_monthly.length %> / 
-                <%= @rakuten_pay_target.sum(:product_len) %>
+                <%= @rakuten_pay_monthly.length %>
               </td>
               <td class="">
-                <%= @airpay_monthly.length %> / 
-                <%= @airpay_target.sum(:product_len) %>
+                <%= @airpay_monthly.length %> 
               </td>
               <td class=""><%= @demaekan_monthly.sum(:out_get_20) %></td>
               <td class=""><%= (dmer_monthly_ave * @shift_monthly_plan.length).round() rescue "測定不可" %></td>
