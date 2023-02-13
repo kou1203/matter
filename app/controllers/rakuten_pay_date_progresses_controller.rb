@@ -182,7 +182,8 @@ class RakutenPayDateProgressesController < ApplicationController
     result_fin_len = rakuten_pay_person_this_month_len_fin + rakuten_pay_person_prev_len + rakuten_pay_company_this_month_len_fin + rakuten_pay_company_prev_len
     # 終着（個人合計＋法人合計）
     profit_fin = rakuten_pay_person_profit_sum + rakuten_pay_company_profit_sum
-    fin_len = (@rakuten_pays_user.where(date: @start_date..@end_date).length.to_f / shift_digestion * shift_schedule).round() rescue 0
+    get_len = @rakuten_pays_user.where(date: @start_date..@end_date).length
+    fin_len = (get_len.to_f / shift_digestion * shift_schedule).round() rescue 0
       if (profit_current > profit_fin) || (Date.today > @rakuten_pay1_closing_date)
         profit_fin = profit_current
         result_fin_len = rakuten_pay_result_len
@@ -239,7 +240,7 @@ class RakutenPayDateProgressesController < ApplicationController
         date: @month                                           ,
         shift_schedule: shift_schedule            ,
         shift_digestion: shift_digestion          ,
-        get_len: @rakuten_pays_user.where(date: @start_date..@end_date).length,
+        get_len: get_len,
         share_len: @rakuten_pays_user_share.length                                                                                ,
         fin_len: fin_len                                       ,
         valuation_current: valuation_current                                                                                      ,
