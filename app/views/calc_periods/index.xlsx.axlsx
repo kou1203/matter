@@ -181,7 +181,7 @@ wb = xlsx_package.workbook
         @airpaysticker_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           sheet.add_row [
             date_progress.base, date_progress.user.name, date_progress.user.position_sub, 
-            date_progress.get_len,date_progress.profit_current
+            date_progress.result_len,date_progress.profit_current
           ]
         end 
       end
