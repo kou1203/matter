@@ -108,7 +108,7 @@ Air獲得：<%= @shift_digestion.where(user_id: user.id).sum(:airpay) rescue 0 %
               <span class="">予定<%= s.shift.slice(-2,2) %></span> 
             <% end %>
               / 終着<%= @result.find_by(user_id: s.user_id).shift.slice(-2,2) rescue "未入力" %>：
-              <%= s.user.name %>
+              <%= s.user.name %><br>
               <% if @result.exists?(user_id: s.user_id) %>
               <span>終着入力済：<%= link_to "終着修正",edit_result_path(@result.find_by(user_id: s.user_id).id), class: "link" %> </span>
               <% else %>
@@ -117,7 +117,7 @@ Air獲得：<%= @shift_digestion.where(user_id: user.id).sum(:airpay) rescue 0 %
                 <% if (@result.find_by(user_id: s.user_id)) && (s.shift != @result.find_by(user_id: s.user_id).shift) %>
                 <span class="red">※<%= link_to "予定シフト相違（変更）",edit_shift_path( s.id), class: "red-link" %></span>
                 <% end %>
-                
+              </p>
           <% end %>
           <% end %>
         </div><%# 終着が打たれているか確認 %>
