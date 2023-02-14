@@ -108,16 +108,16 @@ Air獲得：<%= @shift_digestion.where(user_id: user.id).sum(:airpay) rescue 0 %
               <span class="">予定<%= s.shift.slice(-2,2) %></span> 
             <% end %>
               / 終着<%= @result.find_by(user_id: s.user_id).shift.slice(-2,2) rescue "未入力" %>：
-              <%= s.user.name %><br>
+              <%= s.user.name %>
               <% if @result.exists?(user_id: s.user_id) %>
-              <span>終着入力済：<%= link_to "終着修正",edit_result_path(@result.find_by(user_id: s.user_id).id), class: "link" %> </span>
+              <span><%= link_to "修正",edit_result_path(@result.find_by(user_id: s.user_id).id), class: "link" %> </span>
               <% else %>
-              <span class="red"><%= link_to "終着入力",new_result_path(user_id: s.user_id,date: @month), class: "red-link" %></span>
+              <span class="red"><%= link_to "入力",new_result_path(user_id: s.user_id,date: @month), class: "red-link" %></span>
               <% end %>
                 <% if (@result.find_by(user_id: s.user_id)) && (s.shift != @result.find_by(user_id: s.user_id).shift) %>
-                <span class="red">※<%= link_to "予定シフト相違（変更）",edit_shift_path( s.id), class: "red-link" %></span>
+                <br><br><span class="red">※<%= link_to "#{s.user.name}の予定シフトが相違しています。（修正）",edit_shift_path( s.id), class: "red-link" %></span>
                 <% end %>
-              </p>
+              </p><br> 
           <% end %>
           <% end %>
         </div><%# 終着が打たれているか確認 %>
