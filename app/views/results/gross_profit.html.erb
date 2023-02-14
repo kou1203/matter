@@ -11,10 +11,24 @@
     <div data-scope-path="results/ranking">
       <h2>
         <%= link_to "<<",gross_profit_results_path(month:@month.prev_month), class:"link" %>
-        <%= @month.month %>月 (<%= @minimum_date_cash.strftime("%m月%d日") %>〜<%= @maximum_date_cash.strftime("%m月%d日") %>)
+        <%= @month.month %>月 (<%= @start_date.strftime("%m月%d日") %>〜<%= @end_date.strftime("%m月%d日") %>)
         <%= link_to ">>",gross_profit_results_path(month:@month.next_month), class:"link" %>
       </h2>
-      <%= render "result_parts/valuation_factory" %>
+    <table>
+      <tr>
+        <th class="rank-th">氏名</th>
+        <th class="rank-th">役職</th>
+        <th class="rank-th">終着売上</th>
+      </tr>
+      <% if @cash_date_progress.present? %>
+      <% @cash_date_progress.each do |cash_progress| %>
+      <tr>
+      <td class="rank-td"><%= cash_progress.user.name %></td>
+      <td class="rank-td"><%= cash_progress.user.position_sub %></td>
+      <td class="rank-td"><%= cash_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
+      </tr>
+      <% end %>
+      <% end %>
     </div>
   </div>
 </div>

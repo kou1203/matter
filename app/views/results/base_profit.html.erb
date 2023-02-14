@@ -14,12 +14,12 @@
     <div class="date-head"><%# 日付切替 %>
       <h2>
         <%= link_to "<<",base_profit_results_path(month: @month.ago(1.month),base: @base), class:"link","data-turbolinks": false %>
-        <%= @month.month %>月(<%= @start_date %>〜<%= @end_date %>)進捗
+        <%= @month.month %>月進捗
         <%= link_to ">>",base_profit_results_path(month: @month.since(1.month),base: @base), class:"link","data-turbolinks": false %>
       </h2>
     </div><%# 日付切替 %>
     <hr>
-    <h2>◆<%= @base %>売上</h2>
+    <h2>◆<%= @base %>売上（最終更新：<%= @cash_date_progress.maximum(:create_date) %>）</h2>
     <table class="progress-tb">
       <tr>
         <th class="progress-th1" colspan="2">基本情報</th>
@@ -136,18 +136,18 @@
         <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).shift_digestion_slmt rescue 0 %></td>
         <td class="progress-td"><%= total_visit %></td>
         <td class="progress-td"><%= visit %></td>
-        <td class="progress-td"><%= number_to_percentage(visit / total_visit * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= number_to_percentage(visit.to_f / total_visit * 100,precision: 0) rescue 0 %></td>
         <td class="progress-td"><%= interview %></td>
-        <td class="progress-td"><%= number_to_percentage(interview / visit * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= number_to_percentage(interview.to_f / visit * 100,precision: 0) rescue 0 %></td>
         <td class="progress-td"><%= full_talk %></td>
-        <td class="progress-td"><%= number_to_percentage(full_talk / interview * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= number_to_percentage(full_talk.to_f / interview * 100,precision: 0) rescue 0 %></td>
         <td class="progress-td"><%= get %></td>
-        <td class="progress-td"><%= number_to_percentage(get / full_talk * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= number_to_percentage(get.to_f / full_talk * 100,precision: 0) rescue 0 %></td>
         <td class="progress-td"><%= airpay_visit %></td>
         <td class="progress-td"><%= airpay_interview %></td>
-        <td class="progress-td"><%= number_to_percentage(airpay_interview / airpay_visit * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= number_to_percentage(airpay_interview.to_f / airpay_visit * 100,precision: 0) rescue 0 %></td>
         <td class="progress-td"><%= airpay_get %></td>
-        <td class="progress-td"><%= number_to_percentage(airpay_get / airpay_interview * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= number_to_percentage(airpay_get.to_f / airpay_interview * 100,precision: 0) rescue 0 %></td>
       </tr>
       <% end %>
       <tr>

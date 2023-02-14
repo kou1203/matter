@@ -12,10 +12,56 @@
     <%# 各商材の%を選択 %>
     <h2>
       <%= link_to "<<",ranking_results_path(month:@month.prev_month), class:"link" %>
-      <%= @month.month %>月 (<%= @minimum_date_cash.strftime("%m月%d日") %>〜<%= @maximum_date_cash.strftime("%m月%d日") %>)
+      <%= @month.month %>月 (<%= @start_date.strftime("%m月%d日") %>〜<%= @end_date.strftime("%m月%d日") %>)
       <%= link_to ">>",ranking_results_path(month:@month.next_month), class:"link" %>
     </h2>
-    <%= render "result_parts/valuation_factory" %>
+  <%# ランキング %>
+    <div style="display: flex;">
+      <div><%# 終着 %>
+        <p class="sub-title">終着</p>
+        <table>
+          <thead>
+            <tr>
+              <th class="rank-th">順位</th>
+              <th class="rank-th">氏名</th>
+              <th class="rank-th">終着売上</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% @cash_date_progress.each_with_index do |rank,i| %>
+            <tr>
+              <td class="rank-td"><%= i + 1 %>位</td>
+              <td class="rank-td"><%= rank.user.name %></td>
+              <td class="rank-td"><%= (rank.valuation_fin).to_s(:delimited) %></td>
+            </tr>
+          <% break if i == 4 %>
+          <% end %>
+          </tbody>
+        </table>
+      </div><%# /終着 %>
+      <div><%# Ave %>
+        <p class="sub-title">平均</p>
+        <table>
+          <thead>
+            <tr>
+              <th class="rank-th">順位</th>
+              <th class="rank-th">氏名</th>
+              <th class="rank-th">Ave</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% @ranking_ave.each_with_index do |rank,i| %>
+            <tr>
+              <td class="rank-td"><%= i + 1 %>位</td>
+              <td class="rank-td"><%= rank[0] %></td>
+              <td class="rank-td"><%= (rank[1][0]).to_s(:delimited) %></td>
+            </tr>
+          <% break if i == 4 %>
+          <% end %>
+          </tbody>
+        </table>
+      </div><%# /終着 %>
+    </div>
     <h2>商材別獲得数</h2>
     <div style="display: flex;">
       <div><%# dメル %>
@@ -29,11 +75,11 @@
             </tr>
           </thead>
           <tbody>
-          <% @dmers_rank.each_with_index do |dmer,i| %>
+          <% @dmer_date_progress.each_with_index do |dmer,i| %>
             <tr>
               <td><%= i + 1 %>位</td>
-              <td><%= dmer[0] %></td>
-              <td><%= (dmer[1]) %></td>
+              <td><%= dmer.user.name %></td>
+              <td><%= (dmer.get_len) %></td>
             </tr>
           <% break if i == 4 %>
           <% end %>
@@ -51,11 +97,11 @@
             </tr>
           </thead>
           <tbody>
-          <% @aupays_rank.each_with_index do |aupay,i| %>
+          <% @aupay_date_progress.each_with_index do |aupay,i| %>
             <tr>
               <td><%= i + 1 %>位</td>
-              <td><%= aupay[0] %></td>
-              <td><%= (aupay[1]) %></td>
+              <td><%= aupay.user.name %></td>
+              <td><%= (aupay.get_len) %></td>
             </tr>
           <% break if i == 4 %>
           <% end %>
@@ -75,11 +121,11 @@
             </tr>
           </thead>
           <tbody>
-          <% @rakuten_pays_rank.each_with_index do |rakuten_pay,i| %>
+          <% @rakuten_pay_date_progress.each_with_index do |rakuten_pay,i| %>
             <tr>
               <td><%= i + 1 %>位</td>
-              <td><%= rakuten_pay[0] %></td>
-              <td><%= (rakuten_pay[1]) %></td>
+              <td><%= rakuten_pay.user.name %></td>
+              <td><%= (rakuten_pay.get_len) %></td>
             </tr>
           <% break if i == 4 %>
           <% end %>
@@ -97,11 +143,11 @@
             </tr>
           </thead>
           <tbody>
-          <% @airpays_rank.each_with_index do |airpay,i| %>
+          <% @airpay_date_progress.each_with_index do |airpay,i| %>
             <tr>
               <td><%= i + 1 %>位</td>
-              <td><%= airpay[0] %></td>
-              <td><%= (airpay[1]) %></td>
+              <td><%= airpay.user.name %></td>
+              <td><%= (airpay.get_len) %></td>
             </tr>
           <% break if i == 4 %>
           <% end %>
@@ -111,7 +157,7 @@
     </div>
     <p class="caution-text">
       ※獲得数は不備・NGも入ってます。
-      （<%= @minimum_date_cash.strftime("%m月%d日") %>〜<%= @maximum_date_cash.strftime("%m月%d日") %>）
+      （<%= @start_date.strftime("%m月%d日") %>〜<%= @end_date.strftime("%m月%d日") %>）
       の範囲で算出しております。
     </p>
   </div>

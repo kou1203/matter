@@ -830,18 +830,46 @@ class ResultsController < ApplicationController
 
   end 
 
+  # ランキング
   def ranking
-    @result_category = "ランキング"
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @calc_periods = CalcPeriod.where(sales_category: "評価売")
-    valuation_pack
+    calc_period_and_per
+    @users = User.where(base_sub: "キャッシュレス").where.not(position: "退職").order("users.position_sub ASC").order("users.id ASC")
+    @cash_date_progress = CashDateProgress.includes(:user).where(date: @start_date..@end_date).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
+    @cash_date_progress = @cash_date_progress.where(date: @cash_date_progress.maximum(:date)).where(create_date: @cash_date_progress.maximum(:create_date)).order("valuation_fin DESC")
+    @ranking_ave = {}
+    @cash_date_progress.each do |r|
+      sum_valuations_ave = (r.valuation_fin.to_f / r.shift_schedule).round() rescue 0
+      @ranking_ave.store(r.user.name,[sum_valuations_ave])
+      ranking_ave = @ranking_ave.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+    end
+
+
+
+    @dmer_date_progress = DmerDateProgress.includes(:user).where(date: @start_date..@end_date).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
+    @dmer_date_progress = @dmer_date_progress.where(date: @dmer_date_progress.maximum(:date)).where(create_date: @dmer_date_progress.maximum(:create_date)).order("get_len DESC")
+    @aupay_date_progress = AupayDateProgress.includes(:user).where(date: @start_date..@end_date).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
+    @aupay_date_progress = @aupay_date_progress.where(date: @aupay_date_progress.maximum(:date)).where(create_date: @aupay_date_progress.maximum(:create_date)).order("get_len DESC")
+    @rakuten_pay_date_progress = RakutenPayDateProgress.includes(:user).where(date: @start_date..@end_date).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
+    @rakuten_pay_date_progress = @rakuten_pay_date_progress.where(date: @rakuten_pay_date_progress.maximum(:date)).where(create_date: @rakuten_pay_date_progress.maximum(:create_date)).order("get_len DESC")
+    @airpay_date_progress = AirpayDateProgress.includes(:user).where(date: @start_date..@end_date).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
+    @airpay_date_progress = @airpay_date_progress.where(date: @airpay_date_progress.maximum(:date)).where(create_date: @airpay_date_progress.maximum(:create_date)).order("get_len DESC")
   end
 
+  # 利益計算用終着
   def gross_profit
-    @result_category = "利益計算用終着"
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @calc_periods = CalcPeriod.where(sales_category: "評価売")
-    valuation_pack
+    calc_period_and_per
+    @cash_date_progress = 
+      CashDateProgress.includes(:user).where(date: @start_date..@end_date)
+      .where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
+      .where.not(user: {base: "2次店"})
+    @cash_date_progress = 
+      @cash_date_progress.where(date: @cash_date_progress.maximum(:date))
+      .where(create_date: @cash_date_progress.maximum(:create_date))
+      .order("position_sub")
   end 
 
   def base_profit
