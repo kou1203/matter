@@ -1094,6 +1094,9 @@ ActiveRecord::Schema.define(version: 2023_02_10_051306) do
 
   create_table "result_summits", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "result_id"
+    t.integer "metered_light"
+    t.integer "low_voltage"
+    t.integer "store_len"
     t.integer "power_company1_full_talk1"
     t.integer "power_company1_full_talk2"
     t.integer "power_company1_get"

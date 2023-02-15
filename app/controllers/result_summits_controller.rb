@@ -43,7 +43,6 @@ class ResultSummitsController < ApplicationController
     @shift_ojt = @shifts.where(shift: "帯同")
     @shift_office_work = @shifts.where(shift: "内勤")
 
-
     @result_summit_only_data = ""  
     @result_summit_and_put_data = ""
     @result_summit_only = @results.where(shift: "電気")
@@ -232,7 +231,13 @@ class ResultSummitsController < ApplicationController
     @year_parse = @month.year
     @billing_month = @month.strftime("%Y年%m月")
     @user = User.find(params[:user_id])
-    @summits = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(billing_date: @billing_month)
+    @bases = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(billing_date: @billing_month).group(:base)
+    @base = params[:base]
+    if params[:base].present?
+      @summits = SummitBillingAmount.includes(:user).where(base: params[:base]).where(user_id: @user.id).where(billing_date: @billing_month)
+    else
+      @summits = SummitBillingAmount.includes(:user).where(user_id: @user.id).where(billing_date: @billing_month)
+    end 
 
 
     @count_chart = [
@@ -246,13 +251,13 @@ class ResultSummitsController < ApplicationController
 
     @commission_chart = [
       {
-        name: "合計", data: @commission_sum_m = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).sum(:commission)
+        name: "合計", data: @commission_sum_all = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).sum(:commission)
       },
       {
-        name: "従量電灯", data: @commission_sum_l = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).sum(:commission)
+        name: "従量電灯", data: @commission_sum_m = SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%従量%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).sum(:commission)
       },
       {
-        name: "低圧電力", data: SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).sum(:commission)
+        name: "低圧電力", data: @commission_sum_l =  SummitBillingAmount.includes(:user).where(user_id: @user.id).where("contract_type LIKE ?", "%低圧%").where("billing_date LIKE ?","%#{@year_parse}%").group(:billing_date).sum(:commission)
       },
     ]
 
@@ -467,6 +472,9 @@ class ResultSummitsController < ApplicationController
   def result_summit_params
     params.require(:result_summit).permit(
       :result_id                          ,
+      :metered_light                      ,
+      :low_voltage                        ,
+      :store_len                          ,
       # 電力会社別基準値（訪問-成約）
       :power_company1_full_talk1          ,
       :power_company1_full_talk2          ,

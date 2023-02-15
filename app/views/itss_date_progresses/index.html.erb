@@ -127,7 +127,7 @@
           <h2>◆拠点別獲得内訳</h2>
           <table class="progress-tb">
             <tr>
-              <th class="progress-th1" colspan="5">基本情報</th>
+              <th class="progress-th1" colspan="3">基本情報</th>
               <th class="progress-th1" colspan="">獲得内訳</th>
               <th class="progress-th1" colspan="">成果内訳</th>
             </tr>
@@ -135,8 +135,6 @@
             <th class="progress-th2">拠点</th>
             <th class="progress-th2">日付</th>
             <th class="progress-th2">作成日</th>
-            <th class="progress-th2">予定シフト</th>
-            <th class="progress-th2">消化シフト</th>
             <th class="progress-th2">獲得数</th>
             <th class="progress-th2">現状</th>
           </tr>
@@ -147,7 +145,6 @@
                 <td class="progress-td"><%= current.first.date %></td>
                 <td class="progress-td"><%= current.first.create_date %></td>
                 <td class="progress-td"><%= current.sum(:get_len) %></td>
-                <td class="progress-td"><%= current.sum(:fin_len) %></td>
                 <td class="progress-td"><%= current.sum(:result_len) %></td>
             </tr>
             <% if comparison.present? %><%# comparisonデータがあるか判別 %>
@@ -203,9 +200,6 @@
                   @comparison.sum(:profit_current)
                 ).to_s(:delimited) 
               %></td>
-              <td class="difference-td"><%= (
-                @current_progress.sum(:profit_fin) - @comparison.sum(:profit_fin)
-                ).to_s(:delimited) %></td>
             </tr>
             <% end %>
           </table>

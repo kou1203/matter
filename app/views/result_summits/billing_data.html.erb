@@ -54,11 +54,21 @@
   </table>
 
   <% if @summits.present? %>
-  <h2>◆明細一覧(<%= @summits.length %>件)</h2>
+  <h2>◆明細一覧(<%= @summits.length %>件)
+    <button class="display-btn">
+      <%= link_to "全地域明細", billing_data_result_summits_path(user_id: @user.id,month:@month),"data-turbolinks": false, class: "reset-link" %>
+    </button>
+    <% @bases.each do |summit| %>
+    <button class="display-btn">
+      <%= link_to "#{summit.base}明細", billing_data_result_summits_path(user_id: @user.id,month:@month,base: summit.base),"data-turbolinks": false, class: "reset-link" %>
+    </button>
+    <% end %>
+  </h2>
   <div class="index-form">
   <table>
     <tr>
       <th class="date-th">No</th>
+      <th class="date-th">拠点</th>
       <th class="date-th">店舗名</th>
       <th class="date-th">請求月</th>
       <th class="date-th">契約種別</th>
@@ -71,6 +81,7 @@
     <% @summits.each_with_index do |s, i| %>
     <tr>
       <td class="date-td"><%= i + 1 %></td>
+      <td class="date-td"><%= s.base %></td>
       <td class="date-td"><%= s.store_name %></td>
       <td class="date-td"><%= s.billing_date %></td>
       <td class="date-td"><%= s.contract_type %></td>
@@ -150,6 +161,15 @@
           <td class="date-td">0</td>
           <% end %>
           <% @commission_sum_l.each do |commission| %>
+          <td class="date-td">¥<%= commission[1].round().to_s(:delimited) %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <th class="date-th">合計</th>
+          <% (@commission_sum_all.length - @commission_sum_all.length).times do %>
+          <td class="date-td">0</td>
+          <% end %>
+          <% @commission_sum_all.each do |commission| %>
           <td class="date-td">¥<%= commission[1].round().to_s(:delimited) %></td>
           <% end %>
         </tr>

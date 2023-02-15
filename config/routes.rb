@@ -52,7 +52,9 @@ Rails.application.routes.draw do
     collection { post :import }
   end 
 
-  resources :summit_date_progresses, only: [:index]
+  resources :summit_date_progresses, only: [:index] do 
+    collection {get :base}
+  end 
 
   resources :summit_date_progresses, only: :show,param: :user_id
 

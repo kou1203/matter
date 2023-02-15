@@ -18,7 +18,11 @@
     <div class="summit-link-flex">
         <% bases.each do |base| %>
         <div class="summit-section">
-            <h2><%= link_to "#{base}利益表", base_profit_result_summits_path,"data-turbolinks": false,class: "link" %></h2>
+        <% if SummitBillingAmount.first.present? %>
+            <h2><%= link_to "#{base}明細データ", base_summit_date_progresses_path(base: base,month: SummitBillingAmount.maximum(:payment_date).ago(2.month)),"data-turbolinks": false,class: "link" %></h2>
+        <% else %>
+            <h2><%= base %></h2>
+        <% end %>
             <% @users.where(base: base).each do |user| %>
                 <p class="link-text"><%= link_to "#{user.name}",result_summit_path(user.id),"data-turbolinks": false, class: "summit-link" %></p>
             <% end %>            

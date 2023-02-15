@@ -2,6 +2,9 @@ class CreateResultSummits < ActiveRecord::Migration[6.1]
   def change
     create_table :result_summits do |t|
       t.references :result                  ,foreign_key: true 
+      t.integer :metered_light
+      t.integer :low_voltage
+      t.integer :store_len
 # 電力会社別基準値（訪問-獲得）
       t.integer :power_company1_full_talk1
       t.integer :power_company1_full_talk2

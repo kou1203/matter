@@ -179,7 +179,11 @@ class RakutenPayDateProgressesController < ApplicationController
     rakuten_pay_company_prev_profit_fin = (@rakuten_pay_price * rakuten_pay_company_prev_len) + (@rakuten_pay_price * rakuten_pay_company_done_prev.length)
     # 終着（法人合計）
     rakuten_pay_company_profit_sum = rakuten_pay_company_this_month_profit_fin + rakuten_pay_company_prev_profit_fin
-    result_fin_len = rakuten_pay_person_this_month_len_fin + rakuten_pay_person_prev_len + rakuten_pay_company_this_month_len_fin + rakuten_pay_company_prev_len
+    result_fin_len = 
+      rakuten_pay_person_this_month_len_fin + rakuten_pay_person_prev_len + 
+      rakuten_pay_company_this_month_len_fin + rakuten_pay_company_prev_len +
+      rakuten_pay_company_done_prev.length + 
+      rakuten_pay_person_done_prev.length
     # 終着（個人合計＋法人合計）
     profit_fin = rakuten_pay_person_profit_sum + rakuten_pay_company_profit_sum
     get_len = @rakuten_pays_user.where(date: @start_date..@end_date).length
