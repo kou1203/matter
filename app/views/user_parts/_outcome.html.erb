@@ -113,7 +113,7 @@
   <% if @airpay_pic.present? && @airpay_pic.exists?(user_id: @user.id) %>
   <tr>
     <td class="valuation-td">AirPayステッカー</td>
-    <td class="valuation-td"><%= @airpay_pic.sum(:product_len) rescue 0 %></td>
+    <td class="valuation-td"><%= @airpay_pic.length rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @airpay_pic.sum(:valuation).to_s(:delimited) rescue 0 %></td>
@@ -444,19 +444,15 @@
       <th class="valuation-th">No</th>
       <th class="valuation-th">商材</th>
       <th class="valuation-th">獲得日</th>
-      <th class="valuation-th">獲得数</th>
       <th class="valuation-th">評価売上</th>
-      <th class="valuation-th"></th>
     </thead>
     <tbody>
-      <% @airpay_pic.each do |pic| %>
+      <% @airpay_pic.each_with_index do |pic, i| %>
       <tr>
-      <td class="valuation-td "><%= num %></td>
-      <td class="valuation-td "><%= pic.product_name rescue "" %></td>
-      <td class="valuation-td "><%= pic.date %></td>
-      <td class="valuation-td "><%= pic.product_len %></td>
+      <td class="valuation-td "><%= i + 1 %></td>
+      <td class="valuation-td "><%= pic.store_name rescue "" %></td>
+      <td class="valuation-td "><%= pic.form_send %></td>
       <td class="valuation-td "><%= pic.valuation %></td>
-      <td class="valuation-td "><%= link_to "編集", edit_other_product_path(pic.id) %></td>
       </tr>
       <% end %>
     </tbody>

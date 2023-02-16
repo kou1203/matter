@@ -125,7 +125,6 @@ class AirpaystickerDateProgressesController < ApplicationController
       @airpaystickers_user = OtherProduct.where("product_name LIKE ?", "%AirPayステッカー%").where(user_id: user_id)
       @airpaystickers_user_period = @airpaystickers_user.where(date: @airpaysticker1_start_date..@airpaysticker1_end_date)
       shift_digestion = @airpaystickers_user_period.length
-      get_len = @airpaystickers_user_period.sum(:product_len)
     # 現状売上
       valuation_current = 0
       profit_current = 0
@@ -143,7 +142,8 @@ class AirpaystickerDateProgressesController < ApplicationController
       
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
-      valuation_current = @airpaystickers_user_period.sum(:valuation)
+      valuation_current = AirpaySticker.where(user_id: user_id).where(form_send: @start_date..@end_date).where(sticker_ok: "〇").where(pop_ok: "〇").sum(:valuation)
+      get_len = AirpaySticker.where(user_id: user_id).where(form_send: @start_date..@end_date).where(sticker_ok: "〇").where(pop_ok: "〇").length
 
       if r.user.position == "退職"
         user_base = r.user.position
@@ -160,7 +160,7 @@ class AirpaystickerDateProgressesController < ApplicationController
         shift_digestion: shift_digestion                    ,
         get_len: get_len                                    ,
         result_len: result_len                              ,
-        fin_len: get_len                                    ,
+        fin_len: result_len                                    ,
         valuation_current: valuation_current                ,
         valuation_fin: valuation_current                    ,
         profit_current: profit_current                          ,

@@ -434,7 +434,7 @@ class ResultsController < ApplicationController
     @other_products = OtherProduct.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
     @aupay_pic = @other_products.where(product_name: "auPay写真")
     @dmer_pic = @other_products.where(product_name: "dメルステッカー")
-    @airpay_pic = @other_products.where("product_name LIKE ?", "%AirPayステッカー%")
+    @airpay_pic = AirpaySticker.where(user_id: @user.id).where(form_send: @month.beginning_of_month..@month.end_of_month)
     # ITSS
     @itss = Itss.includes(:user).where(user_id: @user.id).where(construction_schedule: @itss1_start_date..@itss1_end_date)
     # 決済リスト

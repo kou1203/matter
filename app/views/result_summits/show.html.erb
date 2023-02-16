@@ -949,7 +949,7 @@
               <%= week_shift = @result_summit.where(date: week.minimum(:date)..week.maximum(:date)).length %>
             </td>
             <td class="date-td">
-              <%=( (@summits.where(date: week.minimum(:date)..week.maximum(:date)).where("contract_type LIKE ?","%従量%").length).to_f() / week_shift).round(1) %>
+              <%=( @result_summit.where(date: week.minimum(:date)..week.maximum(:date)).sum(:metered_light).to_f() / week_shift).round(1) %>
             </td>
             <td class="date-td">
               <%= week_visit = ((week.sum(:first_visit) + week.sum(:latter_visit)).to_f() / week_shift).round(1) %>
@@ -1003,27 +1003,25 @@
         <td class="date-td"><%= @result_summit.sum(:metered_light) %></td>
         <td class="date-td"><%= metered_light.where(status: "SWエラー").length %></td>
         <td class="date-td"><%= metered_light.where(status: "キャンセル").length %></td>
-        <td class="date-td"><%= metered_light_ave = (@result_summit.sum(:metered_light).to_f / @result_summit.length).round(1) %></td>
-        <td class="date-td"><%= (metered_light_ave * @shift_summit.length).round() %></td>
-
+        <td class="date-td"><%= metered_light_ave = (@result_summit.sum(:metered_light).to_f / (@result_summit_only.length + @result_summit_and_put.length)).round(1) %></td>
+        <td class="date-td"><%= (metered_light_ave * (@shift_summit.length + @shift_summit_and_put.length)).round() rescue 0 %></td>
         </tr>
         <tr>
         <%  low_voltage = @summits.where(contract_type: "低圧電力") %>
         <td class="date-td">サミット新電力　動力</td>
         <td class="date-td"><%= @result_summit.sum(:low_voltage) %></td>
-        <td class="date-td"><%= low_voltage.where(status: "SWエラー").length %></td>
+        <td class="date-td"><%= low_voltage.where(status: "SWエラー").length  %></td>
         <td class="date-td"><%= low_voltage.where(status: "キャンセル").length %></td>
-        <td class="date-td"><%= low_voltage_ave = (@result_summit.sum(:low_voltage).to_f / @result_summit.length).round(1) %></td>
-        <td class="date-td"><%= (low_voltage_ave * @shift_summit.length).round() %></td>
+        <td class="date-td"><%= low_voltage_ave = (@result_summit.sum(:low_voltage).to_f / (@result_summit_only.length + @result_summit_and_put.length)).round(1) %></td>
+        <td class="date-td"><%= (low_voltage_ave * (@shift_summit.length  + @shift_summit_and_put.length)).round() rescue 0 %></td>
         </tr>
         <tr>
-        <% store_uniq = @summits.pluck(:store_prop_id).uniq %>
         <td class="date-td">サミット新電力　獲得母体数</td>
         <td class="date-td"><%= @result_summit.sum(:store_len) %></td>
         <td class="date-td"><%=  %></td>
         <td class="date-td"><%=  %></td>
-        <td class="date-td"><%= store_uniq_ave = (@result_summit.sum(:store_len).to_f / @result_summit.length).round(1) %></td>
-        <td class="date-td"><%= (store_uniq_ave * @shift_summit.length).round() %></td>
+        <td class="date-td"><%= store_uniq_ave = (@result_summit.sum(:store_len).to_f / (@result_summit_only.length + @result_summit_and_put.length)).round(1) %></td>
+        <td class="date-td"><%= (store_uniq_ave * (@shift_summit.length  + @shift_summit_and_put.length)).round() rescue 0 %></td>
         </tr>
       </table>
       <p class="caution-text">※SWエラーとキャンセルは案件情報から参照しておりますが、獲得, Ave,終着は営業の入力した件数を参照しております。 </p>
