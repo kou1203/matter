@@ -112,10 +112,10 @@
             <th class="date-th left"><span class="date-span">１０：解約金成約</span></th>
             <th class="date-th left"><span class="date-span">１１：ペロフル</span></th>
             <th class="date-th left"><span class="date-span">１１：ペロ成約</span></th>
-            <th class="date-th left"><span class="date-span">サミット（従量）</span></th>
-            <th class="date-th left"><span class="date-span">サミット（動力）</span></th>
-            <th class="date-th left"><span class="date-span">サミット（獲得母体数）</span></th>
-            <th class="date-th left" colspan="3"><span class="date-span"></span></th>
+            <th class="date-th"><span class="date-span">従量電灯</span></th>
+            <th class="date-th"><span class="date-span">低圧電力</span></th>
+            <th class="date-th"><span class="date-span">獲得店舗数</span></th>
+            <th class="date-th" colspan="3"><span class="date-span"></span></th>
           </tr>
         </thead>
         <tbody>
@@ -253,10 +253,10 @@
             <td class="date-td"><span class="date-span"><%= result.result_summit.out2_full_talk_11.to_i rescue "" %></span></td>
             <td class="date-td race-border"><span class="date-span"><%= result.result_summit.out2_get_11.to_i rescue "" %></span></td>
             <%# 獲得内訳 %>
-            <td class="date-td race-border"><span class="date-span"><%= @summits.where(date: result.date).where("contract_type LIKE ?","%従量%").length rescue "" %></span></td>
-            <td class="date-td race-border"><span class="date-span"><%= @summits.where(date: result.date).where(contract_type: "低圧電力").length rescue "" %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.metered_light rescue 0 %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.low_voltage rescue 0 %></span></td>
             <%# 獲得母体 %>
-            <td class="date-td race-border"><span class="date-span"><%= @summits.where(date: result.date).pluck(:store_prop_id).uniq.length rescue "" %></span></td>
+            <td class="date-td race-border"><span class="date-span"><%= result.result_summit.store_len rescue 0 %></span></td>
             <%# 編集, 削除 %>
           <td class="date-td race-border"><span class="date-span"><%= link_to "基準値編集", edit_result_path(result.id),class: "link" %></span></td>
           <% if result.shift == "電気" || result.shift == "設置電気" %>
@@ -986,8 +986,8 @@
     </div><%# /週間基準値 %>
     <% end %>
     <div><%# 獲得内訳 %>
-      <% if @summits.present? && @shift_summit.present? && @result_summit.present? %>
-      <h2>獲得内訳</h2>
+      <h2>獲得内訳：消化シフト<%= @result_summit_only.length + @result_summit_and_put.length %> / <%= @shift_summit_only.length + @shift_summit_and_put.length %>
+      </h2>
       <table>
         <tr>
         <th class="date-th">商材</th>
@@ -1000,33 +1000,33 @@
         <tr>
         <td class="date-td">サミット新電力　従量</td>
         <% metered_light = @summits.where("contract_type LIKE ?","%従量%") %>
-        <td class="date-td"><%= metered_light.length %></td>
+        <td class="date-td"><%= @result_summit.sum(:metered_light) %></td>
         <td class="date-td"><%= metered_light.where(status: "SWエラー").length %></td>
         <td class="date-td"><%= metered_light.where(status: "キャンセル").length %></td>
-        <td class="date-td"><%= metered_light_ave = (metered_light.length.to_f / @result_summit.length).round(1) %></td>
+        <td class="date-td"><%= metered_light_ave = (@result_summit.sum(:metered_light).to_f / @result_summit.length).round(1) %></td>
         <td class="date-td"><%= (metered_light_ave * @shift_summit.length).round() %></td>
 
         </tr>
         <tr>
         <%  low_voltage = @summits.where(contract_type: "低圧電力") %>
         <td class="date-td">サミット新電力　動力</td>
-        <td class="date-td"><%= low_voltage.length %></td>
+        <td class="date-td"><%= @result_summit.sum(:low_voltage) %></td>
         <td class="date-td"><%= low_voltage.where(status: "SWエラー").length %></td>
         <td class="date-td"><%= low_voltage.where(status: "キャンセル").length %></td>
-        <td class="date-td"><%= low_voltage_ave = (low_voltage.length.to_f / @result_summit.length).round(1) %></td>
+        <td class="date-td"><%= low_voltage_ave = (@result_summit.sum(:low_voltage).to_f / @result_summit.length).round(1) %></td>
         <td class="date-td"><%= (low_voltage_ave * @shift_summit.length).round() %></td>
         </tr>
         <tr>
         <% store_uniq = @summits.pluck(:store_prop_id).uniq %>
         <td class="date-td">サミット新電力　獲得母体数</td>
-        <td class="date-td"><%= store_uniq.length %></td>
+        <td class="date-td"><%= @result_summit.sum(:store_len) %></td>
         <td class="date-td"><%=  %></td>
         <td class="date-td"><%=  %></td>
-        <td class="date-td"><%= store_uniq_ave = (store_uniq.length.to_f / @result_summit.length).round(1) %></td>
+        <td class="date-td"><%= store_uniq_ave = (@result_summit.sum(:store_len).to_f / @result_summit.length).round(1) %></td>
         <td class="date-td"><%= (store_uniq_ave * @shift_summit.length).round() %></td>
         </tr>
       </table>
-      <% end %>
+      <p class="caution-text">※SWエラーとキャンセルは案件情報から参照しておりますが、獲得, Ave,終着は営業の入力した件数を参照しております。 </p>
     </div><%# /獲得内訳 %>
   </div>
 </div><%# users/showスコープ頭 %>

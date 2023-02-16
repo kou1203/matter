@@ -92,7 +92,7 @@
             <tr>
               <th class="progress-th1" colspan="5">基本情報</th>
               <th class="progress-th1" colspan="3">獲得内訳</th>
-              <th class="progress-th1" colspan="2">成果内訳</th>
+              <th class="progress-th1" colspan="4">成果内訳</th>
             </tr>
             <tr>
               <th class="progress-th2">比較対象</th>
@@ -104,7 +104,9 @@
               <th class="progress-th2">獲得終着見込</th>
               <th class="progress-th2">上位店連携数</th>
               <th class="progress-th2">現状</th>
+              <th class="progress-th2">現状(13,500)</th>
               <th class="progress-th2">終着</th>
+              <th class="progress-th2">終着(13,500)</th>
             </tr>
             <tr v-if="isDifActive">
               <td class="progress-td">現状</td>
@@ -116,7 +118,9 @@
               <td class="progress-td"><%= @current_progress.sum(:fin_len) %></td>
               <td class="progress-td"><%= @current_progress.sum(:share_len) %></td>
               <td class="progress-td"><%= @current_progress.sum(:result_len) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:prev_price_result) %></td>
               <td class="progress-td"><%= @current_progress.sum(:result_fin_len) %></td>
+              <td class="progress-td"><%= @current_progress.sum(:prev_price_result_fin) %></td>
             </tr>
             <% if @comparison.present? %>
             <tr v-if="isDifActive">
@@ -129,7 +133,9 @@
               <td class="progress-td"><%= @comparison.sum(:fin_len) %></td>
               <td class="progress-td"><%= @comparison.sum(:share_len) %></td>
               <td class="progress-td"><%= @comparison.sum(:result_len) %></td>
+              <td class="progress-td"><%= @comparison.sum(:prev_price_result) %></td>
               <td class="progress-td"><%= @comparison.sum(:result_fin_len) %></td>
+              <td class="progress-td"><%= @comparison.sum(:prev_price_result_fin) %></td>
             </tr>
             <tr>
               <td class="difference-td" colspan="3">差異</td>
@@ -139,7 +145,9 @@
               <td class="difference-td"><%= @current_progress.sum(:fin_len) - @comparison.sum(:fin_len) %></td>
               <td class="difference-td"><%= @current_progress.sum(:share_len) - @comparison.sum(:share_len) %></td>
               <td class="difference-td"><%= @current_progress.sum(:result_len) -  @comparison.sum(:result_len) %></td>
+              <td class="difference-td"><%= @current_progress.sum(:prev_price_result) -  @comparison.sum(:prev_price_result) %></td>
               <td class="difference-td"><%= @current_progress.sum(:result_fin_len) -  @comparison.sum(:result_fin_len) %></td>
+              <td class="difference-td"><%= @current_progress.sum(:prev_price_result_fin) -  @comparison.sum(:prev_price_result_fin) %></td>
             </tr>
             <% end %>
           </table>
@@ -148,7 +156,7 @@
             <tr>
               <th class="progress-th1" colspan="5">基本情報</th>
               <th class="progress-th1" colspan="3">獲得内訳</th>
-              <th class="progress-th1" colspan="2">成果内訳</th>
+              <th class="progress-th1" colspan="5">成果内訳</th>
             </tr>
           <tr>
             <th class="progress-th2">拠点</th>
@@ -160,7 +168,9 @@
             <th class="progress-th2">獲得終着見込</th>
             <th class="progress-th2">上位店連携数</th>
             <th class="progress-th2">現状</th>
+            <th class="progress-th2">現状（13,500）</th>
             <th class="progress-th2">終着</th>
+            <th class="progress-th2">終着（13,500）</th>
           </tr>
           <% @current_arry.zip(@comparison_arry).each do |current,comparison| %><%# 配列繰返 %>
             <% if current.present? %><%# currentデータがあるか判別 %>
@@ -174,7 +184,9 @@
                 <td class="progress-td"><%= current.sum(:fin_len) %></td>
                 <td class="progress-td"><%= current.sum(:share_len) %></td>
                 <td class="progress-td"><%= current.sum(:result_len) %></td>
+                <td class="progress-td"><%= current.sum(:prev_price_result) %></td>
                 <td class="progress-td"><%= current.sum(:result_fin_len) %></td>
+                <td class="progress-td"><%= current.sum(:prev_price_result_fin) %></td>
             </tr>
             <% if comparison.present? %><%# comparisonデータがあるか判別 %>
             <tr v-if="isDifActive">
@@ -187,7 +199,9 @@
               <td class="progress-td"><%= comparison.sum(:fin_len) %></td>
               <td class="progress-td"><%= comparison.sum(:share_len) %></td>
               <td class="progress-td"><%= comparison.sum(:result_len) %></td>
+              <td class="progress-td"><%= comparison.sum(:prev_price_result) %></td>
               <td class="progress-td"><%= comparison.sum(:result_fin_len) %></td>
+              <td class="progress-td"><%= comparison.sum(:prev_price_result_fin) %></td>
             </tr>
             <tr>
               <td class="difference-td" colspan="3"><%= current.first.base %>比較差異</td>
@@ -197,7 +211,9 @@
               <td class="difference-td"><%= current.sum(:fin_len) - comparison.sum(:fin_len) %></td>
               <td class="difference-td"><%= current.sum(:share_len) - comparison.sum(:share_len) %></td>
               <td class="difference-td"><%= current.sum(:result_len) - comparison.sum(:result_len) %></td>
+              <td class="difference-td"><%= current.sum(:prev_price_result) - comparison.sum(:prev_price_result) %></td>
               <td class="difference-td"><%= current.sum(:result_fin_len) - comparison.sum(:result_fin_len) %></td>
+              <td class="difference-td"><%= current.sum(:prev_price_result_fin) - comparison.sum(:prev_price_result_fin) %></td>
             </tr>
             <% end %><%# comparisonデータがあるか判別 %>
             <% end %><%# currentデータがあるか判別 %>
@@ -328,7 +344,7 @@
           <tr>
             <th class="progress-th1" colspan="5">基本情報</th>
             <th class="progress-th1" colspan="3">獲得内訳</th>
-            <th class="progress-th1" colspan="2">成果内訳</th>
+            <th class="progress-th1" colspan="4">成果内訳</th>
           </tr>
           <tr>
             <th class="progress-th2">名前</th>
@@ -340,7 +356,9 @@
             <th class="progress-th2">獲得終着見込</th>
             <th class="progress-th2">上位店連携数</th>
             <th class="progress-th2">現状</th>
+            <th class="progress-th2">現状(13,500)</th>
             <th class="progress-th2">終着</th>
+            <th class="progress-th2">終着(13,500)</th>
           </tr>
           <tr v-for="item in currentItems" :key="item" class="progress-tr">
             <td class="progress-td">{{ users.find((u) => u.id == item.user_id).name }}</td>
@@ -352,7 +370,9 @@
             <td class="progress-td">{{ item.fin_len }}</td>
             <td class="progress-td">{{ item.share_len }}</td>
             <td class="progress-td">{{ item.result_len }}</td>
+            <td class="progress-td">{{ item.prev_price_result }}</td>
             <td class="progress-td">{{ item.result_fin_len }}</td>
+            <td class="progress-td">{{ item.prev_price_result_fin }}</td>
           </tr>
           <tr class="sum-tr">
             <td class="progress-td" colspan="3">合計（現状）</td>
@@ -362,7 +382,9 @@
             <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.fin_len,0) }}</td>
             <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.share_len,0) }}</td>
             <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.result_len,0) }}</td>
+            <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.prev_price_result,0) }}</td>
             <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.result_fin_len,0) }}</td>
+            <td class="progress-td">{{ currentItems.reduce((sum,element)=> sum +element.prev_price_result_fin,0) }}</td>
           </tr>
           <tr v-if="comparisonItems.length != 0" class="difference-tr">
             <td class="progress-td" colspan="3">合計（比較対象{{ comparisonItems[0].date }}）</td>
@@ -372,7 +394,9 @@
             <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.fin_len,0) }}</td>
             <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.share_len,0) }}</td>
             <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.result_len,0) }}</td>
+            <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.prev_price_result,0) }}</td>
             <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.result_fin_len,0) }}</td>
+            <td class="progress-td">{{ comparisonItems.reduce((sum,element)=> sum +element.prev_price_result_fin,0) }}</td>
           </tr>
           <tr v-if="comparisonItems.length != 0">
             <td class="difference-td" colspan="3">比較対象との差異</td>
@@ -401,8 +425,16 @@
               comparisonItems.reduce((sum,element)=> sum +element.result_len,0) 
               }}</td>
             <td class="difference-td">{{ 
+              currentItems.reduce((sum,element)=> sum +element.prev_price_result,0) -
+              comparisonItems.reduce((sum,element)=> sum +element.prev_price_result,0) 
+              }}</td>
+            <td class="difference-td">{{ 
               currentItems.reduce((sum,element)=> sum +element.result_fin_len,0) -
               comparisonItems.reduce((sum,element)=> sum +element.result_fin_len,0) 
+              }}</td>
+            <td class="difference-td">{{ 
+              currentItems.reduce((sum,element)=> sum +element.prev_price_result_fin,0) -
+              comparisonItems.reduce((sum,element)=> sum +element.prev_price_result_fin,0) 
               }}</td>
           </tr>
         </table>

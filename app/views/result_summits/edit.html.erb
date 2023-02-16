@@ -18,6 +18,20 @@
     </div>
   <%= form_with model: @result_summit, local: true, class: "form-frame", local: true do |f| %>
   <%# render "shared/error_messages", model: f.object %>
+  <h1>獲得内訳</h1>
+  <div class="form">
+      <p class="form-head"></p>
+      <p>
+          <%= f.label :store_len, "店舗数", class: "form-text" %>-
+          <%= f.label :metered_light, "従量", class: "form-text" %>-
+          <%= f.label :low_voltage, "低圧", class: "form-text" %>
+      </p>
+      <p>
+          <%= f.number_field :store_len,class: "num-input", min: 0 %>
+          <%= f.number_field :metered_light,class: "num-input", min: 0 %>
+          <%= f.number_field :low_voltage , class: "num-input", min: 0 %>
+      </p>
+  </div>
     <h1>電力会社</h1>
   <div class="form">
       <p class="form-head">０１：地域電力</p>

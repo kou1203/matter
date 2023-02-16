@@ -82,7 +82,7 @@ class Summit < ApplicationRecord
     store_prop = StoreProp.find_by(phone_number_1: row["連絡先（-あり）"],name: row["屋号名"])
     store_id = store_prop.id if store_prop.present? 
     if (row["管理番号"].present?)
-      summit = Summit.find_by(store_name: row["屋号名"],supply_num: row["供給地点番号（22桁）"],contract_type: row["契約種別"],amount_use: row["使用量（kWh）"])
+      summit = Summit.find_by(record_num: row["レコード番号"])
       if summit.present?
         summit.assign_attributes(
           processing_status: row["処理状況"],

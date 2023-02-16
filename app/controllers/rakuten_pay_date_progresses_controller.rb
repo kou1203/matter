@@ -145,6 +145,7 @@ class RakutenPayDateProgressesController < ApplicationController
     # 実売
       profit_current = rakuten_pay_done.sum(:profit)
       rakuten_pay_result_len = rakuten_pay_done.length 
+      prev_price_result = rakuten_pay_done.where(profit: 13500).length
     # 終着（個人当月）
       rakuten_pay_person_this_month = @rakuten_pays_user.where(date: @start_date..@end_date).where(store_prop: {race: "個人"})
       rakuten_pay_person_this_month_len_fin = (rakuten_pay_person_this_month.length.to_f / shift_digestion * shift_schedule * @rakuten_pay1_this_month_per).round() rescue 0
@@ -188,9 +189,11 @@ class RakutenPayDateProgressesController < ApplicationController
     profit_fin = rakuten_pay_person_profit_sum + rakuten_pay_company_profit_sum
     get_len = @rakuten_pays_user.where(date: @start_date..@end_date).length
     fin_len = (get_len.to_f / shift_digestion * shift_schedule).round() rescue 0
+    prev_price_result_fin = 0
       if (profit_current > profit_fin) || (Date.today > @rakuten_pay1_closing_date)
         profit_fin = profit_current
         result_fin_len = rakuten_pay_result_len
+        prev_price_result_fin = rakuten_pay_done.where(profit: 13500).length
       end
     # profit_fin = rakuten_pay_company_prev_len + (rakuten_pay_company_done_prev.length.to_f * rakuten_pay_company_calc.prev_month_per).round()
 
@@ -253,6 +256,8 @@ class RakutenPayDateProgressesController < ApplicationController
         profit_fin: profit_fin                                 ,
         result_len: rakuten_pay_result_len                     ,
         result_fin_len: result_fin_len                         ,
+        prev_price_result: prev_price_result                         ,
+        prev_price_result_fin: prev_price_result_fin                         ,
         create_date: Date.today
       }
     # 日付とユーザー名が一致しているデータの場合更新、新しいデータの場合保存
