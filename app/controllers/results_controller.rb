@@ -400,7 +400,7 @@ class ResultsController < ApplicationController
       @rakuten_pays.where(status: "自社不備")
       .or(@rakuten_pays.where(status: "自社NG"))
       .or(@rakuten_pays.where.not(deficiency: nil).where.not(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date))
-    @rakuten_pay_val_len = @rakuten_pays.length - @rakuten_pay_def_ng.length + @rakuten_pays_inc.length
+    @rakuten_pay_val_len = @rakuten_pay_val.length
     @airpays = Airpay.includes(:store_prop).where(date: @start_date..@end_date).where(user_id: @user.id)
     @airpay_def_ng = @airpays.where(status: "審査NG")
     .or(
@@ -434,7 +434,7 @@ class ResultsController < ApplicationController
     @other_products = OtherProduct.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
     @aupay_pic = @other_products.where(product_name: "auPay写真")
     @dmer_pic = @other_products.where(product_name: "dメルステッカー")
-    @airpay_pic = AirpaySticker.where(user_id: @user.id).where(form_send: @month.beginning_of_month..@month.end_of_month)
+    @airpay_pic = AirpaySticker.where(user_id: @user.id).where(form_send: @month.beginning_of_month..@month.end_of_month).where(sticker_ok: "〇").where(pop_ok: "〇")
     # ITSS
     @itss = Itss.includes(:user).where(user_id: @user.id).where(construction_schedule: @itss1_start_date..@itss1_end_date)
     # 決済リスト

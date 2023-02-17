@@ -140,6 +140,20 @@
     <div class="warning"><%= alert %></div>
   <% else %>
       <h1>獲得日：<%= @airpays.minimum(:form_send) %>（<%= days[@airpays.minimum(:form_send).wday] %>）〜<%= @airpays.maximum(:form_send) %>（<%= days[@airpays.maximum(:form_send).wday] %>）</h1>
+    <table>
+      <tr>
+        <th>フォーム送信数</th>
+        <th>ステッカー両方OK</th>
+        <th>店頭ポップOK</th>
+        <th>不備</th>
+      </tr>
+      <tr>
+        <td><%= @airpays.length %></td>
+        <td><%= @airpays.where(sticker_ok: "〇").length %></td>
+        <td><%= @airpays.where(pop_ok: "〇").length %></td>
+        <td><%= @airpays.where.not(deficiency: nil).length %></td>
+      </tr>
+    </table>
     <table class="out-tb">
       <thead>
       <tr>

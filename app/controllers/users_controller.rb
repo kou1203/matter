@@ -696,7 +696,7 @@ class UsersController < ApplicationController
       @other_products = OtherProduct.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
       @aupay_pic = @other_products.where(product_name: "auPay写真")
       @dmer_pic = @other_products.where(product_name: "dメルステッカー")
-      @airpay_pic = AirpaySticker.where(user_id: @user.id).where(form_send: @month.beginning_of_month..@month.end_of_month)
+      @airpay_pic = AirpaySticker.where(user_id: @user.id).where(form_send: @month.beginning_of_month..@month.end_of_month).where(sticker_ok: "〇").where(pop_ok: "〇")
       @airpay_pic_p_repo = @other_products.where("product_name LIKE ?", "%AirPayステッカー%")
       @other_products_val = @other_products.sum(:valuation)
       @dmer_pic_len = @dmer_pic.sum(:product_len)

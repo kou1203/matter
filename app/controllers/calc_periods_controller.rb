@@ -207,20 +207,25 @@ class CalcPeriodsController < ApplicationController
     @demaekan_date_progress = @demaekan_date_progress.where(create_date: @demaekan_date_progress.maximum(:create_date))
     @austicker_date_progress = AustickerDateProgress.where(date: @month.in_time_zone.all_month)
     @austicker_date_progress = @austicker_date_progress.where(create_date: @austicker_date_progress.maximum(:create_date))
-    @dmersticker_date_progress = AustickerDateProgress.where(date: @month.in_time_zone.all_month)
-    @dmersticker_date_progress = @austicker_date_progress.where(create_date: @austicker_date_progress.maximum(:create_date))
+    @dmersticker_date_progress = DmerstickerDateProgress.where(date: @month.in_time_zone.all_month)
+    @dmersticker_date_progress = @dmersticker_date_progress.where(create_date: @dmersticker_date_progress.maximum(:create_date))
+    @airpaysticker_date_progress = AirpaystickerDateProgress.where(date: @month.in_time_zone.all_month)
+    @airpaysticker_date_progress = @airpaysticker_date_progress.where(create_date: @airpaysticker_date_progress.maximum(:create_date))
+    @itss_date_progress = OtherProductDateProgress.where(product_name: "ITSS").where(date: @month.in_time_zone.all_month)
+    @itss_date_progress = @itss_date_progress.where(create_date: @itss_date_progress.maximum(:create_date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
     head :no_content
     filename = "評価売資料#{@month}"
     columns_ja = [
       "拠点", "ユーザー","役職", "予定シフト", "消化シフト", "現状評価売上","終着評価売",
       "dメル審査通過（終着）","dメルアクセプタンス審査通過（終着）","dメル２回目決済（終着）","auPay（終着）", "PayPay（終着）",
-      "楽天ペイ（終着）","AirPay（終着）","出前館（終着）","auステッカー（終着）","dメルステッカー（終着）" 
+      "楽天ペイ（終着）","AirPay（終着）","出前館（終着）","auステッカー（終着）","dメルステッカー（終着）", "ITSS（終着）", "AirPayステッカー（終着）"
     ]
     columns = [
       "base", "user_name","post","shift_schedule", "shift_digestion", "valuation_current", "valuation_fin", 
       "dmer1_valuation_fin", "dmer2_valuation_fin", "dmer3_valuation_fin", "aupay_valuation_fin","paypay_valuation_fin",
-      "rakuten_pay_valuation_fin","airpay_valuation_fin","demaekan_valuation_fin","austicker_valuation_fin","dmersticker_valuation_fin"
+      "rakuten_pay_valuation_fin","airpay_valuation_fin","demaekan_valuation_fin","austicker_valuation_fin","dmersticker_valuation_fin",
+      "itss_valuation_fin","airpaysticker_valuation_fin"
     ]
     bom = "\uFEFF"
     csv = CSV.generate(bom) do |csv|
@@ -267,6 +272,8 @@ class CalcPeriodsController < ApplicationController
           result_attributes["demaekan_valuation_fin"] = @demaekan_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           result_attributes["austicker_valuation_fin"] = @austicker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           result_attributes["dmersticker_valuation_fin"] = @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          result_attributes["airpaysticker_valuation_fin"] = @airpaysticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          result_attributes["itss_valuation_fin"] = @itss_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           csv << result_attributes.values_at(*columns)
         end 
       end

@@ -325,21 +325,6 @@
       <% num += 1 %>
       <% end %>
       <% end %>
-      <% if @rakuten_pay_inc.present? %>
-      <% @rakuten_pay_inc.each do |rakuten_pay| %>
-      <tr>
-      <td class="valuation-td "><%= num %></td>
-      <td class="valuation-td "><%= rakuten_pay.store_prop.name %></td>
-      <td class="valuation-td "><%= rakuten_pay.date %></td>
-      <td class="valuation-td "><%= rakuten_pay.status %></td>
-      <td class="valuation-td "><%= rakuten_pay.deficiency %></td>
-      <td class="valuation-td "><%= rakuten_pay.share %></td>
-      <td class="valuation-td "><%= rakuten_pay.valuation %></td>
-      <td class="valuation-td "><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
-      </tr>
-      <% num += 1 %>
-      <% end %>
-      <% end %>
     </tbody>
   </table>
 <% end %>

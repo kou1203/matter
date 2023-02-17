@@ -73,6 +73,7 @@
         </div><%# 切替ボタン %>
         <% if @current_progress.present? %>
         <button class="active-btn"><%= link_to "Excel出力",calc_periods_path(format: :xlsx,month: @month), data: {confirm: "#{@month.strftime('%m月%d日')}の実売資料をExcelで出力しますか？"}, class: "link",id:'download-csv' %></button>
+        <button class="active-btn"><%= link_to "評価売資料(合計)",cash_valuation_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "#{@month.strftime('%m月%d日')}の評価売資料をCSVで出力しますか？"}, class: "link",id:'download-csv' %></button>
         <% end %>
       </div><%# ヘッド部分 %>
       <% if @current_progress.present? %><%# @current_progressがあるか判別 %>
