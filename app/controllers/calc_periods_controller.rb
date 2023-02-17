@@ -250,7 +250,9 @@ class CalcPeriodsController < ApplicationController
             @airpay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
             @demaekan_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
             @austicker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
-            @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current)
+            @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) +
+            @airpaysticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) +
+            @itss_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current)
           result_attributes["valuation_fin"] = 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin1) + 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin2) + 
@@ -261,7 +263,9 @@ class CalcPeriodsController < ApplicationController
             @airpay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
             @demaekan_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
             @austicker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
-            @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+            @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) +
+            @airpaysticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) +
+            @itss_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           result_attributes["dmer1_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin1)
           result_attributes["dmer2_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin2)
           result_attributes["dmer3_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin3)
