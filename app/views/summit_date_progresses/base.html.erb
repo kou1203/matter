@@ -122,7 +122,7 @@
               <% end %>
           </tr>
           <% end %>
-          <tr class="progress-tr">
+          <tr class="sum-tr">
             <td class="progress-td">全体</td>
               <% (@month_metered_all.group(:billing_date).length - @month_metered_all.group(:billing_date).length).times do %>
               <td class="progress-td"></td>
@@ -171,7 +171,7 @@
               <% end %>
           </tr>
           <% end %>
-          <tr class="progress-tr">
+          <tr class="sum-tr">
             <td class="progress-td">全体</td>
               <% (@month_low_voltage_all.group(:billing_date).length - @month_low_voltage_all.group(:billing_date).length).times do %>
               <td class="progress-td"></td>
@@ -229,7 +229,7 @@
               <% end %>
           </tr>
           <% end %>
-          <tr class="progress-tr">
+          <tr class="sum-tr">
             <td class="progress-td">全体</td>
               <% (@billings_metered_data.group(:billing_date).length - @billings_metered_data.group(:billing_date).length).times do %>
               <td class="progress-td"></td>
@@ -282,7 +282,7 @@
               <% end %>
           </tr>
           <% end %>
-          <tr class="progress-tr">
+          <tr class="sum-tr">
             <td class="progress-td">全体</td>
               <% (@billings_low_voltage_data.group(:billing_date).length - @billings_low_voltage_data.group(:billing_date).length).times do %>
               <td class="progress-td"></td>
@@ -337,7 +337,7 @@
               <% end %>
           </tr>
           <% end %>
-          <tr class="progress-tr">
+          <tr class="sum-tr">
             <td class="progress-td">全体</td>
               <% (@month_metered.group(:billing_date).length - @month_metered.group(:billing_date).length).times do %>
               <td class="progress-td"></td>
@@ -386,7 +386,7 @@
               <% end %>
           </tr>
           <% end %>
-          <tr class="progress-tr">
+          <tr class="sum-tr">
             <td class="progress-td">全体</td>
               <% (@month_low_voltage.group(:billing_date).length - @month_low_voltage.group(:billing_date).length).times do %>
               <td class="progress-td"></td>
@@ -418,7 +418,6 @@
           xtitle: "請求月",
           round: 0
           } %>
-
       </div>
 
       <div class="graph-form" id="billings-ave-graph">
@@ -466,7 +465,7 @@
               <% end %>
           </tr>
           <% end %>
-          <tr class="progress-tr">
+          <tr class="sum-tr">
             <td class="progress-td">全体</td>
               <% (@month_metered.group(:billing_date).length - @month_metered.group(:billing_date).length).times do %>
               <td class="progress-td"></td>
@@ -502,7 +501,7 @@
               <% end %>
           </tr>
           <% end %>
-          <tr class="progress-tr">
+          <tr class="sum-tr">
             <td class="progress-td">全体</td>
               <% (@month_low_voltage.group(:billing_date).length - @month_low_voltage.group(:billing_date).length).times do %>
               <td class="progress-td"></td>

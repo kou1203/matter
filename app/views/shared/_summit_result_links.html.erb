@@ -22,7 +22,11 @@
           <%= link_to "対応履歴", customer_prop_data_result_summits_path(user_id: @user.id,month: @month),"data-turbolinks": false, class: "reset-link" %>
         </button>
         <button class="display-btn">
+        <% if SummitBillingAmount.first.present? %>
+            <%= link_to "明細一覧", billing_data_result_summits_path(user_id: @user.id,month: SummitBillingAmount.maximum(:payment_date).ago(2.month)),"data-turbolinks": false,class: "reset-link" %>
+        <% else %>
           <%= link_to "明細一覧", billing_data_result_summits_path(user_id: @user.id,month: @month),"data-turbolinks": false, class: "reset-link" %>
+        <% end %>
         </button>
         <button class="display-btn">
           <%= link_to "年間データ", prediction_data_result_summits_path(user_id: @user.id,month: @month),"data-turbolinks": false, class: "reset-link" %>
