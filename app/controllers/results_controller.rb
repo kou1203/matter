@@ -62,7 +62,21 @@ class ResultsController < ApplicationController
       @cash_result_out = @cash_result.includes(:result_cash).select(:result_cash_id, :user_id)
     end
     # 日々獲得進捗
-    @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today.yesterday #当日日付
+    # 検索（現状）
+    if params[:date].present?
+      @month_daily = params[:date].to_date
+    elsif params[:search_date].present?
+      @month_daily = params[:search_date].to_date  
+    else
+      @month_daily = Date.today #当日日付
+    end 
+    # 検索（比較対象）
+    if params[:comparison_date].present?
+      @comparison_date = params[:comparison_date].to_date
+    else  
+      @comparison_date = @month_daily.prev_month
+    end 
+
     @dmer_monthly = 
         Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
     @aupay_monthly = 
@@ -74,7 +88,6 @@ class ResultsController < ApplicationController
     @airpay_monthly = 
         Airpay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
     @result_demaekan = Result.includes(:result_cash,:user).select(:user_id,:result_id,:date)
-    @demaekan_monthly = @result_demaekan.where(date: @month_daily.beginning_of_month..@month_daily).where(user: {base_sub: "キャッシュレス"})
     @shift_monthly_plan = 
       Shift.includes(:user)
       .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
@@ -91,6 +104,35 @@ class ResultsController < ApplicationController
       Result.includes(:user)
       .where(date: @month_daily.beginning_of_month..@month_daily)
       .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+
+    @dmer_comparison = 
+        Dmer.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @aupay_comparison = 
+        Aupay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @paypay_comparison = 
+        Paypay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @rakuten_pay_comparison = 
+        RakutenPay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @airpay_comparison = 
+        Airpay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @result_demaekan = Result.includes(:result_cash,:user).select(:user_id,:result_id,:date)
+    @shift_comparison_plan = 
+      Shift.includes(:user)
+      .where(start_time: @comparison_date.beginning_of_month..@comparison_date.end_of_month)
+      .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+    @shift_comparison_slmt_plan = 
+      Shift.includes(:user)
+      .where(start_time: @comparison_date.beginning_of_month..@comparison_date.end_of_month)
+      .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+    @shift_comparison_digestion = 
+      Result.includes(:user)
+      .where(date: @comparison_date.beginning_of_month..@comparison_date)
+      .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+    @shift_comparison_slmt_digestion = 
+      Result.includes(:user)
+      .where(date: @comparison_date.beginning_of_month..@comparison_date)
+      .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+
     # 月間決済率
     # 当月
     @dmer_slmt_this_month = 
@@ -162,42 +204,17 @@ class ResultsController < ApplicationController
     end
 
     # 現状売上
-    if @month_daily.day >= 26
       @result_monthly = 
-        Result.where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+        Result.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
         .or(
-          Result.where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+          Result.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
         )
       @shift_monthly =
-        Shift.where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.next_month.since(24.days)).includes(:user)
+        Shift.where(start_time: @month_daily.beginning_of_month..@month_daily.beginning_of_month.next_month.since(24.days)).includes(:user)
         .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
         .or(
-          Shift.where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.next_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+          Shift.where(start_time: @month_daily.beginning_of_month..@month_daily.beginning_of_month.next_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
         )
-    else  
-      @result_monthly = 
-        Result.where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-        .or(
-          Result.where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-        )
-      @shift_monthly =
-        Shift.where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-        .or(
-          Shift.where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.since(24.days)).includes(:user).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-        )
-    end
-    # 当日獲得数・売上
-    @dmer_today_data = Dmer.where(date: @month_daily).includes(:user).select(:valuation_new,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-    @aupay_today_data = Aupay.where(date: @month_daily).includes(:user).includes(:user).select(:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-    @paypay_today_data = Paypay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-    @rakuten_pay_today_data = RakutenPay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-    @airpay_today_data = Airpay.where(date: @month_daily).includes(:user).select(:valuation,:base_sub,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"})
-    @result_today_data = Result.where(date: @month_daily).includes(:user).select(:profit, :user_id,:date,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"})
-    @shift_today_data = 
-      Shift.where(start_time: @month_daily).includes(:user).select(:user_id,:start_time,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-      .or(
-        Shift.where(start_time: @month_daily).includes(:user).select(:user_id,:start_time,:shift,:base,:base_sub).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-      )
       # 当月不備
       @dmer_def = Dmer.includes(:store_prop,:user).where(store_prop: {head_store: nil}).where(status: "不備対応中")
       @dmer_def_this_month = 
@@ -247,44 +264,6 @@ class ResultsController < ApplicationController
       @rakuten_pay_month = RakutenPay.includes(:user).all
       @paypay_month = Paypay.includes(:user).all
     end
-      @shifts = Shift.includes(:user).all
-      # 個別利益表 
-      if @results.group(:user_id).length == 1 
-        # paypay
-            @paypays_user = Paypay.where(user_id: @results.first.user_id )
-            @paypays_this_month = this_period(@paypays_user,@results)
-            @paypays_def_this_month = @paypays_this_month.where(status: "自社不備")
-        # 少額短期保険
-          @st_insurances_user = StInsurance.where(user_id: @results.first.user_id )
-          @st_insurances_this_month = this_period(@st_insurances_user,@results)
-          @st_insurances_def_this_month = this_period(@st_insurances_this_month,@results)
-        # 楽天フェムト新規
-          @rakuten_casas_user = RakutenCasa.where(user_id: @results.first.user_id)
-          @rakuten_casas_this_month = this_period(@rakuten_casas_user, @results)
-          @rakuten_casas_cancel = casa_cancel(@rakuten_casas_user, @results )
-          @rakuten_casas_def_net = @rakuten_casas_this_month.where.not(deficiency_net: nil).where(deficiency_solution_net: nil)
-          .or(@rakuten_casas_this_month.where.not(deficiency_net: nil).where(deficiency_solution_net: @results.minimum(:date)..@results.maximum(:date)))
-          @rakuten_casas_def_anti = @rakuten_casas_this_month.where.not(deficiency_anti: nil).where(deficiency_solution_anti: nil)
-          .or(@rakuten_casas_this_month.where.not(deficiency_anti: nil).where(deficiency_solution_anti: @results.minimum(:date)..@results.maximum(:date)))
-          @rakuten_casas_not_this_month = not_period(@rakuten_casas_user, @results)
-          @rakuten_casas_inc = inc_period(@rakuten_casas_not_this_month, @results)
-          @rakuten_casas_inc_net = @rakuten_casas_not_this_month.where(deficiency_solution_net: @results.minimum(:date)..@results.maximum(:date))
-          @rakuten_casas_dec_net = @rakuten_casas_not_this_month.where(deficiency_net: @results.minimum(:date)..@results.maximum(:date))
-          @rakuten_casas_inc_anti = @rakuten_casas_not_this_month.where(deficiency_solution_anti: @results.minimum(:date)..@results.maximum(:date))
-          @rakuten_casas_dec_anti = @rakuten_casas_not_this_month.where(deficiency_anti: @results.minimum(:date)..@results.maximum(:date))
-        # 楽天フェムト設置
-          @rakuten_casas_put = @rakuten_casas_user.where(put: @results.minimum(:date)..@results.maximum(:date))
-          # 設置
-          @rakuten_casas_put_self = @rakuten_casas_put.where(putter_id: @results.first.user_id).where(user_id: @results.first.user_id)
-          # 他者設置
-          @rakuten_casas_put_other = RakutenCasa.where.not(user_id: @results.first.user_id).where(putter_id: @results.first.user_id).where(put: @results.minimum(:date)..@results.maximum(:date))
-          # 設置依頼
-          @rakuten_casas_put_request = @rakuten_casas_put.where(user_id: @results.first.user_id).where.not(putter_id: @results.first.user_id)
-          @result_monthly
-      else
-      # 全体売上
-        @shift_sum = this_period(@shifts,@results)
-      end
   end 
 
   def new 
@@ -821,9 +800,9 @@ class ResultsController < ApplicationController
 
       ).order(position_sub: :asc)
     @result = 
-      Result.includes(:user).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス新規")
+      Result.includes(:user, :result_cash).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス新規")
       .or(
-        Result.includes(:user).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス決済")
+        Result.includes(:user, :result_cash).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス決済")
 
       )
     @users = User.where(base: @base_category).where(base_sub: "キャッシュレス").where.not(position: "退職").order(position_sub: :asc)

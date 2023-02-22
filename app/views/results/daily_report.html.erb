@@ -66,11 +66,7 @@
 <% end %>
 <%# /現状売上 %>
 <%# 当日売上 %>
-<% if @result.where(user_id: user.id).present? %>
-<% today_profit_new = (@result.where(user_id: user.id).sum(:dmer) * 8000) + (@result.where(user_id: user.id).sum(:rakuten_pay) * 4000) + (@result.where(user_id: user.id).sum(:airpay) * 3000) rescue 0 %>
-<% else %>
-<% today_profit_new = 0 %>
-<% end %>
+<% today_profit_new = (@result.where(user_id: user.id).sum(:dmer) * 8000) + (@result.where(user_id: user.id).sum(:rakuten_pay) * 4000) + (@result.where(user_id: user.id).sum(:airpay) * 3000)  %>
 <%# /当日売上 %>
 <%# 平均 %>
 <% dmer_ave = 0 %>
