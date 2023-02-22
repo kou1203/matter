@@ -123,6 +123,7 @@ Rails.application.routes.draw do
       get :profit
       get :base_profit
       get :daily_report
+      get :dup_index
     }
   end  
 

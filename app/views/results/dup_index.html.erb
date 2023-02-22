@@ -1,0 +1,46 @@
+<div data-scope-path="shared/header">
+  <h1>終着重複案件</h1>
+  <%= render "shared/header" %>
+</div>
+<div data-scope-path="users/show"><%# users/showスコープ頭 %>
+  <p class="dup-text"><%= link_to "前のページに戻る", shift_path(@user_id),class: "link" %></p>
+  <table class="">
+    <tr>
+    <th class="dup-th">ID</th>
+    <th class="dup-th">獲得者</th>
+    <th class="dup-th">シフト</th>
+    <th class="dup-th">日付</th>
+    <th class="dup-th">地域</th>
+    <th class="dup-th">売上</th>
+    <th class="dup-th">基準値</th>
+    <th class="dup-th">切返入力有無</th>
+    <th colspan="2" class="dup-th"></th>
+    </tr>
+  <% @results.each do |result| %>
+    <tr class="dup-tr">
+    <td class="dup-td"><%= result.id %></td>
+    <td class="dup-td"><%= result.user.name %></td>
+    <td class="dup-td"><%= result.shift %></td>
+    <td class="dup-td"><%= result.date %></td>
+    <td class="dup-td"><%= result.area %></td>
+    <td class="dup-td"><%= result.profit %></td>
+    <td class="dup-td">
+      <%= result.first_total_visit + result.latter_total_visit %> -
+      <%= result.first_visit + result.latter_visit %> -
+      <%= result.first_interview + result.latter_interview %> -
+      <%= result.first_full_talk + result.latter_full_talk %> -
+      <%= result.first_get + result.latter_get %>
+    </td>
+    <% if result.result_cash.present? %>
+    <td class="dup-td">有</td>
+    <% else %>
+    <td class="dup-td">無</td>
+    <% end %>
+    <td class="dup-td"><%= link_to "編集", edit_result_path(result.id), class: "link" %></td>
+    <td class="dup-td"><%= link_to "削除", result_path(result.id),method: :delete,data: {confirm: "ID：#{result.id}\n#{result.date.strftime("%Y年%m月%d日")}の終着を削除してもよろしいですか？"},class: "delete-link" %></td>
+    </tr>
+  <% end %>
+  </table>
+    
+    
+</div><%# users/showスコープ頭 %>

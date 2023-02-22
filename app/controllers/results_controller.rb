@@ -883,6 +883,13 @@ class ResultsController < ApplicationController
     
   end 
 
+  def dup_index
+    @user_id = params[:user_id]
+    @date = params[:date]
+    @results = Result.where(user_id: @user_id).where(date: @date)
+  end
+
+
 
 
   private

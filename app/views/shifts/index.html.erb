@@ -184,7 +184,7 @@
         %>
           <td rowspan="2" style="vertical-align:middle; background:red; color:white;" ><%= link_to shift.user.name, shift_path(shift.user.id),class: "show-link" %></td>
         <% else %>
-          <td rowspan="2" style="vertical-align:middle;"><%= shift.user.name %></td>
+          <td rowspan="2" style="vertical-align:middle; " ><%= link_to shift.user.name, shift_path(shift.user.id),class: "link" %></td>
         <% end %>
           <td><%= shift.user.base %></td>
           <td><%= cash_new_p %></td>
