@@ -80,7 +80,7 @@
           <thead>
             <tr class="index-tr">
               <th class="" colspan="3">基本情報</th>
-              <th class="" colspan="5">シフト</th>
+              <th class="" colspan="3">シフト</th>
               <th class="" colspan="4">現状獲得数</th>
               <th class="" colspan="4">終着獲得数</th>
             </tr>
@@ -89,9 +89,7 @@
               <th class="">日付</th>
               <th class="">人員</th>
               <th class="">新規予定シフト</th>
-              <th class="">決済予定シフト</th>
               <th class="">新規消化シフト</th>
-              <th class="">決済消化シフト</th>
               <th class="">新規残シフト</th>
               <th class="gray">dメル</th>
               <th class="gray">auPay</th>
@@ -109,9 +107,7 @@
               <td class=""><%= @month_daily.beginning_of_month.strftime("%m月%d日") %>〜<%= @month_daily.strftime("%m月%d日") %></td>
               <td class=""><%= @shift_monthly_plan.group(:user_id).length %></td>
               <td class=""><%= @shift_monthly_plan.length %></td>
-              <td class=""><%= @shift_monthly_slmt_plan.length %></td>
               <td class=""><%= @shift_monthly_digestion.length %></td>
-              <td class=""><%= @shift_monthly_slmt_digestion.length %></td>
               <td class=""><%= 
                 @shift_monthly_plan.length -
                 @shift_monthly_digestion.length 
@@ -138,9 +134,7 @@
               <td class=""><%= @comparison_date.beginning_of_month.strftime("%m月%d日") %>〜<%= @comparison_date.strftime("%m月%d日") %></td>
               <td class=""><%= @shift_comparison_plan.group(:user_id).length %></td>
               <td class=""><%= @shift_comparison_plan.length %></td>
-              <td class=""><%= @shift_comparison_slmt_plan.length %></td>
               <td class=""><%= @shift_comparison_digestion.length %></td>
-              <td class=""><%= @shift_comparison_slmt_digestion.length %></td>
               <td class=""><%= 
                 @shift_comparison_plan.length -
                 @shift_comparison_digestion.length 
@@ -166,9 +160,7 @@
               <td class="" colspan="2">差異</td>
               <td class="<%= "red" if 0 > @shift_monthly_plan.group(:user_id).length - @shift_comparison_plan.group(:user_id).length %>"><%= @shift_monthly_plan.group(:user_id).length - @shift_comparison_plan.group(:user_id).length %></td>
               <td class="<%= "red" if 0 > @shift_monthly_plan.length - @shift_comparison_plan.length %>"><%= @shift_monthly_plan.length - @shift_comparison_plan.length %></td>
-              <td class="<%= "red" if 0 > @shift_monthly_slmt_plan.length - @shift_comparison_slmt_plan.length %>"><%= @shift_monthly_slmt_plan.length - @shift_comparison_slmt_plan.length %></td>
               <td class="<%= "red" if 0 > @shift_monthly_digestion.length - @shift_comparison_digestion.length %>"><%= @shift_monthly_digestion.length - @shift_comparison_digestion.length %></td>
-              <td class="<%= "red" if 0 > @shift_monthly_slmt_digestion.length - @shift_comparison_slmt_digestion.length %>"><%= @shift_monthly_slmt_digestion.length - @shift_comparison_slmt_digestion.length %></td>
               <td class="<%= "red" if 0 > (@shift_monthly_plan.length - @shift_monthly_digestion.length) - (@shift_comparison_plan.length - @shift_comparison_digestion.length) %>"><%= 
                 (@shift_monthly_plan.length - @shift_monthly_digestion.length) - (@shift_comparison_plan.length - @shift_comparison_digestion.length)
               %></td>
@@ -204,7 +196,7 @@
           <thead>
             <tr class="index-tr">
               <th class="" colspan="3">基本情報</th>
-              <th class="" colspan="5">シフト</th>
+              <th class="" colspan="3">シフト</th>
               <th class="" colspan="4">現状獲得数</th>
               <th class="" colspan="4">終着獲得数</th>
             </tr>
@@ -213,9 +205,7 @@
               <th class="">日付</th>
               <th class="">人員</th>
               <th class="">新規予定シフト</th>
-              <th class="">決済予定シフト</th>
               <th class="">新規消化シフト</th>
-              <th class="">決済消化シフト</th>
               <th class="">新規残シフト</th>
               <th class="gray">dメル</th>
               <th class="gray">auPay</th>
@@ -287,9 +277,7 @@
               <td class=""><%= @shift_monthly_plan.where(user: {base: base}).group(:user_id).length %></td>
               <%# シフト %>
               <td class=""><%= @shift_monthly_plan.where(user: {base: base}).length %></td>
-              <td class=""><%= @shift_monthly_slmt_plan.where(user: {base: base}).length %></td>
               <td class=""><%= @shift_monthly_digestion.where(user: {base: base}).length %></td>
-              <td class=""><%= @shift_monthly_slmt_digestion.where(user: {base: base}).length %></td>
               <td class=""><%= 
                 @shift_monthly_plan.where(user: {base: base}).length -
                 @shift_monthly_digestion.where(user: {base: base}).length
@@ -319,9 +307,7 @@
               <td class=""><%= @shift_comparison_plan.where(user: {base: base}).group(:user_id).length %></td>
               <%# シフト %>
               <td class=""><%= @shift_comparison_plan.where(user: {base: base}).length %></td>
-              <td class=""><%= @shift_comparison_slmt_plan.where(user: {base: base}).length %></td>
               <td class=""><%= @shift_comparison_digestion.where(user: {base: base}).length %></td>
-              <td class=""><%= @shift_comparison_slmt_digestion.where(user: {base: base}).length %></td>
               <td class=""><%= 
                 @shift_comparison_plan.where(user: {base: base}).length -
                 @shift_comparison_digestion.where(user: {base: base}).length
@@ -354,14 +340,9 @@
               <td class="<%= "red" if 0 > @shift_monthly_plan.where(user: {base: base}).length - @shift_comparison_plan.where(user: {base: base}).length %>">
                 <%= @shift_monthly_plan.where(user: {base: base}).length - @shift_comparison_plan.where(user: {base: base}).length %>
               </td>
-              <td class="<%= "red" if 0 > @shift_monthly_slmt_plan.where(user: {base: base}).length - @shift_comparison_slmt_plan.where(user: {base: base}).length %>">
-                <%= @shift_monthly_slmt_plan.where(user: {base: base}).length - @shift_comparison_slmt_plan.where(user: {base: base}).length %>
               </td>
               <td class="<%= "red" if 0 > @shift_monthly_digestion.where(user: {base: base}).length - @shift_comparison_digestion.where(user: {base: base}).length %>">
                 <%= @shift_monthly_digestion.where(user: {base: base}).length - @shift_comparison_digestion.where(user: {base: base}).length %>
-              </td>
-              <td class="<%= "red" if 0 > @shift_monthly_slmt_digestion.where(user: {base: base}).length - @shift_comparison_slmt_digestion.where(user: {base: base}).length %>">
-                <%= @shift_monthly_slmt_digestion.where(user: {base: base}).length - @shift_comparison_slmt_digestion.where(user: {base: base}).length %>
               </td>
               <td class="<%= "red" if 0 > (@shift_comparison_plan.where(user: {base: base}).length - @shift_comparison_digestion.where(user: {base: base}).length) -(@shift_monthly_plan.where(user: {base: base}).length - @shift_monthly_digestion.where(user: {base: base}).length) %>">
                 <%= 
