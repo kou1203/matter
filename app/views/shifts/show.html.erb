@@ -61,7 +61,7 @@
             <% if @results.where(date: date).length > 1 %>
             <span class="r-shift"><%= link_to "重複",dup_index_results_path(user_id: @user.id,date: date),class: "caution-link" %></span>
             <% elsif r_data == shift.shift %>
-            ○
+            <span class=""><%=link_to "○",edit_result_path(@results.find_by(date: date).id),class:"link" %></span>
             <% elsif r_data.present? %>
             <span class="r-shift"><%=link_to r_data.slice(-2,2),edit_result_path(@results.find_by(date: date).id),class:"link" %></span>
             <% else %>
