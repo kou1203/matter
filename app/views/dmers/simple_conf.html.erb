@@ -1,0 +1,56 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>dメル早見</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div>
+    <hr>
+    <%= render "shared/dmer_links" %>
+    <hr>
+    <h2>
+      <%= link_to "<<",dmers_path(month: @month.ago(1.month)), class:"link" %>
+      <%= @month.month %>月dメル各種件数
+      <%= link_to ">>",dmers_path(month: @month.since(1.month)), class:"link" %>
+    </h2>
+    <table>
+      <tr>
+      <th class="out-th">拠点</th>
+      <th class="out-th">獲得数</th>
+      <th class="out-th">審査通過</th>
+      <th class="out-th">初回決済</th>
+      <th class="out-th">アクセプタンス</th>
+      <th class="out-th">アクセプタンス合格</th>
+      <th class="out-th">2回目決済</th>
+      <th class="out-th">期限切れ</th>
+      </tr>
+      <% @bases.each do |base| %>
+      <tr>
+      <td class="index-td"><%= base %></td>
+      <td class="index-td"><%= @monthly_data.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_done.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_slmt.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_pic.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_pic_done.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_2nd_slmt.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_slmt_dead.where(user: {base: base}).length %></td>
+      </tr>
+      <% end %>
+      <tr class="sum-tr">
+      <td class="index-td">全拠点</td>
+      <td class="index-td"><%= @monthly_data.length %></td>
+      <td class="index-td"><%= @monthly_done.length %></td>
+      <td class="index-td"><%= @monthly_slmt.length %></td>
+      <td class="index-td"><%= @monthly_pic.length %></td>
+      <td class="index-td"><%= @monthly_pic_done.length %></td>
+      <td class="index-td"><%= @monthly_2nd_slmt.length %></td>
+      <td class="index-td"><%= @monthly_slmt_dead.length %></td>
+      </tr>
+    </table>
+    <p class="caution-text">※こちらの件数は担当商材がキャッシュレスではない人も含まれております。</p>
+  </div>
+</div>

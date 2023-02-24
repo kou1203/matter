@@ -9,6 +9,11 @@
 </div>
 <div data-scope-path="shares/index">
 <div class="main">
+<% if current_user.name == "管理用" %>
+<hr>
+<%= render "shared/rakuten_pay_links" %>
+<hr>
+<% end %>
 <% if current_user.position_sub == "管理" %>
   <%= form_with url: import_rakuten_pays_path do |f| %>
     <table class="csv-tb">
@@ -94,6 +99,18 @@
                         f.select :status_eq,
                         options_from_collection_for_select(RakutenPay.select(:status)
                         .distinct,:status, :status),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">不備カテゴリー</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :def_status_eq,
+                        options_from_collection_for_select(RakutenPay.select(:def_status)
+                        .distinct,:def_status, :def_status),
                         {include_blank: true},
                         {class: "t-input"} 
                       %>
@@ -205,9 +222,10 @@
         <th class="out-th">審査完了日</th>
         <th class="out-th">入金日</th>
         <th class="out-th">入金期限</th>
-        <th class="out-th">入金判定</th>
         <th class="remarks-th">不備詳細①</th>
         <th class="remarks-th">不備詳細②</th>
+        <th class="out-th">入金判定</th>
+        <th class="out-th">不備カテゴリー</th>
       </tr>
       </thead>
       <tbody>
@@ -227,6 +245,7 @@
         <td class="out-td"><%= rakuten_pay.payment_flag %></td>
         <td class="remarks-td"><%= rakuten_pay.deficiency_info %></td>
         <td class="remarks-td"><%= rakuten_pay.deficiency_consent %></td>
+        <td class="remarks-td"><%= rakuten_pay.def_status %></td>
       </tr>
       <% end %>
       </tbody>

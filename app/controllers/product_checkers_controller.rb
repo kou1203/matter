@@ -8,6 +8,7 @@ class ProductCheckersController < ApplicationController
         @q.result(distinct: false)
       end
       @products_data = @products.page(params[:page]).per(100)
+      @products = ProductChecker.all
   end
 end
 

@@ -56,6 +56,9 @@ class RakutenPaysController < ApplicationController
     end
   end 
 
+  def deficiency
+  end 
+
   private 
   def rakuten_pay_params 
     params.require(:rakuten_pay).permit(

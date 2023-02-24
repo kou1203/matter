@@ -9,6 +9,11 @@
 </div>
 <div data-scope-path="shares/index">
 <div class="main">
+<% if current_user.name == "管理用" %>
+<hr>
+<%= render "shared/dmer_links" %>
+<hr>
+<% end %>
 <% if current_user.position_sub == "管理" %>
     <%= form_with url: import_dmers_path do |f| %>
       <table class="csv-tb">
@@ -199,46 +204,6 @@
       <hr>
       <div class="warning"><%= alert %></div>
       <% if @dmers.empty? %>
-        <h2>
-          <%= link_to "<<",dmers_path(month: @month.ago(1.month)), class:"link" %>
-          <%= @month.month %>月dメル各種件数
-          <%= link_to ">>",dmers_path(month: @month.since(1.month)), class:"link" %>
-        </h2>
-        <table>
-          <tr>
-          <th class="out-th">拠点</th>
-          <th class="out-th">獲得数</th>
-          <th class="out-th">審査通過</th>
-          <th class="out-th">初回決済</th>
-          <th class="out-th">アクセプタンス</th>
-          <th class="out-th">アクセプタンス合格</th>
-          <th class="out-th">2回目決済</th>
-          <th class="out-th">期限切れ</th>
-          </tr>
-          <% @bases.each do |base| %>
-          <tr>
-          <td class="index-td"><%= base %></td>
-          <td class="index-td"><%= @monthly_data.where(user: {base: base}).length %></td>
-          <td class="index-td"><%= @monthly_done.where(user: {base: base}).length %></td>
-          <td class="index-td"><%= @monthly_slmt.where(user: {base: base}).length %></td>
-          <td class="index-td"><%= @monthly_pic.where(user: {base: base}).length %></td>
-          <td class="index-td"><%= @monthly_pic_done.where(user: {base: base}).length %></td>
-          <td class="index-td"><%= @monthly_2nd_slmt.where(user: {base: base}).length %></td>
-          <td class="index-td"><%= @monthly_slmt_dead.where(user: {base: base}).length %></td>
-          </tr>
-          <% end %>
-          <tr class="sum-tr">
-          <td class="index-td">全拠点</td>
-          <td class="index-td"><%= @monthly_data.length %></td>
-          <td class="index-td"><%= @monthly_done.length %></td>
-          <td class="index-td"><%= @monthly_slmt.length %></td>
-          <td class="index-td"><%= @monthly_pic.length %></td>
-          <td class="index-td"><%= @monthly_pic_done.length %></td>
-          <td class="index-td"><%= @monthly_2nd_slmt.length %></td>
-          <td class="index-td"><%= @monthly_slmt_dead.length %></td>
-          </tr>
-        </table>
-        <p class="caution-text">※こちらの件数は担当商材がキャッシュレスではない人も含まれております。</p>
       <% else %>
       <h1>獲得日：<%= @dmers.minimum(:date) %>（<%= days[@dmers.minimum(:date).wday] %>）〜<%= @dmers.maximum(:date) %>（<%= days[@dmers.maximum(:date).wday] %>）</h1>
 

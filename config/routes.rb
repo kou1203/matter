@@ -65,6 +65,7 @@ Rails.application.routes.draw do
 
   resources :dmers, expect: [:new, :create] do 
     collection { post :import }
+    collection { get :simple_conf }
   end 
   
   resources :stocks do 
@@ -180,6 +181,7 @@ Rails.application.routes.draw do
 
   resources :rakuten_pays do 
     collection { post :import }
+    collection { get :deficiency }
   end 
 
   resources :error_pages
