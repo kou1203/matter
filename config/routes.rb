@@ -182,6 +182,7 @@ Rails.application.routes.draw do
   resources :rakuten_pays do 
     collection { post :import }
     collection { get :deficiency }
+    collection { get :simple_conf }
   end 
 
   resources :error_pages

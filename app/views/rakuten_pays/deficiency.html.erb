@@ -1,6 +1,6 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <div data-scope-path="shared/header">
-  <h1 class="sub-title">不備内訳</h1>
+  <h1 class="sub-title">楽天ペイ不備内訳</h1>
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;">
@@ -8,5 +8,174 @@
   <%= render "shared/sidebar" %>
 </div>
 <div data-scope-path="shares/index">
-hello deficiency!!
+<hr>
+<%= render "shared/rakuten_pay_links" %>
+<hr>
+<div class="link-flex">
+  <div>
+  <h2>◆拠点別件数</h2>
+  <table>
+    <tr>
+      <% @bases.each do |base| %>
+      <th><%= base %></th>
+      <% end %>
+    </tr>
+    <tr>
+      <% @bases.each do |base| %>
+      <td><%= @rakuten_pays_def.where(user: {base: base}).length %>件</td>
+      <% end %>
+    </tr>
+  </table>
+  </div>
+</div>
+<h2>◆不備内訳</h2>
+<table>
+  <tr>  
+    <th>合計</th>
+    <% @rakuten_pays_def.group(:def_status).each do |rakuten_pay| %>
+    <th><%= rakuten_pay.def_status %></th>
+    <% end %>
+  </tr>
+  <tr>
+    <td><%= @rakuten_pays_def.length %>件</td>
+    <% @rakuten_pays_def.group(:def_status).count.each do |rakuten_pay| %>
+    <td><%= rakuten_pay[1] %>件</td>
+    <% end %>
+  </tr>
+</table>
+
+<hr>
+<h2>◆不備発生推移</h2><br>
+<%= line_chart @def_graph %>
+<div class="link-flex">
+  <div>
+    <h2>◆月間不備発生件数</h2>
+    <table>
+      <tr>
+        <th class="green-th">拠点</th>
+        <% month_ary = [] %><%# 月間 %>
+        <% @rakuten_pays_def.group("YEAR(client_def_date)").group("MONTH(client_def_date)").count.each do |month| %>
+        <th class="green-th">
+          <%= month[0][0] %>年
+          <%= month[0][1] %>月
+          <% month_ary << "#{month[0][0]}年#{month[0][1]}月"  %>
+        </th>
+        <% end %>
+        <th class="green-th">合計</th>
+      </tr>
+      <% @bases.each do |base| %>
+        <tr>
+          <td><%= base %></td>
+            <% month_cnt = 0 %><%# 配列を順番に取り出すための配列番号 %>
+            <% throw_flag = 0 %>
+            <% month_save = "" %>
+            <% @rakuten_pays_def.where(user: {base: base}).group("YEAR(client_def_date)").group("MONTH(client_def_date)").count.each do |rakuten_def| %>
+              <% if month_save == "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
+                <td><%= 0 %>件</td>
+                <td><%= rakuten_def[1] %>件<%= month_save %></td>
+                <% month_cnt += 1 %>
+              <% elsif month_ary[month_cnt] == "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
+                <td><%= rakuten_def[1] %>件</td>
+                <% month_cnt += 1 %>
+                <% throw_flag = 0 %>
+              <% elsif throw_flag == 1 %>
+                <% throw_flag = 0 %>
+              <% else %>
+                <td><%= 0 %>件</td>
+                <% month_save = "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
+                <% month_cnt += 1 %>
+              <% throw_flag = 1 %>
+              <% end %>
+              <% if month_ary[month_cnt] == month_save %>
+                <td><%= rakuten_def[1] %>件</td>
+                <% month_save = "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
+                <% month_cnt += 1 %>
+              <% end %>
+            <% end %>
+            <td><%= @rakuten_pays_def.where(user: {base: base}).length %>件</td>
+        </tr>
+      <% end %>
+      <tr>
+        <td>全拠点</td>
+          <% @rakuten_pays_def.group("YEAR(client_def_date)").group("MONTH(client_def_date)").count.each do |rakuten_def| %>
+              <td><%= rakuten_def[1] %>件</td>
+          <% end %>
+        <td><%= @rakuten_pays_def.length %>件</td>
+      </tr>
+    </table>
+  </div>
+  <div>
+    <% if @rakuten_pays_def.where.not(client_def_solution: nil).length != 0 %>
+      <h2>◆月間不備解消件数</h2>
+      <table>
+        <tr>
+          <th class="green-th">拠点</th>
+          <% month_ary = [] %><%# 月間 %>
+          <% @rakuten_pays_def.where.not(client_def_solution: nil).group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |month| %>
+          <th class="green-th">
+            <%= month[0][0] %>年
+            <%= month[0][1] %>月
+            <% month_ary << "#{month[0][0]}年#{month[0][1]}月"  %>
+          </th>
+          <% end %>
+          <th class="green-th">合計</th>
+        </tr>
+        <% @bases.each do |base| %>
+          <tr>
+            <td><%= base %></td>
+              <% month_cnt = 0 %><%# 配列を順番に取り出すための配列番号 %>
+              <% throw_flag = 0 %>
+              <% month_save = "" %>
+              <% before_month_len = 0 %>
+              <% month_len = @rakuten_pays_def.where.not(client_def_solution: nil).where(user: {base: base}).group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").length %>
+                <% if month_len == 0 %>
+                  <% month_ary.length.times do %>
+                    <td><%= 0 %>件</td>
+                    <% before_month_len += 1 %>
+                  <% end %>
+                <% end %>
+              <% @rakuten_pays_def.where.not(client_def_solution: nil).where(user: {base: base}).group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |rakuten_def| %>
+                <% if month_save == "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
+                  <td><%= 0 %>件</td>
+                  <td><%= rakuten_def[1] %>件<%= month_save %></td>
+                  <% month_cnt += 1 %>
+                  <% before_month_len += 1 %>
+                <% elsif month_ary[month_cnt] == "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
+                  <td><%= rakuten_def[1] %>件</td>
+                  <% month_cnt += 1 %>
+                  <% throw_flag = 0 %>
+                <% elsif throw_flag == 1 %>
+                  <% throw_flag = 0 %>
+                <% else %>
+                  <td><%= 0 %>件</td>
+                  <% month_save = "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
+                  <% month_cnt += 1 %>
+                  <% throw_flag = 1 %>
+                  <% before_month_len += 1 %>
+                <% end %>
+                <% if month_ary[month_cnt] == month_save %>
+                  <td><%= rakuten_def[1] %>件</td>
+                  <% month_save = "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
+                  <% month_cnt += 1 %>
+                <% end %>
+              <% end %>
+              <% if (month_len != 0) && ((month_ary.length - before_month_len) > month_len) %>
+                <% ((month_ary.length - before_month_len) - month_len).times do %>
+                <td><%= 0 %>件</td>
+                <% end %>
+              <% end %>
+              <td><%= @rakuten_pays_def.where.not(client_def_solution: nil).where(user: {base: base}).length %>件</td>
+          </tr>
+        <% end %>
+        <tr>
+          <td>全拠点</td>
+            <% @rakuten_pays_def.where.not(client_def_solution: nil).group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |rakuten_def| %>
+              <td><%= rakuten_def[1] %>件</td>
+            <% end %>
+          <td><%= @rakuten_pays_def.where.not(client_def_solution: nil).length %>件</td>
+        </tr>
+      </table>
+    <% end %>
+  </div>
+</div>
 </div>

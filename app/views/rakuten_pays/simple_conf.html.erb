@@ -1,0 +1,83 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>楽天ペイ早見</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div>
+    <hr>
+    <%= render "shared/rakuten_pay_links" %>
+    <hr>
+    <h2>
+      <%= link_to "<<",simple_conf_rakuten_pays_path(month: @month.ago(1.month)), class:"link" %>
+      <%= @month.month %>月楽天ペイ各種件数
+      <%= link_to ">>",simple_conf_rakuten_pays_path(month: @month.since(1.month)), class:"link" %>
+    </h2>
+    <table>
+      <tr>
+      <th class="out-th">拠点</th>
+      <th class="out-th">人員</th>
+      <th class="out-th">新規消化シフト</th>
+      <th class="out-th">獲得数</th>
+      <th class="out-th">獲得Ave</th>
+      <th class="out-th">審査通過</th>
+      <th class="out-th">自社不備</th>
+      <th class="out-th">自社不備解消</th>
+      <th class="out-th">上位店不備</th>
+      <th class="out-th">不備解消</th>
+      </tr>
+      <% @bases.each do |base| %>
+      <tr>
+      <td class="index-td"><%= base %></td>
+      <td class="index-td"><%= @monthly_data.where(user: {base: base}).group(:user_id).length %></td>
+      <td class="index-td"><%= @results.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_data.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= (@monthly_data.where(user: {base: base}).length.to_f / @results.where(user: {base: base}).length).round(1) %></td>
+      <td class="index-td"><%= @monthly_done.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_def.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_def_solution.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_client_def.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_client_def_solution.where(user: {base: base}).length %></td>
+      </tr>
+      <% end %>
+      <tr class="sum-tr">
+      <td class="index-td">全拠点</td>
+      <td class="index-td"><%= @monthly_data.group(:user_id).length %></td>
+      <td class="index-td"><%= @results.length %></td>
+      <td class="index-td"><%= @monthly_data.length %></td>
+      <td class="index-td"><%= (@monthly_data.length.to_f / @results.length).round(1) %></td>
+      <td class="index-td"><%= @monthly_done.length %></td>
+      <td class="index-td"><%= @monthly_def.length %></td>
+      <td class="index-td"><%= @monthly_def_solution.length %></td>
+      <td class="index-td"><%= @monthly_client_def.length %></td>
+      <td class="index-td"><%= @monthly_client_def_solution.length %></td>
+      </tr>
+    </table>
+    <p class="caution-text">※こちらの件数は担当商材がキャッシュレスではない人も含まれております。</p>
+  <hr>
+  <h2>
+    ◆獲得推移(合計：<%= @monthly_data.length %>件, 
+    獲得日数：<%= @monthly_data.group(:date).length %>日, 
+    １日平均：<%= (@monthly_data.length.to_f / @monthly_data.group(:date).length).round(1) %>)件
+  </h2><br>
+  <%= line_chart @monthly_data.group(:date).count,options = {
+    label: "獲得数",
+  } %>
+  
+  <h2>
+    ◆審査完了推移(合計：<%= @monthly_done.length %>件, 
+    審査通過日数：<%= @monthly_done.group(:result_point).length %>日, 
+    １日平均：<%= (@monthly_done.length.to_f / @monthly_done.group(:result_point).length).round(1) %>)件
+  </h2><br>
+  <%= line_chart @monthly_done.group(:result_point).count,options = {
+    label: "審査通過数",
+    colors: ["red"]
+  } %>
+  </div>
+  </div>
+
+</div>

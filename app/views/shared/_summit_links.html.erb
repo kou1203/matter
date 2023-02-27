@@ -1,35 +1,35 @@
     
-<div class="summit-link-flex">
-    <div class="summit-section">
+<div class="link-flex">
+    <div class="section">
         <h2>各種一覧</h2>
-        <p class="link-text"><%= link_to "サミット一覧", summits_path ,"data-turbolinks": false, class: "summit-link" %></p>
-        <p class="link-text"><%= link_to "SWエラー一覧", sw_error_summits_path,"data-turbolinks": false, class: "summit-link" %></p>
-        <p class="link-text"><%= link_to "支払遅延一覧", summit_error_histories_path,"data-turbolinks": false, class: "summit-link" %></p>
-        <p class="link-text"><%= link_to "廃止一覧", cancel_summits_path,"data-turbolinks": false, class: "summit-link" %></p>
+        <p class="link-text"><%= link_to "サミット一覧", summits_path ,"data-turbolinks": false, class: "index-link" %></p>
+        <p class="link-text"><%= link_to "SWエラー一覧", sw_error_summits_path,"data-turbolinks": false, class: "index-link" %></p>
+        <p class="link-text"><%= link_to "支払遅延一覧", summit_error_histories_path,"data-turbolinks": false, class: "index-link" %></p>
+        <p class="link-text"><%= link_to "廃止一覧", cancel_summits_path,"data-turbolinks": false, class: "index-link" %></p>
     </div>
-    <div class="summit-section">
+    <div class="section">
         <h2>その他詳細</h2>
-        <p class="link-text"><%= link_to "対応履歴", summit_customer_props_path,"data-turbolinks": false, class: "summit-link" %></p>
-        <p class="link-text"><%= link_to "支払明細", summit_billing_amounts_path,"data-turbolinks": false, class: "summit-link" %></p>
-        <p class="link-text"><%= link_to "明細分析", summit_date_progresses_path(month: Date.today.ago(2.month)),"data-turbolinks": false,class: "summit-link" %></p>
+        <p class="link-text"><%= link_to "対応履歴", summit_customer_props_path,"data-turbolinks": false, class: "index-link" %></p>
+        <p class="link-text"><%= link_to "支払明細", summit_billing_amounts_path,"data-turbolinks": false, class: "index-link" %></p>
+        <p class="link-text"><%= link_to "明細分析", summit_date_progresses_path(month: Date.today.ago(2.month)),"data-turbolinks": false,class: "index-link" %></p>
     </div>
     <%= javascript_pack_tag 'base_slct' %>
     <% bases = ["中部SS", "関西SS", "関東SS"] %>
-    <div class="summit-link-flex">
+    <div class="link-flex">
         <% bases.each do |base| %>
-        <div class="summit-section">
+        <div class="section">
         <% if SummitBillingAmount.first.present? %>
-            <h2><%= link_to "#{base}明細データ", base_summit_date_progresses_path(base: base,month: SummitBillingAmount.maximum(:payment_date).ago(2.month)),"data-turbolinks": false,class: "link" %></h2>
+            <h2><%= link_to "#{base}明細データ", base_summit_date_progresses_path(base: base,month: SummitBillingAmount.maximum(:payment_date).ago(2.month)),"data-turbolinks": false,class: "index-link" %></h2>
         <% else %>
             <h2><%= base %></h2>
         <% end %>
             <% @users.where(base: base).each do |user| %>
-                <p class="link-text"><%= link_to "#{user.name}",result_summit_path(user.id),"data-turbolinks": false, class: "summit-link" %></p>
+                <p class="link-text"><%= link_to "#{user.name}",result_summit_path(user.id),"data-turbolinks": false, class: "index-link" %></p>
             <% end %>            
         </div>
         <% end %>
     </div>
-    <%# link_to "SWエラー", sw_error_summits_path,"data-turbolinks": false, class: "summit-link" %>
+    <%# link_to "SWエラー", sw_error_summits_path,"data-turbolinks": false, class: "link" %>
 </div>
 <hr>
     

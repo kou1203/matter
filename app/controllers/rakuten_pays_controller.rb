@@ -57,7 +57,34 @@ class RakutenPaysController < ApplicationController
   end 
 
   def deficiency
+    @bases = ["中部SS","関西SS","関東SS","2次店"]
+    @rakuten_pays_def = RakutenPay.includes(:user).where.not(client_def_date: nil)
+    @def_graph = []
+    
+      @bases.each do |base|
+        def_base = {
+          name: "#{base}不備件数", data: @rakuten_pays_def.where(user: {base: base}).group("YEAR(client_def_date)").group("MONTH(client_def_date)").count
+        }
+        @def_graph << def_base
+      end
+    
   end 
+
+  def simple_conf
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @bases = ["中部SS", "関西SS", "関東SS", "九州SS", "2次店"]
+    @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @month.beginning_of_month..@month.end_of_month)
+    @monthly_data = RakutenPay.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    @monthly_done = 
+    RakutenPay.includes(:user).where(result_point: @month.beginning_of_month..@month.end_of_month).where(status: "審査OK")
+      .or(
+        RakutenPay.includes(:user).where(result_point: @month.beginning_of_month..@month.end_of_month).where(status: "OK")
+      )
+    @monthly_def = RakutenPay.includes(:user).where(deficiency: @month.beginning_of_month..@month.end_of_month)
+    @monthly_def_solution = RakutenPay.includes(:user).where(deficiency_solution: @month.beginning_of_month..@month.end_of_month)
+    @monthly_client_def = RakutenPay.includes(:user).where(client_def_date: @month.beginning_of_month..@month.end_of_month)
+    @monthly_client_def_solution = RakutenPay.includes(:user).where(client_def_solution: @month.beginning_of_month..@month.end_of_month)
+  end
 
   private 
   def rakuten_pay_params 
