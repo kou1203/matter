@@ -59,9 +59,9 @@ class Dmer < ApplicationRecord
             payment_settlement: row["決済入金日"],
             result_point: row["審査完了日（新規）"],
             result_point_settlement: row["審査完了日（決済）"],
-            deficiency: row["不備発生日（新規）"],
+            deficiency: row["不備発生日"],
             deficiency_settlement: row["不備発生日（決済）"],
-            deficiency_solution: row["不備解消日（新規）"],
+            deficiency_solution: row["不備解消日"],
             deficiency_solution_settlement: row["不備解消日（決済）"],
             deficiency_deadline: row["不備解消期限"],
             deficiency_remarks: row["不備詳細（新規）"],
@@ -72,7 +72,10 @@ class Dmer < ApplicationRecord
             profit_second_settlement: row["2回目決済実売"],
             valuation_new: row["獲得評価売"],
             valuation_settlement: row["決済評価売"],
-            valuation_second_settlement: row["2回目決済評価売"]
+            valuation_second_settlement: row["2回目決済評価売"],
+            controll_num: row["管理番号"],
+            def_status: row["不備カテゴリー"],
+            picture_update: row["キャリア連携日"],
           )
           errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できません" if dmer.invalid? && errors.length < 5
       end
@@ -131,9 +134,9 @@ class Dmer < ApplicationRecord
           payment_settlement: row["決済入金日"],
           result_point: row["審査完了日（新規）"],
           result_point_settlement: row["審査完了日（決済）"],
-          deficiency: row["不備発生日（新規）"],
+          deficiency: row["不備発生日"],
+          deficiency_solution: row["不備解消日"],
           deficiency_settlement: row["不備発生日（決済）"],
-          deficiency_solution: row["不備解消日（新規）"],
           deficiency_solution_settlement: row["不備解消日（決済）"],
           deficiency_deadline: row["不備解消期限"],
           deficiency_remarks: row["不備詳細（新規）"],
@@ -144,7 +147,10 @@ class Dmer < ApplicationRecord
           profit_second_settlement: row["2回目決済実売"],
           valuation_new: row["獲得評価売"],
           valuation_settlement: row["決済評価売"],
-          valuation_second_settlement: row["2回目決済評価売"]
+          valuation_second_settlement: row["2回目決済評価売"],
+          controll_num: row["管理番号"],
+          def_status: row["不備カテゴリー"],
+          picture_update: row["キャリア連携日"],
         }
       end
       Dmer.upsert_all(dmers)

@@ -75,6 +75,7 @@ class RakutenPaysController < ApplicationController
     @bases = ["中部SS", "関西SS", "関東SS", "九州SS", "2次店"]
     @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @month.beginning_of_month..@month.end_of_month)
     @monthly_data = RakutenPay.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    @monthly_share = RakutenPay.includes(:user).where(share: @month.beginning_of_month..@month.end_of_month)
     @monthly_done = 
     RakutenPay.includes(:user).where(result_point: @month.beginning_of_month..@month.end_of_month).where(status: "審査OK")
       .or(

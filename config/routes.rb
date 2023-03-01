@@ -65,7 +65,9 @@ Rails.application.routes.draw do
 
   resources :dmers, expect: [:new, :create] do 
     collection { post :import }
+    collection { get :export }
     collection { get :simple_conf }
+    collection { get :deficiency }
   end 
   
   resources :stocks do 

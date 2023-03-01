@@ -1,5 +1,6 @@
 class DmersController < ApplicationController
   before_action :authenticate_user!
+  require 'csv'
   def index 
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @q = Dmer.includes(:store_prop, :user).ransack(params[:q])
@@ -10,8 +11,6 @@ class DmersController < ApplicationController
         @q.result(distinct: false)
       end
     @dmers_data = @dmers.page(params[:page]).per(100)
-
-
   end 
 
   def new
@@ -77,9 +76,65 @@ class DmersController < ApplicationController
     end
   end 
 
+  def deficiency
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @bases = ["中部SS","関西SS","関東SS","2次店"]
+    @dmers_def = Dmer.includes(:user).where.not(deficiency: nil).where(deficiency: @month.in_time_zone.all_year)
+    @def_graph = []
+    
+      @bases.each do |base|
+        def_base = {
+          name: "#{base}不備件数", data: @dmers_def.where(user: {base: base}).where(deficiency: @month.in_time_zone.all_year).group("MONTH(deficiency)").count
+        }
+        @def_graph << def_base
+      end
+  end 
+
+  def export 
+    @month = params[:month].to_date
+    @dmer_result1 = 
+      Dmer.where(result_point: @month.beginning_of_month..@month.end_of_month).where(settlement: ..@month.end_of_month).where(settlement_deadline: @month.beginning_of_month..)
+      .or(
+        Dmer.where(settlement: @month.beginning_of_month..@month.end_of_month).where(result_point: ..@month.end_of_month).where(settlement_deadline: @month.beginning_of_month..)
+      )
+    filename = "dメル一覧"
+    columns_ja = [
+      "管理番号", "店舗名", "獲得者","獲得日", "初回決済日",
+    ]
+    columns = [
+      "controll_num", "store_prop_name", "user_name", "date","settlement"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      @dmer_result1.each do |dmer|
+        result_attributes = {}
+        result_attributes["controll_num"] = dmer.controll_num
+        result_attributes["store_prop_name"] = dmer.store_prop.name
+        result_attributes["user_name"] = dmer.user.name
+        result_attributes["date"] = dmer.date
+        result_attributes["settlement"] = dmer.settlement
+        csv << result_attributes.values_at(*columns)
+      end 
+    end 
+    create_csv(filename,csv)
+  end 
 
 
   private 
+
+
+
+  def create_csv(filename, csv1)
+    #ファイル書き込み
+    File.open("./#{filename}.csv", "w") do |file|
+      file.write(csv1)
+    end
+    #send_fileを使ってCSVファイル作成後に自動でダウンロードされるようにする
+    stat = File::stat("./#{filename}.csv")
+    send_file("./#{filename}.csv", filename: "#{filename}.csv", length: stat.size)
+  end
+
   def dmer_params
     params.require(:dmer).permit(
       :customer_num,

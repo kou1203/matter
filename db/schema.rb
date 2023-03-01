@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_23_094329) do
+ActiveRecord::Schema.define(version: 2023_02_27_092304) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -419,6 +419,9 @@ ActiveRecord::Schema.define(version: 2023_02_23_094329) do
     t.integer "valuation_new", null: false
     t.integer "valuation_settlement", null: false
     t.integer "valuation_second_settlement", null: false
+    t.string "controll_num"
+    t.string "def_status"
+    t.date "picture_update"
     t.index ["settlementer_id"], name: "index_dmers_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_dmers_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_dmers_on_user_id"

@@ -22,7 +22,7 @@
     </tr>
     <tr>
       <% @bases.each do |base| %>
-      <td><%= @rakuten_pays_def.where(user: {base: base}).length %>件</td>
+      <td><%= @rakuten_pays_def.where(status: "1次審査不備").where(user: {base: base}).length %>件</td>
       <% end %>
     </tr>
   </table>
@@ -32,13 +32,13 @@
 <table>
   <tr>  
     <th>合計</th>
-    <% @rakuten_pays_def.group(:def_status).each do |rakuten_pay| %>
+    <% @rakuten_pays_def.where(status: "1次審査不備").group(:def_status).each do |rakuten_pay| %>
     <th><%= rakuten_pay.def_status %></th>
     <% end %>
   </tr>
   <tr>
-    <td><%= @rakuten_pays_def.length %>件</td>
-    <% @rakuten_pays_def.group(:def_status).count.each do |rakuten_pay| %>
+    <td><%= @rakuten_pays_def.where(status: "1次審査不備").length %>件</td>
+    <% @rakuten_pays_def.where(status: "1次審査不備").group(:def_status).count.each do |rakuten_pay| %>
     <td><%= rakuten_pay[1] %>件</td>
     <% end %>
   </tr>
@@ -111,7 +111,7 @@
         <tr>
           <th class="green-th">拠点</th>
           <% month_ary = [] %><%# 月間 %>
-          <% @rakuten_pays_def.where.not(client_def_solution: nil).group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |month| %>
+          <% @rakuten_pays_def.where.not(client_def_solution: nil).where.not(status: "申込取消").where.not(status: "申込取消（不備）").group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |month| %>
           <th class="green-th">
             <%= month[0][0] %>年
             <%= month[0][1] %>月
@@ -134,7 +134,7 @@
                     <% before_month_len += 1 %>
                   <% end %>
                 <% end %>
-              <% @rakuten_pays_def.where.not(client_def_solution: nil).where(user: {base: base}).group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |rakuten_def| %>
+              <% @rakuten_pays_def.where.not(client_def_solution: nil).where.not(status: "申込取消").where.not(status: "申込取消（不備）").where(user: {base: base}).group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |rakuten_def| %>
                 <% if month_save == "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
                   <td><%= 0 %>件</td>
                   <td><%= rakuten_def[1] %>件<%= month_save %></td>
@@ -164,15 +164,15 @@
                 <td><%= 0 %>件</td>
                 <% end %>
               <% end %>
-              <td><%= @rakuten_pays_def.where.not(client_def_solution: nil).where(user: {base: base}).length %>件</td>
+              <td><%= @rakuten_pays_def.where.not(client_def_solution: nil).where.not(status: "申込取消").where.not(status: "申込取消（不備）").where(user: {base: base}).length %>件</td>
           </tr>
         <% end %>
         <tr>
           <td>全拠点</td>
-            <% @rakuten_pays_def.where.not(client_def_solution: nil).group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |rakuten_def| %>
+            <% @rakuten_pays_def.where.not(client_def_solution: nil).where.not(status: "申込取消").where.not(status: "申込取消（不備）").group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |rakuten_def| %>
               <td><%= rakuten_def[1] %>件</td>
             <% end %>
-          <td><%= @rakuten_pays_def.where.not(client_def_solution: nil).length %>件</td>
+          <td><%= @rakuten_pays_def.where.not(client_def_solution: nil).where.not(status: "申込取消").where.not(status: "申込取消（不備）").length %>件</td>
         </tr>
       </table>
     <% end %>

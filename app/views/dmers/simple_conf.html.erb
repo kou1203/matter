@@ -13,17 +13,21 @@
     <%= render "shared/dmer_links" %>
     <hr>
     <h2>
-      <%= link_to "<<",dmers_path(month: @month.ago(1.month)), class:"link" %>
+      <%= link_to "<<",simple_conf_dmers_path(month: @month.ago(1.month)), class:"link" %>
       <%= @month.month %>月dメル各種件数
-      <%= link_to ">>",dmers_path(month: @month.since(1.month)), class:"link" %>
-    </h2>
+      <%= link_to ">>",simple_conf_dmers_path(month: @month.since(1.month)), class:"link" %>
+    </h2><br>
+    <p class="link-text"><%= link_to "各種成果のCSV",export_dmers_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "index-link",id:'download-csv' %></p>
+    <h2>◆月間各種件数（過去に獲得したものもを加算）</h2>
     <table>
       <tr>
       <th class="out-th">拠点</th>
       <th class="out-th">獲得数</th>
       <th class="out-th">審査通過</th>
+      <th class="out-th">未決済</th>
       <th class="out-th">初回決済</th>
       <th class="out-th">アクセプタンス</th>
+      <th class="out-th">アクセプタンス未審査</th>
       <th class="out-th">アクセプタンス合格</th>
       <th class="out-th">2回目決済</th>
       <th class="out-th">期限切れ</th>
@@ -32,25 +36,161 @@
       <tr>
       <td class="index-td"><%= base %></td>
       <td class="index-td"><%= @monthly_data.where(user: {base: base}).length %></td>
-      <td class="index-td"><%= @monthly_done.where(user: {base: base}).length %></td>
-      <td class="index-td"><%= @monthly_slmt.where(user: {base: base}).length %></td>
-      <td class="index-td"><%= @monthly_pic.where(user: {base: base}).length %></td>
-      <td class="index-td"><%= @monthly_pic_done.where(user: {base: base}).length %></td>
-      <td class="index-td"><%= @monthly_2nd_slmt.where(user: {base: base}).length %></td>
+      <td class="index-td">
+        <%= @monthly_done.where(user: {base: base}).where(date: @month.in_time_zone.all_month).length %>
+        （<%= @monthly_done.where(user: {base: base}).length %>）
+      </td>
+      <td class="index-td"><%= @monthly_done.where(user: {base: base}).where(settlement: nil).where.not(status_settlement: "期限切れ").length %></td>
+      <td class="index-td">
+        <%= @monthly_slmt.where(user: {base: base}).where(date: @month.in_time_zone.all_month).length %>
+        （<%= @monthly_slmt.where(user: {base: base}).length %>）
+      </td>
+      <td class="index-td">
+        <%= @monthly_pic.where(user: {base: base}).where(date: @month.in_time_zone.all_month).length %>
+        （<%= @monthly_pic.where(user: {base: base}).length %>）
+      </td>
+      <td class="index-td"><%= @monthly_pic.where(user: {base: base}).where(status_update_settlement: nil).length %></td>
+      <td class="index-td">
+        <%= @monthly_pic_done.where(user: {base: base}).where(date: @month.in_time_zone.all_month).length %>
+        （<%= @monthly_pic_done.where(user: {base: base}).length %>）
+      </td>
+      <td class="index-td">
+        <%= @monthly_2nd_slmt.where(user: {base: base}).where(date: @month.in_time_zone.all_month).length %>
+        （<%= @monthly_2nd_slmt.where(user: {base: base}).length %>）
+      </td>
       <td class="index-td"><%= @monthly_slmt_dead.where(user: {base: base}).length %></td>
       </tr>
       <% end %>
       <tr class="sum-tr">
       <td class="index-td">全拠点</td>
-      <td class="index-td"><%= @monthly_data.length %></td>
-      <td class="index-td"><%= @monthly_done.length %></td>
-      <td class="index-td"><%= @monthly_slmt.length %></td>
-      <td class="index-td"><%= @monthly_pic.length %></td>
-      <td class="index-td"><%= @monthly_pic_done.length %></td>
-      <td class="index-td"><%= @monthly_2nd_slmt.length %></td>
+      <td class="index-td">
+        <%= @monthly_data.where(date: @month.in_time_zone.all_month).length %>
+        （<%= @monthly_data.length %>）
+      </td>
+      <td class="index-td">
+        <%= @monthly_done.where(date: @month.in_time_zone.all_month).length %>
+        （<%= @monthly_done.length %>）
+      </td>
+      <td class="index-td"><%= @monthly_done.where(settlement: nil).where.not(status_settlement: "期限切れ").length %></td>
+      <td class="index-td">
+        <%= @monthly_slmt.where(date: @month.in_time_zone.all_month).length %>
+        （<%= @monthly_slmt.length %>）
+      </td>
+      <td class="index-td">
+        <%= @monthly_pic.where(date: @month.in_time_zone.all_month).length %>
+        （<%= @monthly_pic.length %>）
+      </td>
+      <td class="index-td"><%= @monthly_pic.where(status_update_settlement: nil).length %></td>
+      <td class="index-td">
+        <%= @monthly_pic_done.where(date: @month.in_time_zone.all_month).length %>
+        （<%= @monthly_pic_done.length %>）
+      </td>
+      <td class="index-td">
+        <%= @monthly_2nd_slmt.where(date: @month.in_time_zone.all_month).length %>
+        （<%= @monthly_2nd_slmt.length %>）
+      </td>
       <td class="index-td"><%= @monthly_slmt_dead.length %></td>
       </tr>
     </table>
+    <p class="caution-text">（審査完了日：<%= @monthly_done.maximum(:date).strftime("%m月%d日") %>, アクセプタンス合格日：<%= @monthly_pic_done.maximum(:status_update_settlement).strftime("%m月%d日") %>）まで反映</p><br>
+    <hr>
+
+    <h2>◆アクセプタンスキャリア連携→合格までの日数（日曜日は日数に数えてません。）</h2>
+    <%# 差分日数を仕分けする %>
+    <% difference_0 = 0 %>
+    <% difference_1 = 0 %>
+    <% difference_2 = 0 %>
+    <% difference_3 = 0 %>
+    <% difference_4 = 0 %>
+    <% difference_5 = 0 %>
+    <% difference_6 = 0 %>
+    <% difference_7 = 0 %>
+    <% difference_8 = 0 %>
+    <% difference_9 = 0 %>
+    <% difference_10_over = 0 %>
+    
+    <% @monthly_pic_done.each do |dmer| %>
+      <% sunday_len = (dmer.picture_update..dmer.status_update_settlement).select(&:sunday?).length rescue 0 %>
+      <% dmer_dif = (dmer.status_update_settlement - dmer.picture_update).to_i - sunday_len rescue 0 %>
+      <% if dmer_dif == 0 %>
+        <% difference_0 += 1 %>
+      <% elsif dmer_dif == 1 %>
+        <% difference_1 += 1 %>
+      <% elsif dmer_dif == 2 %>
+        <% difference_2 += 1 %>
+      <% elsif dmer_dif == 3 %>
+        <% difference_3 += 1 %>
+      <% elsif dmer_dif == 4 %>
+        <% difference_4 += 1 %>
+      <% elsif dmer_dif == 5 %>
+        <% difference_5 += 1 %>
+      <% elsif dmer_dif == 6 %>
+        <% difference_6 += 1 %>
+      <% elsif dmer_dif == 7 %>
+        <% difference_7 += 1 %>
+      <% elsif dmer_dif == 8 %>
+        <% difference_8 += 1 %>
+      <% elsif dmer_dif == 9 %>
+        <% difference_9 += 1 %>
+      <% elsif dmer_dif >= 10 %>
+        <% difference_10_over += 1 %>
+      <% elsif dmer_dif == 11 %>
+        <% difference_11 += 1 %>
+      <% elsif dmer_dif == 12 %>
+        <% difference_11 += 1 %>
+      <% else %>
+        <%= dmer_dif %><br>
+        <%= dmer.store_prop.name %><br>
+        <%= dmer.status_update_settlement %>
+        <%= dmer.picture %><br>
+      <% end %>
+    <% end %>
+    <table>
+      <tr>
+        <th class="purple-th">当日</th>
+        <th class="purple-th">1日</th>
+        <th class="purple-th">2日</th>
+        <th class="purple-th">3日</th>
+        <th class="purple-th">4日</th>
+        <th class="purple-th">5日</th>
+        <th class="purple-th">6日</th>
+        <th class="purple-th">7日</th>
+        <th class="purple-th">8日</th>
+        <th class="purple-th">9日</th>
+        <th class="purple-th">10日</th>
+      </tr>
+      <tr>
+        <td><%= difference_0 %>件</td>
+        <td><%= difference_1 %>件</td>
+        <td><%= difference_2 %>件</td>
+        <td><%= difference_3 %>件</td>
+        <td><%= difference_4 %>件</td>
+        <td><%= difference_5 %>件</td>
+        <td><%= difference_6 %>件</td>
+        <td><%= difference_7 %>件</td>
+        <td><%= difference_8 %>件</td>
+        <td><%= difference_9 %>件</td>
+        <td><%= difference_10_over %>件</td>
+      </tr>
+    </table>
+    <%  
+      chart = 
+        [
+          ["当日", difference_0],
+          ["1日",difference_1],
+          ["2日",difference_2],
+          ["3日",difference_3],
+          ["4日",difference_4],
+          ["5日",difference_5],
+          ["6日",difference_6],
+          ["7日",difference_7],
+          ["8日",difference_8],
+          ["9日",difference_9],
+          ["10日以上",difference_10_over],
+          ] 
+    %>
+    <%= pie_chart chart %><br>
+
     <p class="caution-text">※こちらの件数は担当商材がキャッシュレスではない人も含まれております。</p>
   </div>
 </div>

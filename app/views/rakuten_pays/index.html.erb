@@ -9,11 +9,9 @@
 </div>
 <div data-scope-path="shares/index">
 <div class="main">
-<% if current_user.name == "管理用" %>
 <hr>
 <%= render "shared/rakuten_pay_links" %>
 <hr>
-<% end %>
 <% if current_user.position_sub == "管理" %>
   <%= form_with url: import_rakuten_pays_path do |f| %>
     <table class="csv-tb">
@@ -83,6 +81,20 @@
                     <td class="s-td">
                       <%= f.date_field :share_gteq, class: "s-input" %>〜
                       <%= f.date_field :share_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">不備発生</td>
+                    <td class="s-td">
+                      <%= f.date_field :client_def_date_gteq, class: "s-input" %>〜
+                      <%= f.date_field :client_def_date_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">不備解消</td>
+                    <td class="s-td">
+                      <%= f.date_field :client_def_solution_gteq, class: "s-input" %>〜
+                      <%= f.date_field :client_def_solution_lteq, class: "s-input" %>
                     </td>
                   </tr>
                   <tr class="s-tr">

@@ -23,12 +23,14 @@
       <th class="out-th">人員</th>
       <th class="out-th">新規消化シフト</th>
       <th class="out-th">獲得数</th>
+      <th class="out-th">上位店連携数</th>
       <th class="out-th">獲得Ave</th>
       <th class="out-th">審査通過</th>
       <th class="out-th">自社不備</th>
       <th class="out-th">自社不備解消</th>
       <th class="out-th">上位店不備</th>
       <th class="out-th">不備解消</th>
+      <th class="out-th">不備→申込取消</th>
       </tr>
       <% @bases.each do |base| %>
       <tr>
@@ -36,12 +38,14 @@
       <td class="index-td"><%= @monthly_data.where(user: {base: base}).group(:user_id).length %></td>
       <td class="index-td"><%= @results.where(user: {base: base}).length %></td>
       <td class="index-td"><%= @monthly_data.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_share.where(user: {base: base}).length %></td>
       <td class="index-td"><%= (@monthly_data.where(user: {base: base}).length.to_f / @results.where(user: {base: base}).length).round(1) %></td>
       <td class="index-td"><%= @monthly_done.where(user: {base: base}).length %></td>
       <td class="index-td"><%= @monthly_def.where(user: {base: base}).length %></td>
       <td class="index-td"><%= @monthly_def_solution.where(user: {base: base}).length %></td>
       <td class="index-td"><%= @monthly_client_def.where(user: {base: base}).length %></td>
-      <td class="index-td"><%= @monthly_client_def_solution.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_client_def_solution.where.not(status: "申込取消").where.not(status: "申込取消（不備）").where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_client_def_solution.where(status: "申込取消").where(user: {base: base}).length + @monthly_client_def_solution.where(status: "申込取消（不備）").where(user: {base: base}).length %></td>
       </tr>
       <% end %>
       <tr class="sum-tr">
@@ -49,34 +53,37 @@
       <td class="index-td"><%= @monthly_data.group(:user_id).length %></td>
       <td class="index-td"><%= @results.length %></td>
       <td class="index-td"><%= @monthly_data.length %></td>
+      <td class="index-td"><%= @monthly_share.length %></td>
       <td class="index-td"><%= (@monthly_data.length.to_f / @results.length).round(1) %></td>
       <td class="index-td"><%= @monthly_done.length %></td>
       <td class="index-td"><%= @monthly_def.length %></td>
       <td class="index-td"><%= @monthly_def_solution.length %></td>
       <td class="index-td"><%= @monthly_client_def.length %></td>
-      <td class="index-td"><%= @monthly_client_def_solution.length %></td>
+      <td class="index-td"><%= @monthly_client_def_solution.where.not(status: "申込取消").where.not(status: "申込取消（不備）").length %></td>
+      <td class="index-td"><%= @monthly_client_def_solution.where(status: "申込取消").length + @monthly_client_def_solution.where(status: "申込取消（不備）").length %></td>
       </tr>
     </table>
     <p class="caution-text">※こちらの件数は担当商材がキャッシュレスではない人も含まれております。</p>
-  <hr>
-  <h2>
-    ◆獲得推移(合計：<%= @monthly_data.length %>件, 
-    獲得日数：<%= @monthly_data.group(:date).length %>日, 
-    １日平均：<%= (@monthly_data.length.to_f / @monthly_data.group(:date).length).round(1) %>)件
-  </h2><br>
-  <%= line_chart @monthly_data.group(:date).count,options = {
-    label: "獲得数",
-  } %>
+    <hr>
+    <h2>
+      ◆獲得推移(合計：<%= @monthly_data.length %>件, 
+      獲得日数：<%= @monthly_data.group(:date).length %>日, 
+      １日平均：<%= (@monthly_data.length.to_f / @monthly_data.group(:date).length).round(1) %>)件
+    </h2><br>
+    <%= line_chart [{name: "獲得件数",data: @monthly_data.group(:date).count},{name: "上位連携数",data: @monthly_share.group(:share).count}],options = {
+      label: "獲得数",
+    } %>
   
-  <h2>
-    ◆審査完了推移(合計：<%= @monthly_done.length %>件, 
-    審査通過日数：<%= @monthly_done.group(:result_point).length %>日, 
-    １日平均：<%= (@monthly_done.length.to_f / @monthly_done.group(:result_point).length).round(1) %>)件
-  </h2><br>
-  <%= line_chart @monthly_done.group(:result_point).count,options = {
-    label: "審査通過数",
-    colors: ["red"]
-  } %>
+    <h2>
+      ◆審査完了推移(合計：<%= @monthly_done.length %>件, 
+      審査通過日数：<%= @monthly_done.group(:result_point).length %>日, 
+      １日平均：<%= (@monthly_done.length.to_f / @monthly_done.group(:result_point).length).round(1) %>)件
+    </h2><br>
+    <%= line_chart @monthly_done.group(:result_point).count,options = {
+      label: "審査通過数",
+      colors: ["red"]
+    } %>
+
   </div>
   </div>
 

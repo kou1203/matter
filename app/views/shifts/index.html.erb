@@ -125,12 +125,8 @@
         <tr>
           <th>ユーザー名</th>
           <th>拠点</th>
-          <th>キャッシュレス新規</th>
-          <th>キャッシュレス決済</th>
-          <th>楽天フェムト新規</th>
-          <th>楽天フェムト設置</th>
-          <th>電気</th>
-          <th>設置電気</th>
+          <th>新規</th>
+          <th>決済</th>
           <th>帯同</th>
           <th>内勤</th>
           <th>休み</th>
@@ -189,10 +185,6 @@
           <td><%= shift.user.base %></td>
           <td><%= cash_new_p %></td>
           <td><%= cash_slmt_p %></td>
-          <td><%= @shifts.where(user_id: shift.user.id).where(shift: "楽天フェムト新規").length %></td>
-          <td><%= @shifts.where(user_id: shift.user.id).where(shift: "楽天フェムト設置").length %></td>
-          <td><%= @shifts.where(user_id: shift.user.id).where(shift: "電気").length %></td>
-          <td><%= @shifts.where(user_id: shift.user.id).where(shift: "設置電気").length %></td>
           <td><%= @shifts.where(user_id: shift.user.id).where(shift: "帯同").length %></td>
           <td><%= @shifts.where(user_id: shift.user.id).where(shift: "内勤").length %></td>
           <td><%= @shifts.where(user_id: shift.user.id).where(shift: "休み").length %></td>
@@ -201,10 +193,6 @@
             shift_sum =
               @shifts.where(user_id: shift.user.id).where(shift: "キャッシュレス新規").length +
               @shifts.where(user_id: shift.user.id).where(shift: "キャッシュレス決済").length +
-              @shifts.where(user_id: shift.user.id).where(shift: "楽天フェムト新規").length +
-              @shifts.where(user_id: shift.user.id).where(shift: "楽天フェムト設置").length +
-              @shifts.where(user_id: shift.user.id).where(shift: "電気").length +
-              @shifts.where(user_id: shift.user.id).where(shift: "設置電気").length +
               @shifts.where(user_id: shift.user.id).where(shift: "帯同").length +
               @shifts.where(user_id: shift.user.id).where(shift: "内勤").length +
               @shifts.where(user_id: shift.user.id).where(shift: "休み").length +
@@ -220,10 +208,6 @@
           <td>消化シフト</td>
           <td ><%= cash_new_d %></td>
           <td ><%= cash_slmt_d %></td>
-          <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "楽天フェムト新規").length %></td>
-          <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "楽天フェムト設置").length %></td>
-          <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "電気").length %></td>
-          <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "設置電気").length %></td>
           <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "帯同").length %></td>
           <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "内勤").length %></td>
           <td ><%= @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "休み").length %></td>
@@ -231,10 +215,6 @@
           <td><%=  
               @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "キャッシュレス新規").length +
               @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "キャッシュレス決済").length +
-              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "楽天フェムト新規").length +
-              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "楽天フェムト設置").length +
-              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "電気").length +
-              @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "設置電気").length +
               @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "帯同").length +
               @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "内勤").length +
               @results.where(user_id: shift.user.id).where(date:@shifts.minimum(:start_time)..@shifts.maximum(:start_time)).where(shift: "休み").length +
