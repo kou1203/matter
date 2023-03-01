@@ -92,6 +92,7 @@
       <td class="index-td"><%= @monthly_slmt_dead.length %></td>
       </tr>
     </table>
+    <% if @monthly_done.present? && @monthly_pic_done.present? %>
     <p class="caution-text">（審査完了日：<%= @monthly_done.maximum(:date).strftime("%m月%d日") %>, アクセプタンス合格日：<%= @monthly_pic_done.maximum(:status_update_settlement).strftime("%m月%d日") %>）まで反映</p><br>
     <hr>
 
@@ -190,7 +191,7 @@
           ] 
     %>
     <%= pie_chart chart %><br>
-
+  <% end %>
     <p class="caution-text">※こちらの件数は担当商材がキャッシュレスではない人も含まれております。</p>
   </div>
 </div>
