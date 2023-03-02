@@ -3,6 +3,7 @@ class CommentsController < ApplicationController
   def new 
     @store_id = params[:store_id]
     @product = params[:product]
+    @content = params[:content]
     @comment = Comment.new
     session[:previous_url] = request.referer
   end 

@@ -9,8 +9,8 @@
   <div data-scope-path="shared/form">
   <div class="form-main">
     <div class="form-title">
-      <h1><%= @comment.store_prop.name %></h1>
-      <h2>（<%= @comment.product %><%= @comment.content %>）</h2>
+      <h1><%= StoreProp.find(@store_id).name %></h1>
+      <h2>（<%= @product %><%= @content %>）</h2>
     </div>
   <%= form_with(model: @comment, date: {remote: false}) do |f| %>
   <%= render "shared/error_messages", model: f.object %>
