@@ -14,6 +14,7 @@ class CommentsController < ApplicationController
       redirect_to session[:previous_url]
     else  
       redirect_to new_comment_path
+    end
   end 
 
   def edit 
