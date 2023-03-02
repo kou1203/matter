@@ -399,11 +399,11 @@
             <% bases.each do |base| %>
               <tr class="index-tr">
                 <th class=""><%= base %></th>
-                <td class=""><%= @shift_monthly.where(user: {base: base}).length %></td>
-                <td class=""><%= @result_monthly.where(user: {base: base}).length %></td>
+                <td class=""><%= @shift_monthly.where(shift: "キャッシュレス新規").where(user: {base: base}).length %></td>
+                <td class=""><%= @result_monthly.where(shift: "キャッシュレス新規").where(user: {base: base}).length %></td>
                 <td class=""><%= 
-                  @shift_monthly.where(user: {base: base}).length -
-                  @result_monthly.where(user: {base: base}).length 
+                  @shift_monthly.where(user: {base: base}).where(shift: "キャッシュレス新規").length -
+                  @result_monthly.where(user: {base: base}).where(shift: "キャッシュレス新規").length 
                 %></td>
                 <td class=""><%= @result_monthly.where(user: {base: base}).sum(:profit).to_s(:delimited) rescue "測定不可" %></td>
                 <td class=""><%= (@result_monthly.where(user: {base: base}).sum(:profit) / @result_monthly.where(user: {base: base}).length).round().to_s(:delimited) rescue "測定不可" %></td>
