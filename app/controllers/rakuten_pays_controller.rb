@@ -87,7 +87,49 @@ class RakutenPaysController < ApplicationController
     @monthly_client_def_solution = RakutenPay.includes(:user).where(client_def_solution: @month.beginning_of_month..@month.end_of_month)
   end
 
+  def index_export
+    @rakuten_pays = RakutenPay.includes(:user).all
+    filename = "楽天ペイ一覧"
+    columns_ja = [
+      "申込番号","店舗名", "獲得者",
+      "獲得日","審査ステータス","審査完了日","入金フラグ"
+    ]
+    columns = [
+      "customer_num","store_prop_name","user_name",
+      "date","status","result_point","payment_flag"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      @rakuten_pays.find_each do |rakuten_pay|
+        result_attributes = {}
+        result_attributes["customer_num"] = rakuten_pay.customer_num
+        result_attributes["store_prop_name"] = rakuten_pay.store_prop.name
+        result_attributes["user_name"] = rakuten_pay.user.name
+        result_attributes["date"] = rakuten_pay.date
+        result_attributes["status"] = rakuten_pay.status
+        result_attributes["result_point"] = rakuten_pay.result_point
+        result_attributes["payment_flag"] = rakuten_pay.payment_flag
+        csv << result_attributes.values_at(*columns)
+      end 
+    end 
+    create_csv(filename,csv)
+  end
+
+
+
   private 
+
+  def create_csv(filename, csv1)
+    #ファイル書き込み
+    File.open("./#{filename}.csv", "w") do |file|
+      file.write(csv1)
+    end
+    #send_fileを使ってCSVファイル作成後に自動でダウンロードされるようにする
+    stat = File::stat("./#{filename}.csv")
+    send_file("./#{filename}.csv", filename: "#{filename}.csv", length: stat.size)
+  end
+
   def rakuten_pay_params 
     params.require(:rakuten_pay).permit(
       :client,

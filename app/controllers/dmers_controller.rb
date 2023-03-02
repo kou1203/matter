@@ -90,13 +90,51 @@ class DmersController < ApplicationController
       end
   end 
 
-  def export 
-    @month = params[:month].to_date
-    @dmer_result1 = 
-      Dmer.where(result_point: @month.beginning_of_month..@month.end_of_month).where(settlement: ..@month.end_of_month).where(settlement_deadline: @month.beginning_of_month..)
-      .or(
-        Dmer.where(settlement: @month.beginning_of_month..@month.end_of_month).where(result_point: ..@month.end_of_month).where(settlement_deadline: @month.beginning_of_month..)
-      )
+  def index_export
+    @dmers = Dmer.includes(:user).all
+    filename = "dメル一覧"
+    columns_ja = [
+      "商流","管理番号", "申込番号","店舗名", "獲得者",
+      "獲得日", "業種チェック","審査ステータス","審査完了日","決済対応者",
+      "初回決済日","アクセプタンス","アクセプタンス合格日",
+      "2回目決済"
+    ]
+    columns = [
+      "client","controll_num", "customer_num","store_prop_name","user_name",
+      "date","industry_status","status","result_point", "settlementer",
+      "settlement","picture","status_update_settlement",
+      "settlement_second"
+    ]
+    bom = "\uFEFF"
+    csv = CSV.generate(bom) do |csv|
+      csv << columns_ja
+      @dmers.find_each do |dmer|
+        result_attributes = {}
+        result_attributes["client"] = dmer.client
+        result_attributes["controll_num"] = dmer.controll_num
+        result_attributes["customer_num"] = dmer.customer_num
+        result_attributes["store_prop_name"] = dmer.store_prop.name
+        result_attributes["user_name"] = dmer.user.name
+        result_attributes["date"] = dmer.date
+        result_attributes["industry_status"] = dmer.industry_status
+        result_attributes["status"] = dmer.status
+        result_attributes["result_point"] = dmer.result_point
+        if dmer.settlementer.present?
+        result_attributes["settlementer"] = dmer.settlementer.name
+        else
+        result_attributes["settlementer"] = ""
+        end
+        result_attributes["settlement"] = dmer.settlement
+        result_attributes["picture"] = dmer.picture
+        result_attributes["status_update_settlement"] = dmer.status_update_settlement
+        result_attributes["settlement_second"] = dmer.settlement_second
+        csv << result_attributes.values_at(*columns)
+      end 
+    end 
+    create_csv(filename,csv)
+  end 
+
+  def self.export
     filename = "dメル一覧"
     columns_ja = [
       "管理番号", "店舗名", "獲得者","獲得日", "初回決済日",
@@ -107,7 +145,7 @@ class DmersController < ApplicationController
     bom = "\uFEFF"
     csv = CSV.generate(bom) do |csv|
       csv << columns_ja
-      @dmer_result1.each do |dmer|
+      @dmers.each do |dmer|
         result_attributes = {}
         result_attributes["controll_num"] = dmer.controll_num
         result_attributes["store_prop_name"] = dmer.store_prop.name

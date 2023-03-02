@@ -529,25 +529,10 @@
       </article>
         <p class="caution-text">※当月決済率は<%= @month_daily.beginning_of_month %>〜<%= @month_daily.end_of_month %>のものを対象としています。</p>
         <p class="caution-text">※過去月決済は前月以前に獲得したもので決済期限が<%= @month_daily.beginning_of_month %>以降のものを対象としています。</p>
-      <h2>キャッシュレス</h2>
       
       <div class="user-form">
         <div>
-        <table class="user-tb">
-        <% @users_cash.group(:base).each do |base| %>
-          <tr class="index-tr">
-          <th><%= link_to base.base,base_profit_results_path(base: base.base),class: "reset-link" %></th>
-          <% @users_cash.where(base: base.base).each do |user| %>
-          <td><%= link_to user.name, user_path(user.id), class: "link" %></td>
-          <% end %>
-          </tr>
-        <% end  %>
-        </table>
-
-
-
-
-        <h2>キャッシュレス（2023年2月〜）</h2>
+        <h2>キャッシュレス（2023年2月以降）</h2>
         <table class="user-tb">
         <% @users_cash.group(:base).each do |base| %>
           <tr class="index-tr">
@@ -558,22 +543,7 @@
           </tr>
         <% end %>
         </table>
-
-
-      <% users_summit_data = [@users_chubu_summit, @users_kansai_summit, @users_kanto_summit] %>
-      <h2>サミット　<%= link_to "全体利益表", base_profit_result_summits_path,"data-turbolinks": false,class: "link" %></h2>
-        <table class="user-tb">
-      <% users_summit_data.each do |users| %>
-        <tr class="index-tr">
-          <th><%= users.first.base %></th>
-        <% users.each do |user| %>
-          <td><%= link_to user.name, result_summit_path(user.id),"data-turbolinks": false, class: "link" %></td>
-        <% end %>
-        </tr>
-      <% end %>
-        </table>
-        
-      <%= link_to "日々獲得内容確認",date_progress_results_path,class: "link" %>
+          <%= link_to "日々獲得内容確認",date_progress_results_path,class: "link" %>
         </div>
       </div>
     </div>

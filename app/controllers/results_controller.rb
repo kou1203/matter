@@ -438,6 +438,7 @@ class ResultsController < ApplicationController
 
     @rakuten_pays_def = 
       RakutenPay.includes(:store_prop, :user)
+      .where(date: @month.ago(2.month)..@month.end_of_month)
       .where(status: "自社不備")
       .where(user_id: @user.id)
       .or(
@@ -890,6 +891,25 @@ class ResultsController < ApplicationController
   end
 
 
+  def comment_new 
+    @comment = Comment.new(comment_params)
+    if @comment.save 
+      flash[:notice] = "対応結果を登録しました。"
+      redirect_to request.referer
+    else  
+      flash[:notice] = "登録できませんでした。"
+      redirect_to session[:previous_url]
+    end 
+  end 
+
+  def comment_update
+    @comment = Comment.find(comment_params[:id])
+    @comment.update(comment_params)
+    flash[:notice] = "対応結果を更新しました。"
+    redirect_to request.referer
+  end  
+
+
 
 
   private
@@ -947,7 +967,21 @@ class ResultsController < ApplicationController
           # .where.not(result_point: date.minimum(:date)..date.maximum(:date).end_of_month))
       end
 
-      
+
+      def comment_params 
+        params.permit(
+          :store_prop_id         ,
+          :product            ,
+          :content            ,
+          :status             ,
+          :ball               ,
+          :request            ,
+          :request_show       ,
+          :response           ,
+          :response_show      ,
+          :done     
+        )
+      end 
 
       def judge_inc(product, date)
         return product.where.not(date: date.minimum(:date)..date.maximum(:date))

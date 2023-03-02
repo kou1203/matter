@@ -1,4 +1,5 @@
 class Dmer < ApplicationRecord
+  require 'csv'
   require 'charlock_holmes'
   belongs_to :user
   belongs_to :settlementer, class_name: "User" , optional: true
@@ -17,6 +18,7 @@ class Dmer < ApplicationRecord
     validates :valuation_settlement
     validates :valuation_second_settlement
   end 
+
 
 # データが問題ないかチェックする関数
   def self.csv_check(file)

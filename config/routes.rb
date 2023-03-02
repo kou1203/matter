@@ -65,6 +65,7 @@ Rails.application.routes.draw do
 
   resources :dmers, expect: [:new, :create] do 
     collection { post :import }
+    collection { get :index_export }
     collection { get :export }
     collection { get :simple_conf }
     collection { get :deficiency }
@@ -127,6 +128,8 @@ Rails.application.routes.draw do
       get :base_profit
       get :daily_report
       get :dup_index
+      post :comment_new
+      put :comment_update
     }
   end  
 
@@ -183,6 +186,7 @@ Rails.application.routes.draw do
 
   resources :rakuten_pays do 
     collection { post :import }
+    collection { get :index_export }
     collection { get :deficiency }
     collection { get :simple_conf }
   end 

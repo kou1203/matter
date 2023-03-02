@@ -1,4 +1,21 @@
 class CommentsController < ApplicationController
+
+  def new 
+    @store_id = params[:store_id]
+    @product = params[:product]
+    @comment = Comment.new
+    session[:previous_url] = request.referer
+  end 
+
+  def create 
+    @comment = Comment.new(comment_params)
+    if @comment.save
+      flash[:notice] = "対応結果を登録しました。"
+      redirect_to session[:previous_url]
+    else  
+      redirect_to new_comment_path
+  end 
+
   def edit 
     @comment = Comment.find(params[:id])
     session[:previous_url] = request.referer

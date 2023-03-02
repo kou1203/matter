@@ -10,7 +10,7 @@
     <th class="valuation-th">不備・NG</th>
   </tr>
   <tr>
-    <th class="product-th">dメル</th>
+    <td class="valuation-td">dメル</td>
     <td class="valuation-td"><%= @dmers.length %></td>
     <td class="valuation-td"><%= 
           @dmers.where.not(status: "審査OK")
@@ -34,7 +34,7 @@
     %></td>
   </tr>
   <tr>
-    <th class="product-th">auPay</th>
+    <td class="valuation-td">auPay</td>
     <td class="valuation-td"><%= @aupays.length %></td>
     <td class="valuation-td"><%= 
       @aupays
@@ -57,7 +57,7 @@
     %></td>
   </tr>
   <tr>
-    <th class="product-th">楽天ペイ</th>
+    <td class="valuation-td">楽天ペイ</td>
     <td class="valuation-td"><%= @rakuten_pays.length %></td>
     <td class="valuation-td"><%= 
           @rakuten_pays.where(status: "未処理")
@@ -70,7 +70,7 @@
     %></td>
   </tr>
   <tr>
-    <th class="product-th">AirPay</th>
+    <td class="valuation-td">AirPay</td>
     <td class="valuation-td"><%= @airpays.length %></td>
     <td class="valuation-td"><%= 
       @airpays.where(status: "審査中")

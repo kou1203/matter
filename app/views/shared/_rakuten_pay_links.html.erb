@@ -7,5 +7,8 @@
   <div class="section">
     <h2>　</h2>
     <p class="link-text"><%= link_to "早見", simple_conf_rakuten_pays_path ,"data-turbolinks": false, class: "index-link" %></p>
+    <% if current_user.position == "権限①" %>
+    <p class="link-text"><%= link_to "CSV出力",index_export_rakuten_pays_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "index-link",id:'download-csv' %></p>
+    <% end %>
   </div>
 </div>

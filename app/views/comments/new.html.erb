@@ -1,0 +1,70 @@
+<div data-scope-path="shared/header">
+  <h1>コメント入力</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form">
+  <div class="form-main">
+    <div class="form-title">
+      <h1><%= @comment.store_prop.name %></h1>
+      <h2>（<%= @comment.product %><%= @comment.content %>）</h2>
+    </div>
+  <%= form_with(model: @comment, date: {remote: false}) do |f| %>
+  <%= render "shared/error_messages", model: f.object %>
+  <%= f.hidden_field :store_prop_id, value: @store_id  %>
+  <%= f.hidden_field :content, value: @comment.content  %>
+  <%= f.hidden_field :product, value: @product  %>
+  <div class="form">
+      <p><%= f.label :request, "対応日", class: "form-text" %></p>
+      <p><%= f.date_field :request, class: "date-input" %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :content, "カテゴリー", class: "form-text" %></p>
+      <p><%= 
+        f.select :status,{
+        "不備": "不備", "決済": "決済",
+        }, {}, {class: "slct-input"}
+      %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :status, "対応状況", class: "form-text" %></p>
+      <p><%= 
+        f.select :status,{
+        "対応中": "対応中", "対応済": "対応済", "不可": "不可"
+        }, {}, {class: "slct-input"}
+      %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :ball, "対応者", class: "form-text" %></p>
+      <p><%= 
+        f.select :ball,{
+        "営業": "営業", "管理": "管理", "上位店": "上位店"
+        }, {}, {class: "slct-input"}
+      %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :request_show, "対応メモ", class: "form-text" %></p>
+      <p><%= f.text_field :request_show, class: "input" %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :response, "対応処理日", class: "form-text" %></p>
+      <p><%= f.date_field :response, class: "date-input" %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :response_show, "対応結果", class: "form-text" %></p>
+      <p><%= f.text_field :response_show, class: "input" %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :done, "対応完了日", class: "form-text" %></p>
+      <p><%= f.date_field :done, class: "date-input" %></p>
+  </div>
+  <div class="form-submit">
+    <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+  </div>
+  <% end %>
+  </div>
+  </div>
+</div>

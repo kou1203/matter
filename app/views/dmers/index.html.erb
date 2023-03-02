@@ -12,6 +12,7 @@
 <hr>
 <%= render "shared/dmer_links" %>
 <hr>
+<%# link_to 'データ出力', dmers_path(format: :csv),class: "link" %>
 <% if current_user.position_sub == "管理" %>
     <%= form_with url: import_dmers_path do |f| %>
       <table class="csv-tb">
@@ -60,6 +61,12 @@
                   </tr>
                 </thead>
                 <tbody>
+                  <tr class="s-tr">
+                    <td class="s-td">上位店連携</td>
+                    <td class="s-td">
+                      <%= f.select :controll_num_null,{"未連携": true,"連携済": false},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
                   <tr class="s-tr">
                     <td class="s-td">店舗</td>
                     <td class="s-td">

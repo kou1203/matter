@@ -8,7 +8,7 @@
     <% end %>
       <%= link_to "< Home >", root_path, class: "sign-text","data-turbolinks": false %>
     <% if user_signed_in? %>
-      <%= link_to current_user.name, user_path(current_user.id), class: "sign-text" %><span class="sign-text">/</span>
+      <%= link_to current_user.name, result_path(current_user.id),"data-turbolinks": false, class: "sign-text" %><span class="sign-text">/</span>
       <%= link_to "ログアウト", destroy_user_session_path,method: :delete, class: "sign-text" %>
     <% else %>
       <%= link_to "新規登録", new_user_registration_path, class: "sign-text" %><span class="sign-text">/</span>

@@ -78,7 +78,7 @@
         <td class="valuation-td"><%= comment.request_show %></td>
         <td class="valuation-td"><%= link_to "編集" ,edit_comment_path(comment.id), class: "link" %></td>
         <% else %>
-        <%= form_with(url: comment_new_users_path,data: {remote: false}) do |f| %>
+        <%= form_with(url: comment_new_results_path,data: {remote: false}) do |f| %>
         <%= f.hidden_field :store_prop_id, value: store.id %>
         <%= f.hidden_field :product, value: "dメル" %>
         <%= f.hidden_field :content, value: "決済" %>
@@ -94,7 +94,7 @@
           %>
         </td>
         <td class="valuation-td"><%= f.text_field :request_show, class: "input" %></td>
-        <td class="valuation-td"><%= f.submit "登録", class: "comment-btn" %></td>
+        <td class="valuation-td"><%= f.submit "登録", class: "comment-btn","data-turbolinks": false %></td>
         <% end %>
         <% end %>
       <%# /コメント機能 %>
@@ -128,7 +128,7 @@
         <td class="valuation-td"><%= comment.request_show %></td>
         <td class="valuation-td"><%= link_to "編集" ,edit_comment_path(comment.id), class: "link" %></td>
         <% else %>
-        <%= form_with(url: comment_new_users_path,data: {remote: false}) do |f| %>
+        <%= form_with(url: comment_new_results_path,data: {remote: false}) do |f| %>
         <%= f.hidden_field :store_prop_id, value: store.id %>
         <%= f.hidden_field :product, value: "auPay" %>
         <%= f.hidden_field :content, value: "決済" %>
@@ -144,7 +144,7 @@
           %>
         </td>
         <td class="valuation-td"><%= f.text_field :request_show, class: "input" %></td>
-        <td class="valuation-td"><%= f.submit "登録", class: "comment-btn" %></td>
+        <td class="valuation-td"><%= f.submit "登録", class: "comment-btn","data-turbolinks": false %></td>
         <% end %>
         <% end %>
       <%# /コメント機能 %>

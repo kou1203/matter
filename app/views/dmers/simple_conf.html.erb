@@ -17,9 +17,6 @@
       <%= @month.month %>月dメル各種件数
       <%= link_to ">>",simple_conf_dmers_path(month: @month.since(1.month)), class:"link" %>
     </h2><br>
-    <% if current_user.position_sub == "管理" %>
-    <p class="link-text"><%= link_to "各種成果のCSV",export_dmers_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "index-link",id:'download-csv' %></p>
-    <% end %>
     <h2>◆月間各種件数（過去に獲得したものもを加算）</h2>
     <table>
       <tr>
