@@ -108,6 +108,7 @@
     <% difference_8 = 0 %>
     <% difference_9 = 0 %>
     <% difference_10_over = 0 %>
+    <% other = 0 %>
     
     <% @monthly_pic_done.each do |dmer| %>
       <% sunday_len = (dmer.picture_update..dmer.status_update_settlement).select(&:sunday?).length rescue 0 %>
@@ -134,19 +135,13 @@
         <% difference_9 += 1 %>
       <% elsif dmer_dif >= 10 %>
         <% difference_10_over += 1 %>
-      <% elsif dmer_dif == 11 %>
-        <% difference_11 += 1 %>
-      <% elsif dmer_dif == 12 %>
-        <% difference_11 += 1 %>
       <% else %>
-        <%= dmer_dif %><br>
-        <%= dmer.store_prop.name %><br>
-        <%= dmer.status_update_settlement %>
-        <%= dmer.picture %><br>
+        <% other += 1 %>
       <% end %>
     <% end %>
     <table>
       <tr>
+        <th class="purple-th">合計</th>
         <th class="purple-th">当日</th>
         <th class="purple-th">1日</th>
         <th class="purple-th">2日</th>
@@ -158,8 +153,10 @@
         <th class="purple-th">8日</th>
         <th class="purple-th">9日</th>
         <th class="purple-th">10日</th>
+        <th class="purple-th">再審査中</th>
       </tr>
       <tr>
+        <td><%= @monthly_pic_done.length - other %>件</td>
         <td><%= difference_0 %>件</td>
         <td><%= difference_1 %>件</td>
         <td><%= difference_2 %>件</td>
@@ -171,6 +168,7 @@
         <td><%= difference_8 %>件</td>
         <td><%= difference_9 %>件</td>
         <td><%= difference_10_over %>件</td>
+        <td><%= other %>件</td>
       </tr>
     </table>
     <%  

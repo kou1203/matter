@@ -111,7 +111,7 @@ Air獲得：<%= @shift_digestion.where(user_id: user.id).sum(:airpay) rescue 0 %
             / 
             <% if @result.exists?(user_id: s.user_id) %>
               <%= link_to "終着#{@result.find_by(user_id: s.user_id).shift.slice(-2,2)}",edit_result_path(@result.find_by(user_id: s.user_id).id), class: "link" %>：
-              <% if @result.find_by(user_id: s.user_id).result_cash.id.present? %>
+              <% if @result.find_by(user_id: s.user_id).result_cash.present? %>
               <%= link_to "切返",edit_result_cash_path(@result.find_by(user_id: s.user_id).result_cash.id), class: "link" %>：
               <% end %>
             <% else %>

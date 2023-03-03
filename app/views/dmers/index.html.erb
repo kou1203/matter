@@ -147,6 +147,13 @@
                     </td>
                   </tr>
                   <tr class="s-tr">
+                    <td class="s-td">不備発生</td>
+                    <td class="s-td">
+                      <%= f.date_field :deficiency_gteq, class: "s-input" %>〜
+                      <%= f.date_field :deficiency_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
                     <td class="s-td">商流</td>
                     <td class="s-td">
                       <%= 
@@ -345,8 +352,10 @@
           <th class="out-th">決済完了日</th>
           <th class="out-th">2回目決済日</th>
           <th class="out-th">決済期限</th>
-          <th class="out-th">不備内容(新規)</th>
+          <th class="out-th">不備内容カテゴリー</th>
           <th class="out-th">不備内容(決済)</th>
+          <th class="out-th">不備発生日</th>
+          <th class="out-th">不備解消日</th>
           <th class="out-th"></th>
         </tr>
       </thead>
@@ -385,8 +394,14 @@
           <td class="index-td"><%= dmer.status_update_settlement %></td>
           <td class="index-td"><%= dmer.settlement_second %></td>
           <td class="index-td"><%= dmer.settlement_deadline %></td>
-          <td class="remarks-td-dmer"><%= dmer.deficiency_remarks %></td>
-          <td class="remarks-td-dmer"><%= dmer.deficiency_remarks_settlement %></td>
+          <td class="index-td"><%= dmer.def_status %></td>
+          <% if dmer.deficiency_remarks_settlement.present? %>
+          <td class="index-td">不備有り（詳細にて確認ください）</td>
+          <% else %>
+          <td class="index-td"></td>
+          <% end %>
+          <td class="index-td"><%= dmer.deficiency %></td>
+          <td class="index-td"><%= dmer.deficiency_solution %></td>
 
           <td class="index-td"><%= link_to "　詳細　",  dmer_path(dmer.id) ,class: "link" %></td>
         </tr>

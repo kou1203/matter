@@ -38,7 +38,11 @@
   <tr>  
     <th>合計</th>
     <% @dmers_def.group(:def_status).each do |dmer| %>
+    <% if dmer.def_status.present? %>
     <th><%= dmer.def_status %></th>
+    <% else %>
+    <th>不明</th>
+    <% end %>
     <% end %>
   </tr>
   <tr>
@@ -57,7 +61,6 @@
     <h2>◆<%= @month.year %>年：月間不備発生件数</h2>
     <table>
       <tr>
-        <th class="green-th">拠点</th>
         <% month_ary = [] %><%# 月間 %>
         <% @dmers_def.group("MONTH(deficiency)").count.each do |month| %>
         <th class="green-th">
@@ -68,41 +71,7 @@
         <% end %>
         <th class="green-th">合計</th>
       </tr>
-      <% @bases.each do |base| %>
-        <tr>
-          <td><%= base %></td>
-            <% month_cnt = 0 %><%# 配列を順番に取り出すための配列番号 %>
-            <% throw_flag = 0 %>
-            <% month_save = "" %>
-            <% @dmers_def.where(user: {base: base}).group("MONTH(deficiency)").count.each do |dmer_def| %>
-              <% if month_save == "#{dmer_def[0]}月" %>
-                <td><%= 0 %>件</td>
-                <td><%= dmer_def[1] %>件</td>
-                <% month_cnt += 1 %>
-              <% elsif month_ary[month_cnt] == "#{dmer_def[0]}月" %>
-                <td><%= dmer_def[1] %>件</td>
-                <% month_cnt += 1 %>
-                <% throw_flag = 0 %>
-              <% elsif throw_flag == 1 %>
-                <% throw_flag = 0 %>
-                <% month_cnt += 1 %>
-              <% else %>
-                <td><%= 0 %>件</td>
-                <% month_save = "#{dmer_def[0]}月" %>
-                <% month_cnt += 1 %>
-              <% throw_flag = 1 %>
-              <% end %>
-              <% if month_ary[month_cnt] == month_save %>
-                <td><%= dmer_def[1] %>件</td>
-                <% month_save = "#{dmer_def[0]}月" %>
-                <% month_cnt += 1 %>
-              <% end %>
-            <% end %>
-            <td><%= @dmers_def.where(user: {base: base}).length %>件</td>
-        </tr>
-      <% end %>
       <tr>
-        <td>全拠点</td>
           <% @dmers_def.group("MONTH(deficiency)").count.each do |dmer_def| %>
               <td><%= dmer_def[1] %>件</td>
           <% end %>
@@ -115,7 +84,6 @@
       <h2>◆月間不備解消件数</h2>
       <table>
         <tr>
-          <th class="green-th">拠点</th>
           <% month_ary = [] %><%# 月間 %>
           <% @dmers_def.where.not(deficiency_solution: nil).group("YEAR(deficiency_solution)").group("MONTH(deficiency_solution)").count.each do |month| %>
           <th class="green-th">
@@ -126,55 +94,7 @@
           <% end %>
           <th class="green-th">合計</th>
         </tr>
-        <% @bases.each do |base| %>
-          <tr>
-            <td><%= base %></td>
-              <% month_cnt = 0 %><%# 配列を順番に取り出すための配列番号 %>
-              <% throw_flag = 0 %>
-              <% month_save = "" %>
-              <% before_month_len = 0 %>
-              <% month_len = @dmers_def.where.not(deficiency_solution: nil).where(user: {base: base}).group("YEAR(deficiency_solution)").group("MONTH(deficiency_solution)").length %>
-                <% if month_len == 0 %>
-                  <% month_ary.length.times do %>
-                    <td><%= 0 %>件</td>
-                    <% before_month_len += 1 %>
-                  <% end %>
-                <% end %>
-              <% @dmers_def.where.not(deficiency_solution: nil).where(user: {base: base}).group("YEAR(deficiency_solution)").group("MONTH(deficiency_solution)").count.each do |dmer_def| %>
-                <% if month_save == "#{dmer_def[0][1]}月" %>
-                  <td><%= 0 %>件</td>
-                  <td><%= dmer_def[1] %>件</td>
-                  <% month_cnt += 1 %>
-                  <% before_month_len += 1 %>
-                <% elsif month_ary[month_cnt] == "#{dmer_def[0][1]}月" %>
-                  <td><%= dmer_def[1] %>件</td>
-                  <% month_cnt += 1 %>
-                  <% throw_flag = 0 %>
-                <% elsif throw_flag == 1 %>
-                  <% throw_flag = 0 %>
-                <% else %>
-                  <td><%= 0 %>件</td>
-                  <% month_save = "#{dmer_def[0][1]}月" %>
-                  <% month_cnt += 1 %>
-                  <% throw_flag = 1 %>
-                  <% before_month_len += 1 %>
-                <% end %>
-                <% if month_ary[month_cnt] == month_save %>
-                  <td><%= dmer_def[1] %>件</td>
-                  <% month_save = "#{dmer_def[0]}月" %>
-                  <% month_cnt += 1 %>
-                <% end %>
-              <% end %>
-              <% if (month_len != 0) && ((month_ary.length - before_month_len) > month_len) %>
-                <% ((month_ary.length - before_month_len) - month_len).times do %>
-                <td><%= 0 %>件</td>
-                <% end %>
-              <% end %>
-              <td><%= @dmers_def.where.not(deficiency_solution: nil).where(user: {base: base}).length %>件</td>
-          </tr>
-        <% end %>
         <tr>
-          <td>全拠点</td>
             <% @dmers_def.where.not(deficiency_solution: nil).group("YEAR(deficiency_solution)").group("MONTH(deficiency_solution)").count.each do |dmer_def| %>
               <td><%= dmer_def[1] %>件</td>
             <% end %>

@@ -52,7 +52,6 @@
     <h2>◆月間不備発生件数</h2>
     <table>
       <tr>
-        <th class="green-th">拠点</th>
         <% month_ary = [] %><%# 月間 %>
         <% @rakuten_pays_def.group("YEAR(client_def_date)").group("MONTH(client_def_date)").count.each do |month| %>
         <th class="green-th">
@@ -63,40 +62,7 @@
         <% end %>
         <th class="green-th">合計</th>
       </tr>
-      <% @bases.each do |base| %>
-        <tr>
-          <td><%= base %></td>
-            <% month_cnt = 0 %><%# 配列を順番に取り出すための配列番号 %>
-            <% throw_flag = 0 %>
-            <% month_save = "" %>
-            <% @rakuten_pays_def.where(user: {base: base}).group("YEAR(client_def_date)").group("MONTH(client_def_date)").count.each do |rakuten_def| %>
-              <% if month_save == "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
-                <td><%= 0 %>件</td>
-                <td><%= rakuten_def[1] %>件<%= month_save %></td>
-                <% month_cnt += 1 %>
-              <% elsif month_ary[month_cnt] == "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
-                <td><%= rakuten_def[1] %>件</td>
-                <% month_cnt += 1 %>
-                <% throw_flag = 0 %>
-              <% elsif throw_flag == 1 %>
-                <% throw_flag = 0 %>
-              <% else %>
-                <td><%= 0 %>件</td>
-                <% month_save = "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
-                <% month_cnt += 1 %>
-              <% throw_flag = 1 %>
-              <% end %>
-              <% if month_ary[month_cnt] == month_save %>
-                <td><%= rakuten_def[1] %>件</td>
-                <% month_save = "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
-                <% month_cnt += 1 %>
-              <% end %>
-            <% end %>
-            <td><%= @rakuten_pays_def.where(user: {base: base}).length %>件</td>
-        </tr>
-      <% end %>
       <tr>
-        <td>全拠点</td>
           <% @rakuten_pays_def.group("YEAR(client_def_date)").group("MONTH(client_def_date)").count.each do |rakuten_def| %>
               <td><%= rakuten_def[1] %>件</td>
           <% end %>
@@ -109,7 +75,6 @@
       <h2>◆月間不備解消件数</h2>
       <table>
         <tr>
-          <th class="green-th">拠点</th>
           <% month_ary = [] %><%# 月間 %>
           <% @rakuten_pays_def.where.not(client_def_solution: nil).where.not(status: "申込取消").where.not(status: "申込取消（不備）").group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |month| %>
           <th class="green-th">
@@ -120,55 +85,7 @@
           <% end %>
           <th class="green-th">合計</th>
         </tr>
-        <% @bases.each do |base| %>
-          <tr>
-            <td><%= base %></td>
-              <% month_cnt = 0 %><%# 配列を順番に取り出すための配列番号 %>
-              <% throw_flag = 0 %>
-              <% month_save = "" %>
-              <% before_month_len = 0 %>
-              <% month_len = @rakuten_pays_def.where.not(client_def_solution: nil).where(user: {base: base}).group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").length %>
-                <% if month_len == 0 %>
-                  <% month_ary.length.times do %>
-                    <td><%= 0 %>件</td>
-                    <% before_month_len += 1 %>
-                  <% end %>
-                <% end %>
-              <% @rakuten_pays_def.where.not(client_def_solution: nil).where.not(status: "申込取消").where.not(status: "申込取消（不備）").where(user: {base: base}).group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |rakuten_def| %>
-                <% if month_save == "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
-                  <td><%= 0 %>件</td>
-                  <td><%= rakuten_def[1] %>件<%= month_save %></td>
-                  <% month_cnt += 1 %>
-                  <% before_month_len += 1 %>
-                <% elsif month_ary[month_cnt] == "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
-                  <td><%= rakuten_def[1] %>件</td>
-                  <% month_cnt += 1 %>
-                  <% throw_flag = 0 %>
-                <% elsif throw_flag == 1 %>
-                  <% throw_flag = 0 %>
-                <% else %>
-                  <td><%= 0 %>件</td>
-                  <% month_save = "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
-                  <% month_cnt += 1 %>
-                  <% throw_flag = 1 %>
-                  <% before_month_len += 1 %>
-                <% end %>
-                <% if month_ary[month_cnt] == month_save %>
-                  <td><%= rakuten_def[1] %>件</td>
-                  <% month_save = "#{rakuten_def[0][0]}年#{rakuten_def[0][1]}月" %>
-                  <% month_cnt += 1 %>
-                <% end %>
-              <% end %>
-              <% if (month_len != 0) && ((month_ary.length - before_month_len) > month_len) %>
-                <% ((month_ary.length - before_month_len) - month_len).times do %>
-                <td><%= 0 %>件</td>
-                <% end %>
-              <% end %>
-              <td><%= @rakuten_pays_def.where.not(client_def_solution: nil).where.not(status: "申込取消").where.not(status: "申込取消（不備）").where(user: {base: base}).length %>件</td>
-          </tr>
-        <% end %>
         <tr>
-          <td>全拠点</td>
             <% @rakuten_pays_def.where.not(client_def_solution: nil).where.not(status: "申込取消").where.not(status: "申込取消（不備）").group("YEAR(client_def_solution)").group("MONTH(client_def_solution)").count.each do |rakuten_def| %>
               <td><%= rakuten_def[1] %>件</td>
             <% end %>
