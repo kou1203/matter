@@ -10,6 +10,7 @@ class Paypay < ApplicationRecord
     validates :valuation
   end 
 
+
   belongs_to :store_prop
   belongs_to :user
 

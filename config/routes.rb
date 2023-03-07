@@ -299,4 +299,9 @@ Rails.application.routes.draw do
     collection {post :import}
   end 
 
+  resources :payment_cashes 
+  resources :payment_dmers do 
+    collection { post :import}
+  end 
+
 end

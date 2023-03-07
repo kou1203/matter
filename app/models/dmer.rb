@@ -4,6 +4,7 @@ class Dmer < ApplicationRecord
   belongs_to :user
   belongs_to :settlementer, class_name: "User" , optional: true
   belongs_to :store_prop
+  has_many :payment_dmers
 
   with_options presence: true do 
     validates :client

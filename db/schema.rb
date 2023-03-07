@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_02_27_092304) do
+ActiveRecord::Schema.define(version: 2023_03_03_085547) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -701,6 +701,25 @@ ActiveRecord::Schema.define(version: 2023_02_27_092304) do
     t.integer "actual_profit", null: false
     t.index ["store_prop_id"], name: "index_pandas_on_store_prop_id"
     t.index ["user_id"], name: "index_pandas_on_user_id"
+  end
+
+  create_table "payment_dmers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "dmer_id"
+    t.string "controll_num"
+    t.string "customer_num"
+    t.string "store_code"
+    t.string "store_name"
+    t.string "client"
+    t.string "company"
+    t.date "date"
+    t.date "result_point"
+    t.date "settlement"
+    t.date "picture_done"
+    t.string "settlement_second"
+    t.string "result_category"
+    t.integer "price"
+    t.date "payment", null: false
+    t.index ["dmer_id"], name: "index_payment_dmers_on_dmer_id"
   end
 
   create_table "paypay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1624,6 +1643,7 @@ ActiveRecord::Schema.define(version: 2023_02_27_092304) do
   add_foreign_key "other_products", "users"
   add_foreign_key "pandas", "store_props"
   add_foreign_key "pandas", "users"
+  add_foreign_key "payment_dmers", "dmers"
   add_foreign_key "paypay_date_progresses", "users"
   add_foreign_key "paypays", "store_props"
   add_foreign_key "paypays", "users"
