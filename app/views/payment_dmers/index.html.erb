@@ -26,182 +26,157 @@
       <% end %>
     <% end %>
     <%= alert %>
-    <h2 class="">
-      <%= link_to "<<",payment_dmers_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
-      <%= @month.month %>月dメル明細
-      <%= link_to ">>",payment_dmers_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
-    </h2>
-    <hr>
-    <%# 変数 %>
-      <% billing_slmt = @payments_monthly.where(result_category: "獲得手数料・初回決済手数料") %>
-      <% billing_pic = @payments_monthly.where(result_category: "ステッカー連携手数料") %>
-      <% billing_slmt2nd = @payments_monthly.where(result_category: "2回目決済手数料") %>
-      <% billing_sticker = @payments_monthly.where(result_category: "事前QR申込インセンティブ") %>
-    <%# /変数 %>
-    <table>
-      <tr>
-      <th class="green-th">項目</th>
-      <th class="green-th">合計</th>
-      <th class="green-th">審査完了+決済</th>
-      <th class="green-th">アクセプタンス合格</th>
-      <th class="green-th">2回目決済</th>
-      <th class="green-th">ステッカー</th>
-      </tr>
-      <tr>
+  <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
+      <%= javascript_pack_tag 'search' %>
+      <article id='search'><%# 検索フォーム %>
+        <button @click="active" v-if="!isActive" class="active-btn">詳細検索表示</button>
+        <button @click="active" v-if="isActive" class="active-btn">詳細検索表示中</button>
+        <div v-if="isActive" class="s-form"><%# 検索フォームの外枠 %>
+          <%= search_form_for @q do |f| %>
+            <p class="s-text">検索したい内容を入力してください。</p>
+            <hr>
+          <div class="s-flex"><%# 検索フォーム %>
+            <div class="product-form"><%# 商材情報 %>
+              <table class="s-tb">
+                <thead>
+                  <tr class="s-tr">
+                    <th class="s-th">項目</th>
+                    <th class="s-th">検索内容</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">商流</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :client_eq,
+                        options_from_collection_for_select(PaymentDmer.select(:client)
+                        .distinct,:client, :client),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">会社</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :company_eq,
+                        options_from_collection_for_select(PaymentDmer.select(:company)
+                        .distinct,:company, :company),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">成果項目</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :result_category_eq,
+                        options_from_collection_for_select(PaymentDmer.select(:result_category)
+                        .distinct,:result_category, :result_category),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">入金日</td>
+                    <td class="s-td">
+                      <%= f.date_field :payment_gteq, class: "s-input" %>〜
+                      <%= f.date_field :payment_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div><%# 商材情報 %>
+          </div><%# 検索フォーム %>
+          <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "s-btn" %>
+          <button class="s-reset-btn"><%= link_to "解除", payment_dmers_path, class: "reset-link" %></button>
+          <% end %>
+          
+        </div><%# /検索フォームの外枠 %>
+        <div v-else>
+          <%= search_form_for @q do |f| %>
+              <%= f.text_field :store_name_or_controll_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
+              <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "search-btn" %>
+          <% end %>
+        </div>
+      </article>
+      <hr>
+      <% if @payments.present? %>
+      <table>
+        <tr>
+        <th class="green-th">項目</th>
+        <th class="green-th">合計</th>
+        <th class="green-th">審査完了+決済</th>
+        <th class="green-th">アクセプタンス合格</th>
+        <th class="green-th">2回目決済</th>
+        <th class="green-th">ステッカー</th>
+        </tr>
+        <tr>
         <td class="">件数</td>
-        <td class=""><%= @payments_monthly.length.to_s(:delimited) %></td>
-        <td class=""><%= billing_slmt.length.to_s(:delimited) %></td>
-        <td class=""><%= billing_pic.length.to_s(:delimited) %></td>
-        <td class=""><%= billing_slmt2nd.length.to_s(:delimited) %></td>
-        <td class=""><%= billing_sticker.length.to_s(:delimited) %></td>
-      </tr>
-      <tr>
+        <td class=""><%= @payments.length %></td>
+        <td class=""><%= @payments.where(result_category: "獲得手数料・初回決済手数料").length %></td>
+        <td class=""><%= @payments.where(result_category: "ステッカー連携手数料").length %></td>
+        <td class=""><%= @payments.where(result_category: "2回目決済手数料").length %></td>
+        <td class=""><%= @payments.where(result_category: "事前QR申込インセンティブ").length %></td>
+        </tr>
+        <tr>
         <td class="">手数料</td>
-        <td class=""><%= @payments_monthly.sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= billing_slmt.sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= billing_pic.sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= billing_slmt2nd.sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= billing_sticker.sum(:price).to_s(:delimited) %></td>
-      </tr>
-    </table>
-    <hr>
-    
-    <h2>◆当付ミス？（審査完了+初回決済）</h2>
-    <table>
-      <tr>
-        <th>No</th>
-        <th>商流</th>
-        <th>管理番号</th>
-        <th>店舗名</th>
-        <th>会社名</th>
-        <th>手数料</th>
-        <th>成果になった日</th>
-        <th>自社入金予想日</th>
-        <th>入金日</th>
-      </tr>
-      <% cnt = 0 %>
-      <% flag = "" %>
-      <% result_date = "" %>
-      <% @dmer_result1.each do |dmer| %>
-        <% if (dmer.settlement >= dmer.result_point) %>
-        <% flag = dmer.settlement.since(1.month).month %>
-        <% result_date = dmer.settlement %>
-        <% elsif (dmer.result_point > dmer.settlement) %>
-        <% flag = dmer.result_point.since(1.month).month %>
-        <% result_date = dmer.result_point %>
-        <% else %>
-        <% flag = "" %>
-        <% end %>
-        <% billing_doubt = billing_slmt.find_by(dmer_id: dmer.id) %>
-        <% if billing_doubt.nil? %>
+        <td class=""><%= @payments.sum(:price).to_s(:delimited) %></td>
+        <td class=""><%= @payments.where(result_category: "獲得手数料・初回決済手数料").sum(:price).to_s(:delimited) %></td>
+        <td class=""><%= @payments.where(result_category: "ステッカー連携手数料").sum(:price).to_s(:delimited) %></td>
+        <td class=""><%= @payments.where(result_category: "2回目決済手数料").sum(:price).to_s(:delimited) %></td>
+        <td class=""><%= @payments.where(result_category: "事前QR申込インセンティブ").sum(:price).to_s(:delimited) %></td>
+        </tr>
+      </table>
+      <table>
         <tr>
-          <td><%= cnt += 1 %></td>
-          <td><%= dmer.client %></td>
-          <td><%= dmer.controll_num %></td>
-          <td><%= dmer.store_prop.name %></td>
-          <td><%= billing_doubt.company rescue "" %></td>
-          <td><%= billing_doubt.price rescue "" %></td>
-          <td><%= result_date rescue "" %></td>
-          <td><%= flag %>月</td>
-          <% if billing_doubt.nil? %>
-          <td class="red">データなし</td>
+          <th>No</th>
+          <th>管理番号</th>
+          <th>クライアント</th>
+          <th>店舗名</th>
+          <th>申込日</th>
+          <th>審査完了日</th>
+          <th>初回決済日</th>
+          <th>アクセプタンス合格</th>
+          <th>2回目決済</th>
+          <th>成果項目</th>
+          <th>手数料</th>
+          <th>会社名</th>
+          <th>入金日</th>
+          <th>自社案件連携</th>
+        </tr>
+        <% @payments_data.each_with_index do |payment, i| %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= payment.controll_num %></td>
+          <td><%= payment.client %></td>
+          <td><%= payment.store_name %></td>
+          <td><%= payment.date %></td>
+          <td><%= payment.result_point %></td>
+          <td><%= payment.settlement %></td>
+          <td><%= payment.picture_done %></td>
+          <td><%= payment.settlement_second %></td>
+          <td><%= payment.result_category %></td>
+          <td><%= payment.price %></td>
+          <td><%= payment.company %></td>
+          <td><%= payment.payment %></td>
+          <% if payment.dmer.present? %>
+          <td>有</td>
           <% else %>
-          <td><%= billing_doubt.payment.month %>月</td>
+          <td class="red">無</td>
           <% end %>
         </tr>
         <% end %>
+      </table>
+    <div class="kaminari-page">
+      <%= paginate @payments_data %>
+    </div>
       <% end %>
-    </table>
-    <hr>
-    
-    <h2>◆当付ミス？（アクセプタンス合格）</h2>
-    <table>
-      <tr>
-        <th>No</th>
-        <th>商流</th>
-        <th>管理番号</th>
-        <th>店舗名</th>
-        <th>会社名</th>
-        <th>手数料</th>
-        <th>成果になった日</th>
-        <th>自社入金予想日</th>
-        <th>入金日</th>
-      </tr>
-      <% cnt = 0 %>
-      <% flag = "" %>
-      <% result_date = "" %>
-      <% @dmer_result2.each do |dmer| %>
-        <% flag = dmer.status_update_settlement.since(1.month).month %>
-        <% result_date = dmer.status_update_settlement %>
-        <% billing_doubt = billing_pic.find_by(dmer_id: dmer.id) %>
-        <% if billing_doubt.nil? %>
-        <tr>
-          <td><%= cnt += 1 %></td>
-          <td><%= dmer.client %></td>
-          <td><%= dmer.controll_num %></td>
-          <td><%= dmer.store_prop.name %></td>
-          <td><%= billing_doubt.company rescue "" %></td>
-          <td><%= billing_doubt.price rescue "" %></td>
-          <td><%= result_date rescue "" %></td>
-          <td><%= flag %>月</td>
-          <% if billing_doubt.nil? %>
-          <td class="red">データなし</td>
-          <% else %>
-          <td><%= billing_doubt.payment.month %>月</td>
-          <% end %>
-        </tr>
-        <% end %>
-      <% end %>
-    </table>
-    <hr>
-    
-    <h2>◆当付ミス？（2回目決済）</h2>
-    <table>
-      <tr>
-        <th>No</th>
-        <th>商流</th>
-        <th>管理番号</th>
-        <th>店舗名</th>
-        <th>会社名</th>
-        <th>手数料</th>
-        <th>成果になった日</th>
-        <th>自社入金予想日</th>
-        <th>入金日</th>
-      </tr>
-      <% cnt = 0 %>
-      <% flag = "" %>
-      <% result_date = "" %>
-      <% @dmer_result3.each do |dmer| %>
-        <% if dmer.settlement_second >= dmer.status_update_settlement %>
-        <% flag = dmer.settlement_second.since(2.month).month %>
-        <% result_date = dmer.settlement_second %>
-        <% elsif dmer.status_update_settlement > dmer.settlement_second %>
-        <% flag = dmer.status_update_settlement.since(2.month).month %>
-        <% result_date = dmer.status_update_settlement %>
-        <% else %>
-        <% flag = "" %>
-        <% end %>
-        <% billing_doubt = billing_slmt2nd.find_by(dmer_id: dmer.id) %>
-        <% if billing_doubt.nil? %>
-        <tr>
-          <td><%= cnt += 1 %></td>
-          <td><%= dmer.client %></td>
-          <td><%= dmer.controll_num %></td>
-          <td><%= dmer.store_prop.name %></td>
-          <td><%= billing_doubt.company rescue "" %></td>
-          <td><%= billing_doubt.price rescue "" %></td>
-          <td><%= result_date rescue "" %></td>
-          <td><%= flag %>月</td>
-          <% if billing_doubt.nil? %>
-          <td class="red">データなし</td>
-          <% else %>
-          <td><%= billing_doubt.payment.month %>月</td>
-          <% end %>
-        </tr>
-        <% end %>
-      <% end %>
-    </table>
-  <%= alert %>
   </div>
 </div>
 <% end %>

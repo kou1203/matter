@@ -301,7 +301,10 @@ Rails.application.routes.draw do
 
   resources :payment_cashes 
   resources :payment_dmers do 
-    collection { post :import}
+    collection { 
+      post :import
+      get :not_payment
+    }
   end 
 
 end
