@@ -358,7 +358,13 @@ class ResultsController < ApplicationController
     @paypay_done = 
         Paypay.where(user_id: @user.id).where(result_point: @paypay1_start_date..@paypay1_end_date)
         .where(status: "60審査可決")
-    @rakuten_pays = RakutenPay.where(user_id: @user.id).where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
+    if @month.year == 2023 && @month.month == 2
+      start_d = Date.new(2023,1,26)
+      end_d = Date.new(2023,2,28)
+      @rakuten_pays = RakutenPay.where(user_id: @user.id).where(date: start_d..end_d)
+    else
+      @rakuten_pays = RakutenPay.where(user_id: @user.id).where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
+    end
     @rakuten_pay_val = 
       @rakuten_pays.where.not(status: "自社NG").where.not(status: "自社不備")
       .where(deficiency: nil)
