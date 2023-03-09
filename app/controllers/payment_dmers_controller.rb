@@ -10,59 +10,6 @@ class PaymentDmersController < ApplicationController
         @q.result(distinct: false)
       end
       @payments_data = @payments.page(params[:page]).per(100)
-      @payments_monthly = PaymentDmer.where(payment: @month.beginning_of_month..@month.end_of_month)
-      @billing_slmt = @payments_monthly.where(result_category: "獲得手数料・初回決済手数料")
-      @billing_pic = @payments_monthly.where(result_category: "ステッカー連携手数料")
-      @billing_slmt2nd = @payments_monthly.where(result_category: "2回目決済手数料")
-      @billing_sticker = PaymentDmer.where(result_category: "事前QR申込インセンティブ")
-
-      # 自社dメル
-      @prev_month = @month.ago(1.month) 
-      @prev_2month = @month.ago(2.month) 
-      @dmer_result1 = 
-        Dmer.includes(:payment_dmer).where(result_point: @prev_month.beginning_of_month..@prev_month.end_of_month)
-        .where(settlement_deadline: @prev_month.beginning_of_month..)
-        .where(settlement: ..@prev_month.end_of_month)
-        .where(status: "審査OK")
-        .where.not(industry_status: "NG")
-        .where.not(industry_status: "×")
-        .where.not(industry_status: "要確認")
-        .or(
-          Dmer.where(settlement: @prev_month.beginning_of_month..@prev_month.end_of_month)
-          .where(settlement_deadline: @prev_month.beginning_of_month..)
-          .where(result_point: ..@prev_month.end_of_month)
-          .where(status: "審査OK")
-          .where.not(industry_status: "NG")
-          .where.not(industry_status: "×")
-          .where.not(industry_status: "要確認")
-        )
-      
-        @dmer_result2 = 
-          Dmer.includes(:payment_dmer).where(status_update_settlement: @prev_month.beginning_of_month..@prev_month.end_of_month)
-          .where(status: "審査OK")
-          .where.not(industry_status: "NG")
-          .where.not(industry_status: "×")
-          .where.not(industry_status: "要確認")
-          .where(status_settlement: "完了")
-      
-        @dmer_result3 = 
-          Dmer.includes(:payment_dmer).where(status_update_settlement: @prev_2month.beginning_of_month..@prev_2month.end_of_month)
-          .where(settlement_second: ..@prev_2month.end_of_month)
-          .where(status: "審査OK")
-          .where.not(industry_status: "NG")
-          .where.not(industry_status: "×")
-          .where.not(industry_status: "要確認")
-          .where(status_settlement: "完了")
-          .or(
-            Dmer.where(settlement_second: @prev_2month.beginning_of_month..@prev_2month.end_of_month)
-            .where(status_update_settlement: ..@prev_2month.end_of_month)
-            .where(status: "審査OK")
-            .where.not(industry_status: "NG")
-            .where.not(industry_status: "×")
-            .where.not(industry_status: "要確認")
-            .where(status_settlement: "完了")
-
-          )
   end 
 
   def not_payment

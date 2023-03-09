@@ -1,4 +1,16 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<%# 変数 %>
+  <% billing_slmt = PaymentDmer.where(result_category: "獲得手数料・初回決済手数料") %>
+  <% billing_pic = PaymentDmer.where(result_category: "ステッカー連携手数料") %>
+  <% billing_slmt2nd = PaymentDmer.where(result_category: "2回目決済手数料") %>
+  <% billing_sticker = PaymentDmer.where(result_category: "事前QR申込インセンティブ") %>
+  <% not_payment1_price = 0 %>
+  <% not_payment1_len = 0 %>
+  <% not_payment2_price = 0 %>
+  <% not_payment2_len = 0 %>
+  <% not_payment3_price = 0 %>
+  <% not_payment3_len = 0 %>
+<%# /変数 %>
 <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
 <div data-scope-path="shared/header">
   <h1>dメル未入金一覧</h1>
@@ -18,145 +30,173 @@
       <%= link_to ">>",not_payment_payment_dmers_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
     </h2>
     <hr>
-    <%# 変数 %>
-      <% billing_slmt = PaymentDmer.where(result_category: "獲得手数料・初回決済手数料") %>
-      <% billing_pic = PaymentDmer.where(result_category: "ステッカー連携手数料") %>
-      <% billing_slmt2nd = PaymentDmer.where(result_category: "2回目決済手数料") %>
-      <% billing_sticker = PaymentDmer.where(result_category: "事前QR申込インセンティブ") %>
-    <%# /変数 %>
-    <table>
-      <tr>
-      <th class="green-th">項目</th>
-      <th class="green-th">合計</th>
-      <th class="green-th">審査完了+決済</th>
-      <th class="green-th">アクセプタンス合格</th>
-      <th class="green-th">2回目決済</th>
-      <th class="green-th">ステッカー</th>
-      </tr>
-      <tr>
-        <td class="">件数</td>
-        <td class=""><%= @payments_monthly.length.to_s(:delimited) %></td>
-        <td class=""><%= @billing_slmt.length.to_s(:delimited) %></td>
-        <td class=""><%= @billing_pic.length.to_s(:delimited) %></td>
-        <td class=""><%= @billing_slmt2nd.length.to_s(:delimited) %></td>
-        <td class=""><%= @billing_sticker.length.to_s(:delimited) %></td>
-      </tr>
-      <tr>
-        <td class="">手数料</td>
-        <td class=""><%= @payments_monthly.sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= @billing_slmt.sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= @billing_pic.sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= @billing_slmt2nd.sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= @billing_sticker.sum(:price).to_s(:delimited) %></td>
-      </tr>
-    </table>
-    <hr>
-    
-    <h2>◆当付ミス？（審査完了+初回決済）<%= link_to "マックスのみ",not_payment_payment_dmers_path(month:@month, client: "マックス"),"data-turbolinks": false, class:"link"  %></h2>
-    <table>
-      <tr>
-        <th>No</th>
-        <th>商流</th>
-        <th>管理番号</th>
-        <th>店舗名</th>
-        <th>成果になった日</th>
-        <th>自社入金予想日</th>
-      </tr>
-      <% cnt = 0 %>
-      <% flag = "" %>
-      <% result_date = "" %>
-      <% @dmer_result1.each do |dmer| %>
-        <% if (dmer.settlement >= dmer.result_point) %>
-        <% flag = dmer.settlement.since(1.month).month %>
-        <% result_date = dmer.settlement %>
-        <% elsif (dmer.result_point > dmer.settlement) %>
-        <% flag = dmer.result_point.since(1.month).month %>
-        <% result_date = dmer.result_point %>
-        <% else %>
+    <div class="flex"><%# 右と左と画面を分ける %>
+      <div><%# 左（一覧） %>
+      <h2>
+        ◆当付ミス？（審査完了+初回決済）
+        <%= link_to "マックスのみ表示",not_payment_payment_dmers_path(month:@month, client: "マックス"),"data-turbolinks": false, class:"link"  %>
+      </h2>
+      <table>
+        <tr>
+          <th>No</th>
+          <th>商流</th>
+          <th>管理番号</th>
+          <th>店舗名</th>
+          <th>成果になった日</th>
+          <th>自社入金予想日</th>
+        </tr>
         <% flag = "" %>
+        <% result_date = "" %>
+        <% @dmer_result1.each do |dmer| %>
+          <% if (dmer.settlement >= dmer.result_point) %>
+          <% flag = dmer.settlement.since(1.month).month %>
+          <% result_date = dmer.settlement %>
+          <% elsif (dmer.result_point > dmer.settlement) %>
+          <% flag = dmer.result_point.since(1.month).month %>
+          <% result_date = dmer.result_point %>
+          <% else %>
+          <% flag = "" %>
+          <% end %>
+          <% billing_doubt = billing_slmt.find_by(dmer_id: dmer.id) %>
+          <% if billing_doubt.nil? %>
+          <tr>
+            <td><%= not_payment1_len += 1 %></td>
+            <% not_payment1_price += 14000 %>
+            <td><%= dmer.client %></td>
+            <td><%= dmer.controll_num %></td>
+            <td><%= dmer.store_prop.name %></td>
+            <td><%= result_date rescue "" %></td>
+            <td><%= flag %>月</td>
+          </tr>
+          <% end %>
         <% end %>
-        <% billing_doubt = billing_slmt.find_by(dmer_id: dmer.id) %>
-        <% if billing_doubt.nil? %>
+      </table>
+      <hr>
+      
+      <h2>◆当付ミス？（アクセプタンス合格）</h2>
+      <table>
         <tr>
-          <td><%= cnt += 1 %></td>
-          <td><%= dmer.client %></td>
-          <td><%= dmer.controll_num %></td>
-          <td><%= dmer.store_prop.name %></td>
-          <td><%= result_date rescue "" %></td>
-          <td><%= flag %>月</td>
+          <th>No</th>
+          <th>商流</th>
+          <th>管理番号</th>
+          <th>店舗名</th>
+          <th>成果になった日</th>
+          <th>自社入金予想日</th>
         </tr>
-        <% end %>
-      <% end %>
-    </table>
-    <hr>
-    
-    <h2>◆当付ミス？（アクセプタンス合格）</h2>
-    <table>
-      <tr>
-        <th>No</th>
-        <th>商流</th>
-        <th>管理番号</th>
-        <th>店舗名</th>
-        <th>成果になった日</th>
-        <th>自社入金予想日</th>
-      </tr>
-      <% cnt = 0 %>
-      <% flag = "" %>
-      <% result_date = "" %>
-      <% @dmer_result2.each do |dmer| %>
-        <% flag = dmer.status_update_settlement.since(1.month).month %>
-        <% result_date = dmer.status_update_settlement %>
-        <% billing_doubt = billing_pic.find_by(dmer_id: dmer.id) %>
-        <% if billing_doubt.nil? %>
-        <tr>
-          <td><%= cnt += 1 %></td>
-          <td><%= dmer.client %></td>
-          <td><%= dmer.controll_num %></td>
-          <td><%= dmer.store_prop.name %></td>
-          <td><%= result_date rescue "" %></td>
-          <td><%= flag %>月</td>
-        </tr>
-        <% end %>
-      <% end %>
-    </table>
-    <hr>
-    
-    <h2>◆当付ミス？（2回目決済）</h2>
-    <table>
-      <tr>
-        <th>No</th>
-        <th>商流</th>
-        <th>管理番号</th>
-        <th>店舗名</th>
-        <th>成果になった日</th>
-        <th>自社入金予想日</th>
-      </tr>
-      <% cnt = 0 %>
-      <% flag = "" %>
-      <% result_date = "" %>
-      <% @dmer_result3.each do |dmer| %>
-        <% if dmer.settlement_second >= dmer.status_update_settlement %>
-        <% flag = dmer.settlement_second.since(2.month).month %>
-        <% result_date = dmer.settlement_second %>
-        <% elsif dmer.status_update_settlement > dmer.settlement_second %>
-        <% flag = dmer.status_update_settlement.since(2.month).month %>
-        <% result_date = dmer.status_update_settlement %>
-        <% else %>
+        <% cnt = 0 %>
         <% flag = "" %>
+        <% result_date = "" %>
+        <% @dmer_result2.each do |dmer| %>
+          <% flag = dmer.status_update_settlement.since(1.month).month %>
+          <% result_date = dmer.status_update_settlement %>
+          <% billing_doubt = billing_pic.find_by(dmer_id: dmer.id) %>
+          <% if billing_doubt.nil? %>
+          <tr>
+            <td><%= not_payment2_len += 1 %></td>
+            <% not_payment2_price += 5000 %>
+            <td><%= dmer.client %></td>
+            <td><%= dmer.controll_num %></td>
+            <td><%= dmer.store_prop.name %></td>
+            <td><%= result_date rescue "" %></td>
+            <td><%= flag %>月</td>
+          </tr>
+          <% end %>
         <% end %>
-        <% billing_doubt = billing_slmt2nd.find_by(dmer_id: dmer.id) %>
-        <% if billing_doubt.nil? %>
+      </table>
+      <hr>
+      
+      <h2>◆当付ミス？（2回目決済）</h2>
+      <table>
         <tr>
-          <td><%= cnt += 1 %></td>
-          <td><%= dmer.client %></td>
-          <td><%= dmer.controll_num %></td>
-          <td><%= dmer.store_prop.name %></td>
-          <td><%= result_date rescue "" %></td>
-          <td><%= flag %>月</td>
+          <th>No</th>
+          <th>商流</th>
+          <th>管理番号</th>
+          <th>店舗名</th>
+          <th>成果になった日</th>
+          <th>自社入金予想日</th>
         </tr>
+        <% cnt = 0 %>
+        <% flag = "" %>
+        <% result_date = "" %>
+        <% @dmer_result3.each do |dmer| %>
+          <% if dmer.settlement_second >= dmer.status_update_settlement %>
+          <% flag = dmer.settlement_second.since(2.month).month %>
+          <% result_date = dmer.settlement_second %>
+          <% elsif dmer.status_update_settlement > dmer.settlement_second %>
+          <% flag = dmer.status_update_settlement.since(2.month).month %>
+          <% result_date = dmer.status_update_settlement %>
+          <% else %>
+          <% flag = "" %>
+          <% end %>
+          <% billing_doubt = billing_slmt2nd.find_by(dmer_id: dmer.id) %>
+          <% if billing_doubt.nil? %>
+          <tr>
+            <td><%= not_payment3_len += 1 %></td>
+            <% not_payment3_price += 5000 %>
+            <td><%= dmer.client %></td>
+            <td><%= dmer.controll_num %></td>
+            <td><%= dmer.store_prop.name %></td>
+            <td><%= result_date rescue "" %></td>
+            <td><%= flag %>月</td>
+          </tr>
+          <% end %>
         <% end %>
-      <% end %>
-    </table>
+      </table>
+      </div><%# 左 %>
+      <div><%# 右（合計） %>
+        <h2>◆明細合計金額</h2>
+        <table>
+          <tr>
+          <th class="green-th">項目</th>
+          <th class="green-th">合計</th>
+          <th class="green-th">審査完了+決済</th>
+          <th class="green-th">アクセプタンス合格</th>
+          <th class="green-th">2回目決済</th>
+          <th class="green-th">ステッカー</th>
+          </tr>
+          <tr>
+            <td class="">件数</td>
+            <td class=""><%= @payments_monthly.length.to_s(:delimited) %></td>
+            <td class=""><%= @billing_slmt.length.to_s(:delimited) %></td>
+            <td class=""><%= @billing_pic.length.to_s(:delimited) %></td>
+            <td class=""><%= @billing_slmt2nd.length.to_s(:delimited) %></td>
+            <td class=""><%= @billing_sticker.length.to_s(:delimited) %></td>
+          </tr>
+          <tr>
+            <td class="">手数料</td>
+            <td class=""><%= @payments_monthly.sum(:price).to_s(:delimited) %></td>
+            <td class=""><%= @billing_slmt.sum(:price).to_s(:delimited) %></td>
+            <td class=""><%= @billing_pic.sum(:price).to_s(:delimited) %></td>
+            <td class=""><%= @billing_slmt2nd.sum(:price).to_s(:delimited) %></td>
+            <td class=""><%= @billing_sticker.sum(:price).to_s(:delimited) %></td>
+          </tr>
+        </table>
+        <h2>◆明細未確認合計金額</h2>
+        <table>
+          <tr>
+            <th class="green-th">項目</th>
+            <th class="green-th">合計</th>
+            <th class="green-th">審査完了+決済</th>
+            <th class="green-th">アクセプタンス合格</th>
+            <th class="green-th">2回目決済</th>
+          </tr>
+          <tr>
+            <td>件数</td>
+            <td><%= (not_payment1_len + not_payment2_len + not_payment3_len).to_s(:delimited) %></td>
+            <td><%= not_payment1_len.to_s(:delimited) %></td>
+            <td><%= not_payment2_len.to_s(:delimited) %></td>
+            <td><%= not_payment3_len.to_s(:delimited) %></td>
+          </tr>
+          <tr>
+            <td>手数料</td>
+            <td><%= (not_payment1_price + not_payment2_price + not_payment3_price).to_s(:delimited) %></td>
+            <td><%= (not_payment1_price).to_s(:delimited) %></td>
+            <td><%= (not_payment2_price).to_s(:delimited) %></td>
+            <td><%= (not_payment3_price).to_s(:delimited) %></td>
+          </tr>
+        </table>
+      </div><%# 右 %>
+    </div><%# 右と左と分ける %>
   </div>
 </div>
 <% end %>

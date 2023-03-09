@@ -1,7 +1,7 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
 <div data-scope-path="shared/header">
-  <h1>dメル明細資料</h1>
+  <h1>楽天ペイ明細資料</h1>
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;">
@@ -13,7 +13,7 @@
       <%= render "shared/payment_links" %>
     <hr>
     <% if current_user.position_sub == "管理" %>
-      <%= form_with url: import_payment_dmers_path do |f| %>
+      <%= form_with url: import_payment_rakuten_pays_path do |f| %>
         <table class="csv-tb">
           <tr>
             <td class="csv-label">CSV</td>
@@ -50,7 +50,7 @@
                     <td class="s-td">
                       <%= 
                         f.select :client_eq,
-                        options_from_collection_for_select(PaymentDmer.select(:client)
+                        options_from_collection_for_select(PaymentRakutenPay.select(:client)
                         .distinct,:client, :client),
                         {include_blank: true},
                         {class: "t-input"} 
@@ -62,7 +62,7 @@
                     <td class="s-td">
                       <%= 
                         f.select :company_eq,
-                        options_from_collection_for_select(PaymentDmer.select(:company)
+                        options_from_collection_for_select(PaymentRakutenPay.select(:company)
                         .distinct,:company, :company),
                         {include_blank: true},
                         {class: "t-input"} 
@@ -74,7 +74,7 @@
                     <td class="s-td">
                       <%= 
                         f.select :result_category_eq,
-                        options_from_collection_for_select(PaymentDmer.select(:result_category)
+                        options_from_collection_for_select(PaymentRakutenPay.select(:result_category)
                         .distinct,:result_category, :result_category),
                         {include_blank: true},
                         {class: "t-input"} 
@@ -93,7 +93,7 @@
             </div><%# 商材情報 %>
           </div><%# 検索フォーム %>
           <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "s-btn" %>
-          <button class="s-reset-btn"><%= link_to "解除", payment_dmers_path, class: "reset-link" %></button>
+          <button class="s-reset-btn"><%= link_to "解除", payment_rakuten_pays_path, class: "reset-link" %></button>
           <% end %>
           
         </div><%# /検索フォームの外枠 %>
@@ -110,26 +110,14 @@
         <tr>
         <th class="green-th">項目</th>
         <th class="green-th">合計</th>
-        <th class="green-th">審査完了+決済</th>
-        <th class="green-th">アクセプタンス合格</th>
-        <th class="green-th">2回目決済</th>
-        <th class="green-th">ステッカー</th>
         </tr>
         <tr>
         <td class="">件数</td>
         <td class=""><%= @payments.length %></td>
-        <td class=""><%= @payments.where(result_category: "獲得手数料・初回決済手数料").length %></td>
-        <td class=""><%= @payments.where(result_category: "ステッカー連携手数料").length %></td>
-        <td class=""><%= @payments.where(result_category: "2回目決済手数料").length %></td>
-        <td class=""><%= @payments.where(result_category: "事前QR申込インセンティブ").length %></td>
         </tr>
         <tr>
         <td class="">手数料</td>
         <td class=""><%= @payments.sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= @payments.where(result_category: "獲得手数料・初回決済手数料").sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= @payments.where(result_category: "ステッカー連携手数料").sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= @payments.where(result_category: "2回目決済手数料").sum(:price).to_s(:delimited) %></td>
-        <td class=""><%= @payments.where(result_category: "事前QR申込インセンティブ").sum(:price).to_s(:delimited) %></td>
         </tr>
       </table>
       <table>
@@ -140,9 +128,7 @@
           <th>店舗名</th>
           <th>申込日</th>
           <th>審査完了日</th>
-          <th>初回決済日</th>
-          <th>アクセプタンス合格</th>
-          <th>2回目決済</th>
+          <th>同意書受領日</th>
           <th>成果項目</th>
           <th>手数料</th>
           <th>会社名</th>
@@ -157,14 +143,12 @@
           <td><%= payment.store_name %></td>
           <td><%= payment.date %></td>
           <td><%= payment.result_point %></td>
-          <td><%= payment.settlement %></td>
-          <td><%= payment.picture_done %></td>
-          <td><%= payment.settlement_second %></td>
+          <td><%= payment.consent_form %></td>
           <td><%= payment.result_category %></td>
           <td><%= payment.price %></td>
           <td><%= payment.company %></td>
           <td><%= payment.payment %></td>
-          <% if payment.dmer.present? %>
+          <% if payment.rakuten_pay.present? %>
           <td>有</td>
           <% else %>
           <td class="red">無</td>

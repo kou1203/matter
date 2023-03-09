@@ -25,11 +25,11 @@
     <td class="dup-td"><%= result.area %></td>
     <td class="dup-td"><%= result.profit %></td>
     <td class="dup-td">
-      <%= result.first_total_visit + result.latter_total_visit %> -
-      <%= result.first_visit + result.latter_visit %> -
-      <%= result.first_interview + result.latter_interview %> -
-      <%= result.first_full_talk + result.latter_full_talk %> -
-      <%= result.first_get + result.latter_get %>
+      <%= result.first_total_visit + result.latter_total_visit rescue 0 %> -
+      <%= result.first_visit + result.latter_visit rescue 0 %> -
+      <%= result.first_interview + result.latter_interview rescue 0 %> -
+      <%= result.first_full_talk + result.latter_full_talk rescue 0 %> -
+      <%= result.first_get + result.latter_get rescue 0 %>
     </td>
     <% if result.result_cash.present? %>
     <td class="dup-td">有</td>

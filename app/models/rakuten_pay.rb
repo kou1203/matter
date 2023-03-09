@@ -1,6 +1,7 @@
 class RakutenPay < ApplicationRecord
   belongs_to :user 
   belongs_to :store_prop
+  has_one :payment_rakuten_pay
 
   with_options presence: true do 
     validates :user_id 

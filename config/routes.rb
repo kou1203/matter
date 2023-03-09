@@ -306,5 +306,11 @@ Rails.application.routes.draw do
       get :not_payment
     }
   end 
+  resources :payment_rakuten_pays do 
+    collection { 
+      post :import
+      get :not_payment
+    }
+  end 
 
 end

@@ -1,5 +1,5 @@
-class PaymentDmer < ApplicationRecord
-  belongs_to :dmer , optional: true
+class PaymentRakutenPay < ApplicationRecord
+  belongs_to :rakuten_pay , optional: true
   with_options presence: true do 
     validates :payment
   end 
@@ -9,17 +9,14 @@ class PaymentDmer < ApplicationRecord
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
         product = new(
           controll_num: row["管理番号"],
-          customer_num: row["申込番号"],
-          store_code: row["店舗コード"],
+          app_id: row["申込番号"],
           store_name: row["店舗名"],
-          date: row["キャリアET日"],
-          result_point: row["審査完了日"],
-          settlement: row["初回決済日"],
+          date: row["キャリア取次日"],
+          result_point: row["キャリア審査通過日"],
+          consent_form: row["同意書キャリア受領完了日"],
           result_category: row["種類"],
-          picture_done: row["アクセプタンスキャリア確認日"],
-          settlement_second: row["2回目決済日"],
           payment: row["入金日"],
-          price: row["手数料額"],
+          price: row["金額"],
           client: row["商流"],
           company: row["会社名"],
         )
@@ -36,22 +33,19 @@ class PaymentDmer < ApplicationRecord
     nochange_cnt = 0
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
       product = find_by(controll_num: row["管理番号"],result_category: row["種類"])
-        d_id = Dmer.find_by(controll_num: row["管理番号"]).id rescue ""
+      r_id = RakutenPay.find_by(customer_num: row["管理番号"]).id rescue ""
       if product.present?
         product.assign_attributes(
-          dmer_id: d_id,
+          rakuten_pay_id: r_id,
           controll_num: row["管理番号"],
-          customer_num: row["申込番号"],
-          store_code: row["店舗コード"],
+          app_id: row["申込番号"],
           store_name: row["店舗名"],
-          date: row["キャリアET日"],
-          result_point: row["審査完了日"],
-          settlement: row["初回決済日"],
+          date: row["キャリア取次日"],
+          result_point: row["キャリア審査通過日"],
+          consent_form: row["同意書キャリア受領完了日"],
           result_category: row["種類"],
-          picture_done: row["アクセプタンスキャリア確認日"],
-          settlement_second: row["2回目決済日"],
           payment: row["入金日"],
-          price: row["手数料額"],
+          price: row["金額"],
           client: row["商流"],
           company: row["会社名"],
         )
@@ -63,19 +57,16 @@ class PaymentDmer < ApplicationRecord
         end 
       else  
         product = new(
-          dmer_id: d_id,
+          rakuten_pay_id: r_id,
           controll_num: row["管理番号"],
-          customer_num: row["申込番号"],
-          store_code: row["店舗コード"],
+          app_id: row["申込番号"],
           store_name: row["店舗名"],
-          date: row["キャリアET日"],
-          result_point: row["審査完了日"],
-          settlement: row["初回決済日"],
+          date: row["キャリア取次日"],
+          result_point: row["キャリア審査通過日"],
+          consent_form: row["同意書キャリア受領完了日"],
           result_category: row["種類"],
-          picture_done: row["アクセプタンスキャリア確認日"],
-          settlement_second: row["2回目決済日"],
           payment: row["入金日"],
-          price: row["手数料額"],
+          price: row["金額"],
           client: row["商流"],
           company: row["会社名"],
           )
@@ -85,5 +76,4 @@ class PaymentDmer < ApplicationRecord
     end
     "新規登録#{new_cnt}件, 更新#{update_cnt}件, 変更なし#{nochange_cnt}件"
   end 
-
 end
