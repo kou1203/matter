@@ -5,7 +5,7 @@
 <%# /変数 %>
 <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
   <div data-scope-path="shared/header">
-    <h1>楽天ペイ未入金一覧</h1>
+    <h1>PayPay未入金一覧</h1>
     <%= render "shared/header" %>
   </div>
   <div style="display:flex;">
@@ -17,15 +17,15 @@
         <%= render "shared/payment_links" %>
       <hr>
       <h2 class="">
-        <%= link_to "<<",not_payment_payment_rakuten_pays_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
-        <%= @month.month %>月楽天ペイ明細
-        <%= link_to ">>",not_payment_payment_rakuten_pays_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
+        <%= link_to "<<",not_payment_payment_paypays_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
+        <%= @month.month %>月PayPay明細
+        <%= link_to ">>",not_payment_payment_paypays_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
       </h2>
       <hr>
       <div class="flex"><%# 右と左と画面を分ける %>
         <div><%# 左（一覧） %>
         <h2>
-          ◆明細未反映案件（審査完了：<%= @start_date.to_date %>〜<%= @end_date.to_date %>）
+          ◆明細未反映案件（審査完了：<%= @month.ago(2.month).beginning_of_month.to_date %>〜<%= @month.ago(2.month).end_of_month.to_date %>）
         </h2>
         <table>
           <tr>
@@ -36,7 +36,6 @@
             <th>店舗名</th>
             <th>獲得者</th>
             <th>獲得日</th>
-            <th>申込日</th>
             <th>成果になった日</th>
             <th>自社入金予想日</th>
           </tr>
@@ -44,24 +43,23 @@
           <% result_date = "" %>
           <% billing_connect_len = 0 %>
           <% billing_connect_price = 0 %>
-          <% @results_monthly.each do |rakuten_pay| %>
-          <% billing_doubt = @billing_date.find_by(controll_num: rakuten_pay.customer_num) %>
+          <% @results_monthly.each do |paypay| %>
+          <% billing_doubt = @billing_date.find_by(controll_num: paypay.customer_num) %>
           <% if  billing_doubt.present? %>
             <% billing_connect_len += 1 %>
             <% billing_connect_price += billing_doubt.price %>
           <% else %>
             <tr>
               <td><%= not_payment1_len += 1 %></td>
-              <% not_payment1_price += 13500 %>
-              <td><%= rakuten_pay.client %></td>
-              <td><%= rakuten_pay.user.group %></td>
-              <td><%= rakuten_pay.customer_num %></td>
-              <td><%= rakuten_pay.store_prop.name %></td>
-              <td><%= rakuten_pay.user.name %></td>
-              <td><%= rakuten_pay.date %></td>
-              <td><%= rakuten_pay.share %></td>
-              <td><%= rakuten_pay.result_point %></td>
-              <td><%= rakuten_pay.payment %></td>
+              <% not_payment1_price += 3000 %>
+              <td><%= paypay.client %></td>
+              <td><%= paypay.user.group %></td>
+              <td><%= paypay.customer_num %></td>
+              <td><%= paypay.store_prop.name %></td>
+              <td><%= paypay.user.name %></td>
+              <td><%= paypay.date %></td>
+              <td><%= paypay.result_point %></td>
+              <td><%= paypay.payment %></td>
             </tr>
           <% end %>
           <% end %>
@@ -76,21 +74,18 @@
             <th class="green-th">合計</th>
             <th class="green-th">合計連携済</th>
             <th class="green-th">当月連携済</th>
-            <th class="green-th">後日解約</th>
             </tr>
             <tr>
               <td class="">件数</td>
               <td class=""><%= @payments_monthly.length.to_s(:delimited) %></td>
-              <td class=""><%= @payments_monthly.where.not(rakuten_pay_id: nil).length.to_s(:delimited) %></td>
+              <td class=""><%= @payments_monthly.where.not(paypay_id: nil).length.to_s(:delimited) %></td>
               <td class=""><%= billing_connect_len.to_s(:delimited) %></td>
-              <td class=""><%= @payments_monthly_ng.length.to_s(:delimited) %></td>
             </tr>
             <tr>
               <td class="">手数料</td>
               <td class=""><%= @payments_monthly.sum(:price).to_s(:delimited) %></td>
-              <td class=""><%= @payments_monthly.where.not(rakuten_pay_id: nil).sum(:price).to_s(:delimited) %></td>
+              <td class=""><%= @payments_monthly.where.not(paypay_id: nil).sum(:price).to_s(:delimited) %></td>
               <td class=""><%= billing_connect_price.to_s(:delimited) %></td>
-              <td class=""><%= @payments_monthly_ng.sum(:price).to_s(:delimited) %></td>
             </tr>
           </table>
           <h2>◆自社成果合計金額</h2>
@@ -112,7 +107,7 @@
             </tr>
           </table>
 
-          <% empty_data = @billing_date.where(rakuten_pay_id: nil) %>
+          <% empty_data = @billing_date.where(paypay_id: nil) %>
           <% empty_data.each do |e| %>
           <h2 class="red">・自社当て付け失敗：<%= e.store_name %></h2>
           <% end  %>

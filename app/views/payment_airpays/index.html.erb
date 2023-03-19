@@ -1,7 +1,7 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
 <div data-scope-path="shared/header">
-  <h1>楽天ペイ明細資料</h1>
+  <h1>AirPay明細資料</h1>
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;">
@@ -13,7 +13,7 @@
       <%= render "shared/payment_links" %>
     <hr>
     <% if current_user.position_sub == "管理" %>
-      <%= form_with url: import_payment_rakuten_pays_path do |f| %>
+      <%= form_with url: import_payment_airpays_path do |f| %>
         <table class="csv-tb">
           <tr>
             <td class="csv-label">CSV</td>
@@ -44,18 +44,13 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr class="s-tr">
-                    <td class="s-td">自社案件連携</td>
-                    <td class="s-td">
-                      <%= f.select :rakuten_pay_id_null,{"未連携": true,"連携済": false},{include_blank: true},{ class: "t-input"} %>
-                    </td>
                   </tr>
                   <tr class="s-tr">
                     <td class="s-td">商流</td>
                     <td class="s-td">
                       <%= 
                         f.select :client_eq,
-                        options_from_collection_for_select(PaymentRakutenPay.select(:client)
+                        options_from_collection_for_select(PaymentAirpay.select(:client)
                         .distinct,:client, :client),
                         {include_blank: true},
                         {class: "t-input"} 
@@ -67,7 +62,7 @@
                     <td class="s-td">
                       <%= 
                         f.select :company_eq,
-                        options_from_collection_for_select(PaymentRakutenPay.select(:company)
+                        options_from_collection_for_select(PaymentAirpay.select(:company)
                         .distinct,:company, :company),
                         {include_blank: true},
                         {class: "t-input"} 
@@ -79,7 +74,7 @@
                     <td class="s-td">
                       <%= 
                         f.select :result_category_eq,
-                        options_from_collection_for_select(PaymentRakutenPay.select(:result_category)
+                        options_from_collection_for_select(PaymentAirpay.select(:result_category)
                         .distinct,:result_category, :result_category),
                         {include_blank: true},
                         {class: "t-input"} 
@@ -98,36 +93,23 @@
             </div><%# 商材情報 %>
           </div><%# 検索フォーム %>
           <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "s-btn" %>
-          <button class="s-reset-btn"><%= link_to "解除", payment_rakuten_pays_path, class: "reset-link" %></button>
+          <button class="s-reset-btn"><%= link_to "解除", payment_airpays_path, class: "reset-link" %></button>
           <% end %>
           
         </div><%# /検索フォームの外枠 %>
         <div v-else>
           <%= search_form_for @q do |f| %>
-              <%= f.text_field :store_name_or_controll_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
+              <%= f.text_field :store_name_or_akr_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
               <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "search-btn" %>
           <% end %>
         </div>
       </article>
       <hr>
       <% if @payments.present? %>
-      <%# 重複確認 %>
-      <% rakuten_duplicate = @payments.where.not(controll_num: nil).group(:controll_num).having('count(*) >= 2') %>
-        <% if rakuten_duplicate.present? %>
-        <p class="nav-text">管理番号重複</p>
-        <% end %>
-        <%# PJ078772 ばんやジル %>
-      <% rakuten_duplicate.each do |db| %>
-        <p class="nav-text" style="color: red;"><%= db.controll_num %><%= db.store_name %></p>
-      <% end %>
-      <% @payments.where(rakuten_pay_id: nil).each do |rakuten| %>
-      <p class="nav-text">自社案件当て付け失敗</p>
-      <p class="nav-text" style="color: red;"><%= rakuten.controll_num %><%= rakuten.store_name %></p>
-      <% end %>
       <table>
         <tr>
         <th class="green-th">項目</th>
-        <th class="green-th">合計</th>
+        <th class="green-th">審査完了</th>
         </tr>
         <tr>
         <td class="">件数</td>
@@ -142,11 +124,12 @@
         <tr>
           <th>No</th>
           <th>管理番号</th>
+          <th>AKR番号</th>
           <th>クライアント</th>
           <th>店舗名</th>
           <th>申込日</th>
+          <th>獲得者</th>
           <th>審査完了日</th>
-          <th>同意書受領日</th>
           <th>成果項目</th>
           <th>手数料</th>
           <th>会社名</th>
@@ -157,16 +140,17 @@
         <tr>
           <td><%= i + 1 %></td>
           <td><%= payment.controll_num %></td>
+          <td><%= payment.akr_num %></td>
           <td><%= payment.client %></td>
           <td><%= payment.store_name %></td>
+          <td><%= payment.airpay.user.name %></td>
           <td><%= payment.date %></td>
           <td><%= payment.result_point %></td>
-          <td><%= payment.consent_form %></td>
           <td><%= payment.result_category %></td>
           <td><%= payment.price %></td>
           <td><%= payment.company %></td>
           <td><%= payment.payment %></td>
-          <% if payment.rakuten_pay.present? %>
+          <% if payment.airpay.present? %>
           <td>有</td>
           <% else %>
           <td class="red">無</td>

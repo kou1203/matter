@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_08_080526) do
+ActiveRecord::Schema.define(version: 2023_03_10_105215) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -703,6 +703,21 @@ ActiveRecord::Schema.define(version: 2023_03_08_080526) do
     t.index ["user_id"], name: "index_pandas_on_user_id"
   end
 
+  create_table "payment_airpays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "airpay_id"
+    t.string "controll_num"
+    t.string "akr_num"
+    t.string "store_name"
+    t.string "client"
+    t.string "company"
+    t.date "date"
+    t.date "result_point"
+    t.string "result_category"
+    t.integer "price"
+    t.date "payment", null: false
+    t.index ["airpay_id"], name: "index_payment_airpays_on_airpay_id"
+  end
+
   create_table "payment_dmers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "dmer_id"
     t.string "controll_num"
@@ -720,6 +735,20 @@ ActiveRecord::Schema.define(version: 2023_03_08_080526) do
     t.integer "price"
     t.date "payment", null: false
     t.index ["dmer_id"], name: "index_payment_dmers_on_dmer_id"
+  end
+
+  create_table "payment_paypays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "paypay_id"
+    t.string "controll_num"
+    t.string "store_name"
+    t.string "client"
+    t.string "company"
+    t.date "date"
+    t.date "result_point"
+    t.string "result_category"
+    t.integer "price"
+    t.date "payment", null: false
+    t.index ["paypay_id"], name: "index_payment_paypays_on_paypay_id"
   end
 
   create_table "payment_rakuten_pays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1659,7 +1688,9 @@ ActiveRecord::Schema.define(version: 2023_03_08_080526) do
   add_foreign_key "other_products", "users"
   add_foreign_key "pandas", "store_props"
   add_foreign_key "pandas", "users"
+  add_foreign_key "payment_airpays", "airpays"
   add_foreign_key "payment_dmers", "dmers"
+  add_foreign_key "payment_paypays", "paypays"
   add_foreign_key "payment_rakuten_pays", "rakuten_pays"
   add_foreign_key "paypay_date_progresses", "users"
   add_foreign_key "paypays", "store_props"

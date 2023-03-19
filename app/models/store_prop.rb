@@ -103,7 +103,8 @@ class StoreProp < ApplicationRecord
     detection = CharlockHolmes::EncodingDetector.detect(File.read(file.path))
     encoding = detection[:encoding] == 'Shift_JIS' ? 'CP932' : detection[:encoding]
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
-    store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
+      store_prop1 = StoreProp.where(name: row["店舗名"])
+      store_prop = store_prop1.find_by(phone_number_1: row["電話番号1"])
       if store_prop.present?
         store_prop.assign_attributes(
           race: row["区分"],
@@ -142,7 +143,7 @@ class StoreProp < ApplicationRecord
           else   
           nochange_cnt += 1
         end 
-      elsif StoreProp.find_by(phone_number_1: row["電話番号1"]).present? && StoreProp.find_by(name: row["店舗名"]).present?
+      elsif store_prop.present?
         nochange_cnt += 1
       else  
         store_prop = new(

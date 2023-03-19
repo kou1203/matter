@@ -312,5 +312,17 @@ Rails.application.routes.draw do
       get :not_payment
     }
   end 
+  resources :payment_airpays do 
+    collection { 
+      post :import
+      get :not_payment
+    }
+  end 
+  resources :payment_paypays do 
+    collection { 
+      post :import
+      get :not_payment
+    }
+  end 
 
 end

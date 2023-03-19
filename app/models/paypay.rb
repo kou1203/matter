@@ -1,5 +1,10 @@
 class Paypay < ApplicationRecord
   require 'charlock_holmes'
+
+  belongs_to :store_prop
+  belongs_to :user
+  has_one :paypay
+
   with_options presence: true do 
     validates :user_id 
     validates :store_prop_id
@@ -11,8 +16,6 @@ class Paypay < ApplicationRecord
   end 
 
 
-  belongs_to :store_prop
-  belongs_to :user
 
   def self.csv_check(file)
     errors = []

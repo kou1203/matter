@@ -1,4 +1,5 @@
 class PaymentDmer < ApplicationRecord
+  require 'charlock_holmes'
   belongs_to :dmer , optional: true
   with_options presence: true do 
     validates :payment

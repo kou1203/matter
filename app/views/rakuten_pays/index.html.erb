@@ -238,6 +238,9 @@
         <th class="remarks-th">不備詳細②</th>
         <th class="out-th">入金判定</th>
         <th class="out-th">不備カテゴリー</th>
+        <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
+        <th class="out-th">明細書</th>
+        <% end %>
       </tr>
       </thead>
       <tbody>
@@ -258,6 +261,13 @@
         <td class="remarks-td"><%= rakuten_pay.deficiency_consent %></td>
         <td class="out-td"><%= rakuten_pay.payment_flag %></td>
         <td class="remarks-td"><%= rakuten_pay.def_status %></td>
+        <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
+        <% if PaymentRakutenPay.exists?(rakuten_pay_id: rakuten_pay.id) %>
+        <td class="remarks-td">有</td>
+        <% else %>
+        <td class="remarks-td red">無</td>
+        <% end %>
+        <% end %>
       </tr>
       <% end %>
       </tbody>

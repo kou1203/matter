@@ -35,7 +35,8 @@ class PaymentRakutenPaysController < ApplicationController
       @end_date = Date.new(@month.year,@month.prev_month.month,15)
     end 
     @results_monthly = RakutenPay.where(payment: @month.beginning_of_month..@month.end_of_month).where(status: "OK").where.not(payment_flag: "NG")
-    @payments_monthly = PaymentRakutenPay.where(payment: @month.beginning_of_month..@month.end_of_month)
+    @payments_monthly = PaymentRakutenPay.includes(:rakuten_pay).where(payment: @month.beginning_of_month..@month.end_of_month)
+    @payments_monthly_ng = @payments_monthly.where(rakuten_pay: {status: "CANCEL"})
     @billing_date = PaymentRakutenPay.all
 
   end 

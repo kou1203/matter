@@ -82,6 +82,39 @@
                     </td>
                   </tr>
                   <tr class="s-tr">
+                    <td class="s-td">審査通過</td>
+                    <td class="s-td">
+                      <%= f.date_field :result_point_gteq, class: "s-input" %>〜
+                      <%= f.date_field :result_point_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">初回決済</td>
+                    <td class="s-td">
+                      <%= f.date_field :settlement_gteq, class: "s-input" %>〜
+                      <%= f.date_field :settlement_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">アクセプタンス合格</td>
+                    <td class="s-td">
+                      <%= f.date_field :picture_done_gteq, class: "s-input" %>〜
+                      <%= f.date_field :picture_done_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">2回目決済</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :settlement_second_eq,
+                        options_from_collection_for_select(PaymentDmer.select(:settlement_second)
+                        .distinct,:settlement_second, :settlement_second),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
                     <td class="s-td">入金日</td>
                     <td class="s-td">
                       <%= f.date_field :payment_gteq, class: "s-input" %>〜
@@ -114,6 +147,7 @@
         <th class="green-th">アクセプタンス合格</th>
         <th class="green-th">2回目決済</th>
         <th class="green-th">ステッカー</th>
+        <th class="green-th">未連携</th>
         </tr>
         <tr>
         <td class="">件数</td>
@@ -122,6 +156,7 @@
         <td class=""><%= @payments.where(result_category: "ステッカー連携手数料").length %></td>
         <td class=""><%= @payments.where(result_category: "2回目決済手数料").length %></td>
         <td class=""><%= @payments.where(result_category: "事前QR申込インセンティブ").length %></td>
+        <td class=""><%= @payments.where(dmer_id: nil).length %></td>
         </tr>
         <tr>
         <td class="">手数料</td>

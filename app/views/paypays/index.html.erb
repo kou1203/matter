@@ -155,29 +155,29 @@
     <table class="out-tb">
     <thead>
       <tr >
-        <th class="out-tb"></th>
-        <th class="out-tb">ID</th>
-        <th class="out-tb"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+        <th class="out-tb">管理番号</th>
         <th class="out-tb">法人/個人</th>
         <th class="out-tb">店舗名</th>
+        <th class="out-tb">獲得日</th>
+        <th class="out-tb">獲得者</th>
         <th class="out-tb">後確状況</th>
         <th class="out-tb">審査ステータス</th>
         <th class="out-tb">審査完了日</th>
-        <th class="out-tb">管理番号</th>
+        <th class="out-tb"></th>
       </tr>
     </thead>
     <tbody>
       <% @paypays_data.each do |paypay| %>
       <tr >
-        <td ><%= link_to "詳細",  paypay_path(paypay.id) ,class: "link" %></td>
-        <td ><%= paypay.id %></td>
-        <td ><%= paypay.date %></td>
+        <td ><%= paypay.customer_num %></td>
         <td ><%= paypay.store_prop.race %></td>
         <td ><%= paypay.store_prop.name %></td>
+        <td ><%= paypay.date %></td>
+        <td ><%= paypay.user.name %></td>
         <td ><%= paypay.remarks %></td>
         <td ><%= paypay.status %></td>
         <td ><%= paypay.result_point %></td>
-        <td ><%= paypay.customer_num %></td>
+        <td ><%= link_to "詳細",  paypay_path(paypay.id) ,class: "link" %></td>
       </tr>
       <% end %>
     </tbody>

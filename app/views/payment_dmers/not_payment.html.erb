@@ -4,12 +4,12 @@
   <% billing_pic = PaymentDmer.where(result_category: "ステッカー連携手数料") %>
   <% billing_slmt2nd = PaymentDmer.where(result_category: "2回目決済手数料") %>
   <% billing_sticker = PaymentDmer.where(result_category: "事前QR申込インセンティブ") %>
-  <% not_payment1_price = 0 %>
   <% not_payment1_len = 0 %>
-  <% not_payment2_price = 0 %>
   <% not_payment2_len = 0 %>
-  <% not_payment3_price = 0 %>
   <% not_payment3_len = 0 %>
+  <% not_payment1_price = 0 %>
+  <% not_payment2_price = 0 %>
+  <% not_payment3_price = 0 %>
 <%# /変数 %>
 <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
 <div data-scope-path="shared/header">
@@ -39,11 +39,11 @@
       <table>
         <tr>
           <th>No</th>
+          <th>拠点</th>
           <th>商流</th>
           <th>管理番号</th>
           <th>店舗名</th>
           <th>成果になった日</th>
-          <th>自社入金予想日</th>
         </tr>
         <% flag = "" %>
         <% result_date = "" %>
@@ -62,11 +62,11 @@
           <tr>
             <td><%= not_payment1_len += 1 %></td>
             <% not_payment1_price += 14000 %>
+            <td><%= dmer.user.base %></td>
             <td><%= dmer.client %></td>
             <td><%= dmer.controll_num %></td>
             <td><%= dmer.store_prop.name %></td>
             <td><%= result_date rescue "" %></td>
-            <td><%= flag %>月</td>
           </tr>
           <% end %>
         <% end %>
@@ -81,7 +81,6 @@
           <th>管理番号</th>
           <th>店舗名</th>
           <th>成果になった日</th>
-          <th>自社入金予想日</th>
         </tr>
         <% cnt = 0 %>
         <% flag = "" %>
@@ -98,7 +97,6 @@
             <td><%= dmer.controll_num %></td>
             <td><%= dmer.store_prop.name %></td>
             <td><%= result_date rescue "" %></td>
-            <td><%= flag %>月</td>
           </tr>
           <% end %>
         <% end %>
@@ -113,7 +111,6 @@
           <th>管理番号</th>
           <th>店舗名</th>
           <th>成果になった日</th>
-          <th>自社入金予想日</th>
         </tr>
         <% cnt = 0 %>
         <% flag = "" %>
@@ -137,7 +134,6 @@
             <td><%= dmer.controll_num %></td>
             <td><%= dmer.store_prop.name %></td>
             <td><%= result_date rescue "" %></td>
-            <td><%= flag %>月</td>
           </tr>
           <% end %>
         <% end %>
@@ -148,53 +144,137 @@
         <table>
           <tr>
           <th class="green-th">項目</th>
+          <th class="green-th" colspan="5">件数</th>
+          <th class="green-th" colspan="5">手数料</th>
+          </tr>
+          <tr>
+          <th class="green-th"></th>
+          <th class="green-th">合計</th>
+          <th class="green-th">審査完了+決済</th>
+          <th class="green-th">アクセプタンス合格</th>
+          <th class="green-th">2回目決済</th>
+          <th class="green-th">ステッカー</th>
           <th class="green-th">合計</th>
           <th class="green-th">審査完了+決済</th>
           <th class="green-th">アクセプタンス合格</th>
           <th class="green-th">2回目決済</th>
           <th class="green-th">ステッカー</th>
           </tr>
+          <td class="">成果</td>
+            <td class="">
+              <%= (@dmer_result1.length + @dmer_result2.length + @dmer_result3.length).to_s(:delimited) %>
+            </td>
+            <td class="">
+              <%= @dmer_result1.length.to_s(:delimited) %>
+            </td>
+            <td class="">
+              <%= @dmer_result2.length.to_s(:delimited) %>
+            </td>
+            <td class="">
+              <%= @dmer_result3.length.to_s(:delimited) %>
+            </td>
+            <td></td>
+            <td>
+              <%= (@dmer_result1.sum(:profit_new) + @dmer_result2.sum(:profit_settlement) + @dmer_result3.sum(:profit_second_settlement)).to_s(:delimited) %>
+            </td>
+            <td>
+              <%= (@dmer_result1.sum(:profit_new)).to_s(:delimited) %>
+            </td>
+            <td>
+              <%= (@dmer_result2.sum(:profit_settlement)).to_s(:delimited) %>
+            </td>
+            <td>
+              <%= (@dmer_result3.sum(:profit_second_settlement)).to_s(:delimited) %>
+            </td>
+            <td></td>
+          </tr>
           <tr>
-            <td class="">件数</td>
-            <td class=""><%= @payments_monthly.length.to_s(:delimited) %></td>
+            <td class=""><%= @month.month %>月明細</td>
+            <td class=""><%= @payments_monthly.where.not(result_category: "事前QR申込インセンティブ").length.to_s(:delimited) %></td>
             <td class=""><%= @billing_slmt.length.to_s(:delimited) %></td>
             <td class=""><%= @billing_pic.length.to_s(:delimited) %></td>
             <td class=""><%= @billing_slmt2nd.length.to_s(:delimited) %></td>
             <td class=""><%= @billing_sticker.length.to_s(:delimited) %></td>
-          </tr>
-          <tr>
-            <td class="">手数料</td>
-            <td class=""><%= @payments_monthly.sum(:price).to_s(:delimited) %></td>
+            <td class=""><%= @payments_monthly.where.not(result_category: "事前QR申込インセンティブ").sum(:price).to_s(:delimited) %></td>
             <td class=""><%= @billing_slmt.sum(:price).to_s(:delimited) %></td>
             <td class=""><%= @billing_pic.sum(:price).to_s(:delimited) %></td>
             <td class=""><%= @billing_slmt2nd.sum(:price).to_s(:delimited) %></td>
             <td class=""><%= @billing_sticker.sum(:price).to_s(:delimited) %></td>
           </tr>
+          <tr>
+            <td class="">明細（別月発行済）</td>
+            <td class=""><%= 
+              @payment1_prev.length +  
+              @payment2_prev.length +
+              @payment3_prev.length
+            %></td>
+            <td class=""><%= @payment1_prev.length.to_s(:delimited) %></td>
+            <td class=""><%= @payment2_prev.length.to_s(:delimited) %></td>
+            <td class=""><%= @payment3_prev.length.to_s(:delimited) %></td>
+            <td class=""></td>
+            <td class=""><%= 
+              @payment1_prev.sum(:price) +  
+              @payment2_prev.sum(:price) +
+              @payment3_prev.sum(:price)
+            %></td>
+            <td class=""><%= @payment1_prev.sum(:price).to_s(:delimited) %></td>
+            <td class=""><%= @payment2_prev.sum(:price).to_s(:delimited) %></td>
+            <td class=""><%= @payment3_prev.sum(:price).to_s(:delimited) %></td>
+            <td class=""></td>
+          </tr>
+          <tr>
+            <td class="">過去月成果</td>
+            <td class=""><%= @result_prev1.length + @result_prev2.length + @result_prev3.length %></td>
+            <td class=""><%= @result_prev1.length %></td>
+            <td class=""><%= @result_prev2.length %></td>
+            <td class=""><%= @result_prev3.length %></td>
+            <td class=""></td>
+
+          </tr>
+          <tr>
+            <td class="">来月成果</td>
+            <td class=""><%= @result_next1.length + @result_next2.length + @result_next3.length %></td>
+            <td class=""><%= @result_next1.length %></td>
+            <td class=""><%= @result_next2.length %></td>
+            <td class=""><%= @result_next3.length %></td>
+            <td class=""></td>
+
+          </tr>
+          <tr>
+            <td class="">明細当付失敗</td>
+            <td class="red"><%= @error_p.length.to_s(:delimited) %></td>
+            <td class="red"><%= @error_p.where(result_category: "獲得手数料・初回決済手数料").length.to_s(:delimited) %></td>
+            <td class="red"><%= @error_p.where(result_category: "ステッカー連携手数料").length.to_s(:delimited) %></td>
+            <td class="red"><%= @error_p.where(result_category: "2回目決済手数料").length.to_s(:delimited) %></td>
+            <td class=""></td>
+            <td class="red"><%= @error_p.sum(:price).to_s(:delimited) %></td>
+            <td class="red"><%= @error_p.where(result_category: "獲得手数料・初回決済手数料").sum(:price).to_s(:delimited) %></td>
+            <td class="red"><%= @error_p.where(result_category: "ステッカー連携手数料").sum(:price).to_s(:delimited) %></td>
+            <td class="red"><%= @error_p.where(result_category: "2回目決済手数料").sum(:price).to_s(:delimited) %></td>
+            <td class=""></td>
+          </tr>
+          <tr>
+            <td class="">明細未発行案件</td>
+            <td class="red"><%= (not_payment1_len + not_payment2_len + not_payment3_len).to_s(:delimited) %></td>
+            <td class="red"><%= not_payment1_len.to_s(:delimited) %></td>
+            <td class="red"><%= not_payment2_len.to_s(:delimited) %></td>
+            <td class="red"><%= not_payment3_len.to_s(:delimited) %></td>
+            <td class=""></td>
+            <td class="red"><%= (not_payment1_price + not_payment2_price + not_payment3_price).to_s(:delimited) %></td>
+            <td class="red"><%= not_payment1_price.to_s(:delimited) %></td>
+            <td class="red"><%= not_payment2_price.to_s(:delimited) %></td>
+            <td class="red"><%= not_payment3_price.to_s(:delimited) %></td>
+            <td class=""></td>
+          </tr>
+
         </table>
-        <h2>◆明細未確認合計金額</h2>
-        <table>
-          <tr>
-            <th class="green-th">項目</th>
-            <th class="green-th">合計</th>
-            <th class="green-th">審査完了+決済</th>
-            <th class="green-th">アクセプタンス合格</th>
-            <th class="green-th">2回目決済</th>
-          </tr>
-          <tr>
-            <td>件数</td>
-            <td><%= (not_payment1_len + not_payment2_len + not_payment3_len).to_s(:delimited) %></td>
-            <td><%= not_payment1_len.to_s(:delimited) %></td>
-            <td><%= not_payment2_len.to_s(:delimited) %></td>
-            <td><%= not_payment3_len.to_s(:delimited) %></td>
-          </tr>
-          <tr>
-            <td>手数料</td>
-            <td><%= (not_payment1_price + not_payment2_price + not_payment3_price).to_s(:delimited) %></td>
-            <td><%= (not_payment1_price).to_s(:delimited) %></td>
-            <td><%= (not_payment2_price).to_s(:delimited) %></td>
-            <td><%= (not_payment3_price).to_s(:delimited) %></td>
-          </tr>
-        </table>
+        <p class="caution-text">※合計にステッカーは含めておりません。（1次成果と２次成果は前月、3次成果は2ヶ月前の成果になります。）</p><br>
+        <p class="red">※当て付け失敗（<%= @error_p.length %>）</p>
+        <% @error_p.each do |error_data| %>
+          <p class="red">・<%= error_data.store_name %>：<%= error_data.result_category %>：<%= error_data.company %></p>
+        <% end %>
+        
+
       </div><%# 右 %>
     </div><%# 右と左と分ける %>
   </div>
