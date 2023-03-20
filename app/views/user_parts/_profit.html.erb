@@ -1,88 +1,6 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <%# 成果売上の変数 %>
-  <%# 合計成果売上 %>
-<% if current_user.name == "管理用" %>
-  <h2>終着計算内容</h2>
-  <table>
-  <tr>
-    <th>dメル審査完了</th>
-    <th>（期間内）</th>
-    <th>（過去）</th>
-    <th>成果率（期間内）</th>
-    <th>成果率（過去）</th>
-  </tr>
-  <tr>
-    <td><%= @dmer_result1_fin %></td>
-    <td>
-      <%= @dmer1_price %> * 
-      <%= @dmer_result1_fin_this_month_len %>
-      （<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * 
-      <%= @dmer1_this_month_per - @dmer1_dec_per %>） - <%= @dmer_val1_period_profit %>
-    </td>
-    <td>
-      <%= @dmer1_price %> * 
-      <%= @dmer_result1_fin_prev_month_len %>
-      <%= @dmer1_price %> * <%= @dmer1_tgt_prev.length rescue 0 %> + 
-      <%= @dmer1_price %> * <%= @dmer1_done_prev_len %></td>
-    <td><%= @dmer1_this_month_per  %> - <%= @dmer1_dec_per %></td>
-    <td><%= @dmer1_prev_month_per  %> - <%= @dmer1_prev_dec_per %></td>
-  </tr>
-  <tr>
-    <th>dメルアクセプタンス</th>
-    <th>（期間内）</th>
-    <th>（過去）</th>
-    <th>成果率（期間内）</th>
-    <th>成果率（過去）</th>
-  </tr>
-  <tr>
-    <td><%= @dmer_result2_fin %></td>
-    <td><%= @dmer2_price %> * <%= @dmer_result2_fin_this_month_len %>（<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @dmer2_this_month_per - @dmer2_dec_per %>） - <%= @dmer_val2_period_profit %></td>
-    <td><%= @dmer2_price %> * <%= @dmer_result2_fin_prev_month_len %>
-    （<%= @dmer2_slmt_tgt_prev.length rescue 0 %> - <%= @dmer2_prev_val_len %> * <%= @dmer2_prev_month_per - @dmer2_prev_dec_per %>）
-    + <%= @dmer2_price %> * <%= @dmer2_done_prev_len %></td>
-    <td><%= @dmer2_this_month_per  %> - <%= @dmer2_dec_per %></td>
-    <td><%= @dmer2_prev_month_per  %> - <%= @dmer2_prev_dec_per %></td>
-  </tr>
-  <tr>
-    <th>2回目決済</th>
-    <th>（期間内）</th>
-    <th>（過去）</th>
-    <th>成果率（期間内）</th>
-    <th>成果率（過去）</th>
-  </tr>
-  <tr>
-    <td><%= @dmer_result3_fin %></td>
-    <td>
-      <%= @dmer3_price %> * <%= @dmer_result3_fin_this_month_len %>（<%= @dmer_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @dmer3_this_month_per - @dmer3_dec_per %>） - <%= @dmer_val3_period_profit %>
-    </td>
-    <td>
-      <%= @dmer3_price %> * <%= @dmer_result3_fin_prev_month_len %>
-    （<%= @dmer3_slmt_tgt_prev.length rescue 0 %> - <%= @dmer3_val_prev_len %> - <%= @dmer_slmt_dead_len %>）+
-     <%= @dmer_slmt2nd_done.where("? > date",@start_date).sum(:valuation_second_settlement) rescue 0 %>
-    </td>
-    <td><%= @dmer3_this_month_per  %> - <%= @dmer3_dec_per %></td>
-    <td></td>
-  </tr>
-  <tr>
-    <th>AirPay</th>
-    <th>（期間内）</th>
-    <th>（過去）</th>
-    <th>成果率（期間内）</th>
-    <th>成果率（過去）</th>
-  </tr>
-  <tr>
-    <td><%= @airpay_result1_fin %></td>
-    <td><%= @airpay_price %> * <%= @airpays_result_len_fin %>（<%= @airpays_result_len %> / <%= @digestion_new %> * <%= @new_shift %> * <%= @airpay1_this_month_per - @airpay_dec_per %>） - （<%= @airpay_price %> * <%= @airpay26_end_done.length rescue 0 %> ）</td>
-    <td>
-      <%= @airpay_price %> * （<%= @airpay_prev_len %> * 
-      <%= @airpay1_prev_month_per - @airpay_prev_dec_per %> ）+
-    （<%= @airpay_price %> * <%= @airpay_period_done_len %>） 
-    </td>
-    <td><%= @airpay1_this_month_per  %> - <%= @airpay_dec_per %></td>
-    <td><%= @airpay1_prev_month_per  %> - <%= @airpay_prev_dec_per %></td>
-  </tr>
-  </table>
-<% end %>
+
 <div class="result-flex"><%# 大枠 %>
   <div class="left-frame"><%#日々進捗の区切り%>
     <h2 class="date-title">日々進捗</h2>
@@ -238,15 +156,19 @@
           <td class="date-td race-border"><span class="date-span"><%= result.area %></span></td>
         <%# その日の売上 %>
           <% if @results.where(shift: "キャッシュレス新規").present? %>
+            
             <% 
             date_profit =
-              @dmer_user.where(date: result.date).where(store_prop: {head_store: nil}).sum(:valuation_new) +
-              @dmer_slmter.where(status_settlement: "完了").where(picture: result.date).sum(:valuation_settlement) +
+              @dmer_user.where(date: result.date).sum(:valuation_new) +
+              @dmer_slmter.where(picture: result.date).sum(:valuation_settlement) +
               @dmer_slmter.where(settlement_second: result.date).sum(:valuation_second_settlement) +
-              @aupay_user.where(date: result.date).sum(:valuation_new) + 
-              @aupay_slmter.where(status_settlement: "完了").where(picture: result.date).sum(:valuation_settlement) +
+              @aupay_slmter.where(picture: result.date).sum(:valuation_settlement) +
               @paypay_user.where(date: result.date).sum(:valuation) +
-              @rakuten_pay_user.where(user_id: result.user_id).where(date: result.date).sum(:valuation) + @airpay_user.where(date: result.date).sum(:valuation)
+              @rakuten_pay_user.where(user_id: result.user_id).where(date: result.date).sum(:valuation) + 
+              (@airpay_user.where(date: result.date).length * @airpay_price) +
+              @itss.where(date: result.date).sum(:valuation) +
+              @demaekan.where(date: result.date).sum(:valuation) +
+              @other_products.where(date: result.date).sum(:valuation)
             %>
           <% else %>
             <% date_profit = 0 %>

@@ -147,19 +147,19 @@
               <td class="date-td race-border"><span class="date-span"><%= result.ojt.name rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.area rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.profit.round().to_s(:delimited) rescue 0 %></td><%# 営業予想 %>
+
               <% 
                 date_valuation =  
                   @dmers.where(date: d).sum(:valuation_new) + 
+                  @dmers_slmt.where(picture: d).sum(:valuation_settlement) +
+                  @dmers_slmt.where(settlement_second: d).sum(:valuation_second_settlement) +
+                  @aupays_slmt.where(picture: d).sum(:valuation_settlement) +
                   @rakuten_pays.where(date: d).sum(:valuation) + 
                   @paypays.where(date: d).sum(:valuation) +
                   (@airpays.where(date: d).length * @airpay_price) +
                   @demaekan.where(date: d).sum(:valuation) +
                   @other_products.where(date: d).sum(:valuation) +
-                  @itss.where(date: d).sum(:valuation) +
-                  @dmers_slmt.where(picture: d).where(date: d).sum(:valuation_settlement) +
-                  @dmers_slmt.where(settlement_second: d).where(date: d).sum(:valuation_second_settlement) +
-                  @aupays_slmt.where(picture: d).where(date: d).sum(:valuation_settlement)
-                  
+                  @itss.where(date: d).sum(:valuation)
               %>
               <td class="date-td race-border"><span class="date-span"><%= date_valuation %></td><%# 実際の売上 %>
             <%# 合計 %>

@@ -637,8 +637,10 @@ class UsersController < ApplicationController
           .where.not(industry_status: "要確認")
           .where(status: "審査OK")
         # 決済
+
         @dmer_slmter = 
-          Dmer.where(settlementer_id: @results.first.user_id)
+          Dmer.where(settlementer_id: @results.first.user_id).where(status: "審査OK")
+          .where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認")
         @dmer_slmt = 
         slmt_period(@dmer_slmter, @results_date)
         .where.not(industry_status: "×")
