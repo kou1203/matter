@@ -27,17 +27,40 @@ class PaymentRakutenPaysController < ApplicationController
 
   def not_payment 
     @month = params[:month] ? Time.parse(params[:month]) : Date.today.prev_month
-    if @month > Date.new(2023,02,28)
-      @start_date = @month.ago(1.month).beginning_of_month
-      @end_date = @month.ago(1.month).end_of_month
-    else  
-      @start_date = Date.new(@month.ago(2.month).year,@month.ago(2.month).month,16)
-      @end_date = Date.new(@month.year,@month.prev_month.month,15)
+    @rakuten_pays = RakutenPay.includes(:payment_rakuten_pay).where(status: "OK")
+    @payments = PaymentRakutenPay.all
+    @payments_result = @payments.where(result_category: "獲得手数料")
+    @period = []
+    month_cnt = 1
+    12.times do 
+      @period << Date.new(@month.year, month_cnt,1)
+      month_cnt += 1
     end 
-    @results_monthly = RakutenPay.where(payment: @month.beginning_of_month..@month.end_of_month).where(status: "OK").where.not(payment_flag: "NG")
-    @payments_monthly = PaymentRakutenPay.includes(:rakuten_pay).where(payment: @month.beginning_of_month..@month.end_of_month)
-    @payments_monthly_ng = @payments_monthly.where(rakuten_pay: {status: "CANCEL"})
-    @billing_date = PaymentRakutenPay.all
+  end 
 
+
+  def result
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today.prev_month
+    @rakuten_pays = RakutenPay.includes(:user,:payment_rakuten_pay,:store_prop)  
+    if (2022 >= @month.year)
+      @start_date = Date.new(@month.prev_month.year,@month.prev_month.month,16)
+      @end_date = Date.new(@month.year,@month.month,15)
+    elsif @month.year == 2023 && @month.month == 1
+      @start_date = Date.new(@month.prev_month.year,@month.prev_month.month,16)
+      @end_date = @month.end_of_month
+    else    
+      @start_date = @month.beginning_of_month
+      @end_date = @month.end_of_month
+    end 
+    @rakuten_pays_result = @rakuten_pays.where(result_point: @start_date..@end_date).where(payment_flag: "OK")
+      if params[:page_status] == "未発行"
+        @page_status = params[:page_status]
+      else  
+        @page_status = ""
+      end
+    @payments = 
+      PaymentRakutenPay.where(payment: @month.next_month.beginning_of_month..@month.next_month.end_of_month)
+    # dメル成果で明細が発行されている案件
+    @rakuten_pay_billing_data_exist = @rakuten_pays_result.where.not(payment_rakuten_pay: {rakuten_pay_id: nil})
   end 
 end

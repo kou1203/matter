@@ -3,6 +3,7 @@ class Aupay < ApplicationRecord
   belongs_to :user 
   belongs_to :settlementer ,class_name: "User", optional: true
   belongs_to :store_prop 
+  has_one :payment_aupay
 
   with_options presence: true do 
     validates :user_id
@@ -32,6 +33,7 @@ class Aupay < ApplicationRecord
       errors << "#{index}行目決済者名が不正です" if settlementer.blank? && row["決済対応者"].present? && row["決済対応者"] == settlementer_params && errors.length < 5
         store_id = store_prop.id if store_prop.present? 
         aupay = new(
+          record_num: row["管理番号"],
           customer_num: row["お申込み番号"],
           client: row["商流"],
           user_id: user.id,
@@ -87,6 +89,7 @@ class Aupay < ApplicationRecord
     aupay = find_by(store_prop_id: store_prop.id)
     if store_prop.aupay.present? 
       aupay.assign_attributes(
+        record_num: row["管理番号"],
         customer_num: row["お申込み番号"],
         client: row["商流"],
         user_id: user.id,
@@ -127,6 +130,7 @@ class Aupay < ApplicationRecord
       end 
     else  
       aupay = new(
+        record_num: row["管理番号"],
         customer_num: row["お申込み番号"],
         client: row["商流"],
         user_id: user.id,

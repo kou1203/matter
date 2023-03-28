@@ -12,6 +12,136 @@
     <hr>
       <%= render "shared/payment_links" %>
     <hr>
+      <h2 class="">
+        <%= link_to "<<",payment_cashes_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
+        <%= @month.strftime("%Y年%m月") %>明細
+        <%= link_to ">>",payment_cashes_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
+      </h2><br>
+    <h2>◆明細売上内訳</h2>
+    <table>
+      <tr>
+        <th class="green-th">dメル</th>
+        <th class="green-th">楽天ペイ</th>
+        <th class="green-th">AirPay</th>
+        <th class="green-th">PayPay</th>
+        <th class="green-th">合計</th>
+      </tr>
+      <tr>
+        <td class=""><%= @dmer_payment.sum(:price).to_s(:delimited) %></td>
+        <td class=""><%= @rakuten_pay_payment.sum(:price).to_s(:delimited) %></td>
+        <td class=""><%= @airpay_payment.sum(:price).to_s(:delimited) %></td>
+        <td class=""><%= @paypay_payment.sum(:price).to_s(:delimited) %></td>
+        <td class=""><%= 
+          (
+            @dmer_payment.sum(:price) +
+            @rakuten_pay_payment.sum(:price) +
+            @airpay_payment.sum(:price) +
+            @paypay_payment.sum(:price)
+          ).to_s(:delimited) 
+        %></td>
+      </tr>
+    </table>
+    <h2>◆明細内訳</h2>
+    <table>
+      <tr>
+        <th>商材</th>
+        <th>成果</th>
+        <th>明細</th>
+        <th>未発行</th>
+        <th>成果期間</th>
+        <th>明細チェック</th>
+      </tr>
+      <tr>
+        <td>dメル審査通過+決済</td>
+        <td><%= @dmer_result1.length %></td>
+        <td><%= dmer_billing1_len = @dmer_result1.where(payment_dmers: {result_category: "獲得手数料・初回決済手数料"}).length %></td>
+        <td class="red"><%= @dmer_result1.length - dmer_billing1_len %></td>
+        <td>
+          <%= @prev_month.beginning_of_month.strftime("%Y年%m月%d日") %>〜
+          <%= @prev_month.end_of_month.strftime("%Y年%m月%d日") %>
+        </td>
+        <% if @dmer_result1.length - dmer_billing1_len == 0 %>
+          <td class="">○</td>
+        <% else %>
+          <td class="red">×</td>
+        <% end %>
+      </tr>
+      <tr>
+        <td>dメルアクセプタンス合格</td>
+        <td><%= @dmer_result2.length %></td>
+        <td><%= dmer_billing2_len = @dmer_result2.where(payment_dmers: {result_category: "ステッカー連携手数料"}).length %></td>
+        <td class="red"><%= @dmer_result2.length - dmer_billing2_len %></td>
+        <td>
+          <%= @prev_month.beginning_of_month.strftime("%Y年%m月%d日") %>〜
+          <%= @prev_month.end_of_month.strftime("%Y年%m月%d日") %>
+        </td>
+        <% if @dmer_result2.length - dmer_billing2_len == 0 %>
+          <td class="">○</td>
+        <% else %>
+          <td class="red">×</td>
+        <% end %>
+      </tr>
+      <tr>
+        <td>dメル2回目決済</td>
+        <td><%= @dmer_result3.length %></td>
+        <td><%= dmer_billing3_len = @dmer_result3.where(payment_dmers: {result_category: "2回目決済手数料"}).length %></td>
+        <td class="red"><%= @dmer_result3.length - dmer_billing3_len %></td>
+        <td>
+          <%= @prev_2month.beginning_of_month.strftime("%Y年%m月%d日") %>〜
+          <%= @prev_2month.end_of_month.strftime("%Y年%m月%d日") %>
+        </td>
+        <% if @dmer_result3.length - dmer_billing3_len == 0 %>
+          <td class="">○</td>
+        <% else %>
+          <td class="red">×</td>
+        <% end %>
+      </tr>
+      <tr>
+        <td>楽天ペイ</td>
+        <td><%= @rakuten_pays_result.length %></td>
+        <td><%= rakuten_pay_billing_len = @rakuten_pays_result.where.not(payment_rakuten_pay: {rakuten_pay_id: nil}).length %></td>
+        <td class="red"><%= @rakuten_pays_result.length - rakuten_pay_billing_len %></td>
+        <td>
+          <%= @start_date.strftime("%Y年%m月%d日") %>〜
+          <%= @end_date.strftime("%Y年%m月%d日") %>
+        </td>
+        <% if @rakuten_pays_result.length - rakuten_pay_billing_len == 0 %>
+          <td class="">○</td>
+        <% else %>
+          <td class="red">×</td>
+        <% end %>
+      </tr>
+      <tr>
+        <td>AirPay</td>
+        <td><%= @airpays_result.length %></td>
+        <td><%= airpay_billing_len = @airpays_result.where.not(payment_airpay: {airpay_id: nil}).length %></td>
+        <td class="red"><%= @airpays_result.length - airpay_billing_len %></td>
+        <td>
+          <%= @prev_2month.beginning_of_month.strftime("%Y年%m月%d日") %>〜
+          <%= @prev_2month.end_of_month.strftime("%Y年%m月%d日") %>
+        </td>
+        <% if @airpays_result.length - airpay_billing_len == 0 %>
+          <td class="">○</td>
+        <% else %>
+          <td class="red">×</td>
+        <% end %>
+      </tr>
+      <tr>
+        <td>PayPay</td>
+        <td><%= @paypays_result.length %></td>
+        <td><%= paypay_billing_len = @paypays_result.where.not(payment_paypay: {paypay_id: nil}).length %></td>
+        <td class="red"><%= @paypays_result.length - paypay_billing_len %></td>
+        <td>
+          <%= @prev_2month.beginning_of_month.strftime("%Y年%m月%d日") %>〜
+          <%= @prev_2month.end_of_month.strftime("%Y年%m月%d日") %>
+        </td>
+        <% if @paypays_result.length - paypay_billing_len == 0 %>
+          <td class="">○</td>
+        <% else %>
+          <td class="red">×</td>
+        <% end %>
+      </tr>
+    </table>
   </div>
 </div>
 <% end %>

@@ -3,7 +3,7 @@ class Paypay < ApplicationRecord
 
   belongs_to :store_prop
   belongs_to :user
-  has_one :paypay
+  has_one :payment_paypay
 
   with_options presence: true do 
     validates :user_id 

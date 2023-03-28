@@ -19,6 +19,21 @@ class PaymentPaypaysController < ApplicationController
     @payments_monthly = @billing_date.where(payment: @month.beginning_of_month..@month.end_of_month)
   end 
 
+  def result
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today.prev_month
+    @paypays = Paypay.includes(:user,:payment_paypay,:store_prop)  
+    @paypays_result = @paypays.where(result_point: @month.beginning_of_month..@month.end_of_month).where(status: "60審査可決")
+      if params[:page_status] == "未発行"
+        @page_status = params[:page_status]
+      else  
+        @page_status = ""
+      end
+    @payments = 
+      PaymentPaypay.where(payment: @month.since(2.month).beginning_of_month..@month.since(2.month).end_of_month)
+    # 成果で明細が発行されている案件
+    @paypay_billing_data_exist = @paypays_result.where.not(payment_paypay: {paypay_id: nil})
+  end 
+
   def import 
     if params[:file].present?
       if PaymentPaypay.csv_check(params[:file]).present?

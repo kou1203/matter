@@ -545,13 +545,13 @@
         </table>
           <%= link_to "日々獲得内容確認",date_progress_results_path,class: "link" %>
         <hr>
-        <h2>キャッシュレス利益表（2023年1月以前）</h2>
+        <h2 >（旧）キャッシュレス利益表<span class="red">（※2023年1月以前）</span></h2>
         <table class="user-tb">
         <% @users_cash.group(:base).each do |base| %>
           <tr class="index-tr">
           <th class=""><%= base.base %></th>
           <% @users_cash.where(base: base.base).each do |user| %>
-          <td><%= link_to user.name, user_path(user.id,month: Date.new(2023,1,1)),"data-turbolinks": false, class: "link" %></td>
+          <td><%= link_to user.name, user_path(user.id,month: Date.new(2023,1,1)),"data-turbolinks": false, class: "link red" %></td>
           <% end %>
           </tr>
         <% end %>

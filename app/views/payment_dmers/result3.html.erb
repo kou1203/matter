@@ -1,0 +1,205 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %><%# 閲覧制限 %>
+<div data-scope-path="shared/header">
+  <h1>dメル明細3次成果一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <hr>
+      <%= render "shared/payment_links" %>
+    <hr>
+    <%= alert %>
+      <h2>
+
+        <%= link_to "<<",result3_payment_dmers_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
+        <%= @month.strftime("%Y年%m月") %>月（２回目決済）
+        <%= link_to ">>",result3_payment_dmers_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>
+      </h2>
+      <hr>
+      <% if @dmers_result3.present? %><%# @dmers_result3がからじゃない場合のみ表示 %>
+      <div class="link-flex">
+        <div class="section">
+          <h2><%= @month.month %>月成果内訳</h2>
+          <table>
+            <tr>
+            <th class="green-th">項目</th>
+            <th class="green-th">審査完了+決済（件数）</th>
+            <th class="green-th">審査完了+決済（売上）</th>
+            </tr>
+            <tr>
+            <% @dmers_result3.group(:client).each do |c| %>
+            <% if c.client == "マックスサポート" %>
+            <td class="">マックス（他社）</td>
+            <% else %>
+            <td class=""><%= c.client %></td>
+            <% end %>
+            <td class=""><%= @dmers_result3.where(client: c.client).length %></td>
+            <td class=""><%= @dmers_result3.where(client: c.client).sum(:profit_new).to_s(:delimited) %></td>
+            </tr>
+            <% end %>
+            <tr>
+            <td class="">全商流</td>
+            <td class=""><%= @dmers_result3.length %></td>
+            <td class=""><%= @dmers_result3.sum(:profit_new).to_s(:delimited) %></td>
+            </tr>
+          </table>
+        </div>
+        <div class="section">
+          <h2><%= @month.month %>月成果の明細内訳</h2>
+          <table>
+            <tr>
+            <th class="green-th">明細発行月</th>
+            <% payment_month = @dmer_billing_data_exist.group("MONTH(payment_dmers.payment)").order("YEAR(payment_dmers.payment)").order("MONTH(payment_dmers.payment)") %>
+            <% payment_month.each do |dmer| %>
+            <th class="green-th"><%= dmer.payment_dmers.first.payment.strftime("%Y年%m月") %>明細</th>
+            <% end %>
+            <th class="green-th">合計</th>
+            <th class="green-th">未発行</th>
+            </tr>
+            <tr>
+            <td class="">件数</td>
+            <% payment_month.each do |dmer| %>
+            <td class=""><%= @dmer_billing_data_exist.where(payment_dmers: {payment: dmer.payment_dmers.first.payment}).length %></td>
+            <% end %>
+            <td class=""><%= @dmer_billing_data_exist.length %></td>
+            <td class="red"><%= @dmers_result3.length - @dmer_billing_data_exist.length %></td>
+            </tr>
+          </table>
+          <h2><%= @month.since(2.month).month %>明細内訳</h2>
+          <table>
+            <tr>
+            <th class="green-th">明細合計</th>
+            <th class="green-th">合計</th>
+            <th class="green-th">連携失敗</th>
+            </tr>
+            <tr>
+            <td class="">件数</td>
+            <td class=""><%= @payments.length %></td>
+            <td class="red"><%= @payments.where(dmer_id: nil).length %></td>
+
+            </tr>
+          </table>
+
+          <% if @payments.where(dmer_id: nil).present? %>
+          <h2>連携失敗案件</h2><br>
+            <% @payments.where(dmer_id: nil).each do |pay| %>
+            <p class="red">・<%= pay.store_name %></p>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <h2>◆ 絞り込み</h2>
+      <div class="link-flex">
+        <p class="link-text">
+          <%= link_to "マックスのみ", result3_payment_dmers_path(month: @month,client: "マックス",page_status: @page_status),class: "index-link","data-turbolinks": false %>
+        </p>
+        <p class="link-text">
+        <%= link_to "ぷらいまるのみ", result3_payment_dmers_path(month: @month,client: "ぷらいまる",page_status: @page_status),class: "index-link","data-turbolinks": false %>
+        </p>
+        <p class="link-text">
+        <%= link_to "未発行案表示",result3_payment_dmers_path(page_status: "未発行",month: @month),class: "index-link","data-turbolinks": false %>
+        </p>
+        <p class="link-text">
+        <%= link_to "リセット",result3_payment_dmers_path(month: @month,client: @client),class: "index-link","data-turbolinks": false %>
+        </p>
+      </div>
+      <table>
+        <tr>
+          <th class="out-th">No</th>
+          <th class="out-th">管理番号</th>
+          <th class="out-th">クライアント</th>
+          <th class="out-th">店舗名</th>
+          <th class="out-th">獲得日</th>
+          <th class="out-th">獲得者</th>
+          <th class="out-th">業種チェック</th>
+          <th class="out-th">審査ステータス</th>
+          <th class="out-th">審査完了日</th>
+          <th class="out-th">初回決済日</th>
+          <th class="out-th">アクセプタンス合格</th>
+          <th class="out-th">2回目決済</th>
+          <th class="out-th">予想入金日</th>
+          <th class="out-th">入金日</th>
+          <th class="out-th">会社名</th>
+        </tr>
+        <% count = 0 %>
+        <% @dmers_result3.each do |dmer| %><%# 繰り返し %>
+          <% billing_date = dmer.payment_dmers.where(payment_dmers: {result_category: "2回目決済手数料"}).first %>
+          <% page_flag = "#{billing_date.payment.strftime("%Y年%m月")}" rescue "未発行" %>
+          <% if @page_status == "未発行" %><%# 未発行だけに絞り込んでいるか判別 %>
+            <% if page_flag === "未発行" %><%# 未発行案件のみを表示 %>
+              <tr>
+                <td><%= count += 1 %></td>
+                <td><%= dmer.controll_num %></td>
+                <td><%= dmer.client %></td>
+                <td><%= dmer.store_prop.name %></td>
+                <td><%= dmer.date %></td>
+                <td><%= dmer.user.name %></td>
+                <td><%= dmer.industry_status %></td>
+                <td><%= dmer.status %></td>
+                <td><%= dmer.result_point %></td>
+                <td><%= dmer.settlement %></td>
+                <td><%= dmer.status_update_settlement %></td>
+                <td><%= dmer.settlement_second %></td>
+                <% if dmer.status_update_settlement >= dmer.settlement_second %><%# 成果月を判別 %>
+                  <% result_flag = dmer.status_update_settlement %>
+                <% else %>
+                  <% result_flag = dmer.settlement_second rescue "" %>
+                <% end %><%# /成果月を判別 %>
+                <td><%= result_flag.since(2.month).strftime("%Y年%m月") %></td>
+                <%# 入金月 %>
+                <% if 
+                  billing_date.present? && 
+                  result_flag.month == billing_date.payment.ago(2.month).month  
+                %>
+                  <td class=""><%= page_flag %></td>
+                <% else %>
+                  <td class="red"><%= page_flag %></td>
+                <% end %>
+                <%# /入金月 %>
+                <td class=""><%= dmer.user.group %></td>
+              </tr>
+            <% end %><%# /未発行案件のみを表示 %>
+          <% else %><%# 未発行案件以外も表示 %>
+            <tr>
+              <td><%= count += 1 %></td>
+              <td><%= dmer.controll_num %></td>
+              <td><%= dmer.client %></td>
+              <td><%= dmer.store_prop.name %></td>
+              <td><%= dmer.date %></td>
+              <td><%= dmer.user.name %></td>
+              <td><%= dmer.industry_status %></td>
+              <td><%= dmer.status %></td>
+              <td><%= dmer.result_point %></td>
+              <td><%= dmer.settlement %></td>
+              <td><%= dmer.status_update_settlement %></td>
+              <td><%= dmer.settlement_second %></td>
+              <% if dmer.status_update_settlement >= dmer.settlement_second %><%# 成果月を判別 %>
+                <% result_flag = dmer.status_update_settlement %>
+              <% else %>
+                <% result_flag = dmer.settlement_second rescue "" %>
+              <% end %><%# /成果月を判別 %>
+              <td><%= result_flag.since(2.month).strftime("%Y年%m月") %></td>
+              <%# 入金月 %>
+                <% billing_date = dmer.payment_dmers.where(payment_dmers: {result_category: "2回目決済手数料"}).first %>
+                <% if 
+                  billing_date.present? && 
+                  result_flag.month == billing_date.payment.ago(2.month).month  
+                %>
+                  <td class=""><%= page_flag %></td>
+                <% else %>
+                  <td class="red"><%= page_flag %></td>
+                <% end %>
+              <%# /入金月 %>
+              <td class=""><%= dmer.user.group %></td>
+            </tr>
+          <% end %><%# 未発行だけに絞り込んでいるか判別 %>
+        <% end %><%# 繰り返し %>
+      </table>
+      <% end %><%# @dmers_result3がからじゃない場合のみ表示 %>
+  </div>
+</div>
+<% end %><%# /閲覧制限 %>

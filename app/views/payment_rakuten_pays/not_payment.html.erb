@@ -1,15 +1,11 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
-<%# 変数 %>
-  <% not_payment1_price = 0 %>
-  <% not_payment1_len = 0 %>
-<%# /変数 %>
 <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
   <div data-scope-path="shared/header">
     <h1>楽天ペイ未入金一覧</h1>
     <%= render "shared/header" %>
   </div>
   <div style="display:flex;">
-    <div data-scope-path="shared/side_bar">
+    <div data-scope-path="shared/side_bar_humbarger">
       <%= render "shared/sidebar" %>
     </div>
     <div data-scope-path="shares/index">
@@ -17,107 +13,85 @@
         <%= render "shared/payment_links" %>
       <hr>
       <h2 class="">
-        <%= link_to "<<",not_payment_payment_rakuten_pays_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
-        <%= @month.month %>月楽天ペイ明細
-        <%= link_to ">>",not_payment_payment_rakuten_pays_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
+        <%= link_to "<<",not_payment_payment_rakuten_pays_path(month:@month.prev_year),"data-turbolinks": false, class:"link" %>
+        <%= @month.year %>年楽天ペイ未入金確認
+        <%= link_to ">>",not_payment_payment_rakuten_pays_path(month:@month.next_year),"data-turbolinks": false, class:"link" %>
       </h2>
       <hr>
-      <div class="flex"><%# 右と左と画面を分ける %>
-        <div><%# 左（一覧） %>
-        <h2>
-          ◆明細未反映案件（審査完了：<%= @start_date.to_date %>〜<%= @end_date.to_date %>）
-        </h2>
-        <table>
-          <tr>
-            <th>No</th>
-            <th>商流</th>
-            <th>会社</th>
-            <th>管理番号</th>
-            <th>店舗名</th>
-            <th>獲得者</th>
-            <th>獲得日</th>
-            <th>申込日</th>
-            <th>成果になった日</th>
-            <th>自社入金予想日</th>
-          </tr>
-          <% flag = "" %>
-          <% result_date = "" %>
-          <% billing_connect_len = 0 %>
-          <% billing_connect_price = 0 %>
-          <% @results_monthly.each do |rakuten_pay| %>
-          <% billing_doubt = @billing_date.find_by(controll_num: rakuten_pay.customer_num) %>
-          <% if  billing_doubt.present? %>
-            <% billing_connect_len += 1 %>
-            <% billing_connect_price += billing_doubt.price %>
-          <% else %>
-            <tr>
-              <td><%= not_payment1_len += 1 %></td>
-              <% not_payment1_price += 13500 %>
-              <td><%= rakuten_pay.client %></td>
-              <td><%= rakuten_pay.user.group %></td>
-              <td><%= rakuten_pay.customer_num %></td>
-              <td><%= rakuten_pay.store_prop.name %></td>
-              <td><%= rakuten_pay.user.name %></td>
-              <td><%= rakuten_pay.date %></td>
-              <td><%= rakuten_pay.share %></td>
-              <td><%= rakuten_pay.result_point %></td>
-              <td><%= rakuten_pay.payment %></td>
-            </tr>
+      <table>
+        <tr>
+          <th rowspan="2" colspan="2"></th>
+          <th colspan="24">入金月</th>
+        </tr>
+        <tr>
+          <% @period.each do |month| %>
+           <th colspan="2"><%= month.strftime("%Y年%m月") %></th>
           <% end %>
+        </tr>
+        <tr>
+          <th>成果</th>
+          <th>項目</th>
+          <% @period.each do |month| %>
+            <th>件数</th>
+            <th>手数料</th>
           <% end %>
-        </table>
-        </div><%# 左 %>
-        <div><%# 右（合計） %>
-
-          <h2>◆明細合計金額</h2>
-          <table>
-            <tr>
-            <th class="green-th">項目</th>
-            <th class="green-th">合計</th>
-            <th class="green-th">合計連携済</th>
-            <th class="green-th">当月連携済</th>
-            <th class="green-th">後日解約</th>
-            </tr>
-            <tr>
-              <td class="">件数</td>
-              <td class=""><%= @payments_monthly.length.to_s(:delimited) %></td>
-              <td class=""><%= @payments_monthly.where.not(rakuten_pay_id: nil).length.to_s(:delimited) %></td>
-              <td class=""><%= billing_connect_len.to_s(:delimited) %></td>
-              <td class=""><%= @payments_monthly_ng.length.to_s(:delimited) %></td>
-            </tr>
-            <tr>
-              <td class="">手数料</td>
-              <td class=""><%= @payments_monthly.sum(:price).to_s(:delimited) %></td>
-              <td class=""><%= @payments_monthly.where.not(rakuten_pay_id: nil).sum(:price).to_s(:delimited) %></td>
-              <td class=""><%= billing_connect_price.to_s(:delimited) %></td>
-              <td class=""><%= @payments_monthly_ng.sum(:price).to_s(:delimited) %></td>
-            </tr>
-          </table>
-          <h2>◆自社成果合計金額</h2>
-          <table>
-            <tr>
-              <th class="green-th">項目</th>
-              <th class="green-th">合計</th>
-              <th class="green-th">未確認</th>
-            </tr>
-            <tr>
-              <td>件数</td>
-              <td><%= @results_monthly.length.to_s(:delimited) %></td>
-              <td class="red"><%= not_payment1_len.to_s(:delimited) %></td>
-            </tr>
-            <tr>
-              <td>手数料</td>
-              <td><%= @results_monthly.sum(:profit).to_s(:delimited) %></td>
-              <td class="red"><%= (not_payment1_price).to_s(:delimited) %></td>
-            </tr>
-          </table>
-
-          <% empty_data = @billing_date.where(rakuten_pay_id: nil) %>
-          <% empty_data.each do |e| %>
-          <h2 class="red">・自社当て付け失敗：<%= e.store_name %></h2>
-          <% end  %>
-        </div><%# 右 %>
-      </div><%# 右と左と分ける %>
+        </tr>
+        <tr class="payment-tr">
+          <td class="head-td-odd" rowspan="3">審査完了</td>
+          <td>成果</td>
+          <% result_ary = [] %>
+          <% @period.each do |month| %>
+            <%# 変数 %>
+              <% result_month = month.ago(2.month) %>
+              <% if (2023 == month.year) && (month.month == 1) %><%# 2023年1月明細 %>
+                <% start_date = Date.new(result_month.year, result_month.month,16) %>
+                <% end_date = Date.new(result_month.year, result_month.next_month.month,15) %>
+                <% result = @rakuten_pays.where("? >= share", Date.new(2022,12,31)).where(result_point: start_date..end_date) %>
+              <% elsif (2023 == month.year) && (month.month == 2) %><%# 2023年2月明細 %>
+                <% start_date = Date.new(result_month.prev_month.year, result_month.prev_month.month,16) %>
+                <% end_date = Date.new(result_month.year, result_month.month,15) %>
+                <% 
+                  result = 
+                    @rakuten_pays.where(result_point: result_month.beginning_of_month..result_month.end_of_month).or(
+                      @rakuten_pays.where("share > ?", Date.new(2022,12,31)).where(result_point: start_date..end_date)
+                    )
+                %>
+              <% elsif 2023 > result_month.year %><%# 2022年12月以前の明細 %>
+                <% start_date = Date.new(result_month.year, result_month.month,16) %>
+                <% end_date = Date.new(result_month.next_month.year, result_month.next_month.month,15) %>
+                <% result = @rakuten_pays.where(result_point: start_date..end_date) %>
+              <% else %>
+                <% result = @rakuten_pays.where(result_point: result_month.beginning_of_month..result_month.end_of_month) %>
+              <% end %>
+            <%# /変数 %>
+            <td><%= result.length %></td>
+            <td><%= result.sum(:profit).to_s(:delimited) %></td>
+            <% result_ary << result %>
+          <% end %>
+        </tr>
+        <tr class="payment-tr">
+          <td>明細</td>
+          <% @period.each do |month| %>
+          <td><%= @payments_result.where(payment: month.beginning_of_month..month.end_of_month).length %></td>
+          <td><%= @payments_result.where(payment: month.beginning_of_month..month.end_of_month).sum(:price).to_s(:delimited) %></td>
+          <% end %>
+        </tr>
+        <tr class="payment-tr foot-tr">
+          <td>未発行</td>
+          <% result_ary.each do |result| %>
+          <td class="red"><%= 
+            result.length -
+            result.where(payment_rakuten_pay: {result_category: "獲得手数料"}).length 
+          %></td>
+          <td class="red"><%= 
+            (
+            result.sum(:profit) -
+            result.where(payment_rakuten_pay: {result_category: "獲得手数料"}).sum(:profit)
+            ).to_s(:delimited)
+          %></td>
+          <% end %>
+        </tr>
+      </table>
     </div>
   </div>
 <% end %>

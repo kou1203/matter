@@ -486,7 +486,7 @@
           <% ave_profit_new = sum_profit_new.to_f / @digestion_new rescue 0 %>
           <% ave_profit_slmt = sum_profit_slmt.to_f / @digestion_settlement rescue 0 %>
           <% ave_profit = (sum_profit.to_f / @results_date.where.not(shift: "休み").where.not(shift: "帯同").where.not(shift: "内勤").where.not(shift: "欠勤").length) rescue 0 %>
-
+      <p class="red">※こちらの利益表は2023年1月まで利用していたものになります。</p>
       <h2 class="shift-h2"><%= @start_date.strftime('%Y-%m-%d') %>（<%= days[@start_date.wday] %>）〜<%= @end_date.strftime('%Y-%m-%d') %>（<%= days[@end_date.wday] %>）</h2>
       <% end %>
       <table>

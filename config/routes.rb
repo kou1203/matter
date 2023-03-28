@@ -304,24 +304,30 @@ Rails.application.routes.draw do
     collection { 
       post :import
       get :not_payment
+      get :result1
+      get :result2
+      get :result3
     }
   end 
   resources :payment_rakuten_pays do 
     collection { 
       post :import
       get :not_payment
+      get :result
     }
   end 
   resources :payment_airpays do 
     collection { 
       post :import
       get :not_payment
+      get :result
     }
   end 
   resources :payment_paypays do 
     collection { 
       post :import
       get :not_payment
+      get :result
     }
   end 
 

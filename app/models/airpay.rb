@@ -2,7 +2,7 @@ class Airpay < ApplicationRecord
   require 'charlock_holmes'
   belongs_to :user 
   belongs_to :store_prop 
-  has_one :airpay
+  has_one :payment_airpay
 
   with_options presence: true do 
     validates :user_id

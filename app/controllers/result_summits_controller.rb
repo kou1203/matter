@@ -390,13 +390,7 @@ class ResultSummitsController < ApplicationController
         user_summit_sw_done = 
           user_summit_all.includes(:summit_client,:summit_price).where(status: "SW完了")
           .where(summit_client: {contract_start: ..Date.today.ago(30.days)}).where("contract_type LIKE ?","%従量%")
-        # user_summit_all.includes(:summit_client,:summit_price)
-        # .where(status: "SW完了")
-        #   .where(summit_client: {contract_start: ..Date.today}).select('summits.*', 'count(summit_billing_amounts.id) AS billings')
-        #   .left_joins(:summit_billing_amounts)
-        #   .group('summits.id')
-        #   .having('billings < 2').length
-          # .sum(:last_billing).values.inject(:+)
+
         sw_done = user_summit_all.includes(:summit_client,:summit_price).where(status: "SW完了")
         .where(summit_client: {contract_start: ..Date.today.ago(30.days)})
         this_month_profit = sw_done.sum(:last_billing)

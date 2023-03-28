@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_10_105215) do
+ActiveRecord::Schema.define(version: 2023_03_27_120947) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 2023_03_10_105215) do
     t.integer "profit_settlement", null: false
     t.integer "valuation_new", null: false
     t.integer "valuation_settlement", null: false
+    t.string "record_num"
     t.index ["settlementer_id"], name: "index_aupays_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_aupays_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_aupays_on_user_id"
@@ -716,6 +717,19 @@ ActiveRecord::Schema.define(version: 2023_03_10_105215) do
     t.integer "price"
     t.date "payment", null: false
     t.index ["airpay_id"], name: "index_payment_airpays_on_airpay_id"
+  end
+
+  create_table "payment_aupays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "aupay_id"
+    t.string "record_num"
+    t.string "store_name"
+    t.string "client"
+    t.string "company"
+    t.date "result_point"
+    t.string "result_category"
+    t.integer "price"
+    t.date "payment", null: false
+    t.index ["aupay_id"], name: "index_payment_aupays_on_aupay_id"
   end
 
   create_table "payment_dmers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1689,6 +1703,7 @@ ActiveRecord::Schema.define(version: 2023_03_10_105215) do
   add_foreign_key "pandas", "store_props"
   add_foreign_key "pandas", "users"
   add_foreign_key "payment_airpays", "airpays"
+  add_foreign_key "payment_aupays", "aupays"
   add_foreign_key "payment_dmers", "dmers"
   add_foreign_key "payment_paypays", "paypays"
   add_foreign_key "payment_rakuten_pays", "rakuten_pays"

@@ -659,11 +659,12 @@ class UsersController < ApplicationController
 
         @dmer_slmt_done = 
           @dmer_slmter.where(status_update_settlement: @month.beginning_of_month..@month.end_of_month)
-          .where.not(industry_status: "NG")
-          .where.not(industry_status: "×")
-          .where.not(industry_status: "要確認")
-          .where(status: "審査OK")
+          .where(status_settlement: "完了").or(
+            @dmer_slmter.where(status_update_settlement: ..@month.end_of_month)
+          .where(result_point: @month.beginning_of_month..@month.end_of_month)
           .where(status_settlement: "完了")
+  
+        )
         @dmer_pic_def = @dmer_slmt.where(picture: nil)
         @dmer_slmt2nd_get = 
           slmt2nd_get(@dmer_slmter,@results_date)

@@ -247,7 +247,7 @@
       <thead>
         <tr >
           <th class="out-th"></th>
-          <th class="out-th">ID</th>
+          <th class="out-th">レコード番号</th>
           <th class="out-th">本店名</th>
           <th class="out-th">店舗名</th>
           <th class="out-th">獲得者</th>
@@ -270,7 +270,7 @@
       <% @aupays_data.find_each do |aupay| %>
         <tr >
           <td class="index-td"><%= link_to "　詳細　",  aupay_path(aupay.id) ,class: "link" %></td>
-          <td class="index-td"><%= aupay.id %></td>
+          <td class="index-td"><%= aupay.record_num rescue "" %></td>
           <% if @aupays.find_by(store_props: {head_store: aupay.store_prop.name}).present? %>
             <td class="index-td">複数店本店</td>
           <% elsif aupay.store_prop.head_store.blank? %>
