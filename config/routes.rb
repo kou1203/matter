@@ -331,4 +331,12 @@ Rails.application.routes.draw do
     }
   end 
 
+  resources :payment_aupays do 
+    collection { 
+      post :import
+      get :not_payment
+      get :result
+    }
+  end 
+
 end

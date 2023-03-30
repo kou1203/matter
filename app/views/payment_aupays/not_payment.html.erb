@@ -1,7 +1,7 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
 <div data-scope-path="shared/header">
-  <h1>PayPay未入金一覧</h1>
+  <h1>auPay未入金一覧</h1>
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;">
@@ -13,9 +13,9 @@
       <%= render "shared/payment_links" %>
     <hr>
     <h2 class="">
-      <%= link_to "<<",not_payment_payment_paypays_path(month:@month.prev_year),"data-turbolinks": false, class:"link" %>
-      <%= @month.year %>年PayPay未入金確認
-      <%= link_to ">>",not_payment_payment_paypays_path(month:@month.next_year),"data-turbolinks": false, class:"link" %>
+      <%= link_to "<<",not_payment_payment_aupays_path(month:@month.prev_year),"data-turbolinks": false, class:"link" %>
+      <%= @month.year %>年auPay未入金確認
+      <%= link_to ">>",not_payment_payment_aupays_path(month:@month.next_year),"data-turbolinks": false, class:"link" %>
     </h2>
     <hr>
     <table>
@@ -42,11 +42,11 @@
         <% result_ary = [] %>
         <% @period.each do |month| %>
         <%# 変数 %>
-          <% result_month = month.ago(2.month) %>
-          <% result = @paypays.where(result_point: result_month.beginning_of_month..result_month.end_of_month) %>
+          <% result_month = month.ago(1.month) %>
+          <% result = @aupays.where(status_update_settlement: result_month.beginning_of_month..result_month.end_of_month) %>
         <%# /変数 %>
         <td><%= result.length %></td>
-        <td><%= (result.length * 3000).to_s(:delimited) %></td>
+        <td><%= (result.length * 13500).to_s(:delimited) %></td>
         <% result_ary << result %>
         <% end %>
       </tr>
@@ -61,10 +61,10 @@
         <td>未入金</td>
         <% result_ary.each do |result| %>
         <td class="red"><%= 
-          result.length - result.where(payment_paypay: {result_category: "獲得手数料"}).length 
+          result.length - result.where(payment_aupay: {result_category: "決済手数料"}).length 
         %></td>
         <td class="red"><%= 
-          ((result.length * 3000) - (result.where(payment_paypay: {result_category: "獲得手数料"}).length * 3000)).to_s(:delimited)
+          ((result.length * 13500) - (result.where(payment_aupay: {result_category: "決済手数料"}).length * 13500)).to_s(:delimited)
         %></td>
         <% end %>
       </tr>

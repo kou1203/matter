@@ -21,6 +21,9 @@ class Itss < ApplicationRecord
       user = User.find_by(name: row["営業担当者名"].gsub(" ", ""))
       u_id = user.id rescue 0
       itss = find_by(customer_num: row["管理番号"])
+      if (row["【ITSS】N取次状況（大区分）"] == "工事待ち") && (Date.today > row["【ITSS】N工事予定日"].to_date)
+        row["【ITSS】N工事予定日"] = nil
+      end 
       if itss.present?
         itss.assign_attributes(
           client: "マックスサポート",

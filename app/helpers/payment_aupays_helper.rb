@@ -1,0 +1,2 @@
+module PaymentAupaysHelper
+end

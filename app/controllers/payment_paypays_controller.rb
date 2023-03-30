@@ -13,10 +13,15 @@ class PaymentPaypaysController < ApplicationController
 
   def not_payment
     @month = params[:month] ? Time.parse(params[:month]) : Date.today.ago(2.month)
-    @client = params[:client]
-    @results_monthly = Paypay.where(result_point: @month.ago(2.month).beginning_of_month..@month.ago(2.month).end_of_month).where(status: "60審査可決")
-    @billing_date = PaymentPaypay.includes(:paypay).all
-    @payments_monthly = @billing_date.where(payment: @month.beginning_of_month..@month.end_of_month)
+    @paypays = Paypay.includes(:payment_paypay).where(status: "60審査可決")
+    @payments = PaymentPaypay.all
+    @payments_result = @payments
+    @period = []
+    month_cnt = 1
+    12.times do 
+      @period << Date.new(@month.year, month_cnt,1)
+      month_cnt += 1
+    end 
   end 
 
   def result
