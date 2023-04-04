@@ -231,7 +231,7 @@ class CalcPeriodsController < ApplicationController
     csv = CSV.generate(bom) do |csv|
       csv << columns_ja
       bases.each do |base|
-        CashDateProgress.includes(:user).where(base: base).order("users.position_sub ASC").order("users.id ASC").group(:user_id).each do |cash_progress|
+        CashDateProgress.where(date: @month.in_time_zone.all_month).where(create_date: @cash_date_progress.maximum(:create_date)).includes(:user).where(base: base).order("users.position_sub ASC").order("users.id ASC").group(:user_id).each do |cash_progress|
           result_attributes = {}
           result_attributes["base"] = base
           result_attributes["user_name"] = cash_progress.user.name
@@ -241,7 +241,7 @@ class CalcPeriodsController < ApplicationController
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule_slmt).to_i
           result_attributes["shift_digestion"] = 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion).to_i + 
-            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule_slmt).to_i
+            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion_slmt).to_i
           result_attributes["valuation_current"] = 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
             @aupay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
