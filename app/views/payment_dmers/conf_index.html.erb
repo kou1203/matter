@@ -53,15 +53,22 @@
         <th class="out-th">2回目決済発生日</th>
         <th class="out-th">3次成果</th>
         <th class="out-th">未入金内訳</th>
+        <th class="out-th">入金予定月①</th>
+        <th class="out-th">入金予定月②</th>
+        <th class="out-th">入金予定月③</th>
       </tr>
       
       <% result1 = nil %>
       <% result2 = nil %>
       <% result3 = nil %>
+      <% flag1 = nil %>
+      <% flag2 = nil %>
+      <% flag3 = nil %>
       <% cnt = 0 %>
       <% @dmers.each do |dmer| %><%# dメルデータ %>
         <%# 成果フラグ %>
-          <% if dmer.settlement_deadline >= dmer.settlement %>
+          <% if dmer.settlement > dmer.settlement_deadline %>
+          <% result1 = "×" %>
           <% elsif dmer.result_point > dmer.settlement %>
           <% result1 = dmer.result_point %>
           <% else %>
@@ -69,29 +76,40 @@
           <% end %>
           <% if dmer.status_settlement == "期限切れ" %>
             <% result2 = "×" %>
-          <% elsif result1.present? && dmer.status_update_settlement.present? %>
+          <% elsif (result1 != "×") && (dmer.status_update_settlement.present?) %>
             <% if dmer.status_update_settlement > result1 %>
             <% result2 = dmer.status_update_settlement %>
             <% else %>
             <% result2 = result1 %>
             <% end %>
           <% end %>
-          <% if dmer.status_settlement == "期限切れ" %>
+          <% if (dmer.status_settlement == "期限切れ") || (result2 == "×") %>
             <% result3 = "×" %>
+          <% elsif dmer.settlement_second.nil? %>
+            <% result3 = nil %>
           <% elsif result2.present? && dmer.settlement_second.present? %>
             <% if dmer.settlement_second > result2 %>
             <% result3 = dmer.settlement_second %>
             <% else %>
             <% result3 = result2 %>
-            <% end %>
+            <% end %> 
           <% end %>
-          <% flag1 = "未" %>
-          <% if dmer.status_settlement == "期限切れ" %>
-          <% flag2 = "×" %>
-          <% flag3 = "×" %>
+          <% if result1 == "×" %>
+            <% flag1 = "×" %>
           <% else %>
-          <% flag2 = "未" %>
-          <% flag3 = "未" %>
+            <% flag1 = "未" %>
+          <% end %>
+          <% if result2 == "×" %>
+            <% flag2 = "×" %>
+          <% else %>
+            <% flag2 = "未" %>
+          <% end %>
+          <% if result3 == "×" %>
+            <% flag3 = "×" %>
+          <% elsif result3 == nil %>
+            <% flag3 = "" %>
+          <% else %>
+            <% flag3 = "未" %>
           <% end %>
           <% dmer.payment_dmers.each do |p_dmer| %>
             <% if p_dmer.result_category == "獲得手数料・初回決済手数料" %>
@@ -104,9 +122,15 @@
           <% end %>
           
         <%# /成果フラグ %>
-      <% if result3.present? && result3 != "×" && @month.ago(2.month).end_of_month >= result3 %>
+      <% if result1.present? && result1 != "×" && result1 >= @month.ago(1.month).end_of_month.to_date %>
+      <% flag1 = "待" %>
+      <% end %>
+      <% if result2.present? && result2 != "×" && result2 >= @month.ago(1.month).end_of_month.to_date %>
+      <% flag2 = "待" %>
+      <% end %>
+      <% if result3.present? && result3 != "×" && result3 >= @month.ago(2.month).end_of_month.to_date %>
       <% flag3 = "待" %>
-      <% end  %>
+      <% end %>
       <% if (dmer.settlement_deadline >= dmer.settlement) && ((flag1 == "未") || (flag2 == "未") || (flag3 == "未")) %><%# 未入金判定フラグ %>
       <tr>
         <td><%= cnt += 1 %></td>
@@ -138,6 +162,9 @@
           2回目決済,
           <% end %>
         </td>
+        <td><%= result1.next_month.strftime("%Y年%m月") rescue "" %></td>
+        <td><%= result2.next_month.strftime("%Y年%m月") rescue "" %></td>
+        <td><%= result3.since(2.month).strftime("%Y年%m月") rescue "" %></td>
       <% end %><%# 未入金判定フラグ %>
       </tr>
       <% end %><%# dメルデータ %>

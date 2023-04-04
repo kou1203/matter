@@ -30,7 +30,7 @@ class PaymentDmersController < ApplicationController
 
   def conf_index
     @month = params[:month] ? Time.parse(params[:month]) : Date.today.prev_month
-    @period = @month.ago(3.month)..@month
+    @period = @month.ago(5.month)..@month
     @slmt2nd_period = @month.prev_month 
     @dmers = 
       Dmer.includes(:payment_dmers,:store_prop).where(status: "審査OK").where.not(industry_status: "要確認").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(settlement: nil).where(result_point: @period)
