@@ -30,7 +30,7 @@ class PaymentAirpaysController < ApplicationController
     @month = params[:month] ? Time.parse(params[:month]) : Date.today.prev_month
     @airpays = Airpay.includes(:user,:payment_airpay,:store_prop)  
     @airpays_result = @airpays.where(result_point: @month.beginning_of_month..@month.end_of_month).where(status: "審査完了")
-      if params[:page_status] == "未発行"
+      if params[:page_status] == "未入金"
         @page_status = params[:page_status]
       else  
         @page_status = ""

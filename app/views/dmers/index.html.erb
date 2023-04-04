@@ -236,7 +236,15 @@
       <% if @dmers.empty? %>
       <% else %>
       <h1>獲得日：<%= @dmers.minimum(:date) %>（<%= days[@dmers.minimum(:date).wday] %>）〜<%= @dmers.maximum(:date) %>（<%= days[@dmers.maximum(:date).wday] %>）</h1>
-
+      <%# 重複確認 %>
+      <% dmer_duplicate = @dmers.where.not(controll_num: nil).group(:controll_num).having('count(*) >= 2') %>
+        <% if dmer_duplicate.present? %>
+        <p class="nav-text">管理番号重複</p>
+        <% end %>
+        <%# PJ078772 ばんやジル %>
+      <% dmer_duplicate.each do |db| %>
+        <p class="nav-text" style="color: red;"><%= db.controll_num %><%= db.store_prop.name %></p>
+      <% end %>
         <% 
           settlement_subject = 
             @dmers.where(status: "審査OK")

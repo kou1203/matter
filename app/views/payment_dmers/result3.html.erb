@@ -58,7 +58,7 @@
             <th class="green-th"><%= dmer.payment_dmers.first.payment.strftime("%Y年%m月") %>明細</th>
             <% end %>
             <th class="green-th">合計</th>
-            <th class="green-th">未発行</th>
+            <th class="green-th">未入金</th>
             </tr>
             <tr>
             <td class="">件数</td>
@@ -101,7 +101,7 @@
         <%= link_to "ぷらいまるのみ", result3_payment_dmers_path(month: @month,client: "ぷらいまる",page_status: @page_status),class: "index-link","data-turbolinks": false %>
         </p>
         <p class="link-text">
-        <%= link_to "未発行案表示",result3_payment_dmers_path(page_status: "未発行",month: @month),class: "index-link","data-turbolinks": false %>
+        <%= link_to "未入金案表示",result3_payment_dmers_path(page_status: "未入金",month: @month),class: "index-link","data-turbolinks": false %>
         </p>
         <p class="link-text">
         <%= link_to "リセット",result3_payment_dmers_path(month: @month,client: @client),class: "index-link","data-turbolinks": false %>
@@ -128,9 +128,9 @@
         <% count = 0 %>
         <% @dmers_result3.each do |dmer| %><%# 繰り返し %>
           <% billing_date = dmer.payment_dmers.where(payment_dmers: {result_category: "2回目決済手数料"}).first %>
-          <% page_flag = "#{billing_date.payment.strftime("%Y年%m月")}" rescue "未発行" %>
-          <% if @page_status == "未発行" %><%# 未発行だけに絞り込んでいるか判別 %>
-            <% if page_flag === "未発行" %><%# 未発行案件のみを表示 %>
+          <% page_flag = "#{billing_date.payment.strftime("%Y年%m月")}" rescue "未入金" %>
+          <% if @page_status == "未入金" %><%# 未入金だけに絞り込んでいるか判別 %>
+            <% if page_flag === "未入金" %><%# 未入金案件のみを表示 %>
               <tr>
                 <td><%= count += 1 %></td>
                 <td><%= dmer.controll_num %></td>
@@ -162,8 +162,8 @@
                 <%# /入金月 %>
                 <td class=""><%= dmer.user.group %></td>
               </tr>
-            <% end %><%# /未発行案件のみを表示 %>
-          <% else %><%# 未発行案件以外も表示 %>
+            <% end %><%# /未入金案件のみを表示 %>
+          <% else %><%# 未入金案件以外も表示 %>
             <tr>
               <td><%= count += 1 %></td>
               <td><%= dmer.controll_num %></td>
@@ -196,7 +196,7 @@
               <%# /入金月 %>
               <td class=""><%= dmer.user.group %></td>
             </tr>
-          <% end %><%# 未発行だけに絞り込んでいるか判別 %>
+          <% end %><%# 未入金だけに絞り込んでいるか判別 %>
         <% end %><%# 繰り返し %>
       </table>
       <% end %><%# @dmers_result3がからじゃない場合のみ表示 %>

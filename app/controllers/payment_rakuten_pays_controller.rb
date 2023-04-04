@@ -53,7 +53,7 @@ class PaymentRakutenPaysController < ApplicationController
       @end_date = @month.end_of_month
     end 
     @rakuten_pays_result = @rakuten_pays.where(result_point: @start_date..@end_date).where(payment_flag: "OK")
-      if params[:page_status] == "未発行"
+      if params[:page_status] == "未入金"
         @page_status = params[:page_status]
       else  
         @page_status = ""

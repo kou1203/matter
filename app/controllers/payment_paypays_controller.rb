@@ -28,7 +28,7 @@ class PaymentPaypaysController < ApplicationController
     @month = params[:month] ? Time.parse(params[:month]) : Date.today.prev_month
     @paypays = Paypay.includes(:user,:payment_paypay,:store_prop)  
     @paypays_result = @paypays.where(result_point: @month.beginning_of_month..@month.end_of_month).where(status: "60審査可決")
-      if params[:page_status] == "未発行"
+      if params[:page_status] == "未入金"
         @page_status = params[:page_status]
       else  
         @page_status = ""

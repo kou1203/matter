@@ -304,6 +304,7 @@ Rails.application.routes.draw do
     collection { 
       post :import
       get :not_payment
+      get :conf_index
       get :result1
       get :result2
       get :result3

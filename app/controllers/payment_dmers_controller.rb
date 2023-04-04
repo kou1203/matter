@@ -25,11 +25,24 @@ class PaymentDmersController < ApplicationController
       @period << Date.new(@month.year, month_cnt,1)
       month_cnt += 1
     end 
-      
-      
-
 
   end 
+
+  def conf_index
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today.prev_month
+    @period = @month.ago(3.month)..@month
+    @slmt2nd_period = @month.prev_month 
+    @dmers = 
+      Dmer.includes(:payment_dmers,:store_prop).where(status: "審査OK").where.not(industry_status: "要確認").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(settlement: nil).where(result_point: @period)
+      .or(
+        Dmer.includes(:payment_dmers,:store_prop).where(status: "審査OK").where.not(industry_status: "要確認").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(result_point: nil).where(settlement: @period)
+
+      )
+    if params[:client].present?
+      @period = params[:search_date].to_date.ago(3.month)..params[:search_date].to_date
+      @dmers = @dmers.where("client LIKE ?" ,"%#{params[:client]}%")
+    end  
+  end
 
   def result1
     @month = params[:month] ? Time.parse(params[:month]) : Date.today.prev_month
@@ -52,7 +65,7 @@ class PaymentDmersController < ApplicationController
     if @client.present?
       @dmers_result1 = @dmers_result1.where("dmers.client LIKE ?", "%#{@client}%")
     end 
-      if params[:page_status] == "未発行"
+      if params[:page_status] == "未入金"
         @page_status = params[:page_status]
       else  
         @page_status = ""
@@ -81,7 +94,7 @@ class PaymentDmersController < ApplicationController
       if @client.present?
         @dmers_result2 = @dmers_result2.where("dmers.client LIKE ?", "%#{@client}%")
       end 
-      if params[:page_status] == "未発行"
+      if params[:page_status] == "未入金"
         @page_status = params[:page_status]
       else  
         @page_status = ""
@@ -108,7 +121,7 @@ class PaymentDmersController < ApplicationController
       if @client.present?
         @dmers_result3 = @dmers_result3.where("dmers.client LIKE ?", "%#{@client}%")
       end 
-      if params[:page_status] == "未発行"
+      if params[:page_status] == "未入金"
         @page_status = params[:page_status]
       else  
         @page_status = ""

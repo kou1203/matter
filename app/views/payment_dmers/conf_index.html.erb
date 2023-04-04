@@ -1,0 +1,147 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
+<div data-scope-path="shared/header">
+  <h1>dメル未入金一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar_humbarger">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <hr>
+      <%= render "shared/payment_links" %>
+    <hr>
+    <h2 class="">
+      <%= link_to "<<",conf_index_payment_dmers_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
+      <%= @period.first.strftime("%Y年%m月") %>〜<%= @period.last.strftime("%Y年%m月") %>dメル未入金案件
+      <%= link_to ">>",conf_index_payment_dmers_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
+    </h2>
+    <hr>
+    <%# 検索機能 %>
+    <div class="search-form">
+      <%# <p class="search-title">検索</p> %>
+      <%= form_with url: conf_index_payment_dmers_path, local: true, method: :get do |f| %>
+      <p class="search">
+        <%= f.hidden_field :search_date, value: @month %>
+        <%= f.select :client, {"マックス": "マックス", "ぷらいまる": "ぷらいまる"},class:"search-input" %>
+
+        <%= f.submit "絞込",class: "search-btn" %>
+        <%= link_to "解除",conf_index_payment_dmers_path,class: "link" %>
+      </p>
+      <% end %>
+    </div>
+    <%# /検索機能 %>
+    <table>
+      <tr>
+        <th class="out-th">No.</th>
+        <th class="out-th">商流</th>
+        <th class="out-th">管理番号</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">獲得日</th>
+        <th class="out-th">成果1</th>
+        <th class="out-th">成果2</th>
+        <th class="out-th">成果3</th>
+        <th class="out-th">業種チェック</th>
+        <th class="out-th">審査ステータス</th>
+        <th class="out-th">審査完了日</th>
+        <th class="out-th">初回決済</th>
+        <th class="out-th">決済期限</th>
+        <th class="out-th">1次成果</th>
+        <th class="out-th">アクセプタンス合格</th>
+        <th class="out-th">2次成果</th>
+        <th class="out-th">2回目決済発生日</th>
+        <th class="out-th">3次成果</th>
+        <th class="out-th">未入金内訳</th>
+      </tr>
+      
+      <% result1 = nil %>
+      <% result2 = nil %>
+      <% result3 = nil %>
+      <% cnt = 0 %>
+      <% @dmers.each do |dmer| %><%# dメルデータ %>
+        <%# 成果フラグ %>
+          <% if dmer.settlement_deadline >= dmer.settlement %>
+          <% elsif dmer.result_point > dmer.settlement %>
+          <% result1 = dmer.result_point %>
+          <% else %>
+          <% result1 = dmer.settlement %>
+          <% end %>
+          <% if dmer.status_settlement == "期限切れ" %>
+            <% result2 = "×" %>
+          <% elsif result1.present? && dmer.status_update_settlement.present? %>
+            <% if dmer.status_update_settlement > result1 %>
+            <% result2 = dmer.status_update_settlement %>
+            <% else %>
+            <% result2 = result1 %>
+            <% end %>
+          <% end %>
+          <% if dmer.status_settlement == "期限切れ" %>
+            <% result3 = "×" %>
+          <% elsif result2.present? && dmer.settlement_second.present? %>
+            <% if dmer.settlement_second > result2 %>
+            <% result3 = dmer.settlement_second %>
+            <% else %>
+            <% result3 = result2 %>
+            <% end %>
+          <% end %>
+          <% flag1 = "未" %>
+          <% if dmer.status_settlement == "期限切れ" %>
+          <% flag2 = "×" %>
+          <% flag3 = "×" %>
+          <% else %>
+          <% flag2 = "未" %>
+          <% flag3 = "未" %>
+          <% end %>
+          <% dmer.payment_dmers.each do |p_dmer| %>
+            <% if p_dmer.result_category == "獲得手数料・初回決済手数料" %>
+            <% flag1 = "済" %>
+            <% elsif p_dmer.result_category == "ステッカー連携手数料" %>
+            <% flag2 = "済" %>
+            <% elsif p_dmer.result_category == "2回目決済手数料" %>
+            <% flag3 = "済" %>
+            <% end %>
+          <% end %>
+          
+        <%# /成果フラグ %>
+      <% if result3.present? && result3 != "×" && @month.ago(2.month).end_of_month >= result3 %>
+      <% flag3 = "待" %>
+      <% end  %>
+      <% if (dmer.settlement_deadline >= dmer.settlement) && ((flag1 == "未") || (flag2 == "未") || (flag3 == "未")) %><%# 未入金判定フラグ %>
+      <tr>
+        <td><%= cnt += 1 %></td>
+        <td><%= dmer.client %></td>
+        <td><%= dmer.controll_num %></td>
+        <td><%= dmer.store_prop.name %></td>
+        <td><%= dmer.date %></td>
+        <td><%= flag1 %></td>
+        <td><%= flag2 %></td>
+        <td><%= flag3 %></td>
+        <td><%= dmer.industry_status %></td>
+        <td><%= dmer.status %></td>
+        <td><%= dmer.result_point %></td>
+        <td><%= dmer.settlement %></td>
+        <td><%= dmer.settlement_deadline %></td>
+        <td class="red"><%= result1 %></td>
+        <td><%= dmer.status_update_settlement %></td>
+        <td class="red"><%= result2 %></td>
+        <td><%= dmer.settlement_second %></td>
+        <td class="red"><%= result3 %></td>
+        <td class="red">
+          <% if flag1 == "未" %>
+          審査通過+初回決済, 
+          <% end %>
+          <% if flag2 == "未" %>
+          アクセプタンス合格, 
+          <% end %>
+          <% if flag3 == "未" %>
+          2回目決済,
+          <% end %>
+        </td>
+      <% end %><%# 未入金判定フラグ %>
+      </tr>
+      <% end %><%# dメルデータ %>
+    </table>
+  </div>
+</div>
+<% end %>
