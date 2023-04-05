@@ -27,7 +27,7 @@ class PaymentRakutenPaysController < ApplicationController
 
   def not_payment 
     @month = params[:month] ? Time.parse(params[:month]) : Date.today.prev_month
-    @rakuten_pays = RakutenPay.includes(:payment_rakuten_pay).where(status: "OK")
+    @rakuten_pays = RakutenPay.includes(:payment_rakuten_pay).where(status: "OK").where(payment_flag: "OK")
     @payments = PaymentRakutenPay.all
     @payments_result = @payments.where(result_category: "獲得手数料")
     @period = []
@@ -37,6 +37,12 @@ class PaymentRakutenPaysController < ApplicationController
       month_cnt += 1
     end 
   end 
+
+  def conf_index
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today.ago(2.month)
+    @period = @month.ago(5.month)..@month
+    @rakuten_pays = RakutenPay.includes(:payment_rakuten_pay,:store_prop).where(payment_rakuten_pay: {id: nil}).where(status: "OK").where(payment_flag: "OK").where(result_point: @period)
+  end
 
 
   def result
@@ -63,4 +69,5 @@ class PaymentRakutenPaysController < ApplicationController
     # dメル成果で明細が発行されている案件
     @rakuten_pay_billing_data_exist = @rakuten_pays_result.where.not(payment_rakuten_pay: {rakuten_pay_id: nil})
   end 
+
 end

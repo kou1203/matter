@@ -2,6 +2,7 @@ class Itss < ApplicationRecord
   require 'charlock_holmes'
 
   belongs_to :user
+  has_one :payment_itss
 
   with_options presence: true do 
     validates :customer_num

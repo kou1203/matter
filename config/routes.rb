@@ -314,6 +314,7 @@ Rails.application.routes.draw do
     collection { 
       post :import
       get :not_payment
+      get :conf_index
       get :result
     }
   end 
@@ -333,6 +334,14 @@ Rails.application.routes.draw do
   end 
 
   resources :payment_aupays do 
+    collection { 
+      post :import
+      get :not_payment
+      get :result
+    }
+  end 
+
+  resources :payment_itsses do 
     collection { 
       post :import
       get :not_payment

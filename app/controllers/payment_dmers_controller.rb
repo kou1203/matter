@@ -39,7 +39,7 @@ class PaymentDmersController < ApplicationController
 
       )
     if params[:client].present?
-      @period = params[:search_date].to_date.ago(3.month)..params[:search_date].to_date
+      @period = params[:search_date].to_date.ago(5.month)..params[:search_date].to_date
       @dmers = @dmers.where("client LIKE ?" ,"%#{params[:client]}%")
     end  
   end

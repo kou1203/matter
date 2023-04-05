@@ -79,15 +79,8 @@
         <tr class="payment-tr foot-tr">
           <td>未入金</td>
           <% result_ary.each do |result| %>
-          <td class="red"><%= 
-            result.length -
-            result.where(payment_rakuten_pay: {result_category: "獲得手数料"}).length 
-          %></td>
-          <td class="red"><%= 
-            (
-            result.sum(:profit) -
-            result.where(payment_rakuten_pay: {result_category: "獲得手数料"}).sum(:profit)
-            ).to_s(:delimited)
+          <td class="red"><%= result.where(payment_rakuten_pay: {id: nil}).length %></td>
+          <td class="red"><%= result.where(payment_rakuten_pay: {id: nil}).sum(:profit).to_s(:delimited)
           %></td>
           <% end %>
         </tr>

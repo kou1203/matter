@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_27_120947) do
+ActiveRecord::Schema.define(version: 2023_04_04_111315) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -749,6 +749,19 @@ ActiveRecord::Schema.define(version: 2023_03_27_120947) do
     t.integer "price"
     t.date "payment", null: false
     t.index ["dmer_id"], name: "index_payment_dmers_on_dmer_id"
+  end
+
+  create_table "payment_itsses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "itss_id"
+    t.string "entry_date"
+    t.string "controll_num"
+    t.string "p_num"
+    t.string "customer_name"
+    t.integer "price"
+    t.string "company"
+    t.string "client"
+    t.date "payment", null: false
+    t.index ["itss_id"], name: "index_payment_itsses_on_itss_id"
   end
 
   create_table "payment_paypays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1705,6 +1718,7 @@ ActiveRecord::Schema.define(version: 2023_03_27_120947) do
   add_foreign_key "payment_airpays", "airpays"
   add_foreign_key "payment_aupays", "aupays"
   add_foreign_key "payment_dmers", "dmers"
+  add_foreign_key "payment_itsses", "itsses"
   add_foreign_key "payment_paypays", "paypays"
   add_foreign_key "payment_rakuten_pays", "rakuten_pays"
   add_foreign_key "paypay_date_progresses", "users"

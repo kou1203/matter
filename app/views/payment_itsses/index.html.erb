@@ -1,0 +1,161 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
+<div data-scope-path="shared/header">
+  <h1>ITSS明細資料</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <hr>
+      <%= render "shared/payment_links" %>
+    <hr>
+    <% if current_user.position_sub == "管理" %>
+      <%= form_with url: import_payment_itsses_path do |f| %>
+        <table class="csv-tb">
+          <tr>
+            <td class="csv-label">CSV</td>
+            <td ><%= f.file_field :file , accept: ".csv",class: "input" %></td>
+
+            <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？', disable_with: "インポート中" } %></td>
+          </tr>
+        </table>
+      <% end %>
+    <% end %>
+    <%= alert %>
+  <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
+      <%= javascript_pack_tag 'search' %>
+      <article id='search'><%# 検索フォーム %>
+        <button @click="active" v-if="!isActive" class="active-btn">詳細検索表示</button>
+        <button @click="active" v-if="isActive" class="active-btn">詳細検索表示中</button>
+        <div v-if="isActive" class="s-form"><%# 検索フォームの外枠 %>
+          <%= search_form_for @q do |f| %>
+            <p class="s-text">検索したい内容を入力してください。</p>
+            <hr>
+          <div class="s-flex"><%# 検索フォーム %>
+            <div class="product-form"><%# 商材情報 %>
+              <table class="s-tb">
+                <thead>
+                  <tr class="s-tr">
+                    <th class="s-th">項目</th>
+                    <th class="s-th">検索内容</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="s-tr">
+                    <td class="s-td">自社案件連携</td>
+                    <td class="s-td">
+                      <%= f.select :itss_id_null,{"未連携": true,"連携済": false},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">商流</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :client_eq,
+                        options_from_collection_for_select(PaymentItss.select(:client)
+                        .distinct,:client, :client),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">会社</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :company_eq,
+                        options_from_collection_for_select(PaymentItss.select(:company)
+                        .distinct,:company, :company),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">入金日</td>
+                    <td class="s-td">
+                      <%= f.date_field :payment_gteq, class: "s-input" %>〜
+                      <%= f.date_field :payment_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div><%# 商材情報 %>
+          </div><%# 検索フォーム %>
+          <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "s-btn" %>
+          <button class="s-reset-btn"><%= link_to "解除", payment_itsses_path, class: "reset-link" %></button>
+          <% end %>
+          
+        </div><%# /検索フォームの外枠 %>
+        <div v-else>
+          <%= search_form_for @q do |f| %>
+              <%= f.text_field :p_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
+              <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "search-btn" %>
+          <% end %>
+        </div>
+      </article>
+      <hr>
+      <% if @payments.present? %>
+      <%# 重複確認 %>
+      <% itss_duplicate = @payments.where.not(controll_num: nil).group(:controll_num).having('count(*) >= 2') %>
+        <% if itss_duplicate.present? %>
+        <p class="nav-text">管理番号重複</p>
+        <% end %>
+        <%# PJ078772 ばんやジル %>
+      <% itss_duplicate.each do |db| %>
+        <p class="nav-text" style="color: red;"><%= db.controll_num %><%= db.store_name %></p>
+      <% end %>
+      <% @payments.where(itss_id: nil).each do |itss| %>
+      <p class="nav-text">自社案件当て付け失敗</p>
+      <p class="nav-text" style="color: red;"><%= itss.controll_num %><%= itss.store_name %></p>
+      <% end %>
+      <table>
+        <tr>
+        <th class="green-th">項目</th>
+        <th class="green-th">合計</th>
+        </tr>
+        <tr>
+        <td class="">件数</td>
+        <td class=""><%= @payments.length %></td>
+        </tr>
+        <tr>
+        <td class="">手数料</td>
+        <td class=""><%= @payments.sum(:price).to_s(:delimited) %></td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <th>No</th>
+          <th>管理番号</th>
+          <th>顧客</th>
+          <th>手数料</th>
+          <th>会社名</th>
+          <th>入金日</th>
+          <th>自社案件連携</th>
+        </tr>
+        <% @payments_data.each_with_index do |payment, i| %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= payment.controll_num %></td>
+          <td><%= payment.customer_name %></td>
+          <td><%= payment.price %></td>
+          <td><%= payment.company %></td>
+          <td><%= payment.payment %></td>
+          <% if payment.itss.present? %>
+          <td>有</td>
+          <% else %>
+          <td class="red">無</td>
+          <% end %>
+        </tr>
+        <% end %>
+      </table>
+    <div class="kaminari-page">
+      <%= paginate @payments_data %>
+    </div>
+      <% end %>
+  </div>
+</div>
+<% end %>

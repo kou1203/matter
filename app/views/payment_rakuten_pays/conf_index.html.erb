@@ -1,0 +1,72 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
+<div data-scope-path="shared/header">
+  <h1>楽天ペイ未入金一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar_humbarger">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <hr>
+      <%= render "shared/payment_links" %>
+    <hr>
+    <h2 class="">
+      <%= link_to "<<",conf_index_payment_rakuten_pays_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
+      <%= @period.first.strftime("%Y年%m月") %>〜<%= @period.last.strftime("%Y年%m月") %>楽天ペイ未入金案件
+      <%= link_to ">>",conf_index_payment_rakuten_pays_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
+    </h2>
+    <hr>
+    <%# 検索機能 %>
+    <div class="search-form">
+      <%# <p class="search-title">検索</p> %>
+      <%= form_with url: conf_index_payment_rakuten_pays_path, local: true, method: :get do |f| %>
+      <% end %>
+    </div>
+    <%# /検索機能 %>
+    <table>
+      <tr>
+        <th class="out-th">No.</th>
+        <th class="out-th">管理番号</th>
+        <th class="out-th">獲得会社</th>
+        <th class="out-th">店舗名</th>
+        <th class="out-th">獲得日</th>
+        <th class="out-th">上位店連携日</th>
+        <th class="out-th">審査ステータス</th>
+        <th class="out-th">審査完了日</th>
+        <th class="out-th">入金判定</th>
+        <th class="out-th">入金予定月</th>
+      </tr>
+      
+      <% result1 = nil %>
+      <% result2 = nil %>
+      <% result3 = nil %>
+      <% flag1 = nil %>
+      <% flag2 = nil %>
+      <% flag3 = nil %>
+      <% cnt = 0 %>
+      <% @rakuten_pays.each do |rakuten_pay| %><%# 楽天ペイデータ %>
+      <tr>
+        <td><%= cnt += 1 %></td>
+        <td><%= rakuten_pay.customer_num %></td>
+        <td><%= rakuten_pay.user.group %></td>
+        <td><%= rakuten_pay.store_prop.name %></td>
+        <td><%= rakuten_pay.date %></td>
+        <td><%= rakuten_pay.share %></td>
+        <td><%= rakuten_pay.status %></td>
+        <td class="red"><%= rakuten_pay.result_point %></td>
+        <td><%= rakuten_pay.payment_flag %></td>
+        <% if (rakuten_pay.share.nil?) || (rakuten_pay.share.year >= 2023) %>
+        <td><%= rakuten_pay.result_point.since(2.month).strftime("%Y年%m月") %></td>
+        <% elsif (2023 > rakuten_pay.share.year) && (16 > rakuten_pay.result_point.day) %>
+        <td><%= rakuten_pay.result_point.since(1.month).strftime("%Y年%m月") %></td>
+        <% else %>
+        <td><%= rakuten_pay.result_point.since(2.month).strftime("%Y年%m月") %></td>
+        <% end %>
+      </tr>
+      <% end %><%# 楽天ペイデータ %>
+    </table>
+  </div>
+</div>
+<% end %>
