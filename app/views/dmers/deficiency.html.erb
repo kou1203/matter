@@ -33,25 +33,6 @@
   </table>
   </div>
 </div>
-<h2>◆不備内訳</h2>
-<table>
-  <tr>  
-    <th>合計</th>
-    <% @dmers_def.group(:def_status).each do |dmer| %>
-    <% if dmer.def_status.present? %>
-    <th><%= dmer.def_status %></th>
-    <% else %>
-    <th>不明</th>
-    <% end %>
-    <% end %>
-  </tr>
-  <tr>
-    <td><%= @dmers_def.length %>件</td>
-    <% @dmers_def.group(:def_status).count.each do |dmer| %>
-    <td><%= dmer[1] %>件</td>
-    <% end %>
-  </tr>
-</table>
 
 <hr>
 <h2>◆不備発生推移</h2><br>

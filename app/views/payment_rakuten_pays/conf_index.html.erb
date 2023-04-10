@@ -14,7 +14,7 @@
     <hr>
     <h2 class="">
       <%= link_to "<<",conf_index_payment_rakuten_pays_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
-      <%= @period.first.strftime("%Y年%m月") %>〜<%= @period.last.strftime("%Y年%m月") %>楽天ペイ未入金案件
+      <%= @period.first.strftime("%Y年%m月") %>〜<%= @period.last.strftime("%Y年%m月") %>成果楽天ペイ未入金案件
       <%= link_to ">>",conf_index_payment_rakuten_pays_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
     </h2>
     <hr>
@@ -31,6 +31,7 @@
         <th class="out-th">管理番号</th>
         <th class="out-th">獲得会社</th>
         <th class="out-th">店舗名</th>
+        <th class="out-th">獲得者</th>
         <th class="out-th">獲得日</th>
         <th class="out-th">上位店連携日</th>
         <th class="out-th">審査ステータス</th>
@@ -52,6 +53,7 @@
         <td><%= rakuten_pay.customer_num %></td>
         <td><%= rakuten_pay.user.group %></td>
         <td><%= rakuten_pay.store_prop.name %></td>
+        <td><%= rakuten_pay.user.name %></td>
         <td><%= rakuten_pay.date %></td>
         <td><%= rakuten_pay.share %></td>
         <td><%= rakuten_pay.status %></td>

@@ -117,7 +117,7 @@ Rails.application.routes.draw do
     get 'result_casas/new'
     post 'result_casas/create'
     get 'result_summits/new'
-    post 'result_summits/create'
+    post 'result_summits/create' 
     collection { 
       post :import 
       get :export
@@ -130,6 +130,7 @@ Rails.application.routes.draw do
       get :dup_index
       post :comment_new
       put :comment_update
+      get :profit_only
     }
   end  
 
@@ -323,6 +324,7 @@ Rails.application.routes.draw do
       post :import
       get :not_payment
       get :result
+      get :conf_index
     }
   end 
   resources :payment_paypays do 
@@ -330,6 +332,7 @@ Rails.application.routes.draw do
       post :import
       get :not_payment
       get :result
+      get :conf_index
     }
   end 
 
@@ -338,6 +341,7 @@ Rails.application.routes.draw do
       post :import
       get :not_payment
       get :result
+      get :conf_index
     }
   end 
 
@@ -346,6 +350,7 @@ Rails.application.routes.draw do
       post :import
       get :not_payment
       get :result
+      get :conf_index
     }
   end 
 

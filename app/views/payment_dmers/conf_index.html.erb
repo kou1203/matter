@@ -14,7 +14,7 @@
     <hr>
     <h2 class="">
       <%= link_to "<<",conf_index_payment_dmers_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
-      <%= @period.first.strftime("%Y年%m月") %>〜<%= @period.last.strftime("%Y年%m月") %>dメル未入金案件
+      <%= @period.first.strftime("%Y年%m月") %>〜<%= @period.last.strftime("%Y年%m月") %>成果dメル未入金案件
       <%= link_to ">>",conf_index_payment_dmers_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
     </h2>
     <hr>
@@ -38,6 +38,7 @@
         <th class="out-th">商流</th>
         <th class="out-th">管理番号</th>
         <th class="out-th">店舗名</th>
+        <th class="out-th">獲得者</th>
         <th class="out-th">獲得日</th>
         <th class="out-th">成果1</th>
         <th class="out-th">成果2</th>
@@ -137,6 +138,7 @@
         <td><%= dmer.client %></td>
         <td><%= dmer.controll_num %></td>
         <td><%= dmer.store_prop.name %></td>
+        <td><%= dmer.user.name %></td>
         <td><%= dmer.date %></td>
         <td><%= flag1 %></td>
         <td><%= flag2 %></td>

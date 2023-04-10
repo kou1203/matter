@@ -10,6 +10,8 @@ class PaymentCashesController < ApplicationController
       @rakuten_pay_payment = PaymentRakutenPay.where(payment: @month.beginning_of_month..@month.end_of_month)
       @airpay_payment = PaymentAirpay.where(payment: @month.beginning_of_month..@month.end_of_month)
       @paypay_payment = PaymentPaypay.where(payment: @month.beginning_of_month..@month.end_of_month)
+      @aupay_payment = PaymentAupay.where(payment: @month.beginning_of_month..@month.end_of_month)
+      @itss_payment = PaymentItss.where(payment: @month.beginning_of_month..@month.end_of_month)
     # 商材
     # dメル
       @dmers = Dmer.includes(:payment_dmers)
@@ -74,6 +76,12 @@ class PaymentCashesController < ApplicationController
     # PayPay
       @paypays = Paypay.includes(:user,:payment_paypay,:store_prop)  
       @paypays_result = @paypays.where(result_point: @prev_2month.beginning_of_month..@prev_2month.end_of_month).where(status: "60審査可決")
+    # auPay
+      @aupays = Aupay.includes(:user,:payment_aupay,:store_prop)  
+      @aupays_result = @aupays.where(status_update_settlement: @prev_month.beginning_of_month..@prev_month.end_of_month).where(status: "審査通過").where(status_settlement: "完了")
+    # ITSS
+      @itsses = Itss.includes(:user,:payment_itss)  
+      @itsses_result = @itsses.where(construction_schedule: @prev_month.beginning_of_month..@prev_month.end_of_month).where(status_ntt1: "工事完了")
   end 
 end
 

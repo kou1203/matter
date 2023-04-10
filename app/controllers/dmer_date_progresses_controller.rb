@@ -45,72 +45,72 @@ class DmerDateProgressesController < ApplicationController
     if  @current_progress.present?
       @data_fin = [
         {
-          name: "中部SS終着", data: DmerDateProgress.where(base: "中部SS").group(:date,:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
+          name: "中部SS終着", data: DmerDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
         },
         {
-          name: "関西SS終着", data: DmerDateProgress.where(base: "関西SS").group(:date,:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
+          name: "関西SS終着", data: DmerDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
         },
         {
-          name: "関東SS終着", data: DmerDateProgress.where(base: "関東SS").group(:date,:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
+          name: "関東SS終着", data: DmerDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
         },
         {
-          name: "九州SS終着", data: DmerDateProgress.where(base: "九州SS").group(:date,:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
+          name: "九州SS終着", data: DmerDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
         },
       ]
       @data_current = [
         {
-          name: "中部SS現状売上", data: DmerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_current)
+          name: "中部SS現状売上", data: DmerDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
         },
         {
-          name: "関西SS現状売上", data: DmerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_current)
+          name: "関西SS現状売上", data: DmerDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
         },
         {
-          name: "関東SS現状売上", data: DmerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_current)
+          name: "関東SS現状売上", data: DmerDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
         },
         {
-          name: "九州SS現状売上", data: DmerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_current)
+          name: "九州SS現状売上", data: DmerDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
         },
       ]
       @result1_graph = [
         {
-          name: "中部SS一次成果通過件数", data: DmerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:result1_len)
+          name: "中部SS一次成果通過件数", data: DmerDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result1_len)
         },
         {
-          name: "関西SS一次成果通過件数", data: DmerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:result1_len)
+          name: "関西SS一次成果通過件数", data: DmerDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result1_len)
         },
         {
-          name: "関東SS一次成果通過件数", data: DmerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:result1_len)
+          name: "関東SS一次成果通過件数", data: DmerDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result1_len)
         },
         {
-          name: "九州SS一次成果通過件数", data: DmerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:result1_len)
+          name: "九州SS一次成果通過件数", data: DmerDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result1_len)
         },
       ]
       @result2_graph = [
         {
-          name: "中部SS二次成果通過件数", data: DmerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:result2_len)
+          name: "中部SS二次成果通過件数", data: DmerDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result2_len)
         },
         {
-          name: "関西SS二次成果通過件数", data: DmerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:result2_len)
+          name: "関西SS二次成果通過件数", data: DmerDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result2_len)
         },
         {
-          name: "関東SS二次成果通過件数", data: DmerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:result2_len)
+          name: "関東SS二次成果通過件数", data: DmerDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result2_len)
         },
         {
-          name: "九州SS二次成果通過件数", data: DmerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:result2_len)
+          name: "九州SS二次成果通過件数", data: DmerDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result2_len)
         },
       ]
       @result3_graph = [
         {
-          name: "中部SS三次成果通過件数", data: DmerDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:result3_len)
+          name: "中部SS三次成果通過件数", data: DmerDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result3_len)
         },
         {
-          name: "関西SS三次成果通過件数", data: DmerDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:result3_len)
+          name: "関西SS三次成果通過件数", data: DmerDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result3_len)
         },
         {
-          name: "関東SS三次成果通過件数", data: DmerDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:result3_len)
+          name: "関東SS三次成果通過件数", data: DmerDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result3_len)
         },
         {
-          name: "九州SS三次成果通過件数", data: DmerDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:result3_len)
+          name: "九州SS三次成果通過件数", data: DmerDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result3_len)
         },
       ]
     else

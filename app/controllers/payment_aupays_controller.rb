@@ -40,6 +40,12 @@ class PaymentAupaysController < ApplicationController
     @aupay_billing_data_exist = @aupays_result.where.not(payment_aupay: {aupay_id: nil})
   end 
 
+  def conf_index
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today.ago(2.month)
+    @period = @month.ago(5.month)..@month
+    @aupays = Aupay.includes(:payment_aupay,:store_prop).where(payment_aupay: {id: nil}).where(status: "審査通過").where(status_update_settlement: @period)
+  end 
+
   def import
     if params[:file].present?
       if PaymentAupay.csv_check(params[:file]).present?

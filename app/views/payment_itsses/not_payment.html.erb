@@ -1,0 +1,74 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
+<div data-scope-path="shared/header">
+  <h1>ITSS未入金一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar_humbarger">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <hr>
+      <%= render "shared/payment_links" %>
+    <hr>
+    <h2 class="">
+      <%= link_to "<<",not_payment_payment_itsses_path(month:@month.prev_year),"data-turbolinks": false, class:"link" %>
+      <%= @month.year %>年ITSS未入金確認
+      <%= link_to ">>",not_payment_payment_itsses_path(month:@month.next_year),"data-turbolinks": false, class:"link" %>
+    </h2>
+    <hr>
+    <table>
+      <tr>
+        <th rowspan="2" colspan="2"></th>
+        <th colspan="24">入金月</th>
+      </tr>
+      <tr>
+        <% @period.each do |month| %>
+        <th colspan="2"><%= month.strftime("%Y年%m月") %></th>
+        <% end %>
+      </tr>
+      <tr>
+        <th>成果</th>
+        <th>項目</th>
+        <% @period.each do |month| %>
+        <th>件数</th>
+        <th>手数料</th>
+        <% end %>
+      </tr>
+      <tr class="payment-tr">
+        <td class="head-td-odd" rowspan="3">審査完了</td>
+        <td>成果</td>
+        <% result_ary = [] %>
+        <% @period.each do |month| %>
+        <%# 変数 %>
+          <% result_month = month.ago(1.month) %>
+          <% result = @itsses.where(construction_schedule: result_month.beginning_of_month..result_month.end_of_month) %>
+        <%# /変数 %>
+        <td><%= result.length %></td>
+        <td><%= (result.length * 14000).to_s(:delimited) %></td>
+        <% result_ary << result %>
+        <% end %>
+      </tr>
+      <tr class="payment-tr">
+        <td>明細</td>
+        <% @period.each do |month| %>
+        <td><%= @payments_result.where(payment: month.beginning_of_month..month.end_of_month).length %></td>
+        <td><%= @payments_result.where(payment: month.beginning_of_month..month.end_of_month).sum(:price).to_s(:delimited) %></td>
+        <% end %>
+      </tr>
+      <tr class="payment-tr foot-tr">
+        <td>未入金</td>
+        <% result_ary.each do |result| %>
+        <td class="red"><%= 
+          result.length - result.where.not(payment_itss: {id: nil}).length 
+        %></td>
+        <td class="red"><%= 
+          ((result.length * 14000) - (result.where.not(payment_itss: {id: nil}).length * 14000)).to_s(:delimited)
+        %></td>
+        <% end %>
+      </tr>
+    </table>
+  </div>
+</div>
+<% end %>

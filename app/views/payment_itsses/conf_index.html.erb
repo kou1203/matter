@@ -1,0 +1,55 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
+<div data-scope-path="shared/header">
+  <h1>ITSS未入金一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar_humbarger">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <hr>
+      <%= render "shared/payment_links" %>
+    <hr>
+    <h2 class="">
+      <%= link_to "<<",conf_index_payment_itsses_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
+      <%= @period.first.strftime("%Y年%m月") %>〜<%= @period.last.strftime("%Y年%m月") %>成果PayPay未入金案件
+      <%= link_to ">>",conf_index_payment_itsses_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
+    </h2>
+    <hr>
+    <%# 検索機能 %>
+    <div class="search-form">
+      <%# <p class="search-title">検索</p> %>
+      <%= form_with url: conf_index_payment_itsses_path, local: true, method: :get do |f| %>
+      <% end %>
+    </div>
+    <%# /検索機能 %>
+    <table>
+      <tr>
+        <th class="out-th">No.</th>
+        <th class="out-th">管理番号</th>
+        <th class="out-th">獲得会社</th>
+        <th class="out-th">獲得者</th>
+        <th class="out-th">獲得日</th>
+        <th class="out-th">審査ステータス</th>
+        <th class="out-th">審査完了日</th>
+        <th class="out-th">入金予定月</th>
+      </tr>
+      <% cnt = 0 %>
+      <% @itsses.each do |itss| %><%# PayPayデータ %>
+      <tr>
+        <td><%= cnt += 1 %></td>
+        <td><%= itss.customer_num %></td>
+        <td><%= itss.user.group %></td>
+        <td><%= itss.user.name %></td>
+        <td><%= itss.date %></td>
+        <td><%= itss.status_ntt1 %></td>
+        <td class="red"><%= itss.construction_schedule %></td>
+        <td><%= itss.construction_schedule.since(1.month).strftime("%Y年%m月") %></td>
+      </tr>
+      <% end %><%# PayPayデータ %>
+    </table>
+  </div>
+</div>
+<% end %>

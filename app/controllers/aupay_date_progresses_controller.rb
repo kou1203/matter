@@ -43,13 +43,13 @@ class AupayDateProgressesController < ApplicationController
     if  @current_progress.present?
       @data_fin = [
         {
-          name: "中部SS終着", data: AupayDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_fin)
+          name: "中部SS終着", data: AupayDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
         },
         {
-          name: "関西SS終着", data: AupayDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_fin)
+          name: "関西SS終着", data: AupayDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
         },
         {
-          name: "関東SS終着", data: AupayDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_fin)
+          name: "関東SS終着", data: AupayDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
         },
         {
           name: "九州SS終着", data: AupayDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_fin)

@@ -39,6 +39,13 @@ class PaymentPaypaysController < ApplicationController
     @paypay_billing_data_exist = @paypays_result.where.not(payment_paypay: {paypay_id: nil})
   end 
 
+
+  def conf_index
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today.ago(2.month)
+    @period = @month.ago(5.month)..@month
+    @paypays = Paypay.includes(:payment_paypay,:store_prop).where(payment_paypay: {id: nil}).where(status: "60審査可決").where(result_point: @period)
+  end 
+
   def import 
     if params[:file].present?
       if PaymentPaypay.csv_check(params[:file]).present?

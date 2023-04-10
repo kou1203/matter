@@ -41,6 +41,12 @@ class PaymentAirpaysController < ApplicationController
     @airpay_billing_data_exist = @airpays_result.where.not(payment_airpay: {airpay_id: nil})
   end 
 
+  def conf_index
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today.ago(2.month)
+    @period = @month.ago(5.month)..@month
+    @airpays = Airpay.includes(:payment_airpay,:store_prop).where(payment_airpay: {id: nil}).where(status: "審査完了").where(result_point: @period)
+  end 
+
   def import 
     if params[:file].present?
       if PaymentAirpay.csv_check(params[:file]).present?

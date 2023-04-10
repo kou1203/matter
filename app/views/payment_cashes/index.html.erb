@@ -24,6 +24,8 @@
         <th class="green-th">楽天ペイ</th>
         <th class="green-th">AirPay</th>
         <th class="green-th">PayPay</th>
+        <th class="green-th">auPay</th>
+        <th class="green-th">ITSS</th>
         <th class="green-th">合計</th>
       </tr>
       <tr>
@@ -31,12 +33,16 @@
         <td class=""><%= @rakuten_pay_payment.sum(:price).to_s(:delimited) %></td>
         <td class=""><%= @airpay_payment.sum(:price).to_s(:delimited) %></td>
         <td class=""><%= @paypay_payment.sum(:price).to_s(:delimited) %></td>
+        <td class=""><%= @aupay_payment.sum(:price).to_s(:delimited) %></td>
+        <td class=""><%= @itss_payment.sum(:price).to_s(:delimited) %></td>
         <td class=""><%= 
           (
             @dmer_payment.sum(:price) +
             @rakuten_pay_payment.sum(:price) +
             @airpay_payment.sum(:price) +
-            @paypay_payment.sum(:price)
+            @paypay_payment.sum(:price) + 
+            @aupay_payment.sum(:price) +
+            @itss_payment.sum(:price)
           ).to_s(:delimited) 
         %></td>
       </tr>
@@ -136,6 +142,36 @@
           <%= @prev_2month.end_of_month.strftime("%Y年%m月%d日") %>
         </td>
         <% if @paypays_result.length - paypay_billing_len == 0 %>
+          <td class="">○</td>
+        <% else %>
+          <td class="red">×</td>
+        <% end %>
+      </tr>
+      <tr>
+        <td>auPay</td>
+        <td><%= @aupays_result.length %></td>
+        <td><%= aupay_billing_len = @aupays_result.where.not(payment_aupay: {aupay_id: nil}).length %></td>
+        <td class="red"><%= @aupays_result.length - aupay_billing_len %></td>
+        <td>
+          <%= @prev_month.beginning_of_month.strftime("%Y年%m月%d日") %>〜
+          <%= @prev_month.end_of_month.strftime("%Y年%m月%d日") %>
+        </td>
+        <% if @aupays_result.length - aupay_billing_len == 0 %>
+          <td class="">○</td>
+        <% else %>
+          <td class="red">×</td>
+        <% end %>
+      </tr>
+      <tr>
+        <td>ITSS</td>
+        <td><%= @itsses_result.length %></td>
+        <td><%= itss_billing_len = @itsses_result.where.not(payment_itss: {itss_id: nil}).length %></td>
+        <td class="red"><%= @itsses_result.length - itss_billing_len %></td>
+        <td>
+          <%= @prev_month.beginning_of_month.strftime("%Y年%m月%d日") %>〜
+          <%= @prev_month.end_of_month.strftime("%Y年%m月%d日") %>
+        </td>
+        <% if @itsses_result.length - itss_billing_len == 0 %>
           <td class="">○</td>
         <% else %>
           <td class="red">×</td>

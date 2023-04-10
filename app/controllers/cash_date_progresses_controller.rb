@@ -52,44 +52,44 @@ class CashDateProgressesController < ApplicationController
         }
       @data_fin = [
         {
-          name: "中部SS終着", data: CashDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_fin)
+          name: "中部SS終着", data: CashDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
         },
         {
-          name: "関西SS終着", data: CashDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_fin)
+          name: "関西SS終着", data: CashDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
         },
         {
-          name: "関東SS終着", data: CashDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_fin)
+          name: "関東SS終着", data: CashDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
         },
         {
-          name: "九州SS終着", data: CashDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_fin)
+          name: "九州SS終着", data: CashDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
         },
       ]
       @data_fin_val = [
         {
-          name: "中部SS終着", data: CashDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:valuation_fin)
+          name: "中部SS終着", data: CashDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:valuation_fin)
         },
         {
-          name: "関西SS終着", data: CashDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:valuation_fin)
+          name: "関西SS終着", data: CashDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:valuation_fin)
         },
         {
-          name: "関東SS終着", data: CashDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:valuation_fin)
+          name: "関東SS終着", data: CashDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:valuation_fin)
         },
         {
-          name: "九州SS終着", data: CashDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:valuation_fin)
+          name: "九州SS終着", data: CashDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:valuation_fin)
         },
       ]
       @data_current = [
         {
-          name: "中部SS現状売上", data: CashDateProgress.where(base: "中部SS").group(:date,:create_date).sum(:profit_current)
+          name: "中部SS現状売上", data: CashDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
         },
         {
-          name: "関西SS現状売上", data: CashDateProgress.where(base: "関西SS").group(:date,:create_date).sum(:profit_current)
+          name: "関西SS現状売上", data: CashDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
         },
         {
-          name: "関東SS現状売上", data: CashDateProgress.where(base: "関東SS").group(:date,:create_date).sum(:profit_current)
+          name: "関東SS現状売上", data: CashDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
         },
         {
-          name: "九州SS現状売上", data: CashDateProgress.where(base: "九州SS").group(:date,:create_date).sum(:profit_current)
+          name: "九州SS現状売上", data: CashDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
         },
       ]
     else
