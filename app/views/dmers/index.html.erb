@@ -87,6 +87,13 @@
                     </td>
                   </tr>
                   <tr class="s-tr">
+                    <td class="s-td">申込チェック日</td>
+                    <td class="s-td">
+                      <%= f.date_field :app_check_date_gteq, class: "s-input" %>〜
+                      <%= f.date_field :app_check_date_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
                     <td class="s-td">審査完了日</td>
                     <td class="s-td">
                       <%= f.date_field :result_point_gteq, class: "s-input" %>〜
@@ -160,6 +167,18 @@
                         f.select :client_eq,
                         options_from_collection_for_select(Dmer.select(:client)
                         .distinct,:client, :client),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">申込チェック</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :app_check_eq,
+                        options_from_collection_for_select(Dmer.select(:app_check)
+                        .distinct,:app_check, :app_check),
                         {include_blank: true},
                         {class: "t-input"} 
                       %>
@@ -348,6 +367,8 @@
           <th class="out-th">店舗名</th>
           <th class="out-th">獲得者</th>
           <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
+          <th class="out-th">申込チェック</th>
+          <th class="out-th">申込チェック日</th>
           <th class="out-th">業種チェック</th>
           <th class="out-th">審査ステータス</th>
           <th class="out-th">審査完了日</th>
@@ -360,7 +381,7 @@
           <th class="out-th">決済完了日</th>
           <th class="out-th">2回目決済日</th>
           <th class="out-th">決済期限</th>
-          <th class="out-th">不備内容カテゴリー</th>
+          <th class="out-th">不備内容</th>
           <th class="out-th">不備内容(決済)</th>
           <th class="out-th">不備発生日</th>
           <th class="out-th">不備解消日</th>
@@ -382,11 +403,9 @@
           <td class="index-td"><%= dmer.store_prop.name %></td>
           <td class="index-td"><%= dmer.user.name %></td>
           <td class="index-td"><%= dmer.date.month %>月<%= dmer.date.day %>日</td>
-          <% if dmer.industry_status == "NG" || dmer.industry_status == "×" || dmer.industry_status == "要確認" %>
-          <td class="index-td" style="color:red;"><%= dmer.industry_status %></td>
-          <% else %>
+          <td class="index-td"><%= dmer.app_check %></td>
+          <td class="index-td"><%= dmer.app_check_date %></td>
           <td class="index-td"><%= dmer.industry_status %></td>
-          <% end %>
           <td class="index-td"><%= dmer.status %></td>
           <td class="index-td"><%= dmer.result_point %></td>
           <td class="index-td"><%= dmer.shipment %></td>
@@ -402,7 +421,7 @@
           <td class="index-td"><%= dmer.status_update_settlement %></td>
           <td class="index-td"><%= dmer.settlement_second %></td>
           <td class="index-td"><%= dmer.settlement_deadline %></td>
-          <td class="index-td"><%= dmer.def_status %></td>
+          <td class="index-td"><%= dmer.deficiency_remarks %></td>
           <% if dmer.deficiency_remarks_settlement.present? %>
           <td class="index-td">不備有り（詳細にて確認ください）</td>
           <% else %>

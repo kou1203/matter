@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_04_111315) do
+ActiveRecord::Schema.define(version: 2023_04_10_084002) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -423,6 +423,8 @@ ActiveRecord::Schema.define(version: 2023_04_04_111315) do
     t.string "controll_num"
     t.string "def_status"
     t.date "picture_update"
+    t.date "app_check_date"
+    t.string "app_check"
     t.index ["settlementer_id"], name: "index_dmers_on_settlementer_id"
     t.index ["store_prop_id"], name: "index_dmers_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_dmers_on_user_id"
@@ -1396,6 +1398,14 @@ ActiveRecord::Schema.define(version: 2023_04_04_111315) do
     t.string "shift"
     t.bigint "user_id"
     t.index ["user_id"], name: "index_shifts_on_user_id"
+  end
+
+  create_table "spread_links", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.integer "year", null: false
+    t.integer "month", null: false
+    t.string "name"
+    t.string "original_url", null: false
+    t.string "search_url", null: false
   end
 
   create_table "st_insurances", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|

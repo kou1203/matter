@@ -234,6 +234,7 @@ class DmerDateProgressesController < ApplicationController
     dmer_result1 = 
     @dmers_slmter.where(result_point: @dmer1_start_date..@dmer1_end_date)
     .where(settlement: ..@dmer1_end_date)
+    .where(app_check_date: ..@dmer1_end_date)
     .where(status: "審査OK")
     .where.not(industry_status: "NG")
     .where.not(industry_status: "×")
@@ -241,7 +242,35 @@ class DmerDateProgressesController < ApplicationController
     .or(
       @dmers_slmter.where(settlement: @dmer1_start_date..@dmer1_end_date)
       .where(result_point: ..@dmer1_end_date)
+      .where(app_check_date: ..@dmer1_end_date)
       .where(status: "審査OK")
+      .where.not(industry_status: "NG")
+      .where.not(industry_status: "×")
+      .where.not(industry_status: "要確認")
+    )
+    .or(
+      @dmers_slmter.where(settlement: ...@dmer1_start_date)
+      .where(result_point: ...@dmer1_end_date)
+      .where(app_check_date: @dmer1_start_date..@dmer1_end_date)
+      .where(status: "審査OK")
+      .where.not(industry_status: "NG")
+      .where.not(industry_status: "×")
+      .where.not(industry_status: "要確認")
+    ).or(
+      @dmers_slmter.where(result_point: @dmer1_start_date..@dmer1_end_date)
+    .where(settlement: ..@dmer1_end_date)
+    .where(app_check: "OK")
+    .where(status: "審査OK")
+    .where.not("client LIKE ?", "%ぷらいまる%")
+    .where.not(industry_status: "NG")
+    .where.not(industry_status: "×")
+    .where.not(industry_status: "要確認")
+    ).or(
+      @dmers_slmter.where(settlement: @dmer1_start_date..@dmer1_end_date)
+      .where(result_point: ..@dmer1_end_date)
+      .where(app_check: "OK")
+      .where(status: "審査OK")
+      .where.not("client LIKE ?", "%ぷらいまる%")
       .where.not(industry_status: "NG")
       .where.not(industry_status: "×")
       .where.not(industry_status: "要確認")
@@ -251,11 +280,23 @@ class DmerDateProgressesController < ApplicationController
   # 成果2
     dmer_slmt_done = 
       @dmers_slmter.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
-      .where(status_settlement: "完了").or(
+      .where(status_settlement: "完了").where(app_check_date: ..@dmer2_end_date).or(
       @dmers_slmter.where(status_update_settlement: ..@dmer2_end_date)
       .where(result_point: @dmer2_start_date..@dmer2_end_date)
-      .where(status_settlement: "完了")
-
+      .where(status_settlement: "完了").where(app_check_date: ..@dmer2_end_date)
+    ).or(
+        @dmers_slmter.where(status_update_settlement: ...@dmer2_start_date)
+        .where(result_point: ...@dmer2_start_date)
+        .where(status_settlement: "完了").where(app_check_date: @dmer2_start_date..@dmer2_end_date)
+    ).or(
+      @dmers_slmter.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
+      .where(status_settlement: "完了").where(app_check: "OK")
+      .where.not("client LIKE ?", "%ぷらいまる%")
+    ).or(
+      @dmers_slmter.where(status_update_settlement: ...@dmer2_start_date)
+      .where(result_point: ...@dmer2_start_date)
+      .where(status_settlement: "完了").where(app_check: "OK")
+      .where.not("client LIKE ?", "%ぷらいまる%")
     )
       dmer_slmt_done_period = dmer_slmt_done.where(date: @start_date..@end_date)
       dmer_slmt_done_prev = dmer_slmt_done.where(date: ...@start_date)
@@ -263,6 +304,7 @@ class DmerDateProgressesController < ApplicationController
     dmer_slmt2nd_done = 
       @dmers_slmter.where(settlement_second: @dmer3_start_date..@dmer3_end_date)
       .where("? >= status_update_settlement", @dmer3_end_date)
+      .where(app_check_date: ..@dmer3_end_date)
       .where(status: "審査OK")
       .where.not(industry_status: "NG")
       .where.not(industry_status: "×")
@@ -272,7 +314,40 @@ class DmerDateProgressesController < ApplicationController
         @dmers_slmter
         .where(status_update_settlement: @dmer3_start_date..@dmer3_end_date)
         .where("? >= settlement_second", @dmer3_end_date)
+        .where(app_check_date: ..@dmer3_end_date)
         .where(status: "審査OK")
+        .where.not(industry_status: "NG")
+        .where.not(industry_status: "×")
+        .where.not(industry_status: "要確認")
+        .where(status_settlement: "完了")
+      ).or(
+        @dmers_slmter
+        .where(status_update_settlement: ...@dmer3_start_date)
+        .where(settlement_second: ...@dmer3_start_date)
+        .where(app_check_date: @dmer3_start_date..@dmer3_end_date)
+        .where(status: "審査OK")
+        .where.not(industry_status: "NG")
+        .where.not(industry_status: "×")
+        .where.not(industry_status: "要確認")
+        .where(status_settlement: "完了")
+      ).or(
+        @dmers_slmter.where(settlement_second: @dmer3_start_date..@dmer3_end_date)
+        .where("? >= status_update_settlement", @dmer3_end_date)
+        .where(app_check: "OK")
+        .where.not("client LIKE ?", "%ぷらいまる%")
+        .where(status: "審査OK")
+        .where.not(industry_status: "NG")
+        .where.not(industry_status: "×")
+        .where.not(industry_status: "要確認")
+        .where(status_settlement: "完了")
+      ).or(
+        @dmers_slmter
+        .where(status_update_settlement: @dmer3_start_date..@dmer3_end_date)
+        .where("? >= settlement_second", @dmer3_end_date)
+        .where(app_check_date: ..@dmer3_end_date)
+        .where(status: "審査OK")
+        .where(app_check: "OK")
+        .where.not("client LIKE ?", "%ぷらいまる%")
         .where.not(industry_status: "NG")
         .where.not(industry_status: "×")
         .where.not(industry_status: "要確認")

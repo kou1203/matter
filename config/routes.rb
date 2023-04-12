@@ -354,4 +354,10 @@ Rails.application.routes.draw do
     }
   end 
 
+  resources :spread_links do 
+    collection {
+      get :export
+    }
+  end 
+
 end

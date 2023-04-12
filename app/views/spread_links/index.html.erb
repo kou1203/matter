@@ -1,0 +1,59 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>スプレッド出力</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+  <hr>
+<div class="link-flex">
+  <div class="section">
+    <p class="link-text"><%= link_to "出力用URL入力", new_spread_link_path ,"data-turbolinks": false, class: "index-link" %></p>
+  </div>
+  <p class="caution-text"><%= alert %></p>
+</div>
+<hr>
+  <div class="date-head"><%# 日付切替 %>
+    <h2>
+      <%= link_to "<<",spread_links_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
+      <%= @month.year %>年<%= @month.month %>月
+      <%= link_to ">>",spread_links_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>
+    </h2>
+  </div><%# 日付切替 %>
+  <% if @spread_links.present? %>
+    <table>
+      <tr>
+        <th>年月</th>
+        <th>ラベル</th>
+      </tr>
+      <% @spread_links.each do |s_link| %>
+      <tr>
+        <td><%= s_link.year %>年<%= s_link.month %>月</td>
+        <td><%= s_link.name %></td>
+      </tr>
+      <% end %>
+    </table>
+  <% else %>
+  <br>
+  <h2>リンクの登録がありません。新しく登録してください。</h2>
+  <% end %>
+  <hr>
+  <h2>こちらから出力したいユーザーを選択してください。</h2>
+  <br>
+  <div class="link-flex">
+    <% @bases.each do |r_base| %>
+    <div class="section">
+      <h2><%= r_base.user.base %></h2>
+      <% @results.where(user: {base: r_base.user.base}).each do |result| %>
+        <p class="link-text"><%= link_to result.user.name,export_spread_links_path(name: result.user.name,month: @month, base: r_base.user.base), class: "link" %></p>
+      <% end %>
+    </div>
+    <% end %>
+  </div>  
+      
+  </div>
+
+</div>

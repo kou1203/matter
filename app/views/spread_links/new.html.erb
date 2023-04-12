@@ -1,0 +1,40 @@
+<div data-scope-path="shared/header">
+  <h1>スプレッドURL入力</h1>
+  <%= render "shared/header" %>
+</div>
+
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form"><%# CSSスコープ %>
+    <div class="form-main"><%# フォーム外枠 %>
+        <div class="form-title">
+        <h1>スプレッドURL入力</h1>
+        <%= form_with model: @spread_link, class: "form-frame", local: true do |f| %>
+        <div class="form">
+        <h1>日付（年）</h1>
+          <p><%= f.number_field :year , value: Date.today.year, class: "date-input" %>年</p>
+        </div>
+        <div class="form">
+        <h1>日付（月）</h1>
+          <p><%= f.number_field :month , value: Date.today.month, class: "date-input" %>月</p>
+        </div>
+        <div class="form">
+          <h1>スプレッドシートの名前</h1>
+          <p><%= f.text_field :name , class: "date-input" %></p>
+        </div>
+        <div class="form">
+          <h1>スプレッドURL</h1>
+          <p><%= f.text_field :original_url , class: "date-input" %></p>
+        </div>
+        <div class="form">
+          <h1>検索用URL</h1>
+          <p><%= f.text_field :search_url , class: "date-input" %></p>
+        </div>
+        <%= f.submit "登録", class: "submit-btn" %>
+        <% end %>
+        </div>
+        </div>
+  </div><%# CSSスコープ %>
+</div>
