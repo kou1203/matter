@@ -294,7 +294,7 @@ class DmerDateProgressesController < ApplicationController
       .where.not("client LIKE ?", "%ぷらいまる%")
     ).or(
       @dmers_slmter.where(status_update_settlement: ...@dmer2_start_date)
-      .where(result_point: ...@dmer2_start_date)
+      .where(result_point: @dmer2_start_date..@dmer2_end_date)
       .where(status_settlement: "完了").where(app_check: "OK")
       .where.not("client LIKE ?", "%ぷらいまる%")
     )
@@ -344,7 +344,6 @@ class DmerDateProgressesController < ApplicationController
         @dmers_slmter
         .where(status_update_settlement: @dmer3_start_date..@dmer3_end_date)
         .where("? >= settlement_second", @dmer3_end_date)
-        .where(app_check_date: ..@dmer3_end_date)
         .where(status: "審査OK")
         .where(app_check: "OK")
         .where.not("client LIKE ?", "%ぷらいまる%")
