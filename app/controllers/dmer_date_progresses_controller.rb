@@ -322,6 +322,17 @@ class DmerDateProgressesController < ApplicationController
         .where(status_settlement: "完了")
       ).or(
         @dmers_slmter
+        .where(result_point: @dmer3_start_date..@dmer3_end_date)
+        .where(status_update_settlement: ...@dmer3_start_date)
+        .where(settlement_second: ...@dmer3_start_date)
+        .where(app_check_date: ...@dmer3_start_date)
+        .where(status: "審査OK")
+        .where.not(industry_status: "NG")
+        .where.not(industry_status: "×")
+        .where.not(industry_status: "要確認")
+        .where(status_settlement: "完了")
+      ).or(
+        @dmers_slmter
         .where(status_update_settlement: ...@dmer3_start_date)
         .where(settlement_second: ...@dmer3_start_date)
         .where(app_check_date: @dmer3_start_date..@dmer3_end_date)
