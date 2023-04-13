@@ -50,10 +50,26 @@ class PaymentDmersController < ApplicationController
     @dmers_result1 = 
       @dmers.where(result_point: @month.beginning_of_month..@month.end_of_month)
       .where(settlement_deadline: @month.beginning_of_month..)
-      .where(settlement: ..@month.end_of_month).or(
+      .where(settlement: ..@month.end_of_month).where(app_check_date: ..@month.end_of_month)
+      .or(
         @dmers.where(result_point: ..@month.prev_month.end_of_month)
         .where(settlement_deadline: @month.beginning_of_month..)
-        .where(settlement: @month.beginning_of_month..@month.end_of_month)
+        .where(settlement: @month.beginning_of_month..@month.end_of_month).where(app_check_date: ..@month.end_of_month)
+      )
+      .or(
+        @dmers.where(result_point: ..@month.prev_month.end_of_month)
+        .where(settlement_deadline: ..@month.prev_month.end_of_month)
+        .where(settlement: ..@month.prev_month.end_of_month).where(app_check_date: @month..@month.end_of_month)
+      )
+      .or(
+        @dmers.where(result_point: @month.beginning_of_month..@month.end_of_month)
+        .where(settlement_deadline: @month.beginning_of_month..)
+        .where(settlement: ..@month.end_of_month).where(app_check: "OK").where.not("dmers.client LIKE ?", "%ぷらいまる%")
+      )
+      .or(
+        @dmers.where(result_point: ..@month.prev_month.end_of_month)
+        .where(settlement_deadline: @month.beginning_of_month..)
+        .where(settlement: @month.beginning_of_month..@month.end_of_month).where(app_check: "OK").where.not("dmers.client LIKE ?", "%ぷらいまる%")
       )
       if params[:done] == "審査完了"
         @dmers_result1 = 
@@ -84,11 +100,30 @@ class PaymentDmersController < ApplicationController
     @dmers_result2 = 
       @dmers.where(result_point: @month.beginning_of_month..@month.end_of_month)
       .where(status_update_settlement: ..@month.end_of_month)
-      .where(status_settlement: "完了").or(
+      .where(status_settlement: "完了").where(app_check_date: ..@month.end_of_month)
+      .or(
         @dmers.where(result_point: ..@month.prev_month.end_of_month)
         .where(status_update_settlement: @month.beginning_of_month..@month.end_of_month)
-        .where(status_settlement: "完了")
+        .where(status_settlement: "完了").where(app_check_date: ..@month.end_of_month)
       )
+      .or(
+        @dmers.where(result_point: ...@month.beginning_of_month)
+        .where(status_update_settlement: ...@month.beginning_of_month)
+        .where(status_settlement: "完了").where(app_check_date: @month.beginning_of_month..@month.end_of_month)
+      )
+      .or(
+        @dmers.where(result_point: @month.beginning_of_month..@month.end_of_month)
+        .where(status_update_settlement: ..@month.end_of_month)
+        .where(status_settlement: "完了").where(app_check: "OK")
+        .where.not("dmers.client LIKE ?", "%ぷらいまる%")
+      )
+      .or(
+        @dmers.where(result_point: ..@month.prev_month.end_of_month)
+        .where(status_update_settlement: @month.beginning_of_month..@month.end_of_month)
+        .where(status_settlement: "完了").where(app_check: "OK")
+        .where.not("dmers.client LIKE ?", "%ぷらいまる%")
+      )
+
 
       @client = params[:client]
       if @client.present?
@@ -112,9 +147,32 @@ class PaymentDmersController < ApplicationController
     @dmers = Dmer.includes(:user,:payment_dmers,:store_prop).where(status: "審査OK")
     @dmers_result3 = 
       @dmers.where(settlement_second: @month.beginning_of_month..@month.end_of_month)
-      .where(status_update_settlement: ..@month.end_of_month).where(status_settlement: "完了").or(
+      .where(status_update_settlement: ..@month.end_of_month).where(status_settlement: "完了")
+      .where(app_check_date: ..@month.end_of_month)
+      .or(
         @dmers.where(settlement_second: ..@month.prev_month.end_of_month)
         .where(status_update_settlement: @month.beginning_of_month..@month.end_of_month).where(status_settlement: "完了")
+        .where(app_check_date: ..@month.end_of_month)
+      )
+      .or(
+        @dmers.where(settlement_second: ...@month.beginning_of_month)
+        .where(status_update_settlement: ...@month.beginning_of_month).where(status_settlement: "完了")
+        .where(app_check_date: @month.beginning_of_month..@month.end_of_month)
+      )
+      .or(
+        @dmers.where(settlement_second: ...@month.beginning_of_month)
+        .where(status_update_settlement: ...@month.beginning_of_month).where(status_settlement: "完了")
+        .where(result_point: @month.beginning_of_month..@month.end_of_month).where(app_check_date: ..@month.end_of_month)
+      )
+      .or(
+        @dmers.where(settlement_second: @month.beginning_of_month..@month.end_of_month)
+        .where(status_update_settlement: ..@month.end_of_month).where(status_settlement: "完了")
+        .where(app_check: "OK").where.not("dmers.client LIKE ?", "%ぷらいまる%")
+      )
+      .or(
+        @dmers.where(settlement_second: ..@month.prev_month.end_of_month)
+        .where(status_update_settlement: @month.beginning_of_month..@month.end_of_month).where(status_settlement: "完了")
+        .where(app_check: "OK").where.not("dmers.client LIKE ?", "%ぷらいまる%")
       )
 
       @client = params[:client]
