@@ -200,6 +200,12 @@ class SpreadLinksController < ApplicationController
           index_cnt += 1  
           @session_data[index_cnt,col_cnt] = result.result_cash.out_get_13.to_i
           index_cnt += 1  
+          @session_data[index_cnt,col_cnt] = result.result_cash.out_interview_19.to_i
+          index_cnt += 1  
+          @session_data[index_cnt,col_cnt] = result.result_cash.out_full_talk_19.to_i
+          index_cnt += 1  
+          @session_data[index_cnt,col_cnt] = result.result_cash.out_get_19.to_i
+          index_cnt += 1  
         else  
           index_cnt += 42
         end 
