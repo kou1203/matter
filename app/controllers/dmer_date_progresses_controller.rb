@@ -453,6 +453,46 @@ class DmerDateProgressesController < ApplicationController
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
       valuation_current1_price = dmer_done.sum(:valuation_new)
+      # 成果2
+      dmer_slmt_done = 
+      @dmers_slmter.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
+      .where(status_settlement: "完了").where(app_check: "OK").or(
+      @dmers_slmter.where(status_update_settlement: ..@dmer2_end_date)
+      .where(result_point: @dmer2_start_date..@dmer2_end_date)
+      .where(status_settlement: "完了").where(app_check: "OK")
+    )
+      # 成果3
+      dmer_slmt2nd_done = 
+      @dmers_slmter.where(settlement_second: @dmer3_start_date..@dmer3_end_date)
+      .where("? >= status_update_settlement", @dmer3_end_date)
+      .where(app_check: "OK")
+      .where(status: "審査OK")
+      .where.not(industry_status: "NG")
+      .where.not(industry_status: "×")
+      .where.not(industry_status: "要確認")
+      .where(status_settlement: "完了")
+      .or(
+        @dmers_slmter
+        .where(status_update_settlement: @dmer3_start_date..@dmer3_end_date)
+        .where("? >= settlement_second", @dmer3_end_date)
+        .where(app_check: "OK")
+        .where(status: "審査OK")
+        .where.not(industry_status: "NG")
+        .where.not(industry_status: "×")
+        .where.not(industry_status: "要確認")
+        .where(status_settlement: "完了")
+      ).or(
+        @dmers_slmter
+        .where(result_point: @dmer3_start_date..@dmer3_end_date)
+        .where(status_update_settlement: ...@dmer3_start_date)
+        .where(settlement_second: ...@dmer3_start_date)
+        .where(app_check: "OK")
+        .where(status: "審査OK")
+        .where.not(industry_status: "NG")
+        .where.not(industry_status: "×")
+        .where.not(industry_status: "要確認")
+        .where(status_settlement: "完了")
+      )
       valuation_current2_price = dmer_slmt_done.sum(:valuation_settlement)
       valuation_current3_price = dmer_slmt2nd_done.sum(:valuation_second_settlement)
 
