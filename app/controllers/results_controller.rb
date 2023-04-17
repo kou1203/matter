@@ -335,10 +335,18 @@ class ResultsController < ApplicationController
     @dmers_slmt.where(settlement_second: @dmer3_start_date..@dmer3_end_date)
     .where(status_settlement: "完了")
     .where(status_update_settlement: ..@dmer3_end_date)
+    .where(result_point: ..@dmer3_end_date)
     .or(
       @dmers_slmt.where(settlement_second: ..@dmer3_end_date)
       .where(status_settlement: "完了")
       .where(status_update_settlement: @dmer3_start_date..@dmer3_end_date)
+      .where(result_point: ..@dmer3_end_date)
+    )
+    .or(
+      @dmers_slmt.where(settlement_second: ..@dmer3_end_date)
+      .where(status_settlement: "完了")
+      .where(status_update_settlement: ..@dmer3_end_date)
+      .where(result_point: @dmer3_start_date..@dmer3_end_date)
     )
     @dmers_slmt_done = @dmers_slmt.where(settlement: @start_date..@end_date).where(status_settlement: "完了")
     @dmers_slmt_def = @dmers_slmt.where(status_settlement: "決済不備")
