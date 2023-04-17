@@ -324,6 +324,7 @@ class ResultsController < ApplicationController
       .where.not(industry_status: "要確認")
     @dmer_slmt_done = 
       @dmers_slmt.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
+      .where(result_point: ..@dmer2_end_date)
       .where(status_settlement: "完了").or(
         @dmers_slmt.where(status_update_settlement: ..@dmer2_end_date)
         .where(result_point: @dmer2_start_date..@dmer2_end_date)
