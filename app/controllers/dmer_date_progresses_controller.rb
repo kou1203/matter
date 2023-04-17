@@ -280,6 +280,7 @@ class DmerDateProgressesController < ApplicationController
   # 成果2
     dmer_slmt_done = 
       @dmers_slmter.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
+      .where(result_point: ..@dmer2_end_date)
       .where(status_settlement: "完了").where(app_check_date: ..@dmer2_end_date)
       .where(status: "審査OK")
       .where.not(industry_status: "NG")
@@ -289,6 +290,10 @@ class DmerDateProgressesController < ApplicationController
       @dmers_slmter.where(status_update_settlement: ..@dmer2_end_date)
       .where(result_point: @dmer2_start_date..@dmer2_end_date)
       .where(status_settlement: "完了").where(app_check_date: ..@dmer2_end_date)
+      .where(status: "審査OK")
+      .where.not(industry_status: "NG")
+      .where.not(industry_status: "×")
+      .where.not(industry_status: "要確認")
     )
     .or(
         @dmers_slmter.where(status_update_settlement: ...@dmer2_start_date)
@@ -300,6 +305,7 @@ class DmerDateProgressesController < ApplicationController
         .where.not(industry_status: "要確認")
     ).or(
       @dmers_slmter.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
+      .where(result_point: ...@dmer2_start_date)
       .where(status_settlement: "完了").where(app_check: "OK")
       .where.not("client LIKE ?", "%ぷらいまる%")
       .where(status: "審査OK")
@@ -474,6 +480,7 @@ class DmerDateProgressesController < ApplicationController
       # 成果2
       dmer_slmt_done = 
       @dmers_slmter.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
+      .where(result_point: ..@dmer2_end_date)
       .where(status_settlement: "完了").where(app_check: "OK")
       .where(status: "審査OK")
       .where.not(industry_status: "NG")
