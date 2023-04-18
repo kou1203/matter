@@ -1,5 +1,5 @@
 class AirpayDateProgressesController < ApplicationController
-
+  before_action :authenticate_user!
   def index 
     @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "AirPay成果1").price
     @month = params[:month] ? Time.parse(params[:month]) : Date.today

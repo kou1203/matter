@@ -15,7 +15,6 @@ class PaypaysController < ApplicationController
     @paypay = Paypay.new
     @users = User.where.not(base: "退職")
     @store_prop = StoreProp.find(params[:store_prop_id])
-    
   end 
   
   def create 

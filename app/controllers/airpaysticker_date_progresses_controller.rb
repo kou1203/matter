@@ -1,5 +1,4 @@
 class AirpaystickerDateProgressesController < ApplicationController
-
   def index 
     @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "AirPayステッカー成果1").price
     @month = params[:month] ? Time.parse(params[:month]) : Date.today

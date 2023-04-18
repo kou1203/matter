@@ -1,19 +1,14 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <div data-scope-path="shared/header">
-  <h1>実売資料</h1>
+  <h1>成果一覧</h1>
   <%= render "shared/header" %>
 </div>
   <div class="main">
     <div data-scope-path="results/index">
         <h2>
           <%= link_to "<<",profits_path(month:@month.prev_month), class:"link","data-turbolinks": false %>
-          <%= @month.month %>月
+          <%= @month.month %>月成果
           <%= link_to ">>",profits_path(month:@month.next_month), class:"link","data-turbolinks": false %>
         </h2>
-    <% if @results.length == 0 %>
-      <p class="caution-text">※終着の入力がありません</p>
-    <% else %>
-    <%= render 'profit_parts/person_profit' %>
-    <% end %>
   </div>
   

@@ -1,5 +1,5 @@
 class AirpayStickersController < ApplicationController
-
+  before_action :authenticate_user!
   def index 
     @q = AirpaySticker.includes(:user).ransack(params[:q])
     @airpays = 

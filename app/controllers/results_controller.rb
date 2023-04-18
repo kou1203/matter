@@ -1,5 +1,7 @@
 class ResultsController < ApplicationController
   before_action :authenticate_user!
+  before_action :back_retirement
+  before_action :set_data
   def index
     # 商材情報
     @dmers = 
@@ -42,10 +44,7 @@ class ResultsController < ApplicationController
       @q.result(distinct: false).includes(:user).joins(:user).order(date: :asc)
     end
     if @results.present?
-      @month = params[:month] ? Time.parse(params[:month]) : Date.today
-      @calc_periods = CalcPeriod.where(sales_category: "評価売")
       @month_result = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
-      calc_period_and_per
       @minimum_result_cash = @results.minimum(:date) #26日
       @maximum_result_cash = @results.minimum(:date).beginning_of_month.since(1.month).since(24.days) #25日
       if @results.first.user.base == "中部SS"
@@ -76,7 +75,6 @@ class ResultsController < ApplicationController
     else  
       @comparison_date = @month_daily.prev_month
     end 
-
     @dmer_monthly = 
         Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
     @aupay_monthly = 
@@ -104,7 +102,6 @@ class ResultsController < ApplicationController
       Result.includes(:user)
       .where(date: @month_daily.beginning_of_month..@month_daily)
       .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-
     @dmer_comparison = 
         Dmer.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
     @aupay_comparison = 
@@ -132,7 +129,6 @@ class ResultsController < ApplicationController
       Result.includes(:user)
       .where(date: @comparison_date.beginning_of_month..@comparison_date)
       .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-
     # 月間決済率
     # 当月
     @dmer_slmt_this_month = 
@@ -202,7 +198,6 @@ class ResultsController < ApplicationController
       else
       end
     end
-
     # 現状売上
       @result_monthly = 
         Result.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).select(:profit,:base_sub, :shift,:base,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
@@ -291,11 +286,6 @@ class ResultsController < ApplicationController
   end
 
   def show 
-    @calc_periods = CalcPeriod.where(sales_category: "評価売")
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    
-    # calc_period_and_perは"@calc_periods"と"@month"の配置を先にするのが必須
-    calc_period_and_per
     @user = User.find(params[:id])
     # 月間増減
     # dメル
@@ -435,7 +425,7 @@ class ResultsController < ApplicationController
     @dmer_pic = @other_products.where(product_name: "dメルステッカー")
     @airpay_pic = AirpaySticker.where(user_id: @user.id).where(form_send: @month.beginning_of_month..@month.end_of_month).where(sticker_ok: "〇").where(pop_ok: "〇")
     # ITSS
-    @itss = Itss.includes(:user).where(user_id: @user.id).where(construction_schedule: @itss1_start_date..@itss1_end_date)
+    @itss = Itss.includes(:user).where(user_id: @user.id).where(construction_schedule: @itss1_start_date..@itss1_end_date).where(status_ntt1: "工事完了")
     # 決済リスト
     @slmts = 
       StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})
@@ -722,12 +712,8 @@ class ResultsController < ApplicationController
   end
 
   def profit_only 
-    @calc_periods = CalcPeriod.where(sales_category: "評価売")
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @users = User.where.not(position: "退職").or(User.where(position: nil))
     @users_cash = @users.where(base_sub: "キャッシュレス").order(base: "DESC")
-    # calc_period_and_perは"@calc_periods"と"@month"の配置を先にするのが必須
-    calc_period_and_per
     @user = User.find(params[:u_id])
     # 月間増減
     # dメル
@@ -1072,9 +1058,6 @@ class ResultsController < ApplicationController
   end 
 
   def daily_report
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @calc_periods = CalcPeriod.where(sales_category: "評価売")
-    calc_period_and_per
     @base_category = params[:base_category]
     @results = Result.includes(:result_cash,:user).where(user: {base: @base_category}).where(user: {base_sub: "キャッシュレス"}).where(date: @start_date..@month)
     @shift_digestion = 
@@ -1112,9 +1095,6 @@ class ResultsController < ApplicationController
 
   # ランキング
   def ranking
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @calc_periods = CalcPeriod.where(sales_category: "評価売")
-    calc_period_and_per
     @users = User.where(base_sub: "キャッシュレス").where.not(position: "退職").order("users.position_sub ASC").order("users.id ASC")
     @cash_date_progress = CashDateProgress.includes(:user).where(date: @start_date..@end_date).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @cash_date_progress = @cash_date_progress.where(date: @cash_date_progress.maximum(:date)).where(create_date: @cash_date_progress.maximum(:create_date)).order("valuation_fin DESC")
@@ -1124,9 +1104,6 @@ class ResultsController < ApplicationController
       @ranking_ave.store(r.user.name,[sum_valuations_ave])
       ranking_ave = @ranking_ave.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
     end
-
-
-
     @dmer_date_progress = DmerDateProgress.includes(:user).where(date: @start_date..@end_date).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @dmer_date_progress = @dmer_date_progress.where(date: @dmer_date_progress.maximum(:date)).where(create_date: @dmer_date_progress.maximum(:create_date)).order("get_len DESC")
     @aupay_date_progress = AupayDateProgress.includes(:user).where(date: @start_date..@end_date).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
@@ -1139,9 +1116,6 @@ class ResultsController < ApplicationController
 
   # 利益計算用終着
   def gross_profit
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @calc_periods = CalcPeriod.where(sales_category: "評価売")
-    calc_period_and_per
     @cash_date_progress = 
       CashDateProgress.includes(:user).where(date: @start_date..@end_date)
       .where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
@@ -1154,9 +1128,6 @@ class ResultsController < ApplicationController
 
   def base_profit
     @base = params[:base]
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @calc_periods = CalcPeriod.where(sales_category: "評価売")
-    calc_period_and_per
     @results = Result.includes(:user,:result_cash).where(user: {base: @base}).where(date: @start_date..@end_date)
     @users = User.where(base: @base).where(base_sub: "キャッシュレス").where.not(position: "退職").order("users.position_sub ASC").order("users.id ASC")
     @cash_date_progress = CashDateProgress.includes(:user).where(date: @start_date..@end_date).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
@@ -1217,7 +1188,7 @@ class ResultsController < ApplicationController
     # @calc_periods, @month, @result_category
     # 上記3点をvaluation_packより上に配置して設定する必要があります。
     def valuation_pack 
-      calc_period_and_per
+      
       @results = Result.where(date: @month.prev_month.beginning_of_month.since(25.days)..@month.beginning_of_month.since(24.days))
       @month_result = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
       @minimum_result_cash = @results.minimum(:date)
@@ -1364,7 +1335,6 @@ class ResultsController < ApplicationController
     def slmt_second(product,date)
       return product.where(client: "ピアズ").where(status: "審査OK").where(status_settlement: "完了").where(settlement_second: date.minimum(:date)..date.maximum(:date))
     end 
-
     def slmt2nd_dead_line(product,date)
       return product.where(client: "ピアズ")
         .where(settlement_deadline: date.minimum(:date)
@@ -1463,6 +1433,19 @@ class ResultsController < ApplicationController
       :revisit_get,
     )
   end 
+
+  def back_retirement
+    redirect_to error_pages_path if current_user.position == "退職"
+  end
+
+  def set_data
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @calc_periods = CalcPeriod.where(sales_category: "評価売")
+    # calc_period_and_perは"@calc_periods"と"@month"の配置を先にするのが必須
+    calc_period_and_per
+
+  end 
+
 
 
 end

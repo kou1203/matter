@@ -1,5 +1,7 @@
 class AupaysController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_aupay, only: [:show,:edit,:update]
+
   def index 
     @q = Aupay.includes(:user, :store_prop).ransack(params[:q])
     @aupays = 
@@ -24,7 +26,6 @@ class AupaysController < ApplicationController
       redirect_to store_prop_path(@store_prop.id)
     else  
       session[:error] = @aupay.errors.full_messages
-      
       redirect_to store_prop_aupays_new_path(@store_prop.id)
     end 
   end
@@ -43,22 +44,23 @@ class AupaysController < ApplicationController
   end 
 
   def show 
-    @aupay = Aupay.find(params[:id])
     @users = User.all
   end 
   
   def edit 
-    @aupay = Aupay.find(params[:id])
     @users = User.all
   end 
   
   def update 
-    @aupay = Aupay.find(params[:id])
     @aupay.update(aupay_params)
     redirect_to aupay_path(@aupay.id) 
   end 
 
   private 
+  def set_aupay
+    @aupay = Aupay.find(params[:id])
+  end 
+
   def aupay_params 
     params.require(:aupay).permit(
       :customer_num,
@@ -93,7 +95,6 @@ class AupaysController < ApplicationController
       :valuation_new,    
       :valuation_settlement
     )
-
   end 
   
 end

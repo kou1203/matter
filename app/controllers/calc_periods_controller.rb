@@ -1,7 +1,7 @@
 class CalcPeriodsController < ApplicationController
   require 'csv'
+  before_action :set_month
   def index 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @calc_periods = CalcPeriod.all
     @calc_periods_val = CalcPeriod.where(sales_category: "評価売")
     @calc_periods_prof = CalcPeriod.where(sales_category: "実売")
@@ -138,7 +138,6 @@ class CalcPeriodsController < ApplicationController
   end 
 
   def cash_csv_export
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @cash_date_progress = CashDateProgress.where(date: @month.in_time_zone.all_month)
     @cash_date_progress = @cash_date_progress.where(create_date: @cash_date_progress.maximum(:create_date))
     @dmer_date_progress = DmerDateProgress.where(date: @month.in_time_zone.all_month)
@@ -190,7 +189,6 @@ class CalcPeriodsController < ApplicationController
   end
 
   def cash_valuation_csv_export 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @cash_date_progress = CashDateProgress.where(date: @month.in_time_zone.all_month)
     @cash_date_progress = @cash_date_progress.where(create_date: @cash_date_progress.maximum(:create_date)).where(date: @cash_date_progress.maximum(:date))
     @dmer_date_progress = DmerDateProgress.where(date: @month.in_time_zone.all_month)
@@ -286,7 +284,6 @@ class CalcPeriodsController < ApplicationController
   end 
 
   def dmer_csv_export 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @dmer_date_progress = DmerDateProgress.where(date: @month.in_time_zone.all_month)
     @dmer_date_progress = @dmer_date_progress.where(create_date: @dmer_date_progress.maximum(:create_date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
@@ -324,7 +321,6 @@ class CalcPeriodsController < ApplicationController
 
 
   def aupay_csv_export 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @aupay_date_progress = AupayDateProgress.where(date: @month.in_time_zone.all_month)
     @aupay_date_progress = @aupay_date_progress.where(create_date: @aupay_date_progress.maximum(:create_date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
@@ -361,7 +357,6 @@ class CalcPeriodsController < ApplicationController
   end 
 
   def paypay_csv_export 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @paypay_date_progress = PaypayDateProgress.where(date: @month.in_time_zone.all_month)
     @paypay_date_progress = @paypay_date_progress.where(create_date: @paypay_date_progress.maximum(:create_date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
@@ -398,7 +393,6 @@ class CalcPeriodsController < ApplicationController
   end 
 
   def rakuten_pay_csv_export 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @rakuten_pay_date_progress = RakutenPayDateProgress.where(date: @month.in_time_zone.all_month)
     @rakuten_pay_date_progress = @rakuten_pay_date_progress.where(create_date: @rakuten_pay_date_progress.maximum(:create_date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
@@ -435,7 +429,6 @@ class CalcPeriodsController < ApplicationController
   end 
 
   def airpay_csv_export 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @airpay_date_progress = AirpayDateProgress.where(date: @month.in_time_zone.all_month)
     @airpay_date_progress = @airpay_date_progress.where(create_date: @airpay_date_progress.maximum(:create_date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
@@ -472,7 +465,6 @@ class CalcPeriodsController < ApplicationController
   end 
 
   def demaekan_csv_export 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @demaekan_date_progress = DemaekanDateProgress.where(date: @month.in_time_zone.all_month)
     @demaekan_date_progress = @demaekan_date_progress.where(create_date: @demaekan_date_progress.maximum(:create_date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
@@ -509,7 +501,6 @@ class CalcPeriodsController < ApplicationController
   end 
 
   def austicker_csv_export 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @austicker_date_progress = AustickerDateProgress.where(date: @month.in_time_zone.all_month)
     @austicker_date_progress = @austicker_date_progress.where(create_date: @austicker_date_progress.maximum(:create_date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
@@ -546,7 +537,6 @@ class CalcPeriodsController < ApplicationController
   end 
 
   def dmersticker_csv_export 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @dmersticker_date_progress = DmerstickerDateProgress.where(date: @month.in_time_zone.all_month)
     @dmersticker_date_progress = @dmersticker_date_progress.where(create_date: @dmersticker_date_progress.maximum(:create_date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
@@ -583,7 +573,6 @@ class CalcPeriodsController < ApplicationController
   end 
 
   private 
-
   def create_csv(filename, csv1)
     #ファイル書き込み
     File.open("./#{filename}.csv", "w") do |file|
@@ -643,5 +632,9 @@ class CalcPeriodsController < ApplicationController
   # パーセントを / 100 してFloat値にする ex) 60 => 0.6, set_month_per_floatはmodelにて格納されている
   def set_percent_params
     calc_period_edit_params.merge(@calc_period.set_month_per_float)
+  end 
+
+  def set_month
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
   end 
 end

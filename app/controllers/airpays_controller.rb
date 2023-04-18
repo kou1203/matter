@@ -1,5 +1,5 @@
 class AirpaysController < ApplicationController
-
+  before_action :authenticate_user!
   def index 
     @q = Airpay.includes(:user).ransack(params[:q])
     @airpays = 

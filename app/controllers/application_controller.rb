@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
    before_action :devise_permitted_parameters, if: :devise_controller?
-   
+   before_action :authenticate_user!, except: [:new]
   private 
 
 
