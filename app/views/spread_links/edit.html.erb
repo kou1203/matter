@@ -14,11 +14,11 @@
         <%= form_with model: @spread_link, class: "form-frame", local: true do |f| %>
         <div class="form">
         <h1>日付（年）</h1>
-          <p><%= f.number_field :year , value: Date.today.year, class: "date-input" %>年</p>
+          <p><%= f.number_field :year , class: "date-input" %>年</p>
         </div>
         <div class="form">
         <h1>日付（月）</h1>
-          <p><%= f.number_field :month , value: Date.today.month, class: "date-input" %>月</p>
+          <p><%= f.number_field :month , class: "date-input" %>月</p>
         </div>
         <div class="form">
           <h1>スプレッドシートの名前</h1>

@@ -104,6 +104,7 @@ Rails.application.routes.draw do
   resources :shifts,expect: [:show] do 
     collection do
       post :update_month
+      delete :delete_month
     end
   end 
 

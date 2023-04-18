@@ -28,11 +28,13 @@
       <tr>
         <th>年月</th>
         <th>リンク</th>
+        <th>編集</th>
       </tr>
       <% @spread_links.each do |s_link| %>
       <tr>
         <td><%= s_link.year %>年<%= s_link.month %>月</td>
         <td><%= link_to s_link.name,"#{s_link.original_url}",class: "link" %></td>
+        <td><%= link_to "編集", edit_spread_link_path(s_link.id,month: @month) ,"data-turbolinks": false, class: "link" %></td>
       </tr>
       <% end %>
     </table>

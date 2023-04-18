@@ -1,8 +1,9 @@
 class SpreadLinksController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_month
   require 'google_drive'
+
   def index 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @spread_links = SpreadLink.where(year: @month.year, month: @month.month)
     @results = 
       Result.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month).group(:user_id)
@@ -13,7 +14,6 @@ class SpreadLinksController < ApplicationController
 
   def export
     days = ["日", "月", "火", "水", "木", "金", "土"] 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @name = params[:name]
     @base = params[:base]
     @user_id = User.find_by(name: @name).id
@@ -465,11 +465,13 @@ class SpreadLinksController < ApplicationController
   end 
 
   def edit 
-
+    @spread_link = SpreadLink.find(params[:id])
   end 
-
+  
   def update 
-    
+    @spread_link = SpreadLink.find(params[:id])
+    @spread_link.update(spread_links_params)
+    redirect_to spread_links_path(month: @month)
   end 
   
   def show 
@@ -484,6 +486,10 @@ class SpreadLinksController < ApplicationController
       :original_url,
       :search_url,
     )
+  end
+  
+  def set_month
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
   end 
   
 end

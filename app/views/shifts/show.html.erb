@@ -28,11 +28,13 @@
         <option value="休み">休み</option>
       </select>
     </div>
-    
-
+    <% s_date = "" %>
     <%# カレンダー部分 %>
       <% cnt = 0 %>
       <%= month_calendar do |date| %>
+        <% if 20 > cnt && cnt > 10 %>
+        <% s_date = date %>
+        <% end %>
         <% r_data = @results.find_by(date: date).shift rescue "" %>
         <input name="shift-check" type="checkbox" , class="shiftcheckbox">
         <%= date.day %><br>
@@ -84,6 +86,8 @@
       <% end %>
       <%= submit_tag "登録",class: "submit-btn" %>
       <button class="back-btn"><%= link_to "戻る", shifts_path, class: "reset-link" %></button>
+      <% user_id = @user.id %>
+      <button class="delete-btn"><%= link_to "#{s_date.month}月削除", delete_month_shifts_path(month: s_date,u_id: user_id), method: :delete, data: {confirm: "#{s_date.month}月の予定シフトを削除しますか？"},class: "delete-link" %></button>
     <% end %>
   </div>
 </div>

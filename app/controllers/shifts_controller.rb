@@ -78,14 +78,27 @@ class ShiftsController < ApplicationController
     @shift = Shift.find(params[:id])
     @shift.destroy 
     flash[:notice] = "#{@shift.start_time.to_date}#{@shift.shift}のシフトを削除をしました。"
-    redirect_to 
+    redirect_to shifts_path
+  end 
+
+  def delete_month
+    @month = params[:month].to_date
+    @shifts = 
+      Shift.where(user_id: params[:u_id])
+      .where(start_time: @month.all_month)
+      @shifts.destroy_all
+      flash[:notice] = "#{@month.month}月のシフトを削除しました。"
+      redirect_to shift_path(params[:u_id],month: @month)
   end 
 
   private 
+
   def shift_params 
     params.require(:shift).permit(:user_id,:start_time,:shift)
   end 
+
   def month_shifts_params 
     params.require(:shift).permit!
   end 
+
 end
