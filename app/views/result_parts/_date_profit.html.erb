@@ -610,93 +610,93 @@
                 <th class="date-th" rowspan="5">合計</th>
                 <th class="date-th">訪問</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">-</td>
               </tr>
               <tr>
                 <th class="date-th">応答</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th">対面</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) / shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th">フル</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) / shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th">成約</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_get + element.latter_get, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get + element.latter_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get + element.latter_get, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get + element.latter_get, 0) / shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th" rowspan="5">前半</th>
                 <th class="date-th">訪問</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_total_visit , 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_total_visit , 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_total_visit , 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">-</td>
               </tr>
               <tr>
                 <th class="date-th">応答</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit, 0) / shiftItem.reduce((sum, element) => sum + element.first_total_visit , 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th">対面</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_interview , 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview , 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview , 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview , 0) / shiftItem.reduce((sum, element) => sum + element.first_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th">フル</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) / shiftItem.reduce((sum, element) => sum + element.first_interview , 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th">成約</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.first_get , 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get , 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get , 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get , 0) / shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th" rowspan="5">後半</th>
                 <th class="date-th">訪問</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.latter_total_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_total_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_total_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">-</td>
               </tr>
               <tr>
                 <th class="date-th">応答</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) / shiftItem.reduce((sum, element) => sum + element.latter_total_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th">対面</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) / shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th">フル</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) / shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th">成約</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.latter_get, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_get, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_get, 0) / shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) * 100)}} %</td>
               </tr>
             </table>
@@ -827,91 +827,91 @@
                 <th class="date-th" rowspan="2">喫茶・カフェ</th>
                 <th class="date-th">訪問</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.cafe_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.cafe_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.cafe_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">-</td>
               </tr>
               <tr>
                 <th class="date-th">成約</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.cafe_get, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.cafe_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.cafe_get, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.cafe_get, 0) / shiftItem.reduce((sum, element) => sum + element.cafe_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th" rowspan="2">その他飲食</th>
                 <th class="date-th">訪問</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_food_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_food_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_food_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">-</td>
               </tr>
               <tr>
                 <th class="date-th">成約</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_food_get, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_food_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_food_get, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_food_get, 0) / shiftItem.reduce((sum, element) => sum + element.other_food_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th" rowspan="2">車屋</th>
                 <th class="date-th">訪問</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.car_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.car_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.car_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">-</td>
               </tr>
               <tr>
                 <th class="date-th">成約</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.car_get, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.car_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.car_get, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.car_get, 0) / shiftItem.reduce((sum, element) => sum + element.car_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th" rowspan="2">その他小売</th>
                 <th class="date-th">訪問</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_retail_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_retail_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_retail_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">-</td>
               </tr>
               <tr>
                 <th class="date-th">成約</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_retail_get, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_retail_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_retail_get, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_retail_get, 0) / shiftItem.reduce((sum, element) => sum + element.other_retail_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th" rowspan="2">理容・美容</th>
                 <th class="date-th">訪問</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.hair_salon_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.hair_salon_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.hair_salon_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">-</td>
               </tr>
               <tr>
                 <th class="date-th">成約</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.hair_salon_get, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.hair_salon_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.hair_salon_get, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.hair_salon_get, 0) / shiftItem.reduce((sum, element) => sum + element.hair_salon_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th" rowspan="2">整体・鍼灸</th>
                 <th class="date-th">訪問</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.manipulative_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.manipulative_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.manipulative_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">-</td>
               </tr>
               <tr>
                 <th class="date-th">成約</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.manipulative_get, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.manipulative_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.manipulative_get, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.manipulative_get, 0) / shiftItem.reduce((sum, element) => sum + element.manipulative_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="date-th" rowspan="2">その他サービス</th>
                 <th class="date-th">訪問</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_service_visit, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_service_visit, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_service_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">-</td>
               </tr>
               <tr>
                 <th class="date-th">成約</th>
                 <td class="date-td">{{ shiftItem.reduce((sum, element) => sum + element.other_service_get, 0) }}</td>
-                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_service_get, 0) / shiftItem.length * 10) / 10 }}</td>
+                <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_service_get, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="date-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_service_get, 0) / shiftItem.reduce((sum, element) => sum + element.other_service_visit, 0) * 100)}} %</td>
               </tr>
             </table>
@@ -1234,247 +1234,247 @@
                   <th class="date-th" rowspan="3">０１：どういうこと？</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_01, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_01, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_01, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_01, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_01, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_01, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_01, 0) / out.reduce((sum, element) => sum + element.out_interview_01, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_01, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_01, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_01, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_01, 0) / out.reduce((sum, element) => sum + element.out_interview_01, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">０２：君は誰？協会？</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_02, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_02, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_02, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_02, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_02, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_02, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_02, 0) / out.reduce((sum, element) => sum + element.out_interview_02, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_02, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_02, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_02, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_02, 0) / out.reduce((sum, element) => sum + element.out_full_talk_02, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">０３：もらうだけでいいの？</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_03, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_03, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_03, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_03, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_03, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_03, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_03, 0) / out.reduce((sum, element) => sum + element.out_interview_03, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_03, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_03, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_03, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_03, 0) / out.reduce((sum, element) => sum + element.out_full_talk_03, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">０４：PayPayのみ</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_04, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_04, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_04, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_04, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_04, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_04, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_04, 0) / out.reduce((sum, element) => sum + element.out_interview_04, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_04, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_04, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_04, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_04, 0) / out.reduce((sum, element) => sum + element.out_full_talk_04, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">０５：AirPayのみ</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_05, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_05, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_05, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_05, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_05, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_05, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_05, 0) / out.reduce((sum, element) => sum + element.out_interview_05, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_05, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_05, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_05, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_05, 0) / out.reduce((sum, element) => sum + element.out_full_talk_05, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">０６：カードのみ</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_06, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_06, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_06, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_06, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_06, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_06, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_06, 0) / out.reduce((sum, element) => sum + element.out_interview_06, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_06, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_06, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_06, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_06, 0) / out.reduce((sum, element) => sum + element.out_full_talk_06, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">０７：先延ばし</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_07, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_07, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_07, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_07, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_07, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_07, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_07, 0) / out.reduce((sum, element) => sum + element.out_interview_07, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_07, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_07, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_07, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_07, 0) / out.reduce((sum, element) => sum + element.out_full_talk_07, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">０８：現金のみ</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_08, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_08, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_08, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_08, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_08, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_08, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_08, 0) / out.reduce((sum, element) => sum + element.out_interview_08, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_08, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_08, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_08, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_08, 0) / out.reduce((sum, element) => sum + element.out_full_talk_08, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">０９：忙しい</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_09, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_09, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_09, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_09, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_09, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_09, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_09, 0) / out.reduce((sum, element) => sum + element.out_interview_09, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_09, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_09, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_09, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_09, 0) / out.reduce((sum, element) => sum + element.out_full_talk_09, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">１０：面倒くさい</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_10, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_10, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_10, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_10, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_10, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_10, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_10, 0) / out.reduce((sum, element) => sum + element.out_interview_10, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_10, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_10, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_10, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_10, 0) / out.reduce((sum, element) => sum + element.out_full_talk_10, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">１１：情報不足</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_11, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_11, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_11, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_11, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_11, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_11, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_11, 0) / out.reduce((sum, element) => sum + element.out_interview_11, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_11, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_11, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_11, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_11, 0) / out.reduce((sum, element) => sum + element.out_full_talk_11, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">１２：ペロ</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_12, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_12, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_12, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_12, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_12, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_12, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_12, 0) / out.reduce((sum, element) => sum + element.out_interview_12, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_12, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_12, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_12, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_12, 0) / out.reduce((sum, element) => sum + element.out_full_talk_12, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th" rowspan="3">１３：その他</th>
                   <th class="date-th">対面</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_interview_13, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_13, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_13, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">-</td>
                 </tr>
                 <tr>
                   <th class="date-th">フル</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_13, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_13, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_13, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_13, 0) / out.reduce((sum, element) => sum + element.out_interview_13, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="date-th">成約</th>
                   <td class="date-td">{{ out.reduce((sum, element) => sum + element.out_get_13, 0) }}</td>
-                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_13, 0) / out.length * 10) / 10 }}</td>
+                  <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_13, 0) / out.length * 100) / 100 }}</td>
                   <td class="date-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_13, 0) / out.reduce((sum, element) => sum + element.out_full_talk_13, 0) * 100)}} %</td>
                 </tr>
               </table>
@@ -1529,13 +1529,13 @@
             <th rowspan="2" class="total-th">{{ i + 9 }}時</th>
             <th class="total-th">訪問</th>
             <td class="total-td">{{ hourVisit[i - 1] }}</td>
-            <td class="total-td">{{ Math.round(hourVisit[i - 1] / shiftItem.length * 10) / 10 }}</td>
+            <td class="total-td">{{ Math.round(hourVisit[i - 1] / shiftItem.length * 100) / 100 }}</td>
             <td class="total-td">-</td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
             <td class="total-td">{{ hourGet[i - 1] }}</td>
-            <td class="total-td">{{ Math.round(hourGet[i - 1] / shiftItem.length * 10) / 10 }}</td>
+            <td class="total-td">{{ Math.round(hourGet[i - 1] / shiftItem.length * 100) / 100 }}</td>
             <td class="total-td">{{  Math.round(hourGet[i - 1] / hourVisit[i - 1] * 100 ) }}%</td>
           </tr>
           </tbody>
