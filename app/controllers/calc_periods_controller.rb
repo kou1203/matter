@@ -95,6 +95,8 @@ class CalcPeriodsController < ApplicationController
     @cash_date_progresses = @cash_date_progresses.where(create_date: @cash_date_progresses_last_update)
 
     @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "2次店","退職"]
+    
+    @users = User.where.not(position: "退職")
 
     @products = ["合計","dメル", "auPay", "PayPay", "楽天ペイ","AirPay", "出前館","auステッカー", "dメルステッカー","AirPayステッカー","ITSS"]
     

@@ -132,6 +132,7 @@ Rails.application.routes.draw do
       post :comment_new
       put :comment_update
       get :profit_only
+      get :out_come
     }
   end  
 

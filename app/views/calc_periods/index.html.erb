@@ -20,88 +20,81 @@
   </h2>
   <hr>
 <%# @start_date.ago(2.month).beginning_of_month..@end_date.prev_month.end_of_month %>
-  <h2>◆進捗資料の作成</h2>
-  <table>
-    <tr>
-      <th>進捗データ作成</th>
-      <th>進捗</th>
-      <th>最終作成日</th>
-      <th>CSV出力</th>
-    </tr>
-    <tr>
-      <td><%= link_to "dメル", progress_create_dmer_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-      <td><%= link_to "詳細", dmer_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-      <td><%= @dmer_date_progresses_last_update %></td>
-      <td><%= link_to "実売資料(dメル)",dmer_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-    <tr>
-      <td><%= link_to "auPay", progress_create_aupay_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-      <td><%= link_to "詳細", aupay_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-      <td><%= @aupay_date_progresses_last_update %></td>
-      <td><%= link_to "実売資料(auPay)",aupay_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-    <tr>
-      <td><%= link_to "PayPay", progress_create_paypay_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-      <td><%= link_to "詳細", paypay_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-      <td><%= @paypay_date_progresses_last_update %></td>
-      <td><%= link_to "実売資料(PayPay)",paypay_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-    <tr>
-      <td><%= link_to "楽天Pay", progress_create_rakuten_pay_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-      <td><%= link_to "詳細", rakuten_pay_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-      <td><%= @rakuten_pay_date_progresses_last_update %></td>
-      <td><%= link_to "実売資料(楽天ペイ)",rakuten_pay_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-    <tr>
-      <td><%= link_to "AirPay", progress_create_airpay_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-      <td><%= link_to "詳細", airpay_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-      <td><%= @airpay_date_progresses_last_update %></td>
-      <td><%= link_to "実売資料(AirPay)",airpay_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-    <tr>
-      <td><%= link_to "出前館", progress_create_demaekan_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-      <td><%= link_to "詳細", demaekan_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-      <td><%= @demaekan_date_progresses_last_update %></td>
-      <td><%= link_to "実売資料(出前館)",demaekan_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-    <tr>
-      <td><%= link_to "auステッカー", progress_create_austicker_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-      <td><%= link_to "詳細", austicker_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-      <td><%= @austicker_date_progresses_last_update %></td>
-      <td><%= link_to "実売資料(auステッカー)",austicker_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-    <tr>
-      <td><%= link_to "dメルステッカー", progress_create_dmersticker_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-      <td><%= link_to "詳細", dmersticker_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-      <td><%= @dmersticker_date_progresses_last_update %></td>
-      <td><%= link_to "実売資料(dメルステッカー)",dmersticker_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-    <tr>
-      <td><%= link_to "AirPayステッカー", progress_create_airpaysticker_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-      <td><%= link_to "詳細", airpaysticker_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-      <td><%= @airpaysticker_date_progresses_last_update %></td>
-      <td><%= link_to "実売資料(AirPayステッカー)",airpaysticker_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-    <tr>
-      <td><%= link_to "ITSS", progress_create_itss_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-      <td><%= link_to "詳細", itss_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-      <td><%= @itss_date_progresses_last_update %></td>
-      <td><%= link_to "実売資料(AirPayステッカー)",airpaysticker_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-    <tr>
-      <td><%= link_to "キャッシュ合計", progress_create_cash_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-      <td><%= link_to "詳細", cash_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-      <td><%= @cash_date_progresses_last_update %></td>
-      <td><%= link_to "Excelで出力(実売資料)",calc_periods_path(format: :xlsx,month: @month), data: {confirm: "Excelを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td><%= link_to "評価売資料(合計)",cash_valuation_csv_export_calc_periods_path(format: :csv,month: @month), data: {confirm: "CSVを出力しますか？"}, class: "link",id:'download-csv' %></td>
-    </tr>
-  </table>
-  
+    <h2>◆進捗資料の作成</h2>
+    <table>
+      <tr>
+        <th>進捗データ作成</th>
+        <th>進捗</th>
+        <th>最終作成日</th>
+        <th>CSV出力</th>
+      </tr>
+      <tr>
+        <td><%= link_to "dメル", progress_create_dmer_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", dmer_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @dmer_date_progresses_last_update %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><%= link_to "auPay", progress_create_aupay_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", aupay_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @aupay_date_progresses_last_update %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><%= link_to "PayPay", progress_create_paypay_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", paypay_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @paypay_date_progresses_last_update %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><%= link_to "楽天Pay", progress_create_rakuten_pay_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", rakuten_pay_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @rakuten_pay_date_progresses_last_update %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><%= link_to "AirPay", progress_create_airpay_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", airpay_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @airpay_date_progresses_last_update %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><%= link_to "出前館", progress_create_demaekan_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", demaekan_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @demaekan_date_progresses_last_update %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><%= link_to "auステッカー", progress_create_austicker_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", austicker_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @austicker_date_progresses_last_update %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><%= link_to "dメルステッカー", progress_create_dmersticker_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", dmersticker_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @dmersticker_date_progresses_last_update %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><%= link_to "AirPayステッカー", progress_create_airpaysticker_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", airpaysticker_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @airpaysticker_date_progresses_last_update %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><%= link_to "ITSS", progress_create_itss_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", itss_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @itss_date_progresses_last_update %></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><%= link_to "キャッシュ合計", progress_create_cash_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", cash_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @cash_date_progresses_last_update %></td>
+        <td><%= link_to "Excelで出力(実売資料)",calc_periods_path(format: :xlsx,month: @month), data: {confirm: "Excelを出力しますか？"}, class: "link",id:'download-csv' %></td>
+      </tr>
+    </table>
   <% calc_periods_ary.each do |calc_periods| %>
   <% if tb_cnt == 0 %>
   <h2>◆評価売</h2>
@@ -180,5 +173,17 @@
   </table>
   <% end %>
   <p class="caution-text">※過去月も<%= Date.today.month %>月と同じ基準で利益表の計算を行っております。</p>
+  <hr>
+      <div style="display: flex;">
+        <% @bases.each do |base| %>
+          <div>
+            <h2><%= base %></h2>
+            <% @users.where(base: base).each do |user| %>
+              <p class="link-text"><%= link_to user.name, out_come_results_path(u_id: user.id) %></p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+
   </div>
 </div>

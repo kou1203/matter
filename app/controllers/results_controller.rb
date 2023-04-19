@@ -2,6 +2,7 @@ class ResultsController < ApplicationController
   before_action :authenticate_user!
   before_action :back_retirement
   before_action :set_data
+  before_action :set_out_come ,only: [:show,:out_come]
   def index
     # 商材情報
     @dmers = 
@@ -286,7 +287,7 @@ class ResultsController < ApplicationController
   end
 
   def show 
-    @user = User.find(params[:id])
+    
     # 月間増減
     # dメル
     @dmers = Dmer.includes(:store_prop).where(date: @start_date..@end_date).where(user_id: @user.id)
@@ -301,47 +302,7 @@ class ResultsController < ApplicationController
       .where(status: "審査OK").where.not(industry_status: "×").where.not(industry_status: "NG")
       .where.not(result_point: @start_date..@end_date)
     @dmers_db = Dmer.includes(:store_prop).where.not(store_prop: {head_store: nil}).where(date: @start_date..@end_date).where(user_id: @user.id)
-    @dmer_done = 
-      Dmer.where(user_id: @user.id).where(result_point: @dmer1_start_date..@dmer1_end_date)
-      .where.not(industry_status: "NG")
-      .where.not(industry_status: "×")
-      .where.not(industry_status: "要確認")
-      .where(status: "審査OK")
-    @dmers_slmt = 
-      Dmer.where(settlementer_id: @user.id).where(status: "審査OK")
-      .where.not(industry_status: "NG")
-      .where.not(industry_status: "×")
-      .where.not(industry_status: "要確認")
-    @dmer_slmt_done = 
-      @dmers_slmt.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
-      .where(result_point: ..@dmer2_end_date)
-      .where(status_settlement: "完了").or(
-        @dmers_slmt.where(status_update_settlement: ..@dmer2_end_date)
-        .where(result_point: @dmer2_start_date..@dmer2_end_date)
-        .where(status_settlement: "完了")
 
-      )
-    @dmer_slmt2nd_done = 
-    @dmers_slmt.where(settlement_second: @dmer3_start_date..@dmer3_end_date)
-    .where(status_settlement: "完了")
-    .where(status_update_settlement: ..@dmer3_end_date)
-    .where(result_point: ..@dmer3_end_date)
-    .or(
-      @dmers_slmt.where(settlement_second: ..@dmer3_end_date)
-      .where(status_settlement: "完了")
-      .where(status_update_settlement: @dmer3_start_date..@dmer3_end_date)
-      .where(result_point: ..@dmer3_end_date)
-    )
-    .or(
-      @dmers_slmt.where(settlement_second: ..@dmer3_end_date)
-      .where(status_settlement: "完了")
-      .where(status_update_settlement: ..@dmer3_end_date)
-      .where(result_point: @dmer3_start_date..@dmer3_end_date)
-    )
-    @dmers_slmt_done = @dmers_slmt.where(settlement: @start_date..@end_date).where(status_settlement: "完了")
-    @dmers_slmt_def = @dmers_slmt.where(status_settlement: "決済不備")
-    @dmers_slmt_pic_def = @dmers_slmt.where(status_settlement: "写真不備")
-    @dmers_slmt2nd_done = @dmers_slmt.where(settlement_second: @start_date..@end_date).where(status_settlement: "完了")
     @aupays = Aupay.includes(:store_prop).where(date: @start_date..@end_date).where(user_id: @user.id)
     @aupays_inc = 
       Aupay.includes(:store_prop).where(result_point: @start_date..@end_date).where(user_id: @user.id)
@@ -350,33 +311,12 @@ class ResultsController < ApplicationController
       Aupay.includes(:store_prop).where.not(result_point: @start_date..@end_date).where(user_id: @user.id)
       .where(store_prop: {head_store: nil}).where(date: @start_date..@end_date).where(status: "審査通過")
       @aupays_db = Aupay.includes(:store_prop).where(date: @start_date..@end_date).where.not(store_prop: {head_store: nil}).where(user_id: @user.id)
-    @aupays_slmt = Aupay.where(settlementer_id: @user.id).where(status: "審査通過")
-    @aupays_slmt_done = @aupays_slmt.where(settlement: @start_date..@end_date).where(status_settlement: "完了")
-    @aupays_slmt_def = @aupays_slmt.where(status_settlement: "決済不備")
-    @aupays_slmt_pic_def = @aupays_slmt.where(status_settlement: "写真不備")
-
-    @aupay_slmt_done = 
-    @aupays_slmt.where(status_update_settlement: @aupay1_start_date..@aupay1_end_date).where(status_settlement: "完了")
+      @aupays_slmt_done = @aupays_slmt.where(settlement: @start_date..@end_date).where(status_settlement: "完了")
+      @aupays_slmt_def = @aupays_slmt.where(status_settlement: "決済不備")
+      @aupays_slmt_pic_def = @aupays_slmt.where(status_settlement: "写真不備")
 
     @paypays = Paypay.where(date: @start_date..@end_date).where(user_id: @user.id)
-    @paypay_done = 
-        Paypay.where(user_id: @user.id).where(result_point: @paypay1_start_date..@paypay1_end_date)
-        .where(status: "60審査可決")
-    if @month.year == 2023 && @month.month == 2
-      start_d = Date.new(2023,1,26)
-      end_d = Date.new(2023,2,28)
-      @rakuten_pays = RakutenPay.where(user_id: @user.id).where(date: start_d..end_d)
-    else
-      @rakuten_pays = RakutenPay.where(user_id: @user.id).where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
-    end
-    @rakuten_pay_val = 
-      @rakuten_pays.where.not(status: "自社NG").where.not(status: "自社不備")
-      .where(deficiency: nil)
-      .or(
-        RakutenPay.where(user_id: @user.id).where.not(status: "自社NG").where.not(status: "自社不備")
-        .where.not(deficiency: nil)
-        .where(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
-        )
+
     @rakuten_pay_uq = RakutenPay.includes(:store_prop).where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(user_id: @user.id)
     @rakuten_pays_inc = 
       RakutenPay.includes(:store_prop)
@@ -403,29 +343,6 @@ class ResultsController < ApplicationController
       )
 
     @airpay_val_len = @airpays.length - @airpay_def_ng.length
-    @airpay_user = Airpay.where(user_id: @user.id)
-    @airpay_done = 
-      @airpay_user.where(status: "審査完了")
-      .where(result_point: @airpay1_start_date..@airpay1_end_date)
-      @airpay_bonus =
-        if @airpay_done.length >= 20
-          @airpay_done.length * 3000
-        elsif @airpay_done.length >= 10
-          @airpay_done.length * 2000
-        else  
-          0
-        end 
-
-    @airpay_done_val = @airpay_done.sum(:valuation) + @airpay_bonus
-
-    # その他獲得商材
-    @demaekan = Demaekan.where(user_id: @user.id).where(first_cs_contract: @demaekan1_start_date..@demaekan1_end_date)
-    @other_products = OtherProduct.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
-    @aupay_pic = @other_products.where(product_name: "auPay写真")
-    @dmer_pic = @other_products.where(product_name: "dメルステッカー")
-    @airpay_pic = AirpaySticker.where(user_id: @user.id).where(form_send: @month.beginning_of_month..@month.end_of_month).where(sticker_ok: "〇").where(pop_ok: "〇")
-    # ITSS
-    @itss = Itss.includes(:user).where(user_id: @user.id).where(construction_schedule: @itss1_start_date..@itss1_end_date).where(status_ntt1: "工事完了")
     # 決済リスト
     @slmts = 
       StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})
@@ -580,18 +497,18 @@ class ResultsController < ApplicationController
       @time_get_ave = [@get10_ave,@get11_ave,@get12_ave,@get13_ave,@get14_ave,@get15_ave,@get16_ave,@get17_ave,@get18_ave,@get19_ave]
     # 拠点別基準値
       @result_base = Result.includes(:user, :result_cash).where(date: @start_date..@end_date)
-      @result_chubu = @result_base.where(user: {base: "中部SS"})
-      @result_kansai = @result_base.where(user: {base: "関西SS"})
-      @result_kanto = @result_base.where(user: {base: "関東SS"})
-      @result_kyushu = @result_base.where(user: {base: "九州SS"})
-      @result_partner = @result_base.where(user: {base: "2次店"})
+      @result_chubu = @result_base.where(user: {base: "中部SS"}).where(shift: "キャッシュレス新規")
+      @result_kansai = @result_base.where(user: {base: "関西SS"}).where(shift: "キャッシュレス新規")
+      @result_kanto = @result_base.where(user: {base: "関東SS"}).where(shift: "キャッシュレス新規")
+      @result_kyushu = @result_base.where(user: {base: "九州SS"}).where(shift: "キャッシュレス新規")
+      @result_partner = @result_base.where(user: {base: "2次店"}).where(shift: "キャッシュレス新規")
       # 拠点別切り返し
       @result_cash_base = ResultCash.includes(:result,result: :user).where(result: {date: @start_date..@end_date})
-      @result_cash_chubu = @result_cash_base.where(user: {base: "中部SS"})
-      @result_cash_kansai = @result_cash_base.where(user: {base: "関西SS"})
-      @result_cash_kanto = @result_cash_base.where(user: {base: "関東SS"})
-      @result_cash_kyushu = @result_cash_base.where(user: {base: "九州SS"})
-      @result_cash_partner = @result_cash_base.where(user: {base: "2次店"})
+      @result_cash_chubu = @result_cash_base.where(user: {base: "中部SS"}).where(result: {shift: "キャッシュレス新規"})
+      @result_cash_kansai = @result_cash_base.where(user: {base: "関西SS"}).where(result: {shift: "キャッシュレス新規"})
+      @result_cash_kanto = @result_cash_base.where(user: {base: "関東SS"}).where(result: {shift: "キャッシュレス新規"})
+      @result_cash_kyushu = @result_cash_base.where(user: {base: "九州SS"}).where(result: {shift: "キャッシュレス新規"})
+      @result_cash_partner = @result_cash_base.where(user: {base: "2次店"}).where(result: {shift: "キャッシュレス新規"})
       @hour_visit_chubu = []
       @hour_get_chubu = []
       @hour_visit_kansai = []
@@ -978,8 +895,6 @@ class ResultsController < ApplicationController
           @results_week4 = @results_week.where(date: (week1.since(21.days))..(week1.since(27.days)))
           @results_week5 = @results_week.where(date: (week1.since(28.days))..(week1.since(34.days)))
       end
-
-
     end 
 
 
@@ -1180,13 +1095,115 @@ class ResultsController < ApplicationController
     redirect_to request.referer
   end  
 
-
+  def out_come
+    @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "2次店","退職"]
+    @users = User.where.not(position: "退職")
+  end 
 
 
   private
     # 利益表を出力するための関数
     # @calc_periods, @month, @result_category
     # 上記3点をvaluation_packより上に配置して設定する必要があります。
+    def set_out_come
+      if params[:u_id].present?
+        @user = User.find(params[:u_id])
+      else  
+        @user = User.find(params[:id])
+      end
+      # dメル
+      @dmer_done = 
+        Dmer.where(user_id: @user.id).where(result_point: @dmer1_start_date..@dmer1_end_date)
+        .where.not(industry_status: "NG")
+        .where.not(industry_status: "×")
+        .where.not(industry_status: "要確認")
+        .where(status: "審査OK")
+      @dmers_slmt = 
+        Dmer.where(settlementer_id: @user.id).where(status: "審査OK")
+        .where.not(industry_status: "NG")
+        .where.not(industry_status: "×")
+        .where.not(industry_status: "要確認")
+      @dmer_slmt_done = 
+        @dmers_slmt.where(status_update_settlement: @dmer2_start_date..@dmer2_end_date)
+        .where(result_point: ..@dmer2_end_date)
+        .where(status_settlement: "完了").or(
+          @dmers_slmt.where(status_update_settlement: ..@dmer2_end_date)
+          .where(result_point: @dmer2_start_date..@dmer2_end_date)
+          .where(status_settlement: "完了")
+        )
+      @dmer_slmt2nd_done = 
+      @dmers_slmt.where(settlement_second: @dmer3_start_date..@dmer3_end_date)
+      .where(status_settlement: "完了")
+      .where(status_update_settlement: ..@dmer3_end_date)
+      .where(result_point: ..@dmer3_end_date)
+      .or(
+        @dmers_slmt.where(settlement_second: ..@dmer3_end_date)
+        .where(status_settlement: "完了")
+        .where(status_update_settlement: @dmer3_start_date..@dmer3_end_date)
+        .where(result_point: ..@dmer3_end_date)
+      )
+      .or(
+        @dmers_slmt.where(settlement_second: ..@dmer3_end_date)
+        .where(status_settlement: "完了")
+        .where(status_update_settlement: ..@dmer3_end_date)
+        .where(result_point: @dmer3_start_date..@dmer3_end_date)
+      )
+      @dmers_slmt_done = @dmers_slmt.where(settlement: @start_date..@end_date).where(status_settlement: "完了")
+      @dmers_slmt_def = @dmers_slmt.where(status_settlement: "決済不備")
+      @dmers_slmt_pic_def = @dmers_slmt.where(status_settlement: "写真不備")
+      @dmers_slmt2nd_done = @dmers_slmt.where(settlement_second: @start_date..@end_date).where(status_settlement: "完了")
+      # auPay
+      @aupays_slmt = 
+        Aupay.where(settlementer_id: @user.id).where(status: "審査通過")
+      @aupay_slmt_done = 
+        @aupays_slmt.where(status_update_settlement: @aupay1_start_date..@aupay1_end_date)
+        .where(status_settlement: "完了")
+      # PayPay
+      @paypay_done = 
+          Paypay.where(user_id: @user.id)
+          .where(result_point: @paypay1_start_date..@paypay1_end_date)
+          .where(status: "60審査可決")
+      # 楽天ペイ
+      if @month.year == 2023 && @month.month == 2
+        start_d = Date.new(2023,1,26)
+        end_d = Date.new(2023,2,28)
+        @rakuten_pays = RakutenPay.where(user_id: @user.id).where(date: start_d..end_d)
+      else
+        @rakuten_pays = RakutenPay.where(user_id: @user.id).where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
+      end
+      @rakuten_pay_val = 
+        @rakuten_pays.where.not(status: "自社NG").where.not(status: "自社不備")
+        .where(deficiency: nil)
+        .or(
+          RakutenPay.where(user_id: @user.id).where.not(status: "自社NG").where.not(status: "自社不備")
+          .where.not(deficiency: nil)
+          .where(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
+        )
+      # AirPay
+      @airpay_user = Airpay.where(user_id: @user.id)
+      @airpay_done = 
+        @airpay_user.where(status: "審査完了")
+        .where(result_point: @airpay1_start_date..@airpay1_end_date)
+        @airpay_bonus =
+          if @airpay_done.length >= 20
+            @airpay_done.length * 3000
+          elsif @airpay_done.length >= 10
+            @airpay_done.length * 2000
+          else  
+            0
+          end 
+      @airpay_done_val = @airpay_done.sum(:valuation) + @airpay_bonus
+      # その他獲得商材
+      @demaekan = Demaekan.where(user_id: @user.id).where(first_cs_contract: @demaekan1_start_date..@demaekan1_end_date)
+      @other_products = OtherProduct.where(user_id: @user.id).where(date: @month.beginning_of_month..@month.end_of_month)
+      @aupay_pic = @other_products.where(product_name: "auPay写真")
+      @dmer_pic = @other_products.where(product_name: "dメルステッカー")
+      @airpay_pic = AirpaySticker.where(user_id: @user.id).where(form_send: @month.beginning_of_month..@month.end_of_month).where(sticker_ok: "〇").where(pop_ok: "〇")
+      # ITSS
+      @itss = Itss.includes(:user).where(user_id: @user.id).where(construction_schedule: @itss1_start_date..@itss1_end_date).where(status_ntt1: "工事完了")
+      
+    end
+
     def valuation_pack 
       
       @results = Result.where(date: @month.prev_month.beginning_of_month.since(25.days)..@month.beginning_of_month.since(24.days))

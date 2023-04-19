@@ -1,0 +1,28 @@
+
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>成果一覧</h1>
+  <%= render "shared/header" %>
+</div>
+  <div class="main">
+    <div data-scope-path="results/index">
+        <h2>
+          <%= link_to "<<",out_come_results_path(month:@month.prev_month,u_id: @user.id), class:"link","data-turbolinks": false %>
+          <%= @month.month %>月（<%= @user.name %>）成果
+          <%= link_to ">>",out_come_results_path(month:@month.next_month,u_id: @user.id), class:"link","data-turbolinks": false %>
+        </h2>
+        <%= render "user_parts/outcome" %>
+    </div>
+  </div>
+  <div data-scope-path="shares/index">
+        <div style="display: flex;">
+        <% @bases.each do |base| %>
+          <div>
+            <h2><%= base %></h2>
+            <% @users.where(base: base).each do |user| %>
+              <p class="link-text"><%= link_to user.name, out_come_results_path(u_id: user.id),class: "reset-link" %></p>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+  </div>
