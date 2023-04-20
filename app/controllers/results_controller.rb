@@ -287,7 +287,6 @@ class ResultsController < ApplicationController
   end
 
   def show 
-    
     # 月間増減
     # dメル
     @dmers = Dmer.includes(:store_prop).where(date: @start_date..@end_date).where(user_id: @user.id)
@@ -495,20 +494,24 @@ class ResultsController < ApplicationController
       @time_visit_ave = [@visit10_ave,@visit11_ave,@visit12_ave,@visit13_ave,@visit14_ave,@visit15_ave,@visit16_ave,@visit17_ave,@visit18_ave,@visit19_ave]
       @time_get_sum = [@get10_sum,@get11_sum,@get12_sum,@get13_sum,@get14_sum,@get15_sum,@get16_sum,@get17_sum,@get18_sum,@get19_sum]
       @time_get_ave = [@get10_ave,@get11_ave,@get12_ave,@get13_ave,@get14_ave,@get15_ave,@get16_ave,@get17_ave,@get18_ave,@get19_ave]
+      
     # 拠点別基準値
-      @result_base = Result.includes(:user, :result_cash).where(date: @start_date..@end_date)
-      @result_chubu = @result_base.where(user: {base: "中部SS"}).where(shift: "キャッシュレス新規")
-      @result_kansai = @result_base.where(user: {base: "関西SS"}).where(shift: "キャッシュレス新規")
-      @result_kanto = @result_base.where(user: {base: "関東SS"}).where(shift: "キャッシュレス新規")
-      @result_kyushu = @result_base.where(user: {base: "九州SS"}).where(shift: "キャッシュレス新規")
-      @result_partner = @result_base.where(user: {base: "2次店"}).where(shift: "キャッシュレス新規")
+      @result_base = Result.includes(:user, :result_cash).where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
+      @result_chubu = @result_base.where(user: {base: "中部SS"})
+      @result_kansai = @result_base.where(user: {base: "関西SS"})
+      @result_kanto = @result_base.where(user: {base: "関東SS"})
+      @result_kyushu = @result_base.where(user: {base: "九州SS"})
+      @result_partner = @result_base.where(user: {base: "2次店"})
       # 拠点別切り返し
-      @result_cash_base = ResultCash.includes(:result,result: :user).where(result: {date: @start_date..@end_date})
-      @result_cash_chubu = @result_cash_base.where(user: {base: "中部SS"}).where(result: {shift: "キャッシュレス新規"})
-      @result_cash_kansai = @result_cash_base.where(user: {base: "関西SS"}).where(result: {shift: "キャッシュレス新規"})
-      @result_cash_kanto = @result_cash_base.where(user: {base: "関東SS"}).where(result: {shift: "キャッシュレス新規"})
-      @result_cash_kyushu = @result_cash_base.where(user: {base: "九州SS"}).where(result: {shift: "キャッシュレス新規"})
-      @result_cash_partner = @result_cash_base.where(user: {base: "2次店"}).where(result: {shift: "キャッシュレス新規"})
+      @result_cash_base = ResultCash.includes(:result,result: :user).where(result: {date: @start_date..@end_date}).where(result: {shift: "キャッシュレス新規"})
+      @result_cash_chubu = @result_cash_base.where(user: {base: "中部SS"})
+      @result_cash_kansai = @result_cash_base.where(user: {base: "関西SS"})
+      @result_cash_kanto = @result_cash_base.where(user: {base: "関東SS"})
+      @result_cash_kyushu = @result_cash_base.where(user: {base: "九州SS"})
+      @result_cash_partner = @result_cash_base.where(user: {base: "2次店"})
+
+      @hour_visit_base = []
+      @hour_get_base = []
       @hour_visit_chubu = []
       @hour_get_chubu = []
       @hour_visit_kansai = []
@@ -520,6 +523,8 @@ class ResultsController < ApplicationController
       @hour_visit_partner = []
       @hour_get_partner = []
       10.times do |i|
+        @hour_visit_base << @result_base.sum("visit#{i + 10}") rescue 0
+        @hour_get_base << @result_base.sum("get#{i + 10}") rescue 0
         @hour_visit_chubu << @result_chubu.sum("visit#{i + 10}") rescue 0
         @hour_get_chubu << @result_chubu.sum("get#{i + 10}") rescue 0
         @hour_visit_kansai << @result_kansai.sum("visit#{i + 10}") rescue 0
@@ -531,7 +536,12 @@ class ResultsController < ApplicationController
         @hour_visit_partner << @result_partner.sum("visit#{i + 10}") rescue 0
         @hour_get_partner << @result_partner.sum("get#{i + 10}") rescue 0
       end 
-
+      # @result_base 全体基準値
+        @result_base_sum_total_visit = @result_base.sum(:first_total_visit) + @result_base.sum(:latter_total_visit)
+        @result_base_sum_visit = @result_base.sum(:first_visit) + @result_base.sum(:latter_visit)
+        @result_base_sum_interview = @result_base.sum(:first_interview) + @result_base.sum(:latter_interview)
+        @result_base_sum_full_talk = @result_base.sum(:first_full_talk) + @result_base.sum(:latter_full_talk)
+        @result_base_sum_get = @result_base.sum(:first_get) + @result_base.sum(:latter_get)
       if @results.where(shift: "キャッシュレス新規").present?
         # 週毎の期間
         days = ["日", "月", "火", "水", "木", "金", "土"]
@@ -628,7 +638,7 @@ class ResultsController < ApplicationController
 
   end
 
-  def profit_only 
+  def profit_only
     @users = User.where.not(position: "退職").or(User.where(position: nil))
     @users_cash = @users.where(base_sub: "キャッシュレス").order(base: "DESC")
     @user = User.find(params[:u_id])
@@ -1204,40 +1214,7 @@ class ResultsController < ApplicationController
       
     end
 
-    def valuation_pack 
-      
-      @results = Result.where(date: @month.prev_month.beginning_of_month.since(25.days)..@month.beginning_of_month.since(24.days))
-      @month_result = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
-      @minimum_result_cash = @results.minimum(:date)
-      @maximum_result_cash = @results.maximum(:date)
-      @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
-      @minimum_date_cash = @month.prev_month.beginning_of_month.since(25.days)
-      @maximum_date_cash = @month.beginning_of_month.since(24.days)
-      @dmers = Dmer.includes(:user).where.not(user: {base: "2次店"}).where(date: @minimum_date_cash..@maximum_date_cash)
-      @aupays = Aupay.includes(:user).where.not(user: {base: "2次店"}).where(date: @minimum_date_cash..@maximum_date_cash)
-      @rakuten_pays = RakutenPay.includes(:user).where.not(user: {base: "2次店"}).where(date: @minimum_date_cash..@maximum_date_cash)
-      @airpays = Airpay.includes(:user).where.not(user: {base: "2次店"}).where(date: @minimum_date_cash..@maximum_date_cash)
-      @dmers_rank = {}
-      @dmers.group(:user_id).each do |dmer| 
-        @dmers_rank.store(dmer.user.name,@dmers.where(user_id: dmer.user_id).length)
-      end 
-      @dmers_rank = @dmers_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
-      @aupays_rank = {}
-      @aupays.group(:user_id).each do |aupay| 
-        @aupays_rank.store(aupay.user.name,@aupays.where(user_id: aupay.user_id).length)
-      end 
-      @aupays_rank = @aupays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
-      @rakuten_pays_rank = {}
-      @rakuten_pays.group(:user_id).each do |rakuten_pay| 
-        @rakuten_pays_rank.store(rakuten_pay.user.name,@rakuten_pays.where(user_id: rakuten_pay.user_id).length)
-      end 
-      @rakuten_pays_rank = @rakuten_pays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
-      @airpays_rank = {}
-      @airpays.group(:user_id).each do |airpay| 
-        @airpays_rank.store(airpay.user.name,@airpays.where(user_id: airpay.user_id).length)
-      end 
-      @airpays_rank = @airpays_rank.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
-    end 
+
   # dメル,aupayメソッド
     # 新規
       # 絞り込んだ期間のもの

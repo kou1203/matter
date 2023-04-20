@@ -4,7 +4,11 @@
   <h1>成果一覧</h1>
   <%= render "shared/header" %>
 </div>
-  <div class="main">
+  <div style="display: flex;">
+    <div data-scope-path="shared/side_bar">
+      <%= render "shared/sidebar" %>
+    </div>
+    <div>
     <div data-scope-path="results/index">
         <h2>
           <%= link_to "<<",out_come_results_path(month:@month.prev_month,u_id: @user.id), class:"link","data-turbolinks": false %>
@@ -13,8 +17,7 @@
         </h2>
         <%= render "user_parts/outcome" %>
     </div>
-  </div>
-  <div data-scope-path="shares/index">
+    <div data-scope-path="shares/index">
         <div style="display: flex;">
         <% @bases.each do |base| %>
           <div>
@@ -25,4 +28,6 @@
           </div>
         <% end %>
       </div>
+    </div>
+    </div>
   </div>

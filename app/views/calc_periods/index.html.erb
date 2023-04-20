@@ -179,7 +179,7 @@
           <div>
             <h2><%= base %></h2>
             <% @users.where(base: base).each do |user| %>
-              <p class="link-text"><%= link_to user.name, out_come_results_path(u_id: user.id) %></p>
+              <p class="link-text"><%= link_to user.name, out_come_results_path(u_id: user.id),class: "reset-link" %></p>
             <% end %>
           </div>
         <% end %>

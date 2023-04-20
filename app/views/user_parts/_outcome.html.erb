@@ -487,6 +487,7 @@
   <table>
     <thead>
       <th class="valuation-th">No</th>
+      <th class="valuation-th">管理番号</th>
       <th class="valuation-th">契約者名</th>
       <th class="valuation-th">申込日</th>
       <th class="valuation-th">ステータス</th>
@@ -497,6 +498,7 @@
       <% @itss.each_with_index do |itss,i| %>
       <tr>
       <td class="valuation-td "><%= i + 1 %></td>
+      <td class="valuation-td "><%= itss.customer_num %></td>
       <td class="valuation-td "><%= itss.contract_name %></td>
       <td class="valuation-td "><%= itss.date %></td>
       <td class="valuation-td "><%= itss.status_ntt1 %></td>
