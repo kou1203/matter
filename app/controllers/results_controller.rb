@@ -4,6 +4,12 @@ class ResultsController < ApplicationController
   before_action :set_data
   before_action :set_out_come ,only: [:show,:out_come]
   def index
+    # ユーザー情報
+    @users = 
+      User.where.not(position: "退職").or(User.where(position: nil))
+    @users_cash = @users.where(base_sub: "キャッシュレス").order(base: "DESC")
+  end 
+  def monthly_progress
     # 商材情報
     @dmers = 
       Dmer.eager_load(:store_prop).select("dmers.id,dmers.user_id,dmers.store_prop_id")

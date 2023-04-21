@@ -123,6 +123,7 @@ Rails.application.routes.draw do
       post :import 
       get :export
       get :date_progress
+      get :monthly_progress
       get :ranking
       get :gross_profit
       get :profit
