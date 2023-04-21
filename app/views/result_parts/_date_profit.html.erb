@@ -472,6 +472,11 @@
       window.hour_get_kyushu=<%= @hour_get_kyushu.to_json.html_safe %>;
       window.hour_visit_partner=<%= @hour_visit_partner.to_json.html_safe %>;
       window.hour_get_partner=<%= @hour_get_partner.to_json.html_safe %>;
+      window.chubu_len=<%= @chubu_len.to_json.html_safe %>;
+      window.kansai_len=<%= @kansai_len.to_json.html_safe %>;
+      window.kanto_len=<%= @kanto_len.to_json.html_safe %>;
+      window.kyushu_len=<%= @kyushu_len.to_json.html_safe %>;
+      window.partner_len=<%= @partner_len.to_json.html_safe %>;
     </script>
     <%# /Vueの変数 %>
     <%= javascript_pack_tag 'result_cash' %>
@@ -1055,6 +1060,7 @@
           <tr>
             <th class="total-th">項目</th>
             <th class="total-th">内訳</th>
+            <th class="total-th">合計</th>
             <th class="total-th">平均</th>
             <th class="total-th">成約率</th>
           </tr>
@@ -1064,224 +1070,266 @@
           <tr>
             <th rowspan="3" class="total-th">どういうこと？</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_01) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_01).to_f / @shift_digestion_new).round(2) rescue 0 %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_01) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_01).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_01).to_f / @results.sum(:out_interview_01).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_01) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_01).to_f/ @shift_digestion_new).round(2)%></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_01).to_f / @results.sum(:out_full_talk_01).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">君は誰？協会？</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_02) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_02).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_02) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_02).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_02).to_f / @results.sum(:out_interview_02).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_02) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_02).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_02).to_f / @results.sum(:out_full_talk_02).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">もらうだけでいいの？</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_03) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_03).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_03) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_03).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_03).to_f / @results.sum(:out_interview_03).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_03) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_03).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_03).to_f / @results.sum(:out_full_talk_03).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">PayPayのみ</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_04) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_04).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_04) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_04).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_04).to_f / @results.sum(:out_interview_04).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_04) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_04).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_04).to_f / @results.sum(:out_full_talk_04).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">AirPayのみ</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_05) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_05).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_05) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_05).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_05).to_f / @results.sum(:out_interview_05).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_05) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_05).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_05).to_f / @results.sum(:out_full_talk_05).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">カードのみ</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_06) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_06) / @shift_digestion_new).to_f.round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_06) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_06).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_06).to_f / @results.sum(:out_interview_06).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_06) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_06).to_f / @shift_digestion_new).round(2) rescue 0 %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_06).to_f / @results.sum(:out_full_talk_06).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">先延ばし</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_07) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_07).to_f / @shift_digestion_new).round(2) rescue 0 %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_07) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_07).to_f / @shift_digestion_new).to_f.round(2) rescue 0 %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_07).to_f / @results.sum(:out_interview_07).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_07) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_07).to_f / @shift_digestion_new).round(2) rescue 0 %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_07).to_f / @results.sum(:out_full_talk_07).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">現金のみ</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_08) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_08).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_08) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_08).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_08).to_f / @results.sum(:out_interview_08).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_08) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_08).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_08).to_f / @results.sum(:out_full_talk_08).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">忙しい</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_09) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_09).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_09) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_09).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_09).to_f / @results.sum(:out_interview_09).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_09) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_09).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_09).to_f / @results.sum(:out_full_talk_09).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">面倒くさい</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_10) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_10).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_10) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_10).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_10).to_f / @results.sum(:out_interview_10).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_10) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_10).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_10).to_f / @results.sum(:out_full_talk_10).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">情報不足</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_11) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_11).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_11) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_11).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_11).to_f / @results.sum(:out_interview_11).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_11) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_11).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_11).to_f / @results.sum(:out_full_talk_11).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">ペロ</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_12) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_12).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_12) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_12).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_12).to_f / @results.sum(:out_interview_12).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_12) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_12).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_12).to_f / @results.sum(:out_full_talk_12).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">その他</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_interview_13) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_13).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_13) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_13).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_13).to_f / @results.sum(:out_interview_13).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_13) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_13).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_13).to_f / @results.sum(:out_full_talk_13).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">AirPay<br>導入</th>
             <th class="total-th">訪問数</th>
+            <td class="total-td"><%= @results.sum(:out_interview_19) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_interview_19).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @results.sum(:out_full_talk_19) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_full_talk_19).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_full_talk_19).to_f / @results.sum(:out_interview_19).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @results.sum(:out_get_19) rescue 0 %></td>
             <td class="total-td"><%= (@results.sum(:out_get_19).to_f / @shift_digestion_new).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@results.sum(:out_get_19).to_f / @results.sum(:out_full_talk_19).to_f * 100,precision: 1)  %></td>
           </tr>
@@ -1296,230 +1344,316 @@
               <tr>
                 <th class="total-th">項目</th>
                 <th class="total-th">内訳</th>
+                <th class="total-th">合計</th>
+                <th class="total-th">一人当</th>
                 <th class="total-th">平均</th>
                 <th class="total-th">成約率</th>
               </tr>
                 <tr>
                   <th class="total-th" rowspan="3">どういうこと？</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_01, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_01, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_01, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_01, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_01, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_01, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_01, 0) / out.reduce((sum, element) => sum + element.out_interview_01, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_01, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_01, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_01, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_01, 0) / out.reduce((sum, element) => sum + element.out_interview_01, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">君は誰？協会？</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_02, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_02, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_02, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_02, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_02, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_02, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_02, 0) / out.reduce((sum, element) => sum + element.out_interview_02, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_02, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_02, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_02, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_02, 0) / out.reduce((sum, element) => sum + element.out_full_talk_02, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">もらうだけでいいの？</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_03, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_03, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_03, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_03, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_03, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_03, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_03, 0) / out.reduce((sum, element) => sum + element.out_interview_03, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_03, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_03, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_03, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_03, 0) / out.reduce((sum, element) => sum + element.out_full_talk_03, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">PayPayのみ</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_04, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_04, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_04, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_04, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_04, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_04, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_04, 0) / out.reduce((sum, element) => sum + element.out_interview_04, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_04, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_04, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_04, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_04, 0) / out.reduce((sum, element) => sum + element.out_full_talk_04, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">AirPayのみ</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_05, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_05, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_05, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_05, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_05, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_05, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_05, 0) / out.reduce((sum, element) => sum + element.out_interview_05, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_05, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_05, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_05, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_05, 0) / out.reduce((sum, element) => sum + element.out_full_talk_05, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">カードのみ</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_06, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_06, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_06, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_06, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_06, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_06, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_06, 0) / out.reduce((sum, element) => sum + element.out_interview_06, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_06, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_06, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_06, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_06, 0) / out.reduce((sum, element) => sum + element.out_full_talk_06, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">先延ばし</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_07, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_07, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_07, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_07, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_07, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_07, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_07, 0) / out.reduce((sum, element) => sum + element.out_interview_07, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_07, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_07, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_07, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_07, 0) / out.reduce((sum, element) => sum + element.out_full_talk_07, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">現金のみ</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_08, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_08, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_08, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_08, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_08, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_08, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_08, 0) / out.reduce((sum, element) => sum + element.out_interview_08, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_08, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_08, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_08, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_08, 0) / out.reduce((sum, element) => sum + element.out_full_talk_08, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">忙しい</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_09, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_09, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_09, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_09, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_09, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_09, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_09, 0) / out.reduce((sum, element) => sum + element.out_interview_09, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_09, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_09, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_09, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_09, 0) / out.reduce((sum, element) => sum + element.out_full_talk_09, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">面倒くさい</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_10, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_10, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_10, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_10, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_10, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_10, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_10, 0) / out.reduce((sum, element) => sum + element.out_interview_10, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_10, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_10, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_10, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_10, 0) / out.reduce((sum, element) => sum + element.out_full_talk_10, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">情報不足</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_11, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_11, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_11, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_11, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_11, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_11, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_11, 0) / out.reduce((sum, element) => sum + element.out_interview_11, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_11, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_11, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_11, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_11, 0) / out.reduce((sum, element) => sum + element.out_full_talk_11, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">ペロ</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_12, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_12, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_12, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_12, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_12, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_12, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_12, 0) / out.reduce((sum, element) => sum + element.out_interview_12, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_12, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_12, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_12, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_12, 0) / out.reduce((sum, element) => sum + element.out_full_talk_12, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">その他</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_13, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_13, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_13, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_13, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_13, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_13, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_13, 0) / out.reduce((sum, element) => sum + element.out_interview_13, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_13, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_13, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_13, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_13, 0) / out.reduce((sum, element) => sum + element.out_full_talk_13, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">AirPay<br>導入</th>
                   <th class="total-th">対面</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_19, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_19, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_19, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_19, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_19, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_19, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_19, 0) / out.reduce((sum, element) => sum + element.out_interview_19, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_19, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_19, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_19, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_19, 0) / out.reduce((sum, element) => sum + element.out_full_talk_19, 0) * 100)}} %</td>
                 </tr>
@@ -1532,6 +1666,8 @@
           <tr>
             <th class="total-th">項目</th>
             <th class="total-th">内訳</th>
+            <th class="total-th">合計</th>
+            <th class="total-th">一人当</th>
             <th class="total-th">平均</th>
             <th class="total-th">成約率</th>
           </tr>
@@ -1541,224 +1677,308 @@
           <tr>
             <th rowspan="3" class="total-th">どういうこと？</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_01) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_01).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_01).to_f / @result_cash_base.length).round(2) rescue 0 %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_01) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_01).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_01).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_01).to_f / @result_cash_base.sum(:out_interview_01).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_01) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_01).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_01).to_f/ @result_cash_base.length).round(2)%></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_01).to_f / @result_cash_base.sum(:out_full_talk_01).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">君は誰？協会？</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_02) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_02).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_02).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_02) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_02).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_02).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_02).to_f / @result_cash_base.sum(:out_interview_02).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_02) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_02).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_02).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_02).to_f / @result_cash_base.sum(:out_full_talk_02).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">もらうだけでいいの？</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_03) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_03).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_03).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_03) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_03).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_03).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_03).to_f / @result_cash_base.sum(:out_interview_03).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_03) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_03).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_03).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_03).to_f / @result_cash_base.sum(:out_full_talk_03).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">PayPayのみ</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_04) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_04).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_04).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_04) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_04).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_04).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_04).to_f / @result_cash_base.sum(:out_interview_04).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_04) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_04).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_04).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_04).to_f / @result_cash_base.sum(:out_full_talk_04).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">AirPayのみ</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_05) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_05).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_05).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_05) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_05).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_05).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_05).to_f / @result_cash_base.sum(:out_interview_05).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_05) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_05).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_05).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_05).to_f / @result_cash_base.sum(:out_full_talk_05).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">カードのみ</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_06) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_06).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_06).to_f / @result_cash_base.length).to_f.round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_06) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_06).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_06).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_06).to_f / @result_cash_base.sum(:out_interview_06).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_06) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_06).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_06).to_f / @result_cash_base.length).round(2) rescue 0 %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_06).to_f / @result_cash_base.sum(:out_full_talk_06).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">先延ばし</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_07) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_07).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_07).to_f / @result_cash_base.length).round(2) rescue 0 %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_07) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_07).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_07).to_f / @result_cash_base.length).to_f.round(2) rescue 0 %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_07).to_f / @result_cash_base.sum(:out_interview_07).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_07) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_07).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_07).to_f / @result_cash_base.length).round(2) rescue 0 %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_07).to_f / @result_cash_base.sum(:out_full_talk_07).to_f * 100,precision: 1) rescue 0 %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">現金のみ</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_08) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_08).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_08).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_08) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_08).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_08).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_08).to_f / @result_cash_base.sum(:out_interview_08).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_08) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_08).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_08).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_08).to_f / @result_cash_base.sum(:out_full_talk_08).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">忙しい</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_09) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_09).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_09).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_09) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_09).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_09).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_09).to_f / @result_cash_base.sum(:out_interview_09).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_09) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_09).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_09).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_09).to_f / @result_cash_base.sum(:out_full_talk_09).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">面倒くさい</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_10) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_10).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_10).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_10) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_10).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_10).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_10).to_f / @result_cash_base.sum(:out_interview_10).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_10) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_10).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_10).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_10).to_f / @result_cash_base.sum(:out_full_talk_10).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">情報不足</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_11) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_11).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_11).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_11) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_11).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_11).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_11).to_f / @result_cash_base.sum(:out_interview_11).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_11) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_11).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_11).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_11).to_f / @result_cash_base.sum(:out_full_talk_11).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">ペロ</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_12) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_12).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_12).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_12) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_12).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_12).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_12).to_f / @result_cash_base.sum(:out_interview_12).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_12) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_12).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_12).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_12).to_f / @result_cash_base.sum(:out_full_talk_12).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">その他</th>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_13) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_13).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_13).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">フル</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_13) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_13).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_13).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_13).to_f / @result_cash_base.sum(:out_interview_13).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_13) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_13).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_13).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_13).to_f / @result_cash_base.sum(:out_full_talk_13).to_f * 100,precision: 1)  %></td>
           </tr>
           <tr>
           <th rowspan="3" class="total-th">AirPay<br>導入</th>
             <th class="total-th">訪問数</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_interview_19) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_interview_19).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_interview_19).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"></td>
           </tr>
           <tr>
             <th class="total-th">対面</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_full_talk_19) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_19).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_full_talk_19).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_full_talk_19).to_f / @result_cash_base.sum(:out_interview_19).to_f * 100,precision: 1) %></td>
           </tr>
           <tr>
             <th class="total-th">成約</th>
+            <td class="total-td"><%= @result_cash_base.sum(:out_get_19) rescue 0 %></td>
+            <td class="total-td"><%= (@result_cash_base.sum(:out_get_19).to_f / @all_len).round(1) rescue 0 %></td>
             <td class="total-td"><%= (@result_cash_base.sum(:out_get_19).to_f / @result_cash_base.length).round(2) %></td>
             <td class="total-td"><%= number_to_percentage(@result_cash_base.sum(:out_get_19).to_f / @result_cash_base.sum(:out_full_talk_19).to_f * 100,precision: 1)  %></td>
           </tr>

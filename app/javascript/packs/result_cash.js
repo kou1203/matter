@@ -26,6 +26,11 @@ document.addEventListener('turbolinks:load', () => {
   const hour_get_kyushu = window.hour_get_kyushu
   const hour_visit_partner = window.hour_visit_partner
   const hour_get_partner = window.hour_get_partner
+  const chubu_len = window.chubu_len
+  const kansai_len = window.kansai_len
+  const kanto_len = window.kanto_len
+  const kyushu_len = window.kyushu_len
+  const partner_len = window.partner_len
 
   if (element != null) {
     const vueapp = new Vue({
@@ -34,6 +39,7 @@ document.addEventListener('turbolinks:load', () => {
         shiftItem: result_chubu,
         out: result_cash_chubu,
         hourVisit: hour_visit_chubu,
+        user_len: chubu_len,
         hourGet: hour_get_chubu,
         val: "中部SS"
       },
@@ -41,15 +47,15 @@ document.addEventListener('turbolinks:load', () => {
         shiftSlct: function(e) {
           this.val = e.target.value
           if (this.val == "中部SS") {
-            return this.shiftItem = result_chubu, this.out = result_cash_chubu, this.hourVisit = hour_visit_chubu, this.hourGet = hour_get_chubu;
+            return this.shiftItem = result_chubu, this.out = result_cash_chubu, this.hourVisit = hour_visit_chubu, this.hourGet = hour_get_chubu, this.user_len = chubu_len;
           } else if (this.val == "関西SS") {
-            return this.shiftItem = result_kansai, this.out = result_cash_kansai, this.hourVisit = hour_visit_kansai, this.hourGet = hour_get_kansai;
+            return this.shiftItem = result_kansai, this.out = result_cash_kansai, this.hourVisit = hour_visit_kansai, this.hourGet = hour_get_kansai, this.user_len = kansai_len;
           } else if (this.val == "関東SS") {
-            return this.shiftItem = result_kanto, this.out = result_cash_kanto, this.hourVisit = hour_visit_kanto, this.hourGet = hour_get_kanto;
+            return this.shiftItem = result_kanto, this.out = result_cash_kanto, this.hourVisit = hour_visit_kanto, this.hourGet = hour_get_kanto, this.user_len = kanto_len;
           } else if (this.val == "九州SS") {
-            return this.shiftItem = result_kyushu , this.out = result_cash_kyushu, this.hourVisit = hour_visit_kyushu, this.hourGet = hour_get_kyushu;
+            return this.shiftItem = result_kyushu , this.out = result_cash_kyushu, this.hourVisit = hour_visit_kyushu, this.hourGet = hour_get_kyushu, this.user_len = kyushu_len;
           } else if (this.val == "2次店") {
-            return this.shiftItem = result_partner, this.out = result_cash_partner, this.hourVisit = hour_visit_partner, this.hourGet = hour_get_partner;
+            return this.shiftItem = result_partner, this.out = result_cash_partner, this.hourVisit = hour_visit_partner, this.hourGet = hour_get_partner, this.user_len = partner_len;
           } else {}
         }
       }

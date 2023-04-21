@@ -509,6 +509,13 @@ class ResultsController < ApplicationController
       @result_cash_kanto = @result_cash_base.where(user: {base: "関東SS"})
       @result_cash_kyushu = @result_cash_base.where(user: {base: "九州SS"})
       @result_cash_partner = @result_cash_base.where(user: {base: "2次店"})
+      # 人員の数
+      @all_len = @result_cash_base.group(:user_id).length
+      @chubu_len = @result_cash_chubu.group(:user_id).length
+      @kansai_len = @result_cash_kansai.group(:user_id).length
+      @kanto_len = @result_cash_kanto.group(:user_id).length
+      @kyushu_len = @result_cash_kyushu.group(:user_id).length
+      @partner_len = @result_cash_partner.group(:user_id).length
 
       @hour_visit_base = []
       @hour_get_base = []
@@ -632,9 +639,6 @@ class ResultsController < ApplicationController
           .where.not(deficiency: @start_date..@end_date)
           .where(deficiency_solution: @start_date..@end_date)
     end 
-
-
-
 
   end
 
@@ -918,7 +922,7 @@ class ResultsController < ApplicationController
         flash[:notice] = "対応結果を登録しました。"
         redirect_to request.referer
       else  
-        flash[:notice] = "登録できませんでした。"
+        flash[:notice] = "登録できませんでした。,対応状況と対応者を埋めてください。"
         redirect_to session[:previous_url]
       end 
   end 

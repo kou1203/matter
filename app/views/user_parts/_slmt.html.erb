@@ -27,10 +27,9 @@
 <table class="out-tb">
   <thead>
     <tr>
-      <th class="valuation-th">店舗名</th>
       <th class="valuation-th">商材</th>
+      <th class="valuation-th">店舗名</th>
       <th class="valuation-th">商流</th>
-      <th class="valuation-th">拠点</th>
       <th class="valuation-th">獲得者</th>
       <th class="valuation-th">獲得日</th>
       <th class="valuation-th">決済ステータス</th>
@@ -59,10 +58,9 @@
         store.dmer.industry_status != "要確認" &&
         store.dmer.industry_status != "NG"
       %>
-      <td class="valuation-td"><%= store.name %></td>
       <td class="valuation-td">dメル</td>
+      <td class="valuation-td"><%= store.name %></td>
       <td class="valuation-td"><%= store.dmer.client %></td>
-      <td class="valuation-td"><%= store.dmer.user.base %></td>
       <td class="valuation-td"><%= store.dmer.user.name %></td>
       <td class="valuation-td"><%= store.dmer.date %></td>
       <td class="valuation-td"><%= store.dmer.status_settlement %></td>
@@ -110,10 +108,9 @@
         store.aupay.status == "審査通過" &&
       %>
       <tr>
-      <td class="valuation-td"><%= store.name %></td>
       <td class="valuation-td">auPay</td>
+      <td class="valuation-td"><%= store.name %></td>
       <td class="valuation-td"><%= store.aupay.client %></td>
-      <td class="valuation-td"><%= store.aupay.user.base %></td>
       <td class="valuation-td"><%= store.aupay.user.name %></td>
       <td class="valuation-td"><%= store.aupay.date %></td>
       <td class="valuation-td"><%= store.aupay.status_settlement %></td>
