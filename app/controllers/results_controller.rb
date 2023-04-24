@@ -4,69 +4,15 @@ class ResultsController < ApplicationController
   before_action :set_data
   before_action :set_out_come ,only: [:show,:out_come]
   def index
-    # ユーザー情報
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
     @users_cash = @users.where(base_sub: "キャッシュレス").order(base: "DESC")
   end 
   def monthly_progress
-    # 商材情報
-    @dmers = 
-      Dmer.eager_load(:store_prop).select("dmers.id,dmers.user_id,dmers.store_prop_id")
-      .where(store_prop: {head_store: nil})
-      .where.not(status: "自社不備")
-      .where.not(status: "自社NG")
-    @aupays = 
-      Aupay.eager_load(:store_prop).select("aupays.id,aupays.user_id,aupays.store_prop_id")
-      .where(store_prop: {head_store: nil})
-      .where.not(status: "自社不備")
-      .where.not(status: "自社NG")
-    @paypays = Paypay.select("paypays.id,paypays.user_id")
-    @rakuten_pays = RakutenPay.select("rakuten_pays.id,rakuten_pays.user_id")
     # ユーザー情報
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
     @users_cash = @users.where(base_sub: "キャッシュレス").order(base: "DESC")
-    # キャッシュレス
-    @users_chubu = @users.where(base: "中部SS")
-    @users_chubu_cash = @users_chubu.where(base_sub: "キャッシュレス")
-    @users_chubu_summit = @users_chubu.where(base_sub: "サミット")
-    @users_kansai = @users.where(base: "関西SS")
-    @users_kansai_cash = @users_kansai.where(base_sub: "キャッシュレス")
-    @users_kansai_summit = @users_kansai.where(base_sub: "サミット")
-    @users_kanto = @users.where(base: "関東SS")
-    @users_kanto_cash = @users_kanto.where(base_sub: "キャッシュレス")
-    @users_kanto_summit = @users_kanto.where(base_sub: "サミット")
-    @users_kyushu = @users.where(base: "九州SS")
-    @users_kyushu_cash = @users_kyushu.where(base_sub: "キャッシュレス")
-    @users_partner = @users.where(base: "2次店")
-    @user_partner_cash = @users_partner.where(base_sub: "キャッシュレス")
-    # 終着データ
-    @result_category = "拠点別終着"
-    @q = Result.ransack(params[:q])
-    @results = 
-    if params[:q].nil?
-      Result.none 
-    else    
-      @q.result(distinct: false).includes(:user).joins(:user).order(date: :asc)
-    end
-    if @results.present?
-      @month_result = params[:month] ? Time.parse(params[:month]) : @results.minimum(:date)
-      @minimum_result_cash = @results.minimum(:date) #26日
-      @maximum_result_cash = @results.minimum(:date).beginning_of_month.since(1.month).since(24.days) #25日
-      if @results.first.user.base == "中部SS"
-        @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash).where(user: {base: "中部SS"})
-      elsif @results.first.user.base == "関西SS"
-        @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash).where(user: {base: "関西SS"})
-      elsif @results.first.user.base == "関東SS"
-      @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash).where(user: {base: "関東SS"})
-      elsif @results.first.user.base == "九州SS"
-      @cash_result = Result.includes(:user).joins(:user).where(date: @minimum_result_cash..@maximum_result_cash).where(user: {base: "九州SS"})
-      else
-      @cash_result = @results.joins(:user).where(date: @minimum_result_cash..@maximum_result_cash)
-      end
-      @cash_result_out = @cash_result.includes(:result_cash).select(:result_cash_id, :user_id)
-    end
     # 日々獲得進捗
     # 検索（現状）
     if params[:date].present?
@@ -92,7 +38,6 @@ class ResultsController < ApplicationController
         RakutenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
     @airpay_monthly = 
         Airpay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @result_demaekan = Result.includes(:result_cash,:user).select(:user_id,:result_id,:date)
     @shift_monthly_plan = 
       Shift.includes(:user)
       .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
@@ -153,20 +98,20 @@ class ResultsController < ApplicationController
       @aupay_slmt_this_month_kanto = @aupay_slmt_this_month.where(user: {base: "関東SS"})
     # 過去月
     @dmer_slmt_prev_month = 
-      Dmer.includes(:user).where("? > date",@month_daily.beginning_of_month)
-      .where("settlement_deadline > ?",@month_daily.beginning_of_month)
+      Dmer.includes(:user).where(date: ...@month_daily.beginning_of_month)
+      .where(settlement_deadline: @month_daily.beginning_of_month..)
       .where(status: "審査OK")
       .where.not(industry_status: "NG")
       .where.not(industry_status: "×")
       .where.not(industry_status: "要確認")
     @aupay_slmt_prev_month = 
-      Aupay.includes(:user).where("? > date",@month_daily.beginning_of_month)
-      .where("settlement_deadline > ?",@month_daily.beginning_of_month)
+      Aupay.includes(:user).where(date: ...@month_daily.beginning_of_month)
+      .where(settlement_deadline: @month_daily.beginning_of_month..)
       .where(status_update_settlement: nil)
       .where(status: "審査通過")
       .or(
-        Aupay.where("? > date",@month_daily.beginning_of_month)
-        .where("settlement_deadline > ?",@month_daily.beginning_of_month)
+        Aupay.includes(:user).where(date: ...@month_daily.beginning_of_month)
+        .where(settlement_deadline: @month_daily.beginning_of_month..)
         .where(status_update_settlement: @month_daily.beginning_of_month..@month_daily.end_of_month)
         .where(status: "審査通過")
       )
@@ -237,35 +182,6 @@ class ResultsController < ApplicationController
         @rakuten_pay_def.where(date: @month_daily.beginning_of_month..@month_daily.end_of_month)
       @rakuten_pay_def_prev_month = 
         @rakuten_pay_def.where(date: @month_daily.prev_month.beginning_of_month..@month_daily.prev_month.end_of_month)
-    # 日付が~25までは前月の26日が初日と計算するようにする
-    if 26 > @month_daily.day
-      @shift_month = 
-        Shift.includes(:user)
-        .where(start_time: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.beginning_of_month.since(24.days))
-      @result_month = Result.includes(:user).where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily)
-      @result_yesterday = Result.includes(:user).where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily.yesterday)
-      @result_last_month = Result.includes(:user).where(date: @month_daily.ago(2.month).beginning_of_month.since(25.days)..@month_daily.prev_month.beginning_of_month.since(24.days))
-      @dmer_month = Dmer.includes(:user).all
-      @dmer_slmt_month = Dmer.includes(:user).all
-      @dmer_2ndslmt_month = Dmer.includes(:user).all
-      @aupay_month = Aupay.includes(:user).all
-      @aupay_slmt_month = Aupay.includes(:user).all
-      @rakuten_pay_month = RakutenPay.includes(:user).all
-      @paypay_month = Paypay.includes(:user).all
-    else
-      @shift_month = Shift.includes(:user).where(start_time: @month_daily.beginning_of_month.since(25.days)..@month_daily.next_month.beginning_of_month.since(24.days))
-      @result_month = Result.includes(:user).where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily)
-      @result_yesterday = Result.includes(:user).where(date: @month_daily.beginning_of_month.since(25.days)..@month_daily.yesterday)
-      @result_last_month = Result.includes(:user).where(date: @month_daily.prev_month.beginning_of_month.since(25.days)..@month_daily
-      .beginning_of_month.since(24.days))
-      @dmer_month = Dmer.includes(:user).all
-      @dmer_slmt_month = Dmer.includes(:user).all
-      @dmer_2ndslmt_month = Dmer.includes(:user).all
-      @aupay_month = Aupay.includes(:user).all
-      @aupay_slmt_month = Aupay.includes(:user).all
-      @rakuten_pay_month = RakutenPay.includes(:user).all
-      @paypay_month = Paypay.includes(:user).all
-    end
   end 
 
   def new 
@@ -370,7 +286,7 @@ class ResultsController < ApplicationController
 
     @rakuten_pays_def = 
       RakutenPay.includes(:store_prop, :user)
-      .where(date: @month.ago(2.month)..@month.end_of_month)
+      .where(date: Date.today.ago(3.month).beginning_of_month..Date.today)
       .where(status: "自社不備")
       .where(user_id: @user.id)
       .or(

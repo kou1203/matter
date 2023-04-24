@@ -174,8 +174,10 @@
   <% end %>
   <p class="caution-text">※過去月も<%= Date.today.month %>月と同じ基準で利益表の計算を行っております。</p>
   <hr>
+    <h2>◆評価売成果一覧</h2><br>
       <div style="display: flex;">
-        <% @bases.each do |base| %>
+      <% bases = ["中部SS","関西SS","関東SS", "九州SS","2次店"] %>
+        <% bases.each do |base| %>
           <div>
             <h2><%= base %></h2>
             <% @users.where(base: base).each do |user| %>

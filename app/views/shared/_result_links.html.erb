@@ -8,15 +8,16 @@
     
   </div>
   <div class="section">
-    <h2>日報</h2>
+    <h2><%= Date.today.strftime("%m月%d日") %>：日報</h2>
     <% bases.each do |base| %>
     <p class="link-text"><%= link_to "#{base}日報", daily_report_results_path(month: Date.today,base_category: base),class: "index-link" %></p>
     <% end %>
   </div>
   <div class="section">
     <h2>その他項目</h2>
-    <p class="link-text"><%= link_to "ランキング", ranking_results_path,class: "index-link" %></p>
-    <p class="link-text"><%= link_to "利益計算用終着", gross_profit_results_path,class: "index-link" %></p>
+    <p class="link-text"><%= link_to "利益表", results_path(month: @month),class: "index-link" %></p>
+    <p class="link-text"><%= link_to "ランキング", ranking_results_path(month: @month),class: "index-link" %></p>
+    <p class="link-text"><%= link_to "利益計算用終着", gross_profit_results_path(month: @month),class: "index-link" %></p>
     <p class="link-text"><%= link_to "月間獲得早見", monthly_progress_results_path(date: @month),class: "index-link","data-turbolinks": false %></p>
   </div>
 </div>

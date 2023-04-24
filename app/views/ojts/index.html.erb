@@ -151,7 +151,10 @@
           <tr class="">
           <% if cnt % 2 == 0 %>
             <td class="even-td" rowspan="3"><%= ojt.user.base %></td>
-            <td class="even-td" rowspan="3"><%= ojt.user.name %></td>
+            <td class="even-td" rowspan="3">
+              <%= ojt.user.name %><br><br>
+              （<%= ojt.ojt_start.strftime("%H") rescue "" %>〜<%= ojt.ojt_end.strftime("%H") rescue "" %>）
+            </td>
             <td class="even-td" rowspan="3"><%= ojt.ojt.name %></td>
           <% else %>
             <td class="odd-td" rowspan="3"><%= ojt.user.base %></td>

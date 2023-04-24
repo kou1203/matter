@@ -8,9 +8,12 @@
     <%= render "shared/sidebar" %>
   </div>
   <div class="main">
+    <div data-scope-path="shares/index">
+      <%= render "shared/result_links" %>
+    </div>
+    <hr>
     <div data-scope-path="results/index">
       <div class="nav-text" style="color: red;"><%= alert %></div>
-      <hr>
         <div>
           <h2 class="">
             <%= link_to "<<",monthly_progress_results_path(date: @month_daily.prev_month),"data-turbolinks": false, class:"link" %>
@@ -20,7 +23,7 @@
           </h2>
         </div>
         <div><%# 検索 %>
-          <%= form_with url: results_path, local: true, method: :get do |f| %>
+          <%= form_with url: monthly_progress_results_path, local: true, method: :get do |f| %>
                 <%= f.hidden_field :search_date, value: @month_daily %>
               <p class="nav-text">※こちらから確認したい日付に変更できます。</p>
               <table class="s-tb">
@@ -32,7 +35,7 @@
                 <tr class="">
                   <th class="s-th">比較する日付</th>
                   <td class="s-td"><%= f.date_field :comparison_date,class:"s-input" %></td>
-                  <td class="s-reset"><%= link_to "リセット",results_path(month: @month),class:"reset-link","data-turbolinks": false %></td>
+                  <td class="s-reset"><%= link_to "リセット",monthly_progress_results_path,class:"reset-link","data-turbolinks": false %></td>
                 </tr>
               </table>
           <% end %>
@@ -55,7 +58,7 @@
             <tr class="index-tr">
               <th class="" colspan="3">基本情報</th>
               <th class="" colspan="3">シフト</th>
-              <th class="" colspan="4">現状獲得数</th>
+              <th class="gray" colspan="4">現状獲得数</th>
               <th class="" colspan="4">終着獲得数</th>
             </tr>
             <tr class="index-tr">
@@ -82,10 +85,7 @@
               <td class=""><%= @shift_monthly_plan.group(:user_id).length %></td>
               <td class=""><%= @shift_monthly_plan.length %></td>
               <td class=""><%= @shift_monthly_digestion.length %></td>
-              <td class=""><%= 
-                @shift_monthly_plan.length -
-                @shift_monthly_digestion.length 
-              %></td>
+              <td class=""><%= @shift_monthly_plan.length - @shift_monthly_digestion.length %></td>
               <td class="">
                 <%= @dmer_monthly.length %>
               </td>
@@ -109,10 +109,7 @@
               <td class=""><%= @shift_comparison_plan.group(:user_id).length %></td>
               <td class=""><%= @shift_comparison_plan.length %></td>
               <td class=""><%= @shift_comparison_digestion.length %></td>
-              <td class=""><%= 
-                @shift_comparison_plan.length -
-                @shift_comparison_digestion.length 
-              %></td>
+              <td class=""><%= @shift_comparison_plan.length - @shift_comparison_digestion.length %></td>
               <td class="">
                 <%= @dmer_comparison.length %>
               </td>
@@ -171,7 +168,7 @@
             <tr class="index-tr">
               <th class="" colspan="3">基本情報</th>
               <th class="" colspan="3">シフト</th>
-              <th class="" colspan="4">現状獲得数</th>
+              <th class="gray" colspan="4">現状獲得数</th>
               <th class="" colspan="4">終着獲得数</th>
             </tr>
             <tr class="index-tr">
@@ -197,7 +194,7 @@
               <% 
                 dmer_base_monthly_ave = 
                   (@dmer_monthly.where(user: {base: base}).length.to_f / 
-                  @shift_monthly_digestion.where(user: {base: base}).length)
+                  @shift_monthly_digestion.where(user: {base: base}).length) 
               %>
               <% 
                 aupay_base_monthly_ave = 
@@ -457,11 +454,11 @@
           <tr class="index-tr">
             <% 2.times do %>
             <th>当月決済対象</th>
-            <th>当月決済完了数</th>
-            <th>当月決済完了率</th>
-            <th class="gray">過去月決済対象</th>
-            <th class="gray">過去月決済完了数</th>
-            <th class="gray">過去月決済完了率</th>
+            <th>当月決済数</th>
+            <th>当月決済率</th>
+            <th class="gray">過去決済対象</th>
+            <th class="gray">過去決済数</th>
+            <th class="gray">過去決済率</th>
             <% end %>
           </tr>
           <tr class="index-tr" v-for="item in baseItems" :key="item">

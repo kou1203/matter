@@ -8,6 +8,10 @@
     <%= render "shared/sidebar" %>
   </div>
     <div data-scope-path="results/daily_report">
+      <div data-scope-path="shares/index">
+        <%= render "shared/result_links" %>
+      </div>
+      <hr>
         <h2>
           <%= link_to "<<",daily_report_results_path(month:@month.ago(1.days),base_category: @base_category), class:"link" %>
           <%= @base_category %>
