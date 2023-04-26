@@ -1,118 +1,118 @@
-<div data-scope-path="pranesses/show">
+<div data-scope-path="shared/header">
   <h1>ぷらねす詳細</h1>
   <%= render "shared/header" %>
-
-  <%= render "shared/side_bar" %>
-  <div class="main">
-  <div>
-    <table>
-    <tr >
-      <th colspan="4">店舗情報</th>
-    <tr >
-    <th>店舗名</th>
-    <td><%= @praness.store_prop.name %></td>
-    </tr>
-    <th>属性</th>
-    <td><%= @praness.store_prop.race %></td>
-    <th>業種</th>
-    <td><%= @praness.store_prop.industry %></td>
-    <tr >
-    </tr>
-    <tr >
-    <tr >
-    <tr >
-    <th>店舗代表</th>
-    <td><%= @praness.store_prop.person_main %></td>
-    <th>店舗担当</th>
-    <td><%= @praness.store_prop.person_sub %></td>
-    </tr>
-    <tr>
-    <th>店舗住所</th>
-    <td colspan="3"><%= @praness.store_prop.prefecture %><%= @praness.store_prop.city %><%= @praness.store_prop.municipalities %><%= @praness.store_prop.address %><%= @praness.store_prop.building_name %></td>
-    </tr>
-    </table>
-    <table>
-    <tr >
-    </table>
-    <h1 >連絡先</h1>
-    <table>
-    <th>電話番号1</th>
-    <td><%= @praness.store_prop.phone_number_1 %></td>
-    <th>電話番号2</th>
-    <td><%= @praness.store_prop.phone_number_2 %></td>
-    </tr>
-    <tr >
-    <th>メールアドレス1</th>
-    <td><%= @praness.store_prop.mail_1 %></td>
-    <th>メールアドレス2</th>
-    <td><%= @praness.store_prop.mail_2 %></td>
-    </tr>
-    <tr>
-      <th>好適時間</th>
-      <td><%= @praness.store_prop.suitable_time %></td>
-    </tr>
-    <tr>
-      <th>備考</th>
-      <td colspan="2"><%= @praness.store_prop.description %></td>
-      <td><%= link_to "編集", edit_store_prop_path(@praness.store_prop.id), class: "link" %></td>
-    </tr>
-    </table>
-
-    <h1 >ぷらねす情報</h1>
-      
-    <table>
-    <tr >
-      <th>設置日</th>
-      <td><%= @praness.get_date %></td>
-      <th>獲得者</th>
-      <td><%= @praness.user.name %></td>
-    </tr>
-    <tr >
-      <th>顧客番号</th>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div class="main">
+  <div data-scope-path="shares/show">
+      <h2>ぷらねす情報</h2>
+      <table>
+      <tr>
+      <th>管理番号</th>
       <td><%= @praness.customer_num %></td>
-      <th>SSID変更日</th>
-      <td><%= @praness.ssid_change %></td>
-    </tr>
-
-    <tr >
-      <th>SSID①</th>
-      <td><%= @praness.ssid_1 %></td>
-      <th>PASS①</th>
-      <td><%= @praness.pass_1 %></td>
-    </tr>
-    <tr >
-      <th>SSID②</th>
-      <td><%= @praness.ssid_2 %></td>
-      <th>PASS②</th>
-      <td><%= @praness.pass_2 %></td>
-    </tr>
-    <tr >
-      <th>請求額</th>
-      <td>¥<%= @praness.claim.to_s(:delimited) %></td>
-      <th>請求開始月</th>
-      <td><%= @praness.start %></td>
-    </tr>
-    <tr >
-      <th>請求開始締日</th>
-      <td><%= @praness.deadline %></td>
-      <th>店舗引落日</th>
-      <td><%= @praness.payment %></td>
-    </tr>
-    <tr >
-      <th>解約日</th>
-      <td><%= @praness.cancel%></td>
-    </tr>
-    <tr >
-      <th>返却在庫に対する備考</th>
-      <td><%= @praness.return_remarks %></td>
-      <th>備考</th>
-      <td><%= @praness.remarks %></td>
-    </tr>
-      <th></th>
-      <th></th>
-      <th></th>
-      <td><%= link_to "編集", edit_praness_path, class: "link" %></td>
+      <th>店舗名</th>
+      <td><%= @praness.store_name %></td>
+      </tr>
+      <tr>
+      <th>獲得日</th>
+        <td><%= @praness.date %></td>
+        <th>獲得者</th>
+        <td><%= @praness.user.name %></td>
+      </tr>
+      <tr>
+        <th>現状ステータス</th>
+        <td><%= @praness.status %></td>
+        <th>口座ステータス</th>
+        <td><%= @praness.cash_status %></td>
+      </tr>
+      <tr>
+        <th>端末管理番号</th>
+        <td><%= @praness.terminal_num %></td>
+        <th>端末状態</th>
+        <td><%= @praness.terminal_status %></td>
+      </tr>
+      <tr>
+        <th>利用開始日</th>
+        <td><%= @praness.start %></td>
+        <th>料金発生日</th>
+        <td><%= @praness.payment_start %></td>
+      </tr>
+      <tr>
+        <th>初回引き落とし日</th>
+        <td><%= @praness.first_payment %></td>
+        <th></th>
+        <td><%=  %></td>
+      </tr>
+      <tr>
+        <th>アプラス顧客番号</th>
+        <td><%= @praness.aplus_num %></td>
+        <th>口座名義</th>
+        <td><%= @praness.cash_name %></td>
+      </tr>
+      <tr>
+        <th>決済端末</th>
+        <% if @praness.payment_terminal == "TRUE" %>
+        <td>○</td>
+        <% else %>
+        <td>×</td>
+        <% end %>
+        <th>端末不可理由</th>
+        <% if @praness.not_use_reason == "①" %>
+        <td>①作ってない</td>
+        <% elsif @praness.not_use_reason == "②" %>
+        <td>②手元にない</td>
+        <% elsif @praness.not_use_reason == "③" %>
+        <td>③通らない</td>
+        <% elsif @praness.not_use_reason == "④" %>
+        <td>④不審</td>
+        <% elsif @praness.not_use_reason == "⑤" %>
+        <td>⑤法人・当座</td>
+        <% elsif @praness.not_use_reason == "⑥" %>
+        <td>⑥その他</td>
+        <% else %>
+        <td></td>
+        <% end %>
+      </tr>
+      <tr>
+        <th>口座依頼書送付日</th>
+        <td><%= @praness.notice_send %></td>
+        <th>不備内容</th>
+        <td><%= @praness.def_remarks %></td>
+      </tr>
+      <tr>
+       <th>備考</th>
+        <td colspan=2><%= @praness.remarks %></td>
+      </tr>
+      <tr>
+       <th>営業側備考</th>
+        <td colspan=2><%= @praness.sales_man_remarks %></td>
+      </tr>
+      </table>
+      <h2>SSID・パスワード / キャンセル・解約</h2>
+      <table>
+      <tr>
+        <th>SSID①</th>
+        <td><%= @praness.ssid_1 %></td>
+        <th>パスワード①</th>
+        <td><%= @praness.pass_1 %></td>
+      </tr>
+      <tr>
+        <th>SSID②</th>
+        <td><%= @praness.ssid_2 %></td>
+        <th>パスワード②</th>
+        <td><%= @praness.pass_2 %></td>
+      </tr>
+      <tr>
+        <th>解約キャンセル</th>
+        <td><%= @praness.cancel %></td>
+        <th>SSID/パス変更</th>
+        <td><%= @praness.ssid_pass_change %></td>
+      </tr>
     </table>
-
+    </div>
+  </div>
 </div>
 

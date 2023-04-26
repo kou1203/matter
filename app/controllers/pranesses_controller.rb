@@ -6,14 +6,23 @@ class PranessesController < ApplicationController
     @pranesses = 
       if params[:q].nil?
         Praness.none 
-      else  
-        @q.result(distinct: true)
+      else
+        @q.result(distinct: false)
       end
-    respond_to do |format|
-      format.html
-      format.csv do |csv|
-        send_pranesses_csv(@pranesses)
-      end 
+      @pranesses_data = @pranesses.page(params[:page]).per(100)
+  end 
+
+
+  def import 
+    if params[:file].present?
+      if Praness.csv_check(params[:file]).present?
+        redirect_to pranesses_path , alert: "エラーが発生したため中断しました#{Praness.csv_check(params[:file])}"
+      else
+        message = Praness.import(params[:file]) 
+        redirect_to pranesses_path, alert: "インポート処理を完了しました#{message}"
+      end
+    else
+      redirect_to pranesses_path, alert: "インポートに失敗しました。ファイルを選択してください"
     end
   end 
 

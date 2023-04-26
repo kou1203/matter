@@ -835,26 +835,37 @@ ActiveRecord::Schema.define(version: 2023_04_10_084002) do
 
   create_table "pranesses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "customer_num", null: false
-    t.string "client"
+    t.string "store_name", null: false
+    t.date "date", null: false
     t.bigint "user_id"
-    t.bigint "store_prop_id"
-    t.date "get_date", null: false
-    t.date "payment", null: false
     t.string "status", null: false
+    t.string "cash_status"
+    t.string "terminal_num"
     t.bigint "stock_id"
-    t.date "ssid_change"
-    t.string "ssid_1", null: false
-    t.string "pass_1", null: false
-    t.string "ssid_2", null: false
-    t.string "pass_2", null: false
-    t.date "cancel"
-    t.string "return_remarks"
     t.text "remarks"
-    t.integer "claim", null: false
-    t.date "start", null: false
-    t.date "deadline", null: false
+    t.text "sales_man_remarks"
+    t.string "terminal_status"
+    t.string "ssid_1"
+    t.string "ssid_2"
+    t.string "pass_1"
+    t.string "pass_2"
+    t.date "cancel"
+    t.text "cancel_reason"
+    t.string "ssid_pass_change"
+    t.date "start"
+    t.date "payment_start"
+    t.date "first_payment"
+    t.string "aplus_num"
+    t.string "cash_name"
+    t.string "payment_terminal"
+    t.string "not_use_reason"
+    t.string "done"
+    t.string "option"
+    t.string "mail"
+    t.date "notice_send"
+    t.text "def_remarks"
+    t.date "status_update"
     t.index ["stock_id"], name: "index_pranesses_on_stock_id"
-    t.index ["store_prop_id"], name: "index_pranesses_on_store_prop_id"
     t.index ["user_id"], name: "index_pranesses_on_user_id"
   end
 
@@ -1440,7 +1451,6 @@ ActiveRecord::Schema.define(version: 2023_04_10_084002) do
     t.string "status"
     t.string "mail"
     t.text "remarks"
-    t.index ["stock_num"], name: "index_stocks_on_stock_num", unique: true
   end
 
   create_table "store_props", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1735,7 +1745,6 @@ ActiveRecord::Schema.define(version: 2023_04_10_084002) do
   add_foreign_key "paypays", "store_props"
   add_foreign_key "paypays", "users"
   add_foreign_key "pranesses", "stocks"
-  add_foreign_key "pranesses", "store_props"
   add_foreign_key "pranesses", "users"
   add_foreign_key "rakuten_casas", "store_props"
   add_foreign_key "rakuten_casas", "users"

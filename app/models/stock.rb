@@ -1,14 +1,8 @@
 class Stock < ApplicationRecord
 
   has_one :praness
-  has_one :stock_history
-  has_one :return_history
-
   with_options presence: true do 
     validates :stock_num 
-    with_options uniqueness: true do 
-      validates :stock_num 
-    end 
   end 
 
   def self.import(file)
