@@ -1,5 +1,7 @@
 class Stock < ApplicationRecord
 
+  has_one :return_history
+  has_one :stock_history
   has_one :praness
   with_options presence: true do 
     validates :stock_num 
