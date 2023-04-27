@@ -8,14 +8,16 @@
     <%= render "shared/sidebar" %>
   </div>
   <div data-scope-path="shares/index">
-  <hr>
 <div class="link-flex">
   <div class="section">
+  <hr>
+  <% if current_user.position_sub == "管理" %>
     <p class="link-text"><%= link_to "出力用URL入力", new_spread_link_path ,"data-turbolinks": false, class: "index-link" %></p>
+  <hr>
+  <% end %>
   </div>
   <p class="caution-text"><%= alert %></p>
 </div>
-<hr>
   <div class="date-head"><%# 日付切替 %>
     <h2>
       <%= link_to "<<",spread_links_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
