@@ -123,7 +123,6 @@
             <th>楽天ペイ</th>
             <th>AirPay</th>
             <th>出前館</th>
-            <th>サミット</th>
           </tr>
           <tr class="search-tr">
             <td ><%= @store_len %></td>
@@ -133,7 +132,6 @@
             <td ><%= @rakuten_pay_len %></td>
             <td ><%= @airpay_len %></td>
             <td ><%= @demaekan_len %></td>
-            <td ><%= @summit_len %></td>
           </tr>
         </table>
 
@@ -190,9 +188,6 @@
             <% end %>
             <% if store_prop.demaekan.present? %>
               出前館
-            <% end %>
-            <% if store_prop.summits.present? %>
-              サミット
             <% end %>
             </td>
               <% if current_user.position == "権限①" %>

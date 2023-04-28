@@ -3,7 +3,7 @@ class StorePropsController < ApplicationController
   before_action :authenticate_user!
   # before_action :back_retirement only: [:index]
   def index 
-    @q = StoreProp.includes(:dmer, :aupay, :paypay,:rakuten_pay,:demaekan,:airpay,:summits).ransack(params[:q])
+    @q = StoreProp.includes(:dmer, :aupay, :paypay,:rakuten_pay,:demaekan,:airpay).ransack(params[:q])
     @store_props = 
       if params[:q].nil?
         StoreProp.none 
@@ -20,7 +20,6 @@ class StorePropsController < ApplicationController
       @rakuten_pay_len = @store_props.where.not(rakuten_pay: {id: nil}).length
       @airpay_len = @store_props.where.not(airpay: {id: nil}).length
       @demaekan_len = @store_props.where.not(demaekan: {id: nil}).length
-      @summit_len = @store_props.where.not(summits: {id: nil}).length
 
 
       # CSV出力
@@ -130,12 +129,9 @@ class StorePropsController < ApplicationController
     @dmer = @store_prop.dmer
     @aupay = @store_prop.aupay
     @paypay = @store_prop.paypay
-    @praness = @store_prop.praness
-    @rakuten_casa = @store_prop.rakuten_casa
     @airpay = @store_prop.airpay
     @rakuten_pay = @store_prop.rakuten_pay
     @demaekan = @store_prop.demaekan
-    @summits = Summit.where(store_prop_id: @store_prop.id)
   end
 
   def destroy
