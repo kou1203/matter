@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_10_084002) do
+ActiveRecord::Schema.define(version: 2023_04_28_064038) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -778,6 +778,22 @@ ActiveRecord::Schema.define(version: 2023_04_10_084002) do
     t.integer "price"
     t.date "payment", null: false
     t.index ["paypay_id"], name: "index_payment_paypays_on_paypay_id"
+  end
+
+  create_table "payment_pranesses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "praness_id"
+    t.string "store_name", null: false
+    t.string "aplus_customer_num"
+    t.integer "price"
+    t.integer "price_tax"
+    t.string "payment_date"
+    t.string "status", null: false
+    t.string "payment_method"
+    t.date "payment_schedule"
+    t.date "payment"
+    t.date "status_update"
+    t.text "remarks"
+    t.index ["praness_id"], name: "index_payment_pranesses_on_praness_id"
   end
 
   create_table "payment_rakuten_pays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1740,6 +1756,7 @@ ActiveRecord::Schema.define(version: 2023_04_10_084002) do
   add_foreign_key "payment_dmers", "dmers"
   add_foreign_key "payment_itsses", "itsses"
   add_foreign_key "payment_paypays", "paypays"
+  add_foreign_key "payment_pranesses", "pranesses"
   add_foreign_key "payment_rakuten_pays", "rakuten_pays"
   add_foreign_key "paypay_date_progresses", "users"
   add_foreign_key "paypays", "store_props"

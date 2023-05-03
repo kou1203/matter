@@ -32,7 +32,6 @@
   .link {
     text-decoration: none;
   }
-
   .create-path-form {
     padding: 5px;
   }
@@ -81,6 +80,14 @@
     margin-left: 10px;
     margin-bottom: 5px;
     cursor: pointer;
+  }
+
+  .table-title {
+    color: #676565;
+    font-weight: bold;
+    margin-left: 10px;
+    padding: 5px;
+    // margin-bottom: 5px;
   }
 
   .active-btn:hover {
@@ -149,6 +156,19 @@
     border:1px solid #676565;
     font-size: 0.6rem;
     text-align: center;
+    overflow-x: scroll;
+  }
+
+  .progress-tb thead th {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    /* tbody内のセルより手前に表示する */
+    z-index: 1;
+  }
+  
+  .td-even {
+    background-color: rgb(242, 242, 242);
   }
 
   .progress-tr:nth-child(even) {

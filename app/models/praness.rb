@@ -2,6 +2,7 @@ class Praness < ApplicationRecord
   require 'charlock_holmes'
 
   belongs_to :user 
+  has_many :payment_pranesses
   belongs_to :stock , optional: true
   with_options presence: true do 
     validates :customer_num

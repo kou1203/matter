@@ -1,6 +1,6 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <div data-scope-path="shared/header">
-  <h1>ぷらねす一覧</h1>
+  <h1>ぷらねす請求書</h1>
   <%= render "shared/header" %>
 </div>
 
@@ -11,7 +11,7 @@
 <div data-scope-path="shares/index">
 <div class="main">
 <% if current_user.position_sub == "管理" %>
-  <%= form_with url: import_pranesses_path do |f| %>
+  <%= form_with url: import_payment_pranesses_path do |f| %>
     <table class="csv-tb">
       <tr>
         <td class="csv-label" >CSV</td>
@@ -36,12 +36,6 @@
             <p class="s-text">検索したい内容を入力してください。</p>
             <hr>
           <div class="s-flex"><%# 検索フォーム %>
-            <div class="user-form"><%# ユーザー情報 %>
-              <p class="s-label">獲得者</p>
-              <p class="s-text-field"><%= f.text_field :user_name_cont, class: "s-text-input" %></p>
-              <p class="s-label">拠点</p>
-              <p class="s-slct-field"><%= f.select :user_base_cont,{"中部SS": "中部SS","関東SS": "関東SS","関西SS": "関西SS","2次店": "2次店"},{include_blank: true},{ class: "s-slct-input"} %></p>
-            </div><%# ユーザー情報 %>
             <div class="product-form"><%# 商材情報 %>
               <table class="s-tb">
                 <thead>
@@ -52,25 +46,26 @@
                 </thead>
                 <tbody>
                   <tr class="s-tr">
-                    <td class="s-td">獲得日</td>
+                    <td class="s-td">入金/振替予定日</td>
                     <td class="s-td">
-                      <%= f.date_field :date_eq, class: "t-input" %>
+                      <%= f.date_field :payment_schedule_gteq, class: "s-input" %>〜
+                      <%= f.date_field :payment_schedule_lteq, class: "s-input" %>
                     </td>
                   </tr>
                   <tr class="s-tr">
-                    <td class="s-td">獲得日（範囲）</td>
+                    <td class="s-td">実入金/振替日</td>
                     <td class="s-td">
-                      <%= f.date_field :date_gteq, class: "s-input" %>〜
-                      <%= f.date_field :date_lteq, class: "s-input" %>
+                      <%= f.date_field :payment_gteq, class: "s-input" %>〜
+                      <%= f.date_field :payment_lteq, class: "s-input" %>
                     </td>
                   </tr>
                   </tr>
                   <tr class="s-tr">
-                    <td class="s-td">現状ステータス</td>
+                    <td class="s-td">支払状況</td>
                     <td class="s-td">
                       <%= 
                         f.select :status_eq,
-                        options_from_collection_for_select(Praness.select(:status)
+                        options_from_collection_for_select(PaymentPraness.select(:status)
                         .distinct,:status, :status),
                         {include_blank: true},
                         {class: "t-input"} 
@@ -78,36 +73,27 @@
                     </td>
                   </tr>
                   <tr class="s-tr">
-                    <td class="s-td">口座ステータス</td>
+                    <td class="s-td">請求方法</td>
                     <td class="s-td">
                       <%= 
-                        f.select :cash_status_eq,
-                        options_from_collection_for_select(Praness.select(:cash_status)
-                        .distinct,:cash_status, :cash_status),
+                        f.select :payment_method_eq,
+                        options_from_collection_for_select(PaymentPraness.select(:payment_method)
+                        .distinct,:payment_method, :payment_method),
                         {include_blank: true},
                         {class: "t-input"} 
                       %>
                     </td>
                   </tr>
                   <tr class="s-tr">
-                    <td class="s-td">利用開始</td>
+                    <td class="s-td">売上月</td>
                     <td class="s-td">
-                      <%= f.date_field :start_gteq, class: "s-input" %>〜
-                      <%= f.date_field :start_lteq, class: "s-input" %>
-                    </td>
-                  </tr>
-                  <tr class="s-tr">
-                    <td class="s-td">料金発生</td>
-                    <td class="s-td">
-                      <%= f.date_field :payment_start_gteq, class: "s-input" %>〜
-                      <%= f.date_field :payment_start_lteq, class: "s-input" %>
-                    </td>
-                  </tr>
-                  <tr class="s-tr">
-                    <td class="s-td">料金発生</td>
-                    <td class="s-td">
-                      <%= f.date_field :first_payment_gteq, class: "s-input" %>〜
-                      <%= f.date_field :first_payment_lteq, class: "s-input" %>
+                      <%= 
+                        f.select :payment_date_eq,
+                        options_from_collection_for_select(PaymentPraness.select(:payment_date)
+                        .distinct,:payment_date, :payment_date),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
                     </td>
                   </tr>
                 </tbody>
@@ -121,55 +107,54 @@
         </div><%# /検索フォームの外枠 %>
         <div v-else>
           <%= search_form_for @q do |f| %>
-              <%= f.text_field :store_name_or_customer_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
+              <%= f.text_field :store_name_or_praness_customer_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
               <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "search-btn" %>
           <% end %>
         </div>
       </article>
           <hr>
+  <% if @payment_pranesses.empty? %>
     <div class="warning"><%= alert %></div>
-  <% if @pranesses.empty? %>
   <% else %>
-      <h1>獲得日：<%= @pranesses.minimum(:date) %>（<%= days[@pranesses.minimum(:date).wday] %>）〜<%= @pranesses.maximum(:date) %>（<%= days[@pranesses.maximum(:date).wday] %>）</h1>
     <table class="out-tb">
     <thead>
       <tr >
         <th class="out-tb">No.</th>
-        <th class="out-tb">管理番号</th>
+        <th class="out-tb">案件番号</th>
         <th class="out-tb">店舗名</th>
-        <th class="out-tb">獲得日</th>
-        <th class="out-tb">獲得者</th>
-        <th class="out-tb">現状ステータス</th>
-        <th class="out-tb">口座ステータス</th>
-        <th class="out-tb">端末状態</th>
-        <th class="out-tb">利用開始日</th>
-        <th class="out-tb">料金発生日</th>
-        <th class="out-tb">初回引落日</th>
-        <th class="out-tb"></th>
+        <th class="out-tb">アプラス顧客番号</th>
+        <th class="out-tb">単価（税込）</th>
+        <th class="out-tb">単価（税抜）</th>
+        <th class="out-tb">売上月</th>
+        <th class="out-tb">支払状況</th>
+        <th class="out-tb">請求方法</th>
+        <th class="out-tb">入金/振替予定日</th>
+        <th class="out-tb">実入金/振替日</th>
+        <th class="out-tb">備考2</th>
       </tr>
     </thead>
     <tbody>
       <% cnt = 0 %>
-      <% @pranesses_data.each do |praness| %>
+      <% @payment_pranesses_data.each do |payment_praness| %>
       <tr >
         <td ><%= cnt += 1 %></td>
-        <td ><%= praness.customer_num %></td>
-        <td ><%= praness.store_name %></td>
-        <td ><%= praness.date %></td>
-        <td ><%= praness.user.name %></td>
-        <td ><%= praness.status %></td>
-        <td ><%= praness.cash_status %></td>
-        <td ><%= praness.terminal_status %></td>
-        <td ><%= praness.start %></td>
-        <td ><%= praness.payment_start %></td>
-        <td ><%= praness.first_payment %></td>
-        <td ><%= link_to "詳細",  praness_path(praness.id) ,class: "link" %></td>
+        <td ><%= payment_praness.praness.customer_num %></td>
+        <td ><%= payment_praness.store_name %></td>
+        <td ><%= payment_praness.aplus_customer_num %></td>
+        <td ><%= payment_praness.price_tax.to_s(:delimited) %></td>
+        <td ><%= payment_praness.price.to_s(:delimited) %></td>
+        <td ><%= payment_praness.payment_date %></td>
+        <td ><%= payment_praness.status %></td>
+        <td ><%= payment_praness.payment_method %></td>
+        <td ><%= payment_praness.payment_schedule %></td>
+        <td ><%= payment_praness.payment %></td>
+        <td ><%= payment_praness.remarks %></td>
       </tr>
       <% end %>
     </tbody>
     </table>
   <div class="kaminari-page">
-    <%= paginate @pranesses_data %>
+    <%= paginate @payment_pranesses_data %>
   </div>
   <% end %>
   </div>

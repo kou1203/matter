@@ -1,0 +1,119 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>獲得早見表</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/date-progress">
+    <div data-scope-path="shares/index">
+      <hr>
+        <%= render "shared/praness_links" %>
+    </div>
+      <h2>
+
+        <%= link_to "<<",simplified_chart_pranesses_path(month: @month.ago(1.year)), class:"link","data-turbolinks": false %>
+        <%= @month.year %>年
+        <%= link_to ">>",simplified_chart_pranesses_path(month: @month.since(1.year)), class:"link","data-turbolinks": false %>
+      </h2>
+        <table class="progress-tb">
+          <thead>
+          <tr>
+            <th class="progress-th1" colspan="2">日付</th>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+            <th class="progress-th1" colspan=""><%= "#{@month.year}年#{month_cnt}月" %></th>
+            <% month_cnt += 1 %>
+            <% end %>
+            <th class="progress-th1">合計</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr><%# 全体 %>
+            <td class="progress-td" style="vertical-align: middle;" rowspan="4">全体</td>
+            <td class="progress-td">獲得</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="progress-td"><%= @pranesses_year.where(date: Date.new(@month.year,month_cnt,1).all_month).length %>件</td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="progress-td"><%= @pranesses_year.length %>件</td>
+          </tr>
+          <tr>
+            <td class="progress-td">無料期間</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="progress-td"><%= @pranesses_year.where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%01%").length %>件</td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="progress-td"><%= @pranesses_year.where("status LIKE ?","%01%").length %>件</td>
+          </tr>
+          <tr>
+            <td class="progress-td">利用開始</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="progress-td"><%= @pranesses_year.where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%利用開始%").length %>件</td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="progress-td"><%= @pranesses_year.where("status LIKE ?","%利用開始%").length %>件</td>
+          </tr>
+          <tr>
+            <td class="difference-td red">キャンセル</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="difference-td red"><%= @pranesses_year.where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%利用開始%").length %>件</td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="difference-td red"><%= @pranesses_year.where("status LIKE ?","%00%").length %>件</td>
+          </tr><%# 全体 %>
+          <% user_cnt = 1 %>
+          <% @pranesses_year.group(:user_id).each do |p_u| %><%# 個別 %>
+          <tr>
+                <% if user_cnt.to_f % 2  == 1 %>
+                <td rowspan="4" class="progress-td td-even" style="vertical-align: middle;"><%= p_u.user.name %></td>
+                <% else %>
+                <td rowspan="4" class="progress-td" style="vertical-align: middle;"><%= p_u.user.name %></td>
+                <% end %>
+                <% user_cnt += 1 %>
+            <td class="progress-td">獲得</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="progress-td"><%= @pranesses_year.where(user_id: p_u.user_id).where(date: Date.new(@month.year,month_cnt,1).all_month).length %>件</td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="progress-td"><%= @pranesses_year.where(user_id: p_u.user_id).length %>件</td>
+          </tr>
+          <tr>
+            <td class="progress-td">無料期間</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="progress-td"><%= @pranesses_year.where(user_id: p_u.user_id).where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%01%").length %>件</td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="progress-td"><%= @pranesses_year.where(user_id: p_u.user_id).where("status LIKE ?","%01%").length %>件</td>
+          </tr>
+          <tr>
+            <td class="progress-td">利用開始</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="progress-td"><%= @pranesses_year.where(user_id: p_u.user_id).where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%利用開始%").length %>件</td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="progress-td"><%= @pranesses_year.where(user_id: p_u.user_id).where("status LIKE ?","%利用開始%").length %>件</td>
+          </tr>
+          <tr>
+            <td class="difference-td red">キャンセル</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="difference-td red"><%= @pranesses_year.where(user_id: p_u.user_id).where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%利用開始%").length %>件</td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="difference-td red"><%= @pranesses_year.where(user_id: p_u.user_id).where("status LIKE ?","%00%").length %>件</td>
+          </tr>
+          <% end %><%# /個別 %>
+          </tbody>
+        </table>
+  </div>
+</div>

@@ -333,7 +333,6 @@ class CashDateProgressesController < ApplicationController
     end 
     redirect_to calc_periods_path(month: @month) ,alert: "#{cnt}件キャッシュ合計売上結果を作成しました"
 
-
   end  
 
   def date_destroy

@@ -162,19 +162,6 @@
         <% end %>
       </tr>
     </table>
-      <% if @summits.present? %>
-      <h2>サミット獲得日</h2>
-      <table>
-      <% @summits.each do |summit| %>
-      <tr>
-        <th class="product-th">サミット（<%= summit.contract_type %>）</th>
-        <td><%= link_to summit.date, summit_path(summit.id), class: "link" %></td>
-        <th class="product-th">契約容量</th>
-        <td><%= summit.contract_cap %><%= summit.contract_cap_unit %></td>
-      </tr>
-      <% end %>
-      </table>
-      <% end %>
   <% end %>
   </div>
   </div>

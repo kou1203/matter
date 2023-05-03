@@ -47,11 +47,6 @@ class PranessesController < ApplicationController
     end 
   end 
   
-  def import 
-    Praness.import(params[:file])
-    redirect_to pranesses_path
-  end 
-  
   def edit 
     @users = User.all
     @stocks = Stock.joins('LEFT JOIN stock_histories ON stocks.id = stock_histories.stock_id').where('stock_histories.id IS NOT NULL')
@@ -66,6 +61,12 @@ class PranessesController < ApplicationController
 
   def show 
     @praness = Praness.find(params[:id])
+  end 
+
+  def simplified_chart 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @pranesses_year = Praness.where(date: @month.all_year)
+    
   end 
 
  

@@ -60,7 +60,17 @@ Rails.application.routes.draw do
 
 
   resources :pranesses, expect: [:new, :create] do 
-    collection { post :import }
+    collection { 
+      post :import 
+      get :simplified_chart
+    }
+  end 
+
+  resources :payment_pranesses do 
+    collection { 
+      post :import 
+      get :year_profit  
+    }
   end 
 
   resources :dmers, expect: [:new, :create] do 
@@ -118,7 +128,7 @@ Rails.application.routes.draw do
     get 'result_casas/new'
     post 'result_casas/create'
     get 'result_summits/new'
-    post 'result_summits/create' 
+    post 'result_summits/create'
     collection { 
       post :import 
       get :export

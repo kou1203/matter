@@ -13,7 +13,6 @@
   <p class="caution-txt"><%= alert %></p>
     <div class="date-head"><%# 日付切替 %>
       <h2>
-
         <%= link_to "<<",itss_date_progresses_path(month: @month.ago(1.month)), class:"link","data-turbolinks": false %>
         <%= @month.month %>月（<%= @current_progress.first.date rescue "データなし" %>）進捗
         <%= link_to ">>",itss_date_progresses_path(month: @month.since(1.month)), class:"link","data-turbolinks": false %>

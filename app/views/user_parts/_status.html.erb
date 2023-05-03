@@ -165,7 +165,11 @@
       <td class="valuation-td"><%= aupay.client %></td>
       <td class="valuation-td"><%= aupay.store_prop.name %></td>
       <td class="valuation-td"><%= aupay.date %></td>
+      <% if aupay.deficiency_remarks != "既存auPAY加盟店の登録がすでにあるため、差し戻しさせていただきます。" && aupay.status == "差し戻し" %>
+      <td class="valuation-td">不備対応中</td>
+      <% else %>
       <td class="valuation-td"><%= aupay.status %></td>
+      <% end %>
       <td class="valuation-td"><%= aupay.result_point %></td>
       <td class="valuation-td"><%= aupay.shipment %></td>
       <td class="valuation-td"><%= aupay.status_settlement %></td>
