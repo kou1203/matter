@@ -23,6 +23,8 @@ class SpreadLinksController < ApplicationController
     # GoogleDriveのセッションを取得する
     @session = GoogleDrive::Session.from_config("config.json")
     @session_data = @session.spreadsheet_by_key(@spread_link.search_url).worksheet_by_title(@name)
+    @results_all = Result.includes(:user,:result_cash).where(date: @date_period).where(shift: "キャッシュレス新規")
+
     @results = Result.includes(:user,:result_cash).where(user: {name: @name}).where(date: @date_period)
     index_cnt = 0
     col_cnt = 0
@@ -443,6 +445,197 @@ class SpreadLinksController < ApplicationController
         @session_data[week_index + week_cnt,week_col] = (week.sum(:first_get).to_f + week.sum(:latter_get).to_f) / week.where(shift: "キャッシュレス新規").length rescue 0
         week_cnt += 1
       end 
+      # 全拠点基準値
+      s_index = 18 
+      s_col = 47
+      # 全拠点の消化シフト
+      @session_data[10,48] = @results_all.length
+      @session_data[10,49] = @results_all.group(:user_id).length
+      # 合計
+      @session_data[s_index,s_col] = @results_all.sum(:first_total_visit) + @results_all.sum(:latter_total_visit)
+      @session_data[s_index + 1,s_col] = @results_all.sum(:first_visit) + @results_all.sum(:latter_visit)
+      @session_data[s_index + 2,s_col] = @results_all.sum(:first_interview) + @results_all.sum(:latter_interview)
+      @session_data[s_index + 3,s_col] = @results_all.sum(:first_full_talk) + @results_all.sum(:latter_full_talk)
+      @session_data[s_index + 4,s_col] = @results_all.sum(:first_get) + @results_all.sum(:latter_get)
+      # 平均
+      @session_data[s_index,s_col + 1] = ((@results_all.sum(:first_total_visit) + @results_all.sum(:latter_total_visit)).to_f / @results_all.length).round(1)
+      @session_data[s_index + 1,s_col + 1] = ((@results_all.sum(:first_visit) + @results_all.sum(:latter_visit)).to_f / @results_all.length).round(1)
+      @session_data[s_index + 2,s_col + 1] = ((@results_all.sum(:first_interview) + @results_all.sum(:latter_interview)).to_f / @results_all.length).round(1)
+      @session_data[s_index + 3,s_col + 1] = ((@results_all.sum(:first_full_talk) + @results_all.sum(:latter_full_talk)).to_f / @results_all.length).round(1)
+      @session_data[s_index + 4,s_col + 1] = ((@results_all.sum(:first_get) + @results_all.sum(:latter_get)).to_f / @results_all.length).round(1)
+      # 比率
+      @session_data[s_index,s_col + 2] = "-"
+      @session_data[s_index + 1,s_col + 2] = 
+        "#{((@results_all.sum(:first_visit) + @results_all.sum(:latter_visit)).to_f / (@results_all.sum(:first_total_visit) + @results_all.sum(:latter_total_visit)) * 100).round()}%"
+      @session_data[s_index + 2,s_col + 2] = 
+        "#{((@results_all.sum(:first_interview) + @results_all.sum(:latter_interview)).to_f / (@results_all.sum(:first_visit) + @results_all.sum(:latter_visit)) * 100).round()}%"
+      @session_data[s_index + 3,s_col + 2] = 
+        "#{((@results_all.sum(:first_full_talk) + @results_all.sum(:latter_full_talk)).to_f / (@results_all.sum(:first_interview) + @results_all.sum(:latter_interview)) * 100).round()}%"
+      @session_data[s_index + 4,s_col + 2] = 
+      "#{((@results_all.sum(:first_get) + @results_all.sum(:latter_get)).to_f / (@results_all.sum(:first_full_talk) + @results_all.sum(:latter_full_talk)) * 100).round()}%"
+      # 前半合計
+      @session_data[s_index + 5,s_col] = @results_all.sum(:first_total_visit)
+      @session_data[s_index + 6,s_col] = @results_all.sum(:first_visit)
+      @session_data[s_index + 7,s_col] = @results_all.sum(:first_interview)
+      @session_data[s_index + 8,s_col] = @results_all.sum(:first_full_talk)
+      @session_data[s_index + 9,s_col] = @results_all.sum(:first_get)
+      # 後半合計
+      @session_data[s_index + 10,s_col] = @results_all.sum(:latter_total_visit)
+      @session_data[s_index + 11,s_col] = @results_all.sum(:latter_visit)
+      @session_data[s_index + 12,s_col] = @results_all.sum(:latter_interview)
+      @session_data[s_index + 13,s_col] = @results_all.sum(:latter_full_talk)
+      @session_data[s_index + 14,s_col] = @results_all.sum(:latter_get)
+
+      # 店舗別基準値
+      store_index = 37 
+      store_col = 47
+      # 合計
+      @session_data[store_index,store_col] = @results_all.sum(:cafe_visit)
+      @session_data[store_index + 1,store_col] = @results_all.sum(:cafe_get)
+      @session_data[store_index + 2,store_col] = @results_all.sum(:other_food_visit)
+      @session_data[store_index + 3,store_col] = @results_all.sum(:other_food_get)
+      @session_data[store_index + 4,store_col] = @results_all.sum(:car_visit)
+      @session_data[store_index + 5,store_col] = @results_all.sum(:car_get)
+      @session_data[store_index + 6,store_col] = @results_all.sum(:other_retail_visit)
+      @session_data[store_index + 7,store_col] = @results_all.sum(:other_retail_get)
+      @session_data[store_index + 8,store_col] = @results_all.sum(:hair_salon_visit)
+      @session_data[store_index + 9,store_col] = @results_all.sum(:hair_salon_get)
+      @session_data[store_index + 10,store_col] = @results_all.sum(:manipulative_visit)
+      @session_data[store_index + 11,store_col] = @results_all.sum(:manipulative_get)
+      @session_data[store_index + 12,store_col] = @results_all.sum(:other_service_visit)
+      @session_data[store_index + 13,store_col] = @results_all.sum(:other_service_get)
+
+      # 全拠点切り返し
+      out_index = 55 
+      out_col = 47
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_01)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_01)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_01)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_02)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_02)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_02)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_03)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_03)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_03)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_04)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_04)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_04)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_05)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_05)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_05)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_06)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_06)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_06)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_07)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_07)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_07)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_08)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_08)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_08)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_09)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_09)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_09)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_10)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_10)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_10)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_11)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_11)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_11)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_12)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_12)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_12)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_13)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_13)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_13)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_interview_19)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_full_talk_19)
+      out_index += 1
+      @session_data[out_index,out_col] = @results_all.sum(:out_get_19)
+
+      # 全拠点時間別基準値
+      time_index = 101 
+      time_col = 47
+      @session_data[time_index,time_col] = @results_all.sum(:visit10)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:get10)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:visit11)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:get11)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:visit12)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:get12)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:visit13)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:get13)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:visit14)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:get14)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:visit15)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:get15)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:visit16)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:get16)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:visit17)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:get17)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:visit18)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:get18)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:visit19)
+      time_index += 1
+      @session_data[time_index,time_col] = @results_all.sum(:get19)
+      time_index += 1
+
       @session_data.save
       redirect_to spread_links_path(month: @month), alert: "#{@name}のスプレッドへ書き込みました！"
     else # 新規シフトがない場合の処理
