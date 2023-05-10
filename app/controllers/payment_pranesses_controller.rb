@@ -16,11 +16,7 @@ class PaymentPranessesController < ApplicationController
     @payment_pranesses = PaymentPraness.includes(:praness).where.not(payment_method: "請求しない").where("payment_date LIKE ?","%#{@month.year}%").order(:payment_date)
     @pranesses = Praness.all
     # 入金待ち
-    @waiting_for_payment = 
-    PaymentPraness.where(payment_method: nil).where("payment_date LIKE ?","%#{@month.year}%").where(status: "結果待ち")
-      .or(
-        PaymentPraness.where(payment_method: "直接請求").where.not(status: "完了").where("payment_date LIKE ?","%#{@month.year}%").where(payment_schedule: Date.today..)
-      )
+    @waiting_for_payment = PaymentPraness.where(payment_method: nil).where("payment_date LIKE ?","%#{@month.year}%").where(status: "結果待ち")
   end
 
 

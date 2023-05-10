@@ -63,10 +63,10 @@
             <td class="difference-td red">キャンセル</td>
             <% month_cnt = 1 %>
             <% 1..12.times do  %>
-              <td class="difference-td red"><%= @pranesses_year.where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%利用開始%").length %>件</td>
+              <td class="difference-td red"><%= @pranesses_year.where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%00.%").length %>件</td>
               <% month_cnt += 1 %>
             <% end %>
-              <td class="difference-td red"><%= @pranesses_year.where("status LIKE ?","%00%").length %>件</td>
+              <td class="difference-td red"><%= @pranesses_year.where("status LIKE ?","%00.%").length %>件</td>
           </tr><%# 全体 %>
           <% user_cnt = 1 %>
           <% @pranesses_year.group(:user_id).each do |p_u| %><%# 個別 %>
@@ -107,7 +107,7 @@
             <td class="difference-td red">キャンセル</td>
             <% month_cnt = 1 %>
             <% 1..12.times do  %>
-              <td class="difference-td red"><%= @pranesses_year.where(user_id: p_u.user_id).where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%利用開始%").length %>件</td>
+              <td class="difference-td red"><%= @pranesses_year.where(user_id: p_u.user_id).where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%00.%").length %>件</td>
               <% month_cnt += 1 %>
             <% end %>
               <td class="difference-td red"><%= @pranesses_year.where(user_id: p_u.user_id).where("status LIKE ?","%00%").length %>件</td>

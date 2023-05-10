@@ -17,7 +17,7 @@
         <%= link_to "<<",year_profit_payment_pranesses_path(month: @month.ago(1.year)), class:"link","data-turbolinks": false %>
         <%= @month.year %>年（入金待ち
         <% @waiting_for_payment.group(:payment_date).count.each do |wait_data| %>
-          <%= wait_data[0] %>：<%= wait_data[1] %>件、
+          <span class="red"><%= wait_data[0] %>：<%= wait_data[1] %>件, </span>
         <% end %>
         ）
         <%= link_to ">>",year_profit_payment_pranesses_path(month: @month.since(1.year)), class:"link","data-turbolinks": false %>

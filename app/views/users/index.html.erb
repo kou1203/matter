@@ -1,7 +1,13 @@
-<div data-scope-path="users/index">
-
-  <h1>ユーザー一覧</h1>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title">ユーザー一覧</h1>
   <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/index">
   <% if current_user.name == "管理用" %>
   
   <% end %>
@@ -17,7 +23,7 @@
     </tr>
     <tr>
       <td ><%= f.search_field :name_cont, class: "input" %></td>
-      <td class="search-td"><%= f.select :base_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(base: "退職").select(:base).distinct, :base, :base), {prompt: "全拠点"},{class: "input"} %></td>
+      <td class="search-td"><%= f.select :base_eq, options_from_collection_for_select(User.where.not(base: "退職").select(:base).distinct, :base, :base), {prompt: "全拠点"},{class: "input"} %></td>
       <td class="search-td"><%= f.select :base_sub_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(base: "退職").select(:base_sub).distinct, :base_sub, :base_sub), {prompt: "全商材"},{class: "input"} %></td>
       <td class="search-td"><%= f.select :position_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(base: "退職").select(:position).distinct, :position, :position), {prompt: ""},{class: "input"} %></td>
       <td class="search-td"><%= f.select :group_eq, options_from_collection_for_select(User.where.not(base: "中部N").where.not(base: "関西N").where.not(base: "退職").select(:group).distinct, :group, :group), {prompt: "全グループ"},{class: "input"} %></td>
