@@ -122,7 +122,7 @@
       <tr >
         <th class="product-th">dメル</th>
         <% if @dmer.nil? %>
-          <td>未獲得</td>
+          <td><%= link_to "未獲得",new_dmer_path(store_id: @store_prop.id),class: "link" %></td>
         <% else %>
           <td ><%= link_to @store_prop.dmer.date, dmer_path(@store_prop.dmer.id),class: "link" %></td>
         <% end %>

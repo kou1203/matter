@@ -1,0 +1,60 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>AirPay早見</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div>
+    <hr>
+    <%= render "shared/airpay_links" %>
+    <hr>
+    <h2>
+      <%= link_to "<<",simple_conf_airpays_path(month: @month.ago(1.month)), class:"link" %>
+      <%= @month.month %>月AirPay内訳
+      <%= link_to ">>",simple_conf_airpays_path(month: @month.since(1.month)), class:"link" %>
+    </h2><br>
+    <h2>獲得内訳</h2>
+    <table class="out-tb">
+      <thead>
+        <tr>
+          <th class="out-th">拠点</th>
+          <th class="out-th">獲得数</th>
+          <th class="out-th">審査中</th>
+          <th class="out-th">不備</th>
+          <th class="out-th">書類待ち</th>
+          <th class="out-th">審査NG</th>
+          <th class="out-th">審査完了</th>
+          <th class="out-th">審査完了率（%）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @bases.each do |base| %><%# 拠点ごとの内訳 %>
+        <tr>
+          <td><%= base %></td>
+          <td><%= @airpays.where(user: {base: base}).length %></td>
+          <td><%= @airpays.where(user: {base: base}).where(status: "審査中").length %></td>
+          <td><%= @airpays.where(user: {base: base}).where("status LIKE ?","%不備%").length %></td>
+          <td><%= @airpays.where(user: {base: base}).where(status: "書類提出待ち").length %></td>
+          <td><%= @airpays.where(user: {base: base}).where(status: "審査NG").length %></td>
+          <td><%= @airpays.where(user: {base: base}).where(status: "審査完了").length %></td>
+          <td><%= (@airpays.where(user: {base: base}).where(status: "審査完了").length.to_f / @airpays.where(user: {base: base}).length * 100).round(1) %>%</td>
+        </tr>
+        <% end %><%# 拠点ごとの内訳 %>
+        <tr>
+          <td>全体</td>
+          <td><%= @airpays.length %></td>
+          <td><%= @airpays.where(status: "審査中").length %></td>
+          <td><%= @airpays.where("status LIKE ?","%不備%").length %></td>
+          <td><%= @airpays.where(status: "書類提出待ち").length %></td>
+          <td><%= @airpays.where(status: "審査NG").length %></td>
+          <td><%= @airpays.where(status: "審査完了").length %></td>
+          <td><%= (@airpays.where(status: "審査完了").length.to_f / @airpays.length * 100).round(1) %>%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -28,6 +28,13 @@ class AirpaysController < ApplicationController
     end
   end 
 
+  # 早見
+  def simple_conf
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @bases = ["中部SS", "関西SS", "関東SS", "九州SS", "2次店"]
+    @airpays = Airpay.includes(:user).where(date: @month.all_month)
+  end 
+
   private 
   def airpay_params
     params.require(:aiepay).permit(

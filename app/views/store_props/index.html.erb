@@ -8,13 +8,9 @@
   </div>
   <div data-scope-path="shares/index">
   <div class="main">
-    <div class="flex">
-      <% if current_user.position == "権限①" %>
-      <table>
-        <th class="reg"><%= link_to "CSV出力", export_store_props_path(format: :csv), data: {confirm: "CSVを出力しますか？"}, class: "reg-link",id:'download-csv' %></th>
-      </table>
-      <% end %>
-    </div>
+  <hr>
+  <%= render "shared/store_prop_links" %>
+  <hr>
     <% if current_user.position_sub == "管理" %>
     <div>
       <%= form_with url: import_store_props_path do |f| %>

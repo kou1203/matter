@@ -96,7 +96,10 @@ Rails.application.routes.draw do
   end 
 
   resources :airpays do
-    collection { post :import }
+    collection { 
+      post :import 
+      get :simple_conf 
+    }
   end
   
   resources :stock_histories, only: [:destroy]

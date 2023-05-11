@@ -9,6 +9,9 @@
 </div>
 <div data-scope-path="shares/index">
 <div class="main">
+<hr>
+<%= render "shared/airpay_links" %>
+<hr>
 <% if current_user.position_sub == "管理" %>
   <%= form_with url: import_airpays_path do |f| %>
     <table class="csv-tb">

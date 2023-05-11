@@ -16,7 +16,7 @@ class DmersController < ApplicationController
   def new
     @dmer = Dmer.new
     @users = User.all
-    @store_prop = StoreProp.find(params[:store_prop_id])
+    @store_prop = StoreProp.find(params[:store_id])
   end 
   
   def create 

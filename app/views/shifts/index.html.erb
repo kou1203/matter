@@ -19,10 +19,6 @@
         <option value="">シフトを選択</option>
         <option value="キャッシュレス新規">キャッシュレス新規</option>
         <option value="キャッシュレス決済">キャッシュレス決済</option>
-        <option value="楽天フェムト新規">楽天フェムト新規</option>
-        <option value="楽天フェムト設置">楽天フェムト設置</option>
-        <option value="電気">電気</option>
-        <option value="設置電気">設置電気</option>
         <option value="帯同">帯同</option>
         <option value="内勤">内勤</option>
         <option value="休み">休み</option>
@@ -43,9 +39,6 @@
         <%= select "shift[#{date}]", :shift,
           [ ["新規", "キャッシュレス新規"],
           ["決済", "キャッシュレス決済"],
-          ["フェムト", "楽天フェムト新規"],
-          ["設置", "楽天フェムト設置"],
-          ["電気", "電気"],
           ["帯同", "帯同"],
           ["内勤", "内勤"],
           ["休み", "休み"],
@@ -59,9 +52,6 @@
             <%= s.select :shift, 
               { "新規": "キャッシュレス新規",
               "決済": "キャッシュレス決済",
-              "フェムト": "楽天フェムト新規",
-              "設置": "楽天フェムト設置",
-              "電気": "電気",
               "帯同": "帯同",
               "内勤": "内勤",
               "休み": "休み",
@@ -96,7 +86,7 @@
           <td class="form-td"><%= f.text_field :user_name_cont, class: "input" %></td>
           <td class="form-td">
             <%= f.select :user_base_cont,
-              { "中部": "中部","関東": "関東","関西": "関西"},
+              { "中部": "中部","関東": "関東","関西": "関西","2次店": "2次店"},
               {include_blank: true},class: "input" %>
           </td>
         </tr>
