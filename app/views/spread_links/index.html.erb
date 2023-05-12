@@ -50,7 +50,7 @@
   <div class="link-flex">
     <% @bases.each do |r_base| %>
     <div class="section">
-      <h2><%= r_base.user.base %></h2>
+      <h2><%= link_to r_base.user.base, base_export_spread_links_path(month: @month, base: r_base.user.base), class: "link",data: { confirm: 'スプレッドへ書き込みますか？',disable_with: "書き込み中" } %></h2>
       <% @results.where(user: {base: r_base.user.base}).each do |result| %>
         <p class="link-text"><%= link_to result.user.name,export_spread_links_path(name: result.user.name,month: @month, base: r_base.user.base), class: "index-link",data: { confirm: 'スプレッドへ書き込みますか？',disable_with: "書き込み中" } %></p>
       <% end %>

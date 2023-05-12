@@ -373,6 +373,7 @@ Rails.application.routes.draw do
   resources :spread_links do 
     collection {
       get :export
+      get :base_export
     }
   end 
 

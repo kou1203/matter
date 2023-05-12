@@ -24,7 +24,6 @@ class SpreadLinksController < ApplicationController
     @session = GoogleDrive::Session.from_config("config.json")
     @session_data = @session.spreadsheet_by_key(@spread_link.search_url).worksheet_by_title(@name)
     @results_all = Result.includes(:user,:result_cash).where(date: @date_period).where(shift: "キャッシュレス新規")
-
     @results = Result.includes(:user,:result_cash).where(user: {name: @name}).where(date: @date_period)
     index_cnt = 0
     col_cnt = 0
@@ -642,6 +641,110 @@ class SpreadLinksController < ApplicationController
       redirect_to spread_links_path(month: @month), alert: "#{@name}の新規シフトの入力がありません。"
     end # 新規シフトがある場合だけエクスポート
 
+  end 
+
+  def base_export
+    # 初期情報
+      @base = params[:base]
+      @users = User.where(base: @base).where(base_sub: "キャッシュレス").where.not(position: "退職")
+      @spread_links = SpreadLink.where(year: @month.year, month: @month.month)
+      @spread_link = @spread_links.find_by("name LIKE ?","%#{@base}%")
+      @session = GoogleDrive::Session.from_config("config.json")
+      @session_data = @session.spreadsheet_by_key(@spread_link.search_url).worksheet_by_title("拠点利益表")
+    # 初期情報
+    # 基準値
+      index_cnt = 6
+      @users.each do |user|
+        col_cnt = 2
+        # 基本情報
+        @shifts = Shift.where(user_id: user.id).where(start_time: @month.all_month)
+        @results = Result.where(user_id: user.id).where(date: @month.all_month)
+        @date_progress = CashDateProgress.includes(:user).where(user_id: user.id).where(date: @month.all_month).last
+        @dmer_date_progress = DmerDateProgress.includes(:user).where(user_id: user.id).where(date: @month.all_month).last
+        @aupay_date_progress = AupayDateProgress.includes(:user).where(user_id: user.id).where(date: @month.all_month).last
+        @paypay_date_progress = PaypayDateProgress.includes(:user).where(user_id: user.id).where(date: @month.all_month).last
+        @rakuten_pay_date_progress = RakutenPayDateProgress.includes(:user).where(user_id: user.id).where(date: @month.all_month).last
+        @airpay_date_progress = AirpayDateProgress.includes(:user).where(user_id: user.id).where(date: @month.all_month).last
+        @itss_date_progress = OtherProductDateProgress.includes(:user).where(product_name: "ITSS").where(user_id: user.id).where(date: @month.all_month).last
+        @session_data[index_cnt,col_cnt] = user.name
+        @session_data[27 + index_cnt,col_cnt] = user.name
+        col_cnt += 1
+        @session_data[index_cnt,col_cnt] = user.position_sub
+        @session_data[27 + index_cnt,col_cnt] = user.position_sub
+        col_cnt += 3
+        # 基本情報
+        # シフト
+        @session_data[index_cnt,col_cnt] = @shifts.where(shift: "キャッシュレス新規").length
+        @session_data[27 + index_cnt,col_cnt - 2] = @shifts.where(shift: "キャッシュレス新規").length
+        col_cnt += 1
+        @session_data[index_cnt,col_cnt] = @results.where(shift: "キャッシュレス新規").length
+        @session_data[27 + index_cnt,col_cnt - 2] = @results.where(shift: "キャッシュレス新規").length
+        col_cnt += 1
+        @session_data[index_cnt,col_cnt] = @shifts.where(shift: "キャッシュレス決済").length
+        col_cnt += 1
+        @session_data[index_cnt,col_cnt] = @results.where(shift: "キャッシュレス決済").length
+        # シフト
+        # 売上
+        col_cnt += 2
+        @session_data[index_cnt,col_cnt] = @date_progress.valuation_current
+        col_cnt += 1
+        @session_data[index_cnt,col_cnt] = @date_progress.valuation_fin
+        col_cnt += 1
+        # 売上
+        # 基準値
+        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_total_visit) + @results.sum(:latter_total_visit)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
+        col_cnt += 1
+        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_visit) + @results.sum(:latter_visit)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
+        col_cnt += 2
+        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_interview) + @results.sum(:latter_interview)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
+        col_cnt += 2
+        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_full_talk) + @results.sum(:latter_full_talk)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
+        col_cnt += 2
+        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_get) + @results.sum(:latter_get)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
+        col_cnt += 2
+        # 基準値
+        # 生産性
+        col_cnt = 7
+        @session_data[27 + index_cnt,col_cnt] = @dmer_date_progress.get_len rescue 0
+        col_cnt += 1
+        @session_data[27 + index_cnt,col_cnt] = @dmer_date_progress.def_len rescue 0
+        col_cnt += 3
+        @session_data[27 + index_cnt,col_cnt] = @aupay_date_progress.get_len rescue 0
+        col_cnt += 3
+        @session_data[27 + index_cnt,col_cnt] = @rakuten_pay_date_progress.get_len rescue 0
+        col_cnt += 3
+        @session_data[27 + index_cnt,col_cnt] = @airpay_date_progress.get_len rescue 0
+        col_cnt += 2
+        @session_data[27 + index_cnt,col_cnt] = @paypay_date_progress.get_len rescue 0
+        col_cnt += 1
+        @session_data[27 + index_cnt,col_cnt] = @itss_date_progress.get_len rescue 0
+        col_cnt += 1
+        # 生産性
+        # 成果になった件数
+        @session_data[27 + index_cnt,col_cnt] = @dmer_date_progress.result1_len rescue 0
+        col_cnt += 1
+        @session_data[27 + index_cnt,col_cnt] = @dmer_date_progress.result2_len rescue 0
+        col_cnt += 1
+        @session_data[27 + index_cnt,col_cnt] = @dmer_date_progress.result3_len rescue 0
+        col_cnt += 1
+        @session_data[27 + index_cnt,col_cnt] = @aupay_date_progress.result_len rescue 0
+        col_cnt += 1
+        @session_data[27 + index_cnt,col_cnt] = @rakuten_pay_date_progress.get_len rescue 0
+        col_cnt += 1
+        @session_data[27 + index_cnt,col_cnt] = @airpay_date_progress.result_len rescue 0
+        col_cnt += 1
+        @session_data[27 + index_cnt,col_cnt] = @paypay_date_progress.result_len rescue 0
+        col_cnt += 1
+        @session_data[27 + index_cnt,col_cnt] = @itss_date_progress.result_len rescue 0
+        # 成果になった件数
+        col_cnt += 1
+        index_cnt += 1
+      end 
+    # 基準値
+    # リダイレクト先
+      @session_data.save
+      redirect_to spread_links_path(month: @month), alert: "#{@base}の拠点利益表のスプレッドへ書き込みました！"
+    # リダイレクト先
   end 
 
   def new 
