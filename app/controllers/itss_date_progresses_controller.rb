@@ -125,7 +125,7 @@ class ItssDateProgressesController < ApplicationController
       @itss_user = Itss.where(user_id: user_id)
       @itss_user_period = @itss_user.where(date: @start_date..@end_date)
       get_len = @itss_user_period.length
-      @itss_user_result = @itss_user.where(construction_schedule: @itss1_start_date..@itss1_end_date)
+      @itss_user_result = @itss_user.where(construction_schedule: @itss1_start_date..@itss1_end_date).where(status_ntt1: "工事完了")
       result_len = @itss_user_result.length
     # 現状売上
       valuation_current = 0
