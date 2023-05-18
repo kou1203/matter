@@ -110,6 +110,13 @@
                       <%= f.date_field :first_payment_lteq, class: "s-input" %>
                     </td>
                   </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">解約日</td>
+                    <td class="s-td">
+                      <%= f.date_field :cancel_gteq, class: "s-input" %>〜
+                      <%= f.date_field :cancel_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div><%# 商材情報 %>
@@ -145,6 +152,7 @@
         <th class="out-tb">利用開始日</th>
         <th class="out-tb">料金発生日</th>
         <th class="out-tb">初回引落日</th>
+        <th class="out-tb">解約日</th>
         <th class="out-tb"></th>
       </tr>
     </thead>
@@ -163,6 +171,7 @@
         <td ><%= praness.start %></td>
         <td ><%= praness.payment_start %></td>
         <td ><%= praness.first_payment %></td>
+        <td ><%= praness.cancel %></td>
         <td ><%= link_to "詳細",  praness_path(praness.id) ,class: "link" %></td>
       </tr>
       <% end %>

@@ -14,19 +14,20 @@ class AupaysController < ApplicationController
   end
 
   def new 
+    @store_prop = StoreProp.find(params[:store_id])
     @aupay = Aupay.new
-    @store_prop = StoreProp.find(params[:store_prop_id])
+    @users = User.where.not(position: "退職")
   end
   
   def create 
-    @store_prop = StoreProp.find(params[:store_prop_id])
+    @users = User.where.not(position: "退職")
     @aupay = Aupay.new(aupay_params)
+    @store_prop = StoreProp.find(@aupay.store_prop_id)
     @aupay.save 
     if @aupay.save 
-      redirect_to store_prop_path(@store_prop.id)
+      redirect_to store_prop_path(@aupay.store_prop_id)
     else  
-      session[:error] = @aupay.errors.full_messages
-      redirect_to store_prop_aupays_new_path(@store_prop.id)
+      render :new
     end 
   end
 
@@ -49,6 +50,7 @@ class AupaysController < ApplicationController
   
   def edit 
     @users = User.all
+    @aupay = Aupay.find(params[:id])
   end 
   
   def update 
@@ -64,6 +66,7 @@ class AupaysController < ApplicationController
   def aupay_params 
     params.require(:aupay).permit(
       :customer_num,
+      :record_num,
       :client,
       :user_id,
       :store_prop_id,

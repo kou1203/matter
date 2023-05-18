@@ -11,6 +11,34 @@ class AirpaysController < ApplicationController
       @airpays_data = @airpays.page(params[:page]).per(100)
   end 
 
+  def new 
+    @users = User.where.not(position: "退職")
+    @store_prop = StoreProp.find(params[:store_prop_id])
+    @airpay = Airpay.new()
+  end 
+
+  def create 
+    @airpay = Airpay.new(airpay_params)
+    @store_prop = @airpay.store_prop_id
+    @airpay.save
+    if @airpay.save
+      redirect_to store_prop_path(@store_prop)
+    else  
+      render :new
+    end 
+  end 
+
+  def edit 
+    @airpay = Airpay.find(params[:id])
+    @users = User.where.not(position: "退職")
+  end 
+
+  def update 
+    @airpay = Airpay.find(params[:id])
+    @airpay.update(airpay_params)
+    redirect_to airpay_path(@airpay.id)
+  end
+
   def show 
     @airpay = Airpay.find(params[:id])
   end 
@@ -37,7 +65,7 @@ class AirpaysController < ApplicationController
 
   private 
   def airpay_params
-    params.require(:aiepay).permit(
+    params.require(:airpay).permit(
       :store_prop_id                    ,
       :user_id                    ,
        :date                   ,  

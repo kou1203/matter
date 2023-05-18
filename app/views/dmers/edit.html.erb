@@ -15,7 +15,7 @@
         <%= render "shared/error_messages", model: f.object %>
         <div class="form">
             <p><%= f.label :client, "商流", class: "form-text" %></p>
-            <p><%= f.collection_select(:client, Dmer.select(:client).distinct, :client, :client,{}, {class: "slct-input"})%></p>
+            <p><%= f.collection_select(:client, Dmer.group(:client), :client, :client,{include_blank: true}, {class: "slct-input"})%></p>
         </div>
         <div class="form">
             <p><%= f.label :customer_num, "お客様番号", class: "form-text" %></p>
@@ -36,7 +36,7 @@
         <h2>新規情報</h2>
         <div class="form">
             <p><%= f.label :industry_status, "業種チェック", class: "form-text" %></p>
-            <p><%= f.collection_select(:industry_status, Dmer.select(:industry_status).distinct, :industry_status, :industry_status,{}, {class: "slct-input"}) %></p>
+            <p><%= f.collection_select(:client, Dmer.group(:industry_status), :industry_status, :industry_status,{include_blank: true}, {class: "slct-input"})%></p>
         </div>
         <div class="form">
             <p><%= f.label :app_check, "申込チェック", class: "form-text" %></p>

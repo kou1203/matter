@@ -11,12 +11,12 @@
       <div class="form-title">
         <h2>獲得情報</h2>
       </div>
-      <%= form_with model: @dmer,url: store_prop_dmers_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
+      <%= form_with model: @dmer, class: "form-frame", local: true do |f| %>
         <%= render "shared/error_messages", model: f.object %>
         <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
         <div class="form">
             <p><%= f.label :client, "商流", class: "form-text" %></p>
-            <p><%= f.select :client,options_from_collection_for_select(Dmer.select(:client).distinct,:client, :client),{include_blank: true},{class: "slct-input"} %></p>
+            <p><%= f.collection_select(:client, Dmer.group(:client), :client, :client,{include_blank: true}, {class: "slct-input"})%></p>
         </div>
         <div class="form">
             <p><%= f.label :customer_num, "お客様番号", class: "form-text" %></p>
@@ -48,7 +48,7 @@
             <p><p><%= f.date_field :app_check_date , class: "date-input" %></p></p>
         </div>
         <div class="form">
-            <p><%= f.label :status, "新規ステータス", class: "form-text" %></p>
+            <p><%= f.label :status, "審査ステータス", class: "form-text" %></p>
             <p><%= f.select :status,options_from_collection_for_select(Dmer.select(:status).distinct,:status, :status),{include_blank: true},{class: "slct-input"} %></p>
         </div>
         <div class="form">

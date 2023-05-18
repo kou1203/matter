@@ -2,27 +2,6 @@ Rails.application.routes.draw do
   devise_for :users
   root to: 'results#index'
   resources :store_props do 
-    get 'pranesses/index'
-    get 'pranesses/new'
-    post 'pranesses/create'
-    get 'summits/new'
-    post 'summits/create'
-    get 'dmers/new'
-    post 'dmers/create'
-    get 'aupays/new'
-    post 'aupays/create'
-    get 'paypays/new'
-    post 'paypays/create'
-    get 'pandas/new'
-    post 'pandas/create'
-    get 'rakuten_casas/new'
-    post 'rakuten_casas/create'
-    get 'trouble_sses/new'
-    post 'trouble_sses/create'
-    get 'st_insurances/new'
-    post 'st_insurances/create'
-    get 'rakuten_pays/new'
-    post 'rakuten_pays/create'
     collection { post :import }
     collection { get :export }
   end 
@@ -73,7 +52,7 @@ Rails.application.routes.draw do
     }
   end 
 
-  resources :dmers, expect: [:new, :create] do 
+  resources :dmers do 
     collection { post :import }
     collection { get :index_export }
     collection { get :export }
@@ -129,7 +108,6 @@ Rails.application.routes.draw do
     get 'result_cashes/new'
     post 'result_cashes/create'
     get 'result_casas/new'
-    post 'result_casas/create'
     get 'result_summits/new'
     post 'result_summits/create'
     collection { 
@@ -147,6 +125,7 @@ Rails.application.routes.draw do
       put :comment_update
       get :profit_only
       get :out_come
+      get :base_productivity
     }
   end  
 

@@ -55,10 +55,10 @@
     <tr >
     <th >備考</th>
     <td colspan="2"><%= @dmer.store_prop.description %></td>
-    <td ><%= link_to "編集", edit_store_prop_path(@dmer.store_prop.id), class: "link" %></td>
+    <td ><%= link_to "編集", edit_store_prop_path(@dmer.store_prop.id),"data-turbolinks": false, class: "link" %></td>
     </tr>
     </table>
-    <h2 >dメル情報</h2>
+    <h2 >基本情報</h2>
     <table >
     <tr >
     <th >獲得日</th>
@@ -66,40 +66,61 @@
       <th >獲得者</th>
       <td ><%= @dmer.user.name %></td>
     </tr>
-
     <tr >
       <th >お申込み番号</th>
       <td ><%= @dmer.customer_num %></td>
-      <th >商流</th>
-      <td ><%= @dmer.client %></td>
-    </tr>
-
-    <tr >
-      <th >審査ステータス</th>
-      <td ><%= @dmer.status %></td>
-      <th >審査ステータス更新日</th>
-      <td ><%= @dmer.status_update %></td>
+      <th >管理番号</th>
+      <td ><%= @dmer.controll_num %></td>
     </tr>
     <tr >
       <th >上位店共有日</th>
       <td ><%= @dmer.share %></td>
-      <th >不備発生日</th>
-      <td ><%= @dmer.deficiency %></td>
+      <th >商流</th>
+      <td ><%= @dmer.client %></td>
     </tr>
     <tr>
+      <th >不備発生日</th>
+      <td ><%= @dmer.deficiency %></td>
       <th >不備解消日</th>
       <td ><%= @dmer.deficiency_solution %></td>
-      <th >不備解消期限</th>
-      <td ><%= @dmer.deficiency_deadline %></td>
     </tr>
     <tr>
       <th>不備詳細</th>
       <td colspan="3"><%= @dmer.deficiency_remarks %></td>
     </tr>
+  </table>
+  <h2 >ステータス</h2>
+    <table >
+    <tr >
+      <th >業種チェック</th>
+      <td ><%= @dmer.industry_status %></td>
+      <th >審査ステータス更新日</th>
+      <td ><%= @dmer.status_update %></td>
+    </tr>
+    <tr >
+    <th >申込チェック</th>
+      <td ><%= @dmer.app_check %></td>
+      <th >申込チェック日</th>
+      <td ><%= @dmer.app_check_date %></td>
+    </tr>
+
+
+    <tr >
+      <th >審査ステータス</th>
+      <td ><%= @dmer.status %></td>
+      <th >審査完了日（新規）</th>
+      <td ><%= @dmer.result_point %></td>
+    </tr>
 
   </table>
   <h2>決済情報</h2>
   <table>
+    <tr>
+      <th >決済者</th>
+      <td ><%= @dmer.settlementer.name rescue "" %></td>
+      <th >決済完了日</th>
+      <td ><%= @dmer.result_point_settlement %></td>
+    </tr>
     <tr>
       <th >キット発送日</th>
       <td ><%= @dmer.shipment %></td>
@@ -115,9 +136,8 @@
     <tr>
       <th >アクセプタンスアップロード日</th>
       <td ><%= @dmer.picture %></td>
-      <th >決済者</th>
-      <td ><%= @dmer.settlementer.name rescue "" %></td>
-
+      <th >アクセプタンス連携日</th>
+      <td ><%= @dmer.picture_update %></td>
     </tr>
     <tr>
       <th>決済審査ステータス</th>
@@ -141,7 +161,7 @@
       <td colspan="2"><%= @dmer.description %></td>
       <% if current_user.position == "権限①" %>
       <td >
-      <%= link_to "dメル情報編集", edit_dmer_path, class: "link" %>
+      <%= link_to "dメル情報編集", edit_dmer_path,"data-turbolinks": false , class: "link" %>
       </td>
       <% else %>
       <td></td>
@@ -149,22 +169,10 @@
 
     </tr>
   </table>
-  <h2>利益/入金日</h2>
+  <% if current_user.position == "権限①" %>
+  <h2>単価</h2>
   <table>
     <tr>
-      <th >審査完了日（新規）</th>
-      <td ><%= @dmer.result_point %></td>
-      <th >審査完了日（決済）</th>
-      <td ><%= @dmer.result_point_settlement %></td>
-
-    </tr>
-    <tr>
-      <th >獲得入金日</th>
-      <td ><%= @dmer.payment %></td>
-      <th >決済入金日</th>
-      <td ><%= @dmer.payment_settlement %></td>
-    </tr>
-    <tr >
       <th >評価売上（新規）</th>
       <td ><%= @dmer.valuation_new %></td>
       <th colspan="2"></th>
@@ -175,8 +183,6 @@
       <th >評価売上（２回目決済）</th>
       <td ><%= @dmer.valuation_second_settlement %></td>
     </tr>
-
-    <% if current_user.position == "権限①" %>
     <tr>
       <th >実売上（新規）</th>
       <td ><%= @dmer.profit_new %></td>
@@ -188,9 +194,9 @@
       <th >実売上（2回目決済）</th>
       <td ><%= @dmer.profit_second_settlement %></td>
     </tr>
+    </table>
     <% else %>
     <% end %>
-    </table>
   </div>
   </div>
 </div>

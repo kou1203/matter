@@ -15,17 +15,17 @@ class DmersController < ApplicationController
 
   def new
     @dmer = Dmer.new
-    @users = User.all
+    @users = User.where.not(position: "退職")
     @store_prop = StoreProp.find(params[:store_id])
   end 
   
   def create 
     @dmer = Dmer.new(dmer_params)
-    @users = User.all
-    @store_prop = StoreProp.find(params[:store_prop_id])
+    @store_prop = StoreProp.find(@dmer.store_prop_id)
+    @users = User.where.not(position: "退職")
     @dmer.save 
     if @dmer.save 
-      redirect_to store_props_path(@store_prop.id) 
+      redirect_to store_prop_path(@dmer.store_prop_id) 
     else  
       render :new 
     end 
@@ -176,12 +176,15 @@ class DmersController < ApplicationController
   def dmer_params
     params.require(:dmer).permit(
       :customer_num,
+      :controll_num,
       :client,
       :user_id,
       :store_prop_id,
       :date,
       :share,
       :industry_status,
+      :app_check,
+      :app_check_date,
       :status,
       :status_update,
       :shipment,
@@ -189,6 +192,7 @@ class DmersController < ApplicationController
       :settlement,
       :settlement_second,
       :picture,
+      :picture_update,
       :settlement_deadline,
       :status_settlement,
       :status_update_settlement,

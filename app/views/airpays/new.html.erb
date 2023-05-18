@@ -1,0 +1,51 @@
+<div data-scope-path="shared/header">
+  <h1><%= @store_prop.name %>情報入力（AirPay）</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;"><%# フレックス %>
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form"><%# CSSスコープ %>
+    <div class="form-main"><%# フォーム外枠 %>
+      <div class="form-title">
+        <h2>獲得情報</h2>
+      </div>
+      <%= form_with model: @airpay,  class: "form-frame", local: true do |f| %>
+        <%= render "shared/error_messages", model: f.object %>
+        <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
+        <%= f.hidden_field :valuation, value: 3000 %>
+        <%= f.hidden_field :profit, value: 3000 %>
+        <%= f.hidden_field :status_update,value: Date.today %>
+        <div class="form">
+            <p><%= f.label :client, "商流", class: "form-text" %></p>
+            <p><%= f.select :client,options_from_collection_for_select(Airpay.select(:client).distinct,:client, :client),{include_blank: true},{class: "slct-input"} %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :date, "獲得日", class: "form-text" %></p>
+            <p><%= f.date_field :date,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :customer_num, "お客様番号", class: "form-text" %></p>
+            <p><%= f.text_field :customer_num , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :user_id, "獲得者", class: "form-text" %></p>
+            <p><%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "date-input"})%></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :status, "審査ステータス", class: "form-text" %></p>
+            <p><%= f.select :status,options_from_collection_for_select(Airpay.select(:status).distinct,:status, :status),{include_blank: true},{class: "slct-input"} %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :result_point, "審査通過日", class: "form-text" %></p>
+            <p><%= f.date_field :result_point,class: "date-input" %></p>
+        </div>
+    </div><%# フォーム外枠 %>
+        <div class="form-submit">
+            <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        </div>
+    <% end %>
+  </div><%# CSSスコープ %>
+</div><%# フレックス %>
+

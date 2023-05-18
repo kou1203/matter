@@ -1031,6 +1031,31 @@ class ResultsController < ApplicationController
     redirect_to request.referer
   end  
 
+  def base_productivity
+    # 検索内容
+      @search_base = params[:search_base]
+      @s_date = params[:s_date]
+      @e_date = params[:e_date]
+    # 検索内容
+    # 基準値
+      @results = Result.includes(:user,:result_cash).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
+    # 基準値
+    # 商材
+      @products = []
+      @dmers = Dmer.includes(:user).where(date: @s_date..@e_date)
+      @products << @dmers
+      @aupays = Aupay.includes(:user).where(date: @s_date..@e_date)
+      @products << @aupays
+      @rakuten_pays = RakutenPay.includes(:user).where(date: @s_date..@e_date)
+      @products << @rakuten_pays
+      @airpays = Airpay.includes(:user).where(date: @s_date..@e_date)
+      @products << @airpays
+    # 商材
+      if params[:search_base].present? 
+        @results = @results.where(user: {base: @search_base})
+      end
+  end 
+
   def out_come
     @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "2次店","退職"]
     @users = User.where.not(position: "退職")

@@ -122,13 +122,13 @@
       <tr >
         <th class="product-th">dメル</th>
         <% if @dmer.nil? %>
-          <td><%= link_to "未獲得",new_dmer_path(store_id: @store_prop.id),class: "link" %></td>
+          <td><%= link_to "未獲得",new_dmer_path(store_id: @store_prop.id),"data-turbolinks": false,class: "link" %></td>
         <% else %>
           <td ><%= link_to @store_prop.dmer.date, dmer_path(@store_prop.dmer.id),class: "link" %></td>
         <% end %>
-        <th class="product-th">auペイ</th>
+        <th class="product-th">auPay</th>
         <% if @aupay.nil? %>
-          <td>未獲得</td>
+          <td><%= link_to "未獲得",new_aupay_path(store_id: @store_prop.id),"data-turbolinks": false,class: "link" %></td>
         <% else %>
           <td ><%= link_to @store_prop.aupay.date, aupay_path(@store_prop.aupay.id),class: "link" %></td>
         <% end %>
@@ -144,7 +144,7 @@
         <% if @rakuten_pay.nil? %>
           <td>未獲得</td>
         <% else %>
-          <td ><%= link_to @store_prop.rakuten_pay.date, rakuten_pay_path(@store_prop.rakuten_pay.id),class: "link" %></td>
+          <td><%= link_to @store_prop.rakuten_pay.date, rakuten_pay_path(@store_prop.rakuten_pay.id),class: "link" %></td>
         <% end %>
       </tr>
       <tr>
@@ -156,7 +156,7 @@
         <% end %>
         <th class="product-th">AirPay</th>
         <% if @airpay.nil? %>
-          <td>未獲得</td>
+          <td><%= link_to "未獲得",new_airpay_path(store_prop_id: @store_prop.id),"data-turbolinks": false,class: "link" %></td>
         <% else %>
           <td ><%= link_to @store_prop.airpay.date, airpay_path(@store_prop.airpay.id),class: "link" %></td>
         <% end %>

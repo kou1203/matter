@@ -9,6 +9,7 @@ class PaypaysController < ApplicationController
         @q.result(distinct: false)
       end
       @paypays_data = @paypays.page(params[:page]).per(100)
+      session[:previous_url] = request.referer
   end 
 
   def new 
@@ -55,6 +56,12 @@ class PaypaysController < ApplicationController
     @paypay = Paypay.find(params[:id])
     @paypay.update(paypay_params)
     redirect_to paypay_path(@paypay.id)
+  end 
+
+  def destroy 
+    @paypay = Paypay.find(params[:id])
+    @paypay.destroy
+    redirect_to session[:previous_url], alert: "#{@paypay.store_prop.name}のPayPay情報を削除しました。"
   end 
 
   private 

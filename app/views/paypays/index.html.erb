@@ -155,6 +155,7 @@
     <table class="out-tb">
     <thead>
       <tr >
+        <th class="out-tb"></th>
         <th class="out-tb">管理番号</th>
         <th class="out-tb">法人/個人</th>
         <th class="out-tb">店舗名</th>
@@ -169,6 +170,7 @@
     <tbody>
       <% @paypays_data.each do |paypay| %>
       <tr >
+        <td ><%= link_to "削除", paypay_path(paypay.id), method: :delete,data: {confirm: "#{paypay.store_prop.name}のPayPayの情報を削除してもよろしいですか？"},class: "link" %></td>
         <td ><%= paypay.customer_num %></td>
         <td ><%= paypay.store_prop.race %></td>
         <td ><%= paypay.store_prop.name %></td>

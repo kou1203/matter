@@ -180,7 +180,7 @@
               <% end %>
             <% end %>
             <% if store_prop.airpay.present? %>
-              AirPay
+              <%= link_to "AirPay", airpay_path(store_prop.airpay.id), class: "link" %>
             <% end %>
             <% if store_prop.demaekan.present? %>
               出前館

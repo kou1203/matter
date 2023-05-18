@@ -111,7 +111,12 @@
     <tr>
       <th >アクティベート日</th>
       <td ><%= @airpay.activate %></td>
-      <th colspan="2"></th>
+      <th colspan=""></th>
+      <% if current_user.position == "権限①" %>
+      <td ><%= link_to "編集", edit_airpay_path(@airpay.id), class: "link" %></td>
+      <% else %>
+      <td ></td>
+      <% end %>
     </tr>
 
   </table>
