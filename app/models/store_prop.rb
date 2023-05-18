@@ -15,7 +15,6 @@ class StoreProp < ApplicationRecord
   end 
 
   has_one :dmer, dependent: :destroy
-  has_one :praness, dependent: :destroy
   has_one :aupay, dependent: :destroy
   has_one :paypay, dependent: :destroy
   has_many :pandas , dependent: :destroy
