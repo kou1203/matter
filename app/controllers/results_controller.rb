@@ -953,7 +953,7 @@ class ResultsController < ApplicationController
     @cash_date_progress.each do |r|
       sum_valuations_ave = (r.valuation_fin.to_f / r.shift_schedule).round() rescue 0
       @ranking_ave.store(r.user.name,[sum_valuations_ave])
-      ranking_ave = @ranking_ave.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
+      @ranking_ave = @ranking_ave.sort {|(k1,v1), (k2,v2)| v2<=>v1}.to_h
     end
     @dmer_date_progress = DmerDateProgress.includes(:user).where(date: @start_date..@end_date).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @dmer_date_progress = @dmer_date_progress.where(date: @dmer_date_progress.maximum(:date)).where(create_date: @dmer_date_progress.maximum(:create_date)).order("get_len DESC")
@@ -1053,6 +1053,15 @@ class ResultsController < ApplicationController
     # 商材
       if params[:search_base].present? 
         @results = @results.where(user: {base: @search_base})
+        @products = []
+        @dmers = Dmer.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
+        @products << @dmers
+        @aupays = Aupay.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
+        @products << @aupays
+        @rakuten_pays = RakutenPay.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
+        @products << @rakuten_pays
+        @airpays = Airpay.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
+        @products << @airpays
       end
   end 
 

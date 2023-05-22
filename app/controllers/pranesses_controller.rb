@@ -28,32 +28,27 @@ class PranessesController < ApplicationController
 
   def new 
     @praness = Praness.new 
-    @users = User.all
-    @store_prop = StoreProp.find(params[:store_prop_id])
-    stock_table = Stock.arel_table
-    @stocks = Stock.joins('LEFT JOIN stock_histories ON stocks.id = stock_histories.stock_id').where('stock_histories.id IS NOT NULL')
+    @users = User.where.not(position: "退職")
     
   end 
   
   def create 
-    @stocks = Stock.joins('LEFT JOIN stock_histories ON stocks.id = stock_histories.stock_id').where('stock_histories.id IS NOT NULL')
-    @users = User.all
-    @store_prop = StoreProp.find(params[:store_prop_id])
+    @users = User.where.not(position: "退職")
     @praness = Praness.new(praness_params)
     if @praness.save 
-      redirect_to store_prop_path(@store_prop.id)
+      redirect_to praness_path(@praness.id)
     else  
       render :new
     end 
   end 
   
   def edit 
-    @users = User.all
-    @stocks = Stock.joins('LEFT JOIN stock_histories ON stocks.id = stock_histories.stock_id').where('stock_histories.id IS NOT NULL')
+    @users = User.where.not(position: "退職")
     @praness = Praness.find(params[:id])
   end 
   
   def update 
+    @users = User.where.not(position: "退職")
     @praness = Praness.find(params[:id])
     @praness.update(praness_params)
       redirect_to praness_path(@praness.id)
@@ -74,25 +69,36 @@ class PranessesController < ApplicationController
   private 
   def praness_params 
     params.require(:praness).permit(
+      :store_name,
       :customer_num,
-      :client,
       :user_id,
-      :store_prop_id,
-      :get_date,
-      :payment,
+      :date,
       :status,
-      :stock_id,
-      :ssid_change,
+      :cash_status,
+      :terminal_num,
+      :remarks,
+      :sales_man_remarks,
+      :terminal_status,
       :ssid_1,
-      :pass_1,
       :ssid_2,
+      :pass_1,
       :pass_2,
       :cancel,
-      :return_remarks,
-      :remarks,
-      :claim,
+      :cancel_reason,
+      :ssid_pass_change,
       :start,
-      :deadline
+      :payment_start,
+      :first_payment,
+      :aplus_num,
+      :cash_name,
+      :payment_terminal,
+      :not_use_reason,
+      :done,
+      :option,
+      :mail,
+      :notice_send,
+      :def_remarks,
+      :status_update,
     )
   end 
 

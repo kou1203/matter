@@ -11,9 +11,10 @@ class AirpaysController < ApplicationController
       @airpays_data = @airpays.page(params[:page]).per(100)
   end 
 
+
   def new 
     @users = User.where.not(position: "退職")
-    @store_prop = StoreProp.find(params[:store_prop_id])
+    @store_prop = StoreProp.find(params[:store_id])
     @airpay = Airpay.new()
   end 
 

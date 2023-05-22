@@ -84,11 +84,9 @@
       </tr>
       <tr>
        <th>備考</th>
-        <td colspan=2><%= @praness.remarks %></td>
-      </tr>
-      <tr>
-       <th>営業側備考</th>
-        <td colspan=2><%= @praness.sales_man_remarks %></td>
+        <td ><%= @praness.remarks %></td>
+        <th>営業側備考</th>
+        <td ><%= @praness.sales_man_remarks %></td>
       </tr>
       </table>
       <h2>SSID・パスワード / キャンセル・解約</h2>
@@ -110,6 +108,10 @@
         <td><%= @praness.cancel %></td>
         <th>SSID/パス変更</th>
         <td><%= @praness.ssid_pass_change %></td>
+      </tr>
+      <tr>
+        <th colspan="3"></th>
+        <td><%= link_to "編集", edit_praness_path(@praness.id),"data-turbolinks": false, class: "link" %></td>
       </tr>
     </table>
     </div>

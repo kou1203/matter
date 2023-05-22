@@ -721,7 +721,7 @@ class SpreadLinksController < ApplicationController
         col_cnt += 1
         # 生産性
         # 成果になった件数
-        @session_data[27 + index_cnt,col_cnt] = @dmer_date_progress.result1_len rescue 0
+        @session_data[27 + index_cnt,col_cnt] = @dmer_date_progress.done_len rescue 0
         col_cnt += 1
         @session_data[27 + index_cnt,col_cnt] = @dmer_date_progress.result2_len rescue 0
         col_cnt += 1

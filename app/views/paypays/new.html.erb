@@ -1,67 +1,54 @@
 <div data-scope-path="shared/header">
   <h1><%= @store_prop.name %>情報入力（PayPay）</h1>
-  <%= render "shared/header" %>    
+  <%= render "shared/header" %>
 </div>
-<div style="display:flex;">
-<div data-scope-path="shared/side_bar">
-  <%= render "shared/sidebar" %>    
-</div>
-<div data-scope-path="paypays/new">
-  <%= form_with model: @paypay,url: store_prop_paypays_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
-    <%= render "shared/error_messages", model: f.object %>
-    <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
-    <table>
-      <tr>
-        <th><%= f.label :user_id, "獲得者", class: "form-text" %></th>
-        <th><%= f.label :date, "獲得日", class: "form-text" %></th>
-        <th><%= f.label :status, "審査ステータス", class: "form-text" %></th>
-        <th><%= f.label :status_update, "ステータス更新日",class: "form-text" %></th>
-        <th></th>
-      </tr>
-        
-        <td><%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "form-input"}) %></td>
-        <td><%= f.date_field :date , class: "form-input" %></td>
-        <td><%= f.select :status, {"未審査": "未審査","審査中": "審査中", "審査完了": "審査完了", "自社不備": "自社不備","自社NG": "自社NG","上位店不備": "上位店不備","上位店NG": "上位店NG"} ,{}, {class: "form-input"} %></td>
-        <td><%= f.date_field :status_update, value: Date.today, class: "form-input" %></td>
-        <td></td>
-      </tr>
-      <tr>
-        <th><%= f.label :client, "商流", class: "form-text" %></th>
-        <th><%= f.label :client, "上位店管理番号", class: "form-text" %></th>
-        <th><%= f.label :result_point, "上位店連携日", class: "form-text" %></th>
-        <th><%= f.label :payment, "入金日", class: "form-text" %></th>
-      </tr>
-      <tr>
-        <td><%= f.select :client, {"マックスサポート": "マックスサポート"} ,{}, {class: "form-input"} %></td>
-        <td><%= f.text_field :customer_num , class: "form-input" %></td>
-        <td><%= f.date_field :result_point , class: "form-input" %></td>
-        <td><%= f.date_field :payment , class: "form-input" %></td>
-      </tr>
-      <tr>
-        <th><%= f.label :deficiency, "不備発生日", class: "form-text" %></th>
-        <th><%= f.label :deficiency_solution, "不備解消日", class: "form-text" %></th>
-        <th><%= f.label :valuation, "評価売上", class: "form-text" %></th>
-        <th><%= f.label :profit, "実売上", class: "form-text" %></th>
-      </tr>
-      <tr>
-        <td><%= f.date_field :deficiency , class: "form-input" %></td>
-        <td><%= f.date_field :deficiency_solution , class: "form-input" %></td>
-        <td><%= f.number_field :valuation, class: "form-input" %></td>
-        <td><%= f.number_field :profit , class: "form-input" %></td>
-      </tr>
-      <tr>
-        <th colspan="2"><%= f.label :remarks, "備考", class: "form-text" %></th>
-      </tr>
-      <tr>
-        <td colspan="2"><%= f.text_field :remarks , class: "remarks-input" %></td>
-        
-        <td></td>
-      <tr>
-      </tr>
-    </table>
-
-    <%= f.submit "登録", class: "submit-btn" %>
-  
-  
-  <% end %>
-</div>
+<div style="display:flex;"><%# フレックス %>
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form"><%# CSSスコープ %>
+    <div class="form-main"><%# フォーム外枠 %>
+      <div class="form-title">
+        <h2>獲得情報</h2>
+      </div>
+      <%= form_with model: @paypay,  class: "form-frame", local: true do |f| %>
+        <%= render "shared/error_messages", model: f.object %>
+        <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
+        <%= f.hidden_field :valuation, value: 1000 %>
+        <%= f.hidden_field :profit, value: 3000 %>
+        <%= f.hidden_field :status_update,value: Date.today %>
+        <div class="form">
+            <p><%= f.label :client, "商流", class: "form-text" %></p>
+            <p><%= f.select :client,options_from_collection_for_select(Paypay.select(:client).distinct,:client, :client),{include_blank: true},{class: "slct-input"} %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :date, "獲得日", class: "form-text" %></p>
+            <p><%= f.date_field :date,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :customer_num, "お客様番号", class: "form-text" %></p>
+            <p><%= f.text_field :customer_num , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :user_id, "獲得者", class: "form-text" %></p>
+            <p><%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "date-input"})%></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :remarks, "後確状況", class: "form-text" %></p>
+            <p><%= f.select :remarks,options_from_collection_for_select(Paypay.select(:remarks).distinct,:remarks, :remarks),{include_blank: true},{class: "slct-input"} %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :status, "審査ステータス", class: "form-text" %></p>
+            <p><%= f.select :status,options_from_collection_for_select(Paypay.select(:status).distinct,:status, :status),{include_blank: true},{class: "slct-input"} %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :result_point, "審査通過日", class: "form-text" %></p>
+            <p><%= f.date_field :result_point,class: "date-input" %></p>
+        </div>
+    </div><%# フォーム外枠 %>
+        <div class="form-submit">
+            <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        </div>
+    <% end %>
+  </div><%# CSSスコープ %>
+</div><%# フレックス %>

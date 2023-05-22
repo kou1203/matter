@@ -16,7 +16,7 @@
       <h3>メニュー</h3>
         <label class="header-label" id="lists1">店舗情報/商材</label>
           <ul class="dropdown" id="pull-down1" >
-            <li id="lists1"><%= link_to "店舗一覧", store_props_path , class: "side-link" %></li>
+            <li id="lists1"><%= link_to "店舗一覧", store_props_path , class: "side-link","data-turbolinks": false %></li>
             <li id="lists1"><%= link_to "dメル一覧", dmers_path, class: "side-link","data-turbolinks": false %></li>
             <li id="lists1"><%= link_to "aupay一覧", aupays_path, class: "side-link" ,"data-turbolinks": false %></li>
             <li id="lists1"><%= link_to "PayPay一覧", paypays_path, class: "side-link" %></li>
@@ -33,7 +33,7 @@
         <label class="header-label" id="lists2">利益表</label>
           <ul class="dropdown" id="pull-down2">
             <li id="lists2"><%= link_to "利益表", results_path,class: "side-link","data-turbolinks": false %></li>
-            <li id="lists2"><%= link_to "帯同資料", ojts_path,class: "side-link" %></li>
+            <li id="lists2"><%= link_to "帯同資料", ojts_path,class: "side-link","data-turbolinks": false %></li>
             <% if (current_user.position == "権限①") %>
             <%# <li id="lists2"><span data-turbolinks="false">link_to "会議資料", profits_path,class: "side-link"</span></li> %>
             <li id="lists2"><span data-turbolinks="false"><%= link_to "利益計算期間", calc_periods_path,class: "side-link" %></span></li>
@@ -49,7 +49,7 @@
           <li id="lists3"><%= link_to "終着報告", new_result_path(user_id: current_user.id, date: Date.today), class: "side-link","data-turbolinks": false %></li>
           <li id="lists3"><%= link_to "その他獲得報告", new_other_product_path, class: "side-link" %></li>
           <li id="lists3"><%= link_to "シフト申請/確認", shifts_path, class: "side-link" %></li>
-          <li id="lists3"><%= link_to "ユーザー情報", users_path, class: "side-link" %></li>
+          <li id="lists3"><%= link_to "ユーザー情報", users_path, class: "side-link","data-turbolinks": false %></li>
         </ul>
     </ul>
   </nav>

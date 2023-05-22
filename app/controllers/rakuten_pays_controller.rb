@@ -14,15 +14,15 @@ class RakutenPaysController < ApplicationController
   def new
     @rakuten_pay = RakutenPay.new 
     @users = User.all 
-    @store_prop = StoreProp.find(params[:store_prop_id]) 
+    @store_prop = StoreProp.find(params[:store_id])
   end  
   
   def create 
     @rakuten_pay = RakutenPay.new(rakuten_pay_params)
     @users = User.all 
-    @store_prop = StoreProp.find(params[:store_prop_id])
+    @store_prop = @rakuten_pay.store_prop_id
     if @rakuten_pay.save 
-      redirect_to rakuten_pay_path(@rakuten_pay.id) 
+      redirect_to store_prop_path(@store_prop) 
     else  
       render :new 
     end 

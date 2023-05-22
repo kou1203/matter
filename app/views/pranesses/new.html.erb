@@ -1,84 +1,135 @@
-<div data-scope-path="pranesses/new">
-  <h1 class="show-title"><%= @store_prop.name %>情報入力（ぷらねす）</h1>
+<div data-scope-path="shared/header">
+  <h1>情報入力（ぷらねす）</h1>
   <%= render "shared/header" %>
-
-  <%= form_with url: import_store_props_path do |f| %>
-    <table>
-      <tr>
-      <th class="csv">CSV取り込み</td>
-      <td><%= f.file_field :file, accept: '.csv', class: "input" %></td>
-      <td class="result"><%= f.submit  "インポート",class: "result-btn" , data: {confirm: "インポートしますか？"} %></td>
-      <td class="reset"><%= link_to "店舗一覧に戻る", root_path ,class: "reset-link" %></td>
-    </table>
-  <% end %>
-      
-  <%= form_with model: @praness,url:  store_prop_pranesses_create_path(@store_prop.id),  class: "form-frame", local: true do |f| %>
-    <%= render "shared/error_messages", model: f.object %>
-      <%= f.hidden_field :store_prop_id, value: @store_prop.id %>
-    <div class="nav">
-      <%# 一列目 %>
-      <div>
-        <%= f.label :client, "商流", class: "form-text" %>
-        <%= f.select :client, {"自社": "自社"} ,{}, {class: "form-input"} %>
-
-        <%= f.label :ssid_change, "SSID変更日", class: "form-text" %>
-        <%= f.date_field :ssid_change , class: "form-input" %>
-
-        <%= f.label :pass_1, "PASS①", class: "form-text" %>
-        <%= f.text_field :pass_1 , class: "form-input" %>
-
-        <%= f.label :deadline, "請求開始締日", class: "form-text" %>
-        <%= f.date_field :deadline , class: "form-input" %>
-
-        <%= f.label :return_remarks, "返却在庫に対する備考", class: "form-text" %>
-        <%= f.text_field :return_remarks , class: "form-input" %>
-      </div>
-      <%# 2列目 %>
-      <div>
-        <%= f.label :user_id, "獲得者", class: "form-text" %>
-        <%= f.collection_select(:user_id, User.joins(:stock_history).distinct, :id, :name,{}, {class: "form-input"})%>
-
-        <%= f.label :stock_id, "在庫番号", class: "form-text" %>
-        <%= f.collection_select(:stock_id, @stocks, :id, :stock_num,{}, {class: "form-input"} ) %>
-
-        <%= f.label :ssid_2, "SSID②", class: "form-text" %>
-        <%= f.text_field :ssid_2 , class: "form-input" %>
-
-        <%= f.label :payment, "店舗引落日", class: "form-text" %>
-        <%= f.date_field :payment , class: "form-input" %>
-
-        <%= f.label :remarks, "備考", class: "form-text" %>
-        <%= f.text_field :remarks , class: "form-input" %>
-      </div>
-      <%# 3列目 %>
-      <div>
-        <%= f.label :get_date, "獲得日", class: "form-text" %>
-        <%= f.date_field :get_date, class: "form-input2" %>
-
-        <%= f.label :customer_num, "顧客番号", class: "form-text" %>
-        <%= f.number_field :customer_num, value: 367711,class: "form-input" %>
-
-        <%= f.label :pass_2, "PASS②", class: "form-text" %>
-        <%= f.text_field :pass_2 , class: "form-input" %>
-
-        <%= f.label :claim, "請求額", class: "form-text" %>
-        <%= f.number_field :claim , class: "form-input" %>
-      </div>
-      <%# 4列目 %>
-      <div>
-        <%= f.label :status, "端末状態", class: "form-text" %>
-        <%= f.select :status, {"クラウドデバイス完了": "クラウドデバイス完了", "未設定": "未設定"} ,{}, {class: "form-input"} %>
-
-        <%= f.label :ssid_1, "SSID①", class: "form-text" %>
-        <%= f.text_field :ssid_1 , class: "form-input" %>
-
-        <%= f.label :start, "請求開始月", class: "form-text" %>
-        <%= f.date_field :start , class: "form-input" %>
-
-        <%= f.label :cancel, "解約日", class: "form-text" %>
-        <%= f.date_field :cancel , class: "form-input" %>
-      </div>
-    </div>
-    <%= f.submit "登録", class: "submit-btn" %>
-  <% end %>
 </div>
+<div style="display:flex;"><%# フレックス %>
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form"><%# CSSスコープ %>
+    <div class="form-main"><%# フォーム外枠 %>
+      <div class="form-title">
+        <h2>獲得情報</h2>
+      </div>
+      <%= form_with model: @praness,  class: "form-frame", local: true do |f| %>
+        <%= render "shared/error_messages", model: f.object %>
+        <%= f.hidden_field :status_update,value: Date.today %>
+        <div class="form">
+            <p><%= f.label :store_name, "店舗名", class: "form-text" %></p>
+            <p><%= f.text_field :store_name , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :customer_num, "管理番号", class: "form-text" %></p>
+            <p><%= f.text_field :customer_num , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :date, "獲得日", class: "form-text" %></p>
+            <p><%= f.date_field :date,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :user_id, "獲得者", class: "form-text" %></p>
+            <p><%= f.collection_select(:user_id, @users, :id, :name,{}, {class: "date-input"})%></p>
+        </div>
+        <h2>各種ステータス</h2>
+        <div class="form">
+            <p><%= f.label :status, "現状ステータス", class: "form-text" %></p>
+            <p><%= f.collection_select(:status, Praness.select(:status).distinct, :status, :status,{}, {class: "date-input"})%></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :cash_status, "口座ステータス", class: "form-text" %></p>
+            <p><%= f.collection_select(:cash_status, Praness.select(:cash_status).distinct, :cash_status, :cash_status,{}, {class: "date-input"})%></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :terminal_num, "端末管理番号", class: "form-text" %></p>
+            <p><%= f.text_field :terminal_num , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :remarks, "備考", class: "form-text" %></p>
+            <p><%= f.text_field :remarks , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :sales_man_remarks, "営業側備考", class: "form-text" %></p>
+            <p><%= f.text_field :sales_man_remarks , class: "input" %></p>
+        </div>
+        <h2>端末情報</h2>
+        <div class="form">
+            <p><%= f.label :terminal_status, "端末状態", class: "form-text" %></p>
+            <p><%= f.collection_select(:terminal_status, Praness.select(:terminal_status).distinct, :terminal_status, :terminal_status,{}, {class: "date-input"})%></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :ssid_1, "SSID①", class: "form-text" %></p>
+            <p><%= f.text_field :ssid_1 , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :pass_1, "パスワード①", class: "form-text" %></p>
+            <p><%= f.text_field :ssid_1 , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :ssid_2, "SSID②", class: "form-text" %></p>
+            <p><%= f.text_field :ssid_2 , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :pass_2, "パスワード②", class: "form-text" %></p>
+            <p><%= f.text_field :ssid_2, class: "input" %></p>
+        </div>
+        <h2>利用情報</h2>
+        <div class="form">
+            <p><%= f.label :cancel, "解約日", class: "form-text" %></p>
+            <p><%= f.date_field :cancel,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :cancel_reason, "キャンセル理由", class: "form-text" %></p>
+            <p><%= f.text_field :cancel_reason,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :ssid_pass_change, "SSID/PASS変更", class: "form-text" %></p>
+            <p><%= f.text_field :ssid_pass_change, class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :start, "利用開始日", class: "form-text" %></p>
+            <p><%= f.date_field :start,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :payment_start, "料金発生日", class: "form-text" %></p>
+            <p><%= f.date_field :payment_start,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :first_payment, "初回引き落とし日", class: "form-text" %></p>
+            <p><%= f.date_field :first_payment,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :first_payment, "初回引き落とし日", class: "form-text" %></p>
+            <p><%= f.date_field :first_payment,class: "date-input" %></p>
+        </div>
+        <h2>支払い情報</h2>
+        <div class="form">
+            <p><%= f.label :aplus_num, "アプラス顧客番号", class: "form-text" %></p>
+            <p><%= f.number_field :aplus_num,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :cash_name, "口座名義", class: "form-text" %></p>
+            <p><%= f.text_field :cash_name,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :mail, "メールアドレス", class: "form-text" %></p>
+            <p><%= f.text_field :mail,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :not_use_reason, "端末不可理由", class: "form-text" %></p>
+            <p><%= f.collection_select(:not_use_reason, Praness.select(:not_use_reason).distinct, :not_use_reason, :not_use_reason,{}, {class: "date-input"})%></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :notice_send, "通知書送付日", class: "form-text" %></p>
+            <p><%= f.date_field :notice_send,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :def_remarks, "不備内容", class: "form-text" %></p>
+            <p><%= f.text_field :def_remarks,class: "date-input" %></p>
+        </div>
+    </div><%# フォーム外枠 %>
+        <div class="form-submit">
+            <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        </div>
+    <% end %>
+  </div><%# CSSスコープ %>
+</div><%# フレックス %>

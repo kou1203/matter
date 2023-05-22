@@ -13,18 +13,18 @@ class PaypaysController < ApplicationController
   end 
 
   def new 
-    @paypay = Paypay.new
+    @store_prop = StoreProp.find(params[:store_id])
     @users = User.where.not(base: "退職")
-    @store_prop = StoreProp.find(params[:store_prop_id])
+    @paypay = Paypay.new()
   end 
   
   def create 
     @paypay = Paypay.new(paypay_params)
     @users = User.where.not(base: "退職")
-    @store_prop = StoreProp.find(params[:store_prop_id])
+    @store_prop = @paypay.store_prop_id
     @paypay.save
     if @paypay.save 
-      redirect_to store_prop_path(@store_prop.id)
+      redirect_to store_prop_path(@store_prop)
     else 
       render :new 
     end 
