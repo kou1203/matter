@@ -125,7 +125,7 @@
             ).to_f / 3 / shift_digestion
           ).round(1) rescue 0 
       %>
-<%# out_interview_19 %>
+      <%# out_interview_19 %>
       <% airpay_visit = result_user.sum(:out_interview_19) rescue 0 %>
       <% airpay_interview = result_user.sum(:out_full_talk_19) rescue 0 %>
       <% airpay_get = result_user.sum(:out_get_19) rescue 0 %>
@@ -161,7 +161,6 @@
         <% visit = ((@results.sum(:first_visit).to_f + @results.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
         <% interview = ((@results.sum(:first_interview).to_f + @results.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>
         <% full_talk = ((@results.sum(:first_full_talk).to_f + @results.sum(:latter_full_talk).to_f) / shift_digestion).round(1) rescue 0 %>
-        <% get = ((@results.sum(:first_get).to_f + @results.sum(:latter_get).to_f) / shift_digestion).round(1) rescue 0 %>
         <% 
           get = 
             (
@@ -265,13 +264,17 @@
         <td class="difference-td"><%= (@aupay_date_progress.sum(:fin_len).to_f / @aupay_date_progress.sum(:shift_schedule)).round(1) rescue 0 %></td>
         <td class="difference-td"><%= @aupay_date_progress.sum(:get_len) rescue 0 %></td>
         <td class="difference-td"><%= @aupay_date_progress.sum(:fin_len) rescue 0 %></td>
+
         <td class="difference-td"><%= (@rakuten_pay_date_progress.sum(:fin_len).to_f / @rakuten_pay_date_progress.sum(:shift_schedule)).round(1) rescue 0 %></td>
         <td class="difference-td"><%= @rakuten_pay_date_progress.sum(:get_len) rescue 0 %></td>
         <td class="difference-td"><%= @rakuten_pay_date_progress.sum(:fin_len) rescue 0 %></td>
-        <td class="difference-td"><%= (@airpay_date_progress.sum(:fin_len).to_f / @airpay_date_progress.shift_schedule).round(1) rescue 0 %></td>
+
+        <td class="difference-td"><%= (@airpay_date_progress.sum(:fin_len).to_f / @cash_date_progress.sum(:shift_schedule)).round(1) rescue 0 %></td>
         <td class="difference-td"><%= @airpay_date_progress.sum(:get_len) rescue 0 %></td>
         <td class="difference-td"><%= @airpay_date_progress.sum(:fin_len) rescue 0 %></td>
+
         <td class="difference-td"><%= @paypay_date_progress.sum(:get_len) rescue 0 %></td>
+        
         <td class="difference-td"><%= @itss_date_progress.sum(:get_len) rescue 0 %></td>
       </tr>
     </table>
