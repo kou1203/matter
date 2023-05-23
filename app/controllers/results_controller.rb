@@ -977,6 +977,7 @@ class ResultsController < ApplicationController
       .order("position_sub")
   end 
 
+  
   def base_profit
     @base = params[:base]
     @results = Result.includes(:user,:result_cash).where(user: {base: @base}).where(date: @start_date..@end_date)

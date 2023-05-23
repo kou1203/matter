@@ -85,7 +85,7 @@
         <th class="progress-th1" colspan="9">基準値</th>
         <th class="progress-th1" colspan="5">全導入AirPay入り</th><%# １９ %>
       </tr>
-      <tr>
+      <tr><%# 個別 %>
         <th class="progress-th2">氏名</th>
         <th class="progress-th2">役職</th>
         <% 3.times do %>
@@ -152,30 +152,31 @@
         <td class="progress-td"><%= number_to_percentage(airpay_interview.to_f / airpay_visit * 100,precision: 0) rescue 0 %></td>
         <td class="progress-td"><%= airpay_get %></td>
         <td class="progress-td"><%= number_to_percentage(airpay_get.to_f / airpay_interview * 100,precision: 0) rescue 0 %></td>
-      </tr>
+      </tr><%# 個別 %>
       <% end %>
-      <tr>
-      <% shift_digestion = @dmer_date_progress.sum(:shift_schedule) rescue 0 %>
-      <% shift_schedule = @dmer_date_progress.sum(:shift_digestion) rescue 0 %>
-      <% total_visit = ((@results.sum(:first_total_visit).to_f + @results.sum(:latter_total_visit).to_f) / shift_digestion).round(1) rescue 0 %>
-      <% visit = ((@results.sum(:first_visit).to_f + @results.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
-      <% interview = ((@results.sum(:first_interview).to_f + @results.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>
-      <% full_talk = ((@results.sum(:first_full_talk).to_f + @results.sum(:latter_full_talk).to_f) / shift_digestion).round(1) rescue 0 %>
-      <% get = ((@results.sum(:first_get).to_f + @results.sum(:latter_get).to_f) / shift_digestion).round(1) rescue 0 %>
-      <% 
-        get = 
-          (
+      <%# 合計基準値の変数 %>
+        <% shift_schedule = @dmer_date_progress.sum(:shift_schedule) rescue 0 %>
+        <% shift_digestion = @dmer_date_progress.sum(:shift_digestion) rescue 0 %>
+        <% total_visit = ((@results.sum(:first_total_visit).to_f + @results.sum(:latter_total_visit).to_f) / shift_digestion).round(1) rescue 0 %>
+        <% visit = ((@results.sum(:first_visit).to_f + @results.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
+        <% interview = ((@results.sum(:first_interview).to_f + @results.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>
+        <% full_talk = ((@results.sum(:first_full_talk).to_f + @results.sum(:latter_full_talk).to_f) / shift_digestion).round(1) rescue 0 %>
+        <% get = ((@results.sum(:first_get).to_f + @results.sum(:latter_get).to_f) / shift_digestion).round(1) rescue 0 %>
+        <% 
+          get = 
             (
-              @dmer_date_progress.sum(:get_len) + 
-              @rakuten_pay_date_progress.sum(:get_len) + 
-              @airpay_date_progress.sum(:get_len)
-            ).to_f / 3 / shift_digestion
-          ).round(1) rescue 0 
-      %>
-      <% airpay_visit = @results.sum(:out_interview_19) rescue 0 %>
-      <% airpay_interview = @results.sum(:out_full_talk_19) rescue 0 %>
-      <% airpay_get = @results.sum(:out_get_19) rescue 0 %>
-      <tr class="">
+              (
+                @dmer_date_progress.sum(:get_len) + 
+                @rakuten_pay_date_progress.sum(:get_len) + 
+                @airpay_date_progress.sum(:get_len)
+              ).to_f / 3 / shift_digestion
+            ).round(1) rescue 0 
+        %>
+        <% airpay_visit = @results.sum(:out_interview_19) rescue 0 %>
+        <% airpay_interview = @results.sum(:out_full_talk_19) rescue 0 %>
+        <% airpay_get = @results.sum(:out_get_19) rescue 0 %>
+      <%# /合計基準値の変数 %>
+      <tr class=""><%# 合計 %>
         <td class="difference-td" colspan="2">合計</td>
         <td class="difference-td"><%= @cash_date_progress.sum(:shift_schedule) rescue 0 %></td>
         <td class="difference-td"><%= @cash_date_progress.sum(:shift_digestion) rescue 0 %></td>
@@ -197,7 +198,7 @@
         <td class="difference-td"><%= number_to_percentage(airpay_interview / airpay_visit * 100,precision: 0) rescue 0 %></td>
         <td class="difference-td"><%= airpay_get %></td>
         <td class="difference-td"><%= number_to_percentage(airpay_visit / airpay_get * 100,precision: 0) rescue 0 %></td>
-      </tr>
+      </tr><%# 合計 %>
 
     </table>
     <h2>◆<%= @base %>生産性</h2>
