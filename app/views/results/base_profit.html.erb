@@ -185,18 +185,18 @@
         <td class="difference-td"><%= @dmer_date_progress.sum(:shift_digestion_slmt) rescue 0 %></td>
         <td class="difference-td"><%= total_visit %></td>
         <td class="difference-td"><%= visit %></td>
-        <td class="difference-td"><%= number_to_percentage(visit / total_visit * 100,precision: 0) %></td>
+        <td class="difference-td"><%= number_to_percentage(visit.to_f / total_visit * 100,precision: 0) %></td>
         <td class="difference-td"><%= interview %></td>
-        <td class="difference-td"><%= number_to_percentage(interview / visit * 100,precision: 0) %></td>
+        <td class="difference-td"><%= number_to_percentage(interview.to_f / visit * 100,precision: 0) %></td>
         <td class="difference-td"><%= full_talk %></td>
-        <td class="difference-td"><%= number_to_percentage(full_talk / interview * 100,precision: 0) %></td>
+        <td class="difference-td"><%= number_to_percentage(full_talk.to_f / interview * 100,precision: 0) %></td>
         <td class="difference-td"><%= get %></td>
-        <td class="difference-td"><%= number_to_percentage(get / full_talk * 100,precision: 0) %></td>
+        <td class="difference-td"><%= number_to_percentage(get.to_f / full_talk * 100,precision: 0) %></td>
         <td class="difference-td"><%= airpay_visit %></td>
         <td class="difference-td"><%= airpay_interview %></td>
-        <td class="difference-td"><%= number_to_percentage(airpay_interview / airpay_visit * 100,precision: 0) rescue 0 %></td>
+        <td class="difference-td"><%= number_to_percentage(airpay_interview.to_f / airpay_visit * 100,precision: 0) rescue 0 %></td>
         <td class="difference-td"><%= airpay_get %></td>
-        <td class="difference-td"><%= number_to_percentage(airpay_visit / airpay_get * 100,precision: 0) rescue 0 %></td>
+        <td class="difference-td"><%= number_to_percentage(airpay_get.to_f / airpay_interview * 100,precision: 0) rescue 0 %></td>
       </tr><%# 合計 %>
 
     </table>
