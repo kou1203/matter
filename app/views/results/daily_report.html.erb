@@ -50,7 +50,7 @@
 <% team_profit = "#{team_profit_new.to_s(:delimited) rescue 0}（#{team_profit_sum.to_s(:delimited)}）" %>
 <%# /チームの決済などの売上 %>
 <%= date %>
-チームAve：<%= (team_profit_new.to_f / @shift_digestion.where(shift: "キャッシュレス新規").length).round().to_s(:delimited) rescue 0 %>
+チームAve：<%= (team_profit_sum.to_f / @shift_digestion.where(shift: "キャッシュレス新規").length).round().to_s(:delimited) rescue 0 %>
 チームシフト：<%= team_shift %>
 チーム売上：<%= team_profit %>
 チームdメルAve：<%= (@shift_digestion.sum(:dmer).to_f / @shift_digestion.where(shift: "キャッシュレス新規").length).round(1) rescue 0 %>
