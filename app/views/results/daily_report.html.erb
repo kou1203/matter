@@ -3,72 +3,73 @@
   <h1>日報</h1>
   <%= render "shared/header" %>
 </div>
-<div style="display:flex;">
+<div style="display:flex;"><%# サイドバーとメインページを分ける %>
   <div data-scope-path="shared/side_bar">
     <%= render "shared/sidebar" %>
   </div>
-    <div data-scope-path="results/daily_report">
-      <div data-scope-path="shares/index">
-        <%= render "shared/result_links" %>
-      </div>
-      <hr>
-        <h2>
-          <%= link_to "<<",daily_report_results_path(month:@month.ago(1.days),base_category: @base_category), class:"link" %>
-          <%= @base_category %>
-          <%= @month.month %>月
-          <%= @month.day %>日（<%= days[@month.wday] %>）
-          集計期間：<%= @shift_digestion.minimum(:date) %>〜<%= @shift_digestion.maximum(:date) %>
-          <%= link_to ">>",daily_report_results_path(month:@month.since(1.days),base_category: @base_category), class:"link" %>
-        </h2>
-        
-        <div class="separate"><%# 左右に分ける %>
-        <div class="left-form">
-        <h3 class="sub-title">◆本日稼働結果</h3>
-          <% date = "#{@month.month}月#{@month.day}日" %>
-          <% team_shift = "新規#{@shifts.where(shift: "キャッシュレス新規").length}　決済#{@shifts.where(shift: "キャッシュレス決済").length}" %>
-          <% team_get = "dメル#{@shift_digestion.sum(:dmer)}　楽天ペイ#{@shift_digestion.sum(:rakuten_pay)}　AirPay#{@shift_digestion.sum(:airpay)}" %>
-<textarea><%# 個別の日報結果 %>
-<%# チームの決済などの売上 %>
-<% airpay_team_bonus = 0 %>
-<% @users.each do |user| %>
-  <% if @shift_digestion.length == 0 || @shift_schedule.length == 0 || @shift_digestion.where(user_id: user.id).sum(:airpay) == 0 %>
-  <% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && ((@shift_digestion.where(user_id: user.id).sum(:airpay).to_f / @shift_digestion.where(shift: "キャッシュレス新規").length * @shift_schedule.where(shift: "キャッシュレス新規").length).round() >= 20)  %>
-    <% airpay_team_bonus += @shift_digestion.where(user_id: user.id).sum(:airpay) * 5000 %>
-  <% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && ((@shift_digestion.where(user_id: user.id).sum(:airpay).to_f / @shift_digestion.where(shift: "キャッシュレス新規").length * @shift_schedule.where(shift: "キャッシュレス新規").length).round() >= 10) %>
-    <% airpay_team_bonus += @shift_digestion.where(user_id: user.id).sum(:airpay) * 3000 %>
-  <% else %>
-  <% end %>
-<% end %>
-<% dmer_slmt_team = @shift_digestion.sum(:dmer) * 9000 rescue 0 %>
-<% 
-  team_profit_new = 
-    (@shift_digestion.sum(:dmer) * 8000) + 
-    (@shift_digestion.sum(:rakuten_pay) * 4000) + 
-    (@shift_digestion.sum(:airpay) * 3000) + airpay_team_bonus 
-%>
-<% team_profit_sum = team_profit_new + dmer_slmt_team %>
-<% team_profit = "#{team_profit_new.to_s(:delimited) rescue 0}（#{team_profit_sum.to_s(:delimited)}）" %>
-<%# /チームの決済などの売上 %>
-<%= date %>
+<div data-scope-path="results/daily_report">
+  <div data-scope-path="shares/index">
+    <%= render "shared/result_links" %>
+  </div>
+  <hr>
+  <h2>
+    <%= link_to "<<",daily_report_results_path(month:@month.ago(1.days),base_category: @base_category), class:"link" %>
+    <%= @base_category %>
+    <%= @month.month %>月
+    <%= @month.day %>日（<%= days[@month.wday] %>）
+    集計期間：<%= @shift_digestion.minimum(:date) %>〜<%= @shift_digestion.maximum(:date) %>
+    <%= link_to ">>",daily_report_results_path(month:@month.since(1.days),base_category: @base_category), class:"link" %>
+  </h2>
+  <div class="separate"><%# 左右に分ける %>
+    <div class="left-form"><%# 左側 %>
+    <h3 class="sub-title">◆本日稼働結果</h3>
+<textarea><%# 日報結果 %>
+<%# 拠点の決済などの売上変数 %>
+  <%# 拠点でのAirPayの件数に合わせたインセンティブ %>
+    <% airpay_team_bonus = 0 %>
+    <% @users.each do |user| %>
+      <% if @shift_digestion.length == 0 || @shift_digestion.where(user_id: user.id).sum(:airpay) == 0 %>
+      <% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && (@shift_digestion.where(user_id: user.id).sum(:airpay) >= 20)  %>
+        <% airpay_team_bonus += @shift_digestion.where(user_id: user.id).sum(:airpay) * 5000 %>
+      <% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && (@shift_digestion.where(user_id: user.id).sum(:airpay) >= 10) %>
+        <% airpay_team_bonus += @shift_digestion.where(user_id: user.id).sum(:airpay) * 3000 %>
+      <% else %>
+      <% end %>
+    <% end %>
+  <%# 拠点でのAirPayの件数に合わせたインセンティブ %>
+  <% dmer_slmt_team = @shift_digestion.sum(:dmer) * 9000 rescue 0 %><%# dメル決済 %>
+  <% 
+    team_profit_new = 
+      (@shift_digestion.sum(:dmer) * 8000) + 
+      (@shift_digestion.sum(:rakuten_pay) * 4000) + 
+      (@shift_digestion.sum(:airpay) * 3000) + airpay_team_bonus 
+  %>
+  <% team_profit_sum = team_profit_new + dmer_slmt_team %>
+  <% team_profit = "#{team_profit_new.to_s(:delimited) rescue 0}（#{team_profit_sum.to_s(:delimited)}）" %>
+<%# /拠点の決済などの売上変数 %>
+<%# 拠点の表示内容 %>
+<%= @month.strftime("%m月%d日") %>
 チームAve：<%= (team_profit_sum.to_f / @shift_digestion.where(shift: "キャッシュレス新規").length).round().to_s(:delimited) rescue 0 %>
-チームシフト：<%= team_shift %>
+チームシフト：<%= "新規#{@shifts.where(shift: "キャッシュレス新規").length}　決済#{@shifts.where(shift: "キャッシュレス決済").length}" %>
 チーム売上：<%= team_profit %>
 チームdメルAve：<%= (@shift_digestion.sum(:dmer).to_f / @shift_digestion.where(shift: "キャッシュレス新規").length).round(1) rescue 0 %>
-チーム獲得本数：<%= team_get %>
+チーム獲得本数：<%= "dメル#{@shift_digestion.sum(:dmer)}　楽天ペイ#{@shift_digestion.sum(:rakuten_pay)}　AirPay#{@shift_digestion.sum(:airpay)}" %>
+<%# /拠点の表示内容 %>
 <% @users.each do |user| %>
-<%# 合計 %>
-<% dmer_slmt = @shift_digestion.where(user_id: user.id).sum(:dmer) * 9000 rescue 0 %>
-<% airpay_bonus_price = 0 %>
-<% if @shift_digestion.length == 0 || @shift_schedule.length == 0 || @shift_digestion.where(user_id: user.id).sum(:airpay) == 0 %>
+  <% dmer_slmt = @shift_digestion.where(user_id: user.id).sum(:dmer) * 9000 rescue 0 %><%# dメル決済 %>
+  <%# 個別でのAirPayの件数に合わせたインセンティブ %>
   <% airpay_bonus_price = 0 %>
-<% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && ((@shift_digestion.where(user_id: user.id).sum(:airpay).to_f / @shift_digestion.where(shift: "キャッシュレス新規").length * @shift_schedule.where(shift: "キャッシュレス新規").length).round() >= 20)  %>
-  <% airpay_bonus_price = 5000 %>
-<% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && ((@shift_digestion.where(user_id: user.id).sum(:airpay).to_f / @shift_digestion.where(shift: "キャッシュレス新規").length * @shift_schedule.where(shift: "キャッシュレス新規").length).round() >= 10) %>
-  <% airpay_bonus_price = 3000 %>
-<% else %>
-  <% airpay_bonus = 0 %>
-<% end %>
-<% airpay_bonus = @shift_digestion.where(user_id: user.id).sum(:airpay) * airpay_bonus_price %>
+  <% if @shift_digestion.length == 0 || @shift_digestion.where(user_id: user.id).sum(:airpay) == 0 %>
+    <% airpay_bonus_price = 0 %>
+  <% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && (@shift_digestion.where(user_id: user.id).sum(:airpay) >= 20)  %>
+    <% airpay_bonus_price = 5000 %>
+  <% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && (@shift_digestion.where(user_id: user.id).sum(:airpay) >= 10) %>
+    <% airpay_bonus_price = 3000 %>
+  <% else %>
+    <% airpay_bonus = 0 %>
+  <% end %>
+  <% airpay_bonus = @shift_digestion.where(user_id: user.id).sum(:airpay) * airpay_bonus_price %>
+  <%# /個別でのAirPayの件数に合わせたインセンティブ %>
 <%# 現状売上 %>
 <% if @shift_digestion.where(user_id: user.id).present? %>
   <% person_profit_new = (@shift_digestion.where(user_id: user.id).sum(:dmer) * 8000) + (@shift_digestion.where(user_id: user.id).sum(:rakuten_pay) * 4000) + (@shift_digestion.where(user_id: user.id).sum(:airpay) * (3000 + airpay_bonus_price)) rescue 0 %>
@@ -136,4 +137,4 @@ Air獲得：<%= @shift_digestion.where(user_id: user.id).sum(:airpay) rescue 0 %
         </div><%# 左右に分ける %>
 
     </div>
-</div>
+</div><%# サイドバーとメインページを分ける %>
