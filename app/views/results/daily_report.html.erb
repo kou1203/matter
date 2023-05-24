@@ -81,7 +81,7 @@
 <% rakuten_pay_ave = 0 %>
 <% if @shift_digestion.where(user_id: user.id).present? %>
 <% dmer_ave = (@shift_digestion.where(user_id: user.id).sum(:dmer).to_f / @shift_digestion.where(user_id: user.id).where(shift: "キャッシュレス新規").length).round(1) rescue 0 %>
-<% rakuten_pay_ave = (@shift_digestion.where(user_id: user.id).sum(:rakuten_pay).to_f / @shift_digestion.where(user_id: user.id).length).where(shift: "キャッシュレス新規").round(1) rescue 0 %>
+<% rakuten_pay_ave = (@shift_digestion.where(user_id: user.id).sum(:rakuten_pay).to_f / @shift_digestion.where(user_id: user.id).where(shift: "キャッシュレス新規").length).round(1) rescue 0 %>
 <% else %>
 <% end %>
 <% date_progress = "#{@result.where(user_id: user.id).sum(:first_total_visit) + @result.where(user_id: user.id).sum(:latter_total_visit)}-#{@result.where(user_id: user.id).sum(:first_visit) + @result.where(user_id: user.id).sum(:latter_visit)}-#{@result.where(user_id: user.id).sum(:first_interview) + @result.where(user_id: user.id).sum(:latter_interview)}-#{@result.where(user_id: user.id).sum(:first_full_talk) + @result.where(user_id: user.id).sum(:latter_full_talk)}-#{@result.where(user_id: user.id).sum(:first_get) + @result.where(user_id: user.id).sum(:latter_get)}" %>
