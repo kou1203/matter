@@ -101,14 +101,7 @@
 %>
 <% else %>
 <% end %>
-<% 
-  date_progress = 
-    "#{@result.where(user_id: user.id).sum(:first_total_visit) + @result.where(user_id: user.id).sum(:latter_total_visit)}-
-    #{@result.where(user_id: user.id).sum(:first_visit) + @result.where(user_id: user.id).sum(:latter_visit)}-
-    #{@result.where(user_id: user.id).sum(:first_interview) + @result.where(user_id: user.id).sum(:latter_interview)}-
-    #{@result.where(user_id: user.id).sum(:first_full_talk) + @result.where(user_id: user.id).sum(:latter_full_talk)}-
-    #{@result.where(user_id: user.id).sum(:first_get) + @result.where(user_id: user.id).sum(:latter_get)}" 
-%>
+<% date_progress = "#{@result.where(user_id: user.id).sum(:first_total_visit) + @result.where(user_id: user.id).sum(:latter_total_visit)}-#{@result.where(user_id: user.id).sum(:first_visit) + @result.where(user_id: user.id).sum(:latter_visit)}-#{@result.where(user_id: user.id).sum(:first_interview) + @result.where(user_id: user.id).sum(:latter_interview)}-#{@result.where(user_id: user.id).sum(:first_full_talk) + @result.where(user_id: user.id).sum(:latter_full_talk)}-#{@result.where(user_id: user.id).sum(:first_get) + @result.where(user_id: user.id).sum(:latter_get)}" %>
 <%# 個別の表示内容 %>
 ◆<%= user.name %>
 dメルAve：<%= dmer_ave rescue 0 %>
