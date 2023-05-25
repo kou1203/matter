@@ -49,10 +49,10 @@
 <%# /拠点の決済などの売上変数 %>
 <%# 拠点の表示内容 %>
 <%= @month.strftime("%m月%d日") %>
-チームAve：<%= (team_profit_sum.to_f / @shift_digestion.where(shift: "キャッシュレス新規").length).round().to_s(:delimited) rescue 0 %>
-チームシフト：<%= "新規#{@shifts.where(shift: "キャッシュレス新規").length}　決済#{@shifts.where(shift: "キャッシュレス決済").length}" %>
+チームAve：<%= (team_profit_sum.to_f / @shift_digestion.length).round().to_s(:delimited) rescue 0 %>
+チームシフト：<%= "新規#{@shift_digestion.where(shift: "キャッシュレス新規").length}　決済#{@shift_digestion.where(shift: "キャッシュレス決済").length}" %>
 チーム売上：<%= team_profit %>
-チームdメルAve：<%= (@shift_digestion.sum(:dmer).to_f / @shift_digestion.where(shift: "キャッシュレス新規").length).round(1) rescue 0 %>
+チームdメルAve：<%= (@shift_digestion.sum(:dmer).to_f / @shift_digestion.length).round(1) rescue 0 %>
 チーム獲得本数：<%= "dメル#{@shift_digestion.sum(:dmer)}　楽天ペイ#{@shift_digestion.sum(:rakuten_pay)}　AirPay#{@shift_digestion.sum(:airpay)}" %>
 <%# /拠点の表示内容 %>
 <% @users.each do |user| %>
@@ -89,23 +89,39 @@
 <% dmer_ave = 0 %>
 <% rakuten_pay_ave = 0 %>
 <% if @shift_digestion.where(user_id: user.id).present? %>
-<% dmer_ave = (@shift_digestion.where(user_id: user.id).sum(:dmer).to_f / @shift_digestion.where(user_id: user.id).where(shift: "キャッシュレス新規").length).round(1) rescue 0 %>
-<% rakuten_pay_ave = (@shift_digestion.where(user_id: user.id).sum(:rakuten_pay).to_f / @shift_digestion.where(user_id: user.id).where(shift: "キャッシュレス新規").length).round(1) rescue 0 %>
+<% 
+  dmer_ave = 
+    (@shift_digestion.where(user_id: user.id).sum(:dmer).to_f / 
+    @shift_digestion.where(user_id: user.id).where(shift: "キャッシュレス新規").length).round(1) rescue 0 
+%>
+<% 
+  rakuten_pay_ave = 
+    (@shift_digestion.where(user_id: user.id).sum(:rakuten_pay).to_f / 
+    @shift_digestion.where(user_id: user.id).where(shift: "キャッシュレス新規").length).round(1) rescue 0 
+%>
 <% else %>
 <% end %>
-<% date_progress = "#{@result.where(user_id: user.id).sum(:first_total_visit) + @result.where(user_id: user.id).sum(:latter_total_visit)}-#{@result.where(user_id: user.id).sum(:first_visit) + @result.where(user_id: user.id).sum(:latter_visit)}-#{@result.where(user_id: user.id).sum(:first_interview) + @result.where(user_id: user.id).sum(:latter_interview)}-#{@result.where(user_id: user.id).sum(:first_full_talk) + @result.where(user_id: user.id).sum(:latter_full_talk)}-#{@result.where(user_id: user.id).sum(:first_get) + @result.where(user_id: user.id).sum(:latter_get)}" %>
+<% 
+  date_progress = 
+    "#{@result.where(user_id: user.id).sum(:first_total_visit) + @result.where(user_id: user.id).sum(:latter_total_visit)}-
+    #{@result.where(user_id: user.id).sum(:first_visit) + @result.where(user_id: user.id).sum(:latter_visit)}-
+    #{@result.where(user_id: user.id).sum(:first_interview) + @result.where(user_id: user.id).sum(:latter_interview)}-
+    #{@result.where(user_id: user.id).sum(:first_full_talk) + @result.where(user_id: user.id).sum(:latter_full_talk)}-
+    #{@result.where(user_id: user.id).sum(:first_get) + @result.where(user_id: user.id).sum(:latter_get)}" 
+%>
+<%# 個別の表示内容 %>
 ◆<%= user.name %>
 dメルAve：<%= dmer_ave rescue 0 %>
 楽天Ave：<%= rakuten_pay_ave rescue 0 %>
 Air獲得：<%= @shift_digestion.where(user_id: user.id).sum(:airpay) rescue 0 %>
-現状Ave：<%= (person_profit_sum.to_f / @shifts.where(shift: "キャッシュレス新規").where(user_id: user.id).length).round().to_s(:delimited) rescue 0 %>
+現状Ave：<%= (person_profit_sum.to_f / @shift_digestion.where(user_id: user.id).length).round().to_s(:delimited) rescue 0 %>
 現状売上：<%= "#{person_profit_new.to_s(:delimited) rescue 0}（#{person_profit_sum.to_s(:delimited) rescue 0} ）" %>
 当日売上：<%= today_profit_new.to_s(:delimited) rescue 0 %>（<%= today_profit_new + today_profit_dmer + today_profit_airpay rescue 0 %>）
 シフト：<%= "新規#{@shift_digestion.where(user_id: user.id).where(shift: "キャッシュレス新規").length}　決済#{@shift_digestion.where(user_id: user.id).where(shift: "キャッシュレス決済").length}" %>
 基準値：<%= date_progress %>
+<%# 個別の表示内容 %>
 <% end %>
 </textarea>
-
 <%# 個別の日報結果 %>
         </div>
         <div class="right-form"><%# 終着が打たれているか確認 %>
