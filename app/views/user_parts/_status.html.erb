@@ -79,6 +79,27 @@
     <td class="valuation-td"><%= @airpays.where(status: "審査完了").length %></td>
     <td class="valuation-td"><%= @airpay_def_ng.length %></td>
   </tr>
+  <tr>
+    <td class="valuation-td">PayPay</td>
+    <td class="valuation-td"><%= @paypays.length %></td>
+    <td class="valuation-td"><%= @airpays.where(status: "審査待ち").length %></td>
+    <td class="valuation-td"><%= @paypays.where(status: "60審査可決").length %></td>
+    <td class="valuation-td"><%= %></td>
+  </tr>
+  <tr>
+    <td class="valuation-td">ITSS</td>
+    <td class="valuation-td"><%= @itss_get.length %></td>
+    <td class="valuation-td"><%=  %></td>
+    <td class="valuation-td"><%= @itss.where(status_ntt1: "工事完了").length %></td>
+    <td class="valuation-td"><%= %></td>
+  </tr>
+  <tr>
+    <td class="valuation-td">出前館</td>
+    <td class="valuation-td"><%=  %></td>
+    <td class="valuation-td"><%=  %></td>
+    <td class="valuation-td"><%= @demaekan.length %></td>
+    <td class="valuation-td"><%= %></td>
+  </tr>
 </table>
 <% if @dmers.present? %>
 <h2>dメル審査状況（<%= @dmers.length %>件）</h2>

@@ -42,6 +42,7 @@ Rails.application.routes.draw do
     collection { 
       post :import 
       get :simplified_chart
+      get :not_payment
     }
   end 
 

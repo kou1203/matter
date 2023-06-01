@@ -1,6 +1,5 @@
 class PranessesController < ApplicationController
-  require 'csv'
-
+  before_action :set_data
   def index 
     @q = Praness.ransack(params[:q])
     @pranesses = 
@@ -59,8 +58,10 @@ class PranessesController < ApplicationController
   end 
 
   def simplified_chart 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @pranesses_year = Praness.where(date: @month.all_year)
+  end 
+
+  def not_payment 
     
   end 
 
@@ -102,34 +103,8 @@ class PranessesController < ApplicationController
     )
   end 
 
-  def send_pranesses_csv(pranesses)
-    csv_data = CSV.generate do |csv|
-      column_names = %w(user store_prop stock get_date ssid_change ssid_1 ssid_2 pass_1 pass_2 cancel return_remarks remarks claim start deadline withdrawal payment)
-      csv << column_names
-      pranesses.each do |praness|
-        column_values = [
-          praness.user.name,
-          praness.store_prop.name,
-          praness.stock.stock_num,
-          praness.get_date,
-          praness.ssid_change,
-          praness.ssid_1,
-          praness.pass_1,
-          praness.ssid_2,
-          praness.pass_2,
-          praness.cancel,
-          praness.return_remarks,
-          praness.remarks,
-          praness.claim,
-          praness.start,
-          praness.deadline,
-          praness.payment
-
-        ]
-        csv << column_values
-      end 
-    end 
-    send_data(csv_data, filename: "ぷらねす.csv")
+  def set_data
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
   end 
 
 end
