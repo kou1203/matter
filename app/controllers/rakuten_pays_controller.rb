@@ -82,9 +82,9 @@ class RakutenPaysController < ApplicationController
         RakutenPay.includes(:user).where(result_point: @month.beginning_of_month..@month.end_of_month).where(status: "OK")
       )
     @monthly_def = RakutenPay.includes(:user).where(deficiency: @month.beginning_of_month..@month.end_of_month)
-    @monthly_def_solution = RakutenPay.includes(:user).where(deficiency_solution: @month.beginning_of_month..@month.end_of_month)
-    @monthly_client_def = RakutenPay.includes(:user).where(client_def_date: @month.beginning_of_month..@month.end_of_month)
-    @monthly_client_def_solution = RakutenPay.includes(:user).where(client_def_solution: @month.beginning_of_month..@month.end_of_month)
+    @monthly_def_solution = RakutenPay.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month).where.not(deficiency_solution: nil)
+    @monthly_client_def = RakutenPay.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month).where.not(client_def_date: nil)
+    @monthly_client_def_solution = RakutenPay.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month).where.not(client_def_solution: nil)
   end
 
   def index_export

@@ -85,9 +85,9 @@ class UsersController < ApplicationController
     .or(
       @airpays.where(status: "口座情報不備")
       )
-    @itss_get = Itss.where(date: @month.all_month)
-    @itss = Itss.where(status_ntt1: @month.all_month)
-    @demaekan = Demaekan.where(first_cs_contract: @start_date..@end_date)
+    @itss_get = Itss.where(user_id: @user.id).where(date: @month.all_month)
+    @itss = Itss.where(user_id: @user.id).where(status_ntt1: @month.all_month)
+    @demaekan = Demaekan.where(user_id: @user.id).where(first_cs_contract: @start_date..@end_date)
     # 決済リスト
     @slmts = 
       StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})
