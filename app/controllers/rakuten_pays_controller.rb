@@ -148,7 +148,9 @@ class RakutenPaysController < ApplicationController
       :deficiency_consent,
       :result_point,
       :profit,
-      :valuation
+      :valuation,
+      :payment_flag,
+      :payment_deadline
     )
   end
 end

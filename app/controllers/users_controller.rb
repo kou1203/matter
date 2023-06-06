@@ -65,6 +65,7 @@ class UsersController < ApplicationController
       Aupay.includes(:store_prop).where.not(result_point: @month.all_month).where(user_id: @user.id)
       .where(store_prop: {head_store: nil}).where(date: @month.all_month).where(status: "審査通過")
       @aupays_db = Aupay.includes(:store_prop).where(date: @month.all_month).where.not(store_prop: {head_store: nil}).where(user_id: @user.id)
+    @paypays = Paypay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
     @rakuten_pays = RakutenPay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
     @rakuten_pays_inc = 
       RakutenPay.includes(:store_prop)
@@ -84,6 +85,9 @@ class UsersController < ApplicationController
     .or(
       @airpays.where(status: "口座情報不備")
       )
+    @itss_get = Itss.where(date: @month.all_month)
+    @itss = Itss.where(status_ntt1: @month.all_month)
+    @demaekan = Demaekan.where(first_cs_contract: @start_date..@end_date)
     # 決済リスト
     @slmts = 
       StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})
