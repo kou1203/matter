@@ -117,12 +117,24 @@
                     </td>
                   </tr>
                   <tr class="s-tr">
-                    <td class="s-td">不備カテゴリー</td>
+                    <td class="s-td">不備カテゴリー①</td>
                     <td class="s-td">
                       <%= 
                         f.select :def_status_eq,
                         options_from_collection_for_select(RakutenPay.select(:def_status)
                         .distinct,:def_status, :def_status),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">不備カテゴリー②</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :def_status2_eq,
+                        options_from_collection_for_select(RakutenPay.select(:def_status2)
+                        .distinct,:def_status2, :def_status2),
                         {include_blank: true},
                         {class: "t-input"} 
                       %>
@@ -237,7 +249,8 @@
         <th class="remarks-th">不備詳細①</th>
         <th class="remarks-th">不備詳細②</th>
         <th class="out-th">入金判定</th>
-        <th class="out-th">不備カテゴリー</th>
+        <th class="out-th">不備カテゴリー①</th>
+        <th class="out-th">不備カテゴリー②</th>
         <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
         <th class="out-th">明細書</th>
         <% end %>
@@ -261,6 +274,7 @@
         <td class="remarks-td"><%= rakuten_pay.deficiency_consent %></td>
         <td class="out-td"><%= rakuten_pay.payment_flag %></td>
         <td class="remarks-td"><%= rakuten_pay.def_status %></td>
+        <td class="remarks-td"><%= rakuten_pay.def_status2 %></td>
         <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
         <% if PaymentRakutenPay.exists?(rakuten_pay_id: rakuten_pay.id) %>
         <td class="remarks-td">有</td>

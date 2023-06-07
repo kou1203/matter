@@ -1,5 +1,5 @@
 class RakutenPaysController < ApplicationController
-
+  before_action :set_def_category, only: [:simple_conf,:deficiency]
   def index 
     @q = RakutenPay.includes(:store_prop).ransack(params[:q])
     @rakuten_pays = 
@@ -57,8 +57,10 @@ class RakutenPaysController < ApplicationController
   end 
 
   def deficiency
-    @bases = ["中部SS","関西SS","関東SS","2次店"]
+    @bases = ["中部SS","関西SS","関東SS","九州SS","2次店"]
     @rakuten_pays_def = RakutenPay.includes(:user).where.not(client_def_date: nil)
+    @rakuten_pays_def1 = RakutenPay.includes(:user).where.not(def_status: nil)
+    @rakuten_pays_def2 = RakutenPay.includes(:user).where.not(def_status2: nil)
     @def_graph = []
     
       @bases.each do |base|
@@ -129,6 +131,16 @@ class RakutenPaysController < ApplicationController
     stat = File::stat("./#{filename}.csv")
     send_file("./#{filename}.csv", filename: "#{filename}.csv", length: stat.size)
   end
+
+  def set_def_category
+    @def_category = {
+      "101": "WEB≠申込商材","102": "販売形態","103": "車関連商材", "104": "既存店と情報一致","105": "他経路申込と情報一致","106": "既存店と情報相違",
+      "107": "（解約新規懸念）", "201": "資料不鮮明", "202": "資料有効期限切れ","203": "資料内容不足", "204": "必要資料不足","301": "WEB無し判断",
+      "302": "WEB差し替え依頼", "3031": "一部実態取得不可","304": "口座格齟齬", "305": "口座情報齟齬（個人）", "306": "口座情報齟齬（法人）",
+      "401": "WEB≠申込情報", "402": "書類≠申込情報", "403": "フリガナ齟齬","404": "郵政不一致","405": "法人懸念", "406": "屋号１５文字以上",
+      "9901": "その他","802": "商材相違","804": "二重申込","805": "二重申込疑義","806": "二重申込（解約依頼）"
+    } 
+  end 
 
   def rakuten_pay_params 
     params.require(:rakuten_pay).permit(

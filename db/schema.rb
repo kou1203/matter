@@ -1053,6 +1053,7 @@ ActiveRecord::Schema.define(version: 2023_04_28_064038) do
     t.date "payment_deadline"
     t.string "payment_flag"
     t.string "def_status"
+    t.string "def_status2"
     t.date "client_def_date"
     t.date "client_def_solution"
     t.index ["store_prop_id"], name: "index_rakuten_pays_on_store_prop_id", unique: true
