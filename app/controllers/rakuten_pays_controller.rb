@@ -58,11 +58,12 @@ class RakutenPaysController < ApplicationController
 
   def deficiency
     @bases = ["中部SS","関西SS","関東SS","九州SS","2次店"]
+    @def_monthly = RakutenPay.where.not(def_status: nil).or(RakutenPay.where.not(def_status2: nil)).order(:date).group("YEAR(date)").group("MONTH(date)").count
+    @def_cancel_monthly = RakutenPay.where.not(status: "申込取消（不備）").group("YEAR(date)").group("MONTH(date)").count
     @rakuten_pays_def = RakutenPay.includes(:user).where.not(client_def_date: nil)
     @rakuten_pays_def1 = RakutenPay.includes(:user).where.not(def_status: nil)
     @rakuten_pays_def2 = RakutenPay.includes(:user).where.not(def_status2: nil)
     @def_graph = []
-    
       @bases.each do |base|
         def_base = {
           name: "#{base}不備件数", data: @rakuten_pays_def.where(user: {base: base}).group("YEAR(client_def_date)").group("MONTH(client_def_date)").count
