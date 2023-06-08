@@ -70,7 +70,6 @@ class RakutenPaysController < ApplicationController
         }
         @def_graph << def_base
       end
-    
   end 
 
   def simple_conf
@@ -86,8 +85,9 @@ class RakutenPaysController < ApplicationController
       )
     @monthly_def = RakutenPay.includes(:user).where(deficiency: @month.beginning_of_month..@month.end_of_month)
     @monthly_def_solution = RakutenPay.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month).where.not(deficiency_solution: nil)
-    @monthly_client_def = RakutenPay.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month).where.not(client_def_date: nil)
-    @monthly_client_def_solution = RakutenPay.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month).where.not(client_def_solution: nil)
+    @monthly_client_def = @monthly_data.where.not(def_status: nil)
+    @monthly_client_def_solution = @monthly_client_def.where(status: "OK")
+    @monthly_client_def_cancel = @monthly_client_def.where(status: "申込取消（不備）")
   end
 
   def index_export

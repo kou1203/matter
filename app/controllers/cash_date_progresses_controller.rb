@@ -1,131 +1,127 @@
 class CashDateProgressesController < ApplicationController
 
   def index 
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @create_date = params[:create_d]
-    @date_group = CashDateProgress.pluck(:date).uniq
-    @users = User.all
-    @create_group = CashDateProgress.pluck(:create_date).uniq
-    if params[:date].present?
-      @month = params[:date].to_date
-    elsif params[:search_date].present?
-      @month = params[:search_date].to_date  
-    elsif CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
-      @month = CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
-    else
-      @month = params[:month].to_date
-    end 
-
-    @current_progress = 
-    CashDateProgress.where(date: @month)
-    if params[:create_d].present?
+    # 基本設定
+      @month = params[:month] ? Time.parse(params[:month]) : Date.today
+      @create_date = params[:create_d]
+      @date_group = CashDateProgress.pluck(:date).uniq
+      @users = User.all
+      @create_group = CashDateProgress.pluck(:create_date).uniq
+    # 日付検索
+      if params[:date].present?
+        @month = params[:date].to_date
+      elsif params[:search_date].present?
+        @month = params[:search_date].to_date  
+      elsif CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
+        @month = CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
+      else
+        @month = params[:month].to_date
+      end 
+    # 比較対象検索
+      if params[:comparison_date].present?
+        @comparison_date = params[:comparison_date].to_date
+        @comparison = 
+          CashDateProgress.where(date: @comparison_date)
+        @comparison =
+          @comparison.where(create_date: @comparison.maximum(:create_date))
+      else  
+        if @current_progress.present?
+          @comparison = 
+            CashDateProgress.where(date: @current_progress.first.date.prev_month)
+          @comparison = 
+            @comparison.where(create_date: @comparison.maximum(:create_date))
+        else  
+          @comparison = CashDateProgress.none
+        end 
+      end 
+    # 作成日を変更
       @current_progress = 
-        @current_progress.where(create_date: params[:create_d].to_date)
-    else
-      @current_progress = 
-      @current_progress.where(date: @month)
-        .where(create_date: @current_progress.maximum(:create_date))
-    end 
-    # 拠点別現状売上
-    @current_data_chubu = @current_progress.where(base: "中部SS")
-    @current_data_kansai = @current_progress.where(base: "関西SS")
-    @current_data_kanto = @current_progress.where(base: "関東SS")
-    @current_data_kyushu = @current_progress.where(base: "九州SS")
-    @current_data_partner = @current_progress.where(base: "2次店")
-    @current_data_femto = @current_progress.where(base: "フェムト")
-    @current_data_summit = @current_progress.where(base: "サミット")
-    @current_data_retire = @current_progress.where(base: "退職")
-    @current_arry = [
-      @current_data_chubu,@current_data_kansai, @current_data_kanto, @current_data_kyushu,
-      @current_data_partner,@current_data_femto, @current_data_summit, @current_data_retire
-    ]
+      CashDateProgress.where(date: @month)
+      if params[:create_d].present?
+        @current_progress = 
+          @current_progress.where(create_date: params[:create_d].to_date)
+      else
+        @current_progress = 
+        @current_progress.where(date: @month)
+          .where(create_date: @current_progress.maximum(:create_date))
+      end 
     if  @current_progress.present?
-      @product_profit_current_graph =
-        {
-          "dメル" => @current_progress.sum(:dmer_profit_current),
-          "auPay" => @current_progress.sum(:aupay_profit_current),
-          "PayPay" => @current_progress.sum(:paypay_profit_current),
-          "楽天ペイ" => @current_progress.sum(:rakuten_pay_profit_current),
-          "AirPay" => @current_progress.sum(:airpay_profit_current),
-          "auステッカー" => @current_progress.sum(:austicker_profit_current),
-          "dメルステッカー" => @current_progress.sum(:dmersticker_profit_current)
+      # 円グラフ
+        @product_profit_current_graph = {
+            "dメル" => @current_progress.sum(:dmer_profit_current),
+            "auPay" => @current_progress.sum(:aupay_profit_current),
+            "PayPay" => @current_progress.sum(:paypay_profit_current),
+            "楽天ペイ" => @current_progress.sum(:rakuten_pay_profit_current),
+            "AirPay" => @current_progress.sum(:airpay_profit_current),
+            "auステッカー" => @current_progress.sum(:austicker_profit_current),
+            "dメルステッカー" => @current_progress.sum(:dmersticker_profit_current)
         }
-      @data_fin = [
-        {
-          name: "中部SS終着", data: CashDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
-        },
-        {
-          name: "関西SS終着", data: CashDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
-        },
-        {
-          name: "関東SS終着", data: CashDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
-        },
-        {
-          name: "九州SS終着", data: CashDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
-        },
-      ]
-      @data_fin_val = [
-        {
-          name: "中部SS終着", data: CashDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:valuation_fin)
-        },
-        {
-          name: "関西SS終着", data: CashDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:valuation_fin)
-        },
-        {
-          name: "関東SS終着", data: CashDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:valuation_fin)
-        },
-        {
-          name: "九州SS終着", data: CashDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:valuation_fin)
-        },
-      ]
-      @data_current = [
-        {
-          name: "中部SS現状売上", data: CashDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
-        },
-        {
-          name: "関西SS現状売上", data: CashDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
-        },
-        {
-          name: "関東SS現状売上", data: CashDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
-        },
-        {
-          name: "九州SS現状売上", data: CashDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
-        },
-      ]
+      # 折線グラフ
+        @graph_bases = ["全体"]
+        User.where("base LIKE ?","%SS%").group(:base).each do |user|
+          @graph_bases << user.base
+        end
+        @data_fin = []
+        @data_fin_val = []
+        @data_current = []
+        @graph_bases.each do |base|
+          if base == "全体"
+            @data_fin << {
+              name: "#{base}終着", 
+              data: CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
+            }
+            @data_fin_val << {
+              name: "#{base}終着", 
+              data: CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:valuation_fin)
+            }
+            @data_current << {
+              name: "#{base}現状売上", 
+              data: CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
+            }
+          else  
+            @data_fin << {
+              name: "#{base}終着", 
+              data: CashDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
+            }
+            @data_fin_val << {
+              name: "#{base}終着", 
+              data: CashDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:valuation_fin)
+            }
+            @data_current << {
+              name: "#{base}現状売上", 
+              data: CashDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
+            }
+          end 
+        end
     else
       @data = CashDateProgress.none
     end
-
-    # 比較対象
-    if params[:comparison_date].present?
-      @comparison_date = params[:comparison_date].to_date
-      @comparison = 
-        CashDateProgress.where(date: @comparison_date)
-      @comparison =
-        @comparison.where(create_date: @comparison.maximum(:create_date))
-    else  
-      if @current_progress.present?
-        @comparison = 
-          CashDateProgress.where(date: @current_progress.first.date.prev_month)
-        @comparison = 
-          @comparison.where(create_date: @comparison.maximum(:create_date))
-      else  
-        @comparison = CashDateProgress.none
-      end 
-    end 
     # 拠点別現状売上
-    @comparison_data_chubu = @comparison.where(base: "中部SS")
-    @comparison_data_kansai = @comparison.where(base: "関西SS")
-    @comparison_data_kanto = @comparison.where(base: "関東SS")
-    @comparison_data_kyushu = @comparison.where(base: "九州SS")
-    @comparison_data_partner = @comparison.where(base: "2次店")
-    @comparison_data_femto = @comparison.where(base: "フェムト")
-    @comparison_data_summit = @comparison.where(base: "サミット")
-    @comparison_data_retire = @comparison.where(base: "退職")
-    @comparison_arry = [
-      @comparison_data_chubu,@comparison_data_kansai, @comparison_data_kanto, @comparison_data_kyushu,
-      @comparison_data_partner,@comparison_data_femto, @comparison_data_summit, @comparison_data_retire
-    ]
+      @current_data_chubu = @current_progress.where(base: "中部SS")
+      @current_data_kansai = @current_progress.where(base: "関西SS")
+      @current_data_kanto = @current_progress.where(base: "関東SS")
+      @current_data_kyushu = @current_progress.where(base: "九州SS")
+      @current_data_partner = @current_progress.where(base: "2次店")
+      @current_data_femto = @current_progress.where(base: "フェムト")
+      @current_data_summit = @current_progress.where(base: "サミット")
+      @current_data_retire = @current_progress.where(base: "退職")
+      @current_arry = [
+        @current_data_chubu,@current_data_kansai, @current_data_kanto, @current_data_kyushu,
+        @current_data_partner,@current_data_femto, @current_data_summit, @current_data_retire
+      ]
+    # 拠点別現状売上
+      @comparison_data_chubu = @comparison.where(base: "中部SS")
+      @comparison_data_kansai = @comparison.where(base: "関西SS")
+      @comparison_data_kanto = @comparison.where(base: "関東SS")
+      @comparison_data_kyushu = @comparison.where(base: "九州SS")
+      @comparison_data_partner = @comparison.where(base: "2次店")
+      @comparison_data_femto = @comparison.where(base: "フェムト")
+      @comparison_data_summit = @comparison.where(base: "サミット")
+      @comparison_data_retire = @comparison.where(base: "退職")
+      @comparison_arry = [
+        @comparison_data_chubu,@comparison_data_kansai, @comparison_data_kanto, @comparison_data_kyushu,
+        @comparison_data_partner,@comparison_data_femto, @comparison_data_summit, @comparison_data_retire
+      ]
   end 
 
   def progress_create

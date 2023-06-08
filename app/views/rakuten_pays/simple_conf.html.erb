@@ -44,8 +44,8 @@
       <td class="index-td"><%= @monthly_def.where(user: {base: base}).length %></td>
       <td class="index-td"><%= @monthly_def_solution.where(user: {base: base}).length %></td>
       <td class="index-td"><%= @monthly_client_def.where(user: {base: base}).length %></td>
-      <td class="index-td"><%= @monthly_client_def_solution.where.not(status: "申込取消").where.not(status: "申込取消（不備）").where(user: {base: base}).length %></td>
-      <td class="index-td"><%= @monthly_client_def_solution.where(status: "申込取消").where(user: {base: base}).length + @monthly_client_def_solution.where(status: "申込取消（不備）").where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_client_def_solution.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= @monthly_client_def_cancel.where(user: {base: base}).length %></td>
       </tr>
       <% end %>
       <tr class="sum-tr">
@@ -59,9 +59,32 @@
       <td class="index-td"><%= @monthly_def.length %></td>
       <td class="index-td"><%= @monthly_def_solution.length %></td>
       <td class="index-td"><%= @monthly_client_def.length %></td>
-      <td class="index-td"><%= @monthly_client_def_solution.where.not(status: "申込取消").where.not(status: "申込取消（不備）").length %></td>
-      <td class="index-td"><%= @monthly_client_def_solution.where(status: "申込取消").length + @monthly_client_def_solution.where(status: "申込取消（不備）").length %></td>
+      <td class="index-td"><%= @monthly_client_def_solution.length %></td>
+      <td class="index-td"><%= @monthly_client_def_cancel.length %></td>
       </tr>
+    </table>
+    <h2>◆不備①内訳</h2>
+    <table>
+      <thead>
+        <tr>
+        <th class="green-th">不備番号</th>
+        <th class="green-th">不備内容</th>
+        <th class="green-th">発生数</th>
+        <th class="green-th">解消数</th>
+        <th class="green-th">取消数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @monthly_data.where.not(def_status: nil).group(:def_status).each do |r_pay| %>
+        <tr>
+        <td><%= r_pay.def_status %></td>
+        <td><%= @def_category[:"#{r_pay.def_status}"] %></td>
+        <td><%= @monthly_data.where(def_status: r_pay.def_status).length %></td>
+        <td><%= @monthly_data.where(def_status: r_pay.def_status).where(status: "OK").length %></td>
+        <td><%= @monthly_data.where(def_status: r_pay.def_status).where(status: "申込取消（不備）").length %></td>
+        </tr>
+        <% end %>
+      </tbody>
     </table>
     <p class="caution-text">※こちらの件数は担当商材がキャッシュレスではない人も含まれております。</p>
     <hr>
