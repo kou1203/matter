@@ -41,38 +41,35 @@ class AupayDateProgressesController < ApplicationController
       @current_data_partner,@current_data_femto, @current_data_summit, @current_data_retire
     ]
 
-    if  @current_progress.present?
-      @data_fin = [
-        {
-          name: "中部SS終着", data: AupayDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
-        },
-        {
-          name: "関西SS終着", data: AupayDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
-        },
-        {
-          name: "関東SS終着", data: AupayDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_fin)
-        },
-        {
-          name: "九州SS終着", data: AupayDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_fin)
-        },
-      ]
-      @data_current = [
-        {
-          name: "中部SS現状売上", data: AupayDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
-        },
-        {
-          name: "関西SS現状売上", data: AupayDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
-        },
-        {
-          name: "関東SS現状売上", data: AupayDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
-        },
-        {
-          name: "九州SS現状売上", data: AupayDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
-        },
-      ]
-    else
-      @data = AupayDateProgress.none
+    if @current_progress.present?
+      @graph_bases = ["全体","2次店"]
+      User.where("base LIKE ?","%SS%").group(:base).each do |user|
+        @graph_bases << user.base
+      end
+    @data_fin = []
+    @data_current = []
+    @graph_bases.each do |base|
+      if base == "全体"
+        @data_fin << {
+          name: "#{base}終着", 
+          data: AupayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_fin)
+        }
+        @data_current << {
+          name: "#{base}現状売上", data: AupayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
+        }
+      else  
+        @data_fin << {
+          name: "#{base}終着", 
+          data: AupayDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_fin)
+        }
+        @data_current << {
+          name: "#{base}現状売上", data: AupayDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
+        }
+      end
     end
+else
+  @data = AupayDateProgress.none
+end
 
     # 比較対象
     if params[:comparison_date].present?

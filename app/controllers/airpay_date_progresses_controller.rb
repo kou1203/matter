@@ -42,7 +42,7 @@ class AirpayDateProgressesController < ApplicationController
     ]
     if  @current_progress.present?
       # 折線グラフ
-        @graph_bases = ["全体"]
+        @graph_bases = ["全体","2次店"]
         User.where("base LIKE ?","%SS%").group(:base).each do |user|
           @graph_bases << user.base
         end
@@ -55,7 +55,7 @@ class AirpayDateProgressesController < ApplicationController
               data: AirpayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_fin)
             }
             @data_current << {
-              name: "#{base}現状売上", 
+              name: "#{base}現状売上", data: AirpayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
             }
           else  
             @data_fin << {

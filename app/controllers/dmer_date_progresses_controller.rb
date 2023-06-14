@@ -1,6 +1,6 @@
 class DmerDateProgressesController < ApplicationController
 
-  def index 
+  def index # index start
     @profit_price1 = CalcPeriod.where(sales_category: "実売").find_by(name: "dメル成果1").price
     @profit_price2 = CalcPeriod.where(sales_category: "実売").find_by(name: "dメル成果2").price
     @profit_price3 = CalcPeriod.where(sales_category: "実売").find_by(name: "dメル成果3").price
@@ -9,7 +9,7 @@ class DmerDateProgressesController < ApplicationController
     @date_group = DmerDateProgress.pluck(:date).uniq
     @create_group = DmerDateProgress.pluck(:create_date).uniq
     @users = User.all
-    if params[:date].present?
+    if params[:date].present? # 検索
       @month = params[:date].to_date
     elsif params[:search_date].present?
       @month = params[:search_date].to_date  
@@ -17,106 +17,83 @@ class DmerDateProgressesController < ApplicationController
       @month = DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
     else
       @month = params[:month].to_date
-    end 
-
-    @current_progress = 
-    DmerDateProgress.includes(:user).where(date: @month)
-    if params[:create_d].present?
+    end # /検索
+    # 全体現状売上
       @current_progress = 
-        @current_progress.where(create_date: params[:create_d].to_date)
-    else
-      @current_progress = 
-      @current_progress.where(date: @month)
-        .where(create_date: @current_progress.maximum(:create_date))
-    end 
+        DmerDateProgress.includes(:user).where(date: @month)
+      if params[:create_d].present?
+        @current_progress = 
+          @current_progress.where(create_date: params[:create_d].to_date)
+      else
+        @current_progress = 
+        @current_progress.where(date: @month)
+          .where(create_date: @current_progress.maximum(:create_date))
+      end 
+    # /全体現状売上
     # 拠点別現状売上
-    @current_data_chubu = @current_progress.where(base: "中部SS")
-    @current_data_kansai = @current_progress.where(base: "関西SS")
-    @current_data_kanto = @current_progress.where(base: "関東SS")
-    @current_data_kyushu = @current_progress.where(base: "九州SS")
-    @current_data_partner = @current_progress.where(base: "2次店")
-    @current_data_femto = @current_progress.where(base: "フェムト")
-    @current_data_summit = @current_progress.where(base: "サミット")
-    @current_data_retire = @current_progress.where(base: "退職")
-    @current_arry = [
-      @current_data_chubu,@current_data_kansai, @current_data_kanto, @current_data_kyushu,
-      @current_data_partner,@current_data_femto, @current_data_summit, @current_data_retire
-    ]
-    if  @current_progress.present?
-      @data_fin = [
-        {
-          name: "中部SS終着", data: DmerDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
-        },
-        {
-          name: "関西SS終着", data: DmerDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
-        },
-        {
-          name: "関東SS終着", data: DmerDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
-        },
-        {
-          name: "九州SS終着", data: DmerDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
-        },
+      @current_data_chubu = @current_progress.where(base: "中部SS")
+      @current_data_kansai = @current_progress.where(base: "関西SS")
+      @current_data_kanto = @current_progress.where(base: "関東SS")
+      @current_data_kyushu = @current_progress.where(base: "九州SS")
+      @current_data_partner = @current_progress.where(base: "2次店")
+      @current_data_femto = @current_progress.where(base: "フェムト")
+      @current_data_summit = @current_progress.where(base: "サミット")
+      @current_data_retire = @current_progress.where(base: "退職")
+      @current_arry = [
+        @current_data_chubu,@current_data_kansai, @current_data_kanto, @current_data_kyushu,
+        @current_data_partner,@current_data_femto, @current_data_summit, @current_data_retire
       ]
-      @data_current = [
-        {
-          name: "中部SS現状売上", data: DmerDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
-        },
-        {
-          name: "関西SS現状売上", data: DmerDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
-        },
-        {
-          name: "関東SS現状売上", data: DmerDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
-        },
-        {
-          name: "九州SS現状売上", data: DmerDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:profit_current)
-        },
-      ]
-      @result1_graph = [
-        {
-          name: "中部SS一次成果通過件数", data: DmerDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result1_len)
-        },
-        {
-          name: "関西SS一次成果通過件数", data: DmerDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result1_len)
-        },
-        {
-          name: "関東SS一次成果通過件数", data: DmerDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result1_len)
-        },
-        {
-          name: "九州SS一次成果通過件数", data: DmerDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result1_len)
-        },
-      ]
-      @result2_graph = [
-        {
-          name: "中部SS二次成果通過件数", data: DmerDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result2_len)
-        },
-        {
-          name: "関西SS二次成果通過件数", data: DmerDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result2_len)
-        },
-        {
-          name: "関東SS二次成果通過件数", data: DmerDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result2_len)
-        },
-        {
-          name: "九州SS二次成果通過件数", data: DmerDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result2_len)
-        },
-      ]
-      @result3_graph = [
-        {
-          name: "中部SS三次成果通過件数", data: DmerDateProgress.where(base: "中部SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result3_len)
-        },
-        {
-          name: "関西SS三次成果通過件数", data: DmerDateProgress.where(base: "関西SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result3_len)
-        },
-        {
-          name: "関東SS三次成果通過件数", data: DmerDateProgress.where(base: "関東SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result3_len)
-        },
-        {
-          name: "九州SS三次成果通過件数", data: DmerDateProgress.where(base: "九州SS").where(date: @month.beginning_of_month..@month.end_of_month).group(:create_date).sum(:result3_len)
-        },
-      ]
+    # /拠点別現状売上
+    if  @current_progress.present? # 今日、もしくは検索した日付のデータがあるか？
+      @graph_bases = ["全体","2次店"]
+      User.where("base LIKE ?","%SS%").group(:base).each do |user|
+        @graph_bases << user.base
+      end
+      @result1_graph = []
+      @result2_graph = []
+      @result3_graph = []
+      @data_fin = []
+      @data_current = []
+      @graph_bases.each do |base|
+        if base == "全体"
+          @data_fin << {
+            name: "#{base}終着", 
+            data: DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
+          }
+          @data_current << {
+            name: "#{base}現状売上", data: DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
+          }
+          @result1_graph << {
+            name: "#{base}一次成果になった件数", data: DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:result1_len)
+          }
+          @result2_graph << {
+            name: "#{base}二次成果になった件数", data: DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:result2_len)
+          }
+          @result3_graph << {
+            name: "#{base}三次成果になった件数", data: DmerDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:result3_len)
+          }
+        else  
+          @data_fin << {
+            name: "#{base}終着", 
+            data: DmerDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum("profit_fin1+profit_fin2+profit_fin3")
+          }
+          @data_current << {
+            name: "#{base}現状売上", data: DmerDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
+          }
+          @result1_graph << {
+            name: "#{base}一次成果になった件数", data: DmerDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:result1_len)
+          }
+          @result2_graph << {
+            name: "#{base}二次成果になった件数", data: DmerDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:result2_len)
+          }
+          @result3_graph << {
+            name: "#{base}三次成果になった件数", data: DmerDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:result3_len)
+          }
+        end
+      end
     else
       @data = DmerDateProgress.none
     end
-
     # 比較対象
     if params[:comparison_date].present?
       @comparison_date = params[:comparison_date].to_date
@@ -147,7 +124,7 @@ class DmerDateProgressesController < ApplicationController
       @comparison_data_chubu,@comparison_data_kansai, @comparison_data_kanto, @comparison_data_kyushu,
       @comparison_data_partner,@comparison_data_femto, @comparison_data_summit, @comparison_data_retire
     ]
-  end 
+  end # index end
 
  def progress_create
   @month = params[:month].to_date

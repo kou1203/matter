@@ -1,5 +1,5 @@
 class RakutenPaysController < ApplicationController
-  before_action :set_def_category, only: [:simple_conf,:deficiency]
+  before_action :set_def_category, only: [:simple_conf,:deficiency,:deficiency_new]
   def index 
     @q = RakutenPay.includes(:store_prop).ransack(params[:q])
     @rakuten_pays = 
@@ -58,11 +58,12 @@ class RakutenPaysController < ApplicationController
 
   def deficiency
     @bases = ["中部SS","関西SS","関東SS","九州SS","2次店"]
-    @def_monthly = RakutenPay.where.not(def_status: nil).or(RakutenPay.where.not(def_status2: nil)).order(:date).group("YEAR(date)").group("MONTH(date)").count
-    @def_cancel_monthly = RakutenPay.where(status: "申込取消（不備）").group("YEAR(date)").group("MONTH(date)").count
-    @rakuten_pays_def = RakutenPay.includes(:user).where.not(client_def_date: nil)
-    @rakuten_pays_def1 = RakutenPay.includes(:user).where.not(def_status: nil)
-    @rakuten_pays_def2 = RakutenPay.includes(:user).where.not(def_status2: nil)
+    @rakuten_pays = RakutenPay.where(share: ..Date.new(2022,12,31))
+    @def_monthly = @rakuten_pays.where.not(def_status: nil).or(@rakuten_pays.where.not(def_status2: nil)).order(:date).group("YEAR(date)").group("MONTH(date)").count
+    @def_cancel_monthly = @rakuten_pays.where(status: "申込取消（不備）").or(@rakuten_pays.where(status: "申込取消")).group("YEAR(date)").group("MONTH(date)").count
+    @rakuten_pays_def = @rakuten_pays.includes(:user).where.not(client_def_date: nil)
+    @rakuten_pays_def1 = @rakuten_pays.includes(:user).where.not(def_status: nil)
+    @rakuten_pays_def2 = @rakuten_pays.includes(:user).where.not(def_status2: nil)
     @def_graph = []
       @bases.each do |base|
         def_base = {
@@ -70,6 +71,27 @@ class RakutenPaysController < ApplicationController
         }
         @def_graph << def_base
       end
+  end 
+
+  def deficiency_new
+    @bases = ["中部SS","関西SS","関東SS","九州SS","2次店"]
+    @rakuten_pays = RakutenPay.where(share: Date.new(2023,1,1)..)
+    @def_monthly = @rakuten_pays.where.not(def_status: nil).or(@rakuten_pays.where.not(def_status2: nil)).order(:share).group("YEAR(share)").group("MONTH(share)").count
+    @def_cancel_monthly = @rakuten_pays.where.not(def_status: nil).where(status: "申込取消（不備）").or(@rakuten_pays.where.not(def_status: nil).where(status: "申込取消")).group("YEAR(share)").group("MONTH(share)").count
+    @rakuten_pays_def = @rakuten_pays.includes(:user).where.not(client_def_date: nil)
+    @rakuten_pays_def1 = @rakuten_pays.includes(:user).where.not(def_status: nil)
+    @rakuten_pays_def2 = @rakuten_pays.includes(:user).where.not(def_status2: nil)
+    @def_graph = []
+    @def_graph << {
+      name: "全拠点不備件数", data: @rakuten_pays_def.group("YEAR(client_def_date)").group("MONTH(client_def_date)").count
+    }
+      @bases.each do |base|
+        def_base = {
+          name: "#{base}不備件数", data: @rakuten_pays_def.where(user: {base: base}).group("YEAR(client_def_date)").group("MONTH(client_def_date)").count
+        }
+        @def_graph << def_base
+      end
+
   end 
 
   def simple_conf

@@ -238,12 +238,12 @@ class ResultsController < ApplicationController
     # PayPay
     @paypays = Paypay.where(date: @start_date..@end_date).where(user_id: @user.id)
     # 楽天ペイ
-    @rakuten_pay_uq = RakutenPay.includes(:store_prop).where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(user_id: @user.id)
+    @rakuten_pay_uq = RakutenPay.where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(user_id: @user.id)
     @rakuten_pays_inc = 
-      RakutenPay.includes(:store_prop)
+      RakutenPay
       .where.not(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(user_id: @user.id)
       .where(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where.not(deficiency: nil)
-    @rakuten_pays_dec = RakutenPay.includes(:store_prop).where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(user_id: @user.id)
+    @rakuten_pays_dec = RakutenPay.where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(user_id: @user.id)
     .where.not(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where.not(deficiency: nil)
     @rakuten_pay_def_ng = 
       @rakuten_pays.where(status: "自社不備")
@@ -251,7 +251,7 @@ class ResultsController < ApplicationController
       .or(@rakuten_pays.where.not(deficiency: nil).where.not(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date))
     @rakuten_pay_val_len = @rakuten_pay_val.length
     # AirPay
-    @airpays = Airpay.includes(:store_prop).where(date: @start_date..@end_date).where(user_id: @user.id)
+    @airpays = Airpay.where(date: @start_date..@end_date).where(user_id: @user.id)
     @airpay_def_ng = @airpays.where(status: "審査NG")
     .or(
       @airpays.where(status: "代表者情報不備")
@@ -264,14 +264,14 @@ class ResultsController < ApplicationController
       )
     @airpay_val_len = @airpays.length - @airpay_def_ng.length
     # 出前館
-    @demaekan_get = Demaekan.where(user_id: @user.id).where(date: @start_date..@end_date)
+    @demaekan_get = Demaekan.where(date: @start_date..@end_date)
     # ITSS 
     @itss_get = Itss.where(user_id: @user.id).where(date: @start_date..@end_date)
     # 決済リスト
     @slmts = 
-      StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})
+      StoreProp.includes(:dmer, :aupay).where(aupay: {share: Date.today.ago(3.month)..Date.today})
       .or(
-        StoreProp.includes(:dmer, :aupay, :comments).where(dmer: {share: Date.today.ago(3.month)..Date.today})
+        StoreProp.includes(:dmer, :aupay).where(dmer: {share: Date.today.ago(3.month)..Date.today})
       ).order(:id)
     # 不備リスト
     @dmers_def = 
@@ -279,14 +279,12 @@ class ResultsController < ApplicationController
       .where(status: "不備対応中")
       .where(date: Date.today.ago(2.month)..Date.today)
       .where(user_id: @user.id)
-
     @aupays_def = 
       Aupay.includes(:store_prop, :user)
       .where(status: "差し戻し")
       .where.not(deficiency_remarks: "既存auPAY加盟店の登録がすでにあるため、差し戻しさせていただきます。")
       .where(date: Date.today.ago(3.month)..Date.today)
       .where(user_id: @user.id)
-
     @rakuten_pays_def = 
       RakutenPay.includes(:store_prop, :user)
       .where(date: Date.today.ago(3.month).beginning_of_month..Date.today)
@@ -297,12 +295,9 @@ class ResultsController < ApplicationController
         .where(status: "1次審査不備")
         .where(user_id: @user.id)
       ) 
-
-
     @comment = Comment.new
     session[:previous_url] = user_path(@user.id)
     @comments = Comment.select(:id,:status, :content,:store_prop_id,:request_show,:request)
-
     # 利益表
       @date_period = (@start_date..@end_date)
       @results = Result.includes(:user, :result_cash).where(user_id: @user.id).where(date: @start_date..@end_date)

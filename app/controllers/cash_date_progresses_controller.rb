@@ -57,7 +57,7 @@ class CashDateProgressesController < ApplicationController
             "dメルステッカー" => @current_progress.sum(:dmersticker_profit_current)
         }
       # 折線グラフ
-        @graph_bases = ["全体"]
+        @graph_bases = ["全体","2次店"]
         User.where("base LIKE ?","%SS%").group(:base).each do |user|
           @graph_bases << user.base
         end

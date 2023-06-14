@@ -18,7 +18,7 @@
     %>
   <%# /不備カテゴリー変数 %>
   <div><%# 拠点別件数 %>
-  <h2 class="red">※こちらは2022年12月以前に上位店連携した案件の詳細になります。</h2>
+  <h2 class="red">※こちらは2023年1月以降に上位店連携した案件の詳細になります。</h2>
     <h2>◆拠点別件数</h2>
     <table>
       <tr>
@@ -51,10 +51,8 @@
     <table>
         <th >不備番号</th>
         <th >不備内容</th>
-        <th >母体数</th>
-        <th >解消数</th>
-        <th >取消数</th>
-        <th >取消率</th>
+        <th >現状不備件数</th>
+        <th >不備期限切れ数</th>
         <% def1_pie_chart = [] %>
         <% def1_cancel_pie_chart = [] %>
         <% @rakuten_pays_def1.group(:def_status).zip(@rakuten_pays_def1.group(:def_status).count).each do |rakuten_pay, r_len| %>
@@ -62,11 +60,9 @@
       <tr>  
         <td><%= rakuten_pay.def_status %></td>
         <td><%= @def_category[:"#{rakuten_pay.def_status}"] %></td>
-        <td><%= r_len[1] %>件</td>
-        <td><%= def_cancel_len = @rakuten_pays_def1.where(def_status: r_len[0]).where(status: "OK").length  %>件</td>
-        <td><%= def_cancel_len = @rakuten_pays_def1.where(def_status: r_len[0]).where(status: "申込取消").or(@rakuten_pays_def1.where(def_status: r_len[0]).where(status: "申込取消（不備）")).length  %>件</td>
+        <td><%= r_len[1] rescue 0 %>件</td>
+        <td><%= def_cancel_len = @rakuten_pays_def1.where(def_status: r_len[0]).where(status: "申込取消（不備）").length  %>件</td>
         <% def1_cancel_pie_chart << [@def_category[:"#{rakuten_pay.def_status}"], def_cancel_len] %>
-        <td><%= (def_cancel_len.to_f / r_len[1] * 100).round(1) %>%</td>
       </tr>
         <% end %> 
       <tr>
@@ -74,7 +70,6 @@
         <td>合計</td>
         <td><%= @rakuten_pays_def1.length.to_s(:delimited) %>件</td>
         <td><%= def_cancel_all_len = @rakuten_pays_def1.where(status: "申込取消").or(@rakuten_pays_def1.where(status: "申込取消（不備）")).length  %>件</td>
-        <td><%= (def_cancel_all_len.to_f / @rakuten_pays_def1.length * 100).round(1) %>%</td>
       </tr>
     </table>
   </div><%# 不備内訳① %>
@@ -83,7 +78,7 @@
     <table>
         <th >不備番号</th>
         <th >不備内容</th>
-        <th >件数</th>
+        <th >現状不備件数</th>
         <% @rakuten_pays_def2.group(:def_status2).zip(@rakuten_pays_def2.group(:def_status2).count).each do |rakuten_pay, r_len| %>
       <tr>  
         <td><%= rakuten_pay.def_status2 %></td>
@@ -100,12 +95,12 @@
   </div><%# 不備内訳② %>
   <div ><%# 円グラフ %>
     <div>
-    <h2>◆不備①件数内訳</h2>
+    <h2>◆不備①現状件数内訳</h2>
     <%= pie_chart def1_pie_chart ,width: "40vw" %>
     </div>
     <hr>
     <div>
-    <h2 >◆不備①取消件数内訳</h2>
+    <h2 >◆不備①期限切れ件数内訳</h2>
     <%= pie_chart def1_cancel_pie_chart, width: "40vw" %>
     </div>
   </div><%# /円グラフ %>
