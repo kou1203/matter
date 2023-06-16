@@ -18,22 +18,21 @@
 </h2><br>
 <div class="link-flex">
   <div>
-  <h2>◆拠点別件数</h2>
-  <table>
-    <tr>
-      <% @bases.each do |base| %>
-      <th><%= base %></th>
-      <% end %>
-    </tr>
-    <tr>
-      <% @bases.each do |base| %>
-      <td><%= @dmers_def.where(user: {base: base}).length %>件</td>
-      <% end %>
-    </tr>
-  </table>
+    <h2>◆拠点別件数</h2>
+    <table>
+      <tr>
+        <% @bases.each do |base| %>
+        <th><%= base %></th>
+        <% end %>
+      </tr>
+      <tr>
+        <% @bases.each do |base| %>
+        <td><%= @dmers_def.where(user: {base: base}).length %>件</td>
+        <% end %>
+      </tr>
+    </table>
   </div>
 </div>
-
 <hr>
 <h2>◆不備発生推移</h2><br>
 <%= line_chart @def_graph %>
@@ -85,4 +84,30 @@
     <% end %>
   </div>
 </div>
+  <div class="link-flex">
+    <div>
+      <h2>◆<%= @month.year %>年：不備内訳</h2>
+        <table>
+          <tr>
+            <th class="green-th">不備理由</th>
+            <th class="green-th">母体数</th>
+            <th class="green-th">解消件数</th>
+            <th class="green-th">期限切れ</th>
+          </tr>
+          <% def_chart_data = [] %>
+          <% @dmers_def.where.not(def_status: nil).group(:def_status).each do |def_category| %>
+          <tr>
+            <td><%= def_category.def_status %></td>
+            <td><%= @dmers_def.where(def_status: def_category.def_status).length %></td>
+            <td><%= @dmers_def.where(def_status: def_category.def_status).where(status: "審査OK").length %></td>
+            <td><%= @dmers_def.where(def_status: def_category.def_status).where(status: "申込取消（不備）").length %></td>
+            <% def_chart_data << [def_category.def_status, @dmers_def.where(def_status: def_category.def_status).length] %>
+          <% end %>
+          </tr>
+        </table>
+    </div>
+    <div>
+      <%= pie_chart def_chart_data %>
+    </div>
+  </div>
 </div>

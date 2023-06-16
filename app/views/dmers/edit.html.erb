@@ -36,8 +36,9 @@
         <h2>新規情報</h2>
         <div class="form">
             <p><%= f.label :industry_status, "業種チェック", class: "form-text" %></p>
-            <p><%= f.collection_select(:client, Dmer.group(:industry_status), :industry_status, :industry_status,{include_blank: true}, {class: "slct-input"})%></p>
+            <p><%= f.collection_select(:industry_status, Dmer.group(:industry_status), :industry_status, :industry_status,{include_blank: true}, {class: "slct-input"})%></p>
         </div>
+
         <div class="form">
             <p><%= f.label :app_check, "申込チェック", class: "form-text" %></p>
             <p><%= f.collection_select(:app_check, Dmer.select(:app_check).distinct, :app_check, :app_check,{}, {class: "slct-input"}) %></p>

@@ -94,7 +94,6 @@
     <% if @monthly_done.present? && @monthly_pic_done.present? %>
     <p class="caution-text">（審査完了日：<%= @monthly_done.maximum(:date).strftime("%m月%d日") %>, アクセプタンス合格日：<%= @monthly_pic_done.maximum(:status_update_settlement).strftime("%m月%d日") %>）まで反映</p><br>
     <hr>
-
     <h2>◆アクセプタンスキャリア連携→合格までの日数（日曜日は日数に数えてません。）</h2>
     <%# 差分日数を仕分けする %>
     <% difference_0 = 0 %>
@@ -139,6 +138,8 @@
         <% other += 1 %>
       <% end %>
     <% end %>
+    <div class="link-flex">
+    <div>
     <table>
       <tr>
         <th class="purple-th">合計</th>
@@ -189,6 +190,23 @@
     %>
     <%= pie_chart chart %><br>
   <% end %>
-    <p class="caution-text">※こちらの件数は担当商材がキャッシュレスではない人も含まれております。</p>
+  </div>
+  <%# @dmers_def %>
+  <div>
+  <table>
+    <tr>
+      <th class="green-th">不備内容</th>
+      <th class="green-th">件数</th>
+    </tr>
+    <% @dmers_def.group(:def_status).each do |def_state| %>
+    <tr>
+      <td><%= def_state.def_status %></td>
+      <td><%= @dmers_def.where(def_status: def_state.def_status).length %></td>
+    </tr>
+    <% end %>
+  </table>
+  <div>
+  </div>
   </div>
 </div>
+    <p class="caution-text">※こちらの件数は担当商材がキャッシュレスではない人も含まれております。</p>

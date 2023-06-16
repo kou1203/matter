@@ -45,6 +45,7 @@ class DmersController < ApplicationController
     @monthly_pic_done = Dmer.includes(:user).where(status_update_settlement: @month.beginning_of_month..@month.end_of_month).where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認").where(status_settlement: "完了")
     @monthly_slmt_dead = Dmer.includes(:user).where(settlement_deadline: @month.beginning_of_month..@month.end_of_month)
     .where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認").where(status_settlement: "期限切れ")
+    @dmers_def = @monthly_data.where.not(def_status: nil)
   end 
 
   def show 
@@ -81,7 +82,6 @@ class DmersController < ApplicationController
     @bases = ["中部SS","関西SS","関東SS","2次店"]
     @dmers_def = Dmer.includes(:user).where.not(deficiency: nil).where(deficiency: @month.in_time_zone.all_year)
     @def_graph = []
-    
       @bases.each do |base|
         def_base = {
           name: "#{base}不備件数", data: @dmers_def.where(user: {base: base}).where(deficiency: @month.in_time_zone.all_year).group("MONTH(deficiency)").count
