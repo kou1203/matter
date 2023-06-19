@@ -1,0 +1,151 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>楽天ペイ早見</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div>
+    <hr>
+    <%= render "shared/rakuten_pay_links" %>
+    <hr>
+    <h2>
+      <%= link_to "<<",simple_conf_year_rakuten_pays_path(month: @month.ago(1.year)), class:"link" %>
+      <%= @month.year %>年楽天ペイ各種件数
+      <%= link_to ">>",simple_conf_year_rakuten_pays_path(month: @month.since(1.year)), class:"link" %>
+    </h2><br>
+    <p class="caution-text">※こちらは当月獲得した案件のステータスの内訳になります。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>日付</th>
+          <% month_cnt = 0 %>
+          <% 12.times do %>
+          <th><%= @month.year %>年<%= month_cnt += 1 %>月</th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <% get_chart = [] %>
+          <td>獲得</td>
+          <% 12.times do |i| %>
+          <td><%= @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).length %></td>
+          <% get_chart << ["#{@month.year}年#{i + 1}月",@rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).length] %>
+          <% end %>
+        </tr>
+        <tr>
+        <td>未処理</td>
+          <% 12.times do |i| %>
+          <td><%= @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "未処理").length %></td>
+          <% end %>
+        </tr>
+        <tr>
+        <td>審査待ち</td>
+          <% 12.times do |i| %>
+          <td><%= @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "審査待ち").length %></td>
+          <% end %>
+        </tr>
+        <tr>
+        <td>当月審査通過</td>
+          <% 12.times do |i| %>
+          <td><%= @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(result_point: Date.new(@month.year,i + 1,1).all_month).where(status: "OK").length %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>当月審査通過率</td>
+          <% 12.times do |i| %>
+          <td><%= 
+            (@rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(result_point: Date.new(@month.year,i + 1,1).all_month).where(status: "OK").length.to_f / @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).length * 100).round(1) 
+          %>%</td>
+          <% end %>
+        </tr>
+        <tr>
+          <% done_chart = [] %>
+          <td>審査通過</td>
+          <% 12.times do |i| %>
+          <td><%= @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "OK").length %></td>
+          <% done_chart << ["#{@month.year}年#{i + 1}月",@rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "OK").length] %>
+          <% end %>
+        </tr>
+        <tr>
+          <td>審査通過率</td>
+          <% 12.times do |i| %>
+          <td><%= 
+            (@rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "OK").length.to_f / 
+            @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).length * 100).round(1) 
+          %>%</td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>上位店不備</td>
+          <% 12.times do |i| %>
+          <td><%= 
+            @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "1次審査不備").length
+          %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>上位店NG</td>
+          <% 12.times do |i| %>
+          <td><%= @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "NG").length %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>申込取消</td>
+          <% 12.times do |i| %>
+          <td><%= 
+            @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消（不備）").length + 
+            @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消").length
+          %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>不備・NG合計数</td>
+          <% def_ng_chart = [] %>
+          <% 12.times do |i| %>
+          <% 
+            ng_and_def =  
+              @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "1次審査不備").length +
+              @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "NG").length +
+              @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消（不備）").length + 
+              @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消").length
+          %>
+          <td><%= ng_and_def %></td>
+          <% def_ng_chart << ["#{@month.year}年#{i + 1}月",ng_and_def] %>
+          <% end %>
+        </tr>
+        <tr>
+          <td>不備・NG率</td>
+          <% 12.times do |i| %>
+          <% 
+            ng_and_def =  
+              @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "1次審査不備").length +
+              @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "NG").length +
+              @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消（不備）").length + 
+              @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消").length
+          %>
+          <td><%= 
+            (ng_and_def.to_f / @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).length * 100).round(1)
+          %>%</td>
+          <% end %>
+        </tr>
+
+      </tbody>
+    </table>
+    <% 
+      charts = 
+        {name: "獲得",data: get_chart},
+        {name: "審査通過", data: done_chart},
+        {name: "不備・NG", data: def_ng_chart}
+    %>
+    <%= line_chart charts %>
+    <p class="caution-text">※こちらの件数は担当商材がキャッシュレスではない人も含まれております。</p>
+    <hr>
+  </div>
+  </div>
+
+</div>

@@ -58,6 +58,7 @@ Rails.application.routes.draw do
     collection { get :index_export }
     collection { get :export }
     collection { get :simple_conf }
+    collection { get :simple_conf_year }
     collection { get :deficiency }
   end 
   
@@ -188,6 +189,7 @@ Rails.application.routes.draw do
       get :deficiency
       get :deficiency_new
       get :simple_conf
+      get :simple_conf_year
     }
   end 
 

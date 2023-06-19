@@ -93,6 +93,8 @@
       ◆獲得推移(合計：<%= @monthly_data.length %>件, 
       獲得日数：<%= @monthly_data.group(:date).length %>日, 
       １日平均：<%= (@monthly_data.length.to_f / @monthly_data.group(:date).length).round(1) %>)件
+      連携日数：<%= @monthly_share.group(:share).length %>日, 
+      １日平均：<%= (@monthly_share.length.to_f / @monthly_share.group(:share).length).round(1) %>件
     </h2><br>
     <%= line_chart [{name: "獲得件数",data: @monthly_data.group(:date).count},{name: "上位連携数",data: @monthly_share.group(:share).count}],options = {
       label: "獲得数",

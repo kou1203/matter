@@ -48,6 +48,12 @@ class DmersController < ApplicationController
     @dmers_def = @monthly_data.where.not(def_status: nil)
   end 
 
+  def simple_conf_year 
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @bases = ["中部SS", "関西SS", "関東SS", "九州SS", "2次店"]
+    @dmers = Dmer.where(date: @month.all_year)
+  end 
+
   def show 
     @dmer = Dmer.find(params[:id])
     @users = User.all

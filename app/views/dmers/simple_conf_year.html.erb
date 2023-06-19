@@ -1,0 +1,148 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>dメル年間早見</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div>
+    <hr>
+    <%= render "shared/dmer_links" %>
+    <hr>
+    <h2>
+      <%= link_to "<<",simple_conf_year_dmers_path(month: @month.ago(1.year)), class:"link" %>
+      <%= @month.year %>年楽dメル各種件数
+      <%= link_to ">>",simple_conf_year_dmers_path(month: @month.since(1.year)), class:"link" %>
+    </h2><br>
+    <p class="caution-text">※こちらは当月獲得した案件のステータスの内訳になります。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>日付</th>
+          <% month_cnt = 0 %>
+          <% 12.times do %>
+          <th><%= @month.year %>年<%= month_cnt += 1 %>月</th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <% get_chart = [] %>
+          <td>獲得</td>
+          <% 12.times do |i| %>
+          <td><%= @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).length %></td>
+          <% get_chart << ["#{@month.year}年#{i + 1}月",@dmers.where(date: Date.new(@month.year,i + 1,1).all_month).length] %>
+          <% end %>
+        </tr>
+        <tr>
+          <% done_chart = [] %>
+          <td>審査OK</td>
+          <% 12.times do |i| %>
+          <td><%= 
+            @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "OK").where(status: "審査OK").length +
+            @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "〇").where(status: "審査OK").length
+          %></td>
+          <% done_chart << ["#{@month.year}年#{i + 1}月",@dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "OK").where(status: "審査OK").length + @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "〇").where(status: "審査OK").length] %>
+          <% end %>
+        </tr>
+        <tr>
+          <td>審査OK率</td>
+          <% 12.times do |i| %>
+          <td><%= 
+            ((@dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "OK").where(status: "審査OK").length +
+            @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "〇").where(status: "審査OK").length).to_f / 
+            @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).length * 100).round(1)
+          %>%</td>
+          <% end %>
+        </tr>
+        <tr>
+          <% slmt_chart = [] %>
+          <td>決済完了</td>
+          <% 12.times do |i| %>
+          <td><%= 
+            @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "OK").where(status: "審査OK").where(status_settlement: "完了").length +
+            @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "〇").where(status: "審査OK").where(status_settlement: "完了").length
+          %></td>
+          <% slmt_chart << ["#{@month.year}年#{i + 1}月",@dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "OK").where(status: "審査OK").where(status_settlement: "完了").length + @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "〇").where(status: "審査OK").where(status_settlement: "完了").length] %>
+          <% end %>
+        </tr>
+        <tr>
+          <td>期限切れ</td>
+          <% 12.times do |i| %>
+          <td><%= 
+            @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "OK").where(status: "審査OK").where(status_settlement: "期限切れ").length + 
+            @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(industry_status: "〇").where(status: "審査OK").where(status_settlement: "期限切れ").length
+          %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>不備対応中</td>
+          <% 12.times do |i| %>
+          <td><%= @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "不備対応中").length %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>不備期限切れ</td>
+          <% 12.times do |i| %>
+          <td><%= 
+            @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消（不備）").length 
+          %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>申込取消</td>
+          <% 12.times do |i| %>
+          <td><%= 
+            @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消").length 
+          %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>審査NG</td>
+          <% 12.times do |i| %>
+          <td><%= 
+            @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "審査NG").length 
+          %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>不備・NG合計</td>
+          <% def_ng_chart = [] %>
+          <% 12.times do |i| %>
+          <% 
+            def_ng =  
+              @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "不備対応中").length  +
+              @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消（不備）").length +
+              @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消").length +
+              @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "審査NG").length
+          %>
+          <% def_ng_chart << ["#{@month.year}年#{i + 1}月",def_ng] %>
+          <td><%= def_ng %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>不備・NG率</td>
+          <% 12.times do |i| %>
+          <% 
+            def_ng =  
+              @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "不備対応中").length  +
+              @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消（不備）").length +
+              @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "申込取消").length +
+              @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "審査NG").length
+          %>
+          <td><%= (def_ng.to_f / @dmers.where(date: Date.new(@month.year,i + 1,1).all_month).length * 100).round(1) %>%</td>
+          <% end %>
+        </tr>
+      </tbody>
+    </table>
+    <% chart_ary = {name: "獲得",data: get_chart},{name: "審査OK",data: done_chart},{name: "決済完了", data: slmt_chart},{name: "不備・NG", data: def_ng_chart} %>
+    <%= line_chart chart_ary %>
+    <p class="caution-text">※こちらの件数は担当商材がキャッシュレスではない人も含まれております。</p>
+    <hr>
+  </div>
+  </div>
+
+</div>

@@ -111,6 +111,13 @@ class RakutenPaysController < ApplicationController
     @monthly_client_def_solution = @monthly_client_def.where(status: "OK")
     @monthly_client_def_cancel = @monthly_client_def.where(status: "申込取消（不備）")
   end
+  
+  def simple_conf_year
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @bases = ["中部SS", "関西SS", "関東SS", "九州SS", "2次店"]
+    @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @month.all_year)
+    @rakuten_pays = RakutenPay.where(date: @month.all_year)
+  end 
 
   def index_export
     @rakuten_pays = RakutenPay.includes(:user).all
