@@ -476,6 +476,7 @@ class DmerDateProgressesController < ApplicationController
       dmer_slmt2nd_done = 
       @dmers_slmter.where(settlement_second: @dmer3_start_date..@dmer3_end_date)
       .where("? >= status_update_settlement", @dmer3_end_date)
+      .where("? >= result_point", @dmer3_end_date)
       .where(app_check: "OK")
       .where(status: "審査OK")
       .where.not(industry_status: "NG")
@@ -486,6 +487,7 @@ class DmerDateProgressesController < ApplicationController
         @dmers_slmter
         .where(status_update_settlement: @dmer3_start_date..@dmer3_end_date)
         .where("? >= settlement_second", @dmer3_end_date)
+        .where("? >= result_point", @dmer3_end_date)
         .where(app_check: "OK")
         .where(status: "審査OK")
         .where.not(industry_status: "NG")
