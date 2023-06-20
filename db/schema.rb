@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_28_064038) do
+ActiveRecord::Schema.define(version: 2023_06_19_085844) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -1709,6 +1709,25 @@ ActiveRecord::Schema.define(version: 2023_04_28_064038) do
     t.index ["user_id"], name: "index_trouble_sses_on_user_id"
   end
 
+  create_table "usen_pays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "controll_num", null: false
+    t.string "store_name", null: false
+    t.bigint "user_id"
+    t.date "date", null: false
+    t.string "status", null: false
+    t.string "doc_status"
+    t.text "def_remarks"
+    t.date "deficiency"
+    t.date "def_solution"
+    t.date "share"
+    t.date "result_point"
+    t.text "remarks"
+    t.integer "profit", null: false
+    t.integer "valuation", null: false
+    t.date "status_update"
+    t.index ["user_id"], name: "index_usen_pays_on_user_id"
+  end
+
   create_table "users", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -1794,4 +1813,5 @@ ActiveRecord::Schema.define(version: 2023_04_28_064038) do
   add_foreign_key "trouble_ns", "users"
   add_foreign_key "trouble_sses", "store_props"
   add_foreign_key "trouble_sses", "users"
+  add_foreign_key "usen_pays", "users"
 end

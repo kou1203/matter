@@ -297,6 +297,11 @@ Rails.application.routes.draw do
     collection {get :date_destroy}
   end 
 
+  resources :usen_pay_date_progresses do 
+    collection {get :progress_create}
+    collection {get :date_destroy}
+  end 
+
   resources :airpay_stickers do 
     collection {post :import}
   end 
@@ -359,6 +364,12 @@ Rails.application.routes.draw do
     collection {
       get :export
       get :base_export
+    }
+  end 
+
+  resources :usen_pays do 
+    collection {
+      post :import
     }
   end 
 

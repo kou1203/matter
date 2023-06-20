@@ -89,6 +89,12 @@
         <td></td>
       </tr>
       <tr>
+        <td><%= link_to "UsenPay", progress_create_usen_pay_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+        <td><%= link_to "詳細", usen_pay_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+        <td><%= @usen_pay_date_progresses_last_update %></td>
+        <td></td>
+      </tr>
+      <tr>
         <td><%= link_to "キャッシュ合計", progress_create_cash_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
         <td><%= link_to "詳細", cash_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
         <td><%= @cash_date_progresses_last_update %></td>

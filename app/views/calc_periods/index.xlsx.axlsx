@@ -257,7 +257,23 @@ wb = xlsx_package.workbook
             cash_base, date_progress.user.name, date_progress.user.position_sub, 
             date_progress.get_len,date_progress.profit_current
           ]
-        end 
+        end
+      end
+    elsif product == "UsenPay"
+      sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
+      @bases.each do |base|
+        @usen_pay_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
+
+          if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
+            cash_base = date_progress.base
+          else 
+            cash_base = "その他"
+          end 
+          sheet.add_row [
+            cash_base, date_progress.user.name, date_progress.user.position_sub, 
+            date_progress.get_len,date_progress.profit_current
+          ]
+        end
       end
     end 
   end

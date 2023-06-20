@@ -37,4 +37,5 @@ class User < ApplicationRecord
   has_many :cash_date_progress
   has_many :other_product_date_progresses
   has_many :airpay_stickers
+  has_many :usen_pays
 end

@@ -86,6 +86,14 @@ class CalcPeriodsController < ApplicationController
     @itss_date_progresses_last_update = @itss_date_progresses.maximum(:create_date)
     @itss_date_progresses = @itss_date_progresses.where(create_date: @itss_date_progresses_last_update)
 
+    if OtherProductDateProgress.where(product_name: "UsenPay").where(date: @month).exists?
+      @usen_pay_date_progresses = OtherProductDateProgress.where(product_name: "UsenPay").includes(:user).where(date: @month)
+    else  
+      @usen_pay_date_progresses = OtherProductDateProgress.where(product_name: "UsenPay").includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
+    @usen_pay_date_progresses_last_update = @usen_pay_date_progresses.maximum(:create_date)
+    @usen_pay_date_progresses = @usen_pay_date_progresses.where(create_date: @usen_pay_date_progresses_last_update)
+
     if CashDateProgress.where(date: @month).exists?
       @cash_date_progresses = CashDateProgress.where(date: @month)
     else  
@@ -98,7 +106,7 @@ class CalcPeriodsController < ApplicationController
     
     @users = User.where.not(position: "退職")
 
-    @products = ["合計","dメル", "auPay", "PayPay", "楽天ペイ","AirPay", "出前館","auステッカー", "dメルステッカー","AirPayステッカー","ITSS"]
+    @products = ["合計","dメル", "auPay", "PayPay", "楽天ペイ","AirPay", "出前館","auステッカー", "dメルステッカー","AirPayステッカー","ITSS","UsenPay"]
     
     respond_to do |format|
       format.html
@@ -213,6 +221,9 @@ class CalcPeriodsController < ApplicationController
     @airpaysticker_date_progress = @airpaysticker_date_progress.where(create_date: @airpaysticker_date_progress.maximum(:create_date)).where(date: @airpaysticker_date_progress.maximum(:date))
     @itss_date_progress = OtherProductDateProgress.where(product_name: "ITSS").where(date: @month.in_time_zone.all_month)
     @itss_date_progress = @itss_date_progress.where(create_date: @itss_date_progress.maximum(:create_date)).where(date: @itss_date_progress.maximum(:date))
+    @usen_date_progresses  = OtherProductDateProgress.where(product_name: "UsenPay").where(date: @month.in_time_zone.all_month)
+    @itss_date_progress = @itss_date_progress.where(create_date: @itss_date_progress.maximum(:create_date)).where(date: @itss_date_progress.maximum(:date))
+    @usen_date_progresses = @usen_date_progresses.where(create_date: @usen_date_progresses.maximum(:create_date)).where(date: @usen_date_progresses.maximum(:date))
     bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
     head :no_content
     filename = "評価売資料#{@month}"

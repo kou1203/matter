@@ -1,0 +1,2 @@
+module UsenPayDateProgressesHelper
+end
