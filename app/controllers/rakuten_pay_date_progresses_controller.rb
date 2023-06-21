@@ -210,13 +210,9 @@ class RakutenPayDateProgressesController < ApplicationController
           .where.not(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
         )
       @rakuten_pay_inc = 
-        @rakuten_pays_user_period.where.not(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
-        .where(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
-        .where.not(deficiency: nil)
+      @rakuten_pays_user.where.not(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(share: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where.not(deficiency: nil)
       valuation_current = 
-        @rakuten_pays_user_period.sum(:valuation) - 
-        @rakuten_pay_def.sum(:valuation) +
-        @rakuten_pay_inc.sum(:valuation)
+        @rakuten_pays_user_period.sum(:valuation) - @rakuten_pay_def.sum(:valuation) + @rakuten_pay_inc.sum(:valuation)
       rakuten_val_len = 
         @rakuten_pays_user_period.length - 
         @rakuten_pay_def.length +
@@ -243,19 +239,19 @@ class RakutenPayDateProgressesController < ApplicationController
         user_id: user_id                                       ,
         base: user_base                                        ,
         date: @month                                           ,
-        shift_schedule: shift_schedule            ,
-        shift_digestion: shift_digestion          ,
-        get_len: get_len,
-        share_len: @rakuten_pays_user_share.length                                                                                ,
+        shift_schedule: shift_schedule                         ,
+        shift_digestion: shift_digestion                       ,
+        get_len: get_len                                       ,
+        share_len: @rakuten_pays_user_share.length             ,
         fin_len: fin_len                                       ,
-        valuation_current: valuation_current                                                                                      ,
-        valuation_fin: valuation_fin                                                                                              ,
-        profit_current: profit_current                                                                                            ,
+        valuation_current: valuation_current                   ,
+        valuation_fin: valuation_fin                           ,
+        profit_current: profit_current                         ,
         profit_fin: profit_fin                                 ,
         result_len: rakuten_pay_result_len                     ,
         result_fin_len: result_fin_len                         ,
-        prev_price_result: prev_price_result                         ,
-        prev_price_result_fin: prev_price_result_fin                         ,
+        prev_price_result: prev_price_result                   ,
+        prev_price_result_fin: prev_price_result_fin           ,
         create_date: Date.today
       }
     # 日付とユーザー名が一致しているデータの場合更新、新しいデータの場合保存
