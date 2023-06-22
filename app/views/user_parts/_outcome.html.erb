@@ -305,7 +305,7 @@
     </tbody>
   </table>
 <% end %>
-<% if @rakuten_pay_uq.present? || @rakuten_pay_inc.present? %>
+<% if @rakuten_pay_val.present? %>
 <h2>楽天ペイ第一成果（獲得数+自社不備解消数）</h2>
   <% num = 1 %>
   <table>
@@ -321,7 +321,6 @@
       <th class="valuation-th"></th>
     </thead>
     <tbody>
-      <% if @rakuten_pay_val.present? %>
       <% @rakuten_pay_val.each do |rakuten_pay| %>
       <tr>
       <td class="valuation-td "><%= num %></td>
@@ -335,7 +334,6 @@
       <td class="valuation-td "><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
-      <% end %>
       <% end %>
     </tbody>
   </table>
