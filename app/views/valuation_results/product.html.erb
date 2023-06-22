@@ -67,6 +67,8 @@
             <% else %>
             <td><%= product.share %></td>
             <% end %>
+            <% elsif @product_name.include?("出前館") %>
+            <td><%= product.first_cs_contract %></td>
             <% else %>
             <td><%= product.result_point %></td>
             <% end %>
