@@ -373,4 +373,10 @@ Rails.application.routes.draw do
     }
   end 
 
+  resources :valuation_results, only: [:index, :show] do 
+    collection {
+      get :product
+    }
+  end 
+
 end

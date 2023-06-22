@@ -1,0 +1,80 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1><%= @product_name %>成果（評価売）</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+  <br>
+      <h2 class="">
+        <%= link_to "<<",product_valuation_results_path(month:@month.prev_month,product_name: @product_name),"data-turbolinks": false, class:"link" %>
+        <%= @month.strftime("%Y年%m月") %><%= @product_name %>成果
+        （<%= link_to "前のページに戻る",valuation_results_path(month: @month),"data-turbolinks": false, class:"link" %>）
+        <%= link_to ">>",product_valuation_results_path(month:@month.next_month,product_name: @product_name),"data-turbolinks": false, class:"link" %>
+      </h2><br>
+
+    <table>
+      <thead>
+        <tr>
+          <th>No.</th>
+          <th>管理番号</th>
+          <th>店舗名</th>
+          <th>獲得日</th>
+          <th>獲得者</th>
+        <% if @product_name.include?("dメル") %>
+          <th>審査通過日</th>
+          <th>初回決済者</th>
+          <th>初回決+写真</th>
+          <th>２回目決済日</th>
+        <% else %>
+
+          <th>成果になった日</th>
+        <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr></tr>
+          <% if @product_name.include?("dメル") %>
+          <% @product_data[@product_name][0].order(:user_id,:date).each_with_index do |product,i| %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= product.customer_num %></td>
+            <td><%= product.store_prop.name %></td>
+            <td><%= product.date %></td>
+            <td><%= link_to product.user.name,valuation_result_path(product.user_id,product_name: @product_name,month: @month), class:"link" %></td>
+            <td><%= product.result_point %></td>
+            <td><%= product.settlementer.name rescue "" %></td>
+            <td><%= product.status_update_settlement %></td>
+            <td><%= product.settlement_second %></td>
+          </tr>
+          <% end %>
+          <% else %>
+          <% @product_data[@product_name][0].order(:user_id,:date).each_with_index do |product,i| %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= product.customer_num %></td>
+            <td><%= product.store_prop.name %></td>
+            <td><%= product.date %></td>
+            <td><%= link_to product.user.name,valuation_result_path(product.user_id,product_name: @product_name,month: @month), class:"link" %></td>
+            <% if @product_name.include?("auPay") %>
+            <td><%= product.status_update_settlement %></td>
+            <% elsif @product_name.include?("楽天ペイ") %>
+            <% if product.date >= @month.beginning_of_month %>
+            <td><%= product.date %></td>
+            <% else %>
+            <td><%= product.share %></td>
+            <% end %>
+            <% else %>
+            <td><%= product.result_point %></td>
+            <% end %>
+          </tr>
+          <% end  %>
+          <% end %>
+      </tbody>
+    </table>
+    <h2 class="caution-text">※獲得者の項目をクリックすると内訳が見れます。</h2><br>
+  </div>
+</div>

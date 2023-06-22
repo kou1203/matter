@@ -88,6 +88,7 @@ class UsersController < ApplicationController
     @itss_get = Itss.where(user_id: @user.id).where(date: @month.all_month)
     @itss = Itss.where(user_id: @user.id).where(status_ntt1: @month.all_month)
     @demaekan = Demaekan.where(user_id: @user.id).where(first_cs_contract: @start_date..@end_date)
+    @usen_pays = UsenPay.where(user_id: @user.id).where(date: @month.all_month)
     # 決済リスト
     @slmts = 
       StoreProp.includes(:dmer, :aupay, :comments).where(aupay: {share: Date.today.ago(3.month)..Date.today})
@@ -862,6 +863,7 @@ class UsersController < ApplicationController
         @airpay_done_val = @airpay_done.sum(:valuation) + @airpay_bonus
 
 
+        
         # 出前館売上
         @demaekan = Demaekan.includes(:user).where(user_id: @user.id).where(first_cs_contract: @start_date..@end_date)
         @demaekan_len = @demaekan.length

@@ -1,0 +1,39 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>成果（評価売）</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+  <br>
+      <h2 class="">
+        <%= link_to "<<",valuation_results_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
+        <%= @month.strftime("%Y年%m月") %>成果（評価売）
+        <%= link_to ">>",valuation_results_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
+      </h2><br>
+    <h2>◆成果内訳（評価売）</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>商材</th>
+          <th>件数</th>
+          <th>売上</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr></tr>
+        <% @products.each do |product| %>
+        <tr>
+          <td><%=  %><%= link_to product[0], product_valuation_results_path(product_name: product[0],month: @month) ,"data-turbolinks": false, class: "link" %></td>
+          <td><%= product[1][0].to_s(:delimited) rescue 0 %>件 </td>
+          <td>¥<%= product[1][1].to_s(:delimited) rescue 0 %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <h2 class="caution-text">※商材の項目をクリックすると内訳が見れます。</h2>
+  </div>
+</div>
