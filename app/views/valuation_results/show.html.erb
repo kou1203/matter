@@ -56,7 +56,11 @@
           <tr>
             <td><%= i + 1 %></td>
             <td><%= product.customer_num %></td>
+            <% if @product_name.include?("ITSS") %>
+            <td><%= product.contract_name %></td>
+            <% else %>
             <td><%= product.store_prop.name %></td>
+            <% end %>
             <td><%= product.date %></td>
             <td><%= product.user.name %></td>
             <% if @product_name.include?("auPay") %>
@@ -69,6 +73,8 @@
             <% end %>
             <% elsif @product_name.include?("出前館") %>
             <td><%= product.first_cs_contract %></td>
+            <% elsif @product_name.include?("ITSS") %>
+            <td><%= product.construction_schedule %></td>
             <% else %>
             <td><%= product.result_point %></td>
             <% end %>
