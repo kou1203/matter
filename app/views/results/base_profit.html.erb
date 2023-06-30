@@ -211,6 +211,7 @@
         <th class="product-th1" colspan="3">AirPay</th>
         <th class="product-th1" colspan="">PayPay</th>
         <th class="product-th1" colspan="">ITSS</th>
+        <th class="product-th1" colspan="">UsenPay</th>
       </tr>
       <tr>
         <th class="progress-th2">氏名</th>
@@ -226,7 +227,7 @@
         <th class="progress-th2">獲得</th>
         <th class="progress-th2">獲得終着</th>
         <% end %>
-        <% 2.times do %>
+        <% 3.times do %>
         <th class="progress-th2">獲得</th>
         <% end %>
       </tr>
@@ -251,6 +252,7 @@
         <td class="progress-td"><%= @airpay_date_progress.find_by(user_id: user.id).fin_len rescue 0 %></td>
         <td class="progress-td"><%= @paypay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
         <td class="progress-td"><%= @itss_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
+        <td class="progress-td"><%= @usen_pay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
       </tr>
       <% end %>
       <tr>
@@ -276,6 +278,7 @@
         <td class="difference-td"><%= @paypay_date_progress.sum(:get_len) rescue 0 %></td>
         
         <td class="difference-td"><%= @itss_date_progress.sum(:get_len) rescue 0 %></td>
+        <td class="difference-td"><%= @usen_pay_date_progress.sum(:get_len) rescue 0 %></td>
       </tr>
     </table>
     <h2>◆<%= @base %>現状成果になった件数</h2>

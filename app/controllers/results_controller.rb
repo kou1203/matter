@@ -309,6 +309,7 @@ class ResultsController < ApplicationController
       @paypay_date_progress = PaypayDateProgress.where(user_id: @user.id).where(date: @date_period).last
       @rakuten_pay_date_progress = RakutenPayDateProgress.where(user_id: @user.id).where(date: @date_period).last
       @airpay_date_progress = AirpayDateProgress.where(user_id: @user.id).where(date: @date_period).last
+      @usen_pay_date_progress = OtherProduct.where(product_name: "UsenPay").where(user_id: @user.id).where(date: @date_period).last
       @demaekan_date_progress = DemaekanDateProgress.where(user_id: @user.id).where(date: @date_period).last
       @austicker_date_progress = AustickerDateProgress.where(user_id: @user.id).where(date: @date_period).last
       @dmersticker_date_progress = DmerstickerDateProgress.where(user_id: @user.id).where(date: @date_period).last
@@ -1003,6 +1004,9 @@ class ResultsController < ApplicationController
     @demaekan_date_progress = @demaekan_date_progress.where(date: @demaekan_date_progress.maximum(:date)).where(create_date: @demaekan_date_progress.maximum(:create_date))
     @itss_date_progress = OtherProductDateProgress.includes(:user).where(product_name: "ITSS").where(date: @start_date..@end_date).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @itss_date_progress = @itss_date_progress.where(date: @itss_date_progress.maximum(:date)).where(create_date: @itss_date_progress.maximum(:create_date))
+    
+    @usen_pay_date_progress = OtherProductDateProgress.includes(:user).where(product_name: "UsenPay").where(date: @start_date..@end_date).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
+    @usen_pay_date_progress = @usen_pay_date_progress.where(date: @usen_pay_date_progress.maximum(:date)).where(create_date: @usen_pay_date_progress.maximum(:create_date))
     
   end 
 

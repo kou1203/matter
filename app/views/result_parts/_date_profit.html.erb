@@ -2470,6 +2470,12 @@
               <td class="total-td" style="color: red;"><%=  %></td>
             <td class="total-td" colspan=""><%= @airpay_date_progress.get_len rescue 0 %></td>
           </tr>
+          <tr>
+            <td class="total-td" colspan="">UsenPay</td>
+              <td class="total-td" ><%= @usen_pay_date_progress.get_len rescue 0 %></td>
+              <td class="total-td" style="color: red;"><%=  %></td>
+            <td class="total-td" colspan=""><%= @usen_pay_date_progress.get_len rescue 0 %></td>
+          </tr>
           </tbody>
         </table>
       </div><%# /獲得内訳 %>
@@ -2519,6 +2525,7 @@
           <th class="total-th">PayPay</th>
           <th class="total-th">楽天ペイ</th>
           <th class="total-th">AirPay</th>
+          <th class="total-th">UsenPay</th>
         </tr>
         <tr>
           <th class="total-th">獲得数</th>
@@ -2527,6 +2534,7 @@
           <td class="total-td"><%= @paypay_date_progress.get_len rescue 0 %></td>
           <td class="total-td"><%= @rakuten_pay_val_len rescue 0 %></td>
           <td class="total-td"><%= @airpay_date_progress.get_len rescue 0 %></td>
+          <td class="total-td"><%= @usen_pay_date_progress.get_len rescue 0 %></td>
         </tr>
         <tr>
           <th class="total-th">生産性</th>
@@ -2535,6 +2543,7 @@
           <td class="total-td"><%= (@paypay_date_progress.ge_len.to_f / @paypay_date_progress.shift_digestion).round(1) rescue 0 %></td>
           <td class="total-td"><%= (@rakuten_pay_val_len.to_f / @rakuten_pay_date_progress.shift_digestion).round(1) rescue 0 %></td>
           <td class="total-td"><%= (@airpay_date_progress.get_len.to_f / @airpay_date_progress.shift_digestion).round(1) rescue 0 %></td>
+          <td class="total-td"><%= (@usen_pay_date_progress.get_len.get_len.to_f / @airpay_date_progress.shift_digestion).round(1) rescue 0 %></td>
         </tr>
 
         <tr>
@@ -2544,6 +2553,7 @@
           <td class="total-td"><%= @paypay_date_progress.fin_len rescue 0 %></td>
           <td class="total-td"><%= @rakuten_pay_date_progress.fin_len rescue 0 %></td>
           <td class="total-td"><%= @airpay_date_progress.fin_len rescue 0 %></td>
+          <td class="total-td"><%= (@usen_pay_date_progress.get_len.get_len.to_f / @airpay_date_progress.shift_digestion * @shift_schedule_new).round() rescue 0 %></td>
         </tr>
       </table>
 
