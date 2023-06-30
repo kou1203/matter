@@ -1,0 +1,122 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>未入金案件一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/date-progress">
+    <div data-scope-path="shares/index">
+      <hr>
+        <%= render "shared/praness_links" %>
+    </div>
+    <div class="flex">
+      <div><%# 検索 %>
+        <%= form_with url: not_payment_payment_pranesses_path, local: true, method: :get do |f| %>
+              <%= f.hidden_field :search_date, value: @month %>
+            <table class="s-tb">
+              <tr>
+                <th class="s-th">売上月</th>
+                <th class="s-th" colspan="2">振込予定日</th>
+                <td class="s-submit"><%= f.submit "絞込み",class: "s-btn" %></td>
+              </tr>
+              <tr>
+                <td class="s-td"><%= f.select :payment_date,options_from_collection_for_select(PaymentPraness.select(:payment_date).distinct,:payment_date, :payment_date),{include_blank: true},{class: "s-input"} %></td>
+                <td class="s-td"><%= f.date_field :payment_schedule_start, class: "s-date" %>〜</td>
+                <td class="s-td"><%= f.date_field :payment_schedule_end, class: "s-date" %></td>
+                <td class="s-reset"><%= link_to "リセット",not_payment_payment_pranesses_path,class:"reset-link","data-turbolinks": false %></td>
+              </tr>
+            </table>
+        <% end %>
+      <h2>◆未入金案件一覧<br><br>　振替予定日：<%= @not_payments.minimum(:payment_schedule) %>〜<%= @not_payments.maximum(:payment_schedule) %></h2>
+      </div><%# 検索 %>
+
+      <div><%# 早見 %>
+        <table class="s-tb">
+          <thead>
+            <tr >
+              <th class="progress-th1" colspan="2">未入金</th>
+            </tr>
+            <tr>
+              <th class="progress-th1">売上月</th>
+              <th class="progress-th1">件数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @not_payments.group(:payment_date).order(payment_date: :asc).count(:id).each do |not_payment| %>
+            <tr>
+              <td class="progress-td"><%= not_payment[0] %></td>
+              <td class="progress-td"><%= not_payment[1] %></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div><%# 早見 %>
+      <div><%# 早見 %>
+        <table class="s-tb">
+          <thead>
+            <tr>
+              <th class="progress-th2" colspan="2">入金済</th>
+            </tr>
+            <tr>
+              <th class="progress-th2">売上月</th>
+              <th class="progress-th2">件数</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @already_payments.group(:payment_date).order(payment_date: :asc).count(:id).each do |already_payment| %>
+            <tr>
+              <td class="progress-td"><%= already_payment[0] %></td>
+              <td class="progress-td"><%= already_payment[1] %></td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div><%# 早見 %>
+      </div>
+      <table class="progress-tb">
+        <thead>
+          <tr>
+            <th class="progress-th1">No.</th>
+            <th class="progress-th1">案件番号</th>
+            <th class="progress-th1">店舗名</th>
+            <th class="progress-th1">獲得日</th>
+            <th class="progress-th1">解約日</th>
+            <th class="progress-th1">料金発生日</th>
+            <th class="progress-th1">アプラス番号</th>
+            <th class="progress-th1">口座名義</th>
+            <th class="progress-th1">単価（税抜）</th>
+            <th class="progress-th1">売上月</th>  
+            <th class="progress-th1">請求方法</th>
+            <th class="progress-th1">振込予定日</th>
+            <th class="progress-th1">件数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @not_payments.order("pranesses.date").each_with_index do |not_payment, i| %>
+          <% if (not_payment.payment_schedule.present?) && (Date.today > not_payment.payment_schedule)  %>
+          <tr class="sum-tr">
+          <% else %>
+          <tr >
+          <% end %>
+            <td class="progress-td"><%= i + 1 %></td>
+            <td class="progress-td"><%= not_payment.praness.customer_num %></td>
+            <td class="progress-td"><%= not_payment.store_name %></td>
+            <td class="progress-td"><%= not_payment.praness.date %></td>
+            <td class="progress-td"><%= not_payment.praness.cancel %></td>
+            <td class="progress-td"><%= not_payment.praness.payment_start %></td>
+            <td class="progress-td"><%= not_payment.aplus_customer_num %></td>
+            <td class="progress-td"><%= not_payment.praness.cash_name %></td>
+            <td class="progress-td">¥<%= not_payment.price.to_s(:delimited) %></td>
+            <td class="progress-td"><%= not_payment.payment_date %></td>
+            <td class="progress-td"><%= not_payment.payment_method %></td>
+            <td class="progress-td"><%= not_payment.payment_schedule %></td>
+            <td class="progress-td"><%= @not_payments.where(praness_id: not_payment.praness_id).length %></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+  </div>
+</div>

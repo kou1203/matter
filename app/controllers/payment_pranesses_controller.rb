@@ -1,5 +1,5 @@
 class PaymentPranessesController < ApplicationController
-
+  before_action :set_month
   def index 
     @q = PaymentPraness.ransack(params[:q])
     @payment_pranesses = 
@@ -12,12 +12,24 @@ class PaymentPranessesController < ApplicationController
   end 
 
   def year_profit
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @payment_pranesses = PaymentPraness.includes(:praness).where.not(payment_method: "請求しない").where("payment_date LIKE ?","%#{@month.year}%").order(:payment_date)
+    @billings = PaymentPraness.includes(:praness).where("payment_date LIKE ?","%#{@month.year}%").order(:payment_date)
     @pranesses = Praness.all
-    # 入金待ち
-    @waiting_for_payment = PaymentPraness.where(payment_method: nil).where("payment_date LIKE ?","%#{@month.year}%").where(status: "結果待ち")
   end
+
+  def not_payment
+    @not_payments = PaymentPraness.where(status: "入金待ち").includes(:praness)
+    @already_payments = PaymentPraness.where(status: "完了").includes(:praness)
+    if params[:payment_date].present? 
+      @not_payments = @not_payments.where(payment_date: params[:payment_date])
+    end 
+    if params[:payment_schedule_start].present? && params[:payment_schedule_end].present?
+      @not_payments = @not_payments.where(payment_schedule: params[:payment_schedule_start]..params[:payment_schedule_end])
+    elsif params[:payment_schedule_start].present? && params[:payment_schedule_end].blank?
+      @not_payments = @not_payments.where(payment_schedule: params[:payment_schedule_start]..)
+    elsif params[:payment_schedule_start].blank? && params[:payment_schedule_end].present?
+      @not_payments = @not_payments.where(payment_schedule: ..params[:payment_schedule_end])
+    end 
+  end 
 
 
   def import 
@@ -31,6 +43,12 @@ class PaymentPranessesController < ApplicationController
     else
       redirect_to payment_pranesses_path, alert: "インポートに失敗しました。ファイルを選択してください"
     end
+  end 
+
+  private 
+
+  def set_month
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
   end 
   
 end

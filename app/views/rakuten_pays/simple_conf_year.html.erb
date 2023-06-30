@@ -67,7 +67,7 @@
           <% done_chart = [] %>
           <td>審査通過</td>
           <% 12.times do |i| %>
-          <td><%= @rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "OK").length %></td>
+          <td><%= RakutenPay.where(result_point: Date.new(@month.year,i + 1,1).all_month).where(status: "OK").length %></td>
           <% done_chart << ["#{@month.year}年#{i + 1}月",@rakuten_pays.where(date: Date.new(@month.year,i + 1,1).all_month).where(status: "OK").length] %>
           <% end %>
         </tr>

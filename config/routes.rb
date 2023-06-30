@@ -49,7 +49,8 @@ Rails.application.routes.draw do
   resources :payment_pranesses do 
     collection { 
       post :import 
-      get :year_profit  
+      get :year_profit
+      get :not_payment
     }
   end 
 
