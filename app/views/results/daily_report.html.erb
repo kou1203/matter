@@ -73,7 +73,7 @@
 <%# 現状売上 %>
 <% if @shift_digestion.where(user_id: user.id).present? %>
   <% person_profit_new = (@shift_digestion.where(user_id: user.id).sum(:dmer) * 8000) + (@shift_digestion.where(user_id: user.id).sum(:rakuten_pay) * 4000) + (@shift_digestion.where(user_id: user.id).sum(:airpay) * (3000 + airpay_bonus_price)) rescue 0 %>
-  <% person_profit_sum = person_profit_new + dmer_slmt + airpay_bonus rescue 0 %>
+  <% person_profit_sum = person_profit_new + dmer_slmt rescue 0 %>
 <% else %>
 <% person_profit_new = 0 %>
 <% person_profit_sum = 0 %>
