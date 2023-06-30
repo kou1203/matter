@@ -92,6 +92,9 @@
                 <th class="date-th"><span class="date-span">１３：その他対面<span class="date-span"></th>
                 <th class="date-th"><span class="date-span">１３：その他フル</span></th>
                 <th class="date-th"><span class="date-span">１３：その他成約</span></th>
+                <th class="date-th"><span class="date-span">１８：UsenPay対面<span class="date-span"></th>
+                <th class="date-th"><span class="date-span">１８：UsenPayフル</span></th>
+                <th class="date-th"><span class="date-span">１８：UsenPay成約</span></th>
                 <th class="date-th"><span class="date-span">１９：AirPay導入訪問<span class="date-span"></th>
                 <th class="date-th"><span class="date-span">１９：AirPay導入対面</span></th>
                 <th class="date-th"><span class="date-span">１９：AirPay導入成約</span></th>
@@ -256,6 +259,10 @@
               <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_13.to_i rescue 0 %></span></td>
               <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_13.to_i rescue 0 %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_13.to_i rescue 0 %></td>
+              <%#USENPAY基準値%>
+              <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_18.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_18.to_i rescue 0 %></span></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.result_cash.out_get_18.to_i rescue 0 %></td>
               <%#全導入AirPay入り%>
               <td class="date-td"><span class="date-span"><%= result.result_cash.out_interview_19.to_i rescue 0 %></span></td>
               <td class="date-td"><span class="date-span"><%= result.result_cash.out_full_talk_19.to_i rescue 0 %></span></td>
@@ -375,7 +382,7 @@
                 <td class="date-td"><span class="date-span"></span></td>
                 <% end %>
                 <th class="th-blank"></th>
-                <% 44.times do %><%# 切り返し %>
+                <% 47.times do %><%# 切り返し %>
                 <td class="date-td"><span class="date-span"></span></td>
                 <% end %>
                 <th class="th-blank"></th>
