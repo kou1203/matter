@@ -202,8 +202,14 @@ class SpreadLinksController < ApplicationController
             index_cnt += 1  
             @session_data[index_cnt,col_cnt] = result.result_cash.out_get_19.to_i
             index_cnt += 1  
+            @session_data[index_cnt,col_cnt] = result.result_cash.out_interview_18.to_i
+            index_cnt += 1  
+            @session_data[index_cnt,col_cnt] = result.result_cash.out_full_talk_18.to_i
+            index_cnt += 1  
+            @session_data[index_cnt,col_cnt] = result.result_cash.out_get_18.to_i
+            index_cnt += 1  
           else  
-            index_cnt += 42
+            index_cnt += 45
           end 
           # 時間別基準値
           @session_data[index_cnt,col_cnt] = result.visit10.to_i
@@ -300,6 +306,7 @@ class SpreadLinksController < ApplicationController
       @session_data[125,42] = @paypay_date_progress.get_len rescue 0
       @session_data[125,43] = @rakuten_pay_val.length rescue 0
       @session_data[125,44] = @airpay_date_progress.get_len rescue 0
+      @session_data[125,45] = @usen_pay_date_progress.get_len rescue 0
       @session_data[127,40] = @dmer_date_progress.fin_len rescue 0
       @session_data[127,41] = @aupay_date_progress.fin_len rescue 0
       @session_data[127,42] = @paypay_date_progress.fin_len rescue 0
@@ -349,6 +356,7 @@ class SpreadLinksController < ApplicationController
       @session_data[141,41] = @rakuten_pays.length - @rakuten_pay_val.length rescue 0
       @session_data[141,42] = @rakuten_pay_val.length rescue 0
       @session_data[142,40] = @airpay_date_progress.get_len rescue 0
+      @session_data[143,40] = @airpay_date_progress.get_len rescue 0
       # 決済内訳
       @dmers_slmt = 
       Dmer.where(settlementer_id: @user_id).where(status: "審査OK")
@@ -666,6 +674,7 @@ class SpreadLinksController < ApplicationController
         @rakuten_pay_date_progress = RakutenPayDateProgress.includes(:user).where(user_id: user.id).where(date: @month.all_month).last
         @airpay_date_progress = AirpayDateProgress.includes(:user).where(user_id: user.id).where(date: @month.all_month).last
         @itss_date_progress = OtherProductDateProgress.includes(:user).where(product_name: "ITSS").where(user_id: user.id).where(date: @month.all_month).last
+        @usen_pay_date_progress = OtherProductDateProgress.includes(:user).where(product_name: "UsenPay").where(user_id: user.id).where(date: @month.all_month).last
         @session_data[index_cnt,col_cnt] = user.name
         @session_data[27 + index_cnt,col_cnt] = user.name
         col_cnt += 1
@@ -736,8 +745,10 @@ class SpreadLinksController < ApplicationController
         @session_data[27 + index_cnt,col_cnt] = @paypay_date_progress.result_len rescue 0
         col_cnt += 1
         @session_data[27 + index_cnt,col_cnt] = @itss_date_progress.result_len rescue 0
-        # 成果になった件数
         col_cnt += 1
+        @session_data[27 + index_cnt,col_cnt] = @usen_pay_date_progress.get_len rescue 0
+        col_cnt += 1
+        # 成果になった件数
         index_cnt += 1
       end 
     # 基準値

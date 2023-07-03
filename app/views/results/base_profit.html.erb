@@ -84,6 +84,7 @@
         <th class="progress-th1" colspan="2">決済シフト</th>
         <th class="progress-th1" colspan="9">基準値</th>
         <th class="progress-th1" colspan="5">全導入AirPay入り</th><%# １９ %>
+        <th class="progress-th1" colspan="5">UsenPay基準値</th><%# １８ %>
       </tr>
       <tr><%# 個別 %>
         <th class="progress-th2">氏名</th>
@@ -106,6 +107,11 @@
         <th class="progress-th2">対面率</th>
         <th class="progress-th2">成約</th>
         <th class="progress-th2">成約率</th>
+        <th class="progress-th2">対面</th>
+        <th class="progress-th2">フル</th>
+        <th class="progress-th2">フル率</th>
+        <th class="progress-th2">成約</th>
+        <th class="progress-th2">成約率</th>
       </tr>
       <% @users.each do |user| %>
       <% result_user = @results.where(user_id: user.id) %>
@@ -125,10 +131,6 @@
             ).to_f / 3 / shift_digestion
           ).round(1) rescue 0 
       %>
-      <%# out_interview_19 %>
-      <% airpay_visit = result_user.sum(:out_interview_19) rescue 0 %>
-      <% airpay_interview = result_user.sum(:out_full_talk_19) rescue 0 %>
-      <% airpay_get = result_user.sum(:out_get_19) rescue 0 %>
       <tr class="progress-tr">
         <td class="progress-td"><%= user.name %></td>
         <td class="progress-td"><%= user.position_sub %></td>
@@ -147,11 +149,16 @@
         <td class="progress-td"><%= number_to_percentage(full_talk.to_f / interview * 100,precision: 0) rescue 0 %></td>
         <td class="progress-td"><%= get %></td>
         <td class="progress-td"><%= number_to_percentage(get.to_f / full_talk * 100,precision: 0) rescue 0 %></td>
-        <td class="progress-td"><%= airpay_visit %></td>
-        <td class="progress-td"><%= airpay_interview %></td>
-        <td class="progress-td"><%= number_to_percentage(airpay_interview.to_f / airpay_visit * 100,precision: 0) rescue 0 %></td>
-        <td class="progress-td"><%= airpay_get %></td>
-        <td class="progress-td"><%= number_to_percentage(airpay_get.to_f / airpay_interview * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= result_user.sum(:out_interview_19) rescue 0 %></td>
+        <td class="progress-td"><%= result_user.sum(:out_full_talk_19) rescue 0 %></td>
+        <td class="progress-td"><%= number_to_percentage(result_user.sum(:out_full_talk_19).to_f / result_user.sum(:out_interview_19) * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= result_user.sum(:out_get_19) rescue 0 %></td>
+        <td class="progress-td"><%= number_to_percentage(result_user.sum(:out_get_19).to_f / result_user.sum(:out_full_talk_19) * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= result_user.sum(:out_interview_18) rescue 0 %></td>
+        <td class="progress-td"><%= result_user.sum(:out_full_talk_18) rescue 0 %></td>
+        <td class="progress-td"><%= number_to_percentage(result_user.sum(:out_full_talk_18).to_f / result_user.sum(:out_interview_18) * 100,precision: 0) rescue 0 %></td>
+        <td class="progress-td"><%= result_user.sum(:out_get_18) rescue 0 %></td>
+        <td class="progress-td"><%= number_to_percentage(result_user.sum(:out_get_18).to_f / result_user.sum(:out_full_talk_18) * 100,precision: 0) rescue 0 %></td>
       </tr><%# 個別 %>
       <% end %>
       <%# 合計基準値の変数 %>
@@ -171,9 +178,6 @@
               ).to_f / 3 / shift_digestion
             ).round(1) rescue 0 
         %>
-        <% airpay_visit = @results.sum(:out_interview_19) rescue 0 %>
-        <% airpay_interview = @results.sum(:out_full_talk_19) rescue 0 %>
-        <% airpay_get = @results.sum(:out_get_19) rescue 0 %>
       <%# /合計基準値の変数 %>
       <tr class=""><%# 合計 %>
         <td class="difference-td" colspan="2">合計</td>
@@ -192,11 +196,16 @@
         <td class="difference-td"><%= number_to_percentage(full_talk.to_f / interview * 100,precision: 0) %></td>
         <td class="difference-td"><%= get %></td>
         <td class="difference-td"><%= number_to_percentage(get.to_f / full_talk * 100,precision: 0) %></td>
-        <td class="difference-td"><%= airpay_visit %></td>
-        <td class="difference-td"><%= airpay_interview %></td>
-        <td class="difference-td"><%= number_to_percentage(airpay_interview.to_f / airpay_visit * 100,precision: 0) rescue 0 %></td>
-        <td class="difference-td"><%= airpay_get %></td>
-        <td class="difference-td"><%= number_to_percentage(airpay_get.to_f / airpay_interview * 100,precision: 0) rescue 0 %></td>
+        <td class="difference-td"><%= @results.sum(:out_interview_19) rescue 0 %></td>
+        <td class="difference-td"><%= @results.sum(:out_full_talk_19) rescue 0 %></td>
+        <td class="difference-td"><%= number_to_percentage(@results.sum(:out_full_talk_19).to_f / @results.sum(:out_interview_19) * 100,precision: 0) rescue 0 %></td>
+        <td class="difference-td"><%= @results.sum(:out_get_19) rescue 0 %></td>
+        <td class="difference-td"><%= number_to_percentage(@results.sum(:out_get_19).to_f / @results.sum(:out_full_talk_19) * 100,precision: 0) rescue 0 %></td>
+        <td class="difference-td"><%= @results.sum(:out_interview_18) rescue 0 %></td>
+        <td class="difference-td"><%= @results.sum(:out_full_talk_18) rescue 0 %></td>
+        <td class="difference-td"><%= number_to_percentage(@results.sum(:out_full_talk_18).to_f / @results.sum(:out_interview_18) * 100,precision: 0) rescue 0 %></td>
+        <td class="difference-td"><%= @results.sum(:out_get_18) rescue 0 %></td>
+        <td class="difference-td"><%= number_to_percentage(@results.sum(:out_get_18).to_f / @results.sum(:out_full_talk_18) * 100,precision: 0) rescue 0 %></td>
       </tr><%# 合計 %>
 
     </table>

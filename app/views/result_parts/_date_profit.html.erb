@@ -351,6 +351,9 @@
                 <% if result.result_cash.airpay.present? %>
                   AirPay<%= result.result_cash.airpay %><br>
                 <% end %>
+                <% if result.result_cash.other_product1.present? %>
+                  UsenPay<%= result.result_cash.other_product1 %><br>
+                <% end %>
               <% end %>
               <% dmer_slmt = Dmer.where(user_id: result.user_id).where(settlement: result.date).length %>
               <% aupay_slmt = Aupay.where(user_id: result.user_id).where(settlement: result.date).length %>

@@ -119,7 +119,8 @@ class ResultCashesController < ApplicationController
       :aupay,
       :paypay,
       :rakuten_pay,
-      :airpay
+      :airpay,
+      :other_product1
     )
   end 
 end
