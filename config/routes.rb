@@ -129,6 +129,7 @@ Rails.application.routes.draw do
       get :profit_only
       get :out_come
       get :base_productivity
+      get :person_productivity
     }
   end  
 

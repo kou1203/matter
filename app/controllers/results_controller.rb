@@ -1069,6 +1069,46 @@ class ResultsController < ApplicationController
       end
   end 
 
+  def person_productivity
+    # 検索内容
+    @search_user = params[:search_user]
+      if params[:search_user].present? || params[:search_user] != ""
+        @u_id = User.where("name LIKE ?","%#{@search_user}%").first.id
+      else  
+        @u_id = nil
+      end 
+      # @u_id = User.where("name LIKE ?","%#{@search_user}%").first.id
+      @s_date = params[:s_date]
+      @e_date = params[:e_date]
+    # 検索内容
+    # 基準値
+      @results = Result.includes(:user,:result_cash).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
+    # 基準値
+    # 商材
+      @products = []
+      @dmers = Dmer.includes(:user).where(date: @s_date..@e_date)
+      @products << @dmers
+      @aupays = Aupay.includes(:user).where(date: @s_date..@e_date)
+      @products << @aupays
+      @rakuten_pays = RakutenPay.includes(:user).where(date: @s_date..@e_date)
+      @products << @rakuten_pays
+      @airpays = Airpay.includes(:user).where(date: @s_date..@e_date)
+      @products << @airpays
+    # 商材
+      if @u_id.present? 
+        @results = @results.where(user_id: @u_id)
+        @products = []
+        @dmers = Dmer.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
+        @products << @dmers
+        @aupays = Aupay.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
+        @products << @aupays
+        @rakuten_pays = RakutenPay.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
+        @products << @rakuten_pays
+        @airpays = Airpay.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
+        @products << @airpays
+      end
+  end 
+
   def out_come
     @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "2次店","退職"]
     @users = User.where.not(position: "退職")
