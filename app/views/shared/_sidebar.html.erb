@@ -30,7 +30,7 @@
             <li id="lists1"><%= link_to "過去獲得店舗一覧", product_checkers_path, class: "side-link","data-turbolinks": false %></li>
             <li id="lists1"><%= link_to "不備一覧", def_respondings_path, class: "side-link","data-turbolinks": false %></li>
             <li id="lists1"><%= link_to "決済一覧", settlements_path, class: "side-link","data-turbolinks": false %></li>
-            <li id="lists2"><%= link_to "ぷらねす", pranesses_path,"data-turbolinks": false,class: "side-link"%></li>
+            <li id="lists1"><%= link_to "ぷらねす", pranesses_path,"data-turbolinks": false,class: "side-link"%></li>
           </ul>
         <label class="header-label" id="lists2">利益表</label>
           <ul class="dropdown" id="pull-down2">
@@ -44,7 +44,6 @@
             <li id="lists2"><span data-turbolinks="false"><%= link_to "成果一覧（評価売上）", valuation_results_path,class: "side-link" %></span></li>
             <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
             <li id="lists2"><%= link_to "入金精査", payment_cashes_path,class: "side-link"%></li>
-            
             <% end %>
           </ul>
         <label class="header-label" id="lists3">終着報告/シフト</label>
