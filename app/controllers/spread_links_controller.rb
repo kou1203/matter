@@ -683,33 +683,33 @@ class SpreadLinksController < ApplicationController
         col_cnt += 3
         # 基本情報
         # シフト
-        @session_data[index_cnt,col_cnt] = @shifts.where(shift: "キャッシュレス新規").length
-        @session_data[27 + index_cnt,col_cnt - 2] = @shifts.where(shift: "キャッシュレス新規").length
+        @session_data[index_cnt,col_cnt] = @shifts.where(shift: "キャッシュレス新規").length  rescue 0
+        @session_data[27 + index_cnt,col_cnt - 2] = @shifts.where(shift: "キャッシュレス新規").length  rescue 0
         col_cnt += 1
-        @session_data[index_cnt,col_cnt] = @results.where(shift: "キャッシュレス新規").length
-        @session_data[27 + index_cnt,col_cnt - 2] = @results.where(shift: "キャッシュレス新規").length
+        @session_data[index_cnt,col_cnt] = @results.where(shift: "キャッシュレス新規").length  rescue 0
+        @session_data[27 + index_cnt,col_cnt - 2] = @results.where(shift: "キャッシュレス新規").length rescue 0
         col_cnt += 1
-        @session_data[index_cnt,col_cnt] = @shifts.where(shift: "キャッシュレス決済").length
+        @session_data[index_cnt,col_cnt] = @shifts.where(shift: "キャッシュレス決済").length rescue 0
         col_cnt += 1
-        @session_data[index_cnt,col_cnt] = @results.where(shift: "キャッシュレス決済").length
+        @session_data[index_cnt,col_cnt] = @results.where(shift: "キャッシュレス決済").length rescue 0
         # シフト
         # 売上
         col_cnt += 2
-        @session_data[index_cnt,col_cnt] = @date_progress.valuation_current
+        @session_data[index_cnt,col_cnt] = @date_progress.valuation_current  rescue 0
         col_cnt += 1
-        @session_data[index_cnt,col_cnt] = @date_progress.valuation_fin
+        @session_data[index_cnt,col_cnt] = @date_progress.valuation_fin  rescue 0
         col_cnt += 1
         # 売上
         # 基準値
-        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_total_visit) + @results.sum(:latter_total_visit)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
+        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_total_visit) + @results.sum(:latter_total_visit)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)  rescue 0
         col_cnt += 1
-        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_visit) + @results.sum(:latter_visit)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
+        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_visit) + @results.sum(:latter_visit)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)  rescue 0
         col_cnt += 2
-        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_interview) + @results.sum(:latter_interview)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
+        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_interview) + @results.sum(:latter_interview)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)  rescue 0
         col_cnt += 2
-        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_full_talk) + @results.sum(:latter_full_talk)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
+        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_full_talk) + @results.sum(:latter_full_talk)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)  rescue 0
         col_cnt += 2
-        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_get) + @results.sum(:latter_get)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)
+        @session_data[index_cnt,col_cnt] = ((@results.sum(:first_get) + @results.sum(:latter_get)).to_f / @results.where(shift: "キャッシュレス新規").length).round(1)  rescue 0
         col_cnt += 2
         # 基準値
         # 生産性
