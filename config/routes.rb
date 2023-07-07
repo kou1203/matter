@@ -50,7 +50,14 @@ Rails.application.routes.draw do
     collection { 
       post :import 
       get :year_profit
+      get :year_valuation
       get :not_payment
+    }
+  end 
+
+  resources :praness_options do 
+    collection {
+      post :import 
     }
   end 
 
@@ -129,6 +136,7 @@ Rails.application.routes.draw do
       get :profit_only
       get :out_come
       get :base_productivity
+      get :team_productivity
       get :person_productivity
     }
   end  

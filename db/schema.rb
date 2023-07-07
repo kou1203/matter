@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_19_085844) do
+ActiveRecord::Schema.define(version: 2023_07_04_075616) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -847,6 +847,28 @@ ActiveRecord::Schema.define(version: 2023_06_19_085844) do
     t.integer "valuation", null: false
     t.index ["store_prop_id"], name: "index_paypays_on_store_prop_id", unique: true
     t.index ["user_id"], name: "index_paypays_on_user_id"
+  end
+
+  create_table "praness_options", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "customer_num", null: false
+    t.string "store_name", null: false
+    t.bigint "praness_id"
+    t.bigint "user_id"
+    t.date "date", null: false
+    t.date "cancel"
+    t.date "start"
+    t.string "option_customer_num"
+    t.integer "price", null: false
+    t.integer "price_tax", null: false
+    t.string "payment_date", null: false
+    t.string "status", null: false
+    t.string "payment_method"
+    t.date "payment_schedule"
+    t.date "payment"
+    t.text "remarks"
+    t.date "status_update"
+    t.index ["praness_id"], name: "index_praness_options_on_praness_id"
+    t.index ["user_id"], name: "index_praness_options_on_user_id"
   end
 
   create_table "pranesses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1781,6 +1803,8 @@ ActiveRecord::Schema.define(version: 2023_06_19_085844) do
   add_foreign_key "paypay_date_progresses", "users"
   add_foreign_key "paypays", "store_props"
   add_foreign_key "paypays", "users"
+  add_foreign_key "praness_options", "pranesses"
+  add_foreign_key "praness_options", "users"
   add_foreign_key "pranesses", "stocks"
   add_foreign_key "pranesses", "users"
   add_foreign_key "rakuten_casas", "store_props"

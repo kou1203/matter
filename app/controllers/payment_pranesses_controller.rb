@@ -16,6 +16,15 @@ class PaymentPranessesController < ApplicationController
     @pranesses = Praness.all
   end
 
+  def year_valuation
+    @billings = PaymentPraness.includes(:praness).where("payment_date LIKE ?","%#{@month.year}%").order(:payment_date)
+    @pranesses = Praness.includes(:user).where(user: {team: "ぷらねす"})
+    @options = PranessOption.where("payment_date LIKE ?","%#{@month.year}%").order(:payment_date)
+    # 単価
+    @praness_valuation = 1000
+    @option_valuation = 300
+  end
+
   def not_payment
     @not_payments = PaymentPraness.where(status: "入金待ち").includes(:praness)
     @already_payments = PaymentPraness.where(status: "完了").includes(:praness)

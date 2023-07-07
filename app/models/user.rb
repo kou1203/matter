@@ -3,6 +3,7 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
   has_many :dmers
   has_many :pranesses
+  has_many :pranesses_options
   has_one :stock_history
   has_one :return_history
   has_many :summits

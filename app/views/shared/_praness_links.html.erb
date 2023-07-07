@@ -9,8 +9,15 @@
     <div class="section">
         <h2>その他詳細</h2>
         <p class="link-text"><%= link_to "獲得早見表", simplified_chart_pranesses_path,"data-turbolinks": false, class: "index-link" %></p>
-        <p class="link-text"><%= link_to "年間売上", year_profit_payment_pranesses_path,"data-turbolinks": false, class: "index-link" %></p>
+        <% if current_user.position == "権限①" %>
+        <p class="link-text"><%= link_to "年間売上（実売）", year_profit_payment_pranesses_path,"data-turbolinks": false, class: "index-link" %></p>
+        <% end %>
+        <p class="link-text"><%= link_to "年間売上（評価売）", year_valuation_payment_pranesses_path,"data-turbolinks": false, class: "index-link" %></p>
         <p class="link-text"><%= link_to "未入金案件一覧", not_payment_payment_pranesses_path,"data-turbolinks": false, class: "index-link" %></p>
+    </div>
+    <div class="section">
+        <h2>自社オプション</h2>
+        <p class="link-text"><%= link_to "一覧", praness_options_path,"data-turbolinks": false, class: "index-link" %></p>
     </div>
 </div>
 <hr>

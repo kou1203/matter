@@ -1,0 +1,332 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>年間売上（評価売）</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/date-progress">
+    <div data-scope-path="shares/index">
+      <hr>
+        <%= render "shared/praness_links" %>
+    </div>
+      <h2 >
+        <%= link_to "<<",year_valuation_payment_pranesses_path(month: @month.ago(1.year)), class:"link","data-turbolinks": false %>
+        <span class="caution-txt"><%= @month.year %>年　入金待ち：
+              <% if Date.new(@month.year, Date.today.month,15).since(2.month) >= Date.today %>
+              ¥<%= 
+                (
+                  @billings.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{Date.today.prev_month.month}月").sum(:price) +
+                  @billings.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{Date.today.month}月").sum(:price)
+                  ).to_s(:delimited) 
+              %>
+              （<%= 
+                (
+                  @billings.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{Date.today.prev_month.month}月").length +
+                  @billings.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{Date.today.month}月").length
+                  ).to_s(:delimited) 
+              %>件）</span>
+              <% else %>
+              ¥0
+              <% end %>
+        <%= link_to ">>",year_valuation_payment_pranesses_path(month: @month.since(1.year)), class:"link","data-turbolinks": false %>
+      </h2>
+    <%= javascript_pack_tag 'date_progress' %>
+    <script>
+    </script>
+    <article id="date-progress">
+      <br>
+        <div class="btn-form"><%# 切替ボタン %>
+          <p v-if="isActive" class="table-title">◆<%= @month.year %>年売上（表記→本体：オプション）</p>
+          <p v-if="!isActive" class="table-title">◆<%= @month.year %>年件数（表記→本体：オプション）</p>
+          <button @click="active" v-if="isActive" class="active-btn">獲得内訳に切替</button>
+          <button @click="active" v-if="!isActive" class="active-btn">売上内訳に切替</button>
+        </div><%# 切替ボタン %>
+      <div v-if="isActive"><%# 金額 %>
+        <table class="progress-tb">
+          <thead>
+          <tr>
+            <th class="progress-th1" colspan="2">日付</th>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+            <th class="progress-th1" colspan=""><%= "#{@month.year}年#{month_cnt}月" %></th>
+            <% month_cnt += 1 %>
+            <% end %>
+            <th class="progress-th1" colspan="">合計</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="">
+            <td class="progress-td" rowspan="3" style="vertical-align: middle;">全案件</td>
+            <td class="progress-td" rowspan="">売上</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="progress-td">
+                <%= (@billings.where(payment_date: "#{@month.year}年#{month_cnt}月").length * @praness_valuation).to_s(:delimited) %>：
+                <%= (@options.where(payment_date: "#{@month.year}年#{month_cnt}月").length * @option_valuation).to_s(:delimited) %>
+              </td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="progress-td">
+                <%= (@billings.length * @praness_valuation).to_s(:delimited) %>：
+                <%= (@options.length * @option_valuation).to_s(:delimited) %>
+              </td>
+          </tr>
+          <tr>
+          <td class="progress-td">入金額</td>
+          <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="progress-td">
+                <%= (@billings.where(status: "完了").where(payment_date: "#{@month.year}年#{month_cnt}月").length * @praness_valuation).to_s(:delimited) %>：
+                <%= (@options.where(status: "完了").where(payment_date: "#{@month.year}年#{month_cnt}月").length * @option_valuation).to_s(:delimited) %>
+              </td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="progress-td">
+                <%= (@billings.where(status: "完了").length * @praness_valuation).to_s(:delimited) %>：
+                <%= (@options.where(status: "完了").length * @option_valuation).to_s(:delimited) %>
+              </td>
+          </tr>
+          <tr>
+          <td class="difference-td red">未入金額</td>
+          <% month_cnt = 1 %>
+          <% payment_wait = 0 %>
+          <% op_wait = 0 %>
+            <% 1..12.times do  %>
+              <% if Date.new(@month.year, month_cnt,15).since(2.month) >= Date.today %><%# 売上月の次の月15日より今日の日付が前の日付の場合未入金にしない。 %>
+              <td class="difference-td red">0：0</td>
+              <% payment_wait += @billings.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length * @praness_valuation %>
+              <% op_wait += @options.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length * @option_valuation %>
+              <% else %>
+              <td class="difference-td red">
+                <%= (@billings.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length * 1000).to_s(:delimited) %>：
+                <%= (@options.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length * 1000).to_s(:delimited) %>
+              </td>
+              <% end %>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="difference-td red">
+                <%= (@billings.where(status: "入金待ち").length * @praness_valuation - payment_wait).to_s(:delimited) %>：
+                <%= (@options.where(status: "入金待ち").length * @option_valuation - op_wait).to_s(:delimited) %>
+              </td>
+          </tr>
+          <% user_cnt = 1 %>
+          <% @pranesses.group(:user_id).each do |praness| %><%# 個別 %>
+            <% unless @billings.where(praness: {user_id: praness.user.id}).sum(:price) == 0 %>
+              <tr class="">
+                <% if user_cnt.to_f % 2  == 1 %>
+                <td rowspan="3" class="progress-td td-even" style="vertical-align: middle;"><%= praness.user.name %></td>
+                <% else %>
+                <td rowspan="3" class="progress-td" style="vertical-align: middle;"><%= praness.user.name %></td>
+                <% end %>
+                <% user_cnt += 1 %>
+                <td class="progress-td">売上</td>
+                <% month_cnt = 1 %>
+                <% 1..12.times do  %>
+                  <td class="progress-td">
+                    <%= (@billings.where(praness: {user_id: praness.user_id}).where(payment_date: "#{@month.year}年#{month_cnt}月").length * @praness_valuation).to_s(:delimited) %>：
+                    <%= (@options.where(user_id: praness.user_id).where(payment_date: "#{@month.year}年#{month_cnt}月").length * @option_valuation).to_s(:delimited) %>
+                  </td>
+                  <% month_cnt += 1 %>
+                <% end %>
+                  <td class="progress-td">
+                    <%= (@billings.where(praness: {user_id: praness.user.id}).length * @praness_valuation).to_s(:delimited) %>：
+                    <%= (@options.where(user_id: praness.user.id).length * @option_valuation).to_s(:delimited) %>
+                  </td>
+              </tr>
+              <tr>
+                <td class="progress-td" rowspan="">入金額</td>
+                <% month_cnt = 1 %>
+                <% 1..12.times do  %>
+                  <td class="progress-td">
+                    <%= (@billings.where(status: "完了").where(praness: {user_id: praness.user.id}).where(payment_date: "#{@month.year}年#{month_cnt}月").length * @praness_valuation).to_s(:delimited) %>：
+                    <%= (@options.where(status: "完了").where(user_id: praness.user.id).where(payment_date: "#{@month.year}年#{month_cnt}月").length * @option_valuation).to_s(:delimited) %>
+                  </td>
+                  <% month_cnt += 1 %>
+                <% end %>
+                  <td class="progress-td">
+                    <%= (@billings.where(status: "完了").where(praness: {user_id: praness.user.id}).length * @praness_valuation).to_s(:delimited) %>：
+                    <%= (@options.where(status: "完了").where(user_id: praness.user.id).length * @option_valuation).to_s(:delimited) %>
+                  </td>
+              </tr>
+              <tr>
+              <td class="difference-td red">未入金額</td>
+              <% month_cnt = 1 %>
+              <% payment_wait = 0 %>
+              <% option_wait = 0 %>
+                <% 1..12.times do  %>
+                  <% if Date.new(@month.year, month_cnt,15).since(2.month) >= Date.today %><%# 売上月の次の月15日より今日の日付が前の日付の場合未入金にしない。 %>
+                  <td class="difference-td red">0：0</td>
+                  <% payment_wait += @billings.where(praness: {user_id: praness.user_id}).where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length * @praness_valuation %>
+                  <% option_wait += @options.where(user_id: praness.user_id).where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length * @option_valuation %>
+                  <% else %>
+                  <td class="difference-td red">
+                    <%= (@billings.where(praness: {user_id: praness.user_id}).where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length * @praness_valuation).to_s(:delimited) %>：
+                    <%= (@options.where(user_id: praness.user_id).where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length * @option_valuation).to_s(:delimited) %>
+                  </td>
+                  <% end %>
+                  <% month_cnt += 1 %>
+                <% end %>
+                  <td class="difference-td red">
+                    <%= (@billings.where(praness: {user_id: praness.user_id}).where(status: "入金待ち").length * @praness_valuation - payment_wait).to_s(:delimited) %>：
+                    <%= (@options.where(user_id: praness.user_id).where(status: "入金待ち").length * @option_valuation - option_wait).to_s(:delimited) %>
+                  </td>
+              </tr>
+            <% end %>
+          <% end %><%# 個別 %>
+          <tbody>
+        </table>
+      </div><%# /金額 %>
+      <div v-if="!isActive"><%# 件数 %>
+        <table class="progress-tb">
+          <thead>
+          <tr>
+            <th class="progress-th2" colspan="2">日付</th>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+            <th class="progress-th2" colspan=""><%= "#{@month.year}年#{month_cnt}月" %></th>
+            <% month_cnt += 1 %>
+            <% end %>
+            <th class="progress-th2" colspan="">合計</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr class="">
+            <td class="progress-td" rowspan="3" style="vertical-align: middle;">全案件</td>
+            <td class="progress-td">成果数</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="progress-td">
+                <%= @billings.where(payment_date: "#{@month.year}年#{month_cnt}月").length %>：
+                <%= @options.where(payment_date: "#{@month.year}年#{month_cnt}月").length %>
+              </td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="progress-td">
+                <%= @billings.length.to_s(:delimited) %>：
+                <%= @options.length.to_s(:delimited) %>
+              </td>
+          </tr>
+          <tr>
+          <td class="progress-td">入金数</td>
+          <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="progress-td">
+                <%= @billings.where(status: "完了").where(payment_date: "#{@month.year}年#{month_cnt}月").length.to_s(:delimited) %>：
+                <%= @options.where(status: "完了").where(payment_date: "#{@month.year}年#{month_cnt}月").length.to_s(:delimited) %>
+              </td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="progress-td">
+                <%= @billings.where(status: "完了").length.to_s(:delimited) %>：
+                <%= @options.where(status: "完了").length.to_s(:delimited) %>
+              </td>
+          </tr>
+          <tr>
+          <td class="difference-td red">未入金数</td>
+          <% month_cnt = 1 %>
+          <% payment_wait_len = 0 %>
+          <% option_wait_len = 0 %>
+            <% 1..12.times do  %>
+              <% if Date.new(@month.year, month_cnt,15).since(2.month) >= Date.today %><%# 売上月の次の月15日より今日の日付が前の日付の場合未入金にしない。 %>
+              <td class="difference-td red">0：0</td>
+              <% payment_wait_len += @billings.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length %>
+              <% option_wait_len += @options.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length %>
+              <% else %>
+              <td class="difference-td red">
+                <%= @billings.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length.to_s(:delimited) %>：
+                <%= @options.where(status: "入金待ち").where(payment_date: "#{@month.year}年#{month_cnt}月").length.to_s(:delimited) %>
+              </td>
+              <% end %>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="difference-td red">
+                <%= (@billings.where(status: "入金待ち").length - payment_wait_len).to_s(:delimited) %>：
+                <%= (@options.where(status: "入金待ち").length - option_wait_len).to_s(:delimited) %>
+              </td>
+          </tr>
+          <% user_cnt = 1 %>
+          <% @pranesses.group(:user_id).each do |praness| %><%# 個別 %>
+            <% unless @billings.where(praness: {user_id: praness.user.id}).sum(:price) == 0 %>
+              <tr>
+                <% if user_cnt.to_f % 2  == 1 %>
+                <td rowspan="3" class="progress-td td-even" style="vertical-align: middle;"><%= praness.user.name %></td>
+                <% else %>
+                <td rowspan="3" class="progress-td" style="vertical-align: middle;"><%= praness.user.name %></td>
+                <% end %>
+                <% user_cnt += 1 %>
+                <td class="progress-td">成果数</td>
+                <% month_cnt = 1 %>
+                <% 1..12.times do  %>
+                  <td class="progress-td">
+                    <%= @billings.where(praness: {user_id: praness.user.id}).where(payment_date: "#{@month.year}年#{month_cnt}月").length %>：
+                    <%= @options.where(user_id: praness.user.id).where(payment_date: "#{@month.year}年#{month_cnt}月").length %>
+                  </td>
+                  <% month_cnt += 1 %>
+                <% end %>
+                  <td class="progress-td">
+                    <%= @billings.where(praness: {user_id: praness.user.id}).length.to_s(:delimited) %>：
+                    <%= @options.where(user_id: praness.user_id).length.to_s(:delimited) %>
+                  </td>
+              </tr>
+              <tr>
+                <td class="progress-td">入金数</td>
+                <% month_cnt = 1 %>
+                <% 1..12.times do  %>
+                  <td class="progress-td">
+                    <%= @billings.where(praness: {user_id: praness.user.id}).where(status: "完了").where(payment_date: "#{@month.year}年#{month_cnt}月").length %>：
+                    <%= @options.where(user_id: praness.user_id).where(status: "完了").where(payment_date: "#{@month.year}年#{month_cnt}月").length %>
+                  </td>
+                  <% month_cnt += 1 %>
+                <% end %>
+                  <td class="progress-td">
+                    <%= @billings.where(praness: {user_id: praness.user_id}).where(status: "完了").length.to_s(:delimited) %>：
+                    <%= @options.where(user_id: praness.user_id).where(status: "完了").length.to_s(:delimited) %>
+                  </td>
+              </tr>
+              <tr>
+              <td class="difference-td red">未入金数</td>
+              <% month_cnt = 1 %>
+              <% payment_wait_len = 0 %>
+              <% option_wait_len = 0 %>
+                <% 1..12.times do  %>
+                  <% if Date.new(@month.year, month_cnt,15).since(2.month) >= Date.today %><%# 売上月の次の月15日より今日の日付が前の日付の場合未入金にしない。 %>
+                  <td class="difference-td red">0：0</td>
+                  <% payment_wait_len += @billings.where(status: "入金待ち").where(praness: {user_id: praness.user_id}).where(payment_date: "#{@month.year}年#{month_cnt}月").length %>
+                  <% option_wait_len += @options.where(status: "入金待ち").where(user_id: praness.user_id).where(payment_date: "#{@month.year}年#{month_cnt}月").length %>
+                  <% else %>
+                  <td class="difference-td red">
+                    <%= @billings.where(status: "入金待ち").where(praness: {user_id: praness.user_id}).where(payment_date: "#{@month.year}年#{month_cnt}月").length.to_s(:delimited) %>：
+                    <%= @options.where(status: "入金待ち").where(user_id: praness.user_id).where(payment_date: "#{@month.year}年#{month_cnt}月").length.to_s(:delimited) %>
+                  </td>
+                  <% end %>
+                  <% month_cnt += 1 %>
+                <% end %>
+                  <td class="difference-td red">
+                    <%= (@billings.where(praness: {user_id: praness.user_id}).where(status: "入金待ち").length - payment_wait_len).to_s(:delimited) %>：
+                    <%= (@options.where(user_id: praness.user_id).where(status: "入金待ち").length - option_wait_len).to_s(:delimited) %>
+                  </td>
+              </tr>
+            <% end %>
+          <% end %><%# 個別 %>
+          </tbody>
+        </table>
+      </div><%# /件数 %>
+    </article>
+    <br>
+    <h2>◆売上推移</h2>
+    <% 
+      chart_data =  
+        [
+          {name:"売上", data: @billings.where(status: "完了").or(@billings.where(status: "入金待ち")).group(:payment_date).sum(:price)},
+          {name:"入金", data: @billings.group(:payment_date).where(status: "完了").sum(:price)},
+          {name:"未入金", data: @billings.group(:payment_date).where(status: "入金待ち").sum(:price)}
+        ]
+    %>
+    <br>
+        <%= line_chart chart_data,options = {thousands: ","} %>
+        <p class="caution-text">※こちらのグラフ（未入金）は入金待ちも含まれてます。</p>
+  </div>
+</div>

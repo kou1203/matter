@@ -19,7 +19,11 @@
     <p class="link-text"><%= link_to "ランキング", ranking_results_path(month: @month),class: "index-link" %></p>
     <p class="link-text"><%= link_to "利益計算用終着", gross_profit_results_path(month: @month),class: "index-link" %></p>
     <p class="link-text"><%= link_to "月間獲得早見", monthly_progress_results_path(date: @month),class: "index-link","data-turbolinks": false %></p>
-    <p class="link-text"><%= link_to "拠点基準値・生産性", base_productivity_results_path,class: "index-link","data-turbolinks": false %></p>
-    <p class="link-text"><%= link_to "個別基準値・生産性", person_productivity_results_path,class: "index-link","data-turbolinks": false %></p>
+  </div>
+  <div class="section">
+    <h2>生産性基準値</h2>
+    <p class="link-text"><%= link_to "個人別", person_productivity_results_path,class: "index-link","data-turbolinks": false %></p>
+    <p class="link-text"><%= link_to "グループ別", team_productivity_results_path,class: "index-link","data-turbolinks": false %></p>
+    <p class="link-text"><%= link_to "拠点別", base_productivity_results_path,class: "index-link","data-turbolinks": false %></p>
   </div>
 </div>

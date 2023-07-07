@@ -1069,6 +1069,42 @@ class ResultsController < ApplicationController
       end
   end 
 
+  def team_productivity
+    # 検索内容
+      @search_team = params[:search_team]
+      @s_date = params[:s_date]
+      @e_date = params[:e_date]
+    # 検索内容
+    # ユーザー
+      @user_teams = User.where(team: @search_team)
+    # 基準値
+      @results = Result.includes(:user,:result_cash).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
+    # 基準値
+    # 商材
+      @products = []
+      @dmers = Dmer.includes(:user).where(date: @s_date..@e_date)
+      @products << @dmers
+      @aupays = Aupay.includes(:user).where(date: @s_date..@e_date)
+      @products << @aupays
+      @rakuten_pays = RakutenPay.includes(:user).where(date: @s_date..@e_date)
+      @products << @rakuten_pays
+      @airpays = Airpay.includes(:user).where(date: @s_date..@e_date)
+      @products << @airpays
+    # 商材
+      if params[:search_team].present? 
+        @results = @results.where(user: {team: @search_team})
+        @products = []
+        @dmers = Dmer.includes(:user).where(date: @s_date..@e_date).where(user: {team: @search_team})
+        @products << @dmers
+        @aupays = Aupay.includes(:user).where(date: @s_date..@e_date).where(user: {team: @search_team})
+        @products << @aupays
+        @rakuten_pays = RakutenPay.includes(:user).where(date: @s_date..@e_date).where(user: {team: @search_team})
+        @products << @rakuten_pays
+        @airpays = Airpay.includes(:user).where(date: @s_date..@e_date).where(user: {team: @search_team})
+        @products << @airpays
+      end
+  end 
+
   def person_productivity
     # 検索内容
     @search_user = params[:search_user]
