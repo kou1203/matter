@@ -153,10 +153,10 @@
                 <% 7.times do |i| %>
                 <td>-</td>
                 <td>
-                  <%= (result_user.sum("out_full_talk_0#{i + 1}").to_f / result_user.sum("out_interview_0#{i + 1}").round(2) * 100) %>%
+                  <%= (result_user.sum("out_full_talk_0#{i + 1}").to_f / result_user.sum("out_interview_0#{i + 1}").round(2) * 100).round() rescue 0 %>%
                 </td>
                 <td>
-                  <%= (result_user.sum("out_get_0#{i + 1}").to_f / result_user.sum("out_full_talk_0#{i + 1}") * 100) %>%
+                  <%= (result_user.sum("out_get_0#{i + 1}").to_f / result_user.sum("out_full_talk_0#{i + 1}") * 100).round() rescue 0 %>%
                 </td>
                 <% end %>
               </tr><%# /個別 %>
