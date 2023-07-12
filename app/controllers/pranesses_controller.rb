@@ -58,7 +58,7 @@ class PranessesController < ApplicationController
   end 
 
   def simplified_chart 
-    @pranesses_year = Praness.where(date: @month.all_year)
+    @pranesses_year = Praness.includes(:user).where(date: @month.all_year)
   end 
 
   def not_payment 

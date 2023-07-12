@@ -6,7 +6,7 @@ class CreatePaymentPranesses < ActiveRecord::Migration[6.1]
       t.string :aplus_customer_num        
       t.integer :price                    
       t.integer :price_tax                
-      t.string :payment_date              
+      t.date :payment_date                            
       t.string :status                    ,null: false
       t.string :payment_method            
       t.date :payment_schedule            

@@ -11,7 +11,7 @@ class CreatePranessOptions < ActiveRecord::Migration[6.1]
       t.string     :option_customer_num 
       t.integer    :price               ,null: false 
       t.integer    :price_tax           ,null: false 
-      t.string     :payment_date        ,null: false 
+      t.date       :payment_date        ,null: false 
       t.string     :status              ,null: false 
       t.string     :payment_method      
       t.date       :payment_schedule    

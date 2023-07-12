@@ -22,7 +22,7 @@ class PaymentPraness < ApplicationRecord
           aplus_customer_num: row["アプラス顧客番号"],
           price: row["単価（税抜）"],
           price_tax: row["単価（税込）"],
-          payment_date: row["売上月"],
+          payment_date: row["売上月_日付型"],
           status: row["支払状況"],
           payment_method: row["請求方法"],
           payment_schedule: row["入金/振替予定日"],
@@ -43,7 +43,7 @@ class PaymentPraness < ApplicationRecord
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
       praness = Praness.find_by(customer_num: row["案件番号"])
       p_id = praness.id if praness.present?
-      product = find_by(praness_id: p_id,payment_date: row["売上月"])
+      product = find_by(praness_id: p_id,payment_date: row["売上月_日付型"])
       if product.present?
         product.assign_attributes(
           store_name: row["店舗名"],
@@ -51,7 +51,7 @@ class PaymentPraness < ApplicationRecord
           aplus_customer_num: row["アプラス顧客番号"],
           price: row["単価（税抜）"],
           price_tax: row["単価（税込）"],
-          payment_date: row["売上月"],
+          payment_date: row["売上月_日付型"],
           status: row["支払状況"],
           payment_method: row["請求方法"],
           payment_schedule: row["入金/振替予定日"],
@@ -72,7 +72,7 @@ class PaymentPraness < ApplicationRecord
           aplus_customer_num: row["アプラス顧客番号"],
           price: row["単価（税抜）"],
           price_tax: row["単価（税込）"],
-          payment_date: row["売上月"],
+          payment_date: row["売上月_日付型"],
           status: row["支払状況"],
           payment_method: row["請求方法"],
           payment_schedule: row["入金/振替予定日"],

@@ -36,7 +36,7 @@ class PranessOption < ApplicationRecord
           option_customer_num: row["オプション用顧客番号"],
           price: row["単価（税込）"],
           price_tax: row["単価（税抜）"],
-          payment_date: row["売上月"],
+          payment_date: row["売上月_日付型"],
           status: row["支払状況"],
           payment_method: row["請求方法"],
           payment_schedule: row["入金/振替予定日"],
@@ -58,7 +58,7 @@ class PranessOption < ApplicationRecord
       u_id = user.id if user.present?
       praness = Praness.find_by(aplus_num: row["アプラス顧客番号"])
       p_id = praness.id if praness.present?
-      product = PranessOption.find_by(customer_num: row["顧客番号"],payment_date: row["売上月"])
+      product = PranessOption.find_by(customer_num: row["顧客番号"],payment_date: row["売上月_日付型"])
       if product.present?
         product.assign_attributes(
           customer_num: row["顧客番号"],
@@ -71,7 +71,7 @@ class PranessOption < ApplicationRecord
           option_customer_num: row["オプション用顧客番号"],
           price: row["単価（税込）"],
           price_tax: row["単価（税抜）"],
-          payment_date: row["売上月"],
+          payment_date: row["売上月_日付型"],
           status: row["支払状況"],
           payment_method: row["請求方法"],
           payment_schedule: row["入金/振替予定日"],
@@ -96,7 +96,7 @@ class PranessOption < ApplicationRecord
           option_customer_num: row["オプション用顧客番号"],
           price: row["単価（税込）"],
           price_tax: row["単価（税抜）"],
-          payment_date: row["売上月"],
+          payment_date: row["売上月_日付型"],
           status: row["支払状況"],
           payment_method: row["請求方法"],
           payment_schedule: row["入金/振替予定日"],

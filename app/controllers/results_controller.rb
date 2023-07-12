@@ -38,6 +38,8 @@ class ResultsController < ApplicationController
         RakutenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
     @airpay_monthly = 
         Airpay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @usen_pay_monthly = 
+        UsenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
     @shift_monthly_plan = 
       Shift.includes(:user)
       .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
@@ -64,6 +66,8 @@ class ResultsController < ApplicationController
         RakutenPay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
     @airpay_comparison = 
         Airpay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+    @usen_pay_comparison = 
+        UsenPay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
     @result_demaekan = Result.includes(:result_cash,:user).select(:user_id,:result_id,:date)
     @shift_comparison_plan = 
       Shift.includes(:user)

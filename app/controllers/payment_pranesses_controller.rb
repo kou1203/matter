@@ -12,14 +12,17 @@ class PaymentPranessesController < ApplicationController
   end 
 
   def year_profit
-    @billings = PaymentPraness.includes(:praness).where("payment_date LIKE ?","%#{@month.year}%").order(:payment_date)
+    @payment_period = @month.prev_year..@month
+    @billings = PaymentPraness.includes(:praness).where(payment_date: @payment_period).order(:payment_date)
+    @options = PranessOption.where(payment_date: @payment_period).order(:payment_date)
     @pranesses = Praness.all
   end
 
   def year_valuation
-    @billings = PaymentPraness.includes(:praness).where("payment_date LIKE ?","%#{@month.year}%").order(:payment_date)
+    @payment_period = @month.prev_year..@month
+    @billings = PaymentPraness.includes(:praness).where(payment_date: @payment_period).order(:payment_date)
     @pranesses = Praness.includes(:user).where(user: {team: "ぷらねす"})
-    @options = PranessOption.where("payment_date LIKE ?","%#{@month.year}%").order(:payment_date)
+    @options = PranessOption.where(payment_date: @payment_period).order(:payment_date)
     # 単価
     @praness_valuation = 1000
     @option_valuation = 300

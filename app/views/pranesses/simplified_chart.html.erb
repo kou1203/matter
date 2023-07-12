@@ -32,7 +32,7 @@
           </thead>
           <tbody>
           <tr><%# 全体 %>
-            <td class="progress-td" style="vertical-align: middle;" rowspan="4">全体</td>
+            <td class="progress-td" style="vertical-align: middle;" rowspan="5">全体</td>
             <td class="progress-td">獲得</td>
             <% month_cnt = 1 %>
             <% 1..12.times do  %>
@@ -63,18 +63,27 @@
             <td class="difference-td red">キャンセル</td>
             <% month_cnt = 1 %>
             <% 1..12.times do  %>
-              <td class="difference-td red"><%= @pranesses_year.where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%00.%").length %>件</td>
+              <td class="difference-td red"><%= @pranesses_year.where(date: Date.new(@month.year,month_cnt,1).all_month).where(status: "00.キャンセル").length %>件</td>
               <% month_cnt += 1 %>
             <% end %>
-              <td class="difference-td red"><%= @pranesses_year.where("status LIKE ?","%00.%").length %>件</td>
+              <td class="difference-td red"><%= @pranesses_year.where(status: "00.キャンセル").length %>件</td>
+          </tr><%# 全体 %>
+          <tr>
+            <td class="difference-td red">解約</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="difference-td red"><%= @pranesses_year.where(date: Date.new(@month.year,month_cnt,1).all_month).where(status: "00.解約").length %>件</td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="difference-td red"><%= @pranesses_year.where(status: "00.解約").length %>件</td>
           </tr><%# 全体 %>
           <% user_cnt = 1 %>
-          <% @pranesses_year.group(:user_id).each do |p_u| %><%# 個別 %>
+          <% @pranesses_year.where(user: {team: "ぷらねす"}).group(:user_id).each do |p_u| %><%# 個別 %>
           <tr>
                 <% if user_cnt.to_f % 2  == 1 %>
-                <td rowspan="4" class="progress-td td-even" style="vertical-align: middle;"><%= p_u.user.name %></td>
+                <td rowspan="5" class="progress-td td-even" style="vertical-align: middle;"><%= p_u.user.name %></td>
                 <% else %>
-                <td rowspan="4" class="progress-td" style="vertical-align: middle;"><%= p_u.user.name %></td>
+                <td rowspan="5" class="progress-td" style="vertical-align: middle;"><%= p_u.user.name %></td>
                 <% end %>
                 <% user_cnt += 1 %>
             <td class="progress-td">獲得</td>
@@ -107,10 +116,19 @@
             <td class="difference-td red">キャンセル</td>
             <% month_cnt = 1 %>
             <% 1..12.times do  %>
-              <td class="difference-td red"><%= @pranesses_year.where(user_id: p_u.user_id).where(date: Date.new(@month.year,month_cnt,1).all_month).where("status LIKE ?","%00.%").length %>件</td>
+              <td class="difference-td red"><%= @pranesses_year.where(user_id: p_u.user_id).where(date: Date.new(@month.year,month_cnt,1).all_month).where(status: "00.キャンセル").length %>件</td>
               <% month_cnt += 1 %>
             <% end %>
-              <td class="difference-td red"><%= @pranesses_year.where(user_id: p_u.user_id).where("status LIKE ?","%00%").length %>件</td>
+              <td class="difference-td red"><%= @pranesses_year.where(user_id: p_u.user_id).where(status: "00.キャンセル").length %>件</td>
+          </tr>
+          <tr>
+            <td class="difference-td red">解約</td>
+            <% month_cnt = 1 %>
+            <% 1..12.times do  %>
+              <td class="difference-td red"><%= @pranesses_year.where(user_id: p_u.user_id).where(date: Date.new(@month.year,month_cnt,1).all_month).where(status: "00.解約").length %>件</td>
+              <% month_cnt += 1 %>
+            <% end %>
+              <td class="difference-td red"><%= @pranesses_year.where(user_id: p_u.user_id).where(status: "00.解約").length %>件</td>
           </tr>
           <% end %><%# /個別 %>
           </tbody>
