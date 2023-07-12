@@ -78,7 +78,7 @@
               <td class="difference-td red"><%= @pranesses_year.where(status: "00.解約").length %>件</td>
           </tr><%# 全体 %>
           <% user_cnt = 1 %>
-          <% @pranesses_year.where(user: {team: "ぷらねす"}).group(:user_id).each do |p_u| %><%# 個別 %>
+          <% @pranesses_year.where(user: {team: "ぷらねす"}).group(:user_id).order(:position_sub).each do |p_u| %><%# 個別 %>
           <tr>
                 <% if user_cnt.to_f % 2  == 1 %>
                 <td rowspan="5" class="progress-td td-even" style="vertical-align: middle;"><%= p_u.user.name %></td>
