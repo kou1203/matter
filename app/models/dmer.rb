@@ -109,8 +109,6 @@ class Dmer < ApplicationRecord
         else
           row["決済対応者"]
         end
-  
-        dmer = find_by(store_prop_id:  store_prop.id)
         if store_prop.dmer.present?
           exist_cnt += 1
         else  

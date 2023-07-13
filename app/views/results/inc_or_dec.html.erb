@@ -1,0 +1,283 @@
+<div data-scope-path="shared/header">
+  <h1>マイページ</h1>
+  <%= render "shared/header" %>
+</div>
+<div data-scope-path="shared/side_bar_humbarger">
+  <%= render "shared/sidebar" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="users/show"><%# users/showスコープ頭 %>
+    <%= render "shared/mypage_links" %>
+    <h2>
+      <%= @user.name %>：増減
+      <%= link_to "<<",inc_or_dec_results_path(u_id: @user.id,month:@month.prev_month),"data-turbolinks": false, class:"link" %>
+      <%= @month.year %>年<%= @month.month %>月
+      <%= link_to ">>",inc_or_dec_results_path(u_id: @user.id,month:@month.next_month),"data-turbolinks": false, class:"link" %>
+    </h2><br>
+    <p class="alert"><%= notice %></p><%# 登録した時のアラート %>
+<table>
+  <tr>
+  <th class="valuation-th">商材</th>
+  <th class="valuation-th">減少</th>
+  <th class="valuation-th">前月内審査完了</th>
+  <th class="valuation-th">増加</th>
+  <th class="valuation-th">複数店</th>
+  </tr>
+  <tr>
+  <td class="valuation-td">dメル</td>
+  <td class="valuation-td"><%= @dmer_def.length rescue 0 %></td>
+  <td class="valuation-td"><%= @dmer_dec.length rescue 0 %></td>
+  <td class="valuation-td"><%= @dmer_inc.length rescue 0 %></td>
+  <td class="valuation-td"><%= @dmer_db_data.length rescue 0 %></td>
+  </tr>
+  <tr>
+  <td class="valuation-td">auPay</td>
+  <td class="valuation-td"><%= @aupay_def.length rescue 0 %></td>
+  <td class="valuation-td"><%= @aupay_dec.length rescue 0 %></td>
+  <td class="valuation-td"><%= @aupay_inc.length rescue 0 %></td>
+  <td class="valuation-td"><%= @aupay_db.length rescue 0 %></td>
+  </tr>
+  <tr>
+  <td class="valuation-td">楽天ペイ</td>
+  <td class="valuation-td"><%= @rakuten_pay_def.length rescue 0 %></td>
+  <td class="valuation-td"></td>
+  <td class="valuation-td"><%= @rakuten_pay_inc.length rescue 0 %></td>
+  <td class="valuation-td"></td>
+  </tr>
+</table>
+<% if @dmer_def.present? ||  @aupay_def.present? || @rakuten_pay_def.present? %>
+<h2>減少（不備・NG）</h2>
+  <table>
+    <thead>
+      <th class="valuation-th">商材</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">業種ステータス</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">内訳</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% if @dmer_def.present? %>
+      <% @dmer_def.each do |dmer| %>
+      <tr>
+      <td class="valuation-td red">dメル</td>
+      <td class="valuation-td red"><%= dmer.store_prop.name %></td>
+      <td class="valuation-td red"><%= dmer.date %></td>
+      <td class="valuation-td red"><%= dmer.industry_status %></td>
+      <td class="valuation-td red"><%= dmer.status %></td>
+      <td class="valuation-td red">上位店不備・NG</td>
+      <td class="valuation-td red"><%= dmer.valuation_new %></td>
+      <td class="valuation-td red"><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% end %>
+      <% if @aupay_def.present? %>
+      <% @aupay_def.each do |aupay| %>
+      <tr>
+      <td class="valuation-td red">auPay</td>
+      <td class="valuation-td red"><%= aupay.store_prop.name %></td>
+      <td class="valuation-td red"><%= aupay.date %></td>
+      <td class="valuation-td red"></td>
+      <td class="valuation-td red"><%= aupay.status %></td>
+      <% if (aupay.status == "自社NG") || (aupay.status == "自社不備") %>
+        <td class="valuation-td red">自社不備・NG</td>
+      <% else %>
+        <td class="valuation-td red">上位店不備・NG</td>
+      <% end %>
+      <td class="valuation-td red"><%= aupay.valuation_new %></td>
+      <td class="valuation-td red"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% end %>
+      <% if @rakuten_pay_def.present? %>
+      <% @rakuten_pay_def.each do |rakuten_pay| %>
+      <tr>
+      <td class="valuation-td red">楽天ペイ</td>
+      <td class="valuation-td red"><%= rakuten_pay.store_prop.name %></td>
+      <td class="valuation-td red"><%= rakuten_pay.date %></td>
+      <td class="valuation-td red"></td>
+      <td class="valuation-td red"><%= rakuten_pay.status %></td>
+      <td class="valuation-td red">自社不備・NG</td>
+      <td class="valuation-td red"><%= rakuten_pay.valuation %></td>
+      <td class="valuation-td red"><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+<% end %>
+<% if @dmer_dec.present? ||  @aupay_dec.present? %>
+<h2>減少（前月内審査完了）</h2>
+  <table>
+    <thead>
+      <th class="valuation-th">商材</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">業種ステータス</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">内訳</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% if @dmer_dec.present? %>
+      <% @dmer_dec.each do |dmer| %>
+      <tr>
+      <td class="valuation-td red">dメル</td>
+      <td class="valuation-td red"><%= dmer.store_prop.name %></td>
+      <td class="valuation-td red"><%= dmer.date %></td>
+      <td class="valuation-td red"><%= dmer.industry_status %></td>
+      <td class="valuation-td red"><%= dmer.status %></td>
+      <td class="valuation-td red"><%= dmer.result_point %></td>
+      <td class="valuation-td red"><%= dmer.date.month %>月評価売</td>
+      <td class="valuation-td red"><%= dmer.valuation_new %></td>
+      <td class="valuation-td red"><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% end %>
+      <% if @aupay_dec.present? %>
+      <% @aupay_dec.each do |aupay| %>
+      <tr>
+      <td class="valuation-td red">auPay</td>
+      <td class="valuation-td red"><%= aupay.store_prop.name %></td>
+      <td class="valuation-td red"><%= aupay.date %></td>
+      <td class="valuation-td red"></td>
+      <td class="valuation-td red"><%= aupay.status %></td>
+      <td class="valuation-td red"><%= aupay.result_point %></td>
+      <td class="valuation-td red"><%= aupay.date.month %>月評価売</td>
+      <td class="valuation-td red"><%= aupay.valuation_new %></td>
+      <td class="valuation-td red"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+<% end %>
+<% if @dmer_inc.present? || @aupay_inc.present? || @rakuten_pay_inc.present? %>
+<h2>増加（獲得期間外での<%= @month.month %>月審査完了案件・不備解消）</h2>
+  <table>
+    <thead>
+      <th class="valuation-th">商材</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">業種ステータス</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">内訳</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% if @dmer_inc.present? %>
+      <% @dmer_inc.each do |dmer| %>
+      <tr>
+      <td class="valuation-td blue">dメル</td>
+      <td class="valuation-td blue"><%= dmer.store_prop.name %></td>
+      <td class="valuation-td blue"><%= dmer.date %></td>
+      <td class="valuation-td blue"><%= dmer.industry_status %></td>
+      <td class="valuation-td blue"><%= dmer.status %></td>
+      <td class="valuation-td blue"><%= dmer.result_point %></td>
+      <% if dmer.deficiency_remarks.present? %>
+      <td class="valuation-td blue">不備解消</td>
+      <% else %>
+      <td class="valuation-td blue">月内審査完了</td>
+      <% end %>
+      <td class="valuation-td blue"><%= dmer.valuation_new %></td>
+      <td class="valuation-td blue"><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% end %>
+      <% if @aupay_inc.present? %>
+      <% @aupay_inc.each do |aupay| %>
+      <tr>
+      <td class="valuation-td blue">auPay</td>
+      <td class="valuation-td blue"><%= aupay.store_prop.name %></td>
+      <td class="valuation-td blue"><%= aupay.date %></td>
+      <td class="valuation-td blue"></td>
+      <td class="valuation-td blue"><%= aupay.status %></td>
+      <td class="valuation-td blue"><%= aupay.result_point %></td>
+      <% if aupay.deficiency_remarks.present? %>
+      <td class="valuation-td blue">不備解消</td>
+      <% else %>
+      <td class="valuation-td blue">月内審査完了</td>
+      <% end %>
+      <td class="valuation-td blue"><%= aupay.valuation_new %></td>
+      <td class="valuation-td blue"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% end %>
+      <% if @rakuten_pay_inc.present? %>
+      <% @rakuten_pay_inc.each do |rakuten_pay| %>
+      <tr>
+      <td class="valuation-td blue">楽天ペイ</td>
+      <td class="valuation-td blue"><%= rakuten_pay.store_prop.name %></td>
+      <td class="valuation-td blue"><%= rakuten_pay.date %></td>
+      <td class="valuation-td blue"></td>
+      <td class="valuation-td blue"><%= rakuten_pay.status %></td>
+      <td class="valuation-td blue"><%= rakuten_pay.result_point %></td>
+      <td class="valuation-td blue">自社不備解消</td>
+      <td class="valuation-td blue"><%= rakuten_pay.valuation %></td>
+      <td class="valuation-td blue"><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+<% end %>
+<% if @dmer_db_data.present? || @aupay_db.present? %>
+<h2>複数追加</h2>
+  <table>
+    <thead>
+      <th class="valuation-th">商材</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">業種ステータス</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">上位店共有日</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% if @dmer_db_data.present? %>
+      <% @dmer_db_data.each do |dmer| %>
+      <tr>
+      <td class="valuation-td blue">dメル</td>
+      <td class="valuation-td blue"><%= dmer.store_prop.name %></td>
+      <td class="valuation-td blue"><%= dmer.date %></td>
+      <td class="valuation-td blue"><%= dmer.industry_status %></td>
+      <td class="valuation-td blue"><%= dmer.status %></td>
+      <td class="valuation-td blue"><%= dmer.share %></td>
+      <td class="valuation-td blue"><%= dmer.result_point %></td>
+      <td class="valuation-td blue"><%= dmer.valuation_new %></td>
+      <td class="valuation-td blue"><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% end %>
+      <% if @aupay_db.present? %>
+      <% @aupay_db.each do |aupay| %>
+      <tr>
+      <td class="valuation-td blue">auPay</td>
+      <td class="valuation-td blue"><%= aupay.store_prop.name %></td>
+      <td class="valuation-td blue"><%= aupay.date %></td>
+      <td class="valuation-td blue"></td>
+      <td class="valuation-td blue"><%= aupay.status %></td>
+      <td class="valuation-td blue"><%= aupay.share %></td>
+      <td class="valuation-td blue"><%= aupay.result_point %></td>
+      <td class="valuation-td blue"><%= aupay.valuation_new %></td>
+      <td class="valuation-td blue"><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+      </tr>
+      <% end %>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+<% end %>
+  </div><%# users/showスコープ末尾 %>
+</div>

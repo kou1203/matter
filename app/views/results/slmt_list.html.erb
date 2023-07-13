@@ -1,0 +1,166 @@
+<div data-scope-path="shared/header">
+  <h1>マイページ</h1>
+  <%= render "shared/header" %>
+</div>
+<div data-scope-path="shared/side_bar_humbarger">
+  <%= render "shared/sidebar" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="users/show"><%# users/showスコープ頭 %>
+    <%= render "shared/mypage_links" %>
+    <p class="alert"><%= notice %></p><%# 登録した時のアラート %>
+<h2><%= @user.name %>：決済リスト</h2>
+<table>
+  <tr>
+    <th class="valuation-th">dメル</th>
+    <th class="valuation-th">auPay</th>
+  </tr>
+  <tr>
+    <td class="valuation-td"><%= 
+            @slmts.where.not(dmer: {id: nil})
+            .where(dmer: {user_id: @user.id}) 
+            .where.not(dmer: {industry_status: "×"}) 
+            .where.not(dmer: {industry_status: "NG"}) 
+            .where.not(dmer: {industry_status: "要確認"}) 
+            .where(dmer: {status: "審査OK"}) 
+            .where.not(dmer: {status_settlement: "完了"}) 
+            .where.not(dmer: {status_settlement: "期限切れ"}).length 
+    %></td>
+    <td class="valuation-td"><%= 
+            @slmts.where.not(aupay: {id: nil})
+            .where(aupay: {user_id: @user.id})
+            .where(aupay: {status: "審査通過"})
+            .where.not(aupay: {status_settlement: "完了"}) 
+            .where.not(aupay: {status_settlement: "期限切れ"}).length 
+    %></td>
+  </tr>
+</table>
+<table class="out-tb">
+  <thead>
+    <tr>
+      <th class="valuation-th">商材</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">商流</th>
+      <th class="valuation-th">獲得者</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">決済ステータス</th>
+      <th class="valuation-th">決済期限</th>
+      <th class="valuation-th-remarks">不備内容</th>
+      <th class="valuation-th">商材詳細</th>
+      <th class="valuation-th">店舗詳細</th>
+      <th class="valuation-th">対応状況</th>
+      <th class="valuation-th">対応メモ</th>
+      <th class="valuation-th"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <% @slmts.each do |store| %>
+      
+      <%# aupay_comment = @comments.find_by(store_prop_id: store.id, product: "auPay", content: "決済") %>
+      <%# dメル決済 %>
+      <% if 
+        store.dmer.present? && 
+        store.dmer.user_id == @user.id &&
+        store.dmer.status_settlement != "完了" && 
+        store.dmer.status_settlement != "期限切れ" &&
+        store.dmer.status == "審査OK" &&
+        store.dmer.industry_status != "×" &&
+        store.dmer.industry_status != "要確認" &&
+        store.dmer.industry_status != "NG"
+      %>
+      <td class="valuation-td">dメル</td>
+      <td class="valuation-td"><%= store.name %></td>
+      <td class="valuation-td"><%= store.dmer.client %></td>
+      <td class="valuation-td"><%= store.dmer.user.name %></td>
+      <td class="valuation-td"><%= store.dmer.date %></td>
+      <td class="valuation-td"><%= store.dmer.status_settlement %></td>
+      <td class="valuation-td"><%= store.dmer.settlement_deadline %></td>
+      <td class="valuation-td-remarks"><%= store.dmer.deficiency_remarks_settlement %></td>
+      <td class="valuation-td" ><%= link_to "dメル詳細", dmer_path(store.dmer.id),class: "link" %></td>
+      <td class="valuation-td" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+      <%# コメント機能 %>
+        <% dmer_comment = store.comments.where(product: "dメル").where(content: "決済").first %>
+        <% if dmer_comment.present? %>
+        <% comment = store.comments.where(content: "決済").first %>
+        <td class="valuation-td"><%= comment.status %></td>
+        <td class="valuation-td"><%= comment.request_show %></td>
+        <td class="valuation-td"><%= link_to "編集" ,edit_comment_path(comment.id), class: "link" %></td>
+        <% else %>
+        <%= form_with(url: comment_new_results_path,data: {remote: false}) do |f| %>
+        <%= f.hidden_field :store_prop_id, value: store.id %>
+        <%= f.hidden_field :product, value: "dメル" %>
+        <%= f.hidden_field :content, value: "決済" %>
+        <%= f.hidden_field :ball, value: "営業" %>
+        <%= f.hidden_field :request, value: Date.today %>
+        <td class="valuation-td">
+          <%= 
+            f.select :status, {
+              "対応中": "対応中",
+              "対応済": "対応済",
+              "不可": "不可" 
+            }, {}, {class: "input"}
+          %>
+        </td>
+        <td class="valuation-td"><%= f.text_field :request_show, class: "input" %></td>
+        <td class="valuation-td"><%= f.submit "登録", class: "comment-btn","data-turbolinks": false %></td>
+        <%# link_to "登録", new_comment_path(store_id: store.id,product: "dメル",content: "決済"),class: "comment-btn","data-turbolinks": false %>
+        <% end %>
+        <% end %>
+      <%# /コメント機能 %>
+      <% end %>
+      </tr>
+      <%# aupay決済 %>
+      <% if 
+        store.aupay.present? && 
+        store.aupay.user_id == @user.id &&
+        store.aupay.status_settlement != "完了" && 
+        store.aupay.status_settlement != "期限切れ" &&
+        store.aupay.status == "審査通過" &&
+      %>
+      <tr>
+      <td class="valuation-td">auPay</td>
+      <td class="valuation-td"><%= store.name %></td>
+      <td class="valuation-td"><%= store.aupay.client %></td>
+      <td class="valuation-td"><%= store.aupay.user.name %></td>
+      <td class="valuation-td"><%= store.aupay.date %></td>
+      <td class="valuation-td"><%= store.aupay.status_settlement %></td>
+      <td class="valuation-td"><%= store.aupay.settlement_deadline %></td>
+      <td class="valuation-td-remarks"><%= store.aupay.deficiency_remarks_settlement %></td>
+      <td class="valuation-td" ><%= link_to "auPay詳細", aupay_path(store.aupay.id),class: "link" %></td>
+      <td class="valuation-td" ><%= link_to "店舗詳細", store_prop_path(store.id),class: "link" %></td>
+      <%# コメント機能 %>
+        <% aupay_comment = store.comments.where(product: "auPay").where(content: "決済").first %>
+        <% if aupay_comment.present? %>
+        <% comment = store.comments.where(content: "決済").first %>
+        <td class="valuation-td"><%= comment.status %></td>
+        <td class="valuation-td"><%= comment.request_show %></td>
+        <td class="valuation-td"><%= link_to "編集" ,edit_comment_path(comment.id), class: "link" %></td>
+        <% else %>
+        <%= form_with(url: comment_new_results_path,data: {remote: false}) do |f| %>
+        <%= f.hidden_field :store_prop_id, value: store.id %>
+        <%= f.hidden_field :product, value: "auPay" %>
+        <%= f.hidden_field :content, value: "決済" %>
+        <%= f.hidden_field :ball, value: "営業" %>
+        <%= f.hidden_field :request, value: Date.today %>
+        <td class="valuation-td">
+          <%= 
+            f.select :status, {
+              "対応中": "対応中",
+              "対応済": "対応済",
+              "不可": "不可" 
+            }, {}, {class: "input"}
+          %>
+        </td>
+        <td class="valuation-td"><%= f.text_field :request_show, class: "input" %></td>
+        <td class="valuation-td"><%= f.submit "登録", class: "comment-btn","data-turbolinks": false %></td>
+        <% end %>
+        <% end %>
+      <%# /コメント機能 %>
+      <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+  </div><%# users/showスコープ末尾 %>
+</div>

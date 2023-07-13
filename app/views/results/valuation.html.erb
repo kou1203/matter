@@ -1,0 +1,530 @@
+<div data-scope-path="shared/header">
+  <h1>マイページ</h1>
+  <%= render "shared/header" %>
+</div>
+<div data-scope-path="shared/side_bar_humbarger">
+  <%= render "shared/sidebar" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="users/show"><%# users/showスコープ頭 %>
+    <%= render "shared/mypage_links" %>
+    <h2>
+      <%= @user.name %>：成果一覧
+      <%= link_to "<<",valuation_results_path(u_id: @user.id,month:@month.prev_month),"data-turbolinks": false, class:"link" %>
+      <%= @month.year %>年<%= @month.month %>月
+      <%= link_to ">>",valuation_results_path(u_id: @user.id,month:@month.next_month),"data-turbolinks": false, class:"link" %>
+    </h2><br>
+    <p class="alert"><%= notice %></p><%# 登録した時のアラート %>
+<% num = 1 %>
+<div class="nav-text" style="color: red;"><%= alert %></div>
+<% @before_airpay_bonus_date = Date.new(2022,10,1) %>
+<% if @start_date.next_month.beginning_of_month >= @before_airpay_bonus_date %>
+  <% if @airpay_done.present? && @airpay_done.length >= 20 %>
+  <% airpay_bonus = @airpay_done.length * 5000 %>
+  <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
+  <% airpay_bonus = @airpay_done.length * 3000 %>
+  <% else %>
+  <% airpay_bonus = 0 %>
+  <% end %>
+<% else %>
+  <% if @airpay_done.present? && @airpay_done.length >= 20 %>
+  <% airpay_bonus = @airpay_done.length * 3000 %>
+  <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
+  <% airpay_bonus = @airpay_done.length * 2000 %>
+  <% else %>
+  <% airpay_bonus = 0 %>
+  <% end %>
+<% end %>
+<h2 class="red">成果売上：
+  <%=   
+    (
+      @dmer_done.sum(:valuation_new) +
+      @dmer_slmt_done.sum(:valuation_settlement) +
+      @dmer_slmt2nd_done.sum(:valuation_second_settlement) +
+      @aupay_slmt_done.sum(:valuation_settlement) +
+      @paypay_done.sum(:valuation) +
+      @rakuten_pay_val.sum(:valuation) +
+      @airpay_done.sum(:valuation) +
+      airpay_bonus +
+      @demaekan.sum(:valuation) +
+      # その他商材
+      @aupay_pic.sum(:valuation) +
+      @dmer_pic.sum(:valuation) +
+      @airpay_pic.sum(:valuation) +
+      @itss.sum(:valuation)
+    ).to_s(:delimited) rescue 0
+  %></h2>
+  <table>
+  <tr>
+    <th class="valuation-th">商材</th>
+    <th class="valuation-th">第一成果</th>
+    <th class="valuation-th">第二成果</th>
+    <th class="valuation-th">第三成果</th>
+    <th class="valuation-th">売上</th>
+  </tr>
+  <tr>
+    <td class="valuation-td">dメル</td>
+    <td class="valuation-td"><%= @dmer_done.length rescue 0 %></td>
+    <td class="valuation-td"><%= @dmer_slmt_done.length rescue 0 %></td>
+    <td class="valuation-td"><%= @dmer_slmt2nd_done.length rescue 0 %></td>
+    <td class="valuation-td"><%= 
+      (
+        @dmer_done.sum(:valuation_new) +
+        @dmer_slmt_done.sum(:valuation_settlement) +
+        @dmer_slmt2nd_done.sum(:valuation_second_settlement) 
+      ).to_s(:delimited) rescue 0 
+    %></td>
+  </tr>
+  <tr>
+    <td class="valuation-td">auPay</td>
+    <td class="valuation-td"><%= @aupay_slmt_done.length rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @aupay_slmt_done.sum(:valuation_settlement).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <tr>
+    <td class="valuation-td">PayPay</td>
+    <td class="valuation-td"><%= @paypay_done.length rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @paypay_done.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <tr>
+    <td class="valuation-td">楽天ペイ</td>
+    <td class="valuation-td"><%= @rakuten_pay_val.length rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @rakuten_pay_val.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <tr>
+    <td class="valuation-td">AirPay</td>
+    <td class="valuation-td"><%= @airpay_done.length rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <% if @airpay_done.present? && @airpay_done.length >= 20 %>
+    <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + airpay_bonus).to_s(:delimited) rescue 0 %></td>
+    <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
+    <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + airpay_bonus).to_s(:delimited) rescue 0 %></td>
+    <% else %>
+    <td class="valuation-td"><%= @airpay_done.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+    <% end %>
+  </tr>
+  <% if @aupay_pic.present? && @aupay_pic.exists?(user_id: @user.id) %>
+  <tr>
+    <td class="valuation-td">auPay写真</td>
+    <td class="valuation-td"><%= @aupay_pic.sum(:product_len) rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @aupay_pic.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <% end %>
+  <% if @dmer_pic.present? && @dmer_pic.exists?(user_id: @user.id) %>
+  <tr>
+    <td class="valuation-td">dメルステッカー</td>
+    <td class="valuation-td"><%= @dmer_pic.sum(:product_len) rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @dmer_pic.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <% end %>
+  <% if @airpay_pic.present? && @airpay_pic.exists?(user_id: @user.id) %>
+  <tr>
+    <td class="valuation-td">AirPayステッカー</td>
+    <td class="valuation-td"><%= @airpay_pic.length rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @airpay_pic.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <td class="valuation-td">出前館</td>
+    <td class="valuation-td"><%= @demaekan.length rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @demaekan.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <tr>
+    <td class="valuation-td">ITSS</td>
+    <td class="valuation-td"><%= @itss.length rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @itss.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  </table>
+<% if @dmer_done.present? %>
+<h2>dメル第一成果（審査完了）</h2>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">管理番号</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">決済完了日</th>
+      <th class="valuation-th">2回目決済完了日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @dmer_done.each do |dmer| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= dmer.controll_num %></td>
+      <td class="valuation-td "><%= dmer.store_prop.name %></td>
+      <td class="valuation-td "><%= dmer.date %></td>
+      <td class="valuation-td "><%= dmer.status %></td>
+      <td class="valuation-td "><%= dmer.result_point %></td>
+      <td class="valuation-td "><%= dmer.status_update_settlement %></td>
+      <td class="valuation-td "><%= dmer.settlement_second %></td>
+      <td class="valuation-td "><%= dmer.valuation_new %></td>
+      <td class="valuation-td "><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @dmer_slmt_done.present? %>
+<h2>dメル第二成果（第一成果+アクセプタンス）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">管理番号</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">決済完了日</th>
+      <th class="valuation-th">2回目決済完了日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @dmer_slmt_done.each do |dmer| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= dmer.controll_num %></td>
+      <td class="valuation-td "><%= dmer.store_prop.name %></td>
+      <td class="valuation-td "><%= dmer.date %></td>
+      <td class="valuation-td "><%= dmer.status %></td>
+      <td class="valuation-td "><%= dmer.result_point %></td>
+      <td class="valuation-td "><%= dmer.status_update_settlement %></td>
+      <td class="valuation-td "><%= dmer.settlement_second %></td>
+      <td class="valuation-td "><%= dmer.valuation_settlement %></td>
+      <td class="valuation-td "><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @dmer_slmt2nd_done.present? %>
+<h2>dメル第三成果（第二成果+2回目決済）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">管理番号</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">決済完了日</th>
+      <th class="valuation-th">2回目決済日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% num = 1 %>
+      <% @dmer_slmt2nd_done.each do |dmer| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= dmer.controll_num %></td>
+      <td class="valuation-td "><%= dmer.store_prop.name %></td>
+      <td class="valuation-td "><%= dmer.date %></td>
+      <td class="valuation-td "><%= dmer.status %></td>
+      <td class="valuation-td "><%= dmer.result_point %></td>
+      <td class="valuation-td "><%= dmer.status_update_settlement %></td>
+      <td class="valuation-td "><%= dmer.settlement_second %></td>
+      <td class="valuation-td "><%= dmer.valuation_second_settlement %></td>
+      <td class="valuation-td "><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @aupay_slmt_done.present? %>
+<h2>auPay第一成果（審査完了+決済+アクセプタンス）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">レコード番号</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">決済ステータス</th>
+      <th class="valuation-th">決済完了日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @aupay_slmt_done.each do |aupay| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= aupay.record_num %></td>
+      <td class="valuation-td "><%= aupay.store_prop.name %></td>
+      <td class="valuation-td "><%= aupay.date %></td>
+      <td class="valuation-td "><%= aupay.status %></td>
+      <td class="valuation-td "><%= aupay.result_point %></td>
+      <td class="valuation-td "><%= aupay.status_settlement %></td>
+      <td class="valuation-td "><%= aupay.status_update_settlement %></td>
+      <td class="valuation-td "><%= aupay.valuation_settlement %></td>
+      <td class="valuation-td "><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @paypay_done.present? %>
+<h2>PayPay第一成果（審査完了）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">管理番号</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @paypay_done.each do |paypay| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= paypay.customer_num %></td>
+      <td class="valuation-td "><%= paypay.store_prop.name %></td>
+      <td class="valuation-td "><%= paypay.date %></td>
+      <td class="valuation-td "><%= paypay.status %></td>
+      <td class="valuation-td "><%= paypay.result_point %></td>
+      <td class="valuation-td "><%= paypay.valuation %></td>
+      <td class="valuation-td "><%= link_to "詳細", paypay_path(paypay.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @rakuten_pay_val.present? %>
+<h2>楽天ペイ第一成果（獲得数+自社不備解消数）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">管理番号</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">自社不備発生日</th>
+      <th class="valuation-th">上位店連携日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @rakuten_pay_val.each do |rakuten_pay| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= rakuten_pay.customer_num %></td>
+      <td class="valuation-td "><%= rakuten_pay.store_prop.name %></td>
+      <td class="valuation-td "><%= rakuten_pay.date %></td>
+      <td class="valuation-td "><%= rakuten_pay.status %></td>
+      <td class="valuation-td "><%= rakuten_pay.deficiency %></td>
+      <td class="valuation-td "><%= rakuten_pay.share %></td>
+      <td class="valuation-td "><%= rakuten_pay.valuation %></td>
+      <td class="valuation-td "><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @airpay_done.present? %>
+<h2>AirPay第一成果（審査通過）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">管理番号</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @airpay_done.each do |airpay| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= airpay.customer_num %></td>
+      <td class="valuation-td "><%= airpay.store_prop.name %></td>
+      <td class="valuation-td "><%= airpay.date %></td>
+      <td class="valuation-td "><%= airpay.status %></td>
+      <td class="valuation-td "><%= airpay.result_point %></td>
+      <% if @start_date.next_month.beginning_of_month >= @before_airpay_bonus_date %>
+        <% if @airpay_done.present? && @airpay_done.length >= 20 %>
+        <td class="valuation-td "><%= airpay.valuation + 5000 %></td>
+        <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
+        <td class="valuation-td "><%= airpay.valuation + 3000 %></td>
+        <% else %>
+        <td class="valuation-td "><%= airpay.valuation %></td>
+        <% end %>
+      <% else %>
+        <% if @airpay_done.present? && @airpay_done.length >= 20 %>
+        <td class="valuation-td "><%= airpay.valuation + 3000 %></td>
+        <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
+        <td class="valuation-td "><%= airpay.valuation + 2000 %></td>
+        <% else %>
+        <td class="valuation-td "><%= airpay.valuation %></td>
+        <% end %>
+      <% end %>
+      <td class="valuation-td "><%= link_to "詳細", airpay_path(airpay.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @aupay_pic.present? %>
+<h2>auPay写真（獲得）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">獲得数</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @aupay_pic.each do |pic| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= pic.date %></td>
+      <td class="valuation-td "><%= pic.product_len %></td>
+      <td class="valuation-td "><%= pic.valuation %></td>
+      <td class="valuation-td "><%= link_to "編集", edit_other_product_path(pic.id) %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @dmer_pic.present? %>
+<h2>dメルステッカー（獲得）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">獲得数</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @dmer_pic.each do |pic| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= pic.date %></td>
+      <td class="valuation-td "><%= pic.product_len %></td>
+      <td class="valuation-td "><%= pic.valuation %></td>
+      <td class="valuation-td "><%= link_to "編集", edit_other_product_path(pic.id) %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @airpay_pic.present? %>
+<h2>AirPayステッカー（獲得）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">商材</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">評価売上</th>
+    </thead>
+    <tbody>
+      <% @airpay_pic.each_with_index do |pic, i| %>
+      <tr>
+      <td class="valuation-td "><%= i + 1 %></td>
+      <td class="valuation-td "><%= pic.store_name rescue "" %></td>
+      <td class="valuation-td "><%= pic.form_send %></td>
+      <td class="valuation-td "><%= pic.valuation %></td>
+      </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @demaekan.present? %>
+<h2>出前館（成果）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">初回CS締結日</th>
+      <th class="valuation-th">評価売上</th>
+    </thead>
+    <tbody>
+      <% @demaekan.each do |d| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= d.store_prop.name %></td>
+      <td class="valuation-td "><%= d.date %></td>
+      <td class="valuation-td "><%= d.first_cs_contract %></td>
+      <td class="valuation-td "><%= d.valuation %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @itss.present? %>
+<h2>ITSS</h2>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">管理番号</th>
+      <th class="valuation-th">契約者名</th>
+      <th class="valuation-th">申込日</th>
+      <th class="valuation-th">ステータス</th>
+      <th class="valuation-th">工事予定日</th>
+      <th class="valuation-th">評価売上</th>
+    </thead>
+    <tbody>
+      <% @itss.each_with_index do |itss,i| %>
+      <tr>
+      <td class="valuation-td "><%= i + 1 %></td>
+      <td class="valuation-td "><%= itss.customer_num %></td>
+      <td class="valuation-td "><%= itss.contract_name %></td>
+      <td class="valuation-td "><%= itss.date %></td>
+      <td class="valuation-td "><%= itss.status_ntt1 %></td>
+      <td class="valuation-td "><%= itss.construction_schedule %></td>
+      <td class="valuation-td "><%= itss.valuation %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+  <% end %>
+
+  </div><%# users/showスコープ末尾 %>
+</div>

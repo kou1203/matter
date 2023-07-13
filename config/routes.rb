@@ -138,6 +138,11 @@ Rails.application.routes.draw do
       get :base_productivity
       get :team_productivity
       get :person_productivity
+      get :product_status
+      get :slmt_list
+      get :deficiency
+      get :inc_or_dec
+      get :valuation
     }
   end  
 

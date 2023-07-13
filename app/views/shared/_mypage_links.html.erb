@@ -1,0 +1,8 @@
+    <div class="btn-form">
+      <button class="display-btn"><%= link_to "商材ステータス", product_status_results_path(u_id: @user.id,month: @month),"data-turbolinks": false, class: "reset-link" %></button>
+      <button class="display-btn"><%= link_to "決済一覧", slmt_list_results_path(u_id: @user.id,month: @month),"data-turbolinks": false, class: "reset-link" %></button>
+      <button class="display-btn"><%= link_to "不備一覧", deficiency_results_path(u_id: @user.id,month: @month),"data-turbolinks": false, class: "reset-link" %></button>
+      <button class="display-btn"><%= link_to "利益表", result_path(@user.id,month: @month),"data-turbolinks": false, class: "reset-link" %></button>
+      <button class="display-btn"><%= link_to "増減一覧", inc_or_dec_results_path(u_id: @user.id,month: @month),"data-turbolinks": false, class: "reset-link" %></button>
+      <button class="display-btn"><%= link_to "成果一覧", valuation_results_path(u_id: @user.id,month: @month),"data-turbolinks": false, class: "reset-link" %></button>
+    </div>

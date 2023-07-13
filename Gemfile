@@ -99,3 +99,5 @@ gem 'google_drive'
 
 gem 'axlsx_rails'
 
+gem 'parallel'
+
