@@ -101,3 +101,4 @@ gem 'axlsx_rails'
 
 gem 'parallel'
 
+gem 'jquery-rails'

@@ -133,7 +133,6 @@ Rails.application.routes.draw do
       get :dup_index
       post :comment_new
       put :comment_update
-      get :profit_only
       get :out_come
       get :base_productivity
       get :team_productivity
@@ -147,6 +146,10 @@ Rails.application.routes.draw do
   end  
 
   resources :results, only: :show, param: :result_id
+  get "date_fin/:id", to: "results#date_fin", as: "date_fin"
+  get "weekly_fin/:id", to: "results#weekly_fin", as: "weekly_fin"
+  get "out_val/:id", to: "results#out_val", as: "out_val"
+  get "out_val_all/:id", to: "results#out_val_all", as: "out_val_all"
   
   resources :ojts, only: :index do 
     collection { get :export }
