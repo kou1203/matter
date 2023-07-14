@@ -1,0 +1,94 @@
+        <div><%# 個人 %>
+          <h2>店舗別基準値</h2>
+          <table class="out-tb">
+            <thead>
+              <tr>
+              <th class="total-th">項目</th>
+              <th class="total-th">内訳</th>
+              <th class="total-th">平均</th>
+              <th class="total-th">成約率</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr></tr>
+            <tr>
+              <th rowspan="2" class="total-th">喫茶・カフェ</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@cafe_visit_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@cafe_get_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@cafe_get_sum.to_f / @cafe_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">その他飲食</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@other_food_visit_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@other_food_get_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@other_food_get_sum.to_f / @other_food_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">車屋</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@car_visit_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td">-</td>
+
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@car_get_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@car_get_sum.to_f / @car_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">その他小売</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@other_retail_visit_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@other_retail_get_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@other_retail_get_sum.to_f / @other_retail_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">理容・美容</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@hair_salon_visit_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@hair_salon_get_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@hair_salon_get_sum.to_f / @hair_salon_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">整体・鍼灸</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@manipulative_visit_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@manipulative_get_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@manipulative_get_sum.to_f / @manipulative_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">その他サービス</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@other_service_visit_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@other_service_get_sum.to_f / @shift_digestion_new).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@other_service_get_sum.to_f / @other_service_visit_sum.to_f * 100, precision: 1) %></td>
+            </tr>
+            </tbody>
+          </table>
+        </div><%# /個人 %>

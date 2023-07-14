@@ -1,0 +1,94 @@
+        <div><%# 全体 @result_base %>
+          <h2>全体店舗別基準値</h2>
+          <table class="out-tb">
+            <thead>
+              <tr>
+              <th class="total-th">項目</th>
+              <th class="total-th">内訳</th>
+              <th class="total-th">平均</th>
+              <th class="total-th">成約率</th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr></tr>
+            <tr>
+              <th rowspan="2" class="total-th">喫茶・カフェ</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@result_base.sum(:cafe_visit).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@result_base.sum(:cafe_get).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@result_base.sum(:cafe_get).to_f / @result_base.sum(:cafe_visit).to_f.to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">その他飲食</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@result_base.sum(:other_food_visit).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@result_base.sum(:other_food_get).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@result_base.sum(:other_food_get).to_f / @result_base.sum(:other_food_visit).to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">車屋</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@result_base.sum(:car_visit).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td">-</td>
+
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@result_base.sum(:car_get).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@result_base.sum(:car_get).to_f / @result_base.sum(:car_visit).to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">その他小売</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@result_base.sum(:other_retail_visit).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@result_base.sum(:other_retail_get).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@result_base.sum(:other_retail_get).to_f / @result_base.sum(:other_retail_visit).to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">理容・美容</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@result_base.sum(:hair_salon_visit).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@result_base.sum(:hair_salon_get).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@result_base.sum(:hair_salon_get).to_f / @result_base.sum(:hair_salon_visit).to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">整体・鍼灸</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@result_base.sum(:manipulative_visit).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@result_base.sum(:manipulative_get).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@result_base.sum(:manipulative_get).to_f / @result_base.sum(:manipulative_visit).to_f * 100, precision: 1) %></td>
+            </tr>
+            <tr>
+              <th rowspan="2" class="total-th">その他サービス</th>
+              <th class="total-th">訪問</th>
+              <td class="total-td"><%= (@result_base.sum(:other_service_visit).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td">-</td>
+            </tr>
+            <tr>
+              <th class="total-th">成約</th>
+              <td class="total-td"><%= (@result_base.sum(:other_service_get).to_f / @result_base.length).round(2) %></td>
+              <td class="total-td"><%= number_to_percentage(@result_base.sum(:other_service_get).to_f / @result_base.sum(:other_service_visit).to_f * 100, precision: 1) %></td>
+            </tr>
+            </tbody>
+          </table>
+        </div><%# /全体 @result_base %>

@@ -2,9 +2,9 @@ class ResultsController < ApplicationController
   before_action :authenticate_user!
   before_action :back_retirement
   before_action :set_data
-  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation,:date_fin,:weekly_fin,:out_val]
+  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation,:date_fin,:weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all]
   before_action :set_month_product, only: [:show, :date_fin,:weekly_fin,:out_val]
-  before_action :set_result_and_shift, only: [:show, :date_fin,:weekly_fin,:out_val]
+  before_action :set_result_and_shift, only: [:show, :date_fin,:weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all]
 
   def index
     @users = 
@@ -273,65 +273,7 @@ class ResultsController < ApplicationController
       @manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get) 
       @other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit) 
       @other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get) 
-    # 全店舗合計変数 
-      @store_visit_sum = @cafe_visit_sum +  @other_food_visit_sum + @car_visit_sum + @other_retail_visit_sum + @hair_salon_visit_sum + @manipulative_visit_sum + @other_service_visit_sum 
-      @store_get_sum = @cafe_get_sum +  @other_food_get_sum + @car_get_sum + @other_retail_get_sum + @hair_salon_get_sum + @manipulative_get_sum + @other_service_get_sum 
-    # 時間別基準値合計
-      @visit10_sum = @results.sum(:visit10)
-      @visit10_ave = (@visit10_sum.to_f / @shift_digestion_new).round(1)
-      @get10_sum = @results.sum(:get10)
-      @get10_ave = (@get10_sum.to_f / @shift_digestion_new).round(1)
 
-      @visit11_sum = @results.sum(:visit11)
-      @visit11_ave = (@visit11_sum.to_f / @shift_digestion_new).round(1)
-      @get11_sum = @results.sum(:get11)
-      @get11_ave = (@get11_sum.to_f / @shift_digestion_new).round(1)
-
-      @visit12_sum = @results.sum(:visit12)
-      @visit12_ave = (@visit12_sum.to_f / @shift_digestion_new).round(1)
-      @get12_sum = @results.sum(:get12)
-      @get12_ave = (@get12_sum.to_f / @shift_digestion_new).round(1)
-
-      @visit13_sum = @results.sum(:visit13)
-      @visit13_ave = (@visit13_sum.to_f / @shift_digestion_new).round(1)
-      @get13_sum = @results.sum(:get13)
-      @get13_ave = (@get13_sum.to_f / @shift_digestion_new).round(1)
-
-      @visit14_sum = @results.sum(:visit14)
-      @visit14_ave = (@visit14_sum.to_f / @shift_digestion_new).round(1)
-      @get14_sum = @results.sum(:get14)
-      @get14_ave = (@get14_sum.to_f / @shift_digestion_new).round(1)
-
-      @visit15_sum = @results.sum(:visit15)
-      @visit15_ave = (@visit15_sum.to_f / @shift_digestion_new).round(1)
-      @get15_sum = @results.sum(:get15)
-      @get15_ave = (@get15_sum.to_f / @shift_digestion_new).round(1)
-
-      @visit16_sum = @results.sum(:visit16)
-      @visit16_ave = (@visit16_sum.to_f / @shift_digestion_new).round(1)
-      @get16_sum = @results.sum(:get16)
-      @get16_ave = (@get16_sum.to_f / @shift_digestion_new).round(1)
-
-      @visit17_sum = @results.sum(:visit17)
-      @visit17_ave = (@visit17_sum.to_f / @shift_digestion_new).round(1)
-      @get17_sum = @results.sum(:get17)
-      @get17_ave = (@get17_sum.to_f / @shift_digestion_new).round(1)
-
-      @visit18_sum = @results.sum(:visit18)
-      @visit18_ave = (@visit18_sum.to_f / @shift_digestion_new).round(1)
-      @get18_sum = @results.sum(:get18)
-      @get18_ave = (@get18_sum.to_f / @shift_digestion_new).round(1)
-
-      @visit19_sum = @results.sum(:visit19)
-      @visit19_ave = (@visit19_sum.to_f / @shift_digestion_new).round(1)
-      @get19_sum = @results.sum(:get19)
-      @get19_ave = (@get19_sum.to_f / @shift_digestion_new).round(1)
-
-      @time_visit_sum = [@visit10_sum,@visit11_sum,@visit12_sum,@visit13_sum,@visit14_sum,@visit15_sum,@visit16_sum,@visit17_sum,@visit18_sum,@visit19_sum]
-      @time_visit_ave = [@visit10_ave,@visit11_ave,@visit12_ave,@visit13_ave,@visit14_ave,@visit15_ave,@visit16_ave,@visit17_ave,@visit18_ave,@visit19_ave]
-      @time_get_sum = [@get10_sum,@get11_sum,@get12_sum,@get13_sum,@get14_sum,@get15_sum,@get16_sum,@get17_sum,@get18_sum,@get19_sum]
-      @time_get_ave = [@get10_ave,@get11_ave,@get12_ave,@get13_ave,@get14_ave,@get15_ave,@get16_ave,@get17_ave,@get18_ave,@get19_ave]
-      
     # 拠点別基準値
       @result_base = Result.includes(:user, :result_cash).where(date: @month.all_month).where(shift: "キャッシュレス新規")
       @result_chubu = @result_base.where(user: {base: "中部SS"})
@@ -393,6 +335,30 @@ class ResultsController < ApplicationController
     @date_period = @month.beginning_of_month.to_date..@month.end_of_month.to_date
     render partial: "date_fin", locals: {date_period:@date_period} # @date_periodを遅延ロード
   end 
+
+  def store_val # 店舗別基準値
+    # 店舗別合計変数 
+    @cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit) 
+    @cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get) 
+    @other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit) 
+    @other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get) 
+    @car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit) 
+    @car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get) 
+    @other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit) 
+    @other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get) 
+    @hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit) 
+    @hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get) 
+    @manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit) 
+    @manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get) 
+    @other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit) 
+    @other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get) 
+    render partial: "store_val", locals: {} # を遅延ロード
+  end 
+
+  def store_val_all # 店舗別基準値（全体）
+    @result_base = Result.includes(:user, :result_cash).where(date: @month.all_month).where(shift: "キャッシュレス新規")
+    render partial: "store_val_all", locals: {} # 遅延ロード
+  end 
     
   def weekly_fin # 週間基準値
     if @results.where(shift: "キャッシュレス新規").present?
@@ -426,7 +392,6 @@ class ResultsController < ApplicationController
 
   def out_val 
     @out_ary = ["どういうこと？","君は誰？協会？","もらうだけでいいの？","PayPayのみ","AirPayのみ","カードのみ","先延ばし","現金のみ","忙しい","面倒くさい","情報不足","ペロ","その他"]
-    @shift_digestion_new = @results.where(shift: "キャッシュレス新規").length
     render partial: "out_val", locals: {out_ary:@out_ary} # @out_aryを遅延ロード
   end 
 
@@ -435,6 +400,75 @@ class ResultsController < ApplicationController
     @result_cash_base = ResultCash.includes(:result,result: :user).where(result: {date: @month.all_month}).where(result: {shift: "キャッシュレス新規"})
     @all_len = @result_cash_base.group(:user_id).length
     render partial: "out_val_all", locals: {out_ary:@out_ary} # @out_aryを遅延ロード
+  end 
+
+  def time_val
+    # 時間別基準値合計
+    @visit10_sum = @results.sum(:visit10)
+    @visit10_ave = (@visit10_sum.to_f / @shift_digestion_new).round(1)
+    @get10_sum = @results.sum(:get10)
+    @get10_ave = (@get10_sum.to_f / @shift_digestion_new).round(1)
+
+    @visit11_sum = @results.sum(:visit11)
+    @visit11_ave = (@visit11_sum.to_f / @shift_digestion_new).round(1)
+    @get11_sum = @results.sum(:get11)
+    @get11_ave = (@get11_sum.to_f / @shift_digestion_new).round(1)
+
+    @visit12_sum = @results.sum(:visit12)
+    @visit12_ave = (@visit12_sum.to_f / @shift_digestion_new).round(1)
+    @get12_sum = @results.sum(:get12)
+    @get12_ave = (@get12_sum.to_f / @shift_digestion_new).round(1)
+
+    @visit13_sum = @results.sum(:visit13)
+    @visit13_ave = (@visit13_sum.to_f / @shift_digestion_new).round(1)
+    @get13_sum = @results.sum(:get13)
+    @get13_ave = (@get13_sum.to_f / @shift_digestion_new).round(1)
+
+    @visit14_sum = @results.sum(:visit14)
+    @visit14_ave = (@visit14_sum.to_f / @shift_digestion_new).round(1)
+    @get14_sum = @results.sum(:get14)
+    @get14_ave = (@get14_sum.to_f / @shift_digestion_new).round(1)
+
+    @visit15_sum = @results.sum(:visit15)
+    @visit15_ave = (@visit15_sum.to_f / @shift_digestion_new).round(1)
+    @get15_sum = @results.sum(:get15)
+    @get15_ave = (@get15_sum.to_f / @shift_digestion_new).round(1)
+
+    @visit16_sum = @results.sum(:visit16)
+    @visit16_ave = (@visit16_sum.to_f / @shift_digestion_new).round(1)
+    @get16_sum = @results.sum(:get16)
+    @get16_ave = (@get16_sum.to_f / @shift_digestion_new).round(1)
+
+    @visit17_sum = @results.sum(:visit17)
+    @visit17_ave = (@visit17_sum.to_f / @shift_digestion_new).round(1)
+    @get17_sum = @results.sum(:get17)
+    @get17_ave = (@get17_sum.to_f / @shift_digestion_new).round(1)
+
+    @visit18_sum = @results.sum(:visit18)
+    @visit18_ave = (@visit18_sum.to_f / @shift_digestion_new).round(1)
+    @get18_sum = @results.sum(:get18)
+    @get18_ave = (@get18_sum.to_f / @shift_digestion_new).round(1)
+
+    @visit19_sum = @results.sum(:visit19)
+    @visit19_ave = (@visit19_sum.to_f / @shift_digestion_new).round(1)
+    @get19_sum = @results.sum(:get19)
+    @get19_ave = (@get19_sum.to_f / @shift_digestion_new).round(1)
+
+    @time_visit_sum = [@visit10_sum,@visit11_sum,@visit12_sum,@visit13_sum,@visit14_sum,@visit15_sum,@visit16_sum,@visit17_sum,@visit18_sum,@visit19_sum]
+    @time_visit_ave = [@visit10_ave,@visit11_ave,@visit12_ave,@visit13_ave,@visit14_ave,@visit15_ave,@visit16_ave,@visit17_ave,@visit18_ave,@visit19_ave]
+    @time_get_sum = [@get10_sum,@get11_sum,@get12_sum,@get13_sum,@get14_sum,@get15_sum,@get16_sum,@get17_sum,@get18_sum,@get19_sum]
+    @time_get_ave = [@get10_ave,@get11_ave,@get12_ave,@get13_ave,@get14_ave,@get15_ave,@get16_ave,@get17_ave,@get18_ave,@get19_ave]
+    render partial: "time_val", locals: {} # 遅延ロード
+  end 
+
+  def time_val_all
+    @hour_visit_base = []
+    @hour_get_base = []
+    10.times do |i|
+      @hour_visit_base << @result_base.sum("visit#{i + 10}") rescue 0
+      @hour_get_base << @result_base.sum("get#{i + 10}") rescue 0
+    end 
+    render partial: "time_val_all", locals: {} # 遅延ロード
   end 
 
   def product_status
@@ -1054,6 +1088,8 @@ class ResultsController < ApplicationController
     def set_result_and_shift # シフトと終着の変数
       @results = Result.includes(:user, :result_cash).where(user_id: @user.id).where(date: @month.all_month)
       @shifts = Shift.where(user_id: @user.id).where(start_time: @month.all_month)
+      @result_base = Result.includes(:user, :result_cash).where(date: @month.all_month).where(shift: "キャッシュレス新規")
+      @shift_digestion_new = @results.where(shift: "キャッシュレス新規").length
     end 
       
     def back_retirement # 退職者が閲覧できないようにする

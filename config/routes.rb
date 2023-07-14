@@ -150,6 +150,10 @@ Rails.application.routes.draw do
   get "weekly_fin/:id", to: "results#weekly_fin", as: "weekly_fin"
   get "out_val/:id", to: "results#out_val", as: "out_val"
   get "out_val_all/:id", to: "results#out_val_all", as: "out_val_all"
+  get "time_val/:id", to: "results#time_val", as: "time_val"
+  get "time_val_all/:id", to: "results#time_val_all", as: "time_val_all"
+  get "store_val/:id", to: "results#store_val", as: "store_val"
+  get "store_val_all/:id", to: "results#store_val_all", as: "store_val_all"
   
   resources :ojts, only: :index do 
     collection { get :export }

@@ -1,0 +1,30 @@
+      <div><%# 全体 @result_base %>
+        <h2>時間別基準値</h2>
+        <table class="out-tb">
+          <thead>
+            <th class="total-th">時間</th>
+            <th class="total-th">内訳</th>
+            <th class="total-th">平均</th>
+            <th class="total-th">成約率</th>
+          </thead>
+          <tbody>
+          <% time = 10 %>
+          <% cnt = 0 %>
+          <% 10.times do %>
+          <tr>
+            <th rowspan="2" class="total-th"><%= time %>時</th>
+            <th class="total-th">訪問</th>
+            <td class="total-td"><%= (@hour_visit_base[cnt].to_f / @result_base.length).round(2) %></td>
+            <td class="total-td">-</td>
+          </tr>
+          <tr>
+            <th class="total-th">成約</th>
+            <td class="total-td"><%= (@hour_get_base[cnt].to_f / @result_base.length).round(2) %></td>
+            <td class="total-td"><%= number_to_percentage(@hour_get_base[cnt].to_f / @hour_visit_base[cnt].to_f * 100, precision: 1) %></td>
+          </tr>
+          <% time += 1 %>
+          <% cnt += 1 %>
+          <% end %>
+          </tbody>
+        </table>
+      </div><%# /全体 %>
