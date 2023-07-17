@@ -154,6 +154,10 @@ Rails.application.routes.draw do
   get "time_val_all/:id", to: "results#time_val_all", as: "time_val_all"
   get "store_val/:id", to: "results#store_val", as: "store_val"
   get "store_val_all/:id", to: "results#store_val_all", as: "store_val_all"
+
+  get "monthly_get", to: "results#monthly_get", as: "monthly_get"
+  get "monthly_get_base", to: "results#monthly_get_base", as: "monthly_get_base"
+  get "sales_and_def", to: "results#sales_and_def", as: "sales_and_def"
   
   resources :ojts, only: :index do 
     collection { get :export }

@@ -1,0 +1,138 @@
+        <%# 全体平均獲得数の変数 %>
+          <% dmer_monthly_ave = (@dmer_monthly.length.to_f / @shift_monthly_digestion.length) %>
+          <% aupay_monthly_ave = (@aupay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+          <% rakuten_pay_monthly_ave = (@rakuten_pay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+          <% airpay_monthly_ave = (@airpay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+          <% usen_pay_monthly_ave = (@usen_pay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+          <% dmer_comparison_ave = (@dmer_comparison.length.to_f / @shift_comparison_digestion.length) %>
+          <% aupay_comparison_ave = (@aupay_comparison.length.to_f / @shift_comparison_digestion.length) %>
+          <% rakuten_pay_comparison_ave = (@rakuten_pay_comparison.length.to_f / @shift_comparison_digestion.length) %>
+          <% airpay_comparison_ave = (@airpay_comparison.length.to_f / @shift_comparison_digestion.length) %>
+          <% usen_pay_comparison_ave = (@usen_pay_comparison.length.to_f / @shift_comparison_digestion.length) %>
+        <%# /全体平均獲得数の変数 %>
+        <p class="nav-text">◆<%= @month_daily.month %>月全拠点獲得数</p>
+        <table>
+          <thead>
+            <tr class="index-tr">
+              <th class="" colspan="3">基本情報</th>
+              <th class="" colspan="3">シフト</th>
+              <th class="gray" colspan="5">現状獲得数</th>
+              <th class="" colspan="5">終着獲得数</th>
+            </tr>
+            <tr class="index-tr">
+              <th class="">項目</th>
+              <th class="">日付</th>
+              <th class="">人員</th>
+              <th class="">新規予定シフト</th>
+              <th class="">新規消化シフト</th>
+              <th class="">新規残シフト</th>
+              <th class="gray">dメル</th>
+              <th class="gray">auPay</th>
+              <th class="gray">楽天ペイ</th>
+              <th class="gray">AirPay</th>
+              <th class="gray">UsenPay</th>
+              <th class="">dメル</th>
+              <th class="">auPay</th>
+              <th class="">楽天ペイ</th>
+              <th class="">AirPay</th>
+              <th class="">UsenPay</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="">
+              <td class="" rowspan="">全拠点（現状）</td>
+              <td class=""><%= @month_daily.beginning_of_month.strftime("%m月%d日") %>〜<%= @month_daily.strftime("%m月%d日") %></td>
+              <td class=""><%= @shift_monthly_plan.group(:user_id).length %></td>
+              <td class=""><%= @shift_monthly_plan.length %></td>
+              <td class=""><%= @shift_monthly_digestion.length %></td>
+              <td class=""><%= @shift_monthly_plan.length - @shift_monthly_digestion.length %></td>
+              <td class="">
+                <%= @dmer_monthly.length %>
+              </td>
+              <td class="">
+                <%= @aupay_monthly.length %>
+              </td>
+              <td class="">
+                <%= @rakuten_pay_monthly.length %>
+              </td>
+              <td class="">
+                <%= @airpay_monthly.length %> 
+              </td>
+              <td class="">
+                <%= @usen_pay_monthly.length %> 
+              </td>
+              <td class=""><%= dmer_monthly_fin = (dmer_monthly_ave * @shift_monthly_plan.length).round() rescue 0 %></td>
+              <td class=""><%= aupay_monthly_fin = (aupay_monthly_ave * @shift_monthly_plan.length).round() rescue 0 %></td>
+              <td class=""><%= rakuten_pay_monthly_fin = (rakuten_pay_monthly_ave * @shift_monthly_plan.length).round() rescue 0 %></td>
+              <td class=""><%= airpay_monthly_fin = (airpay_monthly_ave * @shift_monthly_plan.length).round() rescue 0 %></td>
+              <td class=""><%= usen_pay_monthly_fin = (usen_pay_monthly_ave * @shift_monthly_plan.length).round() rescue 0 %></td>
+            </tr>
+            <tr class="difference-target-tr">
+              <td class="">全拠点（比較対象）</td>
+              <td class=""><%= @comparison_date.beginning_of_month.strftime("%m月%d日") %>〜<%= @comparison_date.strftime("%m月%d日") %></td>
+              <td class=""><%= @shift_comparison_plan.group(:user_id).length %></td>
+              <td class=""><%= @shift_comparison_plan.length %></td>
+              <td class=""><%= @shift_comparison_digestion.length %></td>
+              <td class=""><%= @shift_comparison_plan.length - @shift_comparison_digestion.length %></td>
+              <td class="">
+                <%= @dmer_comparison.length %>
+              </td>
+              <td class="">
+                <%= @aupay_comparison.length %>
+              </td>
+              <td class="">
+                <%= @rakuten_pay_comparison.length %>
+              </td>
+              <td class="">
+                <%= @airpay_comparison.length %> 
+              </td>
+              <td class="">
+                <%= @usen_pay_comparison.length %> 
+              </td>
+              <td class=""><%= dmer_comparison_fin = (dmer_comparison_ave * @shift_comparison_plan.length).round() rescue 0 %></td>
+              <td class=""><%= aupay_comparison_fin =  (aupay_comparison_ave * @shift_comparison_plan.length).round() rescue 0 %></td>
+              <td class=""><%= rakuten_pay_comparison_fin = (rakuten_pay_comparison_ave * @shift_comparison_plan.length).round() rescue 0 %></td>
+              <td class=""><%= airpay_comparison_fin = (airpay_comparison_ave * @shift_comparison_plan.length).round() rescue 0 %></td>
+              <td class=""><%= usen_pay_comparison_fin = (usen_pay_comparison_ave * @shift_comparison_plan.length).round() rescue 0 %></td>
+            </tr>
+            <tr class="difference-tr">
+              <td class="" colspan="2">差異</td>
+              <td class="<%= "red" if 0 > @shift_monthly_plan.group(:user_id).length - @shift_comparison_plan.group(:user_id).length %>"><%= @shift_monthly_plan.group(:user_id).length - @shift_comparison_plan.group(:user_id).length %></td>
+              <td class="<%= "red" if 0 > @shift_monthly_plan.length - @shift_comparison_plan.length %>"><%= @shift_monthly_plan.length - @shift_comparison_plan.length %></td>
+              <td class="<%= "red" if 0 > @shift_monthly_digestion.length - @shift_comparison_digestion.length %>"><%= @shift_monthly_digestion.length - @shift_comparison_digestion.length %></td>
+              <td class="<%= "red" if 0 > (@shift_monthly_plan.length - @shift_monthly_digestion.length) - (@shift_comparison_plan.length - @shift_comparison_digestion.length) %>"><%= 
+                (@shift_monthly_plan.length - @shift_monthly_digestion.length) - (@shift_comparison_plan.length - @shift_comparison_digestion.length)
+              %></td>
+              <td class="<%= "red" if 0 > @dmer_monthly.length - @dmer_comparison.length %>">
+                <%= @dmer_monthly.length - @dmer_comparison.length %>
+              </td>
+              <td class="<%= "red" if 0 > @aupay_monthly.length - @aupay_comparison.length %>">
+                <%= @aupay_monthly.length - @aupay_comparison.length %>
+              </td>
+              <td class="<%= "red" if 0 > @rakuten_pay_monthly.length - @rakuten_pay_comparison.length %>">
+                <%= @rakuten_pay_monthly.length - @rakuten_pay_comparison.length %>
+              </td>
+              <td class="<%= "red" if 0 > @airpay_monthly.length - @airpay_comparison.length %>">
+                <%= @airpay_monthly.length - @airpay_comparison.length %> 
+              </td>
+              <td class="<%= "red" if 0 > @usen_pay_monthly.length - @usen_pay_comparison.length %>">
+                <%= @usen_pay_monthly.length - @usen_pay_comparison.length %> 
+              </td>
+              <td class="<%= "red" if 0 > dmer_monthly_fin - dmer_comparison_fin rescue 0 %>">
+                <%= dmer_monthly_fin  - dmer_comparison_fin rescue 0 %>
+              </td>
+              <td class="<%= "red" if 0 > aupay_monthly_fin - aupay_comparison_fin rescue 0 %>">
+                <%= aupay_monthly_fin - aupay_comparison_fin rescue 0 %>
+              </td>
+              <td class="<%= "red" if 0 > rakuten_pay_monthly_fin - rakuten_pay_comparison_fin rescue 0 %>">
+                <%= rakuten_pay_monthly_fin - rakuten_pay_comparison_fin rescue 0 %>
+              </td>
+              <td class="<%= "red" if 0 > airpay_monthly_fin - airpay_comparison_fin rescue 0 %>">
+                <%= airpay_monthly_fin - airpay_comparison_fin rescue 0 %>
+              </td>
+              <td class="<%= "red" if 0 > usen_pay_monthly_fin - usen_pay_comparison_fin rescue 0 %>">
+                <%= usen_pay_monthly_fin - usen_pay_comparison_fin rescue 0 %>
+              </td>
+            </tr>
+          </tbody>
+        </table>

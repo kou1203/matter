@@ -1,0 +1,215 @@
+<% bases = ["中部SS", "関東SS", "関西SS","九州SS", "2次店"] %>
+        <p class="nav-text">◆<%= @month_daily.month %>月拠点別獲得数</p>
+        <table>
+          <thead>
+            <tr class="index-tr">
+              <th class="" colspan="3">基本情報</th>
+              <th class="" colspan="3">シフト</th>
+              <th class="gray" colspan="5">現状獲得数</th>
+              <th class="" colspan="5">終着獲得数</th>
+            </tr>
+            <tr class="index-tr">
+              <th class="">拠点</th>
+              <th class="">日付</th>
+              <th class="">人員</th>
+              <th class="">新規予定シフト</th>
+              <th class="">新規消化シフト</th>
+              <th class="">新規残シフト</th>
+              <th class="gray">dメル</th>
+              <th class="gray">auPay</th>
+              <th class="gray">楽天ペイ</th>
+              <th class="gray">AirPay</th>
+              <th class="gray">UsenPay</th>
+              <th class="">dメル</th>
+              <th class="">auPay</th>
+              <th class="">楽天ペイ</th>
+              <th class="">AirPay</th>
+              <th class="">UsenPay</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% bases.each do |base| %>
+            <%# 拠点別平均獲得数の変数 %>
+              <% 
+                dmer_base_monthly_ave = 
+                  (@dmer_monthly.where(user: {base: base}).length.to_f / 
+                  @shift_monthly_digestion.where(user: {base: base}).length) 
+              %>
+              <% 
+                aupay_base_monthly_ave = 
+                  (@aupay_monthly.where(user: {base: base}).length.to_f / 
+                  @shift_monthly_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                paypay_base_monthly_ave = 
+                  (@paypay_monthly.where(user: {base: base}).length.to_f / 
+                  @shift_monthly_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                rakuten_pay_base_monthly_ave = 
+                  (@rakuten_pay_monthly.where(user: {base: base}).length.to_f / 
+                  @shift_monthly_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                airpay_base_monthly_ave = 
+                  (@airpay_monthly.where(user: {base: base}).length.to_f / 
+                  @shift_monthly_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                usen_pay_base_monthly_ave = 
+                  (@usen_pay_monthly.where(user: {base: base}).length.to_f / 
+                  @shift_monthly_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                dmer_base_comparison_ave = 
+                  (@dmer_comparison.where(user: {base: base}).length.to_f / 
+                  @shift_comparison_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                aupay_base_comparison_ave = 
+                  (@aupay_comparison.where(user: {base: base}).length.to_f / 
+                  @shift_comparison_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                paypay_base_comparison_ave = 
+                  (@paypay_comparison.where(user: {base: base}).length.to_f / 
+                  @shift_comparison_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                rakuten_pay_base_comparison_ave = 
+                  (@rakuten_pay_comparison.where(user: {base: base}).length.to_f / 
+                  @shift_comparison_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                airpay_base_comparison_ave = 
+                  (@airpay_comparison.where(user: {base: base}).length.to_f / 
+                  @shift_comparison_digestion.where(user: {base: base}).length)
+              %>
+              <% 
+                usen_pay_base_comparison_ave = 
+                  (@usen_pay_comparison.where(user: {base: base}).length.to_f / 
+                  @shift_comparison_digestion.where(user: {base: base}).length)
+              %>
+            <%# /拠点別平均獲得数の変数 %>
+            <tr class="">
+              <td class="head-td" rowspan=""><%= base %>（現状）</td>
+              <td class=""><%= @month_daily.beginning_of_month.strftime("%m月%d日") %>〜<%= @month_daily.strftime("%m月%d日") %></td>
+              <td class=""><%= @shift_monthly_plan.where(user: {base: base}).group(:user_id).length %></td>
+              <%# シフト %>
+              <td class=""><%= @shift_monthly_plan.where(user: {base: base}).length %></td>
+              <td class=""><%= @shift_monthly_digestion.where(user: {base: base}).length %></td>
+              <td class=""><%= 
+                @shift_monthly_plan.where(user: {base: base}).length -
+                @shift_monthly_digestion.where(user: {base: base}).length
+              %></td>
+              <%# 現状獲得 %>
+              <td class="">
+                <%= @dmer_monthly.where(user: {base: base}).length %>
+              </td>
+              <td class="">
+                <%= @aupay_monthly.where(user: {base: base}).length %>
+              </td>
+              <td class="">
+                <%= @rakuten_pay_monthly.where(user: {base: base}).length %>
+              </td>
+              <td class="">
+                <%= @airpay_monthly.where(user: {base: base}).length %>
+              </td>
+              <td class="">
+                <%= @usen_pay_monthly.where(user: {base: base}).length %>
+              </td>
+              <%# 終着 %>
+              <td class=""><%= dmer_base_monthly_fin =  (dmer_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= aupay_base_monthly_fin =  (aupay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= rakuten_pay_base_monthly_fin =  (rakuten_pay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= airpay_base_monthly_fin =  (airpay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= usen_pay_base_monthly_fin =  (usen_pay_base_monthly_ave * @shift_monthly_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+            </tr>
+            <tr class="">
+              <td class=""><%= base %>（比較対象）</td>
+              <td class=""><%= @comparison_date.beginning_of_month.strftime("%m月%d日") %>〜<%= @comparison_date.strftime("%m月%d日") %></td>
+              <td class=""><%= @shift_comparison_plan.where(user: {base: base}).group(:user_id).length %></td>
+              <%# シフト %>
+              <td class=""><%= @shift_comparison_plan.where(user: {base: base}).length %></td>
+              <td class=""><%= @shift_comparison_digestion.where(user: {base: base}).length %></td>
+              <td class=""><%= 
+                @shift_comparison_plan.where(user: {base: base}).length -
+                @shift_comparison_digestion.where(user: {base: base}).length
+              %></td>
+              <%# 現状獲得 %>
+              <td class="">
+                <%= @dmer_comparison.where(user: {base: base}).length %>
+              </td>
+              <td class="">
+                <%= @aupay_comparison.where(user: {base: base}).length %>
+              </td>
+              <td class="">
+                <%= @rakuten_pay_comparison.where(user: {base: base}).length %>
+              </td>
+              <td class="">
+                <%= @airpay_comparison.where(user: {base: base}).length %>
+              </td>
+              <td class="">
+                <%= @usen_pay_comparison.where(user: {base: base}).length %>
+              </td>
+              <%# 終着 %>
+              <td class=""><%= dmer_base_comparison_fin = (dmer_base_comparison_ave * @shift_comparison_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= aupay_base_comparison_fin =  (aupay_base_comparison_ave * @shift_comparison_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= rakuten_pay_base_comparison_fin =  (rakuten_pay_base_comparison_ave * @shift_comparison_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= airpay_base_comparison_fin =  (airpay_base_comparison_ave * @shift_comparison_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+              <td class=""><%= usen_pay_base_comparison_fin =  (usen_pay_base_comparison_ave * @shift_comparison_plan.where(user: {base: base}).length).round() rescue 0 %></td>
+            </tr>
+            <tr class="difference-tr">
+              <td class="" colspan="2">差異</td>
+              <td class="<%= "red" if 0 > @shift_monthly_plan.where(user: {base: base}).group(:user_id).length - @shift_comparison_plan.where(user: {base: base}).group(:user_id).length %>">
+                <%= @shift_monthly_plan.where(user: {base: base}).group(:user_id).length - @shift_comparison_plan.where(user: {base: base}).group(:user_id).length %>
+                </td>
+              <%# シフト %>
+              <td class="<%= "red" if 0 > @shift_monthly_plan.where(user: {base: base}).length - @shift_comparison_plan.where(user: {base: base}).length %>">
+                <%= @shift_monthly_plan.where(user: {base: base}).length - @shift_comparison_plan.where(user: {base: base}).length %>
+              </td>
+              </td>
+              <td class="<%= "red" if 0 > @shift_monthly_digestion.where(user: {base: base}).length - @shift_comparison_digestion.where(user: {base: base}).length %>">
+                <%= @shift_monthly_digestion.where(user: {base: base}).length - @shift_comparison_digestion.where(user: {base: base}).length %>
+              </td>
+              <td class="<%= "red" if 0 > (@shift_comparison_plan.where(user: {base: base}).length - @shift_comparison_digestion.where(user: {base: base}).length) -(@shift_monthly_plan.where(user: {base: base}).length - @shift_monthly_digestion.where(user: {base: base}).length) %>">
+                <%= 
+                  (@shift_comparison_plan.where(user: {base: base}).length - @shift_comparison_digestion.where(user: {base: base}).length) -(@shift_monthly_plan.where(user: {base: base}).length - @shift_monthly_digestion.where(user: {base: base}).length)
+                %>
+              </td>
+              <%# 現状獲得 %>
+              <td class="<%= "red" if 0 > @dmer_monthly.where(user: {base: base}).length - @dmer_comparison.where(user: {base: base}).length %>">
+                <%= @dmer_monthly.where(user: {base: base}).length - @dmer_comparison.where(user: {base: base}).length %>
+              </td>
+              <td class="<%= "red" if 0 > @aupay_monthly.where(user: {base: base}).length - @aupay_comparison.where(user: {base: base}).length %>">
+                <%= @aupay_monthly.where(user: {base: base}).length - @aupay_comparison.where(user: {base: base}).length %>
+              </td>
+              <td class="<%= "red" if 0 > @rakuten_pay_monthly.where(user: {base: base}).length - @rakuten_pay_comparison.where(user: {base: base}).length %>">
+                <%= @rakuten_pay_monthly.where(user: {base: base}).length - @rakuten_pay_comparison.where(user: {base: base}).length %>
+              </td>
+              <td class="<%= "red" if 0 > @airpay_monthly.where(user: {base: base}).length - @airpay_comparison.where(user: {base: base}).length %>">
+                <%= @airpay_monthly.where(user: {base: base}).length - @airpay_comparison.where(user: {base: base}).length %>
+              </td>
+              <td class="<%= "red" if 0 > @airpay_monthly.where(user: {base: base}).length - @airpay_comparison.where(user: {base: base}).length %>">
+                <%= @usen_pay_monthly.where(user: {base: base}).length - @usen_pay_comparison.where(user: {base: base}).length %>
+              </td>
+              <%# 終着 %>
+              <td class="<%= "red" if 0 > dmer_base_monthly_fin - dmer_base_comparison_fin %>">
+                <%= dmer_base_monthly_fin - dmer_base_comparison_fin rescue 0 %>
+              </td>
+              <td class="<%= "red" if 0 > aupay_base_monthly_fin - aupay_base_comparison_fin %>">
+                <%= aupay_base_monthly_fin - aupay_base_comparison_fin rescue 0 %>
+              </td>
+              <td class="<%= "red" if 0 > rakuten_pay_base_monthly_fin - rakuten_pay_base_comparison_fin %>">
+                <%= rakuten_pay_base_monthly_fin - rakuten_pay_base_comparison_fin rescue 0 %>
+              </td>
+              <td class="<%= "red" if 0 > airpay_base_monthly_fin - airpay_base_comparison_fin %>">
+                <%= airpay_base_monthly_fin - airpay_base_comparison_fin rescue 0 %>
+              </td>
+              <td class="<%= "red" if 0 > usen_pay_base_monthly_fin - usen_pay_base_comparison_fin %>">
+                <%= usen_pay_base_monthly_fin - usen_pay_base_comparison_fin rescue 0 %>
+              </td>
+            </tr>
+          <% end %>
+          </tbody>
+        </table>

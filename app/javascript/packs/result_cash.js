@@ -58,7 +58,6 @@ document.addEventListener('turbolinks:load', () => {
             return this.shiftItem = result_partner, this.out = result_cash_partner, this.hourVisit = hour_visit_partner, this.hourGet = hour_get_partner, this.user_len = partner_len;
           } else {}
         }
-        
       }
       // components: { App }
     });
