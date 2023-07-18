@@ -3,16 +3,19 @@ class ResultsController < ApplicationController
   before_action :back_retirement
   before_action :set_data
   # showアクションのbeforeaction
-  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation,:date_fin,:weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all]
+  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation_list,:date_fin,:weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all]
   before_action :set_month_product, only: [:show, :date_fin,:weekly_fin,:out_val]
   before_action :set_result_and_shift, only: [:show, :date_fin,:weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all]
   # monthly_progressアクションのbeforeaction
   before_action :set_monthly_progress, only: [:monthly_get,:monthly_get_base,:sales_and_def]
 
   def index
+  end 
+  def user_list # indexの個別利益表のユーザー一覧
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
     @users_cash = @users.where(base_sub: "キャッシュレス").order(base: "DESC")
+    render partial: "user_list", locals: {}
   end 
 
   def monthly_progress
@@ -642,7 +645,7 @@ class ResultsController < ApplicationController
           .where(deficiency_solution: @month.all_month)
   end 
 
-  def valuation
+  def valuation_list
   end 
 
   # /マイページ

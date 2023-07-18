@@ -141,7 +141,7 @@ Rails.application.routes.draw do
       get :slmt_list
       get :deficiency
       get :inc_or_dec
-      get :valuation
+      get :valuation_list
     }
   end  
 
@@ -158,6 +158,7 @@ Rails.application.routes.draw do
   get "monthly_get", to: "results#monthly_get", as: "monthly_get"
   get "monthly_get_base", to: "results#monthly_get_base", as: "monthly_get_base"
   get "sales_and_def", to: "results#sales_and_def", as: "sales_and_def"
+  get "user_list", to: "results#user_list", as: "user_list"
   
   resources :ojts, only: :index do 
     collection { get :export }

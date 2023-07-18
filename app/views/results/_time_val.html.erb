@@ -1,4 +1,4 @@
-<div><%# 個人 %>
+<div><%# 個人時間別基準値 %>
   <h2>時間別基準値</h2>
   <table class="out-tb">
     <thead>
@@ -8,23 +8,23 @@
       <th class="total-th">成約率</th>
     </thead>
     <tbody>
-    <% time = 10 %>
-    <% cnt = 0 %>
-    <% 10.times do %>
-    <tr>
-      <th rowspan="2" class="total-th"><%= time %>時</th>
-      <th class="total-th">訪問</th>
-      <td class="total-td"><%= @time_visit_ave[cnt] %></td>
-      <td class="total-td">-</td>
-    </tr>
-    <tr>
-      <th class="total-th">成約</th>
-      <td class="total-td"><%= @time_get_ave[cnt] %></td>
-      <td class="total-td"><%= number_to_percentage(@time_get_sum[cnt].to_f / @time_visit_sum[cnt].to_f * 100, precision: 1) %></td>
-    </tr>
-    <% time += 1 %>
-    <% cnt += 1 %>
-    <% end %>
+      <% time = 10 %>
+      <% cnt = 0 %>
+      <% 10.times do %>
+      <tr>
+        <th rowspan="2" class="total-th"><%= time %>時</th>
+        <th class="total-th">訪問</th>
+        <td class="total-td"><%= @time_visit_ave[cnt] %></td>
+        <td class="total-td">-</td>
+      </tr>
+      <tr>
+        <th class="total-th">成約</th>
+        <td class="total-td"><%= @time_get_ave[cnt] %></td>
+        <td class="total-td"><%= number_to_percentage(@time_get_sum[cnt].to_f / @time_visit_sum[cnt].to_f * 100, precision: 1) %></td>
+      </tr>
+      <% time += 1 %>
+      <% cnt += 1 %>
+      <% end %>
     </tbody>
   </table>
 </div><%# /個人 %>

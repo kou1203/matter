@@ -22,34 +22,7 @@
           </h2>
         </div>
       <div class="user-form">
-        <div>
-        <h2><%= @month.strftime("%Y年%m月") %>：キャッシュレス利益表（2023年2月以降）</h2>
-        <table class="user-tb">
-        <% @users_cash.group(:base).each do |base| %>
-          <tr class="index-tr">
-          <td><%= link_to base.base,base_profit_results_path(base: base.base),class: "link" %></td>
-          <% @users_cash.where(base: base.base).each do |user| %>
-          <td><%= link_to user.name, result_path(user.id,month: @month),"data-turbolinks": false, class: "link" %></td>
-          <% end %>
-          </tr>
-        <% end %>
-        </table>
-          <%= link_to "日々獲得内容確認",date_progress_results_path,class: "link",style: "margin-left: 15px;" %>
-        <hr>
-        <h2 >（旧）キャッシュレス利益表<span class="red">（2023年1月以前）</span></h2>
-        <table class="user-tb">
-        <% @users_cash.group(:base).each do |base| %>
-          <tr class="index-tr">
-          <th class=""><%= base.base %></th>
-          <% @users_cash.where(base: base.base).each do |user| %>
-          <td><%= link_to user.name, user_path(user.id,month: Date.new(2023,1,1)),"data-turbolinks": false, class: "link red" %></td>
-          <% end %>
-          </tr>
-        <% end %>
-        </table>
-        <span class="red" style="margin-left: 15px;">※こちらの利益表は前月26日〜当月25日で計算をしております。</span>
-        <hr>
-        </div>
+        <%= render_async user_list_path(month: @month) %>
       </div>
     </div>
   </div>

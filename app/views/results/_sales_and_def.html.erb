@@ -1,77 +1,71 @@
   <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 
-  <div class="frame" style="display: flex;">
-    <div><%# 現状売上早見 %>
-      <p class="nav-text"><%= @month_daily.month %>現状売上</p>
-      <table>
-        <thead>
-          <tr class="index-tr">
-            <th class="">拠点</th>
-            <th class="">予定シフト</th>
-            <th class="">消化シフト</th>
-            <th class="">残シフト</th>
-            <th class="">現状評価売上</th>
-            <th class="">現状評価Ave</th>
-          </tr>
-        </thead>
-        <tbody>
-        <% @bases.each do |base| %>
-          <tr class="index-tr">
-            <th class=""><%= base %></th>
-            <td class=""><%= @shift_monthly.where(shift: "キャッシュレス新規").where(user: {base: base}).length %></td>
-            <td class=""><%= @result_monthly.where(shift: "キャッシュレス新規").where(user: {base: base}).length %></td>
-            <td class=""><%= 
-              @shift_monthly.where(user: {base: base}).where(shift: "キャッシュレス新規").length -
-              @result_monthly.where(user: {base: base}).where(shift: "キャッシュレス新規").length 
-            %></td>
-            <td class=""><%= @result_monthly.where(user: {base: base}).sum(:profit).to_s(:delimited) rescue "測定不可" %></td>
-            <td class=""><%= (@result_monthly.where(user: {base: base}).sum(:profit) / @result_monthly.where(user: {base: base}).length).round().to_s(:delimited) rescue "測定不可" %></td>
-          </tr>
-        <% end %>
-          <tr class="index-tr">
-            <th class="">全拠点</th>
-            <td class=""><%= @shift_monthly.length %></td>
-            <td class=""><%= @result_monthly.length %></td>
-            <td class=""><%= 
-              @shift_monthly.length -
-              @result_monthly.length 
-            %></td>
-            <td class=""><%= @result_monthly.sum(:profit).to_s(:delimited) rescue "測定不可" %></td>
-            <td class=""><%= (@result_monthly.sum(:profit) / @result_monthly.length).round().to_s(:delimited) rescue "測定不可" %></td>
-          </tr>
-        </tbody>
-      </table>
-      <p class="caution-text">※売上は<%= @result_monthly.minimum(:date) %>〜<%= @result_monthly.maximum(:date) %>の範囲で計算されています。</p>
-    </div><%# /現状売上早見 %>
-    <div><%# 現状不備件数 %>
-      <p class="nav-text"><%= @month_daily.month %>月不備</p>
-      <table>
+<div class="frame" style="display: flex;">
+  <div><%# 現状売上早見 %>
+    <p class="nav-text"><%= @month_daily.month %>現状売上</p>
+    <table>
+      <thead>
         <tr class="index-tr">
-          <th colspan="4">今月</th>
-          <th colspan="3" class="gray">前月</th>
+          <th class="">拠点</th>
+          <th class="">予定シフト</th>
+          <th class="">消化シフト</th>
+          <th class="">残シフト</th>
+          <th class="">現状評価売上</th>
+          <th class="">現状評価Ave</th>
         </tr>
-        <tr class="index-tr">
-          <th>拠点</th>
-          <th>dメル</th>
-          <th>auPay</th>
-          <th>楽天ペイ</th>
-          <th class="gray">dメル</th>
-          <th class="gray">auPay</th>
-          <th class="gray">楽天ペイ</th>
-        </tr>
+      </thead>
+      <tbody>
         <% @bases.each do |base| %>
         <tr class="index-tr">
-          <td><%= base %></td>
-          <td><%= @dmer_def_this_month.where(user: {base: base}).length rescue 0 %></td>
-          <td><%= @aupay_def_this_month.where(user: {base: base}).length rescue 0 %></td>
-          <td><%= @rakuten_pay_def_this_month.where(user: {base: base}).length rescue 0 %></td>
-          <td><%= @dmer_def_prev_month.where(user: {base: base}).length rescue 0 %></td>
-          <td><%= @aupay_def_prev_month.where(user: {base: base}).length rescue 0 %></td>
-          <td><%= @rakuten_pay_def_prev_month.where(user: {base: base}).length rescue 0 %></td>
+          <th class=""><%= base %></th>
+          <td class=""><%= @shift_monthly.where(shift: "キャッシュレス新規").where(user: {base: base}).length %></td>
+          <td class=""><%= @result_monthly.where(shift: "キャッシュレス新規").where(user: {base: base}).length %></td>
+          <td class=""><%= @shift_monthly.where(user: {base: base}).where(shift: "キャッシュレス新規").length - @result_monthly.where(user: {base: base}).where(shift: "キャッシュレス新規").length %></td>
+          <td class=""><%= @result_monthly.where(user: {base: base}).sum(:profit).to_s(:delimited) rescue "測定不可" %></td>
+          <td class=""><%= (@result_monthly.where(user: {base: base}).sum(:profit) / @result_monthly.where(user: {base: base}).length).round().to_s(:delimited) rescue "測定不可" %></td>
         </tr>
         <% end %>
-      </table>
+        <tr class="index-tr">
+          <th class="">全拠点</th>
+          <td class=""><%= @shift_monthly.length %></td>
+          <td class=""><%= @result_monthly.length %></td>
+          <td class=""><%= @shift_monthly.length - @result_monthly.length %></td>
+          <td class=""><%= @result_monthly.sum(:profit).to_s(:delimited) rescue "測定不可" %></td>
+          <td class=""><%= (@result_monthly.sum(:profit) / @result_monthly.length).round().to_s(:delimited) rescue "測定不可" %></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="caution-text">※売上は<%= @result_monthly.minimum(:date) %>〜<%= @result_monthly.maximum(:date) %>の範囲で計算されています。</p>
+  </div><%# /現状売上早見 %>
+  <div><%# 現状不備件数 %>
+    <p class="nav-text"><%= @month_daily.month %>月不備</p>
+    <table>
+      <tr class="index-tr">
+        <th colspan="4">今月</th>
+        <th colspan="3" class="gray">前月</th>
+      </tr>
+      <tr class="index-tr">
+        <th>拠点</th>
+        <th>dメル</th>
+        <th>auPay</th>
+        <th>楽天ペイ</th>
+        <th class="gray">dメル</th>
+        <th class="gray">auPay</th>
+        <th class="gray">楽天ペイ</th>
+      </tr>
+      <% @bases.each do |base| %>
+      <tr class="index-tr">
+        <td><%= base %></td>
+        <td><%= @dmer_def_this_month.where(user: {base: base}).length rescue 0 %></td>
+        <td><%= @aupay_def_this_month.where(user: {base: base}).length rescue 0 %></td>
+        <td><%= @rakuten_pay_def_this_month.where(user: {base: base}).length rescue 0 %></td>
+        <td><%= @dmer_def_prev_month.where(user: {base: base}).length rescue 0 %></td>
+        <td><%= @aupay_def_prev_month.where(user: {base: base}).length rescue 0 %></td>
+        <td><%= @rakuten_pay_def_prev_month.where(user: {base: base}).length rescue 0 %></td>
+      </tr>
+      <% end %>
+    </table>
     <p class="caution-text">※不備数は<%= @month_daily.beginning_of_month %>〜<%= @month_daily.end_of_month %>の範囲で表示されています。</p>
     <p class="caution-text">（dメル、auPayの複数店は含まれておりません。）</p>
-    </div>
   </div>
+</div>
