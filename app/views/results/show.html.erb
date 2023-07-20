@@ -71,7 +71,7 @@
               <td class="date-td"><%= digestion_sum = @shift_digestion_new + @shift_digestion_slmt + @shift_digestion_ojt %></td>
           <td class="date-td"><%= shift_sum - digestion_sum %></td>
           <td class="date-td"><%= @cash_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
-          <td class="date-td"><%= valuation_ave %></td>
+          <td class="date-td"><%= valuation_ave.to_s(:delimited) rescue 0 %></td>
           <td class="date-td"><%= @cash_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
           <td class="date-td"><%= (@cash_date_progress.valuation_fin + (valuation_ave * @shift_schedule_ojt)).to_s(:delimited) rescue 0 %></td>
         </tr>

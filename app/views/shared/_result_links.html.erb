@@ -3,7 +3,7 @@
     <h2><%= @month.strftime("%Y年%m月") %>利益表</h2>
     <% bases = ["中部SS", "関西SS", "関東SS", "九州SS", "2次店"] %>
     <% bases.each do |base| %>
-      <p class="link-text"><%= link_to base,results_base_valuations_path(base: base,month: @month),class: "index-link" %></p>
+      <p class="link-text"><%= link_to base,results_base_valuations_path(base: base,month: @month),class: "index-link","data-turbolinks": false %></p>
     <% end %>
     
   </div>

@@ -8,6 +8,7 @@
 <div style="display:flex;">
   <div data-scope-path="users/show"><%# users/showスコープ頭 %>
     <%= render "shared/mypage_links" %>
+    
     <h2>
       <%= @user.name %>：成果一覧
       <%= link_to "<<",valuation_list_results_path(u_id: @user.id,month:@month.prev_month),"data-turbolinks": false, class:"link" %>
