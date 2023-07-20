@@ -2,7 +2,7 @@
 <div data-scope-path="users/new">
   <div class="frame">
     <div class="sign-in-frame">
-      <h1 class="sign-title">ログイン</h1>
+      <h1 class="sign-title">Matterログイン</h1>
       <%= form_for(resource, as: resource_name,class: "form-frame" ,url: session_path(resource_name))do |f| %>
         <label class="form-text">メールアドレス</label><br>
         <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "form-input" %><br>
@@ -14,3 +14,4 @@
   </div>
     <div><% link_to "ユーザー登録",new_user_path, class: "link",style:"color: white;" %></div>
 </div>
+

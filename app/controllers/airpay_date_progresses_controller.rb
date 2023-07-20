@@ -191,12 +191,16 @@ class AirpayDateProgressesController < ApplicationController
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
       valuation_price =
-        if result_fin_len >= @airpay_bonus2_len
-          @airpay_bonus2_price
-        elsif result_fin_len >= @airpay_bonus1_len
-          @airpay_bonus1_price
-        else  
-          @airpay_price
+        if @month >= Date.new(2023,7,1)
+          8000
+        else 
+          if result_fin_len >= @airpay_bonus2_len
+            @airpay_bonus2_price
+          elsif result_fin_len >= @airpay_bonus1_len
+            @airpay_bonus1_price
+          else  
+            @airpay_price
+          end 
         end 
         period_fin_len = 
           (

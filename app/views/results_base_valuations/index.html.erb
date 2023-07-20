@@ -17,65 +17,13 @@
     <p class="caution-txt"><%= alert %></p>
     <div class="date-head"><%# 日付切替 %>
       <h2>
-        <%= link_to "<<",base_profit_results_path(month: @month.ago(1.month),base: @base), class:"link","data-turbolinks": false %>
+        <%= link_to "<<",results_base_valuations_path(month: @month.ago(1.month),base: @base), class:"link","data-turbolinks": false %>
         <%= @month.month %>月進捗
-        <%= link_to ">>",base_profit_results_path(month: @month.since(1.month),base: @base), class:"link","data-turbolinks": false %>
+        <%= link_to ">>",results_base_valuations_path(month: @month.since(1.month),base: @base), class:"link","data-turbolinks": false %>
       </h2>
     </div><%# 日付切替 %>
     <hr>
-    <%# 売上 %>
-    <h2>◆<%= @base %>売上（最終更新：<%= @cash_date_progress.maximum(:create_date) %>）</h2>
-    <table class="progress-tb">
-      <tr>
-        <th class="progress-th1" colspan="2">基本情報</th>
-        <th class="progress-th1" colspan="2">合計シフト</th>
-        <th class="progress-th1" colspan="2">新規シフト</th>
-        <th class="progress-th1" colspan="2">決済シフト</th>
-        <th class="progress-th1" colspan="3">評価売上</th>
-      </tr>
-      <tr>
-        <th class="progress-th2">氏名</th>
-        <th class="progress-th2">役職</th>
-        <% 3.times do %>
-        <th class="progress-th2">予定</th>
-        <th class="progress-th2">消化</th>
-        <% end %>
-        <th class="progress-th2">Ave</th>
-        <th class="progress-th2">現状売上</th>
-        <th class="progress-th2">終着売上</th>
-      </tr>
-      <% @users.each do |user| %>
-      <% shift_schedule = @dmer_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %>
-      <% shift_digestion = @dmer_date_progress.find_by(user_id: user.id).shift_digestion rescue 0 %>
-      <tr class="progress-tr">
-        <td class="progress-td"><%= user.name %></td>
-        <td class="progress-td"><%= user.position_sub %></td>
-        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %></td>
-        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).shift_digestion rescue 0 %></td>
-        <td class="progress-td"><%= shift_schedule %></td>
-        <td class="progress-td"><%= shift_digestion %></td>
-        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).shift_schedule_slmt rescue 0 %></td>
-        <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).shift_digestion_slmt rescue 0 %></td>
-        <td class="progress-td"><%= (@cash_date_progress.find_by(user_id: user.id).valuation_fin.to_f / @cash_date_progress.find_by(user_id: user.id).shift_schedule).round().to_s(:delimited) rescue 0 %></td>
-        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).valuation_current.to_s(:delimited) rescue 0 %></td>
-        <td class="progress-td"><%= @cash_date_progress.find_by(user_id: user.id).valuation_fin.to_s(:delimited) rescue 0 %></td>
-      </tr>
-      <% end %>
-      <tr class=""> 
-        <td class="difference-td" colspan="2">合計</td>
-        <td class="difference-td"><%= @cash_date_progress.sum(:shift_schedule) rescue 0 %></td>
-        <td class="difference-td"><%= @cash_date_progress.sum(:shift_digestion) rescue 0 %></td>
-        <td class="difference-td"><%= @dmer_date_progress.sum(:shift_schedule) rescue 0 %></td>
-        <td class="difference-td"><%= @dmer_date_progress.sum(:shift_digestion) rescue 0 %></td>
-        <td class="difference-td"><%= @dmer_date_progress.sum(:shift_schedule_slmt) rescue 0 %></td>
-        <td class="difference-td"><%= @dmer_date_progress.sum(:shift_digestion_slmt) rescue 0 %></td>
-        <td class="difference-td"><%= (@cash_date_progress.sum(:valuation_fin).to_f / @cash_date_progress.sum(:shift_schedule)).round().to_s(:delimited) rescue 0 %></td>
-        <td class="difference-td"><%= @cash_date_progress.sum(:valuation_current).to_s(:delimited) rescue 0 %></td>
-        <td class="difference-td"><%= @cash_date_progress.sum(:valuation_fin).to_s(:delimited) rescue 0 %></td>
-      </tr>
-
-    </table>
-    <%# 売上 %>
+    <%= render_async valuation_path(month: @month, base: @base) %><%# 売上 %>
     <h2>◆<%= @base %>基準値</h2>
     <table class="progress-tb">
       <tr>

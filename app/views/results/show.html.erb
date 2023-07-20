@@ -107,6 +107,7 @@
     </script>
     <%# /Vueの変 %>
     <%= javascript_pack_tag 'result_cash' %>
+    
     <div  id="result-cash"><%# vueの適用範囲 %>
         <h3 class="base-slct-title">
           基準値を比較する拠点：
@@ -799,32 +800,19 @@
       <%= render_async out_val_all_path(@user.id,month: @month) %><%# 切り返し（全体） %>
       <% end %>
     </div><%# 切り返し区切り %>
+    <div class="btn-form">
+      <h3 class="base-slct-title">
+        時間別基準値を比較する拠点：
+        <% @bases.group(:base).each do |base| %>
+        <button class="display-btn"><%= link_to base.base,result_path(@user.id,month: @month,time_base: base.base),class: "reset-link","data-turbolinks": false %></button>
+        <% end %>
+      </h3>
+    </div>
     <div class="result-flex"><%# 時間別基準値 %>
       <%= render_async time_val_path(@user.id,month: @month) %><%# 時間別基準値（個人） %>
-      <div><%# 拠点別 %>
-        <h2>拠点別時間別基準値（{{ val }}）</h2>
-        <table class="out-tb">
-          <thead>
-            <th class="total-th">時間</th>
-            <th class="total-th">内訳</th>
-            <th class="total-th">平均</th>
-            <th class="total-th">成約率</th>
-          </thead>
-          <tbody v-for=" i in 10 ">
-          <tr>
-            <th rowspan="2" class="total-th">{{ i + 9 }}時</th>
-            <th class="total-th">訪問</th>
-            <td class="total-td">{{ Math.round(hourVisit[i - 1] / shiftItem.length * 100) / 100 }}</td>
-            <td class="total-td">-</td>
-          </tr>
-          <tr>
-            <th class="total-th">成約</th>
-            <td class="total-td">{{ Math.round(hourGet[i - 1] / shiftItem.length * 100) / 100 }}</td>
-            <td class="total-td">{{  Math.round(hourGet[i - 1] / hourVisit[i - 1] * 100 ) }}%</td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
+
+      <%= render_async time_val_base_path(@user.id,month: @month,time_base: @time_base) %><%# 時間別基準値（拠点別） %>
+
       <%= render_async time_val_all_path(@user.id,month: @month) %><%# 時間別基準値（全体） %>
     </div>
     </div><%# vueの適用範囲 %>

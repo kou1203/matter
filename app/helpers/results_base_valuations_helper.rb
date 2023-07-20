@@ -1,0 +1,2 @@
+module ResultsBaseValuationsHelper
+end

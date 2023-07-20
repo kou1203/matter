@@ -3,7 +3,7 @@ class ResultsController < ApplicationController
   before_action :back_retirement
   before_action :set_data
   # showアクションのbeforeaction
-  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation_list,:date_fin,:weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all]
+  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation_list,:date_fin,:weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all,:time_val_base]
   before_action :set_month_product, only: [:show, :date_fin,:weekly_fin,:out_val]
   before_action :set_result_and_shift, only: [:show, :date_fin,:weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all]
   # monthly_progressアクションのbeforeaction
@@ -184,6 +184,7 @@ class ResultsController < ApplicationController
   
   # マイページ  
   def show 
+    @bases = User.where(base_sub: "キャッシュレス")
     # 各種商材などの件数や売上
       @cash_date_progress = CashDateProgress.where(user_id: @user.id).where(date: @date_period).last
       @dmer_date_progress = DmerDateProgress.where(user_id: @user.id).where(date: @date_period).last
@@ -274,20 +275,20 @@ class ResultsController < ApplicationController
       @hour_get_kyushu = []
       @hour_visit_partner = []
       @hour_get_partner = []
-      10.times do |i|
-        @hour_visit_base << @result_base.sum("visit#{i + 10}") rescue 0
-        @hour_get_base << @result_base.sum("get#{i + 10}") rescue 0
-        @hour_visit_chubu << @result_chubu.sum("visit#{i + 10}") rescue 0
-        @hour_get_chubu << @result_chubu.sum("get#{i + 10}") rescue 0
-        @hour_visit_kansai << @result_kansai.sum("visit#{i + 10}") rescue 0
-        @hour_get_kansai << @result_kansai.sum("get#{i + 10}") rescue 0
-        @hour_visit_kanto << @result_kanto.sum("visit#{i + 10}") rescue 0
-        @hour_get_kanto << @result_kanto.sum("get#{i + 10}") rescue 0
-        @hour_visit_kyuhsu << @result_kyuhsu.sum("visit#{i + 10}") rescue 0
-        @hour_get_kyuhsu << @result_kyuhsu.sum("get#{i + 10}") rescue 0
-        @hour_visit_partner << @result_partner.sum("visit#{i + 10}") rescue 0
-        @hour_get_partner << @result_partner.sum("get#{i + 10}") rescue 0
-      end 
+      # 10.times do |i|
+      #   @hour_visit_base << @result_base.sum("visit#{i + 10}") rescue 0
+      #   @hour_get_base << @result_base.sum("get#{i + 10}") rescue 0
+      #   @hour_visit_chubu << @result_chubu.sum("visit#{i + 10}") rescue 0
+      #   @hour_get_chubu << @result_chubu.sum("get#{i + 10}") rescue 0
+      #   @hour_visit_kansai << @result_kansai.sum("visit#{i + 10}") rescue 0
+      #   @hour_get_kansai << @result_kansai.sum("get#{i + 10}") rescue 0
+      #   @hour_visit_kanto << @result_kanto.sum("visit#{i + 10}") rescue 0
+      #   @hour_get_kanto << @result_kanto.sum("get#{i + 10}") rescue 0
+      #   @hour_visit_kyuhsu << @result_kyuhsu.sum("visit#{i + 10}") rescue 0
+      #   @hour_get_kyuhsu << @result_kyuhsu.sum("get#{i + 10}") rescue 0
+      #   @hour_visit_partner << @result_partner.sum("visit#{i + 10}") rescue 0
+      #   @hour_get_partner << @result_partner.sum("get#{i + 10}") rescue 0
+      # end 
       # @result_base 全体基準値
         @result_base_sum_total_visit = @result_base.sum(:first_total_visit) + @result_base.sum(:latter_total_visit)
         @result_base_sum_visit = @result_base.sum(:first_visit) + @result_base.sum(:latter_visit)
@@ -425,34 +426,10 @@ class ResultsController < ApplicationController
     @time_get_ave = [@get10_ave,@get11_ave,@get12_ave,@get13_ave,@get14_ave,@get15_ave,@get16_ave,@get17_ave,@get18_ave,@get19_ave]
     render partial: "time_val", locals: {} # 遅延ロード
   end 
-  
-  def time_val_base
-    @hour_visit_base = []
-    @hour_get_base = []
-    @hour_visit_chubu = []
-    @hour_get_chubu = []
-    @hour_visit_kansai = []
-    @hour_get_kansai = []
-    @hour_visit_kanto = []
-    @hour_get_kanto = []
-    @hour_visit_kyushu = []
-    @hour_get_kyushu = []
-    @hour_visit_partner = []
-    @hour_get_partner = []
-    10.times do |i|
-      @hour_visit_base << @result_base.sum("visit#{i + 10}") rescue 0
-      @hour_get_base << @result_base.sum("get#{i + 10}") rescue 0
-      @hour_visit_chubu << @result_chubu.sum("visit#{i + 10}") rescue 0
-      @hour_get_chubu << @result_chubu.sum("get#{i + 10}") rescue 0
-      @hour_visit_kansai << @result_kansai.sum("visit#{i + 10}") rescue 0
-      @hour_get_kansai << @result_kansai.sum("get#{i + 10}") rescue 0
-      @hour_visit_kanto << @result_kanto.sum("visit#{i + 10}") rescue 0
-      @hour_get_kanto << @result_kanto.sum("get#{i + 10}") rescue 0
-      @hour_visit_kyuhsu << @result_kyuhsu.sum("visit#{i + 10}") rescue 0
-      @hour_get_kyuhsu << @result_kyuhsu.sum("get#{i + 10}") rescue 0
-      @hour_visit_partner << @result_partner.sum("visit#{i + 10}") rescue 0
-      @hour_get_partner << @result_partner.sum("get#{i + 10}") rescue 0
-    end 
+
+
+  def time_val_base # 拠点別基準値
+    @results_base = Result.includes(:user).where(date: @month.all_month).where(user: {base: @time_base}).where(shift: "キャッシュレス新規")
     render partial: "time_val_base", locals: {} # 遅延ロード
   end 
 
@@ -969,7 +946,6 @@ class ResultsController < ApplicationController
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       # calc_period_and_perは"@calc_periods"と"@month"の配置を先にするのが必須
       calc_period_and_per
-  
     end 
     def set_out_come # 成果になった商材などの変数
       if params[:u_id].present?
@@ -977,6 +953,11 @@ class ResultsController < ApplicationController
       else  
         @user = User.find(params[:id])
       end
+      if params[:time_base].present?
+        @time_base = params[:time_base]
+      else  
+        @time_base = @user.base
+      end 
       # dメル
       @dmer_done = 
         Dmer.where(user_id: @user.id).where(result_point: @dmer1_start_date..@dmer1_end_date)
@@ -1051,13 +1032,17 @@ class ResultsController < ApplicationController
         @airpay_user.where(status: "審査完了")
         .where(result_point: @airpay1_start_date..@airpay1_end_date)
         @airpay_bonus =
+        if @month >= Date.new(2023,7,1)
+          5000
+        else 
           if @airpay_done.length >= 20
             @airpay_done.length * 3000
           elsif @airpay_done.length >= 10
             @airpay_done.length * 2000
           else  
             0
-          end 
+          end
+        end 
       @airpay_done_val = @airpay_done.sum(:valuation) + @airpay_bonus
       # その他獲得商材
       @demaekan = Demaekan.where(user_id: @user.id).where(first_cs_contract: @demaekan1_start_date..@demaekan1_end_date)
@@ -1088,82 +1073,82 @@ class ResultsController < ApplicationController
     end
 
     def set_monthly_progress # monthly_progressの変数
-    # ユーザー情報
-    @users = 
-      User.where.not(position: "退職").or(User.where(position: nil))
-    @users_cash = @users.where(base_sub: "キャッシュレス").order(base: "DESC")
-    # 日々獲得進捗
-    # 検索（現状）
-    if params[:date].present?
-      @month_daily = params[:date].to_date
-    elsif params[:search_date].present?
-      @month_daily = params[:search_date].to_date  
-    else
-      @month_daily = Date.today #当日日付
-    end 
-    # 検索（比較対象）
-    if params[:comparison_date].present?
-      @comparison_date = params[:comparison_date].to_date
-    else  
-      @comparison_date = @month_daily.prev_month
-    end 
-    @dmer_monthly = 
-        Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @aupay_monthly = 
-        Aupay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @paypay_monthly = 
-        Paypay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @rakuten_pay_monthly = 
-        RakutenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @airpay_monthly = 
-        Airpay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @usen_pay_monthly = 
-        UsenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @shift_monthly_plan = 
-      Shift.includes(:user)
-      .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
-      .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-    @shift_monthly_slmt_plan = 
-      Shift.includes(:user)
-      .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
-      .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-    @shift_monthly_digestion = 
-      Result.includes(:user)
-      .where(date: @month_daily.beginning_of_month..@month_daily)
-      .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-    @shift_monthly_slmt_digestion = 
-      Result.includes(:user)
-      .where(date: @month_daily.beginning_of_month..@month_daily)
-      .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-    @dmer_comparison = 
-        Dmer.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @aupay_comparison = 
-        Aupay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @paypay_comparison = 
-        Paypay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @rakuten_pay_comparison = 
-        RakutenPay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @airpay_comparison = 
-        Airpay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @usen_pay_comparison = 
-        UsenPay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
-    @result_demaekan = Result.includes(:result_cash,:user).select(:user_id,:result_id,:date)
-    @shift_comparison_plan = 
-      Shift.includes(:user)
-      .where(start_time: @comparison_date.beginning_of_month..@comparison_date.end_of_month)
-      .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-    @shift_comparison_slmt_plan = 
-      Shift.includes(:user)
-      .where(start_time: @comparison_date.beginning_of_month..@comparison_date.end_of_month)
-      .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-    @shift_comparison_digestion = 
-      Result.includes(:user)
-      .where(date: @comparison_date.beginning_of_month..@comparison_date)
-      .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
-    @shift_comparison_slmt_digestion = 
-      Result.includes(:user)
-      .where(date: @comparison_date.beginning_of_month..@comparison_date)
-      .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+      # ユーザー情報
+      @users = 
+        User.where.not(position: "退職").or(User.where(position: nil))
+      @users_cash = @users.where(base_sub: "キャッシュレス").order(base: "DESC")
+      # 日々獲得進捗
+      # 検索（現状）
+      if params[:date].present?
+        @month_daily = params[:date].to_date
+      elsif params[:search_date].present?
+        @month_daily = params[:search_date].to_date  
+      else
+        @month_daily = Date.today #当日日付
+      end 
+      # 検索（比較対象）
+      if params[:comparison_date].present?
+        @comparison_date = params[:comparison_date].to_date
+      else  
+        @comparison_date = @month_daily.prev_month
+      end 
+      @dmer_monthly = 
+          Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @aupay_monthly = 
+          Aupay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @paypay_monthly = 
+          Paypay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @rakuten_pay_monthly = 
+          RakutenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @airpay_monthly = 
+          Airpay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @usen_pay_monthly = 
+          UsenPay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @shift_monthly_plan = 
+        Shift.includes(:user)
+        .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
+        .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+      @shift_monthly_slmt_plan = 
+        Shift.includes(:user)
+        .where(start_time: @month_daily.beginning_of_month..@month_daily.end_of_month)
+        .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+      @shift_monthly_digestion = 
+        Result.includes(:user)
+        .where(date: @month_daily.beginning_of_month..@month_daily)
+        .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+      @shift_monthly_slmt_digestion = 
+        Result.includes(:user)
+        .where(date: @month_daily.beginning_of_month..@month_daily)
+        .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+      @dmer_comparison = 
+          Dmer.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @aupay_comparison = 
+          Aupay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @paypay_comparison = 
+          Paypay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @rakuten_pay_comparison = 
+          RakutenPay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @airpay_comparison = 
+          Airpay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @usen_pay_comparison = 
+          UsenPay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @result_demaekan = Result.includes(:result_cash,:user).select(:user_id,:result_id,:date)
+      @shift_comparison_plan = 
+        Shift.includes(:user)
+        .where(start_time: @comparison_date.beginning_of_month..@comparison_date.end_of_month)
+        .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+      @shift_comparison_slmt_plan = 
+        Shift.includes(:user)
+        .where(start_time: @comparison_date.beginning_of_month..@comparison_date.end_of_month)
+        .where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+      @shift_comparison_digestion = 
+        Result.includes(:user)
+        .where(date: @comparison_date.beginning_of_month..@comparison_date)
+        .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス新規")
+      @shift_comparison_slmt_digestion = 
+        Result.includes(:user)
+        .where(date: @comparison_date.beginning_of_month..@comparison_date)
+        .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
     end 
       
     def back_retirement # 退職者が閲覧できないようにする

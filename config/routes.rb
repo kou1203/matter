@@ -151,6 +151,7 @@ Rails.application.routes.draw do
   get "out_val/:id", to: "results#out_val", as: "out_val"
   get "out_val_all/:id", to: "results#out_val_all", as: "out_val_all"
   get "time_val/:id", to: "results#time_val", as: "time_val"
+  get "time_val_base/:id", to: "results#time_val_base", as: "time_val_base"
   get "time_val_all/:id", to: "results#time_val_all", as: "time_val_all"
   get "store_val/:id", to: "results#store_val", as: "store_val"
   get "store_val_all/:id", to: "results#store_val_all", as: "store_val_all"
@@ -160,6 +161,10 @@ Rails.application.routes.draw do
   get "sales_and_def", to: "results#sales_and_def", as: "sales_and_def"
   get "user_list", to: "results#user_list", as: "user_list"
   
+  
+  resources :results_base_valuations, only: :index
+  get "valuation", to: "results_base_valuations#valuation", as: "valuation"
+
   resources :ojts, only: :index do 
     collection { get :export }
     collection { get :index_export }

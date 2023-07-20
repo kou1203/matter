@@ -1,0 +1,25 @@
+<%# 拠点別時間別基準値のバックアップ %>
+<div><%# 拠点別 %>
+  <h2>拠点別時間別基準値（{{ val }}）</h2>
+  <table class="out-tb">
+    <thead>
+      <th class="total-th">時間</th>
+      <th class="total-th">内訳</th>
+      <th class="total-th">平均</th>
+      <th class="total-th">成約率</th>
+    </thead>
+    <tbody v-for=" i in 10 ">
+    <tr>
+      <th rowspan="2" class="total-th">{{ i + 9 }}時</th>
+      <th class="total-th">訪問</th>
+      <td class="total-td">{{ Math.round(hourVisit[i - 1] / shiftItem.length * 100) / 100 }}</td>
+      <td class="total-td">-</td>
+    </tr>
+    <tr>
+      <th class="total-th">成約</th>
+      <td class="total-td">{{ Math.round(hourGet[i - 1] / shiftItem.length * 100) / 100 }}</td>
+      <td class="total-td">{{  Math.round(hourGet[i - 1] / hourVisit[i - 1] * 100 ) }}%</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
