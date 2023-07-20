@@ -186,17 +186,17 @@ class ResultsController < ApplicationController
   def show 
     @bases = User.where(base_sub: "キャッシュレス")
     # 各種商材などの件数や売上
-      @cash_date_progress = CashDateProgress.where(user_id: @user.id).where(date: @date_period).last
-      @dmer_date_progress = DmerDateProgress.where(user_id: @user.id).where(date: @date_period).last
-      @aupay_date_progress = AupayDateProgress.where(user_id: @user.id).where(date: @date_period).last
-      @paypay_date_progress = PaypayDateProgress.where(user_id: @user.id).where(date: @date_period).last
-      @rakuten_pay_date_progress = RakutenPayDateProgress.where(user_id: @user.id).where(date: @date_period).last
-      @airpay_date_progress = AirpayDateProgress.where(user_id: @user.id).where(date: @date_period).last
-      @usen_pay_date_progress = OtherProduct.where(product_name: "UsenPay").where(user_id: @user.id).where(date: @date_period).last
-      @demaekan_date_progress = DemaekanDateProgress.where(user_id: @user.id).where(date: @date_period).last
-      @austicker_date_progress = AustickerDateProgress.where(user_id: @user.id).where(date: @date_period).last
-      @dmersticker_date_progress = DmerstickerDateProgress.where(user_id: @user.id).where(date: @date_period).last
-      @airpaysticker_date_progress = AirpaystickerDateProgress.where(user_id: @user.id).where(date: @date_period).last
+      @cash_date_progress = CashDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
+      @dmer_date_progress = DmerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
+      @aupay_date_progress = AupayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
+      @paypay_date_progress = PaypayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
+      @rakuten_pay_date_progress = RakutenPayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
+      @airpay_date_progress = AirpayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
+      @usen_pay_date_progress = OtherProduct.where(product_name: "UsenPay").where(user_id: @user.id).where(date: @month.all_month).last
+      @demaekan_date_progress = DemaekanDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
+      @austicker_date_progress = AustickerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
+      @dmersticker_date_progress = DmerstickerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
+      @airpaysticker_date_progress = AirpaystickerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @dmers_val_len = @dmer_date_progress.get_len - @dmer_date_progress.def_len rescue 0
       @aupays_val_len = @aupay_date_progress.get_len - @aupay_date_progress.def_len rescue 0
     # シフト
