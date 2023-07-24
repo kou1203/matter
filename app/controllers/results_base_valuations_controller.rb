@@ -9,6 +9,15 @@ class ResultsBaseValuationsController < ApplicationController
   def valuation 
     render partial: "valuation", locals: {} # を遅延ロード
   end 
+  def standard_val 
+    render partial: "standard_val", locals: {} # を遅延ロード
+  end 
+  def productivity 
+    render partial: "productivity", locals: {} # を遅延ロード
+  end 
+  def current_result 
+    render partial: "current_result", locals: {} # を遅延ロード
+  end 
 
   private 
   def set_data

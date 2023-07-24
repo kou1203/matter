@@ -97,7 +97,7 @@
               <td class="difference-td red">￥<%= (@billings.where(status: "入金待ち").sum(:price) - payment_wait).to_s(:delimited) %></td>
           </tr>
           <% user_cnt = 1 %>
-          <% @pranesses.group(:user_id).order(:position_sub).each do |praness| %><%# 個別 %>
+          <% @pranesses.group(:user_id).order("users.position_sub").each do |praness| %><%# 個別 %>
             <% unless @billings.where(praness: {user_id: praness.user.id}).sum(:price) == 0 %>
               <tr class="">
                 <% if user_cnt.to_f % 2  == 1 %>
@@ -198,7 +198,7 @@
               <td class="difference-td red"><%= (@billings.where(status: "入金待ち").length - payment_wait_len).to_s(:delimited) %>件</td>
           </tr>
           <% user_cnt = 1 %>
-          <% @pranesses.group(:user_id).order(:position_sub).each do |praness| %><%# 個別 %>
+          <% @pranesses.group(:user_id).order("users.position_sub").each do |praness| %><%# 個別 %>
             <% unless @billings.where(praness: {user_id: praness.user.id}).sum(:price) == 0 %>
               <tr>
                 <% if user_cnt.to_f % 2  == 1 %>

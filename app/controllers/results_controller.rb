@@ -356,19 +356,19 @@ class ResultsController < ApplicationController
     render partial: "weekly_fin", locals: {weeks:@weeks} # @weeksを遅延ロード
   end
 
-  def out_val 
+  def out_val # 切り返し
     @out_ary = ["どういうこと？","君は誰？協会？","もらうだけでいいの？","PayPayのみ","AirPayのみ","カードのみ","先延ばし","現金のみ","忙しい","面倒くさい","情報不足","ペロ","その他"]
     render partial: "out_val", locals: {out_ary:@out_ary} # @out_aryを遅延ロード
   end 
 
-  def out_val_all
+  def out_val_all # 全体切り返し
     @out_ary = ["どういうこと？","君は誰？協会？","もらうだけでいいの？","PayPayのみ","AirPayのみ","カードのみ","先延ばし","現金のみ","忙しい","面倒くさい","情報不足","ペロ","その他"]
     @result_cash_base = ResultCash.includes(:result,result: :user).where(result: {date: @month.all_month}).where(result: {shift: "キャッシュレス新規"})
     @all_len = @result_cash_base.group(:user_id).length
     render partial: "out_val_all", locals: {out_ary:@out_ary} # @out_aryを遅延ロード
   end 
 
-  def time_val
+  def time_val # 時間基準値
     # 時間別基準値合計
     @visit10_sum = @results.sum(:visit10)
     @visit10_ave = (@visit10_sum.to_f / @shift_digestion_new).round(1)
@@ -428,12 +428,12 @@ class ResultsController < ApplicationController
   end 
 
 
-  def time_val_base # 拠点別基準値
+  def time_val_base # 拠点別時間基準値
     @results_base = Result.includes(:user).where(date: @month.all_month).where(user: {base: @time_base}).where(shift: "キャッシュレス新規")
     render partial: "time_val_base", locals: {} # 遅延ロード
   end 
 
-  def time_val_all
+  def time_val_all # 全体時間基準値
     @hour_visit_base = []
     @hour_get_base = []
     10.times do |i|
@@ -466,7 +466,7 @@ class ResultsController < ApplicationController
     @itss_get = Itss.where(user_id: @user.id).where(date: @month.all_month)
   end 
 
-  def slmt_list
+  def slmt_list # 決済リスト
     # 決済リスト
     @slmts = 
       StoreProp.includes(:dmer, :aupay).where(aupay: {share: Date.today.ago(3.month)..Date.today})
@@ -475,7 +475,7 @@ class ResultsController < ApplicationController
       ).order(:id)
   end 
 
-  def deficiency
+  def deficiency # 不備一覧
     # 不備リスト
     @dmers_def = 
       Dmer.includes(:store_prop, :user)
@@ -503,7 +503,7 @@ class ResultsController < ApplicationController
     @comments = Comment.select(:id,:status, :content,:store_prop_id,:request_show,:request)
   end 
 
-  def inc_or_dec
+  def inc_or_dec # 増減
     # 月間増減
     # dメル
     @dmers = Dmer.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
@@ -622,7 +622,7 @@ class ResultsController < ApplicationController
           .where(deficiency_solution: @month.all_month)
   end 
 
-  def valuation_list
+  def valuation_list # 成果一覧
   end 
 
   # /マイページ
@@ -799,7 +799,7 @@ class ResultsController < ApplicationController
     
   end 
 
-  def dup_index
+  def dup_index # 終着の重複を確認（シフトのshow）
     @user_id = params[:user_id]
     @date = params[:date]
     @results = Result.where(user_id: @user_id).where(date: @date)

@@ -1,0 +1,56 @@
+<h2>◆<%= @base %>現状成果になった件数</h2>
+<table class="progress-tb">
+  <tr>
+    <th class="product-th1" colspan="2">基本情報</th>
+    <th class="product-th1" colspan="12">成果</th>
+  </tr>
+  <tr>
+    <th class="progress-th2">氏名</th>
+    <th class="progress-th2">役職</th>
+    <th class="progress-th2">dメル<br>（審査完了）</th>
+    <th class="progress-th2">dメル<br>（決済+アクセプタンス）</th>
+    <th class="progress-th2">dメル<br>（2回目決済）</th>
+    <th class="progress-th2">auPay<br>（決済+アクセプタンス）</th>
+    <th class="progress-th2">PayPay<br>（審査完了）</th>
+    <th class="progress-th2">楽天ペイ<br>（獲得）</th>
+    <th class="progress-th2">AirPay<br>（審査完了）</th>
+    <th class="progress-th2">AirPayステッカー<br>（営業報告）</th>
+    <th class="progress-th2">auステッカー<br>（営業報告）</th>
+    <th class="progress-th2">dメルステッカー<br>（営業報告）</th>
+    <th class="progress-th2">出前館<br>（審査完了）</th>
+    <th class="progress-th2">ITSS<br>（工事予定日<%= @month.month %>月）</th>
+  </tr>
+  <% @users.each do |user| %>
+  <tr class="progress-tr">
+    <td class="progress-td"><%= user.name %></td>
+    <td class="progress-td"><%= user.position_sub %></td>
+    <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).done_len.to_i rescue 0 %></td>
+    <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).result2_len.to_i rescue 0 %></td>
+    <td class="progress-td"><%= @dmer_date_progress.find_by(user_id: user.id).result3_len.to_i rescue 0 %></td>
+    <td class="progress-td"><%= @aupay_date_progress.find_by(user_id: user.id).result_len.to_i rescue 0 %></td>
+    <td class="progress-td"><%= @paypay_date_progress.find_by(user_id: user.id).result_len.to_i rescue 0 %></td>
+    <td class="progress-td"><%= @rakuten_pay_date_progress.find_by(user_id: user.id).valuation_current / 4000 rescue 0 %></td>
+    <td class="progress-td"><%= @airpay_date_progress.find_by(user_id: user.id).result_len.to_i rescue 0 %></td>
+    <td class="progress-td"><%= @airpaysticker_date_progress.find_by(user_id: user.id).get_len.to_i rescue 0 %></td>
+    <td class="progress-td"><%= @austicker_date_progress.find_by(user_id: user.id).get_len.to_i rescue 0 %></td>
+    <td class="progress-td"><%= @dmersticker_date_progress.find_by(user_id: user.id).get_len.to_i rescue 0 %></td>
+    <td class="progress-td"><%= @demaekan_date_progress.find_by(user_id: user.id).result_len.to_i rescue 0 %></td>
+    <td class="progress-td"><%= @itss_date_progress.find_by(user_id: user.id).valuation_current / 4000 rescue 0 %></td>
+  </tr>
+  <% end %>
+  <tr>
+    <td class="difference-td" colspan="2">合計</td>
+    <td class="difference-td"><%= @dmer_date_progress.sum(:done_len) rescue 0 %></td>
+    <td class="difference-td"><%= @dmer_date_progress.sum(:result2_len) rescue 0 %></td>
+    <td class="difference-td"><%= @dmer_date_progress.sum(:result3_len) rescue 0 %></td>
+    <td class="difference-td"><%= @aupay_date_progress.sum(:result_len) rescue 0 %></td>
+    <td class="difference-td"><%= @paypay_date_progress.sum(:result_len) rescue 0 %></td>
+    <td class="difference-td"><%= @rakuten_pay_date_progress.sum(:valuation_current) / 4000 rescue 0 %></td>
+    <td class="difference-td"><%= @airpay_date_progress.sum(:result_len) rescue 0 %></td>
+    <td class="difference-td"><%= @airpaysticker_date_progress.sum(:get_len) rescue 0 %></td>
+    <td class="difference-td"><%= @austicker_date_progress.sum(:get_len) rescue 0 %></td>
+    <td class="difference-td"><%= @dmersticker_date_progress.sum(:get_len) rescue 0 %></td>
+    <td class="difference-td"><%= @demaekan_date_progress.sum(:result_len) rescue 0 %></td>
+    <td class="difference-td"><%= @itss_date_progress.sum(:valuation_current) / 4000 rescue 0 %></td>
+  </tr>
+</table>

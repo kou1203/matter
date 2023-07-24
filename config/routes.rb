@@ -164,6 +164,10 @@ Rails.application.routes.draw do
   
   resources :results_base_valuations, only: :index
   get "valuation", to: "results_base_valuations#valuation", as: "valuation"
+  get "standard_val", to: "results_base_valuations#standard_val", as: "standard_val"
+  get "productivity", to: "results_base_valuations#productivity", as: "productivity"
+  get "current_result", to: "results_base_valuations#current_result", as: "current_result"
+
 
   resources :ojts, only: :index do 
     collection { get :export }

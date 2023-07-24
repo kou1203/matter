@@ -15,7 +15,7 @@ class PaymentPranessesController < ApplicationController
     @payment_period = @month.prev_year..@month
     @billings = PaymentPraness.includes(:praness).where(payment_date: @payment_period).order(:payment_date)
     @options = PranessOption.where(payment_date: @payment_period).order(:payment_date)
-    @pranesses = Praness.all
+    @pranesses = Praness.includes(:user).all
   end
 
   def year_valuation
