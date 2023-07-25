@@ -109,7 +109,7 @@
                 <td class="progress-td">売上</td>
                 <% month_cnt = 1 %>
                 <% @billings.group("Month(payment_date)").each do |billing_month| %>
-                  <td class="progress-td"><%= @billings.where(praness: {user_id: praness.user.id}).where(payment_date: billing_month.payment_date).sum(:price).to_s(:delimited) %></td>
+                  <td class="progress-td">¥<%= @billings.where(praness: {user_id: praness.user.id}).where(payment_date: billing_month.payment_date).sum(:price).to_s(:delimited) %></td>
                   <% month_cnt += 1 %>
                 <% end %>
                   <td class="progress-td">￥<%= @billings.where(praness: {user_id: praness.user.id}).sum(:price).to_s(:delimited) %></td>

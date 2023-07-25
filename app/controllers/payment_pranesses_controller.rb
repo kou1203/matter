@@ -1,5 +1,5 @@
 class PaymentPranessesController < ApplicationController
-  before_action :set_month
+  before_action :set_year_val_params, only: [:year_valuation,:year_val_price, :year_val_len]
   def index 
     @q = PaymentPraness.ransack(params[:q])
     @payment_pranesses = 
@@ -12,23 +12,27 @@ class PaymentPranessesController < ApplicationController
   end 
 
   def year_profit
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @payment_period = @month.prev_year..@month
     @billings = PaymentPraness.includes(:praness).where(payment_date: @payment_period).order(:payment_date)
     @options = PranessOption.where(payment_date: @payment_period).order(:payment_date)
     @pranesses = Praness.includes(:user).all
   end
 
+  # 年間評価売
   def year_valuation
-    @payment_period = @month.prev_year..@month
-    @billings = PaymentPraness.includes(:praness).where(payment_date: @payment_period).order(:payment_date)
-    @pranesses = Praness.includes(:user).where(user: {team: "ぷらねす"})
-    @options = PranessOption.where(payment_date: @payment_period).order(:payment_date)
-    # 単価
-    @praness_valuation = 1000
-    @option_valuation = 300
   end
 
+  def year_val_price
+    render partial: "year_val_price", locals: {}
+  end 
+
+  def year_val_len
+    render partial: "year_val_len", locals: {}
+  end 
+  # /年間評価売
   def not_payment
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @not_payments = PaymentPraness.where(status: "入金待ち").includes(:praness)
     @already_payments = PaymentPraness.where(status: "完了").includes(:praness)
     if params[:payment_date].present? 
@@ -59,8 +63,16 @@ class PaymentPranessesController < ApplicationController
 
   private 
 
-  def set_month
+  def set_year_val_params
+    @display_params = params[:display]
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @payment_period = @month.prev_year..@month
+    @billings = PaymentPraness.includes(:praness).where(payment_date: @payment_period).order(:payment_date)
+    @pranesses = Praness.includes(:user).where(user: {team: "ぷらねす"})
+    @options = PranessOption.where(payment_date: @payment_period).order(:payment_date)
+    # 単価
+    @praness_valuation = 1000
+    @option_valuation = 300
   end 
   
 end

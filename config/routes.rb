@@ -55,6 +55,9 @@ Rails.application.routes.draw do
     }
   end 
 
+  get "year_val_price", to: "payment_pranesses#year_val_price", as: "year_val_price"
+  get "year_val_len", to: "payment_pranesses#year_val_len", as: "year_val_len"
+
   resources :praness_options do 
     collection {
       post :import 
@@ -296,7 +299,7 @@ Rails.application.routes.draw do
   resources :rakuten_pay_date_progresses do 
     collection {get :progress_create}
     collection {get :date_destroy}
-  end 
+  end
 
   resources :airpay_date_progresses do 
     collection {get :progress_create}
@@ -353,6 +356,7 @@ Rails.application.routes.draw do
       get :result3
     }
   end 
+
   resources :payment_rakuten_pays do 
     collection { 
       post :import
@@ -361,6 +365,7 @@ Rails.application.routes.draw do
       get :result
     }
   end 
+
   resources :payment_airpays do 
     collection { 
       post :import
@@ -369,6 +374,7 @@ Rails.application.routes.draw do
       get :conf_index
     }
   end 
+
   resources :payment_paypays do 
     collection { 
       post :import
