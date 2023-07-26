@@ -1,5 +1,6 @@
 class PaymentPranessesController < ApplicationController
   before_action :set_year_val_params, only: [:year_valuation,:year_val_price, :year_val_len]
+  before_action :set_year_profit_params, only: [:year_profit,:year_profit_price, :year_profit_len]
   def index 
     @q = PaymentPraness.ransack(params[:q])
     @payment_pranesses = 
@@ -11,16 +12,23 @@ class PaymentPranessesController < ApplicationController
       @payment_pranesses_data = @payment_pranesses.page(params[:page]).per(100)
   end 
 
+  # 年間実売
   def year_profit
-    @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    @payment_period = @month.prev_year..@month
-    @billings = PaymentPraness.includes(:praness).where(payment_date: @payment_period).order(:payment_date)
-    @options = PranessOption.where(payment_date: @payment_period).order(:payment_date)
-    @pranesses = Praness.includes(:user).all
+
   end
+
+  def year_profit_price
+    render partial: "year_profit_price", locals: {}
+  end 
+
+  def year_profit_len
+    render partial: "year_profit_len", locals: {}
+  end 
+  # /年間実売
 
   # 年間評価売
   def year_valuation
+
   end
 
   def year_val_price
@@ -62,6 +70,14 @@ class PaymentPranessesController < ApplicationController
   end 
 
   private 
+  def set_year_profit_params
+    @display_params = params[:display]
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @payment_period = @month.prev_year..@month
+    @billings = PaymentPraness.includes(:praness).where(payment_date: @payment_period).order(:payment_date)
+    @options = PranessOption.where(payment_date: @payment_period).order(:payment_date)
+    @pranesses = Praness.includes(:user).all
+  end 
 
   def set_year_val_params
     @display_params = params[:display]
@@ -74,5 +90,5 @@ class PaymentPranessesController < ApplicationController
     @praness_valuation = 1000
     @option_valuation = 300
   end 
-  
+
 end

@@ -55,6 +55,8 @@ Rails.application.routes.draw do
     }
   end 
 
+  get "year_profit_price", to: "payment_pranesses#year_profit_price", as: "year_profit_price"
+  get "year_profit_len", to: "payment_pranesses#year_profit_len", as: "year_profit_len"
   get "year_val_price", to: "payment_pranesses#year_val_price", as: "year_val_price"
   get "year_val_len", to: "payment_pranesses#year_val_len", as: "year_val_len"
 
@@ -279,6 +281,9 @@ Rails.application.routes.draw do
     collection {get :airpaysticker_csv_export}
   end 
 
+  get "val_users", to: "calc_periods#val_users", as: "val_users"
+
+  
   resources :dmer_date_progresses do 
     collection {get :progress_create}
     collection {get :csv_export}

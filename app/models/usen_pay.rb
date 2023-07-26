@@ -29,6 +29,7 @@ class UsenPay < ApplicationRecord
           def_remarks: row["不備詳細"],
           doc_status: row["書類ステータス"],
           def_solution: row["不備解消日"],
+          result_point: row["成果日"],
           profit: 0,
           valuation: 0
         )
@@ -57,6 +58,7 @@ class UsenPay < ApplicationRecord
           def_remarks: row["不備詳細"],
           doc_status: row["書類ステータス"],
           def_solution: row["不備解消日"],
+          result_point: row["成果日"],
           profit: 0,
           valuation: 0
         )
@@ -79,6 +81,7 @@ class UsenPay < ApplicationRecord
           def_remarks: row["不備詳細"],
           doc_status: row["書類ステータス"],
           def_solution: row["不備解消日"],
+          result_point: row["成果日"],
           profit: 0,
           valuation: 0
           )

@@ -1,0 +1,12 @@
+<h2>◆評価売成果一覧</h2><br>
+  <div style="display: flex;">
+  <% bases = ["中部SS","関西SS","関東SS", "九州SS","2次店"] %>
+    <% bases.each do |base| %>
+      <div>
+        <h2><%= base %></h2>
+        <% @users.where(base: base).each do |user| %>
+          <p class="link-text"><%= link_to user.name, out_come_results_path(u_id: user.id),class: "reset-link" %></p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>

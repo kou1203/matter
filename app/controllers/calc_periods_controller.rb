@@ -118,6 +118,11 @@ class CalcPeriodsController < ApplicationController
 
   end 
 
+  def val_users
+    @users = User.where.not(position: "退職").where(base_sub: "キャッシュレス")
+    render partial: "val_users", locals: {}
+  end 
+
   def new 
     @calc_period = CalcPeriod.new 
   end 
