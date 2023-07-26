@@ -15,17 +15,17 @@
       <h2>
         <%= link_to "<<",year_profit_payment_pranesses_path(month: @month.ago(1.month),display: @display_params), class:"link","data-turbolinks": false %>
         <span class="caution-txt"><%= @month.year %>年　入金待ち：
-              <% if Date.new(@month.year, Date.today.month,15).since(2.month) >= Date.today %>
+              <% if Date.new(Date.today.year, Date.today.month,15).since(2.month) >= Date.today %>
               ¥<%= 
                 (
-                  @billings.where(status: "入金待ち").where(payment_date: @month.prev_month.beginning_of_month).sum(:price) +
-                  @billings.where(status: "入金待ち").where(payment_date: @month.beginning_of_month).sum(:price)
+                  @billings.where(status: "入金待ち").where(payment_date: Date.today.prev_month.beginning_of_month).sum(:price) +
+                  @billings.where(status: "入金待ち").where(payment_date: Date.today.beginning_of_month).sum(:price)
                   ).to_s(:delimited) 
               %>
               （<%= 
                 (
-                  @billings.where(status: "入金待ち").where(payment_date: @month.prev_month.beginning_of_month).length +
-                  @billings.where(status: "入金待ち").where(payment_date: @month.beginning_of_month).length
+                  @billings.where(status: "入金待ち").where(payment_date: Date.today.prev_month.beginning_of_month).length +
+                  @billings.where(status: "入金待ち").where(payment_date: Date.today.beginning_of_month).length
                   ).to_s(:delimited) 
               %>件）</span>
               <% else %>
@@ -46,7 +46,7 @@
     <% 
       chart_data =  
         [
-          {name:"売上", data: @billings.where(status: "完了").or(@billings.where(status: "入金待ち")).group(:payment_date).sum(:price)},
+          {name:"売上", data: @billings.group(:payment_date).sum(:price)},
           {name:"入金", data: @billings.group(:payment_date).where(status: "完了").sum(:price)},
           {name:"未入金", data: @billings.group(:payment_date).where(status: "入金待ち").sum(:price)}
         ]

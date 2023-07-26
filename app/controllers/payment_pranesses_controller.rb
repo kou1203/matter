@@ -84,8 +84,8 @@ class PaymentPranessesController < ApplicationController
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @payment_period = @month.prev_year..@month
     @billings = PaymentPraness.includes(:praness).where(payment_date: @payment_period).order(:payment_date)
-    @pranesses = Praness.includes(:user).where(user: {team: "ぷらねす"})
     @options = PranessOption.where(payment_date: @payment_period).order(:payment_date)
+    @pranesses = Praness.includes(:user).where(user: {team: "ぷらねす"})
     # 単価
     @praness_valuation = 1000
     @option_valuation = 300
