@@ -4,7 +4,6 @@
     <th class="progress-th1" colspan="">ユーザー</th>
     <th class="progress-th1" colspan="">ぷらねす</th>
     <th class="progress-th1" colspan="">オプション</th>
-    <th class="progress-th1" colspan="">合計</th>
   </tr>
   <% @pranesses.group(:user_id).order(:position_sub).each do |praness| %><%# 個別 %>
   <tr class="progress-tr">
@@ -15,10 +14,6 @@
       </td>
       <td rowspan="" class="progress-td">
       <%= (@options.where(user_id: praness.user_id).where(payment: @month.ago(1.month).beginning_of_month..@month.ago(1.month).end_of_month).length ).to_s(:delimited) %>件
-      </td>
-      <td rowspan="" class="progress-td">
-      <%= 
-        ((@billings.where(praness: {user_id: praness.user_id}).where(payment: @month.ago(1.month).beginning_of_month..@month.ago(1.month).end_of_month).length ) + (@options.where(user_id: praness.user_id).where(payment: @month.ago(1.month).beginning_of_month..@month.ago(1.month).end_of_month).length ) ).to_s(:delimited) %>件
       </td>
   </tr>
   <% end %>
