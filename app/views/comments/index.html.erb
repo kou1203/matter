@@ -1,0 +1,68 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>対応依頼一覧</h1>
+  <%= render "shared/header" %>
+</div>
+
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/index">
+  <div class="main">
+    <h2 class="caution-text"><%= alert %></h2>
+    <br><h2>
+      ◆対応依頼(
+        <%= link_to "dメル", comments_path(product: "dメル") %>
+        <%= link_to "auPay", comments_path(product: "auPay") %>
+        <%= link_to "全て", comments_path %>
+        )
+    </h2>
+    <table class="out-tb">
+    <thead>
+      <tr >
+        <th class="out-tb">No.</th>
+        <th class="out-tb">店舗名</th>
+        <th class="out-tb">商材</th>
+        <th class="out-tb">内容</th>
+        <th class="out-tb">依頼日</th>
+        <th class="out-tb">依頼内容</th>
+        <th class="out-tb">対応者</th>
+        <th class="out-tb">対応日</th>
+        <th class="out-tb">対応内容</th>
+        <th class="out-tb">完了日</th>
+        <th class="out-tb">状況</th>
+        <th class="out-tb">作成日</th>
+        <th class="out-tb">更新日</th>
+        <th class="out-tb"></th>
+        <th class="out-tb"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @comments.each_with_index do |comment, i| %>
+      <% if comment.status == "不可" %>
+      <tr class="b-gray" >
+      <% else %>
+      <tr >
+      <% end %>
+        <td ><%= i + 1 %></td>
+        <td ><%= comment.store_prop.name %></td>
+        <td ><%= comment.product %></td>
+        <td ><%= comment.content %></td>
+        <td ><%= comment.request %></td>
+        <td ><%= comment.request_show %></td>
+        <td ><%= comment.ball %></td>
+        <td ><%= comment.response %></td>
+        <td ><%= comment.response_show %></td>
+        <td ><%= comment.done %></td>
+        <td ><%= comment.status %></td>
+        <td ><%= comment.created_at.to_date %></td>
+        <td ><%= comment.updated_at.to_date %></td>
+        <td ><%= link_to "編集", edit_comment_path(comment.id) %></td>
+<td ><%= link_to "削除", comment_path(comment.id), method: :delete,data: {confirm: "#{comment.store_prop.name}の対応依頼を削除してもよろしいですか？"},class: "link" %></td>
+      </tr>
+      <% end %>
+    </tbody>
+    </table>
+  </div>
+</div>

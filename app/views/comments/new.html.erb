@@ -12,11 +12,11 @@
       <h1><%= StoreProp.find(@store_id).name %></h1>
       <h2>（<%= @product %><%= @content %>）</h2>
     </div>
-  <%= form_with(model: @comment, date: {remote: false}) do |f| %>
+  <%= form_with model: @comment,  class: "form-frame", local: true do |f| %>
   <%= render "shared/error_messages", model: f.object %>
   <%= f.hidden_field :store_prop_id, value: @store_id  %>
-  <%= f.hidden_field :content, value: @comment.content  %>
   <%= f.hidden_field :product, value: @product  %>
+  <%= f.hidden_field :content, value: @content  %>
   <div class="form">
       <p><%= f.label :request, "対応日", class: "form-text" %></p>
       <p><%= f.date_field :request, class: "date-input" %></p>
@@ -24,7 +24,7 @@
   <div class="form">
       <p><%= f.label :content, "カテゴリー", class: "form-text" %></p>
       <p><%= 
-        f.select :status,{
+        f.select :content,{
         "不備": "不備", "決済": "決済",
         }, {}, {class: "slct-input"}
       %></p>

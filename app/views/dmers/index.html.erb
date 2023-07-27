@@ -13,7 +13,7 @@
 <%= render "shared/dmer_links" %>
 <hr>
 <%# link_to 'データ出力', dmers_path(format: :csv),class: "link" %>
-<% if current_user.position_sub == "管理" %>
+  <% if current_user.position_sub == "管理" %>
     <%= form_with url: import_dmers_path do |f| %>
       <table class="csv-tb">
         <tr>
@@ -258,12 +258,13 @@
       <%# 重複確認 %>
       <% dmer_duplicate = @dmers.where.not(controll_num: nil).group(:controll_num).having('count(*) >= 2') %>
         <% if dmer_duplicate.present? %>
-        <p class="nav-text">管理番号重複</p>
+
+          <p class="nav-text">管理番号重複</p>
+          <% end %>
+          <%# PJ078772 ばんやジル %>
+        <% dmer_duplicate.each do |db| %>
+          <p class="nav-text" style="color: red;"><%= db.controll_num %><%= db.store_prop.name %></p>
         <% end %>
-        <%# PJ078772 ばんやジル %>
-      <% dmer_duplicate.each do |db| %>
-        <p class="nav-text" style="color: red;"><%= db.controll_num %><%= db.store_prop.name %></p>
-      <% end %>
         <% 
           settlement_subject = 
             @dmers.where(status: "審査OK")
@@ -386,6 +387,7 @@
           <th class="out-th">不備発生日</th>
           <th class="out-th">不備解消日</th>
           <th class="out-th"></th>
+          <th class="out-th">コメント</th>
         </tr>
       </thead>
       <tbody>
@@ -431,6 +433,11 @@
           <td class="index-td"><%= dmer.deficiency_solution %></td>
 
           <td class="index-td"><%= link_to "　詳細　",  dmer_path(dmer.id) ,class: "link" %></td>
+          <% if dmer.store_prop.comments.present? %>
+          <td class="index-td">有</td>
+          <% else %>
+          <td class="index-td"><%= link_to "　入力　",  new_comment_path(product: "dメル",content: "決済",store_id: dmer.store_prop_id) ,class: "link" %></td>
+          <% end %>
         </tr>
       <% end %>
       </tbody>

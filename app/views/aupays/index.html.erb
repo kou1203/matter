@@ -162,7 +162,7 @@
     <% if @aupays.empty? %>
     
     <% else %>
-      <h1>獲得日：<%= @aupays.minimum(:date) %>（<%= days[@aupays.minimum(:date).wday] %>〜<%= @aupays.maximum(:date) %>（<%= days[@aupays.maximum(:date).wday] %>）</h1>
+      <h1>獲得日：<%= @aupays.minimum(:date) %>（<%= days[@aupays.minimum(:date).wday] %>）〜<%= @aupays.maximum(:date) %>（<%= days[@aupays.maximum(:date).wday] %>）</h1>
 
         <% settlement_subject = @aupays.where(status: "審査通過").length %>
         <% settlement_done = @aupays.where.not(settlement: nil).length %>
@@ -264,6 +264,7 @@
           <th class="out-th">決済期限</th>
           <th class="remarks-th">不備内容(新規)</th>
           <th class="remarks-th">不備内容(決済)</th>
+          <th class="out-th">コメント</th>
         </tr>
       </thead>
       <tbody>
@@ -293,6 +294,11 @@
           <td class="index-td"><%= aupay.settlement_deadline %></td>
           <td class="remarks-td"><%= aupay.deficiency_remarks %></td>
           <td class="remarks-td"><%= aupay.deficiency_remarks_settlement %></td>
+          <% if aupay.store_prop.comments.present? %>
+          <td class="index-td">有</td>
+          <% else %>
+          <td class="index-td"><%= link_to "　入力　",  new_comment_path(product: "auPay",content: "決済",store_id: aupay.store_prop_id) ,class: "link" %></td>
+          <% end %>
         </tr>
       <% end %>
       </tbody>
