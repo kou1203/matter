@@ -113,6 +113,28 @@
           </tbody>
         </table>
       </div><%# /auPay %>
+      <div><%# auPay %>
+        <p class="sub-title">UsenPay</p>
+        <table>
+          <thead>
+            <tr>
+              <th>順位</th>
+              <th>氏名</th>
+              <th>現状獲得数</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% @usen_pay_date_progress.each_with_index do |usen_pay,i| %>
+            <tr>
+              <td><%= i + 1 %>位</td>
+              <td><%= usen_pay.user.name %></td>
+              <td><%= (usen_pay.get_len) %></td>
+            </tr>
+          <% break if i == 4 %>
+          <% end %>
+          </tbody>
+        </table>
+      </div><%# /auPay %>
     </div>
     <div style="display: flex;">
       <div><%# 楽天ペイ %>

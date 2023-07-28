@@ -753,6 +753,9 @@ class ResultsController < ApplicationController
     @rakuten_pay_date_progress = @rakuten_pay_date_progress.where(date: @rakuten_pay_date_progress.maximum(:date)).where(create_date: @rakuten_pay_date_progress.maximum(:create_date)).order("get_len DESC")
     @airpay_date_progress = AirpayDateProgress.includes(:user).where(date: @month.all_month).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @airpay_date_progress = @airpay_date_progress.where(date: @airpay_date_progress.maximum(:date)).where(create_date: @airpay_date_progress.maximum(:create_date)).order("get_len DESC")
+    @usen_pay_date_progress = OtherProductDateProgress.includes(:user).where(date: @month.all_month).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
+    @usen_pay_date_progress = @usen_pay_date_progress.where(date: @usen_pay_date_progress.maximum(:date)).where(create_date: @usen_pay_date_progress.maximum(:create_date)).order("get_len DESC")
+    
   end
 
   # 利益計算用終着
