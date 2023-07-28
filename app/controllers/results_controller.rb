@@ -11,7 +11,7 @@ class ResultsController < ApplicationController
 
   def index
   end 
-  
+
   def user_list # indexの個別利益表のユーザー一覧
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))
@@ -193,7 +193,7 @@ class ResultsController < ApplicationController
       @paypay_date_progress = PaypayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @rakuten_pay_date_progress = RakutenPayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @airpay_date_progress = AirpayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
-      @usen_pay_date_progress = OtherProduct.where(product_name: "UsenPay").where(user_id: @user.id).where(date: @month.all_month).last
+      @usen_pay_date_progress = OtherProductDateProgress.where(product_name: "UsenPay").where(user_id: @user.id).where(date: @month.all_month).last
       @demaekan_date_progress = DemaekanDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @austicker_date_progress = AustickerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @dmersticker_date_progress = DmerstickerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
