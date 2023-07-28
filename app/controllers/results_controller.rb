@@ -11,6 +11,7 @@ class ResultsController < ApplicationController
 
   def index
   end 
+  
   def user_list # indexの個別利益表のユーザー一覧
     @users = 
       User.where.not(position: "退職").or(User.where(position: nil))

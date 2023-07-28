@@ -293,6 +293,28 @@
   </tbody>
 </table>
 <% end %>
+<% if @usen_pays.present? %>
+<h2>UsenPay審査状況（<%= @usen_pays.length %>件）</h2>
+<table>
+  <thead>
+    <tr>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @usen_pays.each do |usen_pay| %>
+      <td class="valuation-td"><%= usen_pay.store_name %></td>
+      <td class="valuation-td"><%= usen_pay.date %></td>
+      <td class="valuation-td"><%= usen_pay.status %></td>
+      <td class="valuation-td"><%= usen_pay.result_point %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
 <% if @dmers_db.length != 0 || @aupays_db.length != 0 %>
 <h2>複数店一覧</h2>
 <table>

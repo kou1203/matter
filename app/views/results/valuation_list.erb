@@ -47,6 +47,7 @@
       @rakuten_pay_val.sum(:valuation) +
       @airpay_done.sum(:valuation) +
       airpay_bonus +
+      @usen_pays.where(result_point: @month.all_month).sum(:valuation) +
       @demaekan.sum(:valuation) +
       # その他商材
       @aupay_pic.sum(:valuation) +
@@ -109,6 +110,13 @@
     <% else %>
     <td class="valuation-td"><%= @airpay_done.sum(:valuation).to_s(:delimited) rescue 0 %></td>
     <% end %>
+  </tr>
+  <tr>
+    <td class="valuation-td">UsenPay</td>
+    <td class="valuation-td"><%= @usen_pays.where(result_point: @month.all_month).length rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @usen_pays.where(result_point: @month.all_month).sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
   <% if @aupay_pic.present? && @aupay_pic.exists?(user_id: @user.id) %>
   <tr>
@@ -397,6 +405,35 @@
         <% end %>
       <% end %>
       <td class="valuation-td "><%= link_to "詳細", airpay_path(airpay.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @usen_pays.where(result_point: @month.all_month).present? %>
+<h2>AirPay第一成果（審査通過）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">管理番号</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">評価売上</th>
+    </thead>
+    <tbody>
+      <% @usen_pays.where(result_point: @month.all_month).each do |usen_pay| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= usen_pay.controll_num %></td>
+      <td class="valuation-td "><%= usen_pay.store_name %></td>
+      <td class="valuation-td "><%= usen_pay.date %></td>
+      <td class="valuation-td "><%= usen_pay.status %></td>
+      <td class="valuation-td "><%= usen_pay.result_point %></td>
+      <td class="valuation-td "><%= usen_pay.valuation.to_s(:delimited) %></td>
       </tr>
       <% num += 1 %>
       <% end %>

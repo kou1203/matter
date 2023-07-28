@@ -60,7 +60,7 @@ class UsenPay < ApplicationRecord
           def_solution: row["不備解消日"],
           result_point: row["成果日"],
           profit: 0,
-          valuation: 0
+          valuation: 10000
         )
         if usen_pay.has_changes_to_save? 
           usen_pay.save!
@@ -83,7 +83,7 @@ class UsenPay < ApplicationRecord
           def_solution: row["不備解消日"],
           result_point: row["成果日"],
           profit: 0,
-          valuation: 0
+          valuation: 10000
           )
         usen_pay.save!
         new_cnt += 1

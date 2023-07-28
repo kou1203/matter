@@ -967,6 +967,7 @@
           <th class="total-th">PayPay</th>
           <th class="total-th">楽天ペイ</th>
           <th class="total-th">AirPay</th>
+          <th class="total-th">UsenPay</th>
           <th class="total-th">出前館</th>
           <th class="total-th">その他<br>商材</th>
           <th class="total-th">全商材</th>
@@ -978,8 +979,9 @@
           <td class="total-td"><%= @dmer_date_progress.result3_len rescue 0 %></td>
           <td class="total-td"><%= @aupay_date_progress.result_len rescue 0 %></td>
           <td class="total-td"><%= @paypay_date_progress.result_len rescue 0 %></td>
-          <td class="total-td"><%= @rakuten_pay_val_len %></td>
+          <td class="total-td"><%= @rakuten_pay_val_len rescue 0 %></td>
           <td class="total-td"><%= @airpay_date_progress.result_len rescue 0 %></td>
+          <td class="total-td"><%= @usen_pay_date_progress.result_len rescue 0 %></td>
           <td class="total-td"><%= @demaekan_date_progress.result_len rescue 0 %></td>
           <td class="total-td"><%=  %>-</td>
           <td class="total-td"><%=  %>-</td>
@@ -994,12 +996,14 @@
           <td class="total-td"><%= @paypay_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @rakuten_pay_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @airpay_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
+          <td class="total-td"><%= @usen_pay_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @demaekan_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= 
             (
               @austicker_date_progress.valuation_current +
               @dmersticker_date_progress.valuation_current +
               @airpaysticker_date_progress.valuation_current +
+              @usen_pay_date_progress.valuation_current +
               @itss.sum(:valuation)
             ).to_s(:delimited) rescue 0 
           %></td>
@@ -1014,12 +1018,14 @@
           <td class="total-td"><%= @paypay_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @rakuten_pay_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @airpay_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
+          <td class="total-td"><%= @usen_pay_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @demaekan_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= 
             (
               @austicker_date_progress.valuation_fin +
               @dmersticker_date_progress.valuation_fin +
               @airpaysticker_date_progress.valuation_fin +
+              @usen_pay_date_progress.valuation_fin +
               @itss.sum(:valuation)
             ).to_s(:delimited) rescue 0 
           %></td>
