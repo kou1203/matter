@@ -755,7 +755,7 @@ class ResultsController < ApplicationController
     @airpay_date_progress = @airpay_date_progress.where(date: @airpay_date_progress.maximum(:date)).where(create_date: @airpay_date_progress.maximum(:create_date)).order("get_len DESC")
     @usen_pay_date_progress = OtherProductDateProgress.includes(:user).where(date: @month.all_month).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @usen_pay_date_progress = @usen_pay_date_progress.where(date: @usen_pay_date_progress.maximum(:date)).where(create_date: @usen_pay_date_progress.maximum(:create_date)).order("get_len DESC")
-    
+
   end
 
   # 利益計算用終着
@@ -1036,7 +1036,7 @@ class ResultsController < ApplicationController
         @airpay_user.where(status: "審査完了")
         .where(result_point: @airpay1_start_date..@airpay1_end_date)
         @airpay_bonus =
-        if @month >= Date.new(2023,7,1)
+        if @month > Date.new(2023,6,30)
           5000
         else 
           if @airpay_done.length >= 20

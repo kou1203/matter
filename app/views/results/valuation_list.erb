@@ -20,7 +20,7 @@
 <div class="nav-text" style="color: red;"><%= alert %></div>
 <% @before_airpay_bonus_date = Date.new(2022,10,1) %>
 <% if @start_date.next_month.beginning_of_month >= @before_airpay_bonus_date %>
-  <% if @airpay_done.present? && @airpay_done.length >= 20 || (@month >= Date.new(2023,7,1)) %>
+  <% if @airpay_done.present? && @airpay_done.length >= 20 || (@month > Date.new(2023,6,30)) %>
     <% airpay_bonus = @airpay_done.length * 5000 %>
   <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
     <% airpay_bonus = @airpay_done.length * 3000 %>
@@ -103,7 +103,7 @@
     <td class="valuation-td"><%= @airpay_done.length rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
-    <% if @airpay_done.present? && @airpay_done.length >= 20 || (@month >= Date.new(2023,7,1)) %>
+    <% if @airpay_done.present? && @airpay_done.length >= 20 || (@month > Date.new(2023,6,30)) %>
     <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + airpay_bonus).to_s(:delimited) rescue 0 %></td>
     <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
     <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + airpay_bonus).to_s(:delimited) rescue 0 %></td>
@@ -388,7 +388,7 @@
       <td class="valuation-td "><%= airpay.status %></td>
       <td class="valuation-td "><%= airpay.result_point %></td>
       <% if @start_date.next_month.beginning_of_month >= @before_airpay_bonus_date %>
-        <% if @airpay_done.present? && @airpay_done.length >= 20 || (@month >= Date.new(2023,7,1)) %>
+        <% if @airpay_done.present? && @airpay_done.length >= 20 || (@month > Date.new(2023,6,30)) %>
         <td class="valuation-td "><%= airpay.valuation + 5000 %></td>
         <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
         <td class="valuation-td "><%= airpay.valuation + 3000 %></td>
