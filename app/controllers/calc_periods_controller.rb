@@ -337,7 +337,6 @@ class CalcPeriodsController < ApplicationController
     create_csv(filename,csv)
   end 
 
-
   def aupay_csv_export 
     @aupay_date_progress = AupayDateProgress.where(date: @month.in_time_zone.all_month)
     @aupay_date_progress = @aupay_date_progress.where(create_date: @aupay_date_progress.maximum(:create_date))

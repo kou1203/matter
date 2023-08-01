@@ -30,8 +30,8 @@ class UsenPay < ApplicationRecord
           doc_status: row["書類ステータス"],
           def_solution: row["不備解消日"],
           result_point: row["成果日"],
-          profit: 0,
-          valuation: 0
+          profit: 13500,
+          valuation: 10000
         )
         errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if usen_pay.invalid? && errors.length < 5
     end
@@ -59,7 +59,7 @@ class UsenPay < ApplicationRecord
           doc_status: row["書類ステータス"],
           def_solution: row["不備解消日"],
           result_point: row["成果日"],
-          profit: 0,
+          profit: 13500,
           valuation: 10000
         )
         if usen_pay.has_changes_to_save? 
@@ -82,7 +82,7 @@ class UsenPay < ApplicationRecord
           doc_status: row["書類ステータス"],
           def_solution: row["不備解消日"],
           result_point: row["成果日"],
-          profit: 0,
+          profit: 13500,
           valuation: 10000
           )
         usen_pay.save!
