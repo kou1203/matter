@@ -31,7 +31,7 @@ class OtherProduct < ApplicationRecord
   end
 
   def airpay_pic_mine_valuation
-    product_len * 3000
+    product_len * 5000
   end
   def airpay_pic_mine_profit
     product_len * 10000

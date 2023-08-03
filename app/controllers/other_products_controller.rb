@@ -25,7 +25,7 @@ class OtherProductsController < ApplicationController
       @other_product[:valuation] = @other_product.product_len * 1500
       @other_product[:profit] = @other_product.product_len * 3000
     elsif @other_product.product_name == "AirPayステッカー（自社）"
-      @other_product[:valuation] = @other_product.product_len * 3000
+      @other_product[:valuation] = @other_product.product_len * 5000
       @other_product[:profit] = @other_product.product_len * 10000
     elsif @other_product.product_name == "AirPayステッカー（他社）"
       @other_product[:valuation] = @other_product.product_len * 4000

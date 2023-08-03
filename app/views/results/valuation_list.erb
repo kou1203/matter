@@ -53,6 +53,7 @@
       @aupay_pic.sum(:valuation) +
       @dmer_pic.sum(:valuation) +
       @airpay_pic.sum(:valuation) +
+      @other_valuation.sum(:valuation) +
       @itss.sum(:valuation)
     ).to_s(:delimited) rescue 0
   %></h2>
@@ -158,6 +159,13 @@
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @itss.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <tr>
+    <td class="valuation-td">その他商材</td>
+    <td class="valuation-td"><%= @other_valuation.sum(:product_len) rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @other_valuation.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
   </table>
 <% if @dmer_done.present? %>
@@ -563,6 +571,31 @@
     </tbody>
   </table>
   <% end %>
-
+  <% if @other_valuation.present? %>
+  <h2>その他獲得商材</h2>
+    <% num = 1 %>
+    <table>
+      <thead>
+        <th class="valuation-th">No</th>
+        <th class="valuation-th">商材</th>
+        <th class="valuation-th">入力日</th>
+        <th class="valuation-th">獲得数</th>
+        <th class="valuation-th">評価売上</th>
+        <th class="valuation-th"></th>
+      </thead>
+      <tbody>
+        <% @other_valuation.each_with_index do |product, i| %>
+        <tr>
+          <td class="valuation-td "><%= num %></td>
+          <td class="valuation-td "><%= product.product_name %></td>
+          <td class="valuation-td "><%= product.date %></td>
+          <td class="valuation-td "><%= product.product_len %></td>
+          <td class="valuation-td "><%= product.valuation %></td>
+          <td class="valuation-td "><%= link_to "編集", edit_other_product_path(product.id) %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
   </div><%# users/showスコープ末尾 %>
 </div>

@@ -130,19 +130,25 @@ class AirpaystickerDateProgressesController < ApplicationController
     # 実売
       @airpay_sticker_profit = AirpaySticker.where(user_id: user_id).where(form_send: @start_date..@end_date)
 
-      profit_current = @airpay_sticker_profit.where(sticker_ok: "〇").sum(:profit_sticker) + @airpay_sticker_profit.where(pop_ok: "〇").sum(:profit_pop)
-      result_len = 
-        @airpay_sticker_profit.where(sticker_ok: "〇")
-        .or(
-          @airpay_sticker_profit.where(pop_ok: "〇")
-        ).length
-    # 終着
+      if @month > Date.new(2023,6,30)
+        valuation_current = @airpaystickers_user_period.sum(:valuation)
+        profit_current = @airpaystickers_user_period.sum(:profit)
+      else
+        profit_current = @airpay_sticker_profit.where(sticker_ok: "〇").sum(:profit_sticker) + @airpay_sticker_profit.where(pop_ok: "〇").sum(:profit_pop)
+        result_len = 
+          @airpay_sticker_profit.where(sticker_ok: "〇")
+          .or(
+            @airpay_sticker_profit.where(pop_ok: "〇")
+          ).length
+          @calc_periods = CalcPeriod.where(sales_category: "評価売")
+          calc_period_and_per
+          valuation_current = AirpaySticker.where(user_id: user_id).where(form_send: @start_date..@end_date).where(sticker_ok: "〇").where(pop_ok: "〇").sum(:valuation)
+          get_len = AirpaySticker.where(user_id: user_id).where(form_send: @start_date..@end_date).where(sticker_ok: "〇").where(pop_ok: "〇").length
+        end
+        # 終着
         profit_fin = profit_current
+        
       
-      @calc_periods = CalcPeriod.where(sales_category: "評価売")
-      calc_period_and_per
-      valuation_current = AirpaySticker.where(user_id: user_id).where(form_send: @start_date..@end_date).where(sticker_ok: "〇").where(pop_ok: "〇").sum(:valuation)
-      get_len = AirpaySticker.where(user_id: user_id).where(form_send: @start_date..@end_date).where(sticker_ok: "〇").where(pop_ok: "〇").length
 
       if r.user.position == "退職"
         user_base = r.user.position
