@@ -29,8 +29,11 @@
           <th>初回決済者</th>
           <th>初回決+写真</th>
           <th>２回目決済日</th>
+        <% elsif @product_name.include?("auPay") %>
+          <th>審査通過日</th>
+          <th>初回決済者</th>
+          <th>初回決+写真</th>
         <% else %>
-
           <th>成果になった日</th>
         <% end %>
         </tr>
@@ -49,6 +52,19 @@
             <td><%= product.settlementer.name rescue "" %></td>
             <td><%= product.status_update_settlement %></td>
             <td><%= product.settlement_second %></td>
+          </tr>
+          <% end %>
+          <% elsif @product_name.include?("auPay") %>
+          <% @product_data[@product_name][0].order(:user_id,:date).each_with_index do |product,i| %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><%= product.customer_num %></td>            
+            <td><%= product.store_prop.name %></td>            
+            <td><%= product.date %></td>            
+            <td><%= product.user.name %></td>            
+            <td><%= product.result_point %></td>            
+            <td><%= product.settlementer.name %></td>       
+            <td><%= product.status_update_settlement %></td>     
           </tr>
           <% end %>
           <% else %>
