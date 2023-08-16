@@ -61,7 +61,7 @@
             <td><%= product.customer_num %></td>            
             <td><%= product.store_prop.name %></td>            
             <td><%= product.date %></td>            
-            <td><%= product.user.name %></td>            
+            <td><%= link_to product.user.name,valuation_result_path(product.user_id,product_name: @product_name,month: @month), class:"link" %></td>         
             <td><%= product.result_point %></td>            
             <td><%= product.settlementer.name %></td>       
             <td><%= product.status_update_settlement %></td>     
