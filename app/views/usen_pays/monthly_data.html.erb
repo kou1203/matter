@@ -39,9 +39,9 @@
           <td><%= @shifts.where(user: {base: base}).length - @results.where(user: {base: base}).length rescue 0 %></td>
           <td><%= @usen_pays.where(user: {base: base}).length rescue 0 %></td>
           <td><%= 
-            @usen_pays.where(user: {base: base}).length.to_f / 
+            (@usen_pays.where(user: {base: base}).length.to_f / 
             @results.where(user: {base: base}).length * 
-            @shifts.where(user: {base: base}).length rescue 0 
+            @shifts.where(user: {base: base}).length).round() rescue 0 
           %></td>
           <td><%= @usen_pays.where(user: {base: base}).where(result_point: @month.all_month).length rescue 0 %></td>
           <td><%= @usenr_pays_result.where(user: {base: base}).length rescue 0 %></td>
@@ -53,7 +53,7 @@
           <td><%= @results.length rescue 0 %></td>
           <td><%= @shifts.length - @results.length rescue 0 %></td>
           <td><%= @usen_pays.length rescue 0 %></td>
-          <td><%= @usen_pays.length.to_f / @results.length * @shifts.length rescue 0 %></td>
+          <td><%= (@usen_pays.length.to_f / @results.length * @shifts.length).round() rescue 0 %></td>
           <td><%= @usen_pays.where(result_point: @month.all_month).length rescue 0 %></td>
           <td><%= @usenr_pays_result.length rescue 0 %></td>
         </tr>
