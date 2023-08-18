@@ -11,6 +11,15 @@ class UsenPaysController < ApplicationController
       @usen_pays_data = @usen_pays.page(params[:page]).per(100)
   end  
 
+  def monthly_data
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @shifts = Shift.includes(:user).where(shift: "キャッシュレス新規").where(start_time: @month.all_month)
+    @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @month.all_month)
+    @usen_pays = UsenPay.includes(:user).where(date: @month.all_month)
+    @usenr_pays_result = UsenPay.includes(:user).where(result_point: @month.all_month)
+    @bases = ["中部SS","関西SS","関東SS","九州SS","2次店"]
+  end
+
   def import 
     if params[:file].present?
       if UsenPay.csv_check(params[:file]).present?

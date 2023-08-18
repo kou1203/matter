@@ -1,0 +1,64 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>UsenPay月間早見</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div>
+    <hr>
+    <%= render "shared/usen_pay_links" %>
+    <hr>
+    <h2>
+      <%= link_to "<<",monthly_data_usen_pays_path(month: @month.ago(1.month)), class:"link" %>
+      <%= @month.strftime("%Y年%m月") %>UsenPay各種件数
+      <%= link_to ">>",monthly_data_usen_pays_path(month: @month.since(1.month)), class:"link" %>
+    </h2><br>
+    <table>
+      <thead>
+      <tr>
+        <th>拠点</th>
+        <th>予定シフト</th>
+        <th>消化シフト</th>
+        <th>残シフト</th>
+        <th>獲得数</th>
+        <th>終着獲得数</th>
+        <th>成果になった数（当月）</th>
+        <th>成果になった数（過去も含む）</th>
+      </tr>
+      </thead>
+      <tbody>
+        <% @bases.each do |base| %>
+        <tr>
+          <td><%= base %></td>
+          <td><%= @shifts.where(user: {base: base}).length rescue 0 %></td>
+          <td><%= @results.where(user: {base: base}).length rescue 0 %></td>
+          <td><%= @shifts.where(user: {base: base}).length - @results.where(user: {base: base}).length rescue 0 %></td>
+          <td><%= @usen_pays.where(user: {base: base}).length rescue 0 %></td>
+          <td><%= 
+            @usen_pays.where(user: {base: base}).length.to_f / 
+            @results.where(user: {base: base}).length * 
+            @shifts.where(user: {base: base}).length rescue 0 
+          %></td>
+          <td><%= @usen_pays.where(user: {base: base}).where(result_point: @month.all_month).length rescue 0 %></td>
+          <td><%= @usenr_pays_result.where(user: {base: base}).length rescue 0 %></td>
+        </tr>
+        <% end %>
+        <tr>
+          <td>全拠点</td>
+          <td><%= @shifts.length rescue 0 %></td>
+          <td><%= @results.length rescue 0 %></td>
+          <td><%= @shifts.length - @results.length rescue 0 %></td>
+          <td><%= @usen_pays.length rescue 0 %></td>
+          <td><%= @usen_pays.length.to_f / @results.length * @shifts.length rescue 0 %></td>
+          <td><%= @usen_pays.where(result_point: @month.all_month).length rescue 0 %></td>
+          <td><%= @usenr_pays_result.length rescue 0 %></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+</div>

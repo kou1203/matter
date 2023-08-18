@@ -10,6 +10,7 @@
 <div data-scope-path="shares/index">
 <div class="main">
 <hr>
+<%= render "shared/usen_pay_links" %>
 
 <% if current_user.position_sub == "管理" %>
   <%= form_with url: import_usen_pays_path do |f| %>
@@ -142,6 +143,21 @@
       <% usen_duplicate.each do |db| %>
         <p class="nav-text" style="color: red;"><%= db.controll_num %><%= db.store_name %></p>
       <% end %>
+    <%# 早見 %>
+    <table>
+      <thead>
+      <tr>
+        <th class="green-th">獲得数</th>
+        <th class="green-th">成果になった数</th>
+      </tr>
+      </thead>
+      <tbody>
+        <td><%= @usen_pays.length %></td>
+        <td><%= @usen_pays.where.not(result_point: nil).length %></td>
+      </tbody>
+    </table>
+    <%# /早見 %>
+    <%# 一覧 %>
     <table class="out-tb">
       <thead>
       <tr>
@@ -155,6 +171,7 @@
         <th class="out-th">連携日</th>
         <th class="out-th">書類ステータス</th>
         <th class="remarks-th">不備詳細</th>
+        <th class="out-th">成果になった日</th>
       </tr>
       </thead>
       <tbody>
@@ -170,6 +187,7 @@
         <td class="out-td"><%= usen_pay.share %></td>
         <td class="out-td"><%= usen_pay.doc_status %></td>
         <td class="remarks-td"><%= usen_pay.def_remarks %></td>
+        <td class="remarks-td"><%= usen_pay.result_point %></td>
       </tr>
       <% end %>
       </tbody>

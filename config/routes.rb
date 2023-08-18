@@ -417,6 +417,7 @@ Rails.application.routes.draw do
   resources :usen_pays do 
     collection {
       post :import
+      get :monthly_data
     }
   end 
 
