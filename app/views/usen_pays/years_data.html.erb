@@ -1,0 +1,57 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>UsenPay年間早見</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div>
+    <hr>
+    <%= render "shared/usen_pay_links" %>
+    <hr>
+    <h2>
+      <%= link_to "<<",years_data_usen_pays_path(month: @month.ago(1.year)), class:"link" %>
+      <%= @month.year %>年楽dメル各種件数
+      <%= link_to ">>",years_data_usen_pays_path(month: @month.since(1.year)), class:"link" %>
+    </h2><br>
+    <p class="caution-text">※こちらは当月獲得した案件のステータスの内訳になります。</p>
+    <table>
+      <thead>
+        <tr>
+          <th>日付</th>
+          <% month_cnt = 0 %>
+          <% 12.times do %>
+          <th><%= @month.year %>年<%= month_cnt += 1 %>月</th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+        <tr></tr>
+        <tr>
+          <td>獲得</td>
+          <% 12.times do |i| %>
+          <td><%= @usen_pays.where(date: Date.new(@month.year,i + 1,1).all_month).length %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>当月成果</td>
+          <% 12.times do |i| %>
+          <td><%= @usen_pays_result.where(date: Date.new(@month.year,i + 1,1).all_month).length %></td>
+          <% end %>
+        </tr>
+        <tr>
+          <td>成果</td>
+          <% 12.times do |i| %>
+          <td><%= @usen_pays_result.where(result_point: Date.new(@month.year,i + 1,1).all_month).length %></td>
+          <% end %>
+        </tr>
+      </tbody>
+    </table>
+    <hr>
+  </div>
+  </div>
+
+</div>

@@ -44,7 +44,7 @@
             @shifts.where(user: {base: base}).length).round() rescue 0 
           %></td>
           <td><%= @usen_pays.where(user: {base: base}).where(result_point: @month.all_month).length rescue 0 %></td>
-          <td><%= @usenr_pays_result.where(user: {base: base}).length rescue 0 %></td>
+          <td><%= @usen_pays_result.where(user: {base: base}).length rescue 0 %></td>
         </tr>
         <% end %>
         <tr>
@@ -55,10 +55,11 @@
           <td><%= @usen_pays.length rescue 0 %></td>
           <td><%= (@usen_pays.length.to_f / @results.length * @shifts.length).round() rescue 0 %></td>
           <td><%= @usen_pays.where(result_point: @month.all_month).length rescue 0 %></td>
-          <td><%= @usenr_pays_result.length rescue 0 %></td>
+          <td><%= @usen_pays_result.length rescue 0 %></td>
         </tr>
       </tbody>
     </table>
+    <p class="caution-text">※こちらのシフトは新規のみになります。</p>
   </div>
 </div>
 </div>
