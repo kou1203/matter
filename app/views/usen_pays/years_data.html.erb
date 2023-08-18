@@ -39,7 +39,7 @@
         <tr>
           <td>当月成果</td>
           <% 12.times do |i| %>
-          <td><%= @usen_pays_result.where(date: Date.new(@month.year,i + 1,1).all_month).length %></td>
+          <td><%= @usen_pays_result.where(date: Date.new(@month.year,i + 1,1).all_month).where(result_point: Date.new(@month.year,i + 1,1).all_month).length %></td>
           <% end %>
         </tr>
         <tr>
