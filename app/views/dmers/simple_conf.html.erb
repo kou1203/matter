@@ -43,9 +43,9 @@
       <td class="index-td"><%= @shifts.where(user: {base: base}).length - @results.where(user: {base: base}).length rescue 0 %></td>
       <td class="index-td"><%= @monthly_data.where(user: {base: base}).length %></td>
       <td class="index-td"><%= 
-        @monthly_data.where(user: {base: base}).length.to_f / 
+        (@monthly_data.where(user: {base: base}).length.to_f / 
         @results.where(user: {base: base}).length *
-        @shifts.where(user: {base: base}).length rescue 0
+        @shifts.where(user: {base: base}).length).round() rescue 0
       %></td>
       <td class="index-td">
         <%= @monthly_done.where(user: {base: base}).where(date: @month.in_time_zone.all_month).length %>
@@ -81,9 +81,9 @@
         <%= @monthly_data.where(date: @month.in_time_zone.all_month).length %>
       </td>
       <td class="index-td"><%= 
-        @monthly_data.length.to_f / 
+        (@monthly_data.length.to_f / 
         @results.length *
-        @shifts.length rescue 0
+        @shifts.length).round() rescue 0
       %></td>
       <td class="index-td">
         <%= @monthly_done.where(date: @month.in_time_zone.all_month).length %>
