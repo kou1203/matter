@@ -21,7 +21,11 @@
     <table>
       <tr>
       <th class="out-th">拠点</th>
+      <th class="out-th">予定シフト</th>
+      <th class="out-th">消化シフト</th>
+      <th class="out-th">残シフト</th>
       <th class="out-th">獲得数</th>
+      <th class="out-th">獲得終着</th>
       <th class="out-th">審査通過</th>
       <th class="out-th">未決済</th>
       <th class="out-th">初回決済</th>
@@ -34,7 +38,15 @@
       <% @bases.each do |base| %>
       <tr>
       <td class="index-td"><%= base %></td>
+      <td class="index-td"><%= @shifts.where(user: {base: base}).length rescue 0 %></td>
+      <td class="index-td"><%= @results.where(user: {base: base}).length rescue 0 %></td>
+      <td class="index-td"><%= @shifts.where(user: {base: base}).length - @results.where(user: {base: base}).length rescue 0 %></td>
       <td class="index-td"><%= @monthly_data.where(user: {base: base}).length %></td>
+      <td class="index-td"><%= 
+        @monthly_data.where(user: {base: base}).length.to_f / 
+        @results.where(user: {base: base}).length *
+        @shifts.where(user: {base: base}).length rescue 0
+      %></td>
       <td class="index-td">
         <%= @monthly_done.where(user: {base: base}).where(date: @month.in_time_zone.all_month).length %>
         （<%= @monthly_done.where(user: {base: base}).length %>）
@@ -62,10 +74,17 @@
       <% end %>
       <tr class="sum-tr">
       <td class="index-td">全拠点</td>
+      <td class="index-td"><%= @shifts.length rescue 0 %></td>
+      <td class="index-td"><%= @results.length rescue 0 %></td>
+      <td class="index-td"><%= @shifts.length - @results.length rescue 0 %></td>
       <td class="index-td">
         <%= @monthly_data.where(date: @month.in_time_zone.all_month).length %>
-        （<%= @monthly_data.length %>）
       </td>
+      <td class="index-td"><%= 
+        @monthly_data.length.to_f / 
+        @results.length *
+        @shifts.length rescue 0
+      %></td>
       <td class="index-td">
         <%= @monthly_done.where(date: @month.in_time_zone.all_month).length %>
         （<%= @monthly_done.length %>）

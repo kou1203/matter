@@ -35,17 +35,19 @@ class DmersController < ApplicationController
     # 月間進捗
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @bases = ["中部SS", "関西SS", "関東SS", "九州SS", "2次店"]
-    @monthly_data = Dmer.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    @monthly_data = Dmer.includes(:user).where(date: @month.all_month)
     @monthly_done = 
-      Dmer.includes(:user).where(result_point: @month.beginning_of_month..@month.end_of_month).where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認")
+      Dmer.includes(:user).where(result_point: @month.all_month).where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認")
     @monthly_slmt = 
-      Dmer.includes(:user).where(settlement: @month.beginning_of_month..@month.end_of_month).where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認")
-    @monthly_2nd_slmt = Dmer.includes(:user).where(settlement_second: @month.beginning_of_month..@month.end_of_month).where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認")
-    @monthly_pic = Dmer.includes(:user).where(picture: @month.beginning_of_month..@month.end_of_month).where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認")
-    @monthly_pic_done = Dmer.includes(:user).where(status_update_settlement: @month.beginning_of_month..@month.end_of_month).where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認").where(status_settlement: "完了")
-    @monthly_slmt_dead = Dmer.includes(:user).where(settlement_deadline: @month.beginning_of_month..@month.end_of_month)
+      Dmer.includes(:user).where(settlement: @month.all_month).where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認")
+    @monthly_2nd_slmt = Dmer.includes(:user).where(settlement_second: @month.all_month).where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認")
+    @monthly_pic = Dmer.includes(:user).where(picture: @month.all_month).where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認")
+    @monthly_pic_done = Dmer.includes(:user).where(status_update_settlement: @month.all_month).where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認").where(status_settlement: "完了")
+    @monthly_slmt_dead = Dmer.includes(:user).where(settlement_deadline: @month.all_month)
     .where(status: "審査OK").where.not(industry_status: "NG").where.not(industry_status: "×").where.not(industry_status: "要確認").where(status_settlement: "期限切れ")
     @dmers_def = @monthly_data.where.not(def_status: nil)
+    @shifts = Shift.includes(:user).where(shift: "キャッシュレス新規").where(start_time: @month.all_month)
+    @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @month.all_month)  
   end 
 
   def simple_conf_year 
