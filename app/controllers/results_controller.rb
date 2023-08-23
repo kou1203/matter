@@ -1059,8 +1059,12 @@ class ResultsController < ApplicationController
       # ITSS
       @itss = Itss.includes(:user).where(user_id: @user.id).where(construction_schedule: @itss1_start_date..@itss1_end_date).where(status_ntt1: "工事完了")
       usen_separate_date = Date.new(2023,8,1)
-      @usen_pays_7month_ago = UsenPay.where(user_id: @user.id).where(date: ...usen_separate_date).where(result_point: @month.all_month) rescue 0
-      @usen_pays_8month_since = UsenPay.where(user_id: @user.id).where(date: usen_separate_date..).where(date: @month.all_month) rescue 0
+      @usen_pays_7month_ago = 
+        UsenPay.where(user_id: @user.id).where(date: ...usen_separate_date).where(result_point: @month.all_month)
+        .where.not(status: "自社不備").where.not(status: "自社NG") rescue 0
+      @usen_pays_8month_since = 
+        UsenPay.where(user_id: @user.id).where(date: usen_separate_date..).where(date: @month.all_month)
+        .where.not(status: "自社不備").where.not(status: "自社NG") rescue 0
     end
 
     def set_month_product # 基本的な商材の変数
