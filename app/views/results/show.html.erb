@@ -869,7 +869,7 @@
             <td class="total-td" colspan="">UsenPay</td>
               <td class="total-td" ><%= @usen_pays.length rescue 0 %></td>
               <td class="total-td" style="color: red;"><%=  %></td>
-            <td class="total-td" colspan=""><%= @usen_pays.length rescue 0 %></td>
+            <td class="total-td" colspan=""><%= @usen_pays.where.not(status: "自社NG").where.not(status: "自社不備").length rescue 0 %></td>
           </tr>
           </tbody>
         </table>
