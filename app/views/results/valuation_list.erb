@@ -47,7 +47,8 @@
       @rakuten_pay_val.sum(:valuation) +
       @airpay_done.sum(:valuation) +
       airpay_bonus +
-      @usen_pays.where(result_point: @month.all_month).sum(:valuation) +
+      @usen_pays_7month_ago.sum(:valuation) +
+      @usen_pays_8month_since.sum(:valuation) +
       @demaekan.sum(:valuation) +
       # その他商材
       @aupay_pic.sum(:valuation) +
@@ -419,7 +420,9 @@
     </tbody>
   </table>
 <% end %>
-<% if @usen_pays.where(result_point: @month.all_month).present? %>
+
+      
+<% if @usen_pays_7month_ago.present? || @usen_pays_8month_since.present? %>
 <h2>UsenPay第一成果</h2>
   <% num = 1 %>
   <table>
@@ -433,7 +436,19 @@
       <th class="valuation-th">評価売上</th>
     </thead>
     <tbody>
-      <% @usen_pays.where(result_point: @month.all_month).each do |usen_pay| %>
+      <% @usen_pays_7month_ago.each do |usen_pay| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= usen_pay.controll_num %></td>
+      <td class="valuation-td "><%= usen_pay.store_name %></td>
+      <td class="valuation-td "><%= usen_pay.date %></td>
+      <td class="valuation-td "><%= usen_pay.status %></td>
+      <td class="valuation-td "><%= usen_pay.result_point %></td>
+      <td class="valuation-td "><%= usen_pay.valuation.to_s(:delimited) %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+      <% @usen_pays_8month_since.each do |usen_pay| %>
       <tr>
       <td class="valuation-td "><%= num %></td>
       <td class="valuation-td "><%= usen_pay.controll_num %></td>

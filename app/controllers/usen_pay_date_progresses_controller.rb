@@ -133,10 +133,14 @@ class UsenPayDateProgressesController < ApplicationController
       profit_current = @usen_pay_user_result.sum(:profit)
     # 終着
         profit_fin = profit_current
-      
+    # 評価売
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       calc_period_and_per
-      valuation_current = @usen_pay_user_result.sum(:valuation)
+      # 7月より前の案件
+      valuation_current_7month_ago = @usen_pay_user_result.where(date: ...Date.new(2023, 8,1)).sum(:valuation) rescue 0
+      # 8月以降の案件
+      valuation_current_8month_since = @usen_pay_user_period.where(date: Date.new(2023, 8,1)..).sum(:valuation) rescue 0
+      valuation_current = valuation_current_7month_ago + valuation_current_8month_since rescue 0
 
       if i_user.user.position == "退職"
         user_base = i_user.user.position
