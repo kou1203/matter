@@ -200,6 +200,7 @@ class ResultsController < ApplicationController
       @airpaysticker_date_progress = AirpaystickerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @dmers_val_len = @dmer_date_progress.get_len - @dmer_date_progress.def_len rescue 0
       @aupays_val_len = @aupay_date_progress.get_len - @aupay_date_progress.def_len rescue 0
+      
     # シフト
       @shift_schedule_new = @shifts.where(shift: "キャッシュレス新規").length
       @shift_schedule_slmt = @shifts.where(shift: "キャッシュレス決済").length
@@ -1065,6 +1066,7 @@ class ResultsController < ApplicationController
       @usen_pays_8month_since = 
         UsenPay.where(user_id: @user.id).where(date: usen_separate_date..).where(date: @month.all_month)
         .where.not(status: "自社不備").where.not(status: "自社NG") rescue 0
+      @usen_pay_val_len = @usen_pays_8month_since.length + @usen_pays_7month_ago.length rescue 0
     end
 
     def set_month_product # 基本的な商材の変数
