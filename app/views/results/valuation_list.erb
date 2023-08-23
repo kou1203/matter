@@ -115,10 +115,10 @@
   </tr>
   <tr>
     <td class="valuation-td">UsenPay</td>
-    <td class="valuation-td"><%= @usen_pays.where(result_point: @month.all_month).length rescue 0 %></td>
+    <td class="valuation-td"><%= @usen_pays_7month_ago.length + @usen_pays_8month_since.length rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
-    <td class="valuation-td"><%= @usen_pays.where(result_point: @month.all_month).sum(:valuation).to_s(:delimited) rescue 0 %></td>
+    <td class="valuation-td"><%= (@usen_pays_7month_ago.sum(:valuation) + @usen_pays_8month_since.sum(:valuation)).to_s(:delimited) rescue 0 %></td>
   </tr>
   <% if @aupay_pic.present? && @aupay_pic.exists?(user_id: @user.id) %>
   <tr>
