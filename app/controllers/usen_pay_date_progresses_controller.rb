@@ -124,7 +124,7 @@ class UsenPayDateProgressesController < ApplicationController
       @usen_pay_user = UsenPay.where(user_id: user_id)
       @usen_pay_user_period = @usen_pay_user.where(date: @start_date..@end_date)
       get_len = @usen_pay_user_period.length
-      @usen_pay_user_result = @usen_pay_user.where(result_point: @month.all_month)
+      @usen_pay_user_result = @usen_pay_user.where(result_point: @month.all_month).where.not(status: "自社不備").where.not(status: "自社NG")
       result_len = @usen_pay_user_result.length
     # 現状売上
       valuation_current = 0
