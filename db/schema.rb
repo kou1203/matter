@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_07_04_075616) do
+ActiveRecord::Schema.define(version: 2023_08_29_090234) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -646,6 +646,45 @@ ActiveRecord::Schema.define(version: 2023_07_04_075616) do
     t.integer "breaking_tv_excavation"
     t.integer "breaking_tv_excavation_ng"
     t.index ["user_id"], name: "index_n_results_on_user_id"
+  end
+
+  create_table "nuros", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "controll_num", null: false
+    t.bigint "user_id"
+    t.string "last_name_kana"
+    t.string "prefecture"
+    t.date "date", null: false
+    t.string "status"
+    t.text "remarks"
+    t.string "status_after_call"
+    t.string "status_progress"
+    t.string "status_antena"
+    t.date "start"
+    t.date "revoke"
+    t.date "cancel"
+    t.string "option_tell"
+    t.date "option_hikari_tv"
+    t.date "option_hikari_tv2"
+    t.date "option_seiton_and_hozon"
+    t.date "option_seiton_and_hozon_cancel"
+    t.string "option_seiton_and_hozon_flag"
+    t.date "option_nuro_hikari_safe"
+    t.date "option_nuro_hikari_safe_cancel"
+    t.string "option_nuro_hikari_safe_flag"
+    t.date "option_nuro_sakutto_support"
+    t.date "option_nuro_sakutto_support_cancel"
+    t.string "option_nuro_sakutto_support_flag"
+    t.date "option_tokutoku_super"
+    t.date "option_tokutoku_super_cacnel"
+    t.string "option_tokutoku_super_flag"
+    t.date "option_nuro_smart_life"
+    t.date "option_nuro_smart_life_cancel"
+    t.string "option_nuro_smart_life_flag"
+    t.date "option_tsunagaru_mesh_wifi"
+    t.date "option_tsunagaru_mesh_wifi_cancel"
+    t.string "option_tsunagaru_mesh_wifi_flag"
+    t.string "isp_num"
+    t.index ["user_id"], name: "index_nuros_on_user_id"
   end
 
   create_table "other_product_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1789,6 +1828,7 @@ ActiveRecord::Schema.define(version: 2023_07_04_075616) do
   add_foreign_key "dmersticker_date_progresses", "users"
   add_foreign_key "itsses", "users"
   add_foreign_key "n_results", "users"
+  add_foreign_key "nuros", "users"
   add_foreign_key "other_product_date_progresses", "users"
   add_foreign_key "other_products", "users"
   add_foreign_key "pandas", "store_props"

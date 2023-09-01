@@ -677,26 +677,18 @@ class ResultsController < ApplicationController
     redirect_to request.referer
   end 
 
+  # 獲得確認
   def date_progress
     # 日々進捗
-    @month_daily = params[:month] ? Date.parse(params[:month]) : Time.zone.today
-    @results_week = 
-      Result.preload(:user).eager_load(:result_cash).where(date: @month_daily.ago(2.days)..@month_daily)
-      @dmers = 
-      Dmer.eager_load(:store_prop).select("dmers.id,dmers.user_id,dmers.store_prop_id")
-      .where(store_prop: {head_store: nil})
-      .where.not(status: "自社不備")
-      .where.not(status: "自社NG")
-    @aupays = 
-      Aupay.eager_load(:store_prop).select("aupays.id,aupays.user_id,aupays.store_prop_id")
-      .where(store_prop: {head_store: nil})
-      .where.not(status: "自社不備")
-      .where.not(status: "自社NG")
-    @paypays = Paypay.select("paypays.id,paypays.user_id")
-    @rakuten_pays = RakutenPay.select("rakuten_pays.id,rakuten_pays.user_id")
-    @airpays = Airpay.eager_load(:store_prop).select("airpays.id, airpays.user_id,airpays.store_prop_id,airpays.status")
-    @users = 
-      User.where.not(position: "退職").or(User.where(position: nil))
+    @results = 
+      Result.includes(:result_cash).where(date: @month.ago(2.days)..@month)
+    @dmers = Dmer.where(date: @month.ago(2.days)..@month)
+    @aupays = Aupay.where(date: @month.ago(2.days)..@month)
+    @paypays = Paypay.where(date: @month.ago(2.days)..@month)
+    @airpays = Airpay.where(date: @month.ago(2.days)..@month)
+    @rakuten_pays = RakutenPay.where(date: @month.ago(2.days)..@month)
+    @usen_pays = UsenPay.where(date: @month.ago(2.days)..@month)
+    @users = User.where(base_sub: "キャッシュレス").where.not(position: "退職")
   end 
 
   def daily_report

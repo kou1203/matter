@@ -1,123 +1,76 @@
-<div data-scope-path="results/date_progress">
-<h2><%= link_to "<<",date_progress_results_path(month:@month_daily.ago(3.days)), class:"link" %>
-    <%= @month_daily.month %>月
-    <% if @month_daily.present? %>
-    <%= @month_daily.ago(2.days).day %>〜
-    <%= @month_daily %>
-    獲得
-    <% end %>
-    <%= link_to ">>",date_progress_results_path(month:@month_daily.since(3.days)), class:"link" %>
-    <span><%= link_to "Top",results_path %></span>
-</h2>
-  <table class="out-tb">
-  <thead>
+<div data-scope-path="shares/date-progress">
+  <h2><%= link_to "<<",date_progress_results_path(month:@month.ago(3.days)), class:"link" %>
+      <%= @month.month %>月
+      <% if @month.present? %>
+      <%= @month.ago(2.days).day %>〜
+      <%= @month.day %>日
+      獲得
+      <% end %>
+      <%= link_to ">>",date_progress_results_path(month:@month.since(3.days)), class:"link" %>
+      <span><%= link_to "Top",results_path, "data-turbolinks": false %></span>
+  </h2>
+  <table class="progress-tb" style="width: 95vw;">
+    <thead>
     <tr>
-    <th class="th-head">ユーザー名</th>
-    <th class="th-head">内容</th>
-    <% @results_week.group(:date).order(:date).each do |r_date| %><%# 日付をループ %>
-    <th class="th-head"><%= r_date.date.month %>月<%= r_date.date.day %>日</th>
-    <% end %>
-      </tr>
+      <th class="progress-th1" rowspan="">ユーザー</th>
+      <% date_period = [@month.ago(2.days),@month.ago(1.days),@month] %>
+      <% date_period.each do |date| %>
+      <th class="progress-th1"colspan="3" ><%= date.strftime("%m月%d日") %></th>
+      <% end %>
+    </tr>
+    <tr>
+      <th class="progress-th2" ></th>
+      <% date_period.each do |a| %>
+      <th class="progress-th2" >営業終着</th>
+      <th class="progress-th2" >実件数</th>
+      <th class="progress-th2 red" >要確認商材</th>
+      <% end %>
+    </tr>
     </thead>
     <tbody>
+    <% @users.each do |user| %>
     <tr>
-    <% @results_week.group(:user_id).order(:base).find_each do |r_user| %><%# ユーザーを拠点毎にループ %>
-      <th class="out-th" rowspan="2"><%= r_user.user.name %></th>
-      <td>営業終着内訳</td>
-      <% @results_week.group(:date).order(:date).each do |r_date| %>
-      <%# 管理の打ち込みデータ（営業のデータと比較するため） %>
-      <% dmer_len = @dmers.where(date: r_date.date).where(user_id: r_user.user.id).length %>
-      <% aupay_len = @aupays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
-      <% paypay_len = @paypays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
-      <% rakuten_pay_len = @rakuten_pays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
-      <% airpay_len = @airpays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
-        <td>
-        <% if 
-          @results_week.where(user_id: r_user.user_id).exists?(date: r_date.date) && 
-          @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.present?
-        %>
-        <% if @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.dmer.present?  %>
-        <% if dmer_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.dmer %>
-        <span style="color:red;">dメル</span>
-        <% else %>
-        <span >dメル</span>
+      <td class="progress-td"><%= user.name %></td>
+      <% date_period.each do |date| %>
+      <td class="progress-td">
+        dメル<%= @results.where(user_id: user.id).where(date: date).sum(:dmer) %>件,
+        auPay<%= @results.where(user_id: user.id).where(date: date).sum(:aupay) %>件<br>
+        PayPay<%= @results.where(user_id: user.id).where(date: date).sum(:paypay) %>件
+        楽天ペイ<%= @results.where(user_id: user.id).where(date: date).sum(:rakuten_pay) %>件<br>
+        AirPay<%= @results.where(user_id: user.id).where(date: date).sum(:airpay) %>件
+        UsenPay<%= @results.where(user_id: user.id).where(date: date).sum(:other_product1) %>件
+      </td>
+      <td class="progress-td">
+        dメル<%= @dmers.where(user_id: user.id).where(date: date).length %>件,
+        auPay<%= @aupays.where(user_id: user.id).where(date: date).length %>件<br>
+        PayPay<%= @paypays.where(user_id: user.id).where(date: date).length %>件
+        楽天ペイ<%= @rakuten_pays.where(user_id: user.id).where(date: date).length %>件<br>
+        AirPay<%= @airpays.where(user_id: user.id).where(date: date).length %>件,
+        UsenPay<%= @usen_pays.where(user_id: user.id).where(date: date).length %>件
+      </td>
+      <td class="progress-td red">
+        <% if @dmers.where(user_id: user.id).where(date: date).length - @results.where(user_id: user.id).where(date: date).sum(:dmer) != 0 %>
+          dメル<br>
         <% end %>
-        <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.dmer %>
+        <% if @aupays.where(user_id: user.id).where(date: date).length - @results.where(user_id: user.id).where(date: date).sum(:aupay) != 0 %>
+          auPay<br>
         <% end %>
-        
-        <% if @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.aupay.present?  %>
-        <% if aupay_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.aupay %>
-        <span style="color:red;">auPay</span>
-        <% else %>
-        <span >auPay</span>
+        <% if @paypays.where(user_id: user.id).where(date: date).length - @results.where(user_id: user.id).where(date: date).sum(:paypay) != 0 %>
+          PayPay<br>
         <% end %>
-        <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.aupay %>
+        <% if @rakuten_pays.where(user_id: user.id).where(date: date).length - @results.where(user_id: user.id).where(date: date).sum(:rakuten_pay) != 0 %>
+          楽天ペイ<br>
         <% end %>
-        <% if @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.paypay.present?  %>
-        <% if paypay_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.paypay %>
-        <span style="color:red;">PayPay</span>
-        <% else %>
-        <span >PayPay</span>
+        <% if @airpays.where(user_id: user.id).where(date: date).length - @results.where(user_id: user.id).where(date: date).sum(:airpay) != 0 %>
+          AirPay<br>
         <% end %>
-        <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.paypay %>
+        <% if @usen_pays.where(user_id: user.id).where(date: date).length - @results.where(user_id: user.id).where(date: date).sum(:other_product1) != 0 %>
+          UsenPay
         <% end %>
-
-        <% if @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.rakuten_pay.present?  %>
-        <% if rakuten_pay_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.rakuten_pay %>
-        <span style="color:red;">楽天ペイ</span>
-        <% else %>
-        <span >楽天ペイ</span>
-        <% end %>
-        <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.rakuten_pay %>
-        <% end %>
-
-        <% if @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.airpay.present?  %>
-        <% if airpay_len != @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.airpay %>
-        <span style="color:red;">AirPay</span>
-        <% else %>
-        <span >AirPay</span>
-        <% end %>
-        <%= @results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.airpay %>
-        <% end %>
-        <%= link_to "編集",edit_result_cash_path(@results_week.where(user_id: r_user.user_id).where(date: r_date.date).first.result_cash.id) %>
-        </td>
+      </td>
       <% end %>
     <% end %>
     </tr>
-    <tr>
-    <td style="opacity:0.5;">管理登録内訳</td>
-      <% @results_week.group(:date).order(:date).each do |r_date| %><%# 管理打ち込みデータをループ %>
-      <% product_sum = 0 %>
-      <% dmer_len = @dmers.where(date: r_date.date).where(user_id: r_user.user.id).length %>
-      <% aupay_len = @aupays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
-      <% paypay_len = @paypays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
-      <% rakuten_pay_len = @rakuten_pays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
-      <% airpay_len = @airpays.where(date: r_date.date).where(user_id: r_user.user.id).length %>
-      <td style="opacity: 0.5;">
-      <% if dmer_len != 0 %>
-        dメル
-        <%= dmer_len %>
-      <% end %>
-      <% if aupay_len != 0 %>
-        auPay
-        <%=  aupay_len %>
-      <% end %>
-      <% if paypay_len != 0 %>
-        PayPay
-        <%=   paypay_len %>
-      <% end %>
-      <% if rakuten_pay_len != 0 %>
-        楽天ペイ
-        <%=  rakuten_pay_len %>
-      <% end %>
-      <% if airpay_len != 0 %>
-        AirPay
-        <%=  airpay_len %>
-      <% end %>
-      </td>
-      <% end %>
-    </tr>
-  <% end %>
-  </tbody>
+    </tbody>
   </table>
 </div>

@@ -1,0 +1,77 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<% calc_periods_ary = [@calc_periods_val, @calc_periods_prof] %>
+<% tb_cnt = 0 %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title">売上計算期間設定</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/date-progress">
+    <p class="s-text"><%= alert %></p>
+    <h2>
+      <%= link_to "<<",weekly_data_calc_periods_path(month: @month.ago(1.month)), class:"link" %>
+      <%= @month.month %>月週間生産性（<%= link_to "戻る",calc_periods_path(month: @month), class:"link" %>）
+      <%= link_to ">>",weekly_data_calc_periods_path(month: @month.since(1.month)), class:"link" %>
+    </h2>
+      <table class="progress-tb">
+        <thead>
+          <tr>
+            <th class="progress-th1" colspan="4">基本情報</th>
+            <th class="progress-th1" colspan="3">シフト</th>
+            <% week_start = 1 %>
+            <% week_end = 7 %>
+            <% 5.times do |i| %>
+            <% if week_end >= @month.end_of_month.day %>
+              <% week_end = @month.end_of_month.day %>
+            <% end %>
+            <th class="progress-th1" colspan="3"><%= i + 1 %>週目（<%= week_start %>〜<%= week_end %>）</th>
+            <% week_start += 7 %>
+            <% week_end += 7 %>
+            <% end %>
+          </tr>
+          <tr>
+            <th class="progress-th2">拠点</th>
+            <th class="progress-th2">氏名</th>
+            <th class="progress-th2">役職</th>
+            <th class="progress-th2">予定シフト</th>
+            <th class="progress-th2">消化シフト</th>
+            <th class="progress-th2">残シフト</th>
+            <% 5.times do %>
+            <th class="progress-th2">dメル</th>
+            <th class="progress-th2">AirPay</th>
+            <th class="progress-th2">UsenPay</th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% @bases.each do |base| %><%# 拠点ごとのループ %>
+          <% @users.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |user| %><%# ユーザーごとのループ %>
+          <tr>
+            <td class="progress-td"><%= base %></td>
+            <td class="progress-td"><%= user.name %></td>
+            <td class="progress-td"><%= user.position_sub %></td>
+            <td class="progress-td"><%= @shifts.where(user_id: user.id).length %></td>
+            <td class="progress-td"><%= @results.where(user_id: user.id).length %></td>
+            <td class="progress-td"><%= @shifts.where(user_id: user.id).length - @results.where(user_id: user.id).length %></td>
+            <% week_start = 1 %>
+            <% week_end = 7 %>
+            <% 5.times do %><%# 週ごとの商材の獲得数を出力 %>
+            <% if week_end >= @month.end_of_month.day %>
+              <% week_end = @month.end_of_month.day %>
+            <% end %>
+            <td class="progress-td"><%= (@dmers.where(user_id: user.id).where(date: Date.new(@month.year, @month.month,week_start)..Date.new(@month.year, @month.month,week_end)).length.to_f / @results.where(user_id: user.id).where(date: Date.new(@month.year, @month.month,week_start)..Date.new(@month.year, @month.month,week_end)).length).round(1) rescue 0 %></td>
+            <td class="progress-td"><%= (@airpays.where(user_id: user.id).where(date: Date.new(@month.year, @month.month,week_start)..Date.new(@month.year, @month.month,week_end)).length.to_f / @results.where(user_id: user.id).where(date: Date.new(@month.year, @month.month,week_start)..Date.new(@month.year, @month.month,week_end)).length).round(1) rescue 0 %></td>
+            <td class="progress-td"><%= (@usen_pays.where(user_id: user.id).where(date: Date.new(@month.year, @month.month,week_start)..Date.new(@month.year, @month.month,week_end)).length.to_f / @results.where(user_id: user.id).where(date: Date.new(@month.year, @month.month,week_start)..Date.new(@month.year, @month.month,week_end)).length).round(1) rescue 0 %></td>
+            <% week_start += 7 %>
+            <% week_end += 7 %>
+            <% end %><%# /週ごとの商材の獲得数を出力 %>
+          </tr>
+          <% end %><%# /ユーザーごとのループ %>
+          <% end %><%# /拠点ごとのループ %>
+        </tbody>
+      </table>
+  </div>
+</div>

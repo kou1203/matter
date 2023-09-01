@@ -268,17 +268,11 @@ Rails.application.routes.draw do
   # end 
 
   resources :calc_periods do 
-    collection {get :cash_csv_export}
-    collection {get :cash_valuation_csv_export}
-    collection {get :dmer_csv_export}
-    collection {get :aupay_csv_export}
-    collection {get :paypay_csv_export}
-    collection {get :rakuten_pay_csv_export}
-    collection {get :airpay_csv_export}
-    collection {get :demaekan_csv_export}
-    collection {get :austicker_csv_export}
-    collection {get :dmersticker_csv_export}
-    collection {get :airpaysticker_csv_export}
+    collection {
+      get :cash_csv_export
+      get :cash_valuation_csv_export
+      get :weekly_data
+    }
   end 
 
   get "val_users", to: "calc_periods#val_users", as: "val_users"
@@ -427,5 +421,7 @@ Rails.application.routes.draw do
       get :product
     }
   end 
+
+  resources :nuros
 
 end

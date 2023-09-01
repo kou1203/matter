@@ -6,6 +6,8 @@ window.addEventListener('turbolinks:load', function(){
   const pullDownParents2 = document.getElementById("pull-down2")
   const pullDownButton3 = document.getElementById("lists3")
   const pullDownParents3 = document.getElementById("pull-down3")
+  const pullDownButton4 = document.getElementById("lists4")
+  const pullDownParents4 = document.getElementById("pull-down4")
   // 拠点別の絞り込み用変数
   const chubuPageButton = document.getElementById("chubu-button")
   const kansaiPageButton = document.getElementById("kansai-button")
@@ -40,7 +42,14 @@ window.addEventListener('turbolinks:load', function(){
       pullDownParents3.setAttribute("style", "display:block;")
     }
   })
-
+  
+  pullDownButton4.addEventListener('click', function(){
+    if (pullDownParents4.getAttribute("style") == "display:block;") {
+      pullDownParents4.removeAttribute("style", "display:block;")
+    } else {
+      pullDownParents4.setAttribute("style", "display:block;")
+    }
+  })
 
 
   // 拠点別絞り込み関数
