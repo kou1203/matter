@@ -662,6 +662,7 @@ ActiveRecord::Schema.define(version: 2023_08_29_090234) do
     t.date "start"
     t.date "revoke"
     t.date "cancel"
+    t.string "current_month_cancel"
     t.string "option_tell"
     t.date "option_hikari_tv"
     t.date "option_hikari_tv2"

@@ -1,6 +1,19 @@
 class NurosController < ApplicationController
 
   def index 
+    @q = Nuro.ransack(params[:q])
+    @nuros = 
+      if params[:q].nil?
+        Nuro.none 
+      else
+        @q.result(distinct: false)
+      end
+      @nuros_data = @nuros.page(params[:page]).per(100)
+      session[:previous_url] = request.referer
+  end 
+
+  def show 
+    @nuro = Nuro.find(params[:id])
   end 
 
   def import

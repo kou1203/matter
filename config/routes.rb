@@ -422,6 +422,10 @@ Rails.application.routes.draw do
     }
   end 
 
-  resources :nuros
+  resources :nuros do 
+    collection {
+      post :import
+    }
+  end 
 
 end

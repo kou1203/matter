@@ -304,8 +304,8 @@ class CalcPeriodsController < ApplicationController
   def weekly_data
     @bases = ["中部SS", "関西SS", "関東SS", "九州SS"]
     @users = User.where(base_sub: "キャッシュレス").where.not(position: "退職")
-    @shifts = Shift.where(start_time: @month.all_month)
-    @results = Result.where(date: @month.all_month)
+    @shifts = Shift.where(start_time: @month.all_month).where(shift: "キャッシュレス新規")
+    @results = Result.where(date: @month.all_month).where(shift: "キャッシュレス新規")
     @dmers = Dmer.where(date: @month.all_month)
     @airpays = Airpay.where(date: @month.all_month)
     @usen_pays = UsenPay.where(date: @month.all_month)

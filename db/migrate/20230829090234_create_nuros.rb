@@ -15,6 +15,7 @@ class CreateNuros < ActiveRecord::Migration[6.1]
       t.date :start
       t.date :revoke
       t.date :cancel
+      t.string :current_month_cancel
       t.string :option_tell
       t.date :option_hikari_tv
       t.date :option_hikari_tv2

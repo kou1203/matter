@@ -13,16 +13,45 @@ class Nuro < ApplicationRecord
       user = User.find_by(name: row["獲得者"]) 
       errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
         u_id = user.id if user.present?
-        praness = new(
+        nuro = new(
           controll_num: row["管理番号"],
           user_id: u_id,
           last_name_kana: row["カナ(姓)"],
+          prefecture: row["都道府県市区町村"],
           date: row["お申込日"],
           status: row["現状ステータス"],
           remarks: row["備考"],
-          remarks: row["後確日時"],
+          status_after_call: row["後確ステータス"],
+          status_progress: row["進捗ステータス"],
+          status_antena: row["アンテナ施工ステータス"],
+          start: row["開通日"],
+          revoke: row["キャンセル日"],
+          cancel: row["解約日"],
+          current_month_cancel: row["光回線短期解約"],
+          option_tell: row["電話サービス同時申込有無"],
+          option_hikari_tv: row["ひかりTVサービス開始日(1契約目)"],
+          option_hikari_tv2: row["ひかりTVサービス開始日(2契約目)"],
+          option_seiton_and_hozon: row["SEITON&HOZON 開始日"],
+          option_seiton_and_hozon_cancel: row["SEITON&HOZON キャンセル"],
+          option_seiton_and_hozon_flag: row["SEITON&HOZON短期解約"],
+          option_nuro_hikari_safe: row["NURO 光 Safe 開始日"],
+          option_nuro_hikari_safe_cancel: row["NURO 光 Safe 開始日　キャンセル"],
+          option_nuro_hikari_safe_flag: row["NURO 光 Safe短期解約"],
+          option_nuro_sakutto_support: row["NURO さくっとサポート 開始日"],
+          option_nuro_sakutto_support_cancel: row["NURO さくっとサポート 開始日　キャンセル"],
+          option_nuro_sakutto_support_flag: row["NURO さくっとサポート短期解約"],
+          option_tokutoku_super: row["とくとくネットスーパー 開始日"],
+          option_tokutoku_super_cacnel: row["とくとくネットスーパー 開始日　キャンセル"],
+          option_tokutoku_super_flag: row["とくとくネットスーパー短期解約"],
+          option_nuro_smart_life: row["NUROスマートライフ 開始日"],
+          option_nuro_smart_life_cancel: row["NUROスマートライフ 開始日　キャンセル"],
+          option_nuro_smart_life_flag: row["NUROスマートライフ短期解約"],
+          option_tsunagaru_mesh_wifi: row["つながるメッシュWi-Fi 開始日"],
+          option_tsunagaru_mesh_wifi_cancel: row["つながるメッシュWi-Fi 開始日　キャンセル"],
+          option_tsunagaru_mesh_wifi_flag: row["つながるメッシュWi-Fi短期解約"],
+          isp_num: row["ISP番号"]
         )
-        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if praness.invalid? && errors.length < 5
+        errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if nuro.invalid? && errors.length < 5
     end
     errors
   end
@@ -36,79 +65,93 @@ class Nuro < ApplicationRecord
     CSV.foreach(file.path, encoding: "#{encoding}:UTF-8",headers: true) do |row|
       user = User.find_by(name: row["獲得者"])
       u_id = user.id if user.present?
-      praness = find_by(customer_num: row["案件番号"])
-      if praness.present?
-        praness.assign_attributes(
-          customer_num: row["案件番号"],
-          store_name: row["店舗名"],
-          date: row["獲得日"],
+      nuro = find_by(controll_num: row["管理番号"])
+      if nuro.present?
+        nuro.assign_attributes(
+          controll_num: row["管理番号"],
           user_id: u_id,
+          last_name_kana: row["カナ(姓)"],
+          prefecture: row["都道府県市区町村"],
+          date: row["お申込日"],
           status: row["現状ステータス"],
-          cash_status: row["口座ステータス"],
-          terminal_num: row["端末管理番号"],
           remarks: row["備考"],
-          sales_man_remarks: row["営業側備考"],
-          terminal_status: row["端末状態"],
-          ssid_1: row["SSID①"],
-          pass_1: row["パスワード①"],
-          ssid_2: row["SSID②"],
-          pass_2: row["パスワード②"],
-          cancel: row["解約キャンセル"],
-          cancel_reason: row["事由"],
-          ssid_pass_change: row["SSID/パス変更"],
-          start: row["利用開始日"],
-          payment_start: row["料金発生日"],
-          first_payment: row["初回引き落とし日"],
-          aplus_num: row["アプラス顧客番号"],
-          cash_name: row["口座名義"],
-          payment_terminal: row["決済端末"],
-          not_use_reason: row["端末不可理由"],
-          done: row["完了"],
-          option: row["オプション"],
-          mail: row["メールアドレス"],
-          notice_send: row["通知書送付日"],
-          def_remarks: row["不備内容"]
+          status_after_call: row["後確ステータス"],
+          status_progress: row["進捗ステータス"],
+          status_antena: row["アンテナ施工ステータス"],
+          start: row["開通日"],
+          revoke: row["キャンセル日"],
+          cancel: row["解約日"],
+          current_month_cancel: row["光回線短期解約"],
+          option_tell: row["電話サービス同時申込有無"],
+          option_hikari_tv: row["ひかりTVサービス開始日(1契約目)"],
+          option_hikari_tv2: row["ひかりTVサービス開始日(2契約目)"],
+          option_seiton_and_hozon: row["SEITON&HOZON 開始日"],
+          option_seiton_and_hozon_cancel: row["SEITON&HOZON キャンセル"],
+          option_seiton_and_hozon_flag: row["SEITON&HOZON短期解約"],
+          option_nuro_hikari_safe: row["NURO 光 Safe 開始日"],
+          option_nuro_hikari_safe_cancel: row["NURO 光 Safe 開始日　キャンセル"],
+          option_nuro_hikari_safe_flag: row["NURO 光 Safe短期解約"],
+          option_nuro_sakutto_support: row["NURO さくっとサポート 開始日"],
+          option_nuro_sakutto_support_cancel: row["NURO さくっとサポート 開始日　キャンセル"],
+          option_nuro_sakutto_support_flag: row["NURO さくっとサポート短期解約"],
+          option_tokutoku_super: row["とくとくネットスーパー 開始日"],
+          option_tokutoku_super_cacnel: row["とくとくネットスーパー 開始日　キャンセル"],
+          option_tokutoku_super_flag: row["とくとくネットスーパー短期解約"],
+          option_nuro_smart_life: row["NUROスマートライフ 開始日"],
+          option_nuro_smart_life_cancel: row["NUROスマートライフ 開始日　キャンセル"],
+          option_nuro_smart_life_flag: row["NUROスマートライフ短期解約"],
+          option_tsunagaru_mesh_wifi: row["つながるメッシュWi-Fi 開始日"],
+          option_tsunagaru_mesh_wifi_cancel: row["つながるメッシュWi-Fi 開始日　キャンセル"],
+          option_tsunagaru_mesh_wifi_flag: row["つながるメッシュWi-Fi短期解約"],
+          isp_num: row["ISP番号"]
         )
-        if praness.has_changes_to_save? 
-          praness.save!
-          praness.assign_attributes(status_update: Date.today)
+        if nuro.has_changes_to_save? 
+          nuro.save!
+          nuro.assign_attributes(status_update: Date.today)
           update_cnt += 1
         else  
           nochange_cnt += 1
         end 
       else  
-        praness = new(
-          customer_num: row["案件番号"],
-          store_name: row["店舗名"],
-          date: row["獲得日"],
+        nuro = new(
+          controll_num: row["管理番号"],
           user_id: u_id,
+          last_name_kana: row["カナ(姓)"],
+          prefecture: row["都道府県市区町村"],
+          date: row["お申込日"],
           status: row["現状ステータス"],
-          cash_status: row["口座ステータス"],
-          terminal_num: row["端末管理番号"],
           remarks: row["備考"],
-          sales_man_remarks: row["営業側備考"],
-          terminal_status: row["端末状態"],
-          ssid_1: row["SSID①"],
-          pass_1: row["パスワード①"],
-          ssid_2: row["SSID②"],
-          pass_2: row["パスワード②"],
-          cancel: row["解約キャンセル"],
-          cancel_reason: row["事由"],
-          ssid_pass_change: row["SSID/パス変更"],
-          start: row["利用開始日"],
-          payment_start: row["料金発生日"],
-          first_payment: row["初回引き落とし日"],
-          aplus_num: row["アプラス顧客番号"],
-          cash_name: row["口座名義"],
-          payment_terminal: row["決済端末"],
-          not_use_reason: row["端末不可理由"],
-          done: row["完了"],
-          option: row["オプション"],
-          mail: row["メールアドレス"],
-          notice_send: row["通知書送付日"],
-          def_remarks: row["不備内容"]
+          status_after_call: row["後確ステータス"],
+          status_progress: row["進捗ステータス"],
+          status_antena: row["アンテナ施工ステータス"],
+          start: row["開通日"],
+          revoke: row["キャンセル日"],
+          cancel: row["解約日"],
+          current_month_cancel: row["光回線短期解約"],
+          option_tell: row["電話サービス同時申込有無"],
+          option_hikari_tv: row["ひかりTVサービス開始日(1契約目)"],
+          option_hikari_tv2: row["ひかりTVサービス開始日(2契約目)"],
+          option_seiton_and_hozon: row["SEITON&HOZON 開始日"],
+          option_seiton_and_hozon_cancel: row["SEITON&HOZON キャンセル"],
+          option_seiton_and_hozon_flag: row["SEITON&HOZON短期解約"],
+          option_nuro_hikari_safe: row["NURO 光 Safe 開始日"],
+          option_nuro_hikari_safe_cancel: row["NURO 光 Safe 開始日　キャンセル"],
+          option_nuro_hikari_safe_flag: row["NURO 光 Safe短期解約"],
+          option_nuro_sakutto_support: row["NURO さくっとサポート 開始日"],
+          option_nuro_sakutto_support_cancel: row["NURO さくっとサポート 開始日　キャンセル"],
+          option_nuro_sakutto_support_flag: row["NURO さくっとサポート短期解約"],
+          option_tokutoku_super: row["とくとくネットスーパー 開始日"],
+          option_tokutoku_super_cacnel: row["とくとくネットスーパー 開始日　キャンセル"],
+          option_tokutoku_super_flag: row["とくとくネットスーパー短期解約"],
+          option_nuro_smart_life: row["NUROスマートライフ 開始日"],
+          option_nuro_smart_life_cancel: row["NUROスマートライフ 開始日　キャンセル"],
+          option_nuro_smart_life_flag: row["NUROスマートライフ短期解約"],
+          option_tsunagaru_mesh_wifi: row["つながるメッシュWi-Fi 開始日"],
+          option_tsunagaru_mesh_wifi_cancel: row["つながるメッシュWi-Fi 開始日　キャンセル"],
+          option_tsunagaru_mesh_wifi_flag: row["つながるメッシュWi-Fi短期解約"],
+          isp_num: row["ISP番号"]
           )
-        praness.save!
+        nuro.save!
         new_cnt += 1
       end
     end
