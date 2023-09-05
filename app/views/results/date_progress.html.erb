@@ -7,7 +7,7 @@
       獲得
       <% end %>
       <%= link_to ">>",date_progress_results_path(month:@month.since(3.days)), class:"link" %>
-      <span><%= link_to "Top",results_path, "data-turbolinks": false %></span>
+      <span><%= link_to "Top",results_path, "data-turbolinks": false %><%= alert %></span>
   </h2>
   <table class="progress-tb" style="width: 95vw;">
     <thead>
@@ -33,12 +33,16 @@
       <td class="progress-td"><%= user.name %></td>
       <% date_period.each do |date| %>
       <td class="progress-td">
-        dメル<%= @results.where(user_id: user.id).where(date: date).sum(:dmer) %>件,
-        auPay<%= @results.where(user_id: user.id).where(date: date).sum(:aupay) %>件<br>
-        PayPay<%= @results.where(user_id: user.id).where(date: date).sum(:paypay) %>件
-        楽天ペイ<%= @results.where(user_id: user.id).where(date: date).sum(:rakuten_pay) %>件<br>
-        AirPay<%= @results.where(user_id: user.id).where(date: date).sum(:airpay) %>件
-        UsenPay<%= @results.where(user_id: user.id).where(date: date).sum(:other_product1) %>件
+        <% date_result = @results.where(user_id: user.id).where(date: date) %>
+        dメル<%= date_result.sum(:dmer) %>件,
+        auPay<%= date_result.sum(:aupay) %>件<br>
+        PayPay<%= date_result.sum(:paypay) %>件
+        楽天ペイ<%= date_result.sum(:rakuten_pay) %>件<br>
+        AirPay<%= date_result.sum(:airpay) %>件
+        UsenPay<%= date_result.sum(:other_product1) %>件
+        <% if date_result.present? && date_result.first.result_cash.present? %>
+        <br><%= link_to "編集", edit_result_cash_path(date_result.first.result_cash.id), class: "link" %>
+        <% end  %>
       </td>
       <td class="progress-td">
         dメル<%= @dmers.where(user_id: user.id).where(date: date).length %>件,
