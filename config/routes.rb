@@ -428,4 +428,10 @@ Rails.application.routes.draw do
     }
   end 
 
+  resources :nuro_payments do 
+    collection {
+      post :import
+    }
+  end 
+  
 end

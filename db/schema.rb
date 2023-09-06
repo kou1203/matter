@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_08_29_090234) do
+ActiveRecord::Schema.define(version: 2023_09_05_105135) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -646,6 +646,17 @@ ActiveRecord::Schema.define(version: 2023_08_29_090234) do
     t.integer "breaking_tv_excavation"
     t.integer "breaking_tv_excavation_ng"
     t.index ["user_id"], name: "index_n_results_on_user_id"
+  end
+
+  create_table "nuro_payments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "nuro_id"
+    t.string "category", null: false
+    t.string "isp_num", null: false
+    t.string "name", null: false
+    t.string "service", null: false
+    t.date "payment", null: false
+    t.integer "price", null: false
+    t.index ["nuro_id"], name: "index_nuro_payments_on_nuro_id"
   end
 
   create_table "nuros", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1829,6 +1840,7 @@ ActiveRecord::Schema.define(version: 2023_08_29_090234) do
   add_foreign_key "dmersticker_date_progresses", "users"
   add_foreign_key "itsses", "users"
   add_foreign_key "n_results", "users"
+  add_foreign_key "nuro_payments", "nuros"
   add_foreign_key "nuros", "users"
   add_foreign_key "other_product_date_progresses", "users"
   add_foreign_key "other_products", "users"

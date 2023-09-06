@@ -1,5 +1,6 @@
 class Nuro < ApplicationRecord
   belongs_to :user
+  has_many :nuro_payments
   with_options presence: true do 
     validates :controll_num 
     validates :user_id 

@@ -1,0 +1,12 @@
+<div class="link-flex">
+  <div class="section">
+    <h2>各種一覧</h2>
+    <p class="link-text"><%= link_to "一覧", nuros_path ,"data-turbolinks": false, class: "index-link" %></p>
+  </div>
+  <div class="section">
+    <h2>　</h2>
+    <% if current_user.position == "権限①" %>
+    <p class="link-text"><%= link_to "明細一覧", nuro_payments_path ,"data-turbolinks": false, class: "index-link" %></p>
+    <% end %>
+  </div>
+</div>
