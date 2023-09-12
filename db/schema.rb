@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_05_105135) do
+ActiveRecord::Schema.define(version: 2023_09_07_101609) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -646,6 +646,14 @@ ActiveRecord::Schema.define(version: 2023_09_05_105135) do
     t.integer "breaking_tv_excavation"
     t.integer "breaking_tv_excavation_ng"
     t.index ["user_id"], name: "index_n_results_on_user_id"
+  end
+
+  create_table "nuro_managemenet_fees", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "service", null: false
+    t.integer "price", null: false
+    t.integer "fee_len", null: false
+    t.date "date", null: false
+    t.date "payment", null: false
   end
 
   create_table "nuro_payments", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|

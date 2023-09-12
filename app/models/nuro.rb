@@ -108,7 +108,6 @@ class Nuro < ApplicationRecord
         )
         if nuro.has_changes_to_save? 
           nuro.save!
-          nuro.assign_attributes(status_update: Date.today)
           update_cnt += 1
         else  
           nochange_cnt += 1
@@ -158,4 +157,5 @@ class Nuro < ApplicationRecord
     end
     "新規登録#{new_cnt}件, 更新#{update_cnt}件, 変更なし#{nochange_cnt}件"
   end 
+
 end

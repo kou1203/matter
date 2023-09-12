@@ -431,6 +431,7 @@ Rails.application.routes.draw do
   resources :nuro_payments do 
     collection {
       post :import
+      post :import_managemenet_fee
     }
   end 
   
