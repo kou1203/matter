@@ -57,6 +57,14 @@ class ValuationResultsController < ApplicationController
         Itss.where(status_ntt1: "工事完了").where(construction_schedule: @month.all_month)
       @demaekan_result = 
         Demaekan.where(first_cs_contract: Date.new(@month.prev_month.year,@month.prev_month.month,26)..Date.new(@month.year,@month.month,25))
+      @usen_pays = UsenPay.where(date: @month.all_month)
+      usen_separate_date = Date.new(2023,8,1)
+      @usen_pays_7month_ago = 
+        UsenPay.where(date: ...usen_separate_date).where(result_point: @month.all_month)
+        .where.not(status: "自社不備").where.not(status: "自社NG") rescue 0
+      @usen_pays_8month_since = 
+        UsenPay.where(date: usen_separate_date..).where(date: @month.all_month)
+        .where.not(status: "自社不備").where.not(status: "自社NG") rescue 0
 
       @products = {}
       @products["dメル（審査完了）"] = [@dmer_result1.length,@dmer_result1.sum(:valuation_new)]
@@ -68,6 +76,8 @@ class ValuationResultsController < ApplicationController
       @products["AirPay（審査完了）"] = [@airpay_result.length,@airpay_sum_valuation]
       @products["ITSS（工事完了）"] = [@itss_result.length,@itss_result.sum(:valuation)]
       @products["出前館（CS締結日）"] = [@demaekan_result.length,@demaekan_result.sum(:valuation)]
+      @products["UsenPay2023年7月以前"] = [@usen_pays_7month_ago.length,@usen_pays_7month_ago.sum(:valuation)]
+      @products["UsenPay2023年8月以降"] = [@usen_pays_8month_since.length,@usen_pays_8month_since.sum(:valuation)]
       
       @product_data = {}
       @product_data["dメル（審査完了）"] = [@dmer_result1.includes(:store_prop,:user)]
@@ -79,6 +89,8 @@ class ValuationResultsController < ApplicationController
       @product_data["AirPay（審査完了）"] = [@airpay_result.includes(:store_prop,:user)]
       @product_data["ITSS（工事完了）"] = [@itss_result.includes(:user)]
       @product_data["出前館（CS締結日）"] = [@demaekan_result.includes(:store_prop,:user)]
+      @product_data["UsenPay2023年7月以前"] = [@usen_pays_7month_ago]
+      @product_data["UsenPay2023年8月以降"] = [@usen_pays_8month_since]
         
     end 
 

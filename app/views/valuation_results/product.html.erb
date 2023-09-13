@@ -71,9 +71,15 @@
           <% @product_data[@product_name][0].order(:user_id,:date).each_with_index do |product,i| %>
           <tr>
             <td><%= i + 1 %></td>
+            <% if @product_name.include?("UsenPay") %>
+            <td><%= product.controll_num %></td>
+            <% else %>
             <td><%= product.customer_num %></td>
+            <% end %>
             <% if @product_name.include?("ITSS") %>
             <td><%= product.contract_name %></td>
+            <% elsif @product_name.include?("UsenPay") %>
+            <td><%= product.store_name %></td>
             <% else %>
             <td><%= product.store_prop.name %></td>
             <% end %>
@@ -81,7 +87,7 @@
             <td><%= link_to product.user.name,valuation_result_path(product.user_id,product_name: @product_name,month: @month), class:"link" %></td>
             <% if @product_name.include?("auPay") %>
             <td><%= product.status_update_settlement %></td>
-            <% elsif @product_name.include?("楽天ペイ") %>
+            <% elsif (@product_name.include?("楽天ペイ")) || (@product_name.include?("UsenPay8月")) %>
             <% if product.date >= @month.beginning_of_month %>
             <td><%= product.date %></td>
             <% else %>
