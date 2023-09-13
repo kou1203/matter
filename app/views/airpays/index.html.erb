@@ -1,3 +1,6 @@
+<% if current_user.position_sub == "99：退職" %>
+  <p>退職者は利用できません。</p>
+<% else %>
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <div data-scope-path="shared/header">
   <h1 class="sub-title">AirPay一覧</h1>
@@ -198,3 +201,4 @@
   </div>
   </div>
 </div>
+<% end %>

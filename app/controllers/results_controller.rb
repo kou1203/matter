@@ -1,7 +1,7 @@
 class ResultsController < ApplicationController
   before_action :authenticate_user!
-  before_action :back_retirement
   before_action :set_data
+  before_action :back_retirement
   # showアクションのbeforeaction
   before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation_list,:date_fin,:weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all,:time_val_base]
   before_action :set_month_product, only: [:show, :date_fin,:weekly_fin,:out_val]
@@ -1157,11 +1157,6 @@ class ResultsController < ApplicationController
         .where(date: @comparison_date.beginning_of_month..@comparison_date)
         .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
     end 
-      
-    def back_retirement # 退職者が閲覧できないようにする
-      redirect_to error_pages_path if current_user.position == "退職"
-    end
-
 
     def result_params # resultのストロングパラメーター
       params.require(:result).permit(
@@ -1255,5 +1250,10 @@ class ResultsController < ApplicationController
         :done     
       )
     end 
+
+          
+    def back_retirement # 退職者が閲覧できないようにする
+      redirect_to error_pages_path if current_user.position_sub == "99：退職"
+    end
 
 end
