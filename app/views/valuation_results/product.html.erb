@@ -29,6 +29,9 @@
           <th>初回決済者</th>
           <th>初回決+写真</th>
           <th>２回目決済日</th>
+          <th>1次成果単価</th>
+          <th>2次成果単価</th>
+          <th>3次成果単価</th>
         <% elsif @product_name.include?("auPay") %>
           <th>審査通過日</th>
           <th>初回決済者</th>
@@ -36,6 +39,7 @@
         <% else %>
           <th>成果になった日</th>
         <% end %>
+          <th>単価</th>
         </tr>
       </thead>
       <tbody>
@@ -52,6 +56,9 @@
             <td><%= product.settlementer.name rescue "" %></td>
             <td><%= product.status_update_settlement %></td>
             <td><%= product.settlement_second %></td>
+            <td><%= product.valuation_new.to_s(:delimited) %></td>
+            <td><%= product.valuation_settlement.to_s(:delimited) %></td>
+            <td><%= product.valuation_second_settlement.to_s(:delimited) %></td>
           </tr>
           <% end %>
           <% elsif @product_name.include?("auPay") %>
@@ -65,6 +72,7 @@
             <td><%= product.result_point %></td>            
             <td><%= product.settlementer.name %></td>       
             <td><%= product.status_update_settlement %></td>     
+            <td><%= product.valuation_settlement.to_s(:delimited) %></td>
           </tr>
           <% end %>
           <% else %>
@@ -100,6 +108,7 @@
             <% else %>
             <td><%= product.result_point %></td>
             <% end %>
+            <td><%= product.valuation.to_s(:delimited) %></td>
           </tr>
           <% end  %>
           <% end %>
