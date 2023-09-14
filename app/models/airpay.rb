@@ -51,6 +51,7 @@ class Airpay < ApplicationRecord
           activate: row["アクティベート日"],
           profit: 3000,
           valuation: 3000,
+          store_name: row["店舗名"]
         )
         errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if airpay.invalid? && errors.length < 5
     end
@@ -91,6 +92,7 @@ class Airpay < ApplicationRecord
         activate: row["アクティベート日"],
         profit: 3000,
         valuation: 3000,
+        store_name: row["店舗名"]
       )
       if airpay.has_changes_to_save? 
         airpay.save!
@@ -122,6 +124,7 @@ class Airpay < ApplicationRecord
         activate: row["アクティベート日"],
         profit: 3000,
         valuation: 3000,
+        store_name: row["店舗名"]
         )
       airpay.save!
       new_cnt += 1

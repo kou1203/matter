@@ -161,7 +161,10 @@
         <th class="out-th">商流</th>
         <th class="out-th">区分</th>
         <th class="out-th">店舗番号</th>
+        <% if current_user.name == "管理用" %>
         <th class="out-th">店舗名</th>
+        <% end %>
+        <th class="out-th">店舗名（AirPay）</th>
         <th class="out-th"><%= sort_link(@q, :date, "獲得日",{}, {class: "reset-link"}) %></th>
         <th class="out-th">獲得者</th>
         <th class="out-th">審査ステータス</th>
@@ -180,7 +183,10 @@
         <td class="out-td"><%= airpay.client %></td>
         <td class="out-td"><%= airpay.store_prop.race %></td>
         <td class="out-td"><%= airpay.customer_num %></td>
+        <% if current_user.name == "管理用" %>
         <td class="out-td"><%= airpay.store_prop.name %></td>
+        <% end %>
+        <td class="out-td"><%= airpay.store_name %></td>
         <td class="out-td"><%= airpay.date %></td>
         <td class="out-td"><%= airpay.user.name %></td>
         <td class="out-td"><%= airpay.status %></td>
