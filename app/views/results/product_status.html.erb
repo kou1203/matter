@@ -264,6 +264,7 @@
   <thead>
     <tr>
       <th class="valuation-th">詳細</th>
+      <th class="valuation-th">店舗番号</th>
       <th class="valuation-th">店舗名</th>
       <th class="valuation-th">獲得日</th>
       <th class="valuation-th">審査ステータス</th>
@@ -284,6 +285,7 @@
       <tr>
       <% end %>
       <td class="valuation-td"><%= link_to "詳細", airpay_path(airpay.id), class: "link" %></td>
+      <td class="valuation-td">　<%= airpay.customer_num %>　</td>
       <td class="valuation-td"><%= airpay.store_prop.name %></td>
       <td class="valuation-td"><%= airpay.date %></td>
       <td class="valuation-td"><%= airpay.status %></td>
