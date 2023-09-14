@@ -25,24 +25,12 @@
     <h3 class="sub-title">◆本日稼働結果</h3>
 <textarea><%# 日報結果 %>
 <%# 拠点の決済などの売上変数 %>
-  <%# 拠点でのAirPayの件数に合わせたインセンティブ %>
-    <% airpay_team_bonus = 0 %>
-    <% @users.each do |user| %>
-      <% if @shift_digestion.length == 0 || @shift_digestion.where(user_id: user.id).sum(:airpay) == 0 %>
-      <% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && (@shift_digestion.where(user_id: user.id).sum(:airpay) >= 20)  %>
-        <% airpay_team_bonus += @shift_digestion.where(user_id: user.id).sum(:airpay) * 5000 %>
-      <% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && (@shift_digestion.where(user_id: user.id).sum(:airpay) >= 10) %>
-        <% airpay_team_bonus += @shift_digestion.where(user_id: user.id).sum(:airpay) * 3000 %>
-      <% else %>
-      <% end %>
-    <% end %>
-  <%# 拠点でのAirPayの件数に合わせたインセンティブ %>
-  <% dmer_slmt_team = @shift_digestion.sum(:dmer) * 9000 rescue 0 %><%# dメル決済 %>
+  <% dmer_slmt_team = @shift_digestion.sum(:dmer) * 10000 rescue 0 %><%# dメル決済 %>
   <% 
     team_profit_new = 
-      (@shift_digestion.sum(:dmer) * 8000) + 
-      (@shift_digestion.sum(:rakuten_pay) * 4000) + 
-      (@shift_digestion.sum(:airpay) * 3000) + airpay_team_bonus 
+      (@shift_digestion.sum(:dmer) * 10000) + 
+      (@shift_digestion.sum(:rakuten_pay) * 5000) + 
+      (@shift_digestion.sum(:airpay) * 8000)
   %>
   <% team_profit_sum = team_profit_new + dmer_slmt_team %>
   <% team_profit = "#{team_profit_new.to_s(:delimited) rescue 0}（#{team_profit_sum.to_s(:delimited)}）" %>
@@ -56,23 +44,10 @@
 チーム獲得本数：<%= "dメル#{@shift_digestion.sum(:dmer)}　楽天ペイ#{@shift_digestion.sum(:rakuten_pay)}　AirPay#{@shift_digestion.sum(:airpay)}" %>
 <%# /拠点の表示内容 %>
 <% @users.each do |user| %>
-  <% dmer_slmt = @shift_digestion.where(user_id: user.id).sum(:dmer) * 9000 rescue 0 %><%# dメル決済 %>
-  <%# 個別でのAirPayの件数に合わせたインセンティブ %>
-  <% airpay_bonus_price = 0 %>
-  <% if @shift_digestion.length == 0 || @shift_digestion.where(user_id: user.id).sum(:airpay) == 0 %>
-    <% airpay_bonus_price = 0 %>
-  <% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && (@shift_digestion.where(user_id: user.id).sum(:airpay) >= 20)  %>
-    <% airpay_bonus_price = 5000 %>
-  <% elsif (@shift_digestion.where(user_id: user.id).sum(:airpay).present?) && (@shift_digestion.where(user_id: user.id).sum(:airpay) >= 10) %>
-    <% airpay_bonus_price = 3000 %>
-  <% else %>
-    <% airpay_bonus = 0 %>
-  <% end %>
-  <% airpay_bonus = @shift_digestion.where(user_id: user.id).sum(:airpay) * airpay_bonus_price %>
-  <%# /個別でのAirPayの件数に合わせたインセンティブ %>
+  <% dmer_slmt = @shift_digestion.where(user_id: user.id).sum(:dmer) * 10000 rescue 0 %><%# dメル決済 %>
 <%# 現状売上 %>
 <% if @shift_digestion.where(user_id: user.id).present? %>
-  <% person_profit_new = (@shift_digestion.where(user_id: user.id).sum(:dmer) * 8000) + (@shift_digestion.where(user_id: user.id).sum(:rakuten_pay) * 4000) + (@shift_digestion.where(user_id: user.id).sum(:airpay) * (3000 + airpay_bonus_price)) rescue 0 %>
+  <% person_profit_new = (@shift_digestion.where(user_id: user.id).sum(:dmer) * 10000) + (@shift_digestion.where(user_id: user.id).sum(:rakuten_pay) * 4000) + (@shift_digestion.where(user_id: user.id).sum(:airpay) * 8000) rescue 0 %>
   <% person_profit_sum = person_profit_new + dmer_slmt rescue 0 %>
 <% else %>
 <% person_profit_new = 0 %>
@@ -80,10 +55,10 @@
 <% end %>
 <%# /現状売上 %>
 <%# 当日売上 %>
-<% today_profit_new = (@result.where(user_id: user.id).sum(:dmer) * 8000) + (@result.where(user_id: user.id).sum(:rakuten_pay) * 4000) + (@result.where(user_id: user.id).sum(:airpay) * (3000 + airpay_bonus_price))  %>
-<% today_profit_dmer = (@result.where(user_id: user.id).sum(:dmer) * 9000) rescue 0 %>
+<% today_profit_new = (@result.where(user_id: user.id).sum(:dmer) * 10000) + (@result.where(user_id: user.id).sum(:rakuten_pay) * 4000) + (@result.where(user_id: user.id).sum(:airpay) * 8000)  %>
+<% today_profit_dmer = (@result.where(user_id: user.id).sum(:dmer) * 10000) rescue 0 %>
 
-<% today_profit_airpay = (@result.where(user_id: user.id).sum(:airpay) * airpay_bonus_price) rescue 0 %>
+<% today_profit_airpay = (@result.where(user_id: user.id).sum(:airpay) * 8000) rescue 0 %>
 <%# /当日売上 %>
 <%# 平均 %>
 <% dmer_ave = 0 %>
