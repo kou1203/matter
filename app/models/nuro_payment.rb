@@ -1,7 +1,6 @@
 class NuroPayment < ApplicationRecord
-  belongs_to :nuro
+  belongs_to :nuro , optional: true
   with_options presence: true do 
-    validates :nuro_id
     validates :category
     validates :isp_num
     validates :name   
