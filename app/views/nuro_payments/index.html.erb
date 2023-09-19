@@ -143,8 +143,10 @@
         <th class="out-tb">ISP番号</th>
         <th class="out-tb">獲得者</th>
         <th class="out-tb">申込日</th>
+        <th class="out-tb">（申込日）自社</th>
         <th class="out-tb">入金日</th>
         <th class="out-tb">単価</th>
+        <th class="out-tb">申込日相違</th>
       </tr>
     </thead>
     <tbody>
@@ -154,9 +156,15 @@
         <td ><%= nuro_payment.category %></td>
         <td ><%= nuro_payment.isp_num %></td>
         <td ><%= nuro_payment.nuro.user.name %></td>
+        <td ><%= nuro_payment.date %></td>
         <td ><%= nuro_payment.nuro.date %></td>
         <td ><%= nuro_payment.payment %></td>
         <td ><%= nuro_payment.price.to_s(:delimited) %></td>
+        <% if nuro_payment.date.end_of_month == nuro_payment.nuro.date.end_of_month %>
+        <td >無し</td>
+        <% else %>
+        <td class="red">相違</td>
+        <% end %>
       </tr>
       <% end %>
     </tbody>

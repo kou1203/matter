@@ -1,0 +1,72 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>Nuro入金日別明細</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div>
+    <hr>
+    <%= render "shared/nuro_links" %>
+    <hr>
+    <h2>
+      <%= link_to "<<",sales_details_nuro_payments_path(month: @month.ago(1.month)), class:"link" %>
+      <%= @month.strftime("%Y年%m月") %>Nuro入金明細
+      <%= link_to ">>",sales_details_nuro_payments_path(month: @month.since(1.month)), class:"link" %>
+    </h2><br>
+
+    <table><%# 合計 %>
+      <tr>
+        <th class="green-th">支払い総額（自社）</th>
+        <th class="green-th">支払い総額（他社）</th>
+        <th class="green-th">支払い総額（合計）</th>
+      </tr>
+      <tr>
+        <td><%= (@nuro_payments.where.not(nuro: {id: nil}).sum(:price) + @nuro_managemenet_fees.sum(:price)).to_s(:delimited) %></td>
+        <td><%= (@nuro_payments.where(nuro: {id: nil}).sum(:price) + @nuro_managemenet_fees.sum(:price)).to_s(:delimited) %></td>
+        <td><%= (@nuro_payments.sum(:price) + @nuro_managemenet_fees.sum(:price)).to_s(:delimited) %></td>
+    </table><%# /合計 %>
+
+    <h2>◆自社案件内訳</h2>
+    <table><%# 内訳 %>
+      <thead>
+        <tr>
+          <th>獲得月</th>
+          <th>手数料</th>
+          <th>管理費・後確費</th>
+          <th>その他</th>
+          <th>売上</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr></tr>
+        <% @nuros.group("YEAR(date)").group("MONTH(date)").each do |nuro| %>
+        <% monthly_price = @nuro_payments.where(nuro: {date: nuro.date.all_month}).sum(:price) %>
+        <% 
+          monthly_cost = 
+            @nuro_managemenet_fees.where(date: nuro.date.all_month).where("service LIKE ?","%管理費%").or(
+              @nuro_managemenet_fees.where(date: nuro.date.all_month).where("service LIKE ?","%後確費%")
+            ).sum(:price)
+        %>
+        <%
+          other_fee = 
+            @nuro_managemenet_fees.where(date: nuro.date.all_month).where.not("service LIKE ?","%管理費%").where.not("service LIKE ?","%後確費%").sum(:price)
+        %>
+        <% if monthly_price != 0 && @nuro_managemenet_fees.where(date: nuro.date.all_month) != 0 %>
+        <tr>
+          <td><%= nuro.date.strftime("%Y年%m月") %></td>
+          <td><%= monthly_price.to_s(:delimited) %></td>
+          <td><%= monthly_cost.to_s(:delimited) %></td>
+          <td><%= other_fee.to_s(:delimited) %></td>
+          <td><%= (monthly_price + monthly_cost + other_fee).to_s(:delimited) %></td>
+        </tr>
+        <% end %>
+        <% end %>
+      </tbody>
+    </table><%# /内訳 %>
+    <h2>◆他社内訳（<%= @month.strftime("%Y年%m月") %>入金）</h2>
+  </div>
+</div>

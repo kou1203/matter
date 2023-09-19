@@ -663,6 +663,7 @@ ActiveRecord::Schema.define(version: 2023_09_14_073952) do
     t.string "isp_num", null: false
     t.string "name", null: false
     t.string "service", null: false
+    t.date "date", null: false
     t.date "payment", null: false
     t.integer "price", null: false
     t.index ["nuro_id"], name: "index_nuro_payments_on_nuro_id"

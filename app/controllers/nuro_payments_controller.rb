@@ -13,6 +13,14 @@ class NuroPaymentsController < ApplicationController
       session[:previous_url] = request.referer
   end 
 
+  def sales_details
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @nuros = Nuro.includes(:nuro_payments).all
+    @nuro_payments = NuroPayment.includes(:nuro).where(payment: @month.all_month)
+    @nuro_managemenet_fees = NuroManagemenetFee.where(payment: @month.all_month)
+  end 
+
+
   def import
     if params[:file].present?
       # if Airpay.csv_check(params[:file]).present?

@@ -5,6 +5,7 @@ class NuroPayment < ApplicationRecord
     validates :isp_num
     validates :name   
     validates :service
+    validates :date
     validates :payment  
     validates :price
   end 
@@ -24,6 +25,7 @@ class NuroPayment < ApplicationRecord
           name: row["企画セット名称"],
           service: row["サービス名"],
           price: row["単価"],
+          date: row["申込日"],
           payment: row["入金日"]
         )
         errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if nuro.invalid? && errors.length < 5
@@ -49,6 +51,7 @@ class NuroPayment < ApplicationRecord
           name: row["企画セット名称"],
           service: row["サービス名"],
           price: row["単価"],
+          date: row["申込日"],
           payment: row["入金日"]
         )
         if nuro_payment.has_changes_to_save? 
@@ -65,6 +68,7 @@ class NuroPayment < ApplicationRecord
           name: row["企画セット名称"],
           service: row["サービス名"],
           price: row["単価"],
+          date: row["申込日"],
           payment: row["入金日"]
           )
           nuro_payment.save!

@@ -275,6 +275,85 @@ wb = xlsx_package.workbook
           ]
         end
       end
+    elsif product == "会議用まとめ"
+      sheet.add_row [
+        "拠点", "ユーザー", "役職", 
+        "dメル獲得Ave", "dメル獲得終着", "dメル現状売上","dメル終着売上",
+        "auPay獲得Ave", "auPay獲得終着", "auPay現状売上","auPay終着売上",
+        "PayPay獲得Ave", "PayPay獲得終着", "PayPay現状売上","PayPay終着売上",
+        "楽天ペイ獲得Ave", "楽天ペイ獲得終着", "楽天ペイ現状売上","楽天ペイ終着売上",
+        "AirPay獲得Ave", "AirPay獲得終着", "AirPay現状売上","AirPay終着売上",
+        "AirAC審査完了", "AirAC現状売上","AirAC終着売上",
+        "U-Pay獲得数", "U-Pay現状売上","U-Pay終着売上"
+      ]
+      @bases.each do |base|
+        @dmer_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
+          if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
+            cash_base = date_progress.base
+          else 
+            cash_base = "その他"
+          end 
+
+          dmer_user_progress = @dmer_date_progresses.where(base: base).where(user_id: date_progress.user_id).first
+          aupay_user_progress = @aupay_date_progresses.where(base: base).where(user_id: date_progress.user_id).first
+          paypay_user_progress = @paypay_date_progresses.where(base: base).where(user_id: date_progress.user_id).first
+          rakuten_pay_user_progress = @rakuten_pay_date_progresses.where(base: base).where(user_id: date_progress.user_id).first
+          airpay_user_progress = @airpay_date_progresses.where(base: base).where(user_id: date_progress.user_id).first
+          airpaysticker_user_progress = @airpaysticker_date_progresses.where(base: base).where(user_id: date_progress.user_id).first
+          usen_pay_user_progress = @usen_pay_date_progresses.where(base: base).where(user_id: date_progress.user_id).first
+
+          dmer_shift_schedule = dmer_user_progress.shift_schedule.to_i + dmer_user_progress.shift_schedule_slmt.to_i
+          dmer_shift_digestion = dmer_user_progress.shift_digestion.to_i + dmer_user_progress.shift_digestion_slmt.to_i
+          dmer_profit_fin = dmer_user_progress.profit_fin1 + dmer_user_progress.profit_fin2 + dmer_user_progress.profit_fin3
+          if (dmer_user_progress.fin_len == 0) || (dmer_user_progress.shift_schedule == 0)
+            dmer_ave_len = 0
+          else
+            dmer_ave_len = (dmer_user_progress.fin_len.to_f / dmer_user_progress.shift_schedule).round(1) rescue 0
+          end 
+
+          if (aupay_user_progress.fin_len == 0) || (aupay_user_progress.shift_schedule == 0)
+            aupay_ave_len = 0
+          else
+            aupay_ave_len = (aupay_user_progress.fin_len.to_f / aupay_user_progress.shift_schedule).round(1) rescue 0
+          end 
+
+          if (paypay_user_progress.fin_len == 0) || (paypay_user_progress.shift_schedule == 0)
+            paypay_ave_len = 0
+          else
+            paypay_ave_len = (paypay_user_progress.fin_len.to_f / paypay_user_progress.shift_schedule).round(1) rescue 0
+          end 
+
+          if (rakuten_pay_user_progress.fin_len == 0) || (rakuten_pay_user_progress.shift_schedule == 0)
+            rakuten_pay_ave_len = 0
+          else
+            rakuten_pay_ave_len = (rakuten_pay_user_progress.fin_len.to_f / rakuten_pay_user_progress.shift_schedule).round(1) rescue 0
+          end 
+
+          if (airpay_user_progress.fin_len == 0) || (airpay_user_progress.shift_schedule == 0)
+            airpay_ave_len = 0
+          else
+            airpay_ave_len = (airpay_user_progress.fin_len.to_f / airpay_user_progress.shift_schedule).round(1) rescue 0
+          end 
+
+          airpay_ac_profit = airpaysticker_user_progress.profit_current rescue 0
+          airpay_ac_result_len = (airpay_ac_profit / 10000).to_i rescue 0
+
+          usen_get_len = usen_pay_user_progress.get_len rescue 0
+          usen_profit = usen_pay_user_progress.profit_current rescue 0
+
+          sheet.add_row [
+            cash_base, date_progress.user.name, date_progress.user.position_sub, 
+            dmer_ave_len,dmer_user_progress.fin_len, dmer_user_progress.profit_current, dmer_profit_fin,
+            aupay_ave_len,aupay_user_progress.fin_len, aupay_user_progress.profit_current, aupay_user_progress.profit_fin,
+            paypay_ave_len,paypay_user_progress.fin_len, paypay_user_progress.profit_current, paypay_user_progress.profit_fin,
+            rakuten_pay_ave_len,rakuten_pay_user_progress.fin_len, rakuten_pay_user_progress.profit_current, rakuten_pay_user_progress.profit_fin,
+            airpay_ave_len,airpay_user_progress.fin_len, airpay_user_progress.profit_current, airpay_user_progress.profit_fin,
+            airpay_ac_result_len,airpay_ac_profit, airpay_ac_profit,
+            usen_get_len, usen_profit, usen_profit
+            
+          ]
+        end
+      end
     end 
   end
 end

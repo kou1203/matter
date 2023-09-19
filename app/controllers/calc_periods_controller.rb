@@ -106,7 +106,7 @@ class CalcPeriodsController < ApplicationController
     
     @users = User.where.not(position: "退職")
 
-    @products = ["合計","dメル", "auPay", "PayPay", "楽天ペイ","AirPay", "出前館","auステッカー", "dメルステッカー","AirPayステッカー","ITSS","UsenPay"]
+    @products = ["合計","dメル", "auPay", "PayPay", "楽天ペイ","AirPay", "出前館","auステッカー", "dメルステッカー","AirPayステッカー","ITSS","UsenPay","会議用まとめ"]
     
     respond_to do |format|
       format.html

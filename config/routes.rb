@@ -432,6 +432,7 @@ Rails.application.routes.draw do
     collection {
       post :import
       post :import_managemenet_fee
+      get :sales_details
     }
   end 
   
