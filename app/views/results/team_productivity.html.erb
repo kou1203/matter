@@ -334,11 +334,12 @@
               <th colspan="2">auPay</th>
               <th colspan="2">楽天ペイ</th>
               <th colspan="2">AirPay</th>
+              <th colspan="2">UsenPay</th>
             </tr>
             <tr>
               <th>ユーザー名</th>
               <th>消化シフト</th>
-              <% 4.times do %>
+              <% 5.times do %>
               <th>獲得</th>
               <th>生産性</th>
               <% end %>
@@ -359,6 +360,8 @@
               <td><%= (@rakuten_pays.where(user_id: user.id).length.to_f / result_user.length).round(1) rescue 0 %></td>
               <td><%= @airpays.where(user_id: user.id).length %></td>
               <td><%= (@airpays.where(user_id: user.id).length.to_f / result_user.length).round(1) rescue 0 %></td>
+              <td><%= @usenpauys.where(user_id: user.id).length %></td>
+              <td><%= (@usen_pays.where(user_id: user.id).length.to_f / result_user.length).round(1) rescue 0 %></td>
             </tr><%# /個別 %>
             <% end %>
             <% end %>
@@ -373,6 +376,8 @@
               <td><%= (@rakuten_pays.length.to_f / result_user.length).round(1) rescue 0 %></td>
               <td><%= @airpays.length %></td>
               <td><%= (@airpays.length.to_f / result_user.length).round(1) rescue 0 %></td>
+              <td><%= @usen_pays.length %></td>
+              <td><%= (@usen_pays.length.to_f / result_user.length).round(1) rescue 0 %></td>
             </tr><%# /合計 %>
           </tbody>
         </table>

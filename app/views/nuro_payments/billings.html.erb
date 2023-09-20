@@ -1,0 +1,63 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>Nuro入金日別明細</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div>
+    <hr>
+    <%= render "shared/nuro_links" %>
+    <div>
+      <% if @other_client.present? %>
+        <%   @nuro_payments = @nuro_payments.where(nuro_id: nil) %>
+        <% fee = @nuro_payments.sum(:price) %>
+      <% else %>
+        <% fee = @nuro_payments.sum(:price) + @payment_fee.sum(:price) %>
+      <% end %>
+      <h2>◆<%= @payment.strftime("%Y年%m月") %>入金（<%= @date.strftime("%Y年%m月") %>獲得分）：<%= @other_client %>獲得手数料</h2>
+
+      <p class="nav-text">　支払：¥<%= fee.to_s(:delimited) %></p>
+      <table>
+        <tr>
+          <th>カテゴリー</th>
+          <th>基本単価</th>
+          <th>件数</th>
+          <th>手数料</th>
+        </tr>
+        <% @nuro_payments.group(:service).each do |nuro_payment| %>
+        <tr>
+          <td><%= 
+            link_to  "#{nuro_payment.category}",items_nuro_payments_path(
+              category: nuro_payment.category,
+              date: nuro_payment.date,
+              payment: nuro_payment.payment,
+              other_client: @other_client
+              ),
+              class: "link"
+          %></td>
+          <td><%= nuro_payment.price.to_s(:delimited) %></td>
+          <td><%= @nuro_payments.where(category: nuro_payment.category).length %></td>
+          <td><%= @nuro_payments.where(category: nuro_payment.category).sum(:price).to_s(:delimited) %></td>
+        </tr>
+        <% end %>
+        <% if @other_client.present? %>
+        <% @payment_fee.each do |fee| %>
+        <tr>
+          <td><%= fee.service %></td>
+          <td><%= fee.price.to_s(:delimited) %></td>
+          <td><%= @payment_fee.where(service: fee.service).length %></td>
+          <td><%= @payment_fee.where(service: fee.service).sum(:price).to_s(:delimited) %></td>
+        </tr>
+        <% end %>
+        <% else %>
+        <% end %>
+      </table>
+      <p class="nav-text"><%= link_to "戻る", sales_details_nuro_payments_path(month: @payment) %></p>
+      <p class="caution-text">※こちらは他社の案件も含まれております。</p>
+    </div>
+  </div>
+</div>

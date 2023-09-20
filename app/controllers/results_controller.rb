@@ -840,6 +840,8 @@ class ResultsController < ApplicationController
       @products << @rakuten_pays
       @airpays = Airpay.includes(:user).where(date: @s_date..@e_date)
       @products << @airpays
+      @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date)
+      @products << @usen_pays
     # 商材
       if params[:search_base].present? 
         @results = @results.where(user: {base: @search_base})
@@ -852,6 +854,8 @@ class ResultsController < ApplicationController
         @products << @rakuten_pays
         @airpays = Airpay.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
         @products << @airpays
+        @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
+        @products << @usen_pays
       end
   end 
 
@@ -876,6 +880,8 @@ class ResultsController < ApplicationController
       @products << @rakuten_pays
       @airpays = Airpay.includes(:user).where(date: @s_date..@e_date)
       @products << @airpays
+      @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date)
+      @products << @usen_pays
     # 商材
       if params[:search_team].present? 
         @results = @results.where(user: {team: @search_team})
@@ -888,6 +894,8 @@ class ResultsController < ApplicationController
         @products << @rakuten_pays
         @airpays = Airpay.includes(:user).where(date: @s_date..@e_date).where(user: {team: @search_team})
         @products << @airpays
+        @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date).where(user: {team: @search_team})
+        @products << @usen_pays
       end
   end 
 
@@ -916,6 +924,8 @@ class ResultsController < ApplicationController
       @products << @rakuten_pays
       @airpays = Airpay.includes(:user).where(date: @s_date..@e_date)
       @products << @airpays
+      @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date)
+      @products << @usen_pays
     # 商材
       if @u_id.present? 
         @results = @results.where(user_id: @u_id)
@@ -928,6 +938,8 @@ class ResultsController < ApplicationController
         @products << @rakuten_pays
         @airpays = Airpay.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
         @products << @airpays
+        @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
+        @products << @usen_pays
       end
   end 
 

@@ -18,6 +18,25 @@ class NuroPaymentsController < ApplicationController
     @nuros = Nuro.includes(:nuro_payments).all
     @nuro_payments = NuroPayment.includes(:nuro).where(payment: @month.all_month)
     @nuro_managemenet_fees = NuroManagemenetFee.where(payment: @month.all_month)
+    @nuro_payment_links = NuroPayment.all
+  end 
+
+  def billings
+    @other_client = params[:other_client]
+    @date = params[:date].to_date
+    @payment = params[:payment].to_date
+     @nuro_payments = NuroPayment.where(date: @date.all_month).where(payment: @payment.all_month)
+     @payment_fee = NuroManagemenetFee.where(date: @date.all_month).where(payment: @payment.all_month)
+  end 
+
+  def items
+    @date = params[:date].to_date
+    @payment = params[:payment].to_date
+    @category = params[:category]
+    @other_client = params[:other_client]
+    @nuro_payments = 
+      NuroPayment.where(date: @date.all_month)
+      .where(payment: @payment.all_month).where(category: @category)
   end 
 
 

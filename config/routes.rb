@@ -425,6 +425,7 @@ Rails.application.routes.draw do
   resources :nuros do 
     collection {
       post :import
+      get :years_result
     }
   end 
 
@@ -433,6 +434,8 @@ Rails.application.routes.draw do
       post :import
       post :import_managemenet_fee
       get :sales_details
+      get :billings
+      get :items
     }
   end 
   

@@ -18,18 +18,23 @@
       <%= link_to ">>",sales_details_nuro_payments_path(month: @month.since(1.month)), class:"link" %>
     </h2><br>
 
+
+    <div class="flex">
+    <div><%# 明細内訳 %>
+    <% if @nuro_payments.present? %>
     <table><%# 合計 %>
       <tr>
         <th class="green-th">支払い総額（自社）</th>
         <th class="green-th">支払い総額（他社）</th>
+        <th class="green-th">管理費・支援金</th>
         <th class="green-th">支払い総額（合計）</th>
       </tr>
       <tr>
-        <td><%= (@nuro_payments.where.not(nuro: {id: nil}).sum(:price) + @nuro_managemenet_fees.sum(:price)).to_s(:delimited) %></td>
-        <td><%= (@nuro_payments.where(nuro: {id: nil}).sum(:price) + @nuro_managemenet_fees.sum(:price)).to_s(:delimited) %></td>
+        <td><%= @nuro_payments.where.not(nuro: {id: nil}).sum(:price).to_s(:delimited) %></td>
+        <td><%= @nuro_payments.where(nuro: {id: nil}).sum(:price).to_s(:delimited) %></td>
+        <td><%= @nuro_managemenet_fees.sum(:price).to_s(:delimited) %></td>
         <td><%= (@nuro_payments.sum(:price) + @nuro_managemenet_fees.sum(:price)).to_s(:delimited) %></td>
     </table><%# /合計 %>
-
     <h2>◆自社案件内訳</h2>
     <table><%# 内訳 %>
       <thead>
@@ -39,12 +44,13 @@
           <th>管理費・後確費</th>
           <th>その他</th>
           <th>売上</th>
+          <th>支払明細</th>
         </tr>
       </thead>
       <tbody>
         <tr></tr>
         <% @nuros.group("YEAR(date)").group("MONTH(date)").each do |nuro| %>
-        <% monthly_price = @nuro_payments.where(nuro: {date: nuro.date.all_month}).sum(:price) %>
+        <% monthly_price = @nuro_payments.where.not(nuro_id: nil).where(date: nuro.date.all_month).sum(:price) %>
         <% 
           monthly_cost = 
             @nuro_managemenet_fees.where(date: nuro.date.all_month).where("service LIKE ?","%管理費%").or(
@@ -62,11 +68,48 @@
           <td><%= monthly_cost.to_s(:delimited) %></td>
           <td><%= other_fee.to_s(:delimited) %></td>
           <td><%= (monthly_price + monthly_cost + other_fee).to_s(:delimited) %></td>
+          <td><%= link_to "明細",billings_nuro_payments_path(date: nuro.date,payment: @month), class: "link" %></td>
         </tr>
         <% end %>
         <% end %>
       </tbody>
     </table><%# /内訳 %>
-    <h2>◆他社内訳（<%= @month.strftime("%Y年%m月") %>入金）</h2>
+    <% if @nuro_payments.where(nuro: {id: nil}).present? %>
+    <h2>◆他社？内訳（<%= @month.strftime("%Y年%m月") %>入金）</h2>
+    <table><%# 内訳 %>
+      <thead>
+        <tr>
+          <th>獲得月</th>
+          <th>手数料</th>
+          <th>支払明細</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr></tr>
+        <% @nuro_payments.group("YEAR(date)").group("MONTH(date)").each do |nuro| %>
+        <% monthly_price = @nuro_payments.where(nuro: {id: nil}).where(date: nuro.date.all_month).sum(:price) %>
+        <% if monthly_price != 0 %>
+        <tr>
+          <td><%= nuro.date.strftime("%Y年%m月") %></td>
+          <td><%= monthly_price.to_s(:delimited) %></td>
+          <td><%= link_to "明細",billings_nuro_payments_path(date: nuro.date,payment: @month,other_client: "他社？"), class: "link" %></td>
+        </tr>
+        <% end %>
+        <% end %>
+      </tbody>
+    </table><%# /内訳 %>
+    <% end %>
+    <p class="caution-text">※こちらは自社で把握しているISP番号には含まれていない案件になります。</p>
+    </div><%# 明細内訳 %>
+    <% else %>
+    <h2 class="caution-text">※<%= @month.strftime("%Y年%m月") %>の明細はまだございません。</h2>
+    <% end %>
+    <div>
+      <h2>◆明細リンク</h2>
+      <% @nuro_payment_links.group("YEAR(payment)").group("MONTH(payment)").each do |nuro_link| %>
+        <p class="nav-text"><%= link_to "#{nuro_link.payment.strftime("%Y年%m月")}明細", sales_details_nuro_payments_path(month: nuro_link.payment),class: "" %></p>
+      <% end %>
+    </div>
+    </div>
   </div>
 </div>

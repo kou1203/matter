@@ -1,0 +1,105 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>Nuro現状成果（年間）</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div>
+    <hr>
+    <%= render "shared/nuro_links" %>
+    <h2>
+      <%= link_to "<<",years_result_nuros_path(month: @month.ago(1.year)), class:"link" %>
+      <%= @month.year %>年成果
+      <%= link_to ">>",years_result_nuros_path(month: @month.since(1.year)), class:"link" %>
+    </h2><br>
+    <table>
+      <tr>
+        <th>獲得月</th>
+        <th colspan="2">光回線</th>
+        <th colspan="2">光でんわ</th>
+        <th colspan="2">ひかりTV</th>
+        <th colspan="2">ひかりTV（2件目）</th>
+        <th colspan="2">SEITON&HOZON</th>
+        <th colspan="2">NURO 光 Safe</th>
+        <th colspan="2">NURO さくっとサポート</th>
+        <th colspan="2">とくとくネットスーパー</th>
+        <th colspan="2">NUROスマートライフ</th>
+        <th colspan="2">つながるメッシュWi-Fi</th>
+      </tr>
+      <tr>
+        <th></th>
+        <% 10.times do %>
+        <th>成果数</th>
+        <th>入金数</th>
+        <% end %>
+      </tr>
+      <% @nuros.group("MONTH(date)").each do |nuro| %>
+      <tr>
+        <td><%= nuro.date.strftime("%m月") %></td>
+        <% nuro_results = @nuros.where(date: nuro.date.all_month) %><%# nuroの月毎の案件 %>
+        <% nuro_results_net = nuro_results.where(current_month_cancel: nil).where.not(start: nil) %>
+        <td><%= nuro_results_net.length %></td><%# 光回線 %>
+        <% if 
+          nuro_results_net.length - 
+          nuro_results_net.where(nuro_payments: {category: "光回線"}).length == 0 
+        %>
+        <td><%= nuro_results_net.where(nuro_payments: {category: "光回線"}).length %></td>
+        <% else %>
+        <td class="red"><%= nuro_results_net.where(nuro_payments: {category: "光回線"}).length %></td>
+        <% end %><%# /光回線 %>
+        <td><%= nuro_results_net.where(option_tell: "有").length %></td><%# 光でんわ %>
+        <% if 
+          nuro_results_net.where(option_tell: "有").length - 
+          nuro_results_net.where(nuro_payments: {category: "光でんわ"}).length == 0 
+        %>
+        <td><%= nuro_results_net.where(nuro_payments: {category: "光でんわ"}).length %></td>
+        <% else %>
+        <td class="red"><%= nuro_results_net.where(nuro_payments: {category: "光でんわ"}).length %></td>
+        <% end %><%# /光でんわ %>
+        <% nuro_results_hikari_tv = nuro_results.where(current_month_cancel: nil).where.not(option_hikari_tv: nil) %><%# ひかりTV %>
+        <% client_nuro_results_hikari_tv = nuro_results_hikari_tv.where(nuro_payments: {category: "ひかりTV"}).or(nuro_results_hikari_tv.where(nuro_payments: {category: "ひかりTV（ビデオプラン）"})) %>
+        <td><%= nuro_results_hikari_tv.length %></td>
+        <% if 
+          nuro_results_hikari_tv.length - 
+          client_nuro_results_hikari_tv.length == 0 
+        %>
+        <td><%= client_nuro_results_hikari_tv.length %></td>
+        <% else %>
+        <td class="red"><%= client_nuro_results_hikari_tv.length %></td>
+        <% end %><%# /ひかりTV %>
+        <% nuro_results_hikari_tv2 = nuro_results.where(current_month_cancel: nil).where.not(option_hikari_tv2: nil) %><%# ひかりTV2件目 %>
+        <% client_nuro_results_hikari_tv2 = nuro_results_hikari_tv2.where(nuro_payments: {category: "ひかりTV２件目"}).or(nuro_results_hikari_tv2.where(nuro_payments: {category: "ひかりTV２件目（専門プラン）"})) %>
+        <td><%= nuro_results_hikari_tv2.length %></td>
+        <% if nuro_results_hikari_tv2.length - client_nuro_results_hikari_tv2.length == 0 %>
+        <td><%= client_nuro_results_hikari_tv2.length %></td>
+        <% else %>
+        <td class="red"><%= client_nuro_results_hikari_tv2.length %></td>
+        <% end %><%# /ひかりTV2件目 %>
+        <% nuro_results_seiton_and_hozon = nuro_results.where(option_seiton_and_hozon_flag: nil).where.not(option_seiton_and_hozon: nil) %><%# SEITON&HOZON（1回目） %>
+        <% client_nuro_results_seiton_and_hozon = nuro_results_seiton_and_hozon.where(nuro_payments: {category: "SEITON&HOZON（1回目）"}) %>
+        <td><%= nuro_results_seiton_and_hozon.length %></td>
+        <% if 
+          nuro_results_seiton_and_hozon.length - 
+          client_nuro_results_seiton_and_hozon.length == 0 
+        %>
+        <td><%= client_nuro_results_seiton_and_hozon.length %></td>
+        <% else %>
+        <td class="red"><%= client_nuro_results_seiton_and_hozon.length %></td>
+        <% end %><%# /SEITON&HOZON（1回目） %>
+        <% nuro_results_hikari_safe = nuro_results.where(option_nuro_hikari_safe_flag: nil).where.not(option_nuro_hikari_safe: nil) %><%# NURO光Safe %>
+        <% client_nuro_results_hikari_safe = nuro_results_seiton_and_hozon.where(nuro_payments: {category: "NURO光Safe"}) %>
+        <td><%= nuro_results_hikari_safe.length %></td>
+        <% if nuro_results_hikari_safe.length - client_nuro_results_hikari_safe.length == 0 %>
+        <td><%= client_nuro_results_hikari_safe.length %></td>
+        <% else %>
+        <td class="red"><%= client_nuro_results_hikari_safe.length %></td>
+        <% end %><%# /NURO光Safe %>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

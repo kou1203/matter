@@ -1,0 +1,50 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>Nuro入金日別明細</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div>
+    <hr>
+    <%= render "shared/nuro_links" %>
+    <% if  @other_client.present? %>
+      <% @nuro_payments = @nuro_payments.where(nuro_id: nil) %>
+    <% end %>
+    <div>
+      <h2>◆<%= @payment.strftime("%Y年%m月") %>入金（<%= @date.strftime("%Y年%m月") %>獲得分）：<%= @other_client %>獲得手数料¥<%= @nuro_payments.sum(:price).to_s(:delimited) %>（<%= @nuro_payments.length %>件）</h2>
+      <table>
+        <tr>
+          <th>No.</th>
+          <th>サービス名</th>
+          <th>ISP契約番号</th>
+          <th>申込日（自社）</th>
+          <th>申込日（明細）</th>
+          <th>単価</th>
+        </tr>
+        <% @nuro_payments.each_with_index do |nuro_payment, i| %>
+        <tr>
+          <td><%= i + 1 %></td>
+          <td><%= nuro_payment.service %></td>
+          <td><%= nuro_payment.isp_num %></td>
+          <% if nuro_payment.nuro.present? %>
+          <td><%= nuro_payment.nuro.date %></td>
+          <% else %>
+          <td class="red">他社案件？</td>
+          <% end %>
+          <% if nuro_payment.nuro.present? && nuro_payment.nuro.date.month == nuro_payment.date.month %>
+          <td><%= nuro_payment.date %></td>
+          <% else %>
+          <td class="red"><%= nuro_payment.date %></td>
+          <% end %>
+          <td><%= nuro_payment.price.to_s(:delimited) %></td>
+        </tr>
+        <% end %>
+      </table>
+      <p class="nav-text"><%= link_to "戻る", billings_nuro_payments_path(date: @date,payment: @payment) %></p>
+    </div>
+  </div>
+</div>
