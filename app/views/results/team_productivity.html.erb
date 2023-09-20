@@ -360,7 +360,7 @@
               <td><%= (@rakuten_pays.where(user_id: user.id).length.to_f / result_user.length).round(1) rescue 0 %></td>
               <td><%= @airpays.where(user_id: user.id).length %></td>
               <td><%= (@airpays.where(user_id: user.id).length.to_f / result_user.length).round(1) rescue 0 %></td>
-              <td><%= @usenpauys.where(user_id: user.id).length %></td>
+              <td><%= @usen_pays.where(user_id: user.id).length %></td>
               <td><%= (@usen_pays.where(user_id: user.id).length.to_f / result_user.length).round(1) rescue 0 %></td>
             </tr><%# /個別 %>
             <% end %>
