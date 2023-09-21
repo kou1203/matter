@@ -155,12 +155,12 @@
         <td ><%= i + 1 %></td>
         <td ><%= nuro_payment.category %></td>
         <td ><%= nuro_payment.isp_num %></td>
-        <td ><%= nuro_payment.nuro.user.name %></td>
+        <td ><%= nuro_payment.nuro.user.name rescue "" %></td>
         <td ><%= nuro_payment.date %></td>
-        <td ><%= nuro_payment.nuro.date %></td>
+        <td ><%= nuro_payment.nuro.date rescue "" %></td>
         <td ><%= nuro_payment.payment %></td>
         <td ><%= nuro_payment.price.to_s(:delimited) %></td>
-        <% if nuro_payment.date.end_of_month == nuro_payment.nuro.date.end_of_month %>
+        <% if nuro_payment.nuro.present? && nuro_payment.date.end_of_month == nuro_payment.nuro.date.end_of_month %>
         <td >無し</td>
         <% else %>
         <td class="red">相違</td>

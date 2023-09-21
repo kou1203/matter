@@ -91,13 +91,45 @@
         <td class="red"><%= client_nuro_results_seiton_and_hozon.length %></td>
         <% end %><%# /SEITON&HOZON（1回目） %>
         <% nuro_results_hikari_safe = nuro_results.where(option_nuro_hikari_safe_flag: nil).where.not(option_nuro_hikari_safe: nil) %><%# NURO光Safe %>
-        <% client_nuro_results_hikari_safe = nuro_results_seiton_and_hozon.where(nuro_payments: {category: "NURO光Safe"}) %>
+        <% client_nuro_results_hikari_safe = nuro_results_hikari_safe.where(nuro_payments: {category: "NURO光Safe"}) %>
         <td><%= nuro_results_hikari_safe.length %></td>
         <% if nuro_results_hikari_safe.length - client_nuro_results_hikari_safe.length == 0 %>
         <td><%= client_nuro_results_hikari_safe.length %></td>
         <% else %>
         <td class="red"><%= client_nuro_results_hikari_safe.length %></td>
         <% end %><%# /NURO光Safe %>
+        <% nuro_results_sakutto_support = nuro_results.where(option_nuro_sakutto_support_flag: nil).where.not(option_nuro_sakutto_support: nil) %><%# NUROさくっとサポート（1回目） %>
+        <% client_nuro_results_sakutto_support = nuro_results_sakutto_support.where(nuro_payments: {category: "NUROさくっとサポート（1回目）"}) %>
+        <td><%= nuro_results_sakutto_support.length %></td>
+        <% if nuro_results_sakutto_support.length - client_nuro_results_sakutto_support.length == 0 %>
+        <td><%= client_nuro_results_sakutto_support.length %></td>
+        <% else %>
+        <td class="red"><%= client_nuro_results_sakutto_support.length %></td>
+        <% end %><%# /NUROさくっとサポート（1回目） %>
+        <% nuro_results_tokutoku_super = nuro_results.where(option_tokutoku_super_flag: nil).where.not(option_tokutoku_super: nil) %><%# とくとくネットスーパー	 %>
+        <% client_nuro_results_tokutoku_super = nuro_results_tokutoku_super.where(nuro_payments: {category: "とくとくネットスーパー"}) %>
+        <td><%= nuro_results_tokutoku_super.length %></td>
+        <% if nuro_results_tokutoku_super.length - client_nuro_results_tokutoku_super.length == 0 %>
+        <td><%= client_nuro_results_tokutoku_super.length %></td>
+        <% else %>
+        <td class="red"><%= client_nuro_results_tokutoku_super.length %></td>
+        <% end %><%# /とくとくネットスーパー	 %>
+        <% nuro_results_smart_life = nuro_results.where(option_nuro_smart_life_flag: nil).where.not(option_nuro_smart_life: nil) %><%# NUROスマートライフ	 %>
+        <% client_nuro_results_smart_life = nuro_results_smart_life.where(nuro_payments: {category: "NUROスマートライフ"}) %>
+        <td><%= nuro_results_smart_life.length %></td>
+        <% if nuro_results_smart_life.length - client_nuro_results_smart_life.length == 0 %>
+        <td><%= client_nuro_results_smart_life.length %></td>
+        <% else %>
+        <td class="red"><%= client_nuro_results_smart_life.length %></td>
+        <% end %><%# /NUROスマートライフ	 %>
+        <% nuro_results_tsunagaru_mesh_wifi = nuro_results.where(option_tsunagaru_mesh_wifi_flag: nil).where.not(option_tsunagaru_mesh_wifi: nil) %><%# つながるメッシュWi-Fi	 %>
+        <% client_nuro_results_tsunagaru_mesh_wifi = nuro_results_tsunagaru_mesh_wifi.where(nuro_payments: {category: "つながるメッシュWi-Fi"}) %>
+        <td><%= nuro_results_tsunagaru_mesh_wifi.length %></td>
+        <% if nuro_results_tsunagaru_mesh_wifi.length - client_nuro_results_tsunagaru_mesh_wifi.length == 0 %>
+        <td><%= client_nuro_results_tsunagaru_mesh_wifi.length %></td>
+        <% else %>
+        <td class="red"><%= client_nuro_results_tsunagaru_mesh_wifi.length %></td>
+        <% end %><%# /つながるメッシュWi-Fi	 %>
       </tr>
       <% end %>
     </table>

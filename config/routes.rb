@@ -426,6 +426,7 @@ Rails.application.routes.draw do
     collection {
       post :import
       get :years_result
+      get :monthly_result
     }
   end 
 

@@ -20,6 +20,10 @@ class NurosController < ApplicationController
     @nuros = Nuro.includes(:nuro_payments).where(date: @month.all_year)
   end 
 
+  def monthly_result
+    @nuros = Nuro.includes(:nuro_payments).where(date: @month.all_month).where.not(status: "キャンセル").where(current_month_cancel: nil)
+  end 
+
   def import
     if params[:file].present?
       # if Airpay.csv_check(params[:file]).present?
