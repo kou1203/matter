@@ -70,7 +70,7 @@ class StorePropsController < ApplicationController
   end 
 
   def export 
-    @store_props_csv = StoreProp.includes(:dmer, :aupay, :paypay, :rakuten_pay)
+    @store_props_csv = StoreProp.includes(:dmer, :aupay, :airpay, :rakuten_pay)
     head :no_content
     filename = "店舗情報一覧#{Date.today}"
     
