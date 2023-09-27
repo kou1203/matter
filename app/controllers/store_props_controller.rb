@@ -78,19 +78,19 @@ class StorePropsController < ApplicationController
       "店舗名", "本店名", "法人/個人", "業種",
       "都道府県", "市区", "町村","番地","建物名",
       "法人名","法人番号","法人住所", 
-      "代表者性別","代表者名","代表者名カナ","代表者生年月日",
-      "担当者性別","担当者名","担当者名カナ", "担当者生年月日",
+      "代表者性別","代表者名","代表者名カナ",
+      "担当者名","担当者名カナ",
       "連絡先1","連絡先2","メルアドレス","好適時間", "定休日",
-      "dメル獲得日", "auPay獲得日", "PayPay獲得日", "楽天ペイ獲得日", "AirPay獲得日"
+      "dメル獲得日", "auPay獲得日", "楽天ペイ獲得日", "AirPay獲得日"
     ]
     columns = [
       "name","head_store","race", "industry",
       "prefecture", "city", "municipalities", "address","building_name",
       "corporate_name", "corporate_num","corporate_address",
-      "gender_main","person_main_name","person_main_kana","person_main_birthday",
-      "gender_sub","person_sub_name","person_sub_kana","person_sub_birthday",
+      "gender_main","person_main_name","person_main_kana",
+      "person_sub_name","person_sub_kana",
       "phone_number_1","phone_number_2","mail_1","suitable_time","holiday",
-      "dmer_date","aupay_date","paypay_date", "rakuten_pay_date", "airpay_date"
+      "dmer_date","aupay_date", "rakuten_pay_date", "airpay_date"
     ]
     bom = "\uFEFF"
     csv = CSV.generate(bom) do |csv|
@@ -107,11 +107,6 @@ class StorePropsController < ApplicationController
           else
             store_attriutes["aupay_date"] = "" 
           end
-          if store.paypay.present?
-            store_attriutes["paypay_date"] = store.paypay.date 
-          else  
-            store_attriutes["paypay_date"] = ""
-          end 
           if store.rakuten_pay.present?
             store_attriutes["rakuten_pay_date"] = store.rakuten_pay.date
           else  
