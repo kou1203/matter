@@ -1,0 +1,28 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>Nuro未入金案件</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <div class="warning"><%= alert %></div><br>
+    <%= render "shared/nuro_links" %>
+    <h2>◆<%= @month.strftime("%Y年%m月") %>未入金案件</h2>
+    <table>
+      <tr>
+        <th>カテゴリー</th>
+        <th>成果</th>
+        <th>明細</th>
+        <th>未入金</th>
+      </tr>
+      <% @nuro_payments.each do |nuro_payment| %>
+      <tr>
+        <td><%= nuro_payment.category %></td>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+</div>

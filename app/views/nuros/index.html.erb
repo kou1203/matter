@@ -133,6 +133,7 @@
     <table class="out-tb">
     <thead>
       <tr >
+        <th class="out-tb">No.</th>
         <th class="out-tb"></th>
         <th class="out-tb">管理番号</th>
         <th class="out-tb">獲得者</th>
@@ -149,11 +150,13 @@
         <th class="out-tb">解約</th>
         <th class="out-tb">ISP番号</th>
         <th class="out-tb">回線短期解約</th>
+        <th class="out-tb">光回線入金</th>
       </tr>
     </thead>
     <tbody>
-      <% @nuros_data.each do |nuro| %>
+      <% @nuros_data.each_with_index do |nuro, i| %>
       <tr >
+        <td ><%= i + 1 %></td>
         <td ><%= link_to "詳細", nuro_path(nuro.id),class: "link" %></td>
         <td ><%= nuro.controll_num %></td>
         <td ><%= nuro.user.name %></td>
@@ -170,6 +173,11 @@
         <td ><%= nuro.cancel %></td>
         <td ><%= nuro.isp_num %></td>
         <td ><%= nuro.current_month_cancel %></td>
+        <% if nuro.nuro_payments.length != 0 %>
+        <td >○</td>
+        <% else %>
+        <td ></td>
+        <% end %>
       </tr>
       <% end %>
     </tbody>

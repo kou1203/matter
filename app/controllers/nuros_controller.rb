@@ -1,7 +1,7 @@
 class NurosController < ApplicationController
   before_action :set_month
   def index 
-    @q = Nuro.ransack(params[:q])
+    @q = Nuro.includes(:nuro_payments).ransack(params[:q])
     @nuros = 
       if params[:q].nil?
         Nuro.none 
@@ -21,7 +21,14 @@ class NurosController < ApplicationController
   end 
 
   def monthly_result
-    @nuros = Nuro.includes(:nuro_payments).where(date: @month.all_month).where.not(status: "キャンセル").where(current_month_cancel: nil)
+    @nuros = Nuro.includes(:nuro_payments).where(date: @month.all_month).where(current_month_cancel: nil)
+    @nuro_payments = NuroPayment.where(date: @month.all_month)
+  end 
+
+  def category_not_payment
+    @category = params[:category]
+    @month = params[:month].to_date
+    @nuros = Nuro.where()
   end 
 
   def import

@@ -8,92 +8,45 @@
     <%= render "shared/sidebar" %>
   </div>
   <div data-scope-path="shares/index">
-    <div class="warning"><%= alert %></div>
-    <hr>
+
+    <div class="warning"><%= alert %></div><br>
     <%= render "shared/nuro_links" %>
     <h2>
       <%= link_to "<<",monthly_result_nuros_path(month: @month.ago(1.month)), class:"link" %>
       <%= @month.strftime("%Y年%m月") %>獲得成果
       <%= link_to ">>",monthly_result_nuros_path(month: @month.since(1.month)), class:"link" %>
     </h2><br>
-
     <table>
       <tr>
-
-        <th colspan="8"></th>
-        <th colspan="2">光回線</th>
-        <th colspan="2">光でんわ</th>
-        <th colspan="2">ひかりTV</th>
-        <th colspan="2">ひかりTV（2件目）</th>
-        <th colspan="2">SEITON&HOZON</th>
-        <th colspan="2">NURO 光 Safe</th>
-        <th colspan="2">NURO さくっとサポート</th>
-        <th colspan="2">とくとくネットスーパー</th>
-        <th colspan="2">NUROスマートライフ</th>
-        <th colspan="2">つながるメッシュWi-Fi</th>
-      </tr>
-      <tr>
-        <th>No.</th>
-        <th>ISP番号</th>
-        <th>苗字（カナ）</th>
-        <th>申込日</th>
-        <th>ステータス</th>
-        <th>開通日</th>
-        <th>解約日</th>
-        <th>光でんわ申込有無</th>
-        <% 10.times do %>
+        <th>商材</th>
         <th>成果</th>
-        <th>入金</th>
-        <% end %>
+        <th>明細</th>
+        <th>未入金</th>
       </tr>
-      <% @nuros.each_with_index do |nuro, i| %>
       <tr>
-        <td><%= i + 1 %></td>
-        <td><%= nuro.isp_num %></td>
-        <td><%= nuro.last_name_kana %></td>
-        <td><%= nuro.date.strftime("%m月%d日") %></td>
-        <td><%= nuro.status %></td>
-        <td><%= nuro.start %></td>
-        <td><%= nuro.cancel %></td>
-        <td><%= nuro.option_tell %></td>
-        <td><%= nuro.start.strftime("%Y%m") rescue "" %></td>
-        <td><%= nuro.nuro_payments.where(category: "光回線").first.payment.strftime("%Y%m") rescue "" %></td>
-        <% if nuro.option_tell == "有" %>
-        <td><%= nuro.start.strftime("%Y%m") rescue "" %></td>
-        <% else %>
-        <td></td>
-        <% end %>
-        <td><%= nuro.nuro_payments.where(category: "光でんわ").first.payment.strftime("%Y%m") rescue "" %></td>
-        <td><%= nuro.option_hikari_tv.strftime("%Y%m") rescue "" %></td>
-        <td><%= nuro.nuro_payments.where(category: "ひかりTV").or(nuro.nuro_payments.where(category: "ひかりTV（ビデオプラン）")).first.payment.strftime("%Y%m") rescue "" %></td>
-        <td><%= nuro.option_hikari_tv.strftime("%Y%m") rescue "" %></td>
-        <td><%= nuro.nuro_payments.where(category: "ひかりTV２件目").or(nuro.nuro_payments.where(category: "ひかりTV２件目（専門プラン）")).first.payment.strftime("%Y%m") rescue "" %></td>
-        <% if nuro.option_seiton_and_hozon_flag.present?  %>
-        <td><%= nuro.option_seiton_and_hozon_flag rescue "" %></td>
-        <% else %>
-        <td><%= nuro.option_seiton_and_hozon.strftime("%Y%m") rescue "" %></td>
-        <% end %>
-        <td><%= nuro.nuro_payments.where(category: "SEITON&HOZON（1回目）").first.payment.strftime("%Y%m") rescue "" %></td>
-        <% if nuro.option_nuro_hikari_safe_flag.present? %>
-        <td><%= nuro.option_nuro_hikari_safe_flag %></td>
-        <% else %>
-        <td><%= nuro.option_nuro_hikari_safe.strftime("%Y%m") rescue "" %></td>
-        <% end %>
-        <td><%= nuro.nuro_payments.where(category: "NURO光Safe").first.payment.strftime("%Y%m") rescue "" %></td>
-        <% if nuro.option_nuro_sakutto_support_flag.present? %>
-        <td><%= nuro.option_nuro_sakutto_support_flag %></td>
-        <% else %>
-        <td><%= nuro.option_nuro_sakutto_support.strftime("%Y%m") rescue "" %></td>
-        <% end %>
-        <td><%= nuro.nuro_payments.where(category: "NUROさくっとサポート（1回目）").first.payment.strftime("%Y%m") rescue "" %></td>
-        <td><%= nuro.option_tokutoku_super.strftime("%Y%m") rescue "" %></td>
-        <td><%= nuro.nuro_payments.where(category: "とくとくネットスーパー").first.payment.strftime("%Y%m") rescue "" %></td>
-        <td><%= nuro.option_nuro_smart_life.strftime("%Y%m") rescue "" %></td>
-        <td><%= nuro.nuro_payments.where(category: "NUROスマートライフ").first.payment.strftime("%Y%m") rescue "" %></td>
-        <td><%= nuro.option_tsunagaru_mesh_wifi.strftime("%Y%m") rescue "" %></td>
-        <td><%= nuro.nuro_payments.where(category: "つながるメッシュWi-Fi").first.payment.strftime("%Y%m") rescue "" %></td>
+        <td>光回線</td>
+        <td><%= @nuros.where.not(start: nil).length %>件</td>
+        <td><%= @nuros.where(nuro_payments: {category: "光回線"}).length %></td>
+        <td><%= link_to @nuros.where.not(start: nil).length - @nuros.where(nuro_payments: {category: "光回線"}).length,"#",class: "link" %></td>
       </tr>
-      <% end %>
+      <tr>
+        <td>光でんわ</td>
+        <td><%= @nuros.where.not(start: nil).where(option_tell: "有").length %>件</td>
+        <td><%= @nuros.where(nuro_payments: {category: "光でんわ"}).length %></td>
+        <td><%= link_to @nuros.where.not(start: nil).where(option_tell: "有").length - @nuros.where(nuro_payments: {category: "光でんわ"}).length,"#",class: "link" %></td>
+      </tr>
+      <tr>
+        <td>ひかりTV</td>
+        <td><%= @nuros.where.not(option_hikari_tv: nil).length %>件</td>
+        <td><%= @nuros.where(nuro_payments: {category: "ひかりTV"}).length %></td>
+        <td><%= link_to @nuros.where.not(option_hikari_tv: nil).length - @nuros.where(nuro_payments: {category: "ひかりTV"}).length,"#",class: "link" %></td>
+      </tr>
+      <tr>
+        <td>ひかりTV２件目</td>
+        <td><%= @nuros.where.not(option_hikari_tv2: nil).length %>件</td>
+        <td><%= @nuros.where(nuro_payments: {category: "ひかりTV２件目"}).length %></td>
+        <td><%= link_to @nuros.where.not(option_hikari_tv2: nil).length - @nuros.where(nuro_payments: {category: "ひかりTV２件目"}).length,category_not_payment_nuros_path(categpry: "ひかりTV２件目", month: @month),class: "link" %></td>
+      </tr>
     </table>
   </div>
 </div>

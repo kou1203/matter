@@ -427,6 +427,7 @@ Rails.application.routes.draw do
       post :import
       get :years_result
       get :monthly_result
+      get :category_not_payment
     }
   end 
 

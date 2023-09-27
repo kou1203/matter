@@ -81,7 +81,7 @@ class StorePropsController < ApplicationController
       "代表者性別","代表者名","代表者名カナ","代表者生年月日",
       "担当者性別","担当者名","担当者名カナ", "担当者生年月日",
       "連絡先1","連絡先2","メルアドレス","好適時間", "定休日",
-      "dメル獲得日", "auPay獲得日", "PayPay獲得日", "楽天ペイ獲得日"
+      "dメル獲得日", "auPay獲得日", "PayPay獲得日", "楽天ペイ獲得日", "AirPay獲得日"
     ]
     columns = [
       "name","head_store","race", "industry",
@@ -90,7 +90,7 @@ class StorePropsController < ApplicationController
       "gender_main","person_main_name","person_main_kana","person_main_birthday",
       "gender_sub","person_sub_name","person_sub_kana","person_sub_birthday",
       "phone_number_1","phone_number_2","mail_1","suitable_time","holiday",
-      "dmer_date","aupay_date","paypay_date", "rakuten_pay_date"
+      "dmer_date","aupay_date","paypay_date", "rakuten_pay_date", "airpay_date"
     ]
     bom = "\uFEFF"
     csv = CSV.generate(bom) do |csv|
@@ -116,6 +116,11 @@ class StorePropsController < ApplicationController
             store_attriutes["rakuten_pay_date"] = store.rakuten_pay.date
           else  
           store_attriutes["rakuten_pay_date"] = ""
+          end 
+          if store.airpay.present?
+            store_attriutes["airpay_date"] = store.airpay.date
+          else  
+          store_attriutes["airpay_date"] = ""
           end 
           csv << store_attriutes.values_at(*columns)
         end
