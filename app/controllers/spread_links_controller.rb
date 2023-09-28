@@ -269,7 +269,7 @@ class SpreadLinksController < ApplicationController
           index_cnt += 1  
           @session_data[index_cnt,col_cnt] = Airpay.where(user_id: result.user_id).where(date: result.date).length rescue 0
           index_cnt += 1  
-          @session_data[index_cnt,col_cnt] = Itss.where(user_id: result.user_id).where(date: result.date).length rescue 0
+          @session_data[index_cnt,col_cnt] = UsenPay.where(user_id: result.user_id).where(date: result.date).length rescue 0
           index_cnt += 1  
 
           col_cnt += 1 # 列を一列ずらす
