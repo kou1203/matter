@@ -1551,6 +1551,7 @@ ActiveRecord::Schema.define(version: 2023_09_14_073952) do
     t.string "status"
     t.string "mail"
     t.text "remarks"
+    t.index ["stock_num"], name: "index_stocks_on_stock_num", unique: true
   end
 
   create_table "store_props", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1882,6 +1883,7 @@ ActiveRecord::Schema.define(version: 2023_09_14_073952) do
   add_foreign_key "result_sales", "users"
   add_foreign_key "result_summits", "results"
   add_foreign_key "results", "users"
+  add_foreign_key "results", "users", column: "ojt_id"
   add_foreign_key "return_histories", "stocks"
   add_foreign_key "return_histories", "users"
   add_foreign_key "shifts", "users"
