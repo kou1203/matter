@@ -34,7 +34,7 @@ class SpreadLinksController < ApplicationController
         index_cnt = 5 
         shift = Shift.includes(:user).where(user: {name: @name}).find_by(start_time: r_date)
         result = Result.includes(:user,:result_cash).where(user: {name: @name}).find_by(date: r_date)
-        if shift.shift == "休み" || result.nil?
+        if shift.shift == "休み" || shift.shift == "内勤" || result.nil?
           @session_data[index_cnt,col_cnt] = shift.start_time.day
           index_cnt += 1
           @session_data[index_cnt,col_cnt] = "（#{days[shift.start_time.wday]}）"
