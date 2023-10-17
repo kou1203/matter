@@ -394,7 +394,7 @@ class DmerDateProgressesController < ApplicationController
       end 
       # 実売終着1（過去）
       profit_fin1_prev = 
-        (@dmer1_price * ( result_tgt_prev1.length.to_f * @dmer1_prev_month_per).round()) +
+        (@dmer1_price * (result_tgt_prev1.length.to_f * @dmer1_prev_month_per).round()) +
         dmer_result1_prev.sum(:profit_new)
       profit_fin1 = profit_fin1_period + profit_fin1_prev
         if (Date.today > @dmer1_closing_date) || (profit_current1_price > profit_fin1)

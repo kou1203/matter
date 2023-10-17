@@ -132,7 +132,7 @@ class RakutenPayDateProgressesController < ApplicationController
       @rakuten_pays_user_share = @rakuten_pays_user.where(share: @start_date..@end_date)
       @rakuten_pays_fin_len = (@rakuten_pays_user_period.length.to_f / shift_digestion * shift_schedule).round() rescue 0
 
-      # 審査完了（前月16日〜15日）
+      # 審査完了
       rakuten_pay_done = 
         @rakuten_pays_user.where(result_point: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
         .where(status: "OK")
