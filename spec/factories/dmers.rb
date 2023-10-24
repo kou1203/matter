@@ -11,6 +11,7 @@ FactoryBot.define do
     profit_settlement { 5000 }
     profit_second_settlement { 5000 }
     association :user
+    association :settlementer, factory: :user
     association :store_prop
   end 
 end 
