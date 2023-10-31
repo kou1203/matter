@@ -139,7 +139,9 @@ class UsenPayDateProgressesController < ApplicationController
       # 7月より前の案件
       valuation_current_7month_ago = @usen_pay_user_result.where.not(status: "自社不備").where.not(status: "自社NG").where(date: ...Date.new(2023, 8,1)).sum(:valuation) rescue 0
       # 8月以降の案件
-      valuation_current_8month_since = @usen_pay_user_period.where.not(status: "自社不備").where.not(status: "自社NG").where(date: Date.new(2023, 8,1)..).sum(:valuation) rescue 0
+      valuation_current_8month_since = @usen_pay_user_period.where.not(status: "自社不備").where.not(status: "自社NG").where(date: Date.new(2023, 8,1)..).or(
+        @usen_pay_user_period.where(date: Date.new(2023, 8,1)..).where(status: "自社NG").where.not(share: nil)
+      ).sum(:valuation) rescue 0
       valuation_current = valuation_current_7month_ago + valuation_current_8month_since rescue 0
 
       if i_user.user.position == "退職"

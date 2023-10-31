@@ -1070,7 +1070,9 @@ class ResultsController < ApplicationController
         .where.not(status: "自社不備").where.not(status: "自社NG") rescue 0
       @usen_pays_8month_since = 
         UsenPay.where(user_id: @user.id).where(date: usen_separate_date..).where(date: @month.all_month)
-        .where.not(status: "自社不備").where.not(status: "自社NG") rescue 0
+        .where.not(status: "自社不備").where.not(status: "自社NG").or(
+          UsenPay.where(user_id: @user.id).where(date: usen_separate_date..).where(date: @month.all_month).where(status: "自社NG").where.not(share: nil)
+        ) rescue 0
       @usen_pay_val_len = @usen_pays_8month_since.length + @usen_pays_7month_ago.length rescue 0
     end
 

@@ -1,6 +1,7 @@
 class AupaysController < ApplicationController
   before_action :authenticate_user!
   before_action :set_aupay, only: [:show,:edit,:update]
+  before_action :back_retirement
 
   def index 
     @q = Aupay.includes(:user, :store_prop).ransack(params[:q])
@@ -99,5 +100,9 @@ class AupaysController < ApplicationController
       :valuation_settlement
     )
   end 
+     
+  def back_retirement # 退職者が閲覧できないようにする
+    redirect_to error_pages_path if current_user.position_sub == "99：退職"
+  end
   
 end

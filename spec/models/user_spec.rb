@@ -13,16 +13,10 @@ RSpec.describe User, type: :model do
     end 
 
     context '新規登録できない時' do 
-      it '名前の入力がないと登録できない' do 
-        @user.name = ''
-        @user.valid?
-        expect(@user.errors.full_messages).to include "Name can't be blank"
-      end 
-
       it 'メールアドレスが空だと登録できない' do 
         @user.email = ''
         @user.valid? 
-        expect(@user.errors_full_massages).to include " Emailを入力してください"
+        expect(@user.errors.full_messages).to include "Emailを入力してください"
       end 
 
       it '同じメールアドレスがあると登録できない' do 

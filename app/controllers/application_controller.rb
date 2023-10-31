@@ -11,806 +11,808 @@ class ApplicationController < ActionController::Base
     # @calc_periods = CalcPeriod.where(sales_category: "評価売")
     # 各商材の計算期間と成約率（実売）　calc_period_and_per上の行に上記の二列を追加する
     def calc_period_and_per
-      @basic_calc_data = @calc_periods.find_by(name: "各商材獲得")
-      @dmer1_calc_data = @calc_periods.find_by(name: "dメル成果1")
-      @dmer2_calc_data = @calc_periods.find_by(name: "dメル成果2")
-      @dmer3_calc_data = @calc_periods.find_by(name: "dメル成果3")
-      @aupay1_calc_data = @calc_periods.find_by(name: "auPay成果1")
-      @paypay1_calc_data = @calc_periods.find_by(name: "PayPay成果1")
-      @rakuten_pay1_calc_data = @calc_periods.find_by(name: "楽天ペイ成果1")
-      @airpay1_calc_data = @calc_periods.find_by(name: "AirPay成果1")
-      @demaekan1_calc_data = @calc_periods.find_by(name: "出前館成果1")
-      @austicker1_calc_data = @calc_periods.find_by(name: "auステッカー成果1")
-      @dmersticker1_calc_data = @calc_periods.find_by(name: "dメルステッカー成果1")
-      @airpaysticker1_calc_data = @calc_periods.find_by(name: "AirPayステッカー成果1")
-      @airpaysticker_mine1_calc_data = @calc_periods.find_by(name: "AirPayステッカー成果1（自社）")
-      @airpaysticker_other1_calc_data = @calc_periods.find_by(name: "AirPayステッカー成果1（他社）")
-      @itss1_calc_data = @calc_periods.find_by(name: "ITSS")
-      # 期間
-      @basic_start_date_year_and_month = @month.since(@basic_calc_data.start_date_month.month)
-      if @basic_calc_data.start_date_day == 0
-        @start_date = Date.new(
-          @basic_start_date_year_and_month.year,
-          @basic_start_date_year_and_month.month,
-          @basic_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @start_date = Date.new(
-          @basic_start_date_year_and_month.year,
-          @basic_start_date_year_and_month.month,
-          @basic_calc_data.start_date_day,
-        )
-
-      end 
-
-      @basic_end_date_year_and_month = @month.since(@basic_calc_data.end_date_month.month)
-      if @basic_calc_data.end_date_day == 0
-        @end_date = Date.new(
-          @basic_end_date_year_and_month.year,
-          @basic_end_date_year_and_month.month,
-          @basic_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @end_date = Date.new(
-          @basic_end_date_year_and_month.year,
-          @basic_end_date_year_and_month.month,
-          @basic_calc_data.end_date_day,
-        )
-
-      end
-
-
-      # 締め日
-      @basic_closing_date_year_and_month = @month.since(@basic_calc_data.closing_date_month.month)
-      if @basic_calc_data.closing_date_day == 0
-        @closing_date = Date.new(
-          @basic_closing_date_year_and_month.year,
-          @basic_closing_date_year_and_month.month,
-          @basic_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @closing_date = Date.new(
-          @basic_closing_date_year_and_month.year,
-          @basic_closing_date_year_and_month.month,
-          @basic_calc_data.closing_date_day,
-        )
-
-      end
-      # 期間
-      @dmer1_start_date_year_and_month = @month.since(@dmer1_calc_data.start_date_month.month)
-      if @dmer1_calc_data.start_date_day == 0
-        @dmer1_start_date = Date.new(
-          @dmer1_start_date_year_and_month.year,
-          @dmer1_start_date_year_and_month.month,
-          @dmer1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmer1_start_date = Date.new(
-          @dmer1_start_date_year_and_month.year,
-          @dmer1_start_date_year_and_month.month,
-          @dmer1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @dmer1_end_date_year_and_month = @month.since(@dmer1_calc_data.end_date_month.month)
-      if @dmer1_calc_data.end_date_day == 0
-        @dmer1_end_date = Date.new(
-          @dmer1_end_date_year_and_month.year,
-          @dmer1_end_date_year_and_month.month,
-          @dmer1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmer1_end_date = Date.new(
-          @dmer1_end_date_year_and_month.year,
-          @dmer1_end_date_year_and_month.month,
-          @dmer1_calc_data.end_date_day,
-        )
-
-      end
-
-      # 締め日
-      @dmer1_closing_date_year_and_month = @month.since(@dmer1_calc_data.closing_date_month.month)
-      if @dmer1_calc_data.closing_date_day == 0
-        @dmer1_closing_date = Date.new(
-          @dmer1_closing_date_year_and_month.year,
-          @dmer1_closing_date_year_and_month.month,
-          @dmer1_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmer1_closing_date = Date.new(
-          @dmer1_closing_date_year_and_month.year,
-          @dmer1_closing_date_year_and_month.month,
-          @dmer1_calc_data.closing_date_day,
-        )
-
-      end
-      # 期間
-      @dmer2_start_date_year_and_month = @month.since(@dmer2_calc_data.start_date_month.month)
-      if @dmer2_calc_data.start_date_day == 0
-        @dmer2_start_date = Date.new(
-          @dmer2_start_date_year_and_month.year,
-          @dmer2_start_date_year_and_month.month,
-          @dmer2_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmer2_start_date = Date.new(
-          @dmer2_start_date_year_and_month.year,
-          @dmer2_start_date_year_and_month.month,
-          @dmer2_calc_data.start_date_day,
-        )
-
-      end 
-
-      @dmer2_end_date_year_and_month = @month.since(@dmer2_calc_data.end_date_month.month)
-      if @dmer2_calc_data.end_date_day == 0
-        @dmer2_end_date = Date.new(
-          @dmer2_end_date_year_and_month.year,
-          @dmer2_end_date_year_and_month.month,
-          @dmer2_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmer2_end_date = Date.new(
-          @dmer2_end_date_year_and_month.year,
-          @dmer2_end_date_year_and_month.month,
-          @dmer2_calc_data.end_date_day,
-        )
-
-      end
-
-      # 締め日
-      @dmer2_closing_date_year_and_month = @month.since(@dmer2_calc_data.closing_date_month.month)
-      if @dmer2_calc_data.closing_date_day == 0
-        @dmer2_closing_date = Date.new(
-          @dmer2_closing_date_year_and_month.year,
-          @dmer2_closing_date_year_and_month.month,
-          @dmer2_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmer2_closing_date = Date.new(
-          @dmer2_closing_date_year_and_month.year,
-          @dmer2_closing_date_year_and_month.month,
-          @dmer2_calc_data.closing_date_day,
-        )
-
-      end
-      # 期間
-      @dmer3_start_date_year_and_month = @month.since(@dmer3_calc_data.start_date_month.month)
-      if @dmer3_calc_data.start_date_day == 0
-        @dmer3_start_date = Date.new(
-          @dmer3_start_date_year_and_month.year,
-          @dmer3_start_date_year_and_month.month,
-          @dmer3_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmer3_start_date = Date.new(
-          @dmer3_start_date_year_and_month.year,
-          @dmer3_start_date_year_and_month.month,
-          @dmer3_calc_data.start_date_day,
-        )
-
-      end 
-
-      @dmer3_end_date_year_and_month = @month.since(@dmer3_calc_data.end_date_month.month)
-      if @dmer3_calc_data.end_date_day == 0
-        @dmer3_end_date = Date.new(
-          @dmer3_end_date_year_and_month.year,
-          @dmer3_end_date_year_and_month.month,
-          @dmer3_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmer3_end_date = Date.new(
-          @dmer3_end_date_year_and_month.year,
-          @dmer3_end_date_year_and_month.month,
-          @dmer3_calc_data.end_date_day,
-        )
-
-      end
-      # 締め日
-      @dmer3_closing_date_year_and_month = @month.since(@dmer3_calc_data.closing_date_month.month)
-      if @dmer3_calc_data.closing_date_day == 0
-        @dmer3_closing_date = Date.new(
-          @dmer3_closing_date_year_and_month.year,
-          @dmer3_closing_date_year_and_month.month,
-          @dmer3_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmer3_closing_date = Date.new(
-          @dmer3_closing_date_year_and_month.year,
-          @dmer3_closing_date_year_and_month.month,
-          @dmer3_calc_data.closing_date_day,
-        )
-
-      end
-      # 期間
-      @aupay1_start_date_year_and_month = @month.since(@aupay1_calc_data.start_date_month.month)
-      if @aupay1_calc_data.start_date_day == 0
-        @aupay1_start_date = Date.new(
-          @aupay1_start_date_year_and_month.year,
-          @aupay1_start_date_year_and_month.month,
-          @aupay1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @aupay1_start_date = Date.new(
-          @aupay1_start_date_year_and_month.year,
-          @aupay1_start_date_year_and_month.month,
-          @aupay1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @aupay1_end_date_year_and_month = @month.since(@aupay1_calc_data.end_date_month.month)
-      if @aupay1_calc_data.end_date_day == 0
-        @aupay1_end_date = Date.new(
-          @aupay1_end_date_year_and_month.year,
-          @aupay1_end_date_year_and_month.month,
-          @aupay1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @aupay1_end_date = Date.new(
-          @aupay1_end_date_year_and_month.year,
-          @aupay1_end_date_year_and_month.month,
-          @aupay1_calc_data.end_date_day,
-        )
-
-      end
-
-      # 締め日
-      @aupay1_closing_date_year_and_month = @month.since(@aupay1_calc_data.closing_date_month.month)
-      if @aupay1_calc_data.closing_date_day == 0
-        @aupay1_closing_date = Date.new(
-          @aupay1_closing_date_year_and_month.year,
-          @aupay1_closing_date_year_and_month.month,
-          @aupay1_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @aupay1_closing_date = Date.new(
-          @aupay1_closing_date_year_and_month.year,
-          @aupay1_closing_date_year_and_month.month,
-          @aupay1_calc_data.closing_date_day,
-        )
-
-      end
-      # 期間
-      @paypay1_start_date_year_and_month = @month.since(@paypay1_calc_data.start_date_month.month)
-      if @paypay1_calc_data.start_date_day == 0
-        @paypay1_start_date = Date.new(
-          @paypay1_start_date_year_and_month.year,
-          @paypay1_start_date_year_and_month.month,
-          @paypay1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @paypay1_start_date = Date.new(
-          @paypay1_start_date_year_and_month.year,
-          @paypay1_start_date_year_and_month.month,
-          @paypay1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @paypay1_end_date_year_and_month = @month.since(@paypay1_calc_data.end_date_month.month)
-      if @paypay1_calc_data.end_date_day == 0
-        @paypay1_end_date = Date.new(
-          @paypay1_end_date_year_and_month.year,
-          @paypay1_end_date_year_and_month.month,
-          @paypay1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @paypay1_end_date = Date.new(
-          @paypay1_end_date_year_and_month.year,
-          @paypay1_end_date_year_and_month.month,
-          @paypay1_calc_data.end_date_day,
-        )
-
-      end
-
-      # 締め日
-      @paypay1_closing_date_year_and_month = @month.since(@paypay1_calc_data.closing_date_month.month)
-      if @paypay1_calc_data.closing_date_day == 0
-        @paypay1_closing_date = Date.new(
-          @paypay1_closing_date_year_and_month.year,
-          @paypay1_closing_date_year_and_month.month,
-          @paypay1_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @paypay1_closing_date = Date.new(
-          @paypay1_closing_date_year_and_month.year,
-          @paypay1_closing_date_year_and_month.month,
-          @paypay1_calc_data.closing_date_day,
-        )
-
-      end
-      # 期間
-      @rakuten_pay1_start_date_year_and_month = @month.since(@rakuten_pay1_calc_data.start_date_month.month)
-      if @rakuten_pay1_calc_data.start_date_day == 0
-        @rakuten_pay1_start_date = Date.new(
-          @rakuten_pay1_start_date_year_and_month.year,
-          @rakuten_pay1_start_date_year_and_month.month,
-          @rakuten_pay1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @rakuten_pay1_start_date = Date.new(
-          @rakuten_pay1_start_date_year_and_month.year,
-          @rakuten_pay1_start_date_year_and_month.month,
-          @rakuten_pay1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @rakuten_pay1_end_date_year_and_month = @month.since(@rakuten_pay1_calc_data.end_date_month.month)
-      if @rakuten_pay1_calc_data.end_date_day == 0
-        @rakuten_pay1_end_date = Date.new(
-          @rakuten_pay1_end_date_year_and_month.year,
-          @rakuten_pay1_end_date_year_and_month.month,
-          @rakuten_pay1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @rakuten_pay1_end_date = Date.new(
-          @rakuten_pay1_end_date_year_and_month.year,
-          @rakuten_pay1_end_date_year_and_month.month,
-          @rakuten_pay1_calc_data.end_date_day,
-        )
-
-      end
-
-
-      # 締め日
-      @rakuten_pay1_closing_date_year_and_month = @month.since(@rakuten_pay1_calc_data.closing_date_month.month)
-      if @rakuten_pay1_calc_data.closing_date_day == 0
-        @rakuten_pay1_closing_date = Date.new(
-          @rakuten_pay1_closing_date_year_and_month.year,
-          @rakuten_pay1_closing_date_year_and_month.month,
-          @rakuten_pay1_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @rakuten_pay1_closing_date = Date.new(
-          @rakuten_pay1_closing_date_year_and_month.year,
-          @rakuten_pay1_closing_date_year_and_month.month,
-          @rakuten_pay1_calc_data.closing_date_day,
-        )
-
-      end
-      # 期間
-      @airpay1_start_date_year_and_month = @month.since(@airpay1_calc_data.start_date_month.month)
-      if @airpay1_calc_data.start_date_day == 0
-        @airpay1_start_date = Date.new(
-          @airpay1_start_date_year_and_month.year,
-          @airpay1_start_date_year_and_month.month,
-          @airpay1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @airpay1_start_date = Date.new(
-          @airpay1_start_date_year_and_month.year,
-          @airpay1_start_date_year_and_month.month,
-          @airpay1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @airpay1_end_date_year_and_month = @month.since(@airpay1_calc_data.end_date_month.month)
-      if @airpay1_calc_data.end_date_day == 0
-        @airpay1_end_date = Date.new(
-          @airpay1_end_date_year_and_month.year,
-          @airpay1_end_date_year_and_month.month,
-          @airpay1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @airpay1_end_date = Date.new(
-          @airpay1_end_date_year_and_month.year,
-          @airpay1_end_date_year_and_month.month,
-          @airpay1_calc_data.end_date_day,
-        )
-
-      end
-
-
-      # 締め日
-      @airpay1_closing_date_year_and_month = @month.since(@airpay1_calc_data.closing_date_month.month)
-      if @airpay1_calc_data.closing_date_day == 0
-        @airpay1_closing_date = Date.new(
-          @airpay1_closing_date_year_and_month.year,
-          @airpay1_closing_date_year_and_month.month,
-          @airpay1_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @airpay1_closing_date = Date.new(
-          @airpay1_closing_date_year_and_month.year,
-          @airpay1_closing_date_year_and_month.month,
-          @airpay1_calc_data.closing_date_day,
-        )
-
-      end
-      # 期間
-      @demaekan1_start_date_year_and_month = @month.since(@demaekan1_calc_data.start_date_month.month)
-      if @demaekan1_calc_data.start_date_day == 0
-        @demaekan1_start_date = Date.new(
-          @demaekan1_start_date_year_and_month.year,
-          @demaekan1_start_date_year_and_month.month,
-          @demaekan1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @demaekan1_start_date = Date.new(
-          @demaekan1_start_date_year_and_month.year,
-          @demaekan1_start_date_year_and_month.month,
-          @demaekan1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @demaekan1_end_date_year_and_month = @month.since(@demaekan1_calc_data.end_date_month.month)
-      if @demaekan1_calc_data.end_date_day == 0
-        @demaekan1_end_date = Date.new(
-          @demaekan1_end_date_year_and_month.year,
-          @demaekan1_end_date_year_and_month.month,
-          @demaekan1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @demaekan1_end_date = Date.new(
-          @demaekan1_end_date_year_and_month.year,
-          @demaekan1_end_date_year_and_month.month,
-          @demaekan1_calc_data.end_date_day,
-        )
-
-      end
-
-
-      # 締め日
-      @demaekan1_closing_date_year_and_month = @month.since(@demaekan1_calc_data.closing_date_month.month)
-      if @demaekan1_calc_data.closing_date_day == 0
-        @demaekan1_closing_date = Date.new(
-          @demaekan1_closing_date_year_and_month.year,
-          @demaekan1_closing_date_year_and_month.month,
-          @demaekan1_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @demaekan1_closing_date = Date.new(
-          @demaekan1_closing_date_year_and_month.year,
-          @demaekan1_closing_date_year_and_month.month,
-          @demaekan1_calc_data.closing_date_day,
-        )
-
-      end
-      # 期間
-      @austicker1_start_date_year_and_month = @month.since(@austicker1_calc_data.start_date_month.month)
-      if @austicker1_calc_data.start_date_day == 0
-        @austicker1_start_date = Date.new(
-          @austicker1_start_date_year_and_month.year,
-          @austicker1_start_date_year_and_month.month,
-          @austicker1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @austicker1_start_date = Date.new(
-          @austicker1_start_date_year_and_month.year,
-          @austicker1_start_date_year_and_month.month,
-          @austicker1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @austicker1_end_date_year_and_month = @month.since(@austicker1_calc_data.end_date_month.month)
-      if @austicker1_calc_data.end_date_day == 0
-        @austicker1_end_date = Date.new(
-          @austicker1_end_date_year_and_month.year,
-          @austicker1_end_date_year_and_month.month,
-          @austicker1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @austicker1_end_date = Date.new(
-          @austicker1_end_date_year_and_month.year,
-          @austicker1_end_date_year_and_month.month,
-          @austicker1_calc_data.end_date_day,
-        )
-
-      end
-
-      # 締め日
-      @austicker1_closing_date_year_and_month = @month.since(@austicker1_calc_data.closing_date_month.month)
-      if @austicker1_calc_data.closing_date_day == 0
-        @austicker1_closing_date = Date.new(
-          @austicker1_closing_date_year_and_month.year,
-          @austicker1_closing_date_year_and_month.month,
-          @austicker1_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @austicker1_closing_date = Date.new(
-          @austicker1_closing_date_year_and_month.year,
-          @austicker1_closing_date_year_and_month.month,
-          @austicker1_calc_data.closing_date_day,
-        )
-
-      end
-      # 期間
-      @dmersticker1_start_date_year_and_month = @month.since(@dmersticker1_calc_data.start_date_month.month)
-      if @dmersticker1_calc_data.start_date_day == 0
-        @dmersticker1_start_date = Date.new(
-          @dmersticker1_start_date_year_and_month.year,
-          @dmersticker1_start_date_year_and_month.month,
-          @dmersticker1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmersticker1_start_date = Date.new(
-          @dmersticker1_start_date_year_and_month.year,
-          @dmersticker1_start_date_year_and_month.month,
-          @dmersticker1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @dmersticker1_end_date_year_and_month = @month.since(@dmersticker1_calc_data.end_date_month.month)
-      if @dmersticker1_calc_data.end_date_day == 0
-        @dmersticker1_end_date = Date.new(
-          @dmersticker1_end_date_year_and_month.year,
-          @dmersticker1_end_date_year_and_month.month,
-          @dmersticker1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmersticker1_end_date = Date.new(
-          @dmersticker1_end_date_year_and_month.year,
-          @dmersticker1_end_date_year_and_month.month,
-          @dmersticker1_calc_data.end_date_day,
-        )
-
-      end
-
-      # 締め日
-      @dmersticker1_closing_date_year_and_month = @month.since(@dmersticker1_calc_data.closing_date_month.month)
-      if @dmersticker1_calc_data.closing_date_day == 0
-        @dmersticker1_closing_date = Date.new(
-          @dmersticker1_closing_date_year_and_month.year,
-          @dmersticker1_closing_date_year_and_month.month,
-          @dmersticker1_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @dmersticker1_closing_date = Date.new(
-          @dmersticker1_closing_date_year_and_month.year,
-          @dmersticker1_closing_date_year_and_month.month,
-          @dmersticker1_calc_data.closing_date_day,
-        )
-
-      end
-      # 期間
-      @airpaysticker1_start_date_year_and_month = @month.since(@airpaysticker1_calc_data.start_date_month.month)
-      if @airpaysticker1_calc_data.start_date_day == 0
-        @airpaysticker1_start_date = Date.new(
-          @airpaysticker1_start_date_year_and_month.year,
-          @airpaysticker1_start_date_year_and_month.month,
-          @airpaysticker1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @airpaysticker1_start_date = Date.new(
-          @airpaysticker1_start_date_year_and_month.year,
-          @airpaysticker1_start_date_year_and_month.month,
-          @airpaysticker1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @airpaysticker1_end_date_year_and_month = @month.since(@airpaysticker1_calc_data.end_date_month.month)
-      if @airpaysticker1_calc_data.end_date_day == 0
-        @airpaysticker1_end_date = Date.new(
-          @airpaysticker1_end_date_year_and_month.year,
-          @airpaysticker1_end_date_year_and_month.month,
-          @airpaysticker1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @airpaysticker1_end_date = Date.new(
-          @airpaysticker1_end_date_year_and_month.year,
-          @airpaysticker1_end_date_year_and_month.month,
-          @airpaysticker1_calc_data.end_date_day,
-        )
-
-      end
-
-      # 締め日
-      @airpaysticker1_closing_date_year_and_month = @month.since(@airpaysticker1_calc_data.closing_date_month.month)
-      if @airpaysticker1_calc_data.closing_date_day == 0
-        @airpaysticker1_closing_date = Date.new(
-          @airpaysticker1_closing_date_year_and_month.year,
-          @airpaysticker1_closing_date_year_and_month.month,
-          @airpaysticker1_closing_date_year_and_month.end_of_month.day,
-        )
-      else
-        @airpaysticker1_closing_date = Date.new(
-          @airpaysticker1_closing_date_year_and_month.year,
-          @airpaysticker1_closing_date_year_and_month.month,
-          @airpaysticker1_calc_data.closing_date_day,
-        )
-
-      end
-
-      # 期間
-      @airpaysticker_mine1_start_date_year_and_month = @month.since(@airpaysticker_mine1_calc_data.start_date_month.month)
-      if @airpaysticker_mine1_calc_data.start_date_day == 0
-        @airpaysticker_mine1_start_date = Date.new(
-          @airpaysticker_mine1_start_date_year_and_month.year,
-          @airpaysticker_mine1_start_date_year_and_month.month,
-          @airpaysticker_mine1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @airpaysticker_mine1_start_date = Date.new(
-          @airpaysticker_mine1_start_date_year_and_month.year,
-          @airpaysticker_mine1_start_date_year_and_month.month,
-          @airpaysticker_mine1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @airpaysticker_mine1_end_date_year_and_month = @month.since(@airpaysticker_mine1_calc_data.end_date_month.month)
-      if @airpaysticker_mine1_calc_data.end_date_day == 0
-        @airpaysticker_mine1_end_date = Date.new(
-          @airpaysticker_mine1_end_date_year_and_month.year,
-          @airpaysticker_mine1_end_date_year_and_month.month,
-          @airpaysticker_mine1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @airpaysticker_mine1_end_date = Date.new(
-          @airpaysticker_mine1_end_date_year_and_month.year,
-          @airpaysticker_mine1_end_date_year_and_month.month,
-          @airpaysticker_mine1_calc_data.end_date_day,
-        )
-
-      end
-
-      # 期間
-      @airpaysticker_other1_start_date_year_and_month = @month.since(@airpaysticker_other1_calc_data.start_date_month.month)
-      if @airpaysticker_other1_calc_data.start_date_day == 0
-        @airpaysticker_other1_start_date = Date.new(
-          @airpaysticker_other1_start_date_year_and_month.year,
-          @airpaysticker_other1_start_date_year_and_month.month,
-          @airpaysticker_other1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @airpaysticker_other1_start_date = Date.new(
-          @airpaysticker_other1_start_date_year_and_month.year,
-          @airpaysticker_other1_start_date_year_and_month.month,
-          @airpaysticker_other1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @airpaysticker_other1_end_date_year_and_month = @month.since(@airpaysticker_other1_calc_data.end_date_month.month)
-      if @airpaysticker_other1_calc_data.end_date_day == 0
-        @airpaysticker_other1_end_date = Date.new(
-          @airpaysticker_other1_end_date_year_and_month.year,
-          @airpaysticker_other1_end_date_year_and_month.month,
-          @airpaysticker_other1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @airpaysticker_other1_end_date = Date.new(
-          @airpaysticker_other1_end_date_year_and_month.year,
-          @airpaysticker_other1_end_date_year_and_month.month,
-          @airpaysticker_other1_calc_data.end_date_day,
-        )
-
-      end
-
-      # 期間
-      @itss1_start_date_year_and_month = @month.since(@itss1_calc_data.start_date_month.month)
-      if @itss1_calc_data.start_date_day == 0
-        @itss1_start_date = Date.new(
-          @itss1_start_date_year_and_month.year,
-          @itss1_start_date_year_and_month.month,
-          @itss1_start_date_year_and_month.end_of_month.day,
-        )
-      else
-        @itss1_start_date = Date.new(
-          @itss1_start_date_year_and_month.year,
-          @itss1_start_date_year_and_month.month,
-          @itss1_calc_data.start_date_day,
-        )
-
-      end 
-
-      @itss1_end_date_year_and_month = @month.since(@itss1_calc_data.end_date_month.month)
-      if @itss1_calc_data.end_date_day == 0
-        @itss1_end_date = Date.new(
-          @itss1_end_date_year_and_month.year,
-          @itss1_end_date_year_and_month.month,
-          @itss1_end_date_year_and_month.end_of_month.day,
-        )
-      else
-        @itss1_end_date = Date.new(
-          @itss1_end_date_year_and_month.year,
-          @itss1_end_date_year_and_month.month,
-          @itss1_calc_data.end_date_day,
-        )
-
-      end
-      
-      # 成約率
-      @dmer1_this_month_per = @dmer1_calc_data.this_month_per
-      @dmer1_prev_month_per = @dmer1_calc_data.prev_month_per
-      @dmer2_this_month_per = @dmer2_calc_data.this_month_per
-      @dmer2_prev_month_per = @dmer2_calc_data.prev_month_per
-      @dmer3_this_month_per = @dmer3_calc_data.this_month_per
-      @dmer3_prev_month_per = @dmer3_calc_data.prev_month_per
-      @aupay1_prev_month_per = @aupay1_calc_data.prev_month_per
-      @paypay1_this_month_per = @paypay1_calc_data.this_month_per
-      @paypay1_prev_month_per = @paypay1_calc_data.prev_month_per
-      @rakuten_pay1_this_month_per = @rakuten_pay1_calc_data.this_month_per
-      @rakuten_pay1_prev_month_per = @rakuten_pay1_calc_data.prev_month_per
-      @airpay1_this_month_per = @airpay1_calc_data.this_month_per
-      @airpay1_prev_month_per = @airpay1_calc_data.prev_month_per
-      @demaekan1_this_month_per = @demaekan1_calc_data.this_month_per
-      @demaekan1_prev_month_per = @demaekan1_calc_data.prev_month_per
-      @austicker1_this_month_per = @austicker1_calc_data.this_month_per
-      @austicker1_prev_month_per = @austicker1_calc_data.prev_month_per
-      @dmersticker1_this_month_per = @dmersticker1_calc_data.this_month_per
-      @dmersticker1_prev_month_per = @dmersticker1_calc_data.prev_month_per
-      @airpaysticker1_this_month_per = @airpaysticker1_calc_data.this_month_per
-      @airpaysticker1_prev_month_per = @airpaysticker1_calc_data.prev_month_per
-
-      # 大元の成約率
-      @closing_span = (@closing_date.to_date - @end_date.to_date).to_i
-      @period_span = (Date.today.to_date - @end_date.to_date).to_i
-      # 増加率
-      if Date.today.to_date >= @end_date.to_date
-      # dメル
-      @dmer1_inc_per = (1.0 - @dmer1_this_month_per) / @closing_span * @period_span
-      @dmer2_inc_per = (1.0 - @dmer2_this_month_per) / @closing_span * @period_span
-      @dmer3_inc_per = (1.0 - @dmer3_this_month_per) / @closing_span * @period_span
-      @dmer1_prev_inc_per = (1.0 - @dmer1_prev_month_per) / @closing_span * @period_span
-      @dmer2_prev_inc_per = (1.0 - @dmer2_prev_month_per) / @closing_span * @period_span
-      # auPay
-      @aupay_prev_inc_per = (1.0 - @aupay1_prev_month_per) / @closing_span * @period_span
-      # AirPay
-      @airpay_inc_per = (1.0 - @airpay1_this_month_per) / @closing_span * @period_span
-      @airpay_prev_inc_per = (1.0 - @airpay1_prev_month_per) / @closing_span * @period_span
-      # 減少率
-      # dメル
-      @dmer1_dec_per = @dmer1_this_month_per / @closing_span * @period_span
-      @dmer2_dec_per = @dmer2_this_month_per / @closing_span * @period_span
-      @dmer3_dec_per = @dmer3_this_month_per / @closing_span * @period_span
-      @dmer1_prev_dec_per = @dmer1_prev_month_per / @closing_span * @period_span
-      @dmer2_prev_dec_per = @dmer2_prev_month_per / @closing_span * @period_span
-      # auPay
-      @aupay_prev_dec_per = @aupay1_prev_month_per / @closing_span * @period_span
-      # AirPay
-      @airpay_dec_per = @airpay1_this_month_per / @closing_span * @period_span
-      @airpay_prev_dec_per = @airpay1_prev_month_per / @closing_span * @period_span
-      else  
-      # dメル
-      @dmer1_inc_per = 0
-      @dmer2_inc_per = 0
-      @dmer3_inc_per = 0
-      @dmer1_prev_inc_per = 0
-      @dmer2_prev_inc_per = 0
-      # auPay
-      @aupay_inc_per = 0
-      @aupay_prev_inc_per = 0
-      # AirPay
-      @airpay_inc_per = 0
-      @airpay_prev_inc_per = 0
-      
-      # 減少率
-
-      # dメル
-      @dmer1_dec_per = 0
-      @dmer2_dec_per = 0
-      @dmer3_dec_per = 0
-      @dmer1_prev_dec_per = 0
-      @dmer2_prev_dec_per = 0
-      # auPay
-      @aupay_dec_per = 0
-      @aupay_prev_dec_per = 0
-      # AirPay
-      @airpay_dec_per = 0
-      @airpay_prev_dec_per = 0
-      end 
-      # 単価
-      @dmer1_price = @dmer1_calc_data.price
-      @dmer2_price = @dmer2_calc_data.price
-      @dmer3_price = @dmer3_calc_data.price
-      @aupay1_price = @aupay1_calc_data.price
-      @paypay_price = @paypay1_calc_data.price
-      @rakuten_pay_price = @rakuten_pay1_calc_data.price
-      @airpay_price = @airpay1_calc_data.price
-
-      # 獲得件数に合わせたインセンティブ
-      @airpay_bonus1_len = @airpay1_calc_data.bonus1_len
-      @airpay_bonus1_price = @airpay1_calc_data.bonus1_price
-      @airpay_bonus2_len = @airpay1_calc_data.bonus2_len
-      @airpay_bonus2_price = @airpay1_calc_data.bonus2_price
+      if @calc_periods.present?
+        @basic_calc_data = @calc_periods.find_by(name: "各商材獲得")
+        @dmer1_calc_data = @calc_periods.find_by(name: "dメル成果1")
+        @dmer2_calc_data = @calc_periods.find_by(name: "dメル成果2")
+        @dmer3_calc_data = @calc_periods.find_by(name: "dメル成果3")
+        @aupay1_calc_data = @calc_periods.find_by(name: "auPay成果1")
+        @paypay1_calc_data = @calc_periods.find_by(name: "PayPay成果1")
+        @rakuten_pay1_calc_data = @calc_periods.find_by(name: "楽天ペイ成果1")
+        @airpay1_calc_data = @calc_periods.find_by(name: "AirPay成果1")
+        @demaekan1_calc_data = @calc_periods.find_by(name: "出前館成果1")
+        @austicker1_calc_data = @calc_periods.find_by(name: "auステッカー成果1")
+        @dmersticker1_calc_data = @calc_periods.find_by(name: "dメルステッカー成果1")
+        @airpaysticker1_calc_data = @calc_periods.find_by(name: "AirPayステッカー成果1")
+        @airpaysticker_mine1_calc_data = @calc_periods.find_by(name: "AirPayステッカー成果1（自社）")
+        @airpaysticker_other1_calc_data = @calc_periods.find_by(name: "AirPayステッカー成果1（他社）")
+        @itss1_calc_data = @calc_periods.find_by(name: "ITSS")
+        # 期間
+        @basic_start_date_year_and_month = @month.since(@basic_calc_data.start_date_month.month)
+        if @basic_calc_data.start_date_day == 0
+          @start_date = Date.new(
+            @basic_start_date_year_and_month.year,
+            @basic_start_date_year_and_month.month,
+            @basic_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @start_date = Date.new(
+            @basic_start_date_year_and_month.year,
+            @basic_start_date_year_and_month.month,
+            @basic_calc_data.start_date_day,
+          )
+
+        end 
+
+        @basic_end_date_year_and_month = @month.since(@basic_calc_data.end_date_month.month)
+        if @basic_calc_data.end_date_day == 0
+          @end_date = Date.new(
+            @basic_end_date_year_and_month.year,
+            @basic_end_date_year_and_month.month,
+            @basic_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @end_date = Date.new(
+            @basic_end_date_year_and_month.year,
+            @basic_end_date_year_and_month.month,
+            @basic_calc_data.end_date_day,
+          )
+
+        end
+
+
+        # 締め日
+        @basic_closing_date_year_and_month = @month.since(@basic_calc_data.closing_date_month.month)
+        if @basic_calc_data.closing_date_day == 0
+          @closing_date = Date.new(
+            @basic_closing_date_year_and_month.year,
+            @basic_closing_date_year_and_month.month,
+            @basic_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @closing_date = Date.new(
+            @basic_closing_date_year_and_month.year,
+            @basic_closing_date_year_and_month.month,
+            @basic_calc_data.closing_date_day,
+          )
+
+        end
+        # 期間
+        @dmer1_start_date_year_and_month = @month.since(@dmer1_calc_data.start_date_month.month)
+        if @dmer1_calc_data.start_date_day == 0
+          @dmer1_start_date = Date.new(
+            @dmer1_start_date_year_and_month.year,
+            @dmer1_start_date_year_and_month.month,
+            @dmer1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmer1_start_date = Date.new(
+            @dmer1_start_date_year_and_month.year,
+            @dmer1_start_date_year_and_month.month,
+            @dmer1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @dmer1_end_date_year_and_month = @month.since(@dmer1_calc_data.end_date_month.month)
+        if @dmer1_calc_data.end_date_day == 0
+          @dmer1_end_date = Date.new(
+            @dmer1_end_date_year_and_month.year,
+            @dmer1_end_date_year_and_month.month,
+            @dmer1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmer1_end_date = Date.new(
+            @dmer1_end_date_year_and_month.year,
+            @dmer1_end_date_year_and_month.month,
+            @dmer1_calc_data.end_date_day,
+          )
+
+        end
+
+        # 締め日
+        @dmer1_closing_date_year_and_month = @month.since(@dmer1_calc_data.closing_date_month.month)
+        if @dmer1_calc_data.closing_date_day == 0
+          @dmer1_closing_date = Date.new(
+            @dmer1_closing_date_year_and_month.year,
+            @dmer1_closing_date_year_and_month.month,
+            @dmer1_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmer1_closing_date = Date.new(
+            @dmer1_closing_date_year_and_month.year,
+            @dmer1_closing_date_year_and_month.month,
+            @dmer1_calc_data.closing_date_day,
+          )
+
+        end
+        # 期間
+        @dmer2_start_date_year_and_month = @month.since(@dmer2_calc_data.start_date_month.month)
+        if @dmer2_calc_data.start_date_day == 0
+          @dmer2_start_date = Date.new(
+            @dmer2_start_date_year_and_month.year,
+            @dmer2_start_date_year_and_month.month,
+            @dmer2_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmer2_start_date = Date.new(
+            @dmer2_start_date_year_and_month.year,
+            @dmer2_start_date_year_and_month.month,
+            @dmer2_calc_data.start_date_day,
+          )
+
+        end 
+
+        @dmer2_end_date_year_and_month = @month.since(@dmer2_calc_data.end_date_month.month)
+        if @dmer2_calc_data.end_date_day == 0
+          @dmer2_end_date = Date.new(
+            @dmer2_end_date_year_and_month.year,
+            @dmer2_end_date_year_and_month.month,
+            @dmer2_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmer2_end_date = Date.new(
+            @dmer2_end_date_year_and_month.year,
+            @dmer2_end_date_year_and_month.month,
+            @dmer2_calc_data.end_date_day,
+          )
+
+        end
+
+        # 締め日
+        @dmer2_closing_date_year_and_month = @month.since(@dmer2_calc_data.closing_date_month.month)
+        if @dmer2_calc_data.closing_date_day == 0
+          @dmer2_closing_date = Date.new(
+            @dmer2_closing_date_year_and_month.year,
+            @dmer2_closing_date_year_and_month.month,
+            @dmer2_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmer2_closing_date = Date.new(
+            @dmer2_closing_date_year_and_month.year,
+            @dmer2_closing_date_year_and_month.month,
+            @dmer2_calc_data.closing_date_day,
+          )
+
+        end
+        # 期間
+        @dmer3_start_date_year_and_month = @month.since(@dmer3_calc_data.start_date_month.month)
+        if @dmer3_calc_data.start_date_day == 0
+          @dmer3_start_date = Date.new(
+            @dmer3_start_date_year_and_month.year,
+            @dmer3_start_date_year_and_month.month,
+            @dmer3_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmer3_start_date = Date.new(
+            @dmer3_start_date_year_and_month.year,
+            @dmer3_start_date_year_and_month.month,
+            @dmer3_calc_data.start_date_day,
+          )
+
+        end 
+
+        @dmer3_end_date_year_and_month = @month.since(@dmer3_calc_data.end_date_month.month)
+        if @dmer3_calc_data.end_date_day == 0
+          @dmer3_end_date = Date.new(
+            @dmer3_end_date_year_and_month.year,
+            @dmer3_end_date_year_and_month.month,
+            @dmer3_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmer3_end_date = Date.new(
+            @dmer3_end_date_year_and_month.year,
+            @dmer3_end_date_year_and_month.month,
+            @dmer3_calc_data.end_date_day,
+          )
+
+        end
+        # 締め日
+        @dmer3_closing_date_year_and_month = @month.since(@dmer3_calc_data.closing_date_month.month)
+        if @dmer3_calc_data.closing_date_day == 0
+          @dmer3_closing_date = Date.new(
+            @dmer3_closing_date_year_and_month.year,
+            @dmer3_closing_date_year_and_month.month,
+            @dmer3_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmer3_closing_date = Date.new(
+            @dmer3_closing_date_year_and_month.year,
+            @dmer3_closing_date_year_and_month.month,
+            @dmer3_calc_data.closing_date_day,
+          )
+
+        end
+        # 期間
+        @aupay1_start_date_year_and_month = @month.since(@aupay1_calc_data.start_date_month.month)
+        if @aupay1_calc_data.start_date_day == 0
+          @aupay1_start_date = Date.new(
+            @aupay1_start_date_year_and_month.year,
+            @aupay1_start_date_year_and_month.month,
+            @aupay1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @aupay1_start_date = Date.new(
+            @aupay1_start_date_year_and_month.year,
+            @aupay1_start_date_year_and_month.month,
+            @aupay1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @aupay1_end_date_year_and_month = @month.since(@aupay1_calc_data.end_date_month.month)
+        if @aupay1_calc_data.end_date_day == 0
+          @aupay1_end_date = Date.new(
+            @aupay1_end_date_year_and_month.year,
+            @aupay1_end_date_year_and_month.month,
+            @aupay1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @aupay1_end_date = Date.new(
+            @aupay1_end_date_year_and_month.year,
+            @aupay1_end_date_year_and_month.month,
+            @aupay1_calc_data.end_date_day,
+          )
+
+        end
+
+        # 締め日
+        @aupay1_closing_date_year_and_month = @month.since(@aupay1_calc_data.closing_date_month.month)
+        if @aupay1_calc_data.closing_date_day == 0
+          @aupay1_closing_date = Date.new(
+            @aupay1_closing_date_year_and_month.year,
+            @aupay1_closing_date_year_and_month.month,
+            @aupay1_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @aupay1_closing_date = Date.new(
+            @aupay1_closing_date_year_and_month.year,
+            @aupay1_closing_date_year_and_month.month,
+            @aupay1_calc_data.closing_date_day,
+          )
+
+        end
+        # 期間
+        @paypay1_start_date_year_and_month = @month.since(@paypay1_calc_data.start_date_month.month)
+        if @paypay1_calc_data.start_date_day == 0
+          @paypay1_start_date = Date.new(
+            @paypay1_start_date_year_and_month.year,
+            @paypay1_start_date_year_and_month.month,
+            @paypay1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @paypay1_start_date = Date.new(
+            @paypay1_start_date_year_and_month.year,
+            @paypay1_start_date_year_and_month.month,
+            @paypay1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @paypay1_end_date_year_and_month = @month.since(@paypay1_calc_data.end_date_month.month)
+        if @paypay1_calc_data.end_date_day == 0
+          @paypay1_end_date = Date.new(
+            @paypay1_end_date_year_and_month.year,
+            @paypay1_end_date_year_and_month.month,
+            @paypay1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @paypay1_end_date = Date.new(
+            @paypay1_end_date_year_and_month.year,
+            @paypay1_end_date_year_and_month.month,
+            @paypay1_calc_data.end_date_day,
+          )
+
+        end
+
+        # 締め日
+        @paypay1_closing_date_year_and_month = @month.since(@paypay1_calc_data.closing_date_month.month)
+        if @paypay1_calc_data.closing_date_day == 0
+          @paypay1_closing_date = Date.new(
+            @paypay1_closing_date_year_and_month.year,
+            @paypay1_closing_date_year_and_month.month,
+            @paypay1_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @paypay1_closing_date = Date.new(
+            @paypay1_closing_date_year_and_month.year,
+            @paypay1_closing_date_year_and_month.month,
+            @paypay1_calc_data.closing_date_day,
+          )
+
+        end
+        # 期間
+        @rakuten_pay1_start_date_year_and_month = @month.since(@rakuten_pay1_calc_data.start_date_month.month)
+        if @rakuten_pay1_calc_data.start_date_day == 0
+          @rakuten_pay1_start_date = Date.new(
+            @rakuten_pay1_start_date_year_and_month.year,
+            @rakuten_pay1_start_date_year_and_month.month,
+            @rakuten_pay1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @rakuten_pay1_start_date = Date.new(
+            @rakuten_pay1_start_date_year_and_month.year,
+            @rakuten_pay1_start_date_year_and_month.month,
+            @rakuten_pay1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @rakuten_pay1_end_date_year_and_month = @month.since(@rakuten_pay1_calc_data.end_date_month.month)
+        if @rakuten_pay1_calc_data.end_date_day == 0
+          @rakuten_pay1_end_date = Date.new(
+            @rakuten_pay1_end_date_year_and_month.year,
+            @rakuten_pay1_end_date_year_and_month.month,
+            @rakuten_pay1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @rakuten_pay1_end_date = Date.new(
+            @rakuten_pay1_end_date_year_and_month.year,
+            @rakuten_pay1_end_date_year_and_month.month,
+            @rakuten_pay1_calc_data.end_date_day,
+          )
+
+        end
+
+
+        # 締め日
+        @rakuten_pay1_closing_date_year_and_month = @month.since(@rakuten_pay1_calc_data.closing_date_month.month)
+        if @rakuten_pay1_calc_data.closing_date_day == 0
+          @rakuten_pay1_closing_date = Date.new(
+            @rakuten_pay1_closing_date_year_and_month.year,
+            @rakuten_pay1_closing_date_year_and_month.month,
+            @rakuten_pay1_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @rakuten_pay1_closing_date = Date.new(
+            @rakuten_pay1_closing_date_year_and_month.year,
+            @rakuten_pay1_closing_date_year_and_month.month,
+            @rakuten_pay1_calc_data.closing_date_day,
+          )
+
+        end
+        # 期間
+        @airpay1_start_date_year_and_month = @month.since(@airpay1_calc_data.start_date_month.month)
+        if @airpay1_calc_data.start_date_day == 0
+          @airpay1_start_date = Date.new(
+            @airpay1_start_date_year_and_month.year,
+            @airpay1_start_date_year_and_month.month,
+            @airpay1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @airpay1_start_date = Date.new(
+            @airpay1_start_date_year_and_month.year,
+            @airpay1_start_date_year_and_month.month,
+            @airpay1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @airpay1_end_date_year_and_month = @month.since(@airpay1_calc_data.end_date_month.month)
+        if @airpay1_calc_data.end_date_day == 0
+          @airpay1_end_date = Date.new(
+            @airpay1_end_date_year_and_month.year,
+            @airpay1_end_date_year_and_month.month,
+            @airpay1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @airpay1_end_date = Date.new(
+            @airpay1_end_date_year_and_month.year,
+            @airpay1_end_date_year_and_month.month,
+            @airpay1_calc_data.end_date_day,
+          )
+
+        end
+
+
+        # 締め日
+        @airpay1_closing_date_year_and_month = @month.since(@airpay1_calc_data.closing_date_month.month)
+        if @airpay1_calc_data.closing_date_day == 0
+          @airpay1_closing_date = Date.new(
+            @airpay1_closing_date_year_and_month.year,
+            @airpay1_closing_date_year_and_month.month,
+            @airpay1_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @airpay1_closing_date = Date.new(
+            @airpay1_closing_date_year_and_month.year,
+            @airpay1_closing_date_year_and_month.month,
+            @airpay1_calc_data.closing_date_day,
+          )
+
+        end
+        # 期間
+        @demaekan1_start_date_year_and_month = @month.since(@demaekan1_calc_data.start_date_month.month)
+        if @demaekan1_calc_data.start_date_day == 0
+          @demaekan1_start_date = Date.new(
+            @demaekan1_start_date_year_and_month.year,
+            @demaekan1_start_date_year_and_month.month,
+            @demaekan1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @demaekan1_start_date = Date.new(
+            @demaekan1_start_date_year_and_month.year,
+            @demaekan1_start_date_year_and_month.month,
+            @demaekan1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @demaekan1_end_date_year_and_month = @month.since(@demaekan1_calc_data.end_date_month.month)
+        if @demaekan1_calc_data.end_date_day == 0
+          @demaekan1_end_date = Date.new(
+            @demaekan1_end_date_year_and_month.year,
+            @demaekan1_end_date_year_and_month.month,
+            @demaekan1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @demaekan1_end_date = Date.new(
+            @demaekan1_end_date_year_and_month.year,
+            @demaekan1_end_date_year_and_month.month,
+            @demaekan1_calc_data.end_date_day,
+          )
+
+        end
+
+
+        # 締め日
+        @demaekan1_closing_date_year_and_month = @month.since(@demaekan1_calc_data.closing_date_month.month)
+        if @demaekan1_calc_data.closing_date_day == 0
+          @demaekan1_closing_date = Date.new(
+            @demaekan1_closing_date_year_and_month.year,
+            @demaekan1_closing_date_year_and_month.month,
+            @demaekan1_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @demaekan1_closing_date = Date.new(
+            @demaekan1_closing_date_year_and_month.year,
+            @demaekan1_closing_date_year_and_month.month,
+            @demaekan1_calc_data.closing_date_day,
+          )
+
+        end
+        # 期間
+        @austicker1_start_date_year_and_month = @month.since(@austicker1_calc_data.start_date_month.month)
+        if @austicker1_calc_data.start_date_day == 0
+          @austicker1_start_date = Date.new(
+            @austicker1_start_date_year_and_month.year,
+            @austicker1_start_date_year_and_month.month,
+            @austicker1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @austicker1_start_date = Date.new(
+            @austicker1_start_date_year_and_month.year,
+            @austicker1_start_date_year_and_month.month,
+            @austicker1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @austicker1_end_date_year_and_month = @month.since(@austicker1_calc_data.end_date_month.month)
+        if @austicker1_calc_data.end_date_day == 0
+          @austicker1_end_date = Date.new(
+            @austicker1_end_date_year_and_month.year,
+            @austicker1_end_date_year_and_month.month,
+            @austicker1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @austicker1_end_date = Date.new(
+            @austicker1_end_date_year_and_month.year,
+            @austicker1_end_date_year_and_month.month,
+            @austicker1_calc_data.end_date_day,
+          )
+
+        end
+
+        # 締め日
+        @austicker1_closing_date_year_and_month = @month.since(@austicker1_calc_data.closing_date_month.month)
+        if @austicker1_calc_data.closing_date_day == 0
+          @austicker1_closing_date = Date.new(
+            @austicker1_closing_date_year_and_month.year,
+            @austicker1_closing_date_year_and_month.month,
+            @austicker1_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @austicker1_closing_date = Date.new(
+            @austicker1_closing_date_year_and_month.year,
+            @austicker1_closing_date_year_and_month.month,
+            @austicker1_calc_data.closing_date_day,
+          )
+
+        end
+        # 期間
+        @dmersticker1_start_date_year_and_month = @month.since(@dmersticker1_calc_data.start_date_month.month)
+        if @dmersticker1_calc_data.start_date_day == 0
+          @dmersticker1_start_date = Date.new(
+            @dmersticker1_start_date_year_and_month.year,
+            @dmersticker1_start_date_year_and_month.month,
+            @dmersticker1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmersticker1_start_date = Date.new(
+            @dmersticker1_start_date_year_and_month.year,
+            @dmersticker1_start_date_year_and_month.month,
+            @dmersticker1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @dmersticker1_end_date_year_and_month = @month.since(@dmersticker1_calc_data.end_date_month.month)
+        if @dmersticker1_calc_data.end_date_day == 0
+          @dmersticker1_end_date = Date.new(
+            @dmersticker1_end_date_year_and_month.year,
+            @dmersticker1_end_date_year_and_month.month,
+            @dmersticker1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmersticker1_end_date = Date.new(
+            @dmersticker1_end_date_year_and_month.year,
+            @dmersticker1_end_date_year_and_month.month,
+            @dmersticker1_calc_data.end_date_day,
+          )
+
+        end
+
+        # 締め日
+        @dmersticker1_closing_date_year_and_month = @month.since(@dmersticker1_calc_data.closing_date_month.month)
+        if @dmersticker1_calc_data.closing_date_day == 0
+          @dmersticker1_closing_date = Date.new(
+            @dmersticker1_closing_date_year_and_month.year,
+            @dmersticker1_closing_date_year_and_month.month,
+            @dmersticker1_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @dmersticker1_closing_date = Date.new(
+            @dmersticker1_closing_date_year_and_month.year,
+            @dmersticker1_closing_date_year_and_month.month,
+            @dmersticker1_calc_data.closing_date_day,
+          )
+
+        end
+        # 期間
+        @airpaysticker1_start_date_year_and_month = @month.since(@airpaysticker1_calc_data.start_date_month.month)
+        if @airpaysticker1_calc_data.start_date_day == 0
+          @airpaysticker1_start_date = Date.new(
+            @airpaysticker1_start_date_year_and_month.year,
+            @airpaysticker1_start_date_year_and_month.month,
+            @airpaysticker1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @airpaysticker1_start_date = Date.new(
+            @airpaysticker1_start_date_year_and_month.year,
+            @airpaysticker1_start_date_year_and_month.month,
+            @airpaysticker1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @airpaysticker1_end_date_year_and_month = @month.since(@airpaysticker1_calc_data.end_date_month.month)
+        if @airpaysticker1_calc_data.end_date_day == 0
+          @airpaysticker1_end_date = Date.new(
+            @airpaysticker1_end_date_year_and_month.year,
+            @airpaysticker1_end_date_year_and_month.month,
+            @airpaysticker1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @airpaysticker1_end_date = Date.new(
+            @airpaysticker1_end_date_year_and_month.year,
+            @airpaysticker1_end_date_year_and_month.month,
+            @airpaysticker1_calc_data.end_date_day,
+          )
+
+        end
+
+        # 締め日
+        @airpaysticker1_closing_date_year_and_month = @month.since(@airpaysticker1_calc_data.closing_date_month.month)
+        if @airpaysticker1_calc_data.closing_date_day == 0
+          @airpaysticker1_closing_date = Date.new(
+            @airpaysticker1_closing_date_year_and_month.year,
+            @airpaysticker1_closing_date_year_and_month.month,
+            @airpaysticker1_closing_date_year_and_month.end_of_month.day,
+          )
+        else
+          @airpaysticker1_closing_date = Date.new(
+            @airpaysticker1_closing_date_year_and_month.year,
+            @airpaysticker1_closing_date_year_and_month.month,
+            @airpaysticker1_calc_data.closing_date_day,
+          )
+
+        end
+
+        # 期間
+        @airpaysticker_mine1_start_date_year_and_month = @month.since(@airpaysticker_mine1_calc_data.start_date_month.month)
+        if @airpaysticker_mine1_calc_data.start_date_day == 0
+          @airpaysticker_mine1_start_date = Date.new(
+            @airpaysticker_mine1_start_date_year_and_month.year,
+            @airpaysticker_mine1_start_date_year_and_month.month,
+            @airpaysticker_mine1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @airpaysticker_mine1_start_date = Date.new(
+            @airpaysticker_mine1_start_date_year_and_month.year,
+            @airpaysticker_mine1_start_date_year_and_month.month,
+            @airpaysticker_mine1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @airpaysticker_mine1_end_date_year_and_month = @month.since(@airpaysticker_mine1_calc_data.end_date_month.month)
+        if @airpaysticker_mine1_calc_data.end_date_day == 0
+          @airpaysticker_mine1_end_date = Date.new(
+            @airpaysticker_mine1_end_date_year_and_month.year,
+            @airpaysticker_mine1_end_date_year_and_month.month,
+            @airpaysticker_mine1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @airpaysticker_mine1_end_date = Date.new(
+            @airpaysticker_mine1_end_date_year_and_month.year,
+            @airpaysticker_mine1_end_date_year_and_month.month,
+            @airpaysticker_mine1_calc_data.end_date_day,
+          )
+
+        end
+
+        # 期間
+        @airpaysticker_other1_start_date_year_and_month = @month.since(@airpaysticker_other1_calc_data.start_date_month.month)
+        if @airpaysticker_other1_calc_data.start_date_day == 0
+          @airpaysticker_other1_start_date = Date.new(
+            @airpaysticker_other1_start_date_year_and_month.year,
+            @airpaysticker_other1_start_date_year_and_month.month,
+            @airpaysticker_other1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @airpaysticker_other1_start_date = Date.new(
+            @airpaysticker_other1_start_date_year_and_month.year,
+            @airpaysticker_other1_start_date_year_and_month.month,
+            @airpaysticker_other1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @airpaysticker_other1_end_date_year_and_month = @month.since(@airpaysticker_other1_calc_data.end_date_month.month)
+        if @airpaysticker_other1_calc_data.end_date_day == 0
+          @airpaysticker_other1_end_date = Date.new(
+            @airpaysticker_other1_end_date_year_and_month.year,
+            @airpaysticker_other1_end_date_year_and_month.month,
+            @airpaysticker_other1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @airpaysticker_other1_end_date = Date.new(
+            @airpaysticker_other1_end_date_year_and_month.year,
+            @airpaysticker_other1_end_date_year_and_month.month,
+            @airpaysticker_other1_calc_data.end_date_day,
+          )
+
+        end
+
+        # 期間
+        @itss1_start_date_year_and_month = @month.since(@itss1_calc_data.start_date_month.month)
+        if @itss1_calc_data.start_date_day == 0
+          @itss1_start_date = Date.new(
+            @itss1_start_date_year_and_month.year,
+            @itss1_start_date_year_and_month.month,
+            @itss1_start_date_year_and_month.end_of_month.day,
+          )
+        else
+          @itss1_start_date = Date.new(
+            @itss1_start_date_year_and_month.year,
+            @itss1_start_date_year_and_month.month,
+            @itss1_calc_data.start_date_day,
+          )
+
+        end 
+
+        @itss1_end_date_year_and_month = @month.since(@itss1_calc_data.end_date_month.month)
+        if @itss1_calc_data.end_date_day == 0
+          @itss1_end_date = Date.new(
+            @itss1_end_date_year_and_month.year,
+            @itss1_end_date_year_and_month.month,
+            @itss1_end_date_year_and_month.end_of_month.day,
+          )
+        else
+          @itss1_end_date = Date.new(
+            @itss1_end_date_year_and_month.year,
+            @itss1_end_date_year_and_month.month,
+            @itss1_calc_data.end_date_day,
+          )
+
+        end
+        
+        # 成約率
+        @dmer1_this_month_per = @dmer1_calc_data.this_month_per
+        @dmer1_prev_month_per = @dmer1_calc_data.prev_month_per
+        @dmer2_this_month_per = @dmer2_calc_data.this_month_per
+        @dmer2_prev_month_per = @dmer2_calc_data.prev_month_per
+        @dmer3_this_month_per = @dmer3_calc_data.this_month_per
+        @dmer3_prev_month_per = @dmer3_calc_data.prev_month_per
+        @aupay1_prev_month_per = @aupay1_calc_data.prev_month_per
+        @paypay1_this_month_per = @paypay1_calc_data.this_month_per
+        @paypay1_prev_month_per = @paypay1_calc_data.prev_month_per
+        @rakuten_pay1_this_month_per = @rakuten_pay1_calc_data.this_month_per
+        @rakuten_pay1_prev_month_per = @rakuten_pay1_calc_data.prev_month_per
+        @airpay1_this_month_per = @airpay1_calc_data.this_month_per
+        @airpay1_prev_month_per = @airpay1_calc_data.prev_month_per
+        @demaekan1_this_month_per = @demaekan1_calc_data.this_month_per
+        @demaekan1_prev_month_per = @demaekan1_calc_data.prev_month_per
+        @austicker1_this_month_per = @austicker1_calc_data.this_month_per
+        @austicker1_prev_month_per = @austicker1_calc_data.prev_month_per
+        @dmersticker1_this_month_per = @dmersticker1_calc_data.this_month_per
+        @dmersticker1_prev_month_per = @dmersticker1_calc_data.prev_month_per
+        @airpaysticker1_this_month_per = @airpaysticker1_calc_data.this_month_per
+        @airpaysticker1_prev_month_per = @airpaysticker1_calc_data.prev_month_per
+
+        # 大元の成約率
+        @closing_span = (@closing_date.to_date - @end_date.to_date).to_i
+        @period_span = (Date.today.to_date - @end_date.to_date).to_i
+        # 増加率
+        if Date.today.to_date >= @end_date.to_date
+        # dメル
+        @dmer1_inc_per = (1.0 - @dmer1_this_month_per) / @closing_span * @period_span
+        @dmer2_inc_per = (1.0 - @dmer2_this_month_per) / @closing_span * @period_span
+        @dmer3_inc_per = (1.0 - @dmer3_this_month_per) / @closing_span * @period_span
+        @dmer1_prev_inc_per = (1.0 - @dmer1_prev_month_per) / @closing_span * @period_span
+        @dmer2_prev_inc_per = (1.0 - @dmer2_prev_month_per) / @closing_span * @period_span
+        # auPay
+        @aupay_prev_inc_per = (1.0 - @aupay1_prev_month_per) / @closing_span * @period_span
+        # AirPay
+        @airpay_inc_per = (1.0 - @airpay1_this_month_per) / @closing_span * @period_span
+        @airpay_prev_inc_per = (1.0 - @airpay1_prev_month_per) / @closing_span * @period_span
+        # 減少率
+        # dメル
+        @dmer1_dec_per = @dmer1_this_month_per / @closing_span * @period_span
+        @dmer2_dec_per = @dmer2_this_month_per / @closing_span * @period_span
+        @dmer3_dec_per = @dmer3_this_month_per / @closing_span * @period_span
+        @dmer1_prev_dec_per = @dmer1_prev_month_per / @closing_span * @period_span
+        @dmer2_prev_dec_per = @dmer2_prev_month_per / @closing_span * @period_span
+        # auPay
+        @aupay_prev_dec_per = @aupay1_prev_month_per / @closing_span * @period_span
+        # AirPay
+        @airpay_dec_per = @airpay1_this_month_per / @closing_span * @period_span
+        @airpay_prev_dec_per = @airpay1_prev_month_per / @closing_span * @period_span
+        else  
+        # dメル
+        @dmer1_inc_per = 0
+        @dmer2_inc_per = 0
+        @dmer3_inc_per = 0
+        @dmer1_prev_inc_per = 0
+        @dmer2_prev_inc_per = 0
+        # auPay
+        @aupay_inc_per = 0
+        @aupay_prev_inc_per = 0
+        # AirPay
+        @airpay_inc_per = 0
+        @airpay_prev_inc_per = 0
+        
+        # 減少率
+
+        # dメル
+        @dmer1_dec_per = 0
+        @dmer2_dec_per = 0
+        @dmer3_dec_per = 0
+        @dmer1_prev_dec_per = 0
+        @dmer2_prev_dec_per = 0
+        # auPay
+        @aupay_dec_per = 0
+        @aupay_prev_dec_per = 0
+        # AirPay
+        @airpay_dec_per = 0
+        @airpay_prev_dec_per = 0
+        end 
+        # 単価
+        @dmer1_price = @dmer1_calc_data.price
+        @dmer2_price = @dmer2_calc_data.price
+        @dmer3_price = @dmer3_calc_data.price
+        @aupay1_price = @aupay1_calc_data.price
+        @paypay_price = @paypay1_calc_data.price
+        @rakuten_pay_price = @rakuten_pay1_calc_data.price
+        @airpay_price = @airpay1_calc_data.price
+
+        # 獲得件数に合わせたインセンティブ
+        @airpay_bonus1_len = @airpay1_calc_data.bonus1_len
+        @airpay_bonus1_price = @airpay1_calc_data.bonus1_price
+        @airpay_bonus2_len = @airpay1_calc_data.bonus2_len
+        @airpay_bonus2_price = @airpay1_calc_data.bonus2_price
+    end
     end 
 
     def shift_pack_cash
@@ -2065,5 +2067,4 @@ class ApplicationController < ActionController::Base
         @base_list = [@chubu_cash_list,@kansai_cash_list,@kanto_cash_list,@kyushu_cash_list,@femto_list,@summit_list,@partner_cash_list,@retire_list]
         @cash_ary = [@chubu_cash_list,@kansai_cash_list,@kanto_cash_list,@kyushu_cash_list] 
     end 
-
 end

@@ -6,5 +6,6 @@ FactoryBot.define do
     base_sub { 'キャッシュレス' }
     password { 'password' }
     password_confirmation { 'password' }
+    position_sub { '05：一般' }
   end
 end
