@@ -572,6 +572,24 @@ class DmerDateProgressesController < ApplicationController
   # 合計
     profit_current = profit_current1_price + profit_current2_price + profit_current3_price
     valuation_current = valuation_current1_price + valuation_current2_price + valuation_current3_price
+    # 2023年11月から獲得した日付に対する成果を計算するようにする
+    @dmer_since2023_11 = Dmer.where(date: @start_date..@end_date).minimum(:date)
+    if  @dmer_since2023_11.present? && (@dmer_since2023_11 > Date.new(2023,11,1))
+      profit_current1 = @dmers_user_period.where(status: "審査OK").where(industry_status: "OK").where.not(settlement: nil)
+      profit_current1_price = profit_current1.sum(:profit_new)
+      profit_current2 = profit_current1.where(status_settlement: "完了").where.not(status_update_settlement: nil)
+      profit_current2_price = profit_current2.sum(:profit_settlement)
+      profit_current3 = profit_current2.where.not(settlement_second: nil)
+      profit_current3_price = profit_current3.sum(:profit_second_settlement)
+      profit_current = profit_current1_price + profit_current2_price + profit_current3_price
+      # dメルの当月成果率を参照
+      profit_fin1 = @dmer1_price * (@dmers_user_period.length.to_f / shift_digestion * shift_schedule * @dmer1_this_month_per ).round() rescue 0
+      profit_fin2 = @dmer2_price * (@dmers_user_period.length.to_f / shift_digestion * shift_schedule * @dmer2_this_month_per).round() rescue 0
+      profit_fin3 = @dmer3_price * (@dmers_user_period.length.to_f / shift_digestion * shift_schedule * @dmer3_this_month_per).round() rescue 0
+      profit_fin1_prev = 0
+      profit_fin2_prev = 0
+      profit_fin3_prev = 0
+    end
     if r.user.position == "退職"
       user_base = r.user.position
     elsif r.user.base_sub == "キャッシュレス"
@@ -605,9 +623,9 @@ class DmerDateProgressesController < ApplicationController
       valuation_fin2_prev: valuation_fin2_prev           ,
       valuation_fin3_prev: valuation_fin3_prev           ,
       profit_current: profit_current                     ,
-      profit_current1: profit_current1_price                     ,
-      profit_current2: profit_current2_price                     ,
-      profit_current3: profit_current3_price                     ,
+      profit_current1: profit_current1_price             ,
+      profit_current2: profit_current2_price             ,
+      profit_current3: profit_current3_price             ,
       profit_fin1: profit_fin1                           ,
       profit_fin2: profit_fin2                           ,
       profit_fin3: profit_fin3                           ,
