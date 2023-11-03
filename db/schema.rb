@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_09_14_073952) do
+ActiveRecord::Schema.define(version: 2023_11_03_083932) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -376,6 +376,13 @@ ActiveRecord::Schema.define(version: 2023_09_14_073952) do
     t.integer "shift_schedule_slmt"
     t.integer "shift_digestion_slmt"
     t.index ["user_id"], name: "index_dmer_date_progresses_on_user_id"
+  end
+
+  create_table "dmer_senbai_users", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "client", null: false
+    t.date "date", null: false
+    t.index ["user_id"], name: "index_dmer_senbai_users_on_user_id"
   end
 
   create_table "dmer_stocks", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1551,7 +1558,6 @@ ActiveRecord::Schema.define(version: 2023_09_14_073952) do
     t.string "status"
     t.string "mail"
     t.text "remarks"
-    t.index ["stock_num"], name: "index_stocks_on_stock_num", unique: true
   end
 
   create_table "store_props", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1845,6 +1851,7 @@ ActiveRecord::Schema.define(version: 2023_09_14_073952) do
   add_foreign_key "demaekans", "store_props"
   add_foreign_key "demaekans", "users"
   add_foreign_key "dmer_date_progresses", "users"
+  add_foreign_key "dmer_senbai_users", "users"
   add_foreign_key "dmers", "store_props"
   add_foreign_key "dmers", "users"
   add_foreign_key "dmers", "users", column: "settlementer_id"
@@ -1883,7 +1890,6 @@ ActiveRecord::Schema.define(version: 2023_09_14_073952) do
   add_foreign_key "result_sales", "users"
   add_foreign_key "result_summits", "results"
   add_foreign_key "results", "users"
-  add_foreign_key "results", "users", column: "ojt_id"
   add_foreign_key "return_histories", "stocks"
   add_foreign_key "return_histories", "users"
   add_foreign_key "shifts", "users"

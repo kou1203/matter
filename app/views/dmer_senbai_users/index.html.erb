@@ -1,0 +1,55 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>dメル専売人員一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+      <h2>
+        <%= link_to "<<",dmer_senbai_users_path(month: @month.prev_month), class:"link" %>
+        <%= @month.strftime("%Y年%m月") %>dメル専売人員一覧
+        <%= link_to ">>",dmer_senbai_users_path(month: @month.next_month), class:"link" %>
+      </h2><br>
+      <hr>
+      <div class="caution-text"><%= alert %></div>
+      <div style="display:flex;">
+      <% @bases.each do |base| %>
+          <div>
+          <h2><%= base %>人員</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>No</th>
+                <th>名前</th>
+                <th>商流</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @users.where(base: base).each_with_index do |user,i| %>
+              <tr>
+                <td><%= i + 1 %></td>
+                <td><%= user.name %></td>
+                <% dmer_senbai_users = user.dmer_senbai_users.where(dmer_senbai_users: {date: @month.all_month}) %>
+                  <% dmer_senbai_data = dmer_senbai_users.first %>
+                  <% if dmer_senbai_users.present? && dmer_senbai_users.length >= 2 %>
+                  <td>2件以上同じ期間の情報があります</td>
+                  <% elsif dmer_senbai_users.present? %>
+                    <td class="red"><%= link_to dmer_senbai_data.client,edit_dmer_senbai_user_path(id: dmer_senbai_data.id),class: "red" %></td>
+                    <td><%= link_to "削除", dmer_senbai_user_path(id: dmer_senbai_data.id), method: :delete %></td>
+                  <% else %>
+                  <td><%= link_to "追加", new_dmer_senbai_user_path(user_id: user.id), class: "link" %></td>
+                  <td></td>
+                  <% end %>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+          </div>
+      <% end %>
+        </div>
+  </div>
+</div>

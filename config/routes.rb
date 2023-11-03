@@ -441,4 +441,5 @@ Rails.application.routes.draw do
     }
   end 
   
+  resources :dmer_senbai_users, except: :show
 end

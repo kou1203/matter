@@ -40,4 +40,5 @@ class User < ApplicationRecord
   has_many :airpay_stickers
   has_many :usen_pays
   has_many :nuros
+  has_many :dmer_senbai_users
 end

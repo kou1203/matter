@@ -1,6 +1,6 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <div data-scope-path="shared/header">
-  <h1 class="sub-title">ユーザー一覧</h1>
+  <h1 class="sub-title">ユーザー情報一覧</h1>
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;">
@@ -81,7 +81,7 @@
         </div>
       </article>
   <hr>
-  <p><%= alert %></p>
+  <p class="caution-text"><%= alert %></p>
   <% if @users.empty? %>
   <% else %>
   <table>
@@ -93,7 +93,9 @@
       <th>グループ②</th>
       <th>メールアドレス</th>
       <th>権限</th>
+      <% if current_user.position == "権限①" %>
       <th></th>
+      <% end %>
     </tr>
   <% @users.each do |user| %>
     <tr>
@@ -104,8 +106,8 @@
       <td><%= user.team %></td>
       <td><%= user.email %></td>
       <td><%= user.position %></td>
-    <% if current_user.name == "管理用" %>
-      <td><%= link_to "編集", edit_user_path(user.id), class: "link" %></td>
+    <% if current_user.position == "権限①" %>
+      <td><%= link_to "人員情報編集", edit_user_path(user.id), class: "link" %></td>
     <% else %>
       <td></td>
     <% end %>

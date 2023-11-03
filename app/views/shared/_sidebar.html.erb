@@ -53,13 +53,12 @@
         <ul class="dropdown" id="pull-down3">
           <li id="lists3"><%= link_to "終着報告", new_result_path(user_id: current_user.id, date: Date.today), class: "side-link","data-turbolinks": false %></li>
           <li id="lists3"><%= link_to "その他獲得報告", new_other_product_path, class: "side-link" %></li>
-          <li id="lists3"><%= link_to "シフト申請/確認", shifts_path, class: "side-link" %></li>
-          <li id="lists3"><%= link_to "ユーザー情報", users_path, class: "side-link","data-turbolinks": false %></li>
         </ul>
-        <label class="header-label" id="lists4">回線事業</label>
+        <label class="header-label" id="lists4">人員</label>
         <ul class="dropdown" id="pull-down4">
-            <li id="lists4"><%= link_to "ぷらねす", pranesses_path,"data-turbolinks": false,class: "side-link"%></li>
-            <li id="lists4"><%= link_to "Nuro", nuros_path,"data-turbolinks": false,class: "side-link"%></li>
+            <li id="lists4"><%= link_to "ユーザー情報", users_path, class: "side-link","data-turbolinks": false %></li>
+            <li id="lists4"><%= link_to "dメル専業人員", dmer_senbai_users_path, class: "side-link" %></li>
+            <li id="lists4"><%= link_to "シフト申請/確認", shifts_path, class: "side-link" %></li>
         </ul>
     </ul>
   </nav>

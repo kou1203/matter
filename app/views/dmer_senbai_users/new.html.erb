@@ -1,0 +1,32 @@
+<div data-scope-path="shared/header">
+  <h1>dメル専売情報入力</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;"><%# フレックス %>
+  <div data-scope-path="shared/side_bar"><%# 左フォーム外枠 %>
+    <%= render "shared/sidebar" %><%# サイドバー %>
+  </div><%# 左フォーム外枠 %>
+  <div data-scope-path="shared/form"><%# CSSスコープ %>
+    <div class="form-main"><%# 右フォーム外枠 %>
+      <div class="form-title">
+        <h2>人員：<%= @user.name %></h2>
+        <p class="caution-text"><%= alert %></p>
+      </div>
+      <%= form_with model: @dmer_senbai_user,  class: "form-frame", local: true do |f| %>
+        <%= render "shared/error_messages", model: f.object %>
+        <%= f.hidden_field :user_id, value: @user.id %>
+        <div class="form">
+            <p><%= f.label :client, "商流", class: "form-text" %></p>
+            <p><%= f.select :client, {"プライマル": "プライマル","メディア": "メディア"}, {},{class: "slct-input"} %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :date, "日付", class: "form-text" %></p>
+            <p><%= f.date_select(:date,{ use_month_numbers: true,discard_day: true },{class: "date-input"}) %></p>
+        </div>
+        <div class="form-submit">
+            <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        </div>
+    </div><%# 右フォーム外枠 %>
+    <% end %>
+  </div><%# CSSスコープ %>
+</div><%# フレックス %>
