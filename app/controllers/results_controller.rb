@@ -495,22 +495,17 @@ class ResultsController < ApplicationController
       .where(status: "不備対応中")
       .where(date: Date.today.ago(2.month)..Date.today)
       .where(user_id: @user.id)
+    @dmer_senbais_def = 
+      DmerSenbai.includes(:user)
+      .where(status: "不備対応中")
+      .where(date: Date.today.ago(2.month)..Date.today)
+      .where(user_id: @user.id)
     @aupays_def = 
       Aupay.includes(:store_prop, :user)
       .where(status: "差し戻し")
       .where.not(deficiency_remarks: "既存auPAY加盟店の登録がすでにあるため、差し戻しさせていただきます。")
       .where(date: Date.today.ago(3.month)..Date.today)
       .where(user_id: @user.id)
-    @rakuten_pays_def = 
-      RakutenPay.includes(:store_prop, :user)
-      .where(date: Date.today.ago(3.month).beginning_of_month..Date.today)
-      .where(status: "自社不備")
-      .where(user_id: @user.id)
-      .or(
-        RakutenPay.includes(:store_prop, :user)
-        .where(status: "1次審査不備")
-        .where(user_id: @user.id)
-      ) 
     @comment = Comment.new
     session[:previous_url] = user_path(@user.id)
     @comments = Comment.select(:id,:status, :content,:store_prop_id,:request_show,:request)
