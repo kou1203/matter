@@ -50,12 +50,12 @@
             <li id="lists2"><%= link_to "依頼中案件", comments_path,class: "side-link"%></li>
             <% end %>
           </ul>
-        <label class="header-label" id="lists3">終着報告/シフト</label>
+        <label class="header-label" id="lists3">終着報告</label>
         <ul class="dropdown" id="pull-down3">
           <li id="lists3"><%= link_to "終着報告", new_result_path(user_id: current_user.id, date: Date.today), class: "side-link","data-turbolinks": false %></li>
           <li id="lists3"><%= link_to "その他獲得報告", new_other_product_path, class: "side-link" %></li>
         </ul>
-        <label class="header-label" id="lists4">人員</label>
+        <label class="header-label" id="lists4">人員・シフト</label>
         <ul class="dropdown" id="pull-down4">
             <li id="lists4"><%= link_to "ユーザー情報", users_path, class: "side-link","data-turbolinks": false %></li>
             <li id="lists4"><%= link_to "dメル専業人員", dmer_senbai_users_path, class: "side-link" %></li>
