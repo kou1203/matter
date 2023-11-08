@@ -1,0 +1,164 @@
+
+<div data-scope-path="shared/header">
+  <h1>dメル専売詳細ページ</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div class="main">
+<div data-scope-path="shares/show">
+  <h2>店舗詳細</h2>
+    <table>
+    <tr>
+    <th >業種</th>
+    <td ><%= @dmer_senbai.industry %></td>
+    <th >カテゴリー</th>
+    <td ><%= @dmer_senbai.category %></td>
+    
+    </tr>
+    <tr>
+    <th >店舗名</th>
+    <td ><%= @dmer_senbai.store_name %></td>
+    <th colspan="2"></th>
+    </tr>
+    <tr>
+      <th >店舗住所</th>
+    <td colspan="3">〒<%= @dmer_senbai.post_code %>　<%= @dmer_senbai.address %></td>
+    </tr>
+    </table>
+    </table>
+    <h2>dメル専売情報</h2>
+    <table>
+    <tr>
+      <th >商流</th>
+      <td ><%= @dmer_senbai.client %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+      <th >お申込み番号</th>
+      <td ><%= @dmer_senbai.customer_num %></td>
+      <th >店舗コード</th>
+      <td ><%= @dmer_senbai.store_code %></td>
+    </tr>
+    <tr>
+      <th >獲得者</th>
+      <td ><%= @dmer_senbai.user.name %></td>
+      <th >獲得日</th>
+      <td ><%= @dmer_senbai.date %></td>
+    </tr>
+    <tr>
+      <th >店舗情報入力日</th>
+      <td ><%= @dmer_senbai.enter_store %></td>
+      <th >店舗登録日</th>
+      <td ><%= @dmer_senbai.reg_store %></td>
+    </tr>
+    <tr>
+      <th >ステータス更新日</th>
+      <td ><%= @dmer_senbai.status_update %></td>
+    </tr>
+  </table>
+  <h2>審査状況</h2>
+  <table>
+    <tr>
+      <th >業種チェック</th>
+      <td ><%= @dmer_senbai.industry_status %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+      <th>申込チェック</th>
+      <td ><%= @dmer_senbai.app_check %></td>
+      <th >申込チェック日</th>
+      <td ><%= @dmer_senbai.app_check_date %></td>
+    </tr>
+    <tr>
+      <th>重複チェック</th>
+      <td ><%= @dmer_senbai.dup_check %></td>
+      <th>Partner Status</th>
+      <td ><%= @dmer_senbai.partner_status %></td>
+    </tr>
+    <tr>
+      <th >審査ステータス</th>
+      <td ><%= @dmer_senbai.status %></td>
+      <th>審査完了日（新規）</th>
+      <td ><%= @dmer_senbai.result_point %></td>
+    </tr>
+  </table>
+  <table>
+    <tr >
+      <th>不備詳細</th>
+      <td colspan="3"><%= @dmer_senbai.deficiency_remarks %></td>
+    </tr>
+  </table>
+  <h2>決済情報</h2>
+  <table>
+    <tr>
+      <th >決済者</th>
+      <td ><%= @dmer_senbai.settlementer.name rescue "" %></td>
+      <th >キット発送日</th>
+      <td ><%= @dmer_senbai.shipment %></td>
+    </tr>
+    <tr>
+      <th >初回決済日</th>
+      <td ><%= @dmer_senbai.settlement %></td>
+      <th >アクセプタンスアップロード日</th>
+      <td ><%= @dmer_senbai.picture %></td>
+    </tr>
+    <tr>
+      <th >決済ステータス</th>
+      <td ><%= @dmer_senbai.status_settlement %></td>
+      <th >決済期限</th>
+      <td ><%= @dmer_senbai.settlement_deadline %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+      <th >アクセプタンスチェック</th>
+      <td ><%= @dmer_senbai.picture_check %></td>
+      <th >アクセプタンスチェック日</th>
+      <td ><%= @dmer_senbai.picture_check_date %></td>
+    </tr>
+    <tr>
+      <th >アクセプタンス再提出日</th>
+      <td ><%= @dmer_senbai.picture_latest %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+      <th >d払い店舗直近決済日</th>
+      <td ><%= @dmer_senbai.dpay_slmt_latest %></td>
+      <th >メルペイ店舗直近決済日</th>
+      <td ><%= @dmer_senbai.merpay_slmt_latest %></td>
+    </tr>
+  </table>
+  <table>
+    <tr>
+      <% if current_user.position == "権限①" %>
+      <td ><%= link_to "dメル専売情報編集", edit_dmer_senbai_path, "data-turbolinks": false, class: "link" %></td>
+      <% end %>
+    </tr>
+  </table>
+  <% if current_user.position == "権限①" %>
+  <h2>単価</h2>
+  <table>
+    <tr>
+      <th >評価売（審査通過）</th>
+      <td ><%= @dmer_senbai.valuation_new %></td>
+      <th >評価売（アクセプタンス合格）</th>
+      <td ><%= @dmer_senbai.valuation_settlement %></td>
+    </tr>
+    <tr>
+      <th >評価売（2回目決済）</th>
+      <td ><%= @dmer_senbai.valuation_second_settlement %></td>
+      <th colspan="2"></th>
+    </tr>
+    <tr>
+      <th >実売</th>
+      <td ><%= @dmer_senbai.profit %></td>
+      <th colspan="2"></th>
+    </tr>
+    </table>
+    <% else %>
+    <% end %>
+  </div>
+  </div>
+</div>

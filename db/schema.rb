@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_03_083932) do
+ActiveRecord::Schema.define(version: 2023_11_07_103219) do
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -383,6 +383,50 @@ ActiveRecord::Schema.define(version: 2023_11_03_083932) do
     t.string "client", null: false
     t.date "date", null: false
     t.index ["user_id"], name: "index_dmer_senbai_users_on_user_id"
+  end
+
+  create_table "dmer_senbais", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "client", null: false
+    t.string "store_code", null: false
+    t.string "customer_num", null: false
+    t.string "industry", null: false
+    t.string "category", null: false
+    t.string "store_name", null: false
+    t.date "date", null: false
+    t.bigint "user_id"
+    t.bigint "settlementer_id"
+    t.string "industry_status"
+    t.string "app_check"
+    t.date "app_check_date"
+    t.string "dup_check"
+    t.date "enter_store"
+    t.date "reg_store"
+    t.string "status", null: false
+    t.string "partner_status", null: false
+    t.string "status_settlement", null: false
+    t.date "result_point"
+    t.date "shipment"
+    t.date "settlement"
+    t.date "settlement_second"
+    t.date "settlement_deadline", null: false
+    t.date "picture"
+    t.date "picture_latest"
+    t.string "picture_check"
+    t.date "picture_check_date"
+    t.date "dpay_slmt_latest"
+    t.date "merpay_slmt_latest"
+    t.text "deficiency_remarks"
+    t.string "post_code", null: false
+    t.string "prefecture", null: false
+    t.string "city", null: false
+    t.string "address", null: false
+    t.integer "valuation_new", null: false
+    t.integer "valuation_settlement", null: false
+    t.integer "valuation_second_settlement", null: false
+    t.integer "profit", null: false
+    t.date "status_update"
+    t.index ["settlementer_id"], name: "index_dmer_senbais_on_settlementer_id"
+    t.index ["user_id"], name: "index_dmer_senbais_on_user_id"
   end
 
   create_table "dmer_stocks", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1852,6 +1896,8 @@ ActiveRecord::Schema.define(version: 2023_11_03_083932) do
   add_foreign_key "demaekans", "users"
   add_foreign_key "dmer_date_progresses", "users"
   add_foreign_key "dmer_senbai_users", "users"
+  add_foreign_key "dmer_senbais", "users"
+  add_foreign_key "dmer_senbais", "users", column: "settlementer_id"
   add_foreign_key "dmers", "store_props"
   add_foreign_key "dmers", "users"
   add_foreign_key "dmers", "users", column: "settlementer_id"

@@ -448,6 +448,7 @@ class ResultsController < ApplicationController
   def product_status
     @dmers = Dmer.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
     @dmers_db = Dmer.includes(:store_prop).where.not(store_prop: {head_store: nil}).where(date: @month.all_month).where(user_id: @user.id)
+    @dmer_senbais = DmerSenbai.includes(:user).where(date: @month.all_month).where(user_id: @user.id)
     @aupays = Aupay.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
     @aupays_db = Aupay.includes(:store_prop).where(date: @month.all_month).where.not(store_prop: {head_store: nil}).where(user_id: @user.id)
     @paypays = Paypay.where(date: @month.all_month).where(user_id: @user.id)
@@ -475,6 +476,16 @@ class ResultsController < ApplicationController
       .or(
         StoreProp.includes(:dmer, :aupay).where(dmer: {share: Date.today.ago(3.month)..Date.today})
       ).order(:id)
+    @dmer_senbais = 
+      DmerSenbai.includes(:user)
+      .where(user_id: @user.id)
+      .where(industry_status: "OK")
+      .where(app_check: "OK")
+      .where(dup_check: "なし")
+      .where(partner_status: "Active")
+      .where(status: "審査OK")
+      .where.not(status_settlement: "期限切れ")
+      .where.not(status_settlement: "完了")
   end 
 
   def deficiency # 不備一覧

@@ -442,4 +442,7 @@ Rails.application.routes.draw do
   end 
   
   resources :dmer_senbai_users, except: :show
+  resources :dmer_senbais do 
+    collection {post :import}
+  end 
 end

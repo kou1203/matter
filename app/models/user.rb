@@ -41,4 +41,5 @@ class User < ApplicationRecord
   has_many :usen_pays
   has_many :nuros
   has_many :dmer_senbai_users
+  has_many :dmer_senbais
 end

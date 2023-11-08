@@ -1,0 +1,307 @@
+<% if current_user.position_sub == "99：退職" %>
+  <p>退職者は利用できません。</p>
+<% else %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>dメル専売一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/index">
+<div class="main">
+<hr>
+<%= render "shared/dmer_links" %>
+<hr>
+<%# link_to 'データ出力', dmers_path(format: :csv),class: "link" %>
+  <% if current_user.position_sub == "管理" %>
+    <%= form_with url: import_dmer_senbais_path do |f| %>
+      <table class="csv-tb">
+        <tr>
+          <td class="csv-label">CSV</td>
+
+          <td ><%= f.file_field :file , accept: ".csv",class: "csv-input" %></td>
+
+          <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？', disable_with: "インポート中" } %></td>
+        </tr>
+      </table>
+    <% end %>
+  <% end %>
+  <p class="nav-text">こちらから確認したい情報を絞り込んでください</p>
+      <%= javascript_pack_tag 'search' %>
+      <article id='search'><%# 検索フォーム %>
+        <button @click="active" v-if="!isActive" class="active-btn">詳細検索表示</button>
+        <button @click="active" v-if="isActive" class="active-btn">詳細検索表示中</button>
+        <div v-if="isActive" class="s-form"><%# 検索フォームの外枠 %>
+          <%= search_form_for @q do |f| %>
+            <p class="s-text">検索したい内容を入力してください。</p>
+            <hr>
+          <div class="s-flex"><%# 検索フォーム %>
+            <div class="user-form"><%# ユーザー情報 %>
+              <p class="s-label">獲得者</p>
+              <p class="s-text-field"><%= f.text_field :user_name_cont, class: "s-text-input" %></p>
+              <p class="s-label">決済者</p>
+              <p class="s-text-field"><%= f.text_field :settlementer_name_cont, class: "s-text-input" %></p>
+              <p class="s-label">拠点</p>
+              <p class="s-slct-field">
+                <%= 
+                  f.select :user_base_eq,
+                  options_from_collection_for_select(User.where(base_sub: "キャッシュレス").select(:base)
+                  .distinct,:base, :base),
+                  {include_blank: true},
+                  {class: "t-input"} 
+                %>
+              </p>
+            </div><%# ユーザー情報 %>
+            <div class="product-form"><%# 商材情報 %>
+              <table class="s-tb">
+                <thead>
+                  <tr class="s-tr">
+                    <th class="s-th">項目</th>
+                    <th class="s-th">検索内容</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="s-tr">
+                    <td class="s-td">獲得日</td>
+                    <td class="s-td">
+                      <%= f.date_field :date_eq, class: "t-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">獲得日（範囲）</td>
+                    <td class="s-td">
+                      <%= f.date_field :date_gteq, class: "s-input" %>〜
+                      <%= f.date_field :date_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">申込チェック日</td>
+                    <td class="s-td">
+                      <%= f.date_field :app_check_date_gteq, class: "s-input" %>〜
+                      <%= f.date_field :app_check_date_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">審査完了日</td>
+                    <td class="s-td">
+                      <%= f.date_field :result_point_gteq, class: "s-input" %>〜
+                      <%= f.date_field :result_point_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">初回決済日</td>
+                    <td class="s-td">
+                      <%= f.date_field :settlement_gteq, class: "s-input" %>〜
+                      <%= f.date_field :settlement_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">アクセプタンス</td>
+                    <td class="s-td">
+                      <%= f.date_field :picture_gteq, class: "s-input" %>〜
+                      <%= f.date_field :picture_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">2回目決済</td>
+                    <td class="s-td">
+                      <%= f.date_field :settlement_second_gteq, class: "s-input" %>〜
+                      <%= f.date_field :settlement_second_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">アクセプタンス連携</td>
+                    <td class="s-td">
+                      <%= f.select :picture_null,{"未完了": true,"完了": false},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">アクセプタンス審査</td>
+                    <td class="s-td">
+                      <%= f.select :picture_check_date_null,{"未完了": true,"完了": false},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">決済完了日</td>
+                    <td class="s-td">
+                      <%= f.date_field :picture_check_date_gteq, class: "s-input" %>〜
+                      <%= f.date_field :picture_check_date_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">2回目決済報告</td>
+                    <td class="s-td">
+                      <%= f.select :settlement_second_null,{"未完了": true,"完了": false},{include_blank: true},{ class: "t-input"} %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">決済期限</td>
+                    <td class="s-td">
+                      <%= f.date_field :settlement_deadline_gteq, class: "s-input" %>〜
+                      <%= f.date_field :settlement_deadline_lteq, class: "s-input" %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">申込チェック</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :app_check_eq,
+                        options_from_collection_for_select(DmerSenbai.select(:app_check)
+                        .distinct,:app_check, :app_check),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">業種ステータス</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :industry_status_eq,
+                        options_from_collection_for_select(DmerSenbai.select(:industry_status)
+                        .distinct,:industry_status, :industry_status),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  </tr>
+                  <tr class="s-tr">
+                    <td class="s-td">審査ステータス</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :status_eq,
+                        options_from_collection_for_select(DmerSenbai.select(:status)
+                        .distinct,:status, :status),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div><%# 商材情報 %>
+          </div><%# 検索フォーム %>
+          <hr>
+          <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "s-btn" %>
+          <button class="s-reset-btn"><%= link_to "解除", dmers_path, class: "reset-link" %></button>
+          <% end %>
+        </div><%# /検索フォームの外枠 %>
+        <div v-else>
+          <%= search_form_for @q do |f| %>
+              <%= f.text_field :store_name_or_customer_num_cont, placeholder: "キーワードから探す", class: "input-box" %>
+              <%= f.submit "検索",data: {disable_with: "検索中"} ,class: "search-btn" %>
+          <% end %>
+        </div>
+      </article><%# /検索フォーム %>
+
+      <hr>
+      <div class="warning"><%= alert %></div>
+      <% if @dmer_senbais.empty? %>
+      <% else %>
+      <h1>獲得日：<%= @dmer_senbais.minimum(:date) %>（<%= days[@dmer_senbais.minimum(:date).wday] %>）〜<%= @dmer_senbais.maximum(:date) %>（<%= days[@dmer_senbais.maximum(:date).wday] %>）</h1>
+      <%# 重複確認 %>
+      <% dmer_duplicate = @dmer_senbais.where.not(store_code: nil).group(:store_code).having('count(*) >= 2') %>
+        <% if dmer_duplicate.present? %>
+
+          <p class="nav-text">管理番号重複</p>
+          <% end %>
+          <%# PJ078772 ばんやジル %>
+        <% dmer_duplicate.each do |db| %>
+          <p class="nav-text" style="color: red;"><%= db.store_code %><%= db.store_prop.name %></p>
+        <% end %>
+        <% 
+          settlement_subject = 
+            @dmer_senbais.where(status: "審査OK")
+            .where.not(industry_status: "NG")
+            .where.not(industry_status: "×")
+            .where.not(industry_status: "要確認").length 
+        %>
+        <% 
+          settlement_done = 
+            @dmer_senbais.where(status: "審査OK")
+            .where.not(industry_status: "NG")
+            .where.not(industry_status: "×")
+            .where.not(industry_status: "要確認")
+            .where(status_settlement: '完了').length 
+        %>
+        <% 
+          slmt_dead = 
+            @dmer_senbais.where(status: "審査OK")
+            .where.not(industry_status: "NG")
+            .where.not(industry_status: "×")
+            .where.not(industry_status: "要確認")
+            .where(status_settlement: "期限切れ").length
+        %>
+
+        <% hubi = @dmer_senbais.where(status: '自社不備' ).length %>
+        <% client_hubi = @dmer_senbais.where(status: '不備対応中' ).length %>
+        <% industry_ng = @dmer_senbais.where(status: '審査OK' ).where(industry_status: 'NG').length + @dmer_senbais.where(status: '審査OK' ).where(industry_status: '×').length %>
+        <% client_ng = @dmer_senbais.where(status: '審査NG' ).length + @dmer_senbais.where(status: '申込取消' ).length %>
+        <% cancel = @dmer_senbais.where(status: '申込取消' ).length %>
+        <% status_ok = @dmer_senbais.where(status: '審査OK' ).where.not(industry_status: "NG").where.not(industry_status: "要確認").where.not(industry_status: '×').length %>
+    <div style="display: flex;">
+    <table  class="out-tb">
+      <thead>
+        <tr >
+          <th class="out-th">申込番号</th>
+          <th class="out-th">商流</th>
+          <th class="out-th">店舗名</th>
+          <th class="out-th">獲得者</th>
+          <th class="out-th">獲得日</th>
+          <th class="out-th">申込チェック</th>
+          <th class="out-th">業種チェック</th>
+          <th class="out-th">重複チェック</th>
+          <th class="out-th">審査ステータス</th>
+          <th class="out-th">審査完了日</th>
+          <th class="out-th">キット発送日</th>
+          <th class="out-th">決済対応者</th>
+          <th class="out-th">初回決済日</th>
+          <th class="out-th">アクセプタンス</th>
+          <th class="out-th">決済ステータス</th>
+          <th class="out-th">決済期限</th>
+          <th class="out-th">アクセプタンスチェック</th>
+          <th class="out-th">アクセプタンスチェック日</th>
+          <th class="out-th">2回目決済日</th>
+          <th class="out-th"></th>
+        </tr>
+      </thead>
+      <tbody>
+      <% @dmer_senbais_data.find_each do |dmer| %>
+        <tr >
+          <td class="index-td"><%= dmer.customer_num %></td>
+          <td class="index-td"><%= dmer.client %></td>
+          <td class="index-td"><%= dmer.store_name %></td>
+          <td class="index-td"><%= dmer.user.name %></td>
+          <td class="index-td"><%= dmer.date.month %>月<%= dmer.date.day %>日</td>
+          <td class="index-td"><%= dmer.app_check %></td>
+          <td class="index-td"><%= dmer.industry_status %></td>
+          <td class="index-td"><%= dmer.dup_check %></td>
+          <td class="index-td"><%= dmer.status %></td>
+          <td class="index-td"><%= dmer.result_point %></td>
+          <td class="index-td"><%= dmer.shipment %></td>
+          <td class="index-td"><%= dmer.settlementer.name rescue ' ' %></td>
+          <td class="index-td"><%= dmer.settlement %></td>
+          <td class="index-td"><%= dmer.picture %></td>
+          <td class="index-td"><%= dmer.status_settlement %></td>
+          <td class="index-td"><%= dmer.settlement_deadline %></td>
+          <td class="index-td"><%= dmer.picture_check %></td>
+          <td class="index-td"><%= dmer.picture_check_date %></td>
+          <td class="index-td"><%= dmer.settlement_second %></td>
+
+          <td class="index-td"><%= link_to "　詳細　",  dmer_senbai_path(dmer.id) ,class: "link" %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  <div class="kaminari-page">
+    <%= paginate @dmer_senbais_data %>
+  </div>
+  <% end %>
+  </div>
+  </div>
+</div>
+<% end %>

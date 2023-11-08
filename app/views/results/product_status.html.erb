@@ -51,6 +51,36 @@
     %></td>
   </tr>
   <tr>
+    <td class="valuation-td">dメル専売</td>
+    <td class="valuation-td"><%= @dmer_senbais.length %></td>
+    <td class="valuation-td"><%= 
+          @dmer_senbais.where.not(status: "審査OK")
+          .where.not(status: "審査NG")
+          .where.not(status: "社内確認中")
+          .where.not(status: "申込取消")
+          .where.not(status: "申込取消（不備）")
+          .where.not(status: "不備対応中").length 
+    %></td>
+    <td class="valuation-td"><%= 
+          @dmer_senbais.where(status: "審査OK")
+          .where(industry_status: "OK")
+          .where(app_check: "OK")
+          .where.not(dup_check: "重複")
+          .where(partner_status: "Active").length 
+    %></td>
+    <td class="valuation-td"><%= 
+          @dmer_senbais.where(status: "審査NG")
+          .or(@dmer_senbais.where(industry_status: "NG"))
+          .or(@dmer_senbais.where(app_check: "NG"))
+          .or(@dmer_senbais.where(dup_check: "重複"))
+          .or(@dmer_senbais.where.not(partner_status: "Active"))
+          .or(@dmer_senbais.where(status: "申込取消"))
+          .or(@dmer_senbais.where(status: "社内確認中"))
+          .or(@dmer_senbais.where(status: "不備対応中"))
+          .or(@dmer_senbais.where(status: "申込取消（不備）")).length 
+    %></td>
+  </tr>
+  <tr>
     <td class="valuation-td">auPay</td>
     <td class="valuation-td"><%= @aupays.length %></td>
     <td class="valuation-td"><%= 
@@ -134,7 +164,8 @@
       <th class="valuation-th">商流</th>
       <th class="valuation-th">店舗名</th>
       <th class="valuation-th">獲得日</th>
-      <th class="valuation-th">業種評価</th>
+      <th class="valuation-th">業種チェック</th>
+      <th class="valuation-th">申込チェック</th>
       <th class="valuation-th">審査ステータス</th>
       <th class="valuation-th">審査完了日</th>
       <th class="valuation-th">キット発送日</th>
@@ -149,7 +180,7 @@
       <% 
         if dmer.industry_status == "×" || dmer.industry_status == "NG" ||
             dmer.status == "審査NG" || dmer.status == "申込取消" ||
-            dmer.status == "申込取消（不備）"
+            dmer.status == "申込取消（不備）" || dmer.status == "社内確認中"
       %>
       <tr style="color:red;">
       <% elsif dmer.status == "不備対応中" %>
@@ -162,11 +193,69 @@
       <td class="valuation-td"><%= dmer.store_prop.name %></td>
       <td class="valuation-td"><%= dmer.date %></td>
       <td class="valuation-td"><%= dmer.industry_status %></td>
+      <td class="valuation-td"><%= dmer.app_check %></td>
       <td class="valuation-td"><%= dmer.status %></td>
       <td class="valuation-td"><%= dmer.result_point %></td>
       <td class="valuation-td"><%= dmer.shipment %></td>
       <td class="valuation-td"><%= dmer.status_settlement %></td>
       <td class="valuation-td"><%= dmer.status_update_settlement %></td>
+      <td class="valuation-td"><%= dmer.settlement_deadline %></td>
+      <td class="valuation-td"><%= dmer.settlement_second %></td>
+    </tr>
+    <% end %>
+  </tbody>
+</table>
+<% end %>
+<% if @dmer_senbais.present? %>
+<h2>dメル専売審査状況（<%= @dmer_senbais.length %>件）</h2>
+<table>
+  <thead>
+    <tr>
+      <th class="valuation-th">詳細</th>
+      <th class="valuation-th">商流</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">業種チェック</th>
+      <th class="valuation-th">申込チェック</th>
+      <th class="valuation-th">重複チェック</th>
+      <th class="valuation-th">PartnerStatus</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">キット発送日</th>
+      <th class="valuation-th">決済ステータス</th>
+      <th class="valuation-th">ACチェック</th>
+      <th class="valuation-th">ACチェック日</th>
+      <th class="valuation-th">決済期限</th>
+      <th class="valuation-th">2回目決済完了日</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @dmer_senbais.each do |dmer| %>
+      <% 
+        if dmer.industry_status == "×" || dmer.industry_status == "NG" ||
+            dmer.status == "審査NG" || dmer.status == "申込取消" ||
+            dmer.status == "申込取消（不備）" || dmer.status == "社内確認中"
+      %>
+      <tr style="color:red;">
+      <% elsif dmer.status == "不備対応中" %>
+      <tr style="color:purple;">
+      <% else %>
+      <tr>
+      <% end %>
+      <td class="valuation-td"><%= link_to "詳細", dmer_path(dmer.id), class: "link" %></td>
+      <td class="valuation-td"><%= dmer.client %></td>
+      <td class="valuation-td"><%= dmer.store_name %></td>
+      <td class="valuation-td"><%= dmer.date %></td>
+      <td class="valuation-td"><%= dmer.industry_status %></td>
+      <td class="valuation-td"><%= dmer.app_check %></td>
+      <td class="valuation-td"><%= dmer.dup_check %></td>
+      <td class="valuation-td"><%= dmer.partner_status %></td>
+      <td class="valuation-td"><%= dmer.status %></td>
+      <td class="valuation-td"><%= dmer.result_point %></td>
+      <td class="valuation-td"><%= dmer.shipment %></td>
+      <td class="valuation-td"><%= dmer.status_settlement %></td>
+      <td class="valuation-td"><%= dmer.picture_check %></td>
+      <td class="valuation-td"><%= dmer.picture_check_date %></td>
       <td class="valuation-td"><%= dmer.settlement_deadline %></td>
       <td class="valuation-td"><%= dmer.settlement_second %></td>
     </tr>
