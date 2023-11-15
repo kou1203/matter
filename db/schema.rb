@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_07_103219) do
+ActiveRecord::Schema.define(version: 2023_11_13_105821) do
+
+  create_table "activity_bases", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.date "date", null: false
+    t.bigint "user_id"
+    t.string "base", null: false
+    t.string "position", null: false
+    t.index ["user_id"], name: "index_activity_bases_on_user_id"
+  end
 
   create_table "airpay_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
@@ -376,6 +384,31 @@ ActiveRecord::Schema.define(version: 2023_11_07_103219) do
     t.integer "shift_schedule_slmt"
     t.integer "shift_digestion_slmt"
     t.index ["user_id"], name: "index_dmer_date_progresses_on_user_id"
+  end
+
+  create_table "dmer_senbai_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "base", null: false
+    t.date "date"
+    t.integer "shift_schedule", null: false
+    t.integer "shift_schedule_slmt", null: false
+    t.integer "shift_digestion", null: false
+    t.integer "shift_digestion_slmt", null: false
+    t.integer "get_len", null: false
+    t.integer "def_len", null: false
+    t.integer "fin_len", null: false
+    t.integer "valuation_current", null: false
+    t.integer "valuation_current1", null: false
+    t.integer "valuation_current2", null: false
+    t.integer "valuation_current3", null: false
+    t.integer "valuation_fin", null: false
+    t.integer "valuation_fin1", null: false
+    t.integer "valuation_fin2", null: false
+    t.integer "valuation_fin3", null: false
+    t.integer "profit_current", null: false
+    t.integer "profit_fin", null: false
+    t.date "create_date", null: false
+    t.index ["user_id"], name: "index_dmer_senbai_date_progresses_on_user_id"
   end
 
   create_table "dmer_senbai_users", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1879,6 +1912,7 @@ ActiveRecord::Schema.define(version: 2023_11_07_103219) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "activity_bases", "users"
   add_foreign_key "airpay_date_progresses", "users"
   add_foreign_key "airpay_stickers", "users"
   add_foreign_key "airpays", "store_props"
@@ -1895,6 +1929,7 @@ ActiveRecord::Schema.define(version: 2023_11_07_103219) do
   add_foreign_key "demaekans", "store_props"
   add_foreign_key "demaekans", "users"
   add_foreign_key "dmer_date_progresses", "users"
+  add_foreign_key "dmer_senbai_date_progresses", "users"
   add_foreign_key "dmer_senbai_users", "users"
   add_foreign_key "dmer_senbais", "users"
   add_foreign_key "dmer_senbais", "users", column: "settlementer_id"

@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
         @airpaysticker_mine1_calc_data = @calc_periods.find_by(name: "AirPayステッカー成果1（自社）")
         @airpaysticker_other1_calc_data = @calc_periods.find_by(name: "AirPayステッカー成果1（他社）")
         @itss1_calc_data = @calc_periods.find_by(name: "ITSS")
-        # 期間
+        # 期間 @basic_calc_data.start_date_monthは-1~1の値が入っている
         @basic_start_date_year_and_month = @month.since(@basic_calc_data.start_date_month.month)
         if @basic_calc_data.start_date_day == 0
           @start_date = Date.new(
@@ -57,7 +57,6 @@ class ApplicationController < ActionController::Base
             @basic_end_date_year_and_month.month,
             @basic_calc_data.end_date_day,
           )
-
         end
 
 

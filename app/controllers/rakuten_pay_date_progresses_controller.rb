@@ -1,5 +1,5 @@
 class RakutenPayDateProgressesController < ApplicationController
-
+  include CommonCalc
   def index 
     @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "楽天ペイ成果1").price
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
@@ -113,15 +113,20 @@ class RakutenPayDateProgressesController < ApplicationController
     else 
       @month = Date.today
     end 
-    @calc_periods = CalcPeriod.where(sales_category: "実売")
-    calc_period_and_per
+    calc_profit
     @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
     @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     cnt = 0
-    @rakuten_pays_group = Shift.group(:user_id)
+    @rakuten_pays_group = RakutenPay.where(date: @month.ago(6.month).beginning_of_month..@month.end_of_month)
     @rakuten_pays_group.group(:user_id).each do |r|
-      @calc_periods = CalcPeriod.where(sales_category: "実売")
-      calc_period_and_per
+      calc_profit
+      @rakuten_pay_calc_period = @calc_periods.find_by(name: "楽天ペイ成果1")
+      @rakuten_pay1_start_date = start_date(@rakuten_pay_calc_period)
+      @rakuten_pay1_end_date = end_date(@rakuten_pay_calc_period)
+      @rakuten_pay1_closing_date = closing_date(@rakuten_pay_calc_period)
+      @rakuten_pay1_this_month_per = @rakuten_pay_calc_period.this_month_per 
+      @rakuten_pay1_prev_month_per = @rakuten_pay_calc_period.prev_month_per 
+      @rakuten_pay_price = @rakuten_pay_calc_period.price
       user_id = r.user_id
       @rakuten_pay_progress_data = RakutenPayDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       shift_schedule = @shifts.where(user_id: user_id).length
@@ -163,8 +168,13 @@ class RakutenPayDateProgressesController < ApplicationController
     rakuten_pay_person_profit_sum = rakuten_pay_person_this_month_profit_fin + rakuten_pay_person_prev_profit_fin
     # 終着（法人当月）
     rakuten_pay_company_calc = @calc_periods.find_by(name: "楽天ペイ成果1（法人）")
+    @rakuten_pay_company_start_date = start_date(rakuten_pay_company_calc)
+    @rakuten_pay_company_end_date = end_date(rakuten_pay_company_calc)
+    @rakuten_pay_company_closing_date = closing_date(rakuten_pay_company_calc)
+    @rakuten_pay_company_this_month_per = rakuten_pay_company_calc.this_month_per
+    @rakuten_pay_company_prev_month_per = rakuten_pay_company_calc.prev_month_per
     rakuten_pay_company_this_month = @rakuten_pays_user.where(date: @start_date..@end_date).where(store_prop: {race: "法人"})
-    rakuten_pay_company_this_month_len_fin = (rakuten_pay_company_this_month.length.to_f / shift_digestion * shift_schedule * rakuten_pay_company_calc.this_month_per).round() rescue 0
+    rakuten_pay_company_this_month_len_fin = (rakuten_pay_company_this_month.length.to_f / shift_digestion * shift_schedule * @rakuten_pay_company_this_month_per).round() rescue 0
     rakuten_pay_company_this_month_profit_fin = @rakuten_pay_price * rakuten_pay_company_this_month_len_fin
     # 終着（法人過去月）
     rakuten_pay_company_done_prev = rakuten_pay_done.where(date: ...@start_date).where(store_prop: {race: "法人"})
@@ -174,7 +184,7 @@ class RakutenPayDateProgressesController < ApplicationController
       .or(
         rakuten_pay_company_prev.where(status: "審査中")
       )
-    rakuten_pay_company_prev_len = (rakuten_pay_company_prev.length.to_f * rakuten_pay_company_calc.prev_month_per).round()
+    rakuten_pay_company_prev_len = (rakuten_pay_company_prev.length.to_f * @rakuten_pay_company_prev_month_per).round()
     rakuten_pay_company_prev_profit_fin = (@rakuten_pay_price * rakuten_pay_company_prev_len) + (@rakuten_pay_price * rakuten_pay_company_done_prev.length)
     # 終着（法人合計）
     rakuten_pay_company_profit_sum = rakuten_pay_company_this_month_profit_fin + rakuten_pay_company_prev_profit_fin
@@ -194,10 +204,13 @@ class RakutenPayDateProgressesController < ApplicationController
         prev_price_result_fin = rakuten_pay_done.where(profit: 13500).length
       end
     # profit_fin = rakuten_pay_company_prev_len + (rakuten_pay_company_done_prev.length.to_f * rakuten_pay_company_calc.prev_month_per).round()
-
-
-      @calc_periods = CalcPeriod.where(sales_category: "評価売")
-      calc_period_and_per
+      calc_valuation
+      @rakuten_pay1_start_date = start_date(@rakuten_pay_calc_period)
+      @rakuten_pay1_end_date = end_date(@rakuten_pay_calc_period)
+      @rakuten_pay1_closing_date = closing_date(@rakuten_pay_calc_period)
+      @rakuten_pay1_this_month_per = @rakuten_pay_calc_period.this_month_per 
+      @rakuten_pay1_prev_month_per = @rakuten_pay_calc_period.prev_month_per 
+      @rakuten_pay_price = @rakuten_pay_calc_period.price
       @rakuten_pays_user_period = @rakuten_pays_user.where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date)
       @rakuten_val_shift_schedule = Shift.where(user_id: user_id).where(start_time: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(shift: "キャッシュレス新規").length
 

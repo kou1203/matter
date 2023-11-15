@@ -1,7 +1,9 @@
 class CalcPeriodsController < ApplicationController
   require 'csv'
+  include Base
   before_action :set_month
   def index 
+    bases
     @calc_periods = CalcPeriod.all
     @calc_periods_val = CalcPeriod.where(sales_category: "評価売")
     @calc_periods_prof = CalcPeriod.where(sales_category: "実売")
@@ -12,6 +14,13 @@ class CalcPeriodsController < ApplicationController
     end 
     @dmer_date_progresses_last_update =  @dmer_date_progresses.maximum(:create_date)
     @dmer_date_progresses = @dmer_date_progresses.where(create_date: @dmer_date_progresses_last_update)
+    if DmerSenbaiDateProgress.where(date: @month).exists?
+      @dmer_senbai_date_progresses = DmerSenbaiDateProgress.includes(:user).where(date: @month)
+    else
+      @dmer_senbai_date_progresses = DmerSenbaiDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+    end 
+    @dmer_senbai_date_progresses_last_update =  @dmer_senbai_date_progresses.maximum(:create_date)
+    @dmer_senbai_date_progresses = @dmer_senbai_date_progresses.where(create_date: @dmer_senbai_date_progresses_last_update)
 
     if AupayDateProgress.where(date: @month).exists?
       @aupay_date_progresses = AupayDateProgress.includes(:user).where(date: @month)
@@ -101,13 +110,11 @@ class CalcPeriodsController < ApplicationController
     end 
     @cash_date_progresses_last_update = @cash_date_progresses.maximum(:create_date)
     @cash_date_progresses = @cash_date_progresses.where(create_date: @cash_date_progresses_last_update)
-
-    @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "2次店","退職"]
     
     @users = User.where.not(position: "退職")
 
-    @products = ["合計","dメル", "auPay", "PayPay", "楽天ペイ","AirPay", "出前館","auステッカー", "dメルステッカー","AirPayステッカー","ITSS","UsenPay","会議用まとめ"]
-    
+    @products = ["合計","dメル", "dメル専売","auPay", "PayPay", "楽天ペイ","AirPay", "出前館","auステッカー", "dメルステッカー","AirPayステッカー","ITSS","UsenPay","会議用まとめ"]
+    @activity_bases = ActivityBase.includes(:user).where(date: @month.beginning_of_month)
     respond_to do |format|
       format.html
       format.xlsx do
@@ -304,7 +311,7 @@ class CalcPeriodsController < ApplicationController
   end 
 
   def weekly_data
-    @bases = ["中部SS", "関西SS", "関東SS", "九州SS"]
+    bases
     @users = User.where(base_sub: "キャッシュレス").where.not(position: "退職")
     @shifts = Shift.where(start_time: @month.all_month).where(shift: "キャッシュレス新規")
     @results = Result.where(date: @month.all_month).where(shift: "キャッシュレス新規")

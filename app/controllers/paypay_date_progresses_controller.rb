@@ -1,4 +1,5 @@
 class PaypayDateProgressesController < ApplicationController
+  include CommonCalc
   def index 
     @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "PayPay成果1").price
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
@@ -113,15 +114,16 @@ class PaypayDateProgressesController < ApplicationController
     else 
       @month = Date.today
     end 
-    @calc_periods = CalcPeriod.where(sales_category: "実売")
-    calc_period_and_per
+    calc_profit
     @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
     @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     cnt = 0
-    @paypays_group = Shift.group(:user_id)
+    @paypays_group = Paypay.where(date: @month.ago(6.month).beginning_of_month..@month.end_of_month)
     @paypays_group.group(:user_id).each do |r|
-      @calc_periods = CalcPeriod.where(sales_category: "実売")
-      calc_period_and_per
+      calc_profit
+      @paypay_calc_period = @calc_periods.find_by(name: "PayPay成果1")
+      @paypay1_start_date = start_date(@paypay_calc_period)
+      @paypay1_end_date = end_date(@paypay_calc_period)
       user_id = r.user_id
       @paypay_progress_data = PaypayDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       shift_schedule = @shifts.where(user_id: user_id).length
@@ -143,8 +145,9 @@ class PaypayDateProgressesController < ApplicationController
     # 終着
         profit_fin = profit_current
       
-      @calc_periods = CalcPeriod.where(sales_category: "評価売")
-      calc_period_and_per
+      calc_valuation
+      @paypay1_start_date = start_date(@paypay_calc_period)
+      @paypay1_end_date = end_date(@paypay_calc_period)
       valuation_current = paypay_done.sum(:valuation)
       valuation_fin = valuation_current
 

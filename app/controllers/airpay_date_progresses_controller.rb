@@ -1,4 +1,5 @@
 class AirpayDateProgressesController < ApplicationController
+  include CommonCalc
   before_action :authenticate_user!
   def index 
     @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "AirPay成果1").price
@@ -112,8 +113,13 @@ class AirpayDateProgressesController < ApplicationController
     else 
       @month = Date.today
     end 
-    @calc_periods = CalcPeriod.where(sales_category: "実売")
-    calc_period_and_per
+    calc_profit
+    airpay_calc_period = @calc_periods.find_by(name: "AirPay成果1")
+    @airpay_bonus1_len = airpay_calc_period.bonus1_len
+    @airpay_bonus2_len = airpay_calc_period.bonus2_len
+    @airpay_bonus1_price = airpay_calc_period.bonus1_price
+    @airpay_bonus2_price = airpay_calc_period.bonus2_price
+    @airpay_price = airpay_calc_period.price
     @results = Result.includes(:result_cash).where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
     @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     # 全体終着獲得数
@@ -129,10 +135,14 @@ class AirpayDateProgressesController < ApplicationController
         @airpay_price
       end
     cnt = 0
-    @airpays_group = Shift.group(:user_id)
+    @airpays_group = Airpay.where(date: @month.ago(6.month).beginning_of_month..@month.end_of_month)
     @airpays_group.group(:user_id).each do |r|
-      @calc_periods = CalcPeriod.where(sales_category: "実売")
-      calc_period_and_per
+      calc_profit
+      @airpay1_start_date = start_date(airpay_calc_period)
+      @airpay1_end_date = end_date(airpay_calc_period)
+      @airpay1_closing_date = end_date(airpay_calc_period)
+      @airpay1_this_month_per = airpay_calc_period.this_month_per
+      @airpay1_prev_month_per = airpay_calc_period.prev_month_per
       user_id = r.user_id
       @airpay_progress_data = AirpayDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       shift_schedule = @shifts.where(user_id: user_id).length
@@ -183,13 +193,21 @@ class AirpayDateProgressesController < ApplicationController
           (@profit_price * prev_done.length)
         profit_fin = period_fin + prev_fin - (2000 * @max_result_len)
         result_fin_len =  ((period_fin + prev_fin) / @profit_price).round() rescue 0
-        if (profit_current > profit_fin) || (Date.today > @closing_date)
+        if (profit_current > profit_fin) || (Date.today > @airpay1_closing_date)
           profit_fin = profit_current
           result_fin_len = result_len
         end 
-
-      @calc_periods = CalcPeriod.where(sales_category: "評価売")
-      calc_period_and_per
+        calc_valuation
+        @airpay_bonus1_len = airpay_calc_period.bonus1_len
+        @airpay_bonus2_len = airpay_calc_period.bonus2_len
+        @airpay_bonus1_price = airpay_calc_period.bonus1_price
+        @airpay_bonus2_price = airpay_calc_period.bonus2_price
+        @airpay1_start_date = start_date(airpay_calc_period)
+        @airpay1_end_date = end_date(airpay_calc_period)
+        @airpay1_closing_date = end_date(airpay_calc_period)
+        @airpay1_this_month_per = airpay_calc_period.this_month_per
+        @airpay1_prev_month_per = airpay_calc_period.prev_month_per
+        @airpay_price = airpay_calc_period.price
       valuation_price =
         if @month >= Date.new(2023,7,1)
           8000
@@ -205,7 +223,7 @@ class AirpayDateProgressesController < ApplicationController
         period_fin_len = 
           (
             (@result_airpay_fin - airpays_done_result26_end_of_month_len).to_f *
-            (@airpay1_this_month_per - @airpay_dec_per)
+            @airpay1_this_month_per
         ).round() rescue 0
         # 期間内終着
         period_fin = @profit_price * period_fin_len
@@ -213,7 +231,7 @@ class AirpayDateProgressesController < ApplicationController
         prev_len = (
             @airpays_user.where(status: "審査中")
             .where(date: ...@start_date).length.to_f * 
-            (@airpay1_prev_month_per - @airpay_prev_dec_per)
+            @airpay1_prev_month_per
         ).round()
         prev_done = 
           @airpays_user.where(status: "審査完了")
@@ -229,7 +247,7 @@ class AirpayDateProgressesController < ApplicationController
 
       valuation_fin = period_fin + prev_fin
 
-      if valuation_current > valuation_fin
+      if (valuation_current > valuation_fin) || (Date.today > @airpay1_closing_date)
         valuation_fin = valuation_current
       end 
 

@@ -1,4 +1,5 @@
 class ResultsController < ApplicationController
+  include CommonCalc
   before_action :authenticate_user!
   before_action :set_data
   before_action :back_retirement
@@ -481,7 +482,7 @@ class ResultsController < ApplicationController
       .where(user_id: @user.id)
       .where(industry_status: "OK")
       .where(app_check: "OK")
-      .where(dup_check: "なし")
+      .where.not(dup_check: "重複")
       .where(partner_status: "Active")
       .where(status: "審査OK")
       .where.not(status_settlement: "期限切れ")
@@ -778,6 +779,8 @@ class ResultsController < ApplicationController
     @cash_date_progress = @cash_date_progress.where(date: @cash_date_progress.maximum(:date)).where(create_date: @cash_date_progress.maximum(:create_date))
     @dmer_date_progress = DmerDateProgress.includes(:user).where(date: @month.all_month).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @dmer_date_progress = @dmer_date_progress.where(date: @dmer_date_progress.maximum(:date)).where(create_date: @dmer_date_progress.maximum(:create_date))
+    @dmer_senbai_date_progress = DmerSenbaiDateProgress.includes(:user).where(date: @month.all_month).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
+    @dmer_senbai_date_progress = @dmer_senbai_date_progress.where(date: @dmer_senbai_date_progress.maximum(:date)).where(create_date: @dmer_senbai_date_progress.maximum(:create_date))
     @aupay_date_progress = AupayDateProgress.includes(:user).where(date: @month.all_month).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @aupay_date_progress = @aupay_date_progress.where(date: @aupay_date_progress.maximum(:date)).where(create_date: @aupay_date_progress.maximum(:create_date))
     @rakuten_pay_date_progress = RakutenPayDateProgress.includes(:user).where(date: @month.all_month).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
@@ -973,6 +976,7 @@ class ResultsController < ApplicationController
       else  
         @time_base = @user.base
       end 
+      calc_valuation
       # dメル
       @dmer_done = 
         Dmer.where(user_id: @user.id).where(result_point: @dmer1_start_date..@dmer1_end_date)
@@ -1014,6 +1018,58 @@ class ResultsController < ApplicationController
       @dmers_slmt_def = @dmers_slmt.where(status_settlement: "決済不備")
       @dmers_slmt_pic_def = @dmers_slmt.where(status_settlement: "写真不備")
       @dmers_slmt2nd_done = @dmers_slmt.where(settlement_second: @month.all_month).where(status_settlement: "完了")
+      # dメル専売
+      @dmer_senbai1_calc_data = @calc_periods.find_by(name: "dメル専売成果1")
+      @dmer_senbai1_start_date = start_date(@dmer_senbai1_calc_data)
+      @dmer_senbai1_end_date = end_date(@dmer_senbai1_calc_data)
+      @dmer_senbai1_closing_date = closing_date(@dmer_senbai1_calc_data)
+      @dmer_senbai1_this_month_per = @dmer_senbai1_calc_data.this_month_per
+      @dmer_senbai1_prev_month_per = @dmer_senbai1_calc_data.prev_month_per
+      @dmer_senbai1_price = @dmer_senbai1_calc_data.price
+      @dmer_senbai2_calc_data = @calc_periods.find_by(name: "dメル専売成果2")
+      @dmer_senbai2_start_data = start_date(@dmer_senbai2_calc_data)
+      @dmer_senbai2_end_data = end_date(@dmer_senbai2_calc_data)
+      @dmer_senbai2_closing_data = closing_date(@dmer_senbai2_calc_data)
+      @dmer_senbai2_this_month_per = @dmer_senbai2_calc_data.this_month_per
+      @dmer_senbai2_prev_month_per = @dmer_senbai2_calc_data.prev_month_per
+      @dmer_senbai2_price = @dmer_senbai2_calc_data.price
+      @dmer_senbai3_calc_data = @calc_periods.find_by(name: "dメル専売成果3")
+      @dmer_senbai3_start_data = start_date(@dmer_senbai3_calc_data)
+      @dmer_senbai3_end_data = end_date(@dmer_senbai3_calc_data)
+      @dmer_senbai3_closing_data = closing_date(@dmer_senbai3_calc_data)
+      @dmer_senbai3_this_month_per = @dmer_senbai3_calc_data.this_month_per
+      @dmer_senbai3_prev_month_per = @dmer_senbai3_calc_data.prev_month_per
+      @dmer_senbai3_price = @dmer_senbai3_calc_data.price
+      # dメル専売の審査通過
+      @dmer_senbai_done = 
+        DmerSenbai.where(user_id: @user.id)
+        .where(industry_status: "OK")
+        .where(app_check: "OK")
+        .where.not(dup_check: "重複")
+        .where(partner_status: "Active")
+        .where(status: "審査OK")
+      @dmer_senbai_done_slmter = 
+        DmerSenbai.where(settlementer_id: @user.id)
+        .where(industry_status: "OK")
+        .where(app_check: "OK")
+        .where.not(dup_check: "重複")
+        .where(partner_status: "Active")
+        .where(status: "審査OK")
+      # dメル成果1
+      @dmer_senbai_result1 = @dmer_senbai_done.where(result_point: @dmer_senbai1_start_date..@dmer_senbai1_end_date)
+      # dメル成果2
+      @dmer_senbai_result2 = 
+        @dmer_senbai_done_slmter.where(result_point: @dmer_senbai1_start_date..@dmer_senbai1_end_date).where(picture_check_date: ..@dmer_senbai1_end_date).where(status_settlement: "完了").where(picture_check: "合格").or(
+        @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai1_end_date).where(picture_check_date: @dmer_senbai2_start_date..@dmer_senbai2_end_date).where(status_settlement: "完了").where(picture_check: "合格")
+        )
+        @dmer_senbai_result3 = 
+        @dmer_senbai_done_slmter.where(result_point: @dmer_senbai1_start_date..@dmer_senbai1_end_date).where(picture_check_date: ..@dmer_senbai2_end_date).where(status_settlement: "完了").where(picture_check: "合格").where(settlement_second: ..@dmer_senbai3_end_date)
+          .or(
+            @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai1_end_date).where(picture_check_date: @dmer_senbai2_start_date..@dmer_senbai2_end_date).where(status_settlement: "完了").where(picture_check: "合格").where(settlement_second: ..@dmer_senbai3_end_date)
+          )
+          .or(
+            @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai1_end_date).where(picture_check_date: ..@dmer_senbai2_end_date).where(status_settlement: "完了").where(picture_check: "合格").where(settlement_second: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
+          )
       # auPay
       @aupays_slmt = 
         Aupay.where(settlementer_id: @user.id).where(status: "審査通過")

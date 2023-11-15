@@ -1,0 +1,42 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>活動拠点一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shares/index">
+    <br>
+      <h2 class="">
+        <%= link_to "<<",activity_bases_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
+        <%= @month.strftime("%Y年%m月") %>
+        <%= link_to ">>",activity_bases_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
+      </h2><br>
+      <%= Shift.group(:user_id).length %>
+      <h2>◆活動拠点</h2>
+      <%= alert %>
+                <%= link_to "ユーザーの拠点と役職を一括登録", bulk_create_activity_bases_path(month: @month),data: {confirm: "#{@month.month}月：ユーザーの拠点と役職を一括登録してもよろしいですか？"}, class: "link" %>
+      <table>
+        <thead>
+          <tr>
+            <th>拠点</th>
+            <th>ユーザー</th>
+            <th>役職</th>
+          </tr>
+        </thead>
+        <tbody>
+        <% @progress_bases.each do |base| %>
+          <% @activity_bases.where(base: base).order(:position,:user_id).each_with_index do |activity_base| %>
+          <tr>
+            <td><%= activity_base.base %></td>
+            <td><%= activity_base.user.name %></td>
+            <td><%= activity_base.position %></td>
+          </tr>
+          <% end %>
+        <% end %>
+        </tbody>
+      </table>
+  </div>
+</div>

@@ -10,6 +10,7 @@ class DmerSenbaisController < ApplicationController
         @q.result(distinct: false)
       end
     @dmer_senbais_data = @dmer_senbais.page(params[:page]).per(100)
+
   end 
 
   def show

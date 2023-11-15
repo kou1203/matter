@@ -1,5 +1,5 @@
 class AupayDateProgressesController < ApplicationController
-
+  include CommonCalc
   def index 
     @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "auPay成果1").price
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
@@ -46,30 +46,30 @@ class AupayDateProgressesController < ApplicationController
       User.where("base LIKE ?","%SS%").group(:base).each do |user|
         @graph_bases << user.base
       end
-    @data_fin = []
-    @data_current = []
-    @graph_bases.each do |base|
-      if base == "全体"
-        @data_fin << {
-          name: "#{base}終着", 
-          data: AupayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_fin)
-        }
-        @data_current << {
-          name: "#{base}現状売上", data: AupayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
-        }
-      else  
-        @data_fin << {
-          name: "#{base}終着", 
-          data: AupayDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_fin)
-        }
-        @data_current << {
-          name: "#{base}現状売上", data: AupayDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
-        }
+      @data_fin = []
+      @data_current = []
+      @graph_bases.each do |base|
+        if base == "全体"
+          @data_fin << {
+            name: "#{base}終着", 
+            data: AupayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_fin)
+          }
+          @data_current << {
+            name: "#{base}現状売上", data: AupayDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
+          }
+        else  
+          @data_fin << {
+            name: "#{base}終着", 
+            data: AupayDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_fin)
+          }
+          @data_current << {
+            name: "#{base}現状売上", data: AupayDateProgress.where(base: base).where(date: @month.beginning_of_month..@month.end_of_month).group(:date,:create_date).sum(:profit_current)
+          }
+        end
       end
+    else
+      @data = AupayDateProgress.none
     end
-else
-  @data = AupayDateProgress.none
-end
 
     # 比較対象
     if params[:comparison_date].present?
@@ -112,15 +112,19 @@ end
     else 
       @month = Date.today
     end 
-    @calc_periods = CalcPeriod.where(sales_category: "実売")
-    calc_period_and_per
+    calc_profit
+    @aupay_calc_period = @calc_periods.find_by(name: "auPay成果1")
     @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
     @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     cnt = 0
-    @aupays_group = Shift.group(:user_id)
+    @aupays_group = Aupay.group(:user_id).where(date: @month.ago(6.month).beginning_of_month..@month.end_of_month)
     @aupays_group.group(:user_id).each do |r|
-      @calc_periods = CalcPeriod.where(sales_category: "実売")
-      calc_period_and_per
+      calc_profit
+      @aupay1_start_date = start_date(@aupay_calc_period)
+      @aupay1_end_date = end_date(@aupay_calc_period)
+      @aupay1_closing_date = closing_date(@aupay_calc_period)
+      @aupay1_prev_month_per = @aupay_calc_period.prev_month_per
+      @aupay1_price = @aupay_calc_period.price
       user_id = r.user_id
       @aupay_progress_data = AupayDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       shift_schedule = @shifts.where(user_id: user_id).length
@@ -145,6 +149,7 @@ end
       aupay_wait = @aupays_user_period.where(status: "審査待ち")
       aupay_wait_prev = aupay_wait.where(date: ...@start_date)
       # 審査完了
+
       aupay_done = 
         @aupays_user.where(result_point: @aupay1_start_date..@aupay1_end_date)
         .where(status: "審査通過")
@@ -186,8 +191,12 @@ end
         profit_fin = profit_current
         result_fin_len = aupay_result.length
       end 
-      @calc_periods = CalcPeriod.where(sales_category: "評価売")
-      calc_period_and_per
+      calc_valuation
+      @aupay1_start_date = start_date(@aupay_calc_period)
+      @aupay1_end_date = end_date(@aupay_calc_period)
+      @aupay1_closing_date = closing_date(@aupay_calc_period)
+      @aupay1_prev_month_per = @aupay_calc_period.prev_month_per
+      @aupay1_price = @aupay_calc_period.price
       valuation_current = aupay_result.sum(:valuation_settlement)
       valuation_fin = 
       (@aupay1_price * aupay_result_fin_prev_month_len) + 

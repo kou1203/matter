@@ -42,6 +42,9 @@
       @dmer_done.sum(:valuation_new) +
       @dmer_slmt_done.sum(:valuation_settlement) +
       @dmer_slmt2nd_done.sum(:valuation_second_settlement) +
+      @dmer_senbai_result1.sum(:valuation_new) +
+      @dmer_senbai_result2.sum(:valuation_settlement) +
+      @dmer_senbai_result3.sum(:valuation_second_settlement) +
       @aupay_slmt_done.sum(:valuation_settlement) +
       @paypay_done.sum(:valuation) +
       @rakuten_pay_val.sum(:valuation) +
@@ -76,6 +79,19 @@
         @dmer_done.sum(:valuation_new) +
         @dmer_slmt_done.sum(:valuation_settlement) +
         @dmer_slmt2nd_done.sum(:valuation_second_settlement) 
+      ).to_s(:delimited) rescue 0 
+    %></td>
+  </tr>
+  <tr>
+    <td class="valuation-td">dメル専売</td>
+    <td class="valuation-td"><%= @dmer_senbai_result1.length rescue 0 %></td>
+    <td class="valuation-td"><%= @dmer_senbai_result2.length rescue 0 %></td>
+    <td class="valuation-td"><%= @dmer_senbai_result3.length rescue 0 %></td>
+    <td class="valuation-td"><%= 
+      (
+        @dmer_senbai_result1.sum(:valuation_new) +
+        @dmer_senbai_result2.sum(:valuation_settlement) +
+        @dmer_senbai_result3.sum(:valuation_second_settlement) 
       ).to_s(:delimited) rescue 0 
     %></td>
   </tr>
@@ -268,6 +284,111 @@
       <td class="valuation-td "><%= dmer.settlement_second %></td>
       <td class="valuation-td "><%= dmer.valuation_second_settlement %></td>
       <td class="valuation-td "><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @dmer_senbai_result1.present? %>
+<h2>dメル専売第一成果（審査完了）</h2>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">店舗コード</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">決済完了日</th>
+      <th class="valuation-th">2回目決済完了日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @dmer_senbai_result1.each do |dmer| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= dmer.store_code %></td>
+      <td class="valuation-td "><%= dmer.store_name %></td>
+      <td class="valuation-td "><%= dmer.date %></td>
+      <td class="valuation-td "><%= dmer.status %></td>
+      <td class="valuation-td "><%= dmer.result_point %></td>
+      <td class="valuation-td "><%= dmer.picture_check_date %></td>
+      <td class="valuation-td "><%= dmer.settlement_second %></td>
+      <td class="valuation-td "><%= dmer.valuation_new %></td>
+      <td class="valuation-td "><%= link_to "詳細", dmer_senbai_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @dmer_senbai_result2.present? %>
+<h2>dメル専売第二成果（第一成果+アクセプタンス）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">店舗コード</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">決済完了日</th>
+      <th class="valuation-th">2回目決済完了日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% @dmer_senbai_result2.each do |dmer| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= dmer.store_code %></td>
+      <td class="valuation-td "><%= dmer.store_name %></td>
+      <td class="valuation-td "><%= dmer.date %></td>
+      <td class="valuation-td "><%= dmer.status %></td>
+      <td class="valuation-td "><%= dmer.result_point %></td>
+      <td class="valuation-td "><%= dmer.picture_check_date %></td>
+      <td class="valuation-td "><%= dmer.settlement_second %></td>
+      <td class="valuation-td "><%= dmer.valuation_settlement %></td>
+      <td class="valuation-td "><%= link_to "詳細", dmer_senbai_path(dmer.id),class: "link" %></td>
+      </tr>
+      <% num += 1 %>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+<% if @dmer_senbai_result3.present? %>
+<h2>dメル専売第三成果（第二成果+2回目決済）</h2>
+  <% num = 1 %>
+  <table>
+    <thead>
+      <th class="valuation-th">No</th>
+      <th class="valuation-th">管理番号</th>
+      <th class="valuation-th">店舗名</th>
+      <th class="valuation-th">獲得日</th>
+      <th class="valuation-th">審査ステータス</th>
+      <th class="valuation-th">審査完了日</th>
+      <th class="valuation-th">決済完了日</th>
+      <th class="valuation-th">2回目決済日</th>
+      <th class="valuation-th">評価売上</th>
+      <th class="valuation-th"></th>
+    </thead>
+    <tbody>
+      <% num = 1 %>
+      <% @dmer_senbai_result3.each do |dmer| %>
+      <tr>
+      <td class="valuation-td "><%= num %></td>
+      <td class="valuation-td "><%= dmer.store_code %></td>
+      <td class="valuation-td "><%= dmer.store_name %></td>
+      <td class="valuation-td "><%= dmer.date %></td>
+      <td class="valuation-td "><%= dmer.status %></td>
+      <td class="valuation-td "><%= dmer.result_point %></td>
+      <td class="valuation-td "><%= dmer.picture_check_date %></td>
+      <td class="valuation-td "><%= dmer.settlement_second %></td>
+      <td class="valuation-td "><%= dmer.valuation_second_settlement %></td>
+      <td class="valuation-td "><%= link_to "詳細", dmer_senbai_path(dmer.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
       <% end %>

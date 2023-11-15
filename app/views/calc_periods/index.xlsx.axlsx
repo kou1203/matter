@@ -4,7 +4,7 @@ wb = xlsx_package.workbook
   wb.add_worksheet(name: product) do |sheet|
     if product == "合計"
       sheet.add_row [ "拠点", "Ave", "現状実売", "終着実売", "dメル一次成果現状実売", "dメル一次成果終着実売"]
-      @bases.each do |base|
+      @progress_bases.each do |base|
         dmer_date_progress = @dmer_date_progresses.where(base: base)
         cash_date_progress = @cash_date_progresses.where(base: base)
         if (cash_date_progress.sum(:profit_fin) == 0) || (cash_date_progress.sum(:shift_schedule) == 0)
@@ -29,29 +29,77 @@ wb = xlsx_package.workbook
 
     elsif product == "dメル"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
-      @bases.each do |base|
-          @dmer_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
-          val_len = date_progress.get_len - date_progress.def_len
-          shift_schedule = date_progress.shift_schedule.to_i + date_progress.shift_schedule_slmt.to_i
-          shift_digestion = date_progress.shift_digestion.to_i + date_progress.shift_digestion_slmt.to_i
-          profit_fin = date_progress.profit_fin1 + date_progress.profit_fin2 + date_progress.profit_fin3
-          if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
-            cash_base = date_progress.base
+      @progress_bases.each do |base|
+          @activity_bases.where(base: base).order(:position,:user_id).each do |activity_user|
+          if date_progress = @dmer_date_progresses.find_by(user_id: activity_user.user_id).present?
+            date_progress = @dmer_date_progresses.find_by(user_id: activity_user.user_id)
+            val_len = date_progress.get_len - date_progress.def_len
+            fin_len = date_progress.fin_len
+            shift_schedule = date_progress.shift_schedule.to_i + date_progress.shift_schedule_slmt.to_i
+            shift_digestion = date_progress.shift_digestion.to_i + date_progress.shift_digestion_slmt.to_i
+            profit_current = date_progress.profit_current
+            profit_fin = date_progress.profit_fin1 + date_progress.profit_fin2 + date_progress.profit_fin3
+            if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
+              ave_len = 0
+              ave_profit = 0
+            else
+              ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
+              ave_profit = (profit_fin.to_f / shift_schedule).round() rescue 0
+            end 
           else 
-            cash_base = "その他"
-          end 
-          if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
+            shift_schedule = 0
+            shift_digestion = 0
+            val_len = 0
             ave_len = 0
+            fin_len = 0
             ave_profit = 0
-          else
-            ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
-            ave_profit = (profit_fin.to_f / shift_schedule).round() rescue 0
+            profit_current = 0
+            profit_fin = 0
           end 
           sheet.add_row [
-            cash_base, date_progress.user.name, date_progress.user.position_sub, 
+            activity_user.base, activity_user.user.name, activity_user.position,  
             shift_schedule, shift_digestion,
-            val_len, ave_len,date_progress.fin_len,
-            ave_profit, date_progress.profit_current, profit_fin
+            val_len, ave_len,fin_len,
+            ave_profit, profit_current, profit_fin
+
+          ]
+        end 
+      end
+
+    elsif product == "dメル専売"
+      sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
+      @progress_bases.each do |base|
+          @activity_bases.where(base: base).order(:position,:user_id).each do |activity_user|
+          if @dmer_senbai_date_progresses.find_by(user_id: activity_user.user_id).present?
+            date_progress = @dmer_senbai_date_progresses.find_by(user_id: activity_user.user_id)
+            val_len = date_progress.get_len
+            fin_len = date_progress.fin_len rescue 0
+            shift_schedule = date_progress.shift_schedule.to_i + date_progress.shift_schedule_slmt.to_i
+            shift_digestion = date_progress.shift_digestion.to_i + date_progress.shift_digestion_slmt.to_i
+            profit_current = date_progress.profit_current
+            profit_fin = date_progress.profit_fin
+            if (fin_len == 0) || (date_progress.shift_schedule == 0)
+              ave_len = 0
+              ave_profit = 0
+            else
+              ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
+              ave_profit = (profit_fin.to_f / shift_schedule).round() rescue 0
+            end 
+          else
+            shift_schedule = 0
+            shift_digestion = 0
+            val_len = 0
+            ave_len = 0
+            fin_len = 0
+            ave_profit = 0
+            profit_current = 0
+            profit_fin = 0
+          end 
+          sheet.add_row [
+            activity_user.base, activity_user.user.name, activity_user.position, 
+            shift_schedule, shift_digestion,
+            val_len, ave_len,fin_len,
+            ave_profit, profit_current, profit_fin
 
           ]
         end 
@@ -59,9 +107,16 @@ wb = xlsx_package.workbook
 
     elsif product == "auPay"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
-      @bases.each do |base|
-        @aupay_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
+      @progress_bases.each do |base|
+        @activity_bases.where(base: base).order(:position,:user_id).each do |activity_user|
+        if @aupay_date_progresses.find_by(user_id: activity_user.user_id).present?
+          date_progress = @aupay_date_progresses.find_by(user_id: activity_user.user_id)
           val_len = date_progress.get_len - date_progress.def_len
+          shift_schedule = date_progress.shift_schedule
+          shift_digestion = date_progress.shift_digestion
+          fin_len = date_progress.fin_len
+          profit_current = date_progress.profit_current
+          profit_fin = date_progress.profit_fin
           if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
             ave_len = 0
             ave_profit = 0
@@ -69,17 +124,22 @@ wb = xlsx_package.workbook
             ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
             ave_profit = (date_progress.profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
           end 
-          if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
-            cash_base = date_progress.base
-          else 
-            cash_base = "その他"
-          end 
+        else 
+            shift_schedule = 0
+            shift_digestion = 0
+            val_len = 0
+            ave_len = 0
+            fin_len = 0
+            ave_profit = 0
+            profit_current = 0
+            profit_fin = 0
+        end 
 
           sheet.add_row [
-            cash_base, date_progress.user.name, date_progress.user.position_sub, 
-            date_progress.shift_schedule, date_progress.shift_digestion,
-            val_len, ave_len,date_progress.fin_len,
-            ave_profit, date_progress.profit_current, date_progress.profit_fin
+            activity_user.base, activity_user.user.name, activity_user.position, 
+            shift_schedule, shift_digestion,
+            val_len, ave_len,fin_len,
+            ave_profit, profit_current, profit_fin
 
           ]
         end 
@@ -87,8 +147,16 @@ wb = xlsx_package.workbook
 
     elsif product == "PayPay"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
-      @bases.each do |base|
-        @paypay_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
+      @progress_bases.each do |base|
+        @activity_bases.where(base: base).order(:position,:user_id).each do |activity_user|
+        if @paypay_date_progresses.find_by(user_id: activity_user.user_id).present?
+          date_progress = @paypay_date_progresses.find_by(user_id: activity_user.user_id)
+          shift_schedule = date_progress.shift_schedule
+          shift_digestion = date_progress.shift_digestion
+          get_len = date_progress.get_len
+          fin_len = date_progress.fin_len
+          profit_fin = date_progress.profit_fin
+          profit_current = date_progress.profit_current
           if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
             ave_len = 0
             ave_profit = 0
@@ -96,18 +164,21 @@ wb = xlsx_package.workbook
             ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
             ave_profit = (date_progress.profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
           end 
-
-          if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
-            cash_base = date_progress.base
-          else 
-            cash_base = "その他"
-          end 
-
+        else 
+            shift_schedule = 0
+            shift_digestion = 0
+            get_len = 0
+            ave_len = 0
+            fin_len = 0
+            ave_profit = 0
+            profit_current = 0
+            profit_fin = 0
+        end
           sheet.add_row [
-            cash_base, date_progress.user.name, date_progress.user.position_sub, 
-            date_progress.shift_schedule, date_progress.shift_digestion,
-            date_progress.get_len, ave_len,date_progress.fin_len,
-            ave_profit, date_progress.profit_current, date_progress.profit_fin
+            activity_user.base, activity_user.user.name, activity_user.position, 
+            shift_schedule, shift_digestion,
+            get_len, ave_len,fin_len,
+            ave_profit, profit_current, profit_fin
 
           ]
         end 
@@ -115,8 +186,15 @@ wb = xlsx_package.workbook
       
     elsif product == "楽天ペイ"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
-      @bases.each do |base|
-        @rakuten_pay_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
+      @progress_bases.each do |base|
+        @activity_bases.where(base: base).order(:position,:user_id).each do |activity_user|
+          if @rakuten_pay_date_progresses.find_by(user_id: activity_user.user_id).present?
+            date_progress = @rakuten_pay_date_progresses.find_by(user_id: activity_user.user_id)
+            shift_schedule = date_progress.shift_schedule
+            shift_digestion = date_progress.shift_digestion
+            get_len = date_progress.get_len
+            profit_current = date_progress.profit_current
+            profit_fin = date_progress.profit_fin
           if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
             ave_len = 0
             ave_profit = 0
@@ -124,52 +202,68 @@ wb = xlsx_package.workbook
             ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
             ave_profit = (date_progress.profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
           end 
-
-          if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
-            cash_base = date_progress.base
-          else 
-            cash_base = "その他"
-          end 
+        else  
+          shift_schedule = 0
+          shift_digestion = 0
+          get_len = 0
+          ave_len = 0
+          fin_len = 0
+          ave_profit = 0
+          profit_current = 0
+          profit_fin = 0
+        end 
 
           sheet.add_row [
-            cash_base, date_progress.user.name, date_progress.user.position_sub, 
-            date_progress.shift_schedule, date_progress.shift_digestion,
-            date_progress.get_len, ave_len,date_progress.fin_len,
-            ave_profit, date_progress.profit_current, date_progress.profit_fin
+            activity_user.base, activity_user.user.name, activity_user.position, 
+            shift_schedule, shift_digestion,
+            get_len, ave_len,date_progress.fin_len,
+            ave_profit, profit_current, profit_fin
           ]
         end 
       end
 
     elsif product == "AirPay"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
-      @bases.each do |base|
-        @airpay_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
-          if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
-            ave_len = 0
-            ave_profit = 0
+      @progress_bases.each do |base|
+        @activity_bases.where(base: base).order(:position,:user_id).each do |activity_user|
+          if @airpay_date_progresses.find_by(user_id: activity_user.user_id).present?
+            date_progress = @airpay_date_progresses.find_by(user_id: activity_user.user_id)
+            shift_schedule = date_progress.shift_schedule
+            shift_digestion = date_progress.shift_digestion
+            get_len = date_progress.get_len
+            fin_len = date_progress.fin_len
+            profit_current = date_progress.profit_current
+            profit_fin = date_progress.profit_fin
+            if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
+              ave_len = 0
+              ave_profit = 0
+            else
+              ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
+              ave_profit = (date_progress.profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
+            end 
           else
-            ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
-            ave_profit = (date_progress.profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
-          end 
-
-          if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
-            cash_base = date_progress.base
-          else 
-            cash_base = "その他"
-          end 
+          shift_schedule = 0
+          shift_digestion = 0
+          get_len = 0
+          ave_len = 0
+          fin_len = 0
+          ave_profit = 0
+          profit_current = 0
+          profit_fin = 0
+          end
 
           sheet.add_row [
-            cash_base, date_progress.user.name, date_progress.user.position_sub, 
-            date_progress.shift_schedule, date_progress.shift_digestion,
-            date_progress.get_len, ave_len,date_progress.fin_len,
-            ave_profit, date_progress.profit_current, date_progress.profit_fin
+            activity_user.base, activity_user.user.name, activity_user.position, 
+            shift_schedule, shift_digestion,
+            get_len, ave_len,fin_len,
+            ave_profit, profit_current, profit_fin
           ]
         end 
       end
 
     elsif product == "出前館"
       sheet.add_row [ "拠点", "ユーザー", "役職", "予定シフト", "消化シフト", "獲得", "獲得Ave", "終着獲得数", "実売Ave", "現状実売", "終着実売" ]
-      @bases.each do |base|
+      @progress_bases.each do |base|
         @demaekan_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
             ave_len = 0
@@ -195,7 +289,7 @@ wb = xlsx_package.workbook
       end
     elsif product == "auステッカー"
       sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
-      @bases.each do |base|
+      @progress_bases.each do |base|
         @austicker_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
 
           if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
@@ -212,7 +306,7 @@ wb = xlsx_package.workbook
       end
     elsif product == "dメルステッカー"
       sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
-      @bases.each do |base|
+      @progress_bases.each do |base|
         @dmersticker_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
 
           if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
@@ -229,7 +323,7 @@ wb = xlsx_package.workbook
       end
     elsif product == "AirPayステッカー"
       sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
-      @bases.each do |base|
+      @progress_bases.each do |base|
         @airpaysticker_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
 
           if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
@@ -245,7 +339,7 @@ wb = xlsx_package.workbook
       end
     elsif product == "ITSS"
       sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
-      @bases.each do |base|
+      @progress_bases.each do |base|
         @itss_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
 
           if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
@@ -261,7 +355,7 @@ wb = xlsx_package.workbook
       end
     elsif product == "UsenPay"
       sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
-      @bases.each do |base|
+      @progress_bases.each do |base|
         @usen_pay_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
 
           if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
@@ -286,7 +380,7 @@ wb = xlsx_package.workbook
         "AirAC審査完了", "AirAC現状売上","AirAC終着売上",
         "U-Pay獲得数", "U-Pay現状売上","U-Pay終着売上"
       ]
-      @bases.each do |base|
+      @progress_bases.each do |base|
         @dmer_date_progresses.where(base: base).order("users.position_sub ASC").order("users.id ASC").each do |date_progress|
           if (date_progress.base.include?("SS")) || (date_progress.base === "退職")
             cash_base = date_progress.base
@@ -304,35 +398,65 @@ wb = xlsx_package.workbook
 
           dmer_shift_schedule = dmer_user_progress.shift_schedule.to_i + dmer_user_progress.shift_schedule_slmt.to_i
           dmer_shift_digestion = dmer_user_progress.shift_digestion.to_i + dmer_user_progress.shift_digestion_slmt.to_i
-          dmer_profit_fin = dmer_user_progress.profit_fin1 + dmer_user_progress.profit_fin2 + dmer_user_progress.profit_fin3
-          if (dmer_user_progress.fin_len == 0) || (dmer_user_progress.shift_schedule == 0)
+          
+          if (dmer_user_progress.nil?) || (dmer_user_progress.fin_len == 0) || (dmer_user_progress.shift_schedule == 0)
             dmer_ave_len = 0
+            dmer_fin_len = 0
+            dmer_profit_current = 0
+            dmer_profit_fin = 0
           else
             dmer_ave_len = (dmer_user_progress.fin_len.to_f / dmer_user_progress.shift_schedule).round(1) rescue 0
+            dmer_fin_len = dmer_user_progress.fin_len
+            dmer_profit_current = dmer_user_progress.profit_current 
+            dmer_profit_fin = dmer_user_progress.profit_fin1 + dmer_user_progress.profit_fin2 + dmer_user_progress.profit_fin3
           end 
 
-          if (aupay_user_progress.fin_len == 0) || (aupay_user_progress.shift_schedule == 0)
+          if (aupay_user_progress.nil?) || (aupay_user_progress.fin_len == 0) || (aupay_user_progress.shift_schedule == 0)
             aupay_ave_len = 0
+            aupay_fin_len = 0
+            aupay_profit_current = 0
+            aupay_profit_fin = 0
           else
             aupay_ave_len = (aupay_user_progress.fin_len.to_f / aupay_user_progress.shift_schedule).round(1) rescue 0
+            aupay_fin_len = aupay_user_progress.fin_len
+            aupay_profit_current = aupay_user_progress.profit_current
+            aupay_profit_fin = aupay_user_progress.profit_fin
           end 
 
-          if (paypay_user_progress.fin_len == 0) || (paypay_user_progress.shift_schedule == 0)
+          if (paypay_user_progress.nil?) || (paypay_user_progress.fin_len == 0) || (paypay_user_progress.shift_schedule == 0)
             paypay_ave_len = 0
+            paypay_fin_len = 0
+            paypay_profit_current = 0
+            paypay_profit_fin = 0
           else
             paypay_ave_len = (paypay_user_progress.fin_len.to_f / paypay_user_progress.shift_schedule).round(1) rescue 0
+            paypay_fin_len = paypay_user_progress.fin_len
+            paypay_profit_current = paypay_user_progress.profit_current
+            paypay_profit_fin = paypay_user_progress.profit_fin
           end 
 
-          if (rakuten_pay_user_progress.fin_len == 0) || (rakuten_pay_user_progress.shift_schedule == 0)
+          if (rakuten_pay_user_progress.nil?) || (rakuten_pay_user_progress.fin_len == 0) || (rakuten_pay_user_progress.shift_schedule == 0)
             rakuten_pay_ave_len = 0
+            rakuten_pay_fin_len = 0
+            rakuten_pay_profit_current = 0
+            rakuten_pay_profit_fin = 0
           else
             rakuten_pay_ave_len = (rakuten_pay_user_progress.fin_len.to_f / rakuten_pay_user_progress.shift_schedule).round(1) rescue 0
+            rakuten_pay_fin_len = rakuten_pay_user_progress.fin_len
+            rakuten_pay_profit_current = rakuten_pay_user_progress.profit_current
+            rakuten_pay_profit_fin = rakuten_pay_user_progress.profit_fin
           end 
 
-          if (airpay_user_progress.fin_len == 0) || (airpay_user_progress.shift_schedule == 0)
+          if (airpay_user_progress.nil?) || (airpay_user_progress.fin_len == 0) || (airpay_user_progress.shift_schedule == 0)
             airpay_ave_len = 0
+            airpay_fin_len = 0
+            airpay_profit_current = 0
+            airpay_profit_fin = 0
           else
             airpay_ave_len = (airpay_user_progress.fin_len.to_f / airpay_user_progress.shift_schedule).round(1) rescue 0
+            airpay_fin_len = airpay_user_progress.fin_len
+            airpay_profit_current = airpay_user_progress.profit_current
+            airpay_profit_fin = airpay_user_progress.profit_fin
           end 
 
           airpay_ac_profit = airpaysticker_user_progress.profit_current rescue 0
@@ -343,11 +467,11 @@ wb = xlsx_package.workbook
 
           sheet.add_row [
             cash_base, date_progress.user.name, date_progress.user.position_sub, 
-            dmer_ave_len,dmer_user_progress.fin_len, dmer_user_progress.profit_current, dmer_profit_fin,
-            aupay_ave_len,aupay_user_progress.fin_len, aupay_user_progress.profit_current, aupay_user_progress.profit_fin,
-            paypay_ave_len,paypay_user_progress.fin_len, paypay_user_progress.profit_current, paypay_user_progress.profit_fin,
-            rakuten_pay_ave_len,rakuten_pay_user_progress.fin_len, rakuten_pay_user_progress.profit_current, rakuten_pay_user_progress.profit_fin,
-            airpay_ave_len,airpay_user_progress.fin_len, airpay_user_progress.profit_current, airpay_user_progress.profit_fin,
+            dmer_ave_len,dmer_fin_len, dmer_profit_current, dmer_profit_fin,
+            aupay_ave_len,aupay_fin_len, aupay_profit_current, aupay_profit_fin,
+            paypay_ave_len,paypay_fin_len, paypay_profit_current, paypay_profit_fin,
+            rakuten_pay_ave_len,rakuten_pay_fin_len, rakuten_pay_profit_current, rakuten_pay_profit_fin,
+            airpay_ave_len,airpay_fin_len, airpay_profit_current, airpay_profit_fin,
             airpay_ac_result_len,airpay_ac_profit, airpay_ac_profit,
             usen_get_len, usen_profit, usen_profit
             

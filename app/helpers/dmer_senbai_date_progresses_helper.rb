@@ -1,0 +1,2 @@
+module DmerSenbaiDateProgressesHelper
+end

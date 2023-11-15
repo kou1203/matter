@@ -445,4 +445,12 @@ Rails.application.routes.draw do
   resources :dmer_senbais do 
     collection {post :import}
   end 
+
+  resources :dmer_senbai_date_progresses, only:[:index] do
+    collection {get :progress_create}
+  end 
+
+  resources :activity_bases, only: [:index,:edit,:update] do 
+    collection {get :bulk_create}
+  end 
 end
