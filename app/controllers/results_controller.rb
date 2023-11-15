@@ -1063,13 +1063,23 @@ class ResultsController < ApplicationController
         @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai1_end_date).where(picture_check_date: @dmer_senbai2_start_date..@dmer_senbai2_end_date).where(status_settlement: "完了").where(picture_check: "合格")
         )
         @dmer_senbai_result3 = 
-        @dmer_senbai_done_slmter.where(result_point: @dmer_senbai1_start_date..@dmer_senbai1_end_date).where(picture_check_date: ..@dmer_senbai2_end_date).where(status_settlement: "完了").where(picture_check: "合格").where(settlement_second: ..@dmer_senbai3_end_date)
-          .or(
-            @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai1_end_date).where(picture_check_date: @dmer_senbai2_start_date..@dmer_senbai2_end_date).where(status_settlement: "完了").where(picture_check: "合格").where(settlement_second: ..@dmer_senbai3_end_date)
-          )
-          .or(
-            @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai1_end_date).where(picture_check_date: ..@dmer_senbai2_end_date).where(status_settlement: "完了").where(picture_check: "合格").where(settlement_second: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-          )
+          @dmer_senbai_done_slmter.where(result_point: @dmer_senbai1_start_date..@dmer_senbai1_end_date).where(picture_check_date: ..@dmer_senbai2_end_date).where(status_settlement: "完了").where(picture_check: "合格").where(settlement_second: ..@dmer_senbai3_end_date).where.not(settlement_second: nil)
+            .or(
+              @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai1_end_date)
+              .where(picture_check_date: @dmer_senbai2_start_date..@dmer_senbai2_end_date)
+              .where(status_settlement: "完了")
+              .where(picture_check: "合格")
+              .where(settlement_second: ..@dmer_senbai3_end_date)
+              .where.not(settlement_second: nil)
+            )
+            .or(
+              @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai1_end_date)
+              .where(picture_check_date: ..@dmer_senbai2_end_date)
+              .where(status_settlement: "完了")
+              .where(picture_check: "合格")
+              .where(settlement_second: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
+              .where.not(settlement_second: nil)
+            )
       # auPay
       @aupays_slmt = 
         Aupay.where(settlementer_id: @user.id).where(status: "審査通過")
