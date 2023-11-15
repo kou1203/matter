@@ -113,7 +113,7 @@ class CalcPeriodsController < ApplicationController
     
     @users = User.where.not(position: "退職")
 
-    @products = ["合計","dメル", "dメル専売","auPay", "PayPay", "楽天ペイ","AirPay", "出前館","auステッカー", "dメルステッカー","AirPayステッカー","ITSS","UsenPay","会議用まとめ"]
+    @products = ["合計","dメル", "dメル専売","auPay", "PayPay", "楽天ペイ","AirPay","AirPayステッカー","UsenPay","会議用まとめ"]
     @activity_bases = ActivityBase.includes(:user).where(date: @month.beginning_of_month)
     respond_to do |format|
       format.html
