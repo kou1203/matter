@@ -193,12 +193,13 @@ wb = xlsx_package.workbook
             shift_schedule = date_progress.shift_schedule
             shift_digestion = date_progress.shift_digestion
             get_len = date_progress.get_len
-            profit_current = date_progress.profit_current
+            fin_len = date_progress.fin_len
+            profit_current = date_progress.profit_current rescue 0
             profit_fin = date_progress.profit_fin
-          if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
-            ave_len = 0
-            ave_profit = 0
-          else
+            if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
+              ave_len = 0
+              ave_profit = 0
+            else
             ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
             ave_profit = (date_progress.profit_fin.to_f / date_progress.shift_schedule).round() rescue 0
           end 
@@ -216,7 +217,7 @@ wb = xlsx_package.workbook
           sheet.add_row [
             activity_user.base, activity_user.user.name, activity_user.position, 
             shift_schedule, shift_digestion,
-            get_len, ave_len,date_progress.fin_len,
+            get_len, ave_len,fin_len,
             ave_profit, profit_current, profit_fin
           ]
         end 
@@ -228,12 +229,12 @@ wb = xlsx_package.workbook
         @activity_bases.where(base: base).order(:position,:user_id).each do |activity_user|
           if @airpay_date_progresses.find_by(user_id: activity_user.user_id).present?
             date_progress = @airpay_date_progresses.find_by(user_id: activity_user.user_id)
-            shift_schedule = date_progress.shift_schedule
-            shift_digestion = date_progress.shift_digestion
-            get_len = date_progress.get_len
-            fin_len = date_progress.fin_len
-            profit_current = date_progress.profit_current
-            profit_fin = date_progress.profit_fin
+            shift_schedule = date_progress.shift_schedule rescue 0
+            shift_digestion = date_progress.shift_digestion rescue 0
+            get_len = date_progress.get_len rescue 0
+            fin_len = date_progress.fin_len rescue 0
+            profit_current = date_progress.profit_current rescue 0
+            profit_fin = date_progress.profit_fin rescue 0
             if (date_progress.fin_len == 0) || (date_progress.shift_schedule == 0)
               ave_len = 0
               ave_profit = 0
