@@ -18,7 +18,7 @@ class ActivityBasesController < ApplicationController
       elsif user_group.user.base_sub == "キャッシュレス"
         user_base = user_group.user.base
       else  
-        user_base = user_group.user.base_sub
+        user_base = "その他"
       end 
 
       activity_base_params = {
