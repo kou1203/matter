@@ -317,7 +317,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
       elsif product.user.base_sub == "キャッシュレス"
         user_base = product.user.base
       else 
-        user_base = product.user.base_sub
+        user_base = "その他"
       end 
 
       dmer_senbai_progress_params = {

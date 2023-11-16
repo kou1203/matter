@@ -158,7 +158,7 @@ class AirpaystickerDateProgressesController < ApplicationController
       elsif r.user.base_sub == "キャッシュレス"
         user_base = r.user.base
       else  
-        user_base = r.user.base_sub
+        user_base = "その他"
       end 
     # Auステッカーの売上の中身
       airpaysticker_progress_params = {

@@ -149,7 +149,7 @@ class UsenPayDateProgressesController < ApplicationController
       elsif i_user.user.base_sub == "キャッシュレス"
         user_base = i_user.user.base
       else  
-        user_base = i_user.user.base_sub
+        user_base = "その他"
       end 
     # UsenPayの売上の中身
       usen_pay_progress_params = {

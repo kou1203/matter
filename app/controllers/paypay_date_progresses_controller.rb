@@ -156,7 +156,7 @@ class PaypayDateProgressesController < ApplicationController
       elsif r.user.base_sub == "キャッシュレス"
         user_base = r.user.base
       else  
-        user_base = r.user.base_sub
+        user_base = "その他"
       end 
     # PayPayの売上の中身
       paypay_progress_params = {

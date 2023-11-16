@@ -212,7 +212,7 @@ class AupayDateProgressesController < ApplicationController
       elsif r.user.base_sub == "キャッシュレス"
         user_base = r.user.base
       else  
-        user_base = r.user.base_sub
+        user_base = "その他"
       end 
     # auPayの売上の中身
       aupay_progress_params = {
