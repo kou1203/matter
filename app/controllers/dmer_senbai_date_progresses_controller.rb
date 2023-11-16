@@ -128,9 +128,9 @@ class DmerSenbaiDateProgressesController < ApplicationController
     senbai_users = DmerSenbaiUser.where(date: @start_date..@end_date)
     cnt = 0
     # ループする人員（過去4ヶ月以内に獲得があるユーザー）
-    product_user_group = DmerSenbai.group(:user_id)
+    # product_user_group = DmerSenbai.group(:user_id)
     #人事の日々の現状売上と終着を作成
-    product_user_group.each do |product|
+    senbai_users.each do |product|
       user_id = product.user_id
       @dmer_senbai_progress_data = DmerSenbaiDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       calc_profit # 計算する期間と成果になる率の関数をモジュールから取得
