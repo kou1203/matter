@@ -62,6 +62,18 @@
                 </thead>
                 <tbody>
                   <tr class="s-tr">
+                    <td class="s-td">商流</td>
+                    <td class="s-td">
+                      <%= 
+                        f.select :client_eq,
+                        options_from_collection_for_select(DmerSenbai.select(:client)
+                        .distinct,:client, :client),
+                        {include_blank: true},
+                        {class: "t-input"} 
+                      %>
+                    </td>
+                  </tr>
+                  <tr class="s-tr">
                     <td class="s-td">獲得日</td>
                     <td class="s-td">
                       <%= f.date_field :date_eq, class: "t-input" %>
