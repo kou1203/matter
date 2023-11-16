@@ -1,4 +1,5 @@
 class UsenPayDateProgressesController < ApplicationController
+  include CommonCalc
   def index 
     @profit_price = CalcPeriod.where(sales_category: "実売").find_by(name: "UsenPay").price
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
@@ -111,36 +112,50 @@ class UsenPayDateProgressesController < ApplicationController
     else 
       @month = Date.today
     end 
-    @calc_periods = CalcPeriod.where(sales_category: "実売")
-    calc_period_and_per
+    calc_profit
+
     cnt = 0
-    @usen_payes_group = Shift.group(:user_id)
+    @usen_payes_group = UsenPay.where(date: @month.ago(6.month).beginning_of_month..@month.end_of_month)
     @usen_payes_group.group(:user_id).each do |i_user|
-      @calc_periods = CalcPeriod.where(sales_category: "実売")
-      calc_period_and_per
+      calc_profit
+      usen_pay_period = @calc_periods.find_by(name: "UsenPay")
+      usen_pay_totalling_period = @calc_periods.find_by(name: "UsenPay獲得")
+      usen_pay_totalling_start_date = start_date(usen_pay_totalling_period)
+      usen_pay_totalling_end_date = end_date(usen_pay_totalling_period)
+      usen_start_date = start_date(usen_pay_period)
+      usen_end_date = end_date(usen_pay_period)
+      usen_pay_price = usen_pay_period.price
+      usen_pay_this_month_per = usen_pay_period.this_month_per
+
       user_id = i_user.user_id
       @usen_pay_progress_data = OtherProductDateProgress.where(product_name: "UsenPay").find_by(user_id: user_id,date: @month,create_date: Date.today)
       # 獲得内訳
-      @usen_pay_user = UsenPay.where(user_id: user_id)
-      @usen_pay_user_period = @usen_pay_user.where(date: @start_date..@end_date)
-      get_len = @usen_pay_user_period.length
-      @usen_pay_user_result = @usen_pay_user.where(result_point: @month.all_month).where.not(status: "自社不備").where.not(status: "自社NG")
-      result_len = @usen_pay_user_result.length
+      shifts = Shift.where(user_id: user_id).where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
+      results = Result.where(user_id: user_id).where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
+      usen_pay_user = UsenPay.where(user_id: user_id)
+      usen_pay_user_period = usen_pay_user.where(date: @start_date..@end_date)
+      get_len = usen_pay_user_period.length
+      fin_len = (get_len.to_f / results * shifts).round() rescue 0
+      usen_pay_user_result = usen_pay_user.where(result_point: usen_start_date..usen_end_date).where(status: "入金待ち")
+      result_len = usen_pay_user_result.length
+      usen_fin_target_len = 
+        usen_pay_user.where(date: usen_pay_totalling_start_date..usen_pay_totalling_end_date).where(status: "不備解消中")
+        .or(
+          usen_pay_user.where(date: usen_pay_totalling_start_date..usen_pay_totalling_end_date).where(status: "書類確認待ち")
+        ).length
     # 現状売上
       valuation_current = 0
       profit_current = 0
     # 実売
-      profit_current = @usen_pay_user_result.sum(:profit)
+      profit_current = usen_pay_user_result.sum(:profit)
     # 終着
-        profit_fin = profit_current
+        profit_fin = profit_current + ((usen_fin_target_len.to_f * usen_pay_this_month_per).round() * usen_pay_price)
     # 評価売
-      @calc_periods = CalcPeriod.where(sales_category: "評価売")
-      calc_period_and_per
       # 7月より前の案件
-      valuation_current_7month_ago = @usen_pay_user_result.where.not(status: "自社不備").where.not(status: "自社NG").where(date: ...Date.new(2023, 8,1)).sum(:valuation) rescue 0
+      valuation_current_7month_ago = usen_pay_user_result.where(date: ...Date.new(2023, 8,1)).sum(:valuation) rescue 0
       # 8月以降の案件
-      valuation_current_8month_since = @usen_pay_user_period.where.not(status: "自社不備").where.not(status: "自社NG").where(date: Date.new(2023, 8,1)..).or(
-        @usen_pay_user_period.where(date: Date.new(2023, 8,1)..).where(status: "自社NG").where.not(share: nil)
+      valuation_current_8month_since = usen_pay_user.where.not(status: "自社不備").where.not(status: "自社NG").where(date: Date.new(2023, 8,1)..).or(
+        usen_pay_user.where(date: Date.new(2023, 8,1)..).where(status: "自社NG").where.not(share: nil)
       ).sum(:valuation) rescue 0
       valuation_current = valuation_current_7month_ago + valuation_current_8month_since rescue 0
 
@@ -153,16 +168,17 @@ class UsenPayDateProgressesController < ApplicationController
       end 
     # UsenPayの売上の中身
       usen_pay_progress_params = {
-        product_name: "UsenPay"                                ,
+        product_name: "UsenPay"                             ,
         user_id: user_id                                    ,
         base: user_base                                     ,
         date: @month                                        ,
         get_len: get_len                                    ,
+        fin_len: fin_len                                    ,
         result_len: result_len                              ,
         valuation_current: valuation_current                ,
         valuation_fin: valuation_current                    ,
         profit_current: profit_current                      ,
-        profit_fin: profit_current                          ,
+        profit_fin: profit_fin                              ,
         create_date: Date.today
       }
     # 日付とユーザー名が一致しているデータの場合更新、新しいデータの場合保存
