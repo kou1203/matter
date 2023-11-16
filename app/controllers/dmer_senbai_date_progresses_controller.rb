@@ -165,9 +165,9 @@ class DmerSenbaiDateProgressesController < ApplicationController
         dmer_senbai_calc_profit # 実売を計算する期間, 単価, 成果率を取得
       # 終着（当月が成果になる率、２次成果の%と単価で出すようにする）, 一緒に現状売上の期間も指定する。
       if senbai_user.present? && senbai_user.client == "ドコモ" # dメル成果1の情報参照
-        profit_fin = @dmer_senbai_docomo_price * (result_dmer_sum.to_f / shift_digestion * shift_schedule * @dmer1_this_month_per).round() rescue 0
+        profit_fin = @dmer_senbai_docomo_price * (result_dmer_sum.to_f / shift_digestion * shift_schedule * @dmer_senbai_docomo_this_month_per).round() rescue 0
       elsif senbai_user.present? && senbai_user.client == "メディア" # dメル成果2の情報参照
-        profit_fin = @dmer_senbai_media_price * (result_dmer_sum.to_f / shift_digestion * shift_schedule * @dmer2_this_month_per).round() rescue 0
+        profit_fin = @dmer_senbai_media_price * (result_dmer_sum.to_f / shift_digestion * shift_schedule * @dmer_senbai_media_this_month_per).round() rescue 0
       else 
         profit_fin = 0
       end
