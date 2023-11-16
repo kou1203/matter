@@ -159,15 +159,15 @@ class DmerSenbaiDateProgressesController < ApplicationController
         .or(dmer_senbais_user_period.where.not(partner_status: "Active"))
       # 獲得数から消化シフトを割って、予定シフトをかける
       dmer_senbais_fin_len = 
-        (result_dmer_sum.to_f / shift_digestion * shift_schedule).round() rescue 0
+        ((result_dmer_sum - dmer_senbais_user_def.length).to_f / shift_digestion * shift_schedule).round() rescue 0
       # 獲得内訳-------------------------------------------
       # 実売-----------------------------------------------  
         dmer_senbai_calc_profit # 実売を計算する期間, 単価, 成果率を取得
       # 終着（当月が成果になる率、２次成果の%と単価で出すようにする）, 一緒に現状売上の期間も指定する。
       if senbai_user.present? && senbai_user.client == "ドコモ" # dメル成果1の情報参照
-        profit_fin = @dmer1_price * (@result_dmer_sum.to_f / shift_digestion * shift_schedule * @dmer1_this_month_per).round() rescue 0
+        profit_fin = @dmer_senbai_docomo_price * (@result_dmer_sum.to_f / shift_digestion * shift_schedule * @dmer1_this_month_per).round() rescue 0
       elsif senbai_user.present? && senbai_user.client == "メディア" # dメル成果2の情報参照
-        profit_fin = @dmer2_price * (@result_dmer_sum.to_f / shift_digestion * shift_schedule * @dmer2_this_month_per).round() rescue 0
+        profit_fin = @dmer_senbai_media_price * (@result_dmer_sum.to_f / shift_digestion * shift_schedule * @dmer2_this_month_per).round() rescue 0
       else 
         profit_fin = 0
       end
