@@ -91,6 +91,28 @@
           </tbody>
         </table>
       </div><%# /dメル %>
+      <div><%# dメル %>
+        <p class="sub-title">dメル専売</p>
+        <table>
+          <thead>
+            <tr>
+              <th>順位</th>
+              <th>氏名</th>
+              <th>現状獲得数</th>
+            </tr>
+          </thead>
+          <tbody>
+          <% @dmer_senbai_date_progress.each_with_index do |dmer,i| %>
+            <tr>
+              <td><%= i + 1 %>位</td>
+              <td><%= dmer.user.name %></td>
+              <td><%= (dmer.get_len) %></td>
+            </tr>
+          <% break if i == 4 %>
+          <% end %>
+          </tbody>
+        </table>
+      </div><%# /dメル %>
       <div><%# auPay %>
         <p class="sub-title">auPay</p>
         <table>
