@@ -985,6 +985,9 @@
           <th class="total-th">dメル<br>（審査完了）</th>
           <th class="total-th">dメル<br>（写真）</th>
           <th class="total-th">dメル<br>（2回目決済）</th>
+          <th class="total-th">dメル専売<br>（審査完了）</th>
+          <th class="total-th">dメル専売<br>（写真）</th>
+          <th class="total-th">dメル専売<br>（2回目決済）</th>
           <th class="total-th">aupay<br>（決済）</th>
           <th class="total-th">PayPay</th>
           <th class="total-th">楽天ペイ</th>
@@ -999,6 +1002,9 @@
           <td class="total-td"><%= @dmer_date_progress.done_len rescue 0 %></td>
           <td class="total-td"><%= @dmer_date_progress.result2_len rescue 0 %></td>
           <td class="total-td"><%= @dmer_date_progress.result3_len rescue 0 %></td>
+          <td class="total-td"><%= (@dmer_senbai_date_progress.valuation_current1 / @dmer_senbai1_price).round() rescue 0 %></td>
+          <td class="total-td"><%= (@dmer_senbai_date_progress.valuation_current2 / @dmer_senbai2_price).round() rescue 0 %></td>
+          <td class="total-td"><%= (@dmer_senbai_date_progress.valuation_current3 / @dmer_senbai3_price).round() rescue 0 %></td>
           <td class="total-td"><%= @aupay_date_progress.result_len rescue 0 %></td>
           <td class="total-td"><%= @paypay_date_progress.result_len rescue 0 %></td>
           <td class="total-td"><%= @rakuten_pay_val_len rescue 0 %></td>
@@ -1014,6 +1020,9 @@
           <td class="total-td"><%= @dmer_date_progress.valuation_current1.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @dmer_date_progress.valuation_current2.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @dmer_date_progress.valuation_current3.to_s(:delimited) rescue 0 %></td>
+          <td class="total-td"><%= @dmer_senbai_date_progress.valuation_current1.to_s(:delimited) rescue 0 %></td>
+          <td class="total-td"><%= @dmer_senbai_date_progress.valuation_current2.to_s(:delimited) rescue 0 %></td>
+          <td class="total-td"><%= @dmer_senbai_date_progress.valuation_current3.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @aupay_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @paypay_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @rakuten_pay_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
@@ -1035,6 +1044,9 @@
           <td class="total-td"><%= @dmer_date_progress.valuation_fin1.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @dmer_date_progress.valuation_fin2.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @dmer_date_progress.valuation_fin3.to_s(:delimited) rescue 0 %></td>
+          <td class="total-td"><%= @dmer_senbai_date_progress.valuation_fin1.to_s(:delimited) rescue 0 %></td>
+          <td class="total-td"><%= @dmer_senbai_date_progress.valuation_fin2.to_s(:delimited) rescue 0 %></td>
+          <td class="total-td"><%= @dmer_senbai_date_progress.valuation_fin3.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @aupay_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @paypay_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @rakuten_pay_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>

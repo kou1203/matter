@@ -190,6 +190,7 @@ class ResultsController < ApplicationController
     # 各種商材などの件数や売上
       @cash_date_progress = CashDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @dmer_date_progress = DmerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
+      @dmer_senbai_date_progress = DmerSenbaiDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @aupay_date_progress = AupayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @paypay_date_progress = PaypayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @rakuten_pay_date_progress = RakutenPayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
