@@ -1084,6 +1084,10 @@ class ResultsController < ApplicationController
               .where(settlement_second: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
               .where.not(settlement_second: nil)
             )
+            @dmers_senbai_slmt_done = @dmer_senbai_done.where(settlement: @month.all_month).where(status_settlement: "完了")
+            @dmers_senbai_slmt_def = @dmer_senbai_done.where(status_settlement: "決済不備")
+            @dmers_senbai_slmt_pic_def = @dmer_senbai_done.where(status_settlement: "写真不備")
+            @dmers_senbai_slmt2nd_done = @dmer_senbai_done.where(settlement_second: @month.all_month).where(status_settlement: "完了")
       # auPay
       @aupays_slmt = 
         Aupay.where(settlementer_id: @user.id).where(status: "審査通過")
