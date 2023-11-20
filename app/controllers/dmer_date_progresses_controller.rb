@@ -612,7 +612,7 @@ class DmerDateProgressesController < ApplicationController
     valuation_current = valuation_current1_price + valuation_current2_price + valuation_current3_price
     # 2023年11月から獲得した日付に対する成果を計算するようにする
     @dmer_since2023_11 = Dmer.where(date: @start_date..@end_date).minimum(:date)
-    if  @dmer_since2023_11.present? && (@dmer_since2023_11 > Date.new(2023,11,1))
+    if (@dmer_since2023_11.nil?) || (@dmer_since2023_11.present?) && (@dmer_since2023_11 > Date.new(2023,10,31))
       profit_current1 = @dmers_slmter.where(date: @start_date..@end_date).where(status: "審査OK").where(industry_status: "OK").where.not(settlement: nil)
       profit_current1_price = profit_current1.sum(:profit_new)
       profit_current2 = profit_current1.where(status_settlement: "完了").where.not(status_update_settlement: nil)
