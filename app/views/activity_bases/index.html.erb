@@ -14,9 +14,9 @@
         <%= @month.strftime("%Y年%m月") %>
         <%= link_to ">>",activity_bases_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
       </h2><br>
-      <h2>◆活動拠点</h2>
+      <h2>◆活動拠点 <%= link_to "ユーザーの拠点と役職を一括登録", bulk_create_activity_bases_path(month: @month),data: {confirm: "#{@month.month}月：ユーザーの拠点と役職を一括登録してもよろしいですか？"}, class: "link" %></h2>
       <%= alert %>
-                <%= link_to "ユーザーの拠点と役職を一括登録", bulk_create_activity_bases_path(month: @month),data: {confirm: "#{@month.month}月：ユーザーの拠点と役職を一括登録してもよろしいですか？"}, class: "link" %>
+               
       <table>
         <thead>
           <tr>
