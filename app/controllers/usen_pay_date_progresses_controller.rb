@@ -172,6 +172,7 @@ class UsenPayDateProgressesController < ApplicationController
         user_id: user_id                                    ,
         base: user_base                                     ,
         date: @month                                        ,
+        shift_digestion: results                            ,
         get_len: get_len                                    ,
         fin_len: fin_len                                    ,
         result_len: result_len                              ,
