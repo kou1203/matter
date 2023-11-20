@@ -312,7 +312,7 @@ wb = xlsx_package.workbook
         "楽天ペイ獲得Ave", "楽天ペイ獲得終着", "楽天ペイ現状売上","楽天ペイ終着売上",
         "AirPay獲得Ave", "AirPay獲得終着", "AirPay現状売上","AirPay終着売上",
         "AirAC審査完了", "AirAC現状売上","AirAC終着売上",
-        "U-Pay獲得数", "U-Pay現状売上","U-Pay終着売上"
+        "U-Pay獲得数", "U-Pay獲得Ave", "U-Pay獲得終着","U-Pay現状売上","U-Pay終着売上"
       ]
       @progress_bases.each do |base|
         @activity_bases.where(base: base).order(:position,:user_id).each do |date_progress|
@@ -391,7 +391,10 @@ wb = xlsx_package.workbook
           airpay_ac_result_len = (airpay_ac_profit / 10000).to_i rescue 0
 
           usen_get_len = usen_pay_user_progress.get_len rescue 0
-          usen_profit = usen_pay_user_progress.profit_current rescue 0
+          usen_fin_len = usen_pay_user_progress.fin_len rescue 0
+          usen_ave_len = (usen_pay_user_progress.fin_len.to_f / usen_pay_user_progress.shift_digestion).round(1) rescue 0
+          usen_profit_current = usen_pay_user_progress.profit_current rescue 0
+          usen_profit_fin = usen_pay_user_progress.profit_fin rescue 0
 
           sheet.add_row [
             date_progress.base, date_progress.user.name, date_progress.position, 
@@ -401,7 +404,7 @@ wb = xlsx_package.workbook
             rakuten_pay_ave_len,rakuten_pay_fin_len, rakuten_pay_profit_current, rakuten_pay_profit_fin,
             airpay_ave_len,airpay_fin_len, airpay_profit_current, airpay_profit_fin,
             airpay_ac_result_len,airpay_ac_profit, airpay_ac_profit,
-            usen_get_len, usen_profit, usen_profit
+            usen_get_len, usen_ave_len,usen_fin_len,usen_profit_current, usen_profit_fin
             
           ]
         end
