@@ -1,5 +1,5 @@
 class CashDateProgressesController < ApplicationController
-
+  include Base
   def index 
     # 基本設定
       @month = params[:month] ? Time.parse(params[:month]) : Date.today
@@ -136,10 +136,7 @@ class CashDateProgressesController < ApplicationController
     @calc_periods = CalcPeriod.where(sales_category: "実売")
     calc_period_and_per
     cnt = 0
-    @bases = [
-      "中部SS", "関西SS", "関東SS", "九州SS",
-      "フェムト", "サミット", "2次店", "退職"
-    ]
+
     @shifts = Shift.where(start_time: @start_date..@end_date)
     @results = Result.where(date: @start_date..@end_date)
     # @users = User.all
@@ -150,6 +147,7 @@ class CashDateProgressesController < ApplicationController
       shift_digestion = @results.where(shift: "キャッシュレス新規").where(user_id: shift.user_id).length + @results.where(shift: "キャッシュレス決済").where(user_id: shift.user_id).length
       @cash_progress_data = 
         CashDateProgress.find_by(date: @month, user_id: shift.user_id,create_date: Date.today)
+      # d併売
       dmer_date_progresses = DmerDateProgress.where(user_id: shift.user_id).where(date: @month)
       dmer_date_progresses = dmer_date_progresses.where(create_date: dmer_date_progresses.maximum(:create_date))
       dmer_profit_current = dmer_date_progresses.sum(:profit_current)
@@ -163,21 +161,13 @@ class CashDateProgressesController < ApplicationController
         dmer_date_progresses.sum(:valuation_fin2) +
         dmer_date_progresses.sum(:valuation_fin3)
 
-        # d専売
-        if DmerSenbaiDateProgress.where(user_id: shift.user_id).where(date: @month).present?
-          dmer_senbai_date_progresses = DmerSenbaiDateProgress.where(user_id: shift.user_id).where(date: @month)
-          dmer_senbai_date_progresses = dmer_senbai_date_progresses.where(create_date: dmer_date_progresses.maximum(:create_date))
-          dmer_senbai_valuation_current = dmer_senbai_date_progresses.sum(:valuation_current)
-          dmer_senbai_valuation_fin = dmer_senbai_date_progresses.sum(:valuation_fin)
-          dmer_senbai_profit_current = dmer_senbai_date_progresses.sum(:profit_current)
-          dmer_senbai_profit_fin = dmer_senbai_date_progresses.sum(:profit_fin)
-        else  
-          dmer_senbai_valuation_current = 0
-          dmer_senbai_valuation_fin = 0
-          dmer_senbai_profit_current = 0
-          dmer_senbai_profit_fin = 0
-
-        end
+    # d専売
+      dmer_senbai_date_progresses = DmerSenbaiDateProgress.where(user_id: shift.user_id).where(date: @month)
+      dmer_senbai_date_progresses = dmer_senbai_date_progresses.where(create_date: dmer_senbai_date_progresses.maximum(:create_date))
+      dmer_valuation_current += dmer_senbai_date_progresses.sum(:valuation_current) rescue 0
+      dmer_valuation_fin += dmer_senbai_date_progresses.sum(:valuation_fin) rescue 0
+      dmer_profit_current += dmer_senbai_date_progresses.sum(:profit_current) rescue 0
+      dmer_profit_fin += dmer_senbai_date_progresses.sum(:profit_fin) rescue 0
       
       aupay_date_progresses = AupayDateProgress.where(user_id: shift.user_id).where(date: @month)
       aupay_date_progresses = aupay_date_progresses.where(create_date: aupay_date_progresses.maximum(:create_date))
@@ -287,7 +277,7 @@ class CashDateProgressesController < ApplicationController
         shift_schedule: shift_schedule                            ,
         shift_digestion: shift_digestion                          ,
         # 実売
-        dmer_profit_current: dmer_profit_current + dmer_senbai_profit_current                 ,
+        dmer_profit_current: dmer_profit_current                 ,
         aupay_profit_current: aupay_profit_current                ,
         paypay_profit_current: paypay_profit_current              ,
         rakuten_pay_profit_current: rakuten_pay_profit_current    ,
@@ -296,7 +286,7 @@ class CashDateProgressesController < ApplicationController
         austicker_profit_current: austicker_profit_current        ,
         dmersticker_profit_current: dmersticker_profit_current    ,
         profit_current: profit_current                            ,
-        dmer_profit_fin: dmer_profit_fin + dmer_senbai_profit_fin                         ,
+        dmer_profit_fin: dmer_profit_fin                         ,
         aupay_profit_fin: aupay_profit_fin                        ,
         paypay_profit_fin: paypay_profit_fin                      ,
         rakuten_pay_profit_fin: rakuten_pay_profit_fin            ,
@@ -308,7 +298,7 @@ class CashDateProgressesController < ApplicationController
         other_profit_current: other_profit_current                    ,
         other_profit_fin: other_profit_fin                            ,
         # 評価売
-        dmer_valuation_current: dmer_valuation_current + dmer_senbai_valuation_current                  ,
+        dmer_valuation_current: dmer_valuation_current                  ,
         aupay_valuation_current: aupay_valuation_current                ,
         paypay_valuation_current: paypay_valuation_current              ,
         rakuten_pay_valuation_current: rakuten_pay_valuation_current    ,
@@ -317,7 +307,7 @@ class CashDateProgressesController < ApplicationController
         austicker_valuation_current: austicker_valuation_current        ,
         dmersticker_valuation_current: dmersticker_valuation_current    ,
         valuation_current: valuation_current                            ,
-        dmer_valuation_fin: dmer_valuation_fin + dmer_senbai_valuation_fin                         ,
+        dmer_valuation_fin: dmer_valuation_fin                         ,
         aupay_valuation_fin: aupay_valuation_fin                        ,
         paypay_valuation_fin: paypay_valuation_fin                      ,
         rakuten_pay_valuation_fin: rakuten_pay_valuation_fin            ,
