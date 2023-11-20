@@ -1,5 +1,4 @@
 class CashDateProgressesController < ApplicationController
-  include Base
   def index 
     # 基本設定
       @month = params[:month] ? Time.parse(params[:month]) : Date.today
@@ -166,8 +165,8 @@ class CashDateProgressesController < ApplicationController
       dmer_senbai_date_progresses = dmer_senbai_date_progresses.where(create_date: dmer_senbai_date_progresses.maximum(:create_date))
       dmer_valuation_current += dmer_senbai_date_progresses.sum(:valuation_current) rescue 0
       dmer_valuation_fin += dmer_senbai_date_progresses.sum(:valuation_fin) rescue 0
-      dmer_profit_current += dmer_senbai_date_progresses.sum(:profit_current) rescue 0
-      dmer_profit_fin += dmer_senbai_date_progresses.sum(:profit_fin) rescue 0
+      # dmer_profit_current += dmer_senbai_date_progresses.sum(:profit_current) rescue 0
+      # dmer_profit_fin += dmer_senbai_date_progresses.sum(:profit_fin) rescue 0
       
       aupay_date_progresses = AupayDateProgress.where(user_id: shift.user_id).where(date: @month)
       aupay_date_progresses = aupay_date_progresses.where(create_date: aupay_date_progresses.maximum(:create_date))
