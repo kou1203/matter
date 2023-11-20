@@ -934,6 +934,7 @@
         <tr>
           <th class="total-th">商材</th>
           <th class="total-th">dメル<br>（新規）</th>
+          <th class="total-th">dメル専売<br>（新規）</th>
           <th class="total-th">aupay<br>（新規）</th>
           <th class="total-th">PayPay</th>
           <th class="total-th">楽天ペイ</th>
@@ -943,6 +944,7 @@
         <tr>
           <th class="total-th">獲得数</th>
           <td class="total-td"><%= @dmers_val_len %></td>
+          <td class="total-td"><%= @dmer_senbai_date_progress.get_len - @dmer_senbai_date_progress.def_len rescue 0 %></td>
           <td class="total-td"><%= @aupays_val_len %></td>
           <td class="total-td"><%= @paypay_date_progress.get_len rescue 0 %></td>
           <td class="total-td"><%= @rakuten_pay_val_len rescue 0 %></td>
@@ -952,6 +954,7 @@
         <tr>
           <th class="total-th">生産性</th>
           <td class="total-td"><%= (@dmers_val_len.to_f / @dmer_date_progress.shift_digestion).round(1) rescue 0 %></td>
+          <td class="total-td"><%= ((@dmer_senbai_date_progress.get_len - @dmer_senbai_date_progress.def_len).to_f / @dmer_senbai_date_progress.shift_digestion).round(1) rescue 0 %></td>
           <td class="total-td"><%= (@aupays_val_len.to_f / @aupay_date_progress.shift_digestion).round(1) rescue 0 %></td>
           <td class="total-td"><%= (@paypay_date_progress.ge_len.to_f / @paypay_date_progress.shift_digestion).round(1) rescue 0 %></td>
           <td class="total-td"><%= (@rakuten_pay_val_len.to_f / @rakuten_pay_date_progress.shift_digestion).round(1) rescue 0 %></td>
@@ -962,6 +965,7 @@
         <tr>
           <th class="total-th">終着見込</th>
           <td class="total-td"><%= @dmer_date_progress.fin_len rescue 0 %></td>
+          <td class="total-td"><%= @dmer_senbai_date_progress.fin_len rescue 0 %></td>
           <td class="total-td"><%= @aupay_date_progress.fin_len rescue 0 %></td>
           <td class="total-td"><%= @paypay_date_progress.fin_len rescue 0 %></td>
           <td class="total-td"><%= @rakuten_pay_date_progress.fin_len rescue 0 %></td>
