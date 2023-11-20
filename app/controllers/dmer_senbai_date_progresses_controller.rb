@@ -172,14 +172,15 @@ class DmerSenbaiDateProgressesController < ApplicationController
         profit_fin = 0
       end
       # 現状売上 （当月で成果になった売上）
+        dmer_senbais_slmter_ok = 
+          dmer_senbais_slmter.where(industry_status: "OK")
+          .where(app_check: "OK").where.not(dup_check: "重複")
+          .where(partner_status: "Active").where(status: "審査OK")
+          .where(status_settlement: "完了").where(picture_check: "合格")
       if dmer_senbais_slmter.present?
         profit_current = 
-          dmer_senbais_slmter.where(client: "ドコモ").where(picture_check_date: @dmer_senbai_docomo_start_date..@dmer_senbai_docomo_end_date).where(industry_status: "OK").where(app_check: "OK")
-            .where.not(dup_check: "重複").where(partner_status: "Active").where(status: "審査OK")
-            .where(status_settlement: "完了").where(picture_check: "合格").sum(:profit) +
-          dmer_senbais_slmter.where(client: "メディア").where(picture_check_date: @dmer_senbai_media_start_date..@dmer_senbai_media_end_date).where(industry_status: "OK").where(app_check: "OK")
-            .where.not(dup_check: "重複").where(partner_status: "Active").where(status: "審査OK")
-            .where(status_settlement: "完了").where(picture_check: "合格").sum(:profit)
+        dmer_senbais_slmter_ok.where(client: "ドコモ").where(picture_check_date: @dmer_senbai_docomo_start_date..@dmer_senbai_docomo_end_date).sum(:profit) +
+        dmer_senbais_slmter_ok.where(client: "メディア").where(picture_check_date: @dmer_senbai_media_start_date..@dmer_senbai_media_end_date).sum(:profit)
       else  
         profit_current = 0
       end
@@ -228,13 +229,16 @@ class DmerSenbaiDateProgressesController < ApplicationController
         dmer_senbai_calc_valuation2 # 1次成果の期間、単価、成果になる率を取得
         # 成果2（アクセプタンス合格）の現状売
         # dメルで審査とアクセプタンス審査が通っている案件
-        dmer_slmt_done = dmer_done.where(status_settlement: "完了").where(picture_check: "合格")
+        dmer_slmt_done = 
+          dmer_senbais_slmter.where(industry_status: "OK").where(app_check: "OK")
+          .where.not(dup_check: "重複").where(partner_status: "Active")
+          .where(status: "審査OK").where(status_settlement: "完了").where(picture_check: "合格")
         valuation_current2_data =
           dmer_slmt_done.where(result_point: @dmer_senbai2_start_date..@dmer_senbai2_end_date)
-            .where(picture_check_date: ..@dmer_senbai2_end_date)
+            .where(picture_check_date: ..@dmer_senbai2_end_date).where.not(picture_check_date: nil)
             .or(
               dmer_slmt_done.where(picture_check_date: @dmer_senbai2_start_date..@dmer_senbai2_end_date)
-              .where(result_point: ..@dmer_senbai2_end_date)
+              .where(result_point: ..@dmer_senbai2_end_date).where.not(picture_check_date: nil)
             )
           valuation_current2 = valuation_current2_data.sum(:valuation_settlement)
         # 成果2終着
@@ -276,17 +280,17 @@ class DmerSenbaiDateProgressesController < ApplicationController
           # 成果2（2回目決済）の現状売
           valuation_current3_data =
             dmer_slmt_done.where(result_point: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-              .where(picture_check_date: ..@dmer_senbai3_end_date)
-              .where(settlement_second: ..@dmer_senbai3_end_date)
+              .where(picture_check_date: ..@dmer_senbai3_end_date).where.not(picture_check_date: nil)
+              .where(settlement_second: ..@dmer_senbai3_end_date).where.not(settlement_second: nil)
               .or(
                 dmer_slmt_done.where(picture_check_date: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-                .where(result_point: ..@dmer_senbai3_end_date)
-                .where(settlement_second: ..@dmer_senbai3_end_date)
+                .where(result_point: ..@dmer_senbai3_end_date).where.not(result_point: nil)
+                .where(settlement_second: ..@dmer_senbai3_end_date).where.not(settlement_second: nil)
               )
               .or(
                 dmer_slmt_done.where(settlement_second: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-                .where(result_point: ..@dmer_senbai3_end_date)
-                .where(picture_check_date: ..@dmer_senbai3_end_date)
+                .where(result_point: ..@dmer_senbai3_end_date).where.not(result_point: nil)
+                .where(picture_check_date: ..@dmer_senbai3_end_date).where.not(picture_check_date: nil)
               )
         valuation_current3 = valuation_current3_data.sum(:valuation_second_settlement)
         # 成果3終着（期間内）
