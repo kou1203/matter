@@ -284,12 +284,12 @@ class DmerSenbaiDateProgressesController < ApplicationController
               .where(settlement_second: ..@dmer_senbai3_end_date).where.not(settlement_second: nil)
               .or(
                 dmer_slmt_done.where(picture_check_date: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-                .where(result_point: ..@dmer_senbai3_end_date).where.not(result_point: nil)
+                .where(result_point: ..@dmer_senbai3_end_date)
                 .where(settlement_second: ..@dmer_senbai3_end_date).where.not(settlement_second: nil)
               )
               .or(
                 dmer_slmt_done.where(settlement_second: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-                .where(result_point: ..@dmer_senbai3_end_date).where.not(result_point: nil)
+                .where(result_point: ..@dmer_senbai3_end_date).where.not(settlement_second: nil)
                 .where(picture_check_date: ..@dmer_senbai3_end_date).where.not(picture_check_date: nil)
               )
         valuation_current3 = valuation_current3_data.sum(:valuation_second_settlement)
