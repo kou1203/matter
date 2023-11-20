@@ -152,13 +152,23 @@ class UsenPayDateProgressesController < ApplicationController
         profit_fin = profit_current + ((usen_fin_target_len.to_f * usen_pay_this_month_per).round() * usen_pay_price)
     # 評価売
       # 7月より前の案件
-      valuation_current_7month_ago = usen_pay_user_result.where(date: ...Date.new(2023, 8,1)).sum(:valuation) rescue 0
+      calc_valuation
+      usen_pay_period = @calc_periods.find_by(name: "UsenPay")
+      usen_pay_totalling_start_date = start_date(usen_pay_totalling_period)
+      usen_pay_totalling_end_date = end_date(usen_pay_totalling_period)
+      usen_start_date = start_date(usen_pay_period)
+      usen_end_date = end_date(usen_pay_period)
+      usen_pay_price = usen_pay_period.price
+      usen_pay_this_month_per = usen_pay_period.this_month_per
+      usen_separate_date = Date.new(2023,8,1)
+      valuation_current_7month_ago = usen_pay_user_result.where(date: ...usen_separate_date).sum(:valuation) rescue 0
+      valuation_current_7month_ago = 0
       # 8月以降の案件
-      valuation_current_8month_since = usen_pay_user.where.not(status: "自社不備").where.not(status: "自社NG").where(date: Date.new(2023, 8,1)..).or(
-        usen_pay_user.where(date: Date.new(2023, 8,1)..).where(status: "自社NG").where.not(share: nil)
+      valuation_current_8month_since = usen_pay_user_period.where.not(status: "自社不備").where.not(status: "自社NG").where(date: usen_separate_date..).or(
+        usen_pay_user_period.where(date: usen_separate_date..).where(status: "自社NG").where.not(share: nil)
       ).sum(:valuation) rescue 0
       valuation_current = valuation_current_7month_ago + valuation_current_8month_since rescue 0
-
+      valuation_fin = usen_pay_price * (fin_len.to_f * usen_pay_this_month_per).round() rescue 0
       if i_user.user.position == "退職"
         user_base = i_user.user.position
       elsif i_user.user.base_sub == "キャッシュレス"
@@ -177,7 +187,7 @@ class UsenPayDateProgressesController < ApplicationController
         fin_len: fin_len                                    ,
         result_len: result_len                              ,
         valuation_current: valuation_current                ,
-        valuation_fin: valuation_current                    ,
+        valuation_fin: valuation_fin                        ,
         profit_current: profit_current                      ,
         profit_fin: profit_fin                              ,
         create_date: Date.today

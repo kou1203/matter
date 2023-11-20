@@ -15,7 +15,7 @@
         <%= link_to ">>",activity_bases_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
       </h2><br>
       <h2>◆活動拠点 <%= link_to "ユーザーの拠点と役職を一括登録", bulk_create_activity_bases_path(month: @month),data: {confirm: "#{@month.month}月：ユーザーの拠点と役職を一括登録してもよろしいですか？"}, class: "link" %></h2>
-      <%= alert %>
+      <br><p class="caution-text"><%= alert %></p>
                
       <table>
         <thead>
@@ -23,6 +23,8 @@
             <th>拠点</th>
             <th>ユーザー</th>
             <th>役職</th>
+            <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -32,6 +34,8 @@
             <td><%= activity_base.base %></td>
             <td><%= activity_base.user.name %></td>
             <td><%= activity_base.position %></td>
+            <td><%= link_to "編集", edit_activity_basis_path(activity_base.id),class: "link","data-turbolinks": false %></td>
+            <td ><%= link_to "削除", activity_basis_path(activity_base.id), method: :delete,data: {confirm: "#{activity_base.user.name}さんの情報を削除してもよろしいですか？"},class: "link" %></td>
           </tr>
           <% end %>
         <% end %>

@@ -43,13 +43,32 @@ class ActivityBasesController < ApplicationController
   end  
 
   def edit 
+    @activity_base = ActivityBase.find(params[:id])
   end 
 
   def update 
+    @activity_base = ActivityBase.find(params[:id])
+    @activity_base.update(activity_base_strong_params)
+    redirect_to activity_bases_path, alert: "#{@activity_base.user.name}さんの情報を編集しました。"
   end
+
+  def destroy 
+    @activity_base = ActivityBase.find(params[:id])
+    @activity_base.destroy
+    redirect_to activity_bases_path, alert: "#{@activity_base.user.name}さんの情報を削除しました。"
+  end 
 
   private 
   def set_month
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
+  end 
+
+  def activity_base_strong_params 
+    params.require(:activity_base).permit(
+      :user_id,
+      :date,
+      :position,
+      :base
+    )
   end 
 end

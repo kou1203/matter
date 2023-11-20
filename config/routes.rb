@@ -450,7 +450,7 @@ Rails.application.routes.draw do
     collection {get :progress_create}
   end 
 
-  resources :activity_bases, only: [:index,:edit,:update] do 
+  resources :activity_bases, only: [:index,:edit,:update,:destroy] do 
     collection {get :bulk_create}
   end 
 end
