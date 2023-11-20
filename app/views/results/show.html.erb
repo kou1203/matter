@@ -842,6 +842,12 @@
             <td class="total-td" colspan=""><%= @dmers_val_len %></td>
           </tr>
           <tr>
+            <td class="total-td" colspan="">dメル専売</td>
+            <td class="total-td"><%= @dmer_senbai_date_progress.get_len rescue 0 %></td>
+            <td class="total-td" style="color: red;"><%= @dmer_senbai_date_progress.def_len rescue 0 %></td>
+            <td class="total-td" colspan=""><%= @dmer_senbai_date_progress.get_len - @dmer_senbai_date_progress.def_len rescue 0 %></td>
+          </tr>
+          <tr>
             <td class="total-td" colspan="">auPay</td>
               <td class="total-td"><%= @aupay_date_progress.get_len rescue 0 %></td>
               <td class="total-td" style="color: red;"><%= @aupay_date_progress.def_len rescue 0 %></td>
