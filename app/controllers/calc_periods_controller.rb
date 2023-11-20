@@ -211,10 +211,13 @@ class CalcPeriodsController < ApplicationController
   end
 
   def cash_valuation_csv_export 
+    bases
     @cash_date_progress = CashDateProgress.where(date: @month.in_time_zone.all_month)
     @cash_date_progress = @cash_date_progress.where(create_date: @cash_date_progress.maximum(:create_date)).where(date: @cash_date_progress.maximum(:date))
     @dmer_date_progress = DmerDateProgress.where(date: @month.in_time_zone.all_month)
     @dmer_date_progress = @dmer_date_progress.where(create_date: @dmer_date_progress.maximum(:create_date)).where(date: @dmer_date_progress.maximum(:date))
+    @dmer_senbai_date_progress = DmerSenbaiDateProgress.where(date: @month.in_time_zone.all_month)
+    @dmer_senbai_date_progress = @dmer_senbai_date_progress.where(create_date: @dmer_senbai_date_progress.maximum(:create_date)).where(date: @dmer_senbai_date_progress.maximum(:date))
     @aupay_date_progress = AupayDateProgress.where(date: @month.in_time_zone.all_month)
     @aupay_date_progress = @aupay_date_progress.where(create_date: @aupay_date_progress.maximum(:create_date)).where(date: @aupay_date_progress.maximum(:date))
     @paypay_date_progress = PaypayDateProgress.where(date: @month.in_time_zone.all_month)
@@ -235,7 +238,6 @@ class CalcPeriodsController < ApplicationController
     @itss_date_progress = @itss_date_progress.where(create_date: @itss_date_progress.maximum(:create_date)).where(date: @itss_date_progress.maximum(:date))
     @usen_date_progress  = OtherProductDateProgress.where(product_name: "UsenPay").where(date: @month.in_time_zone.all_month)
     @usen_date_progress = @usen_date_progress.where(create_date: @usen_date_progress.maximum(:create_date)).where(date: @usen_date_progress.maximum(:date))
-    bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "退職"]
     head :no_content
     filename = "評価売資料#{@month}"
     columns_ja = [
@@ -252,7 +254,7 @@ class CalcPeriodsController < ApplicationController
     bom = "\uFEFF"
     csv = CSV.generate(bom) do |csv|
       csv << columns_ja
-      bases.each do |base|
+      @progress_bases.each do |base|
         CashDateProgress.where(date: @month.in_time_zone.all_month).where(create_date: @cash_date_progress.maximum(:create_date)).includes(:user).where(base: base).order("users.position_sub ASC").order("users.id ASC").group(:user_id).each do |cash_progress|
           result_attributes = {}
           result_attributes["base"] = base
@@ -266,6 +268,7 @@ class CalcPeriodsController < ApplicationController
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion_slmt).to_i
           result_attributes["valuation_current"] = 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
+            @dmer_senbai_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
             @aupay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
             @paypay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
             @rakuten_pay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
@@ -280,6 +283,7 @@ class CalcPeriodsController < ApplicationController
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin1) + 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin2) + 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin3) + 
+            @dmer_senbai_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
             @aupay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
             @paypay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
             @rakuten_pay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
