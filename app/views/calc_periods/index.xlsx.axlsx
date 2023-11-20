@@ -280,22 +280,24 @@ wb = xlsx_package.workbook
         end 
       end
     elsif product == "UsenPay"
-      sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売", "終着実売"]
+      sheet.add_row [ "拠点", "ユーザー", "役職", "獲得","終着獲得", "現状実売", "終着実売"]
       @progress_bases.each do |base|
         @activity_bases.where(base: base).order(:position,:user_id).each do |activity_user|
           if @usen_pay_date_progresses.find_by(user_id: activity_user.user_id).present?
             date_progress = @usen_pay_date_progresses.find_by(user_id: activity_user.user_id)
             get_len = date_progress.get_len
+            fin_len = date_progress.fin_len
             profit_current = date_progress.profit_current
             profit_fin = date_progress.profit_fin
           else 
             get_len = 0
+            fin_len = 0
             profit_current = 0
             profit_fin = 0
           end 
           sheet.add_row [
             activity_user.base, activity_user.user.name, activity_user.position, 
-            get_len,profit_current,profit_fin
+            get_len,fin_len,profit_current,profit_fin
           ]
         end
       end
