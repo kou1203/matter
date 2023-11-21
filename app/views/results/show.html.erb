@@ -31,7 +31,9 @@
           <th class="date-th">残シフト</th>
           <th class="date-th">現状売上</th>
           <th class="date-th">Ave</th>
-          <th class="date-th">予測終着</th>
+          <th class="date-th">終着</th>
+          <th class="date-th">戻入</th>
+          <th class="date-th">終着（戻入込）</th>
           <th class="date-th">帯同加味</th>
         </tr>
         <tr>
@@ -42,6 +44,8 @@
           <td class="date-td"><%=  %></td>
           <td class="date-td"><%=  %></td>
           <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
           <td class="date-td"></td>
         </tr>
         <tr>
@@ -49,6 +53,8 @@
           <td class="date-td"><%= @shift_schedule_slmt rescue 0 %></td>
           <td class="date-td"><%= @shift_digestion_slmt rescue 0 %></td>
           <td class="date-td"><%= @shift_schedule_slmt - @shift_digestion_slmt rescue 0 %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
           <td class="date-td"><%=  %></td>
           <td class="date-td"><%=  %></td>
           <td class="date-td"><%=  %></td>
@@ -63,6 +69,8 @@
           <td class="date-td"><%= (valuation_ave * @shift_digestion_ojt).to_s(:delimited) rescue 0 %></td>
           <td class="date-td"><%= valuation_ave %></td>
           <td class="date-td"><%= (valuation_ave * @shift_schedule_ojt).to_s(:delimited) rescue 0 %></td>
+          <td class="date-td"><%=  %></td>
+          <td class="date-td"><%=  %></td>
           <td class="date-td"></td>
         </tr>
         <tr>
@@ -73,7 +81,9 @@
           <td class="date-td"><%= @cash_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
           <td class="date-td"><%= valuation_ave.to_s(:delimited) rescue 0 %></td>
           <td class="date-td"><%= @cash_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
-          <td class="date-td"><%= (@cash_date_progress.valuation_fin + (valuation_ave * @shift_schedule_ojt)).to_s(:delimited) rescue 0 %></td>
+          <td class="date-td red"><%= @reversal_products.sum(:price).to_s(:delimited) rescue 0 %></td>
+          <td class="date-td"><%= (@cash_date_progress.valuation_fin - @reversal_products.sum(:price)).to_s(:delimited) rescue 0 %></td>
+          <td class="date-td"><%= (@cash_date_progress.valuation_fin - @reversal_products.sum(:price) + (valuation_ave * @shift_schedule_ojt)).to_s(:delimited) rescue 0 %></td>
         </tr>
       </table> 
     </div><%#/シフト/売上の区切り%>
