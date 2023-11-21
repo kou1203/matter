@@ -44,4 +44,5 @@ class User < ApplicationRecord
   has_many :dmer_senbais
   has_many :dmer_senbai_date_progresses
   has_many :activity_bases
+  has_many :reversal_products
 end

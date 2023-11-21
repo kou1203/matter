@@ -453,4 +453,8 @@ Rails.application.routes.draw do
   resources :activity_bases, only: [:index,:edit,:update,:destroy] do 
     collection {get :bulk_create}
   end 
+
+  resources :reversal_products do 
+    collection {get :import}
+  end 
 end

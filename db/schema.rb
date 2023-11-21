@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_13_105821) do
+ActiveRecord::Schema.define(version: 2023_11_21_021311) do
 
   create_table "activity_bases", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date", null: false
@@ -1588,6 +1588,17 @@ ActiveRecord::Schema.define(version: 2023_11_13_105821) do
     t.index ["user_id"], name: "index_return_histories_on_user_id"
   end
 
+  create_table "reversal_products", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "product", null: false
+    t.string "store_name", null: false
+    t.bigint "user_id"
+    t.date "date", null: false
+    t.date "result_date", null: false
+    t.date "reversal_date", null: false
+    t.integer "price", null: false
+    t.index ["user_id"], name: "index_reversal_products_on_user_id"
+  end
+
   create_table "shifts", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.datetime "start_time"
     t.string "shift"
@@ -1973,6 +1984,7 @@ ActiveRecord::Schema.define(version: 2023_11_13_105821) do
   add_foreign_key "results", "users"
   add_foreign_key "return_histories", "stocks"
   add_foreign_key "return_histories", "users"
+  add_foreign_key "reversal_products", "users"
   add_foreign_key "shifts", "users"
   add_foreign_key "st_insurances", "store_props"
   add_foreign_key "st_insurances", "users"
