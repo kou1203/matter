@@ -243,19 +243,20 @@ class CalcPeriodsController < ApplicationController
     columns_ja = [
       "拠点", "ユーザー","役職", "予定シフト", "消化シフト", "現状評価売上","終着評価売",
       "dメル審査通過（終着）","dメルアクセプタンス審査通過（終着）","dメル２回目決済（終着）","auPay（終着）", "PayPay（終着）",
-      "楽天ペイ（終着）","AirPay（終着）","出前館（終着）","auステッカー（終着）","dメルステッカー（終着）", "ITSS（終着）", "UsenPay（終着）","AirPayステッカー（終着）"
+      "楽天ペイ（終着）","AirPay（終着）","出前館（終着）","auステッカー（終着）","dメルステッカー（終着）", "ITSS（終着）", "UsenPay（終着）","AirPayステッカー（終着）","戻入"
     ]
     columns = [
       "base", "user_name","post","shift_schedule", "shift_digestion", "valuation_current", "valuation_fin", 
       "dmer1_valuation_fin", "dmer2_valuation_fin", "dmer3_valuation_fin", "aupay_valuation_fin","paypay_valuation_fin",
       "rakuten_pay_valuation_fin","airpay_valuation_fin","demaekan_valuation_fin","austicker_valuation_fin","dmersticker_valuation_fin",
-      "itss_valuation_fin","usen_valuation_fin","airpaysticker_valuation_fin"
+      "itss_valuation_fin","usen_valuation_fin","airpaysticker_valuation_fin","reversal_price"
     ]
     bom = "\uFEFF"
     csv = CSV.generate(bom) do |csv|
       csv << columns_ja
       @progress_bases.each do |base|
         CashDateProgress.where(date: @month.in_time_zone.all_month).where(create_date: @cash_date_progress.maximum(:create_date)).includes(:user).where(base: base).order("users.position_sub ASC").order("users.id ASC").group(:user_id).each do |cash_progress|
+          @reversal_products = ReversalProduct.where(user_id: cash_progress.user_id).where(reversal_date: @month.all_month)
           result_attributes = {}
           result_attributes["base"] = base
           result_attributes["user_name"] = cash_progress.user.name
@@ -293,7 +294,8 @@ class CalcPeriodsController < ApplicationController
             @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) +
             @airpaysticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) +
             @usen_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) +
-            @itss_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+            @itss_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) - 
+            @reversal_products.where(user_id: cash_progress.user_id).sum(:price)
           result_attributes["dmer1_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin1) + @dmer_senbai_date_progress.sum(:valuation_fin1)
           result_attributes["dmer2_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin2) + @dmer_senbai_date_progress.sum(:valuation_fin2)
           result_attributes["dmer3_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin3) + @dmer_senbai_date_progress.sum(:valuation_fin3)
@@ -307,6 +309,7 @@ class CalcPeriodsController < ApplicationController
           result_attributes["airpaysticker_valuation_fin"] = @airpaysticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           result_attributes["usen_valuation_fin"] = @usen_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           result_attributes["itss_valuation_fin"] = @itss_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          result_attributes["reversal_price"] = @reversal_products.where(user_id: cash_progress.user_id).sum(:price)
           csv << result_attributes.values_at(*columns)
         end 
       end
