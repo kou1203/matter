@@ -1589,6 +1589,7 @@ ActiveRecord::Schema.define(version: 2023_11_21_021311) do
   end
 
   create_table "reversal_products", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "controll_num", null: false
     t.string "product", null: false
     t.string "store_name", null: false
     t.bigint "user_id"

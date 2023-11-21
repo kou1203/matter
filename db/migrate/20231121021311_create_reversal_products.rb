@@ -1,6 +1,7 @@
 class CreateReversalProducts < ActiveRecord::Migration[6.1]
   def change
     create_table :reversal_products do |t|
+      t.string :controll_num      ,null: false
       t.string :product           ,null: false
       t.string :store_name        ,null: false
       t.references :user          ,foreign_key: true

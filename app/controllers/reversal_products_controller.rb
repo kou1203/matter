@@ -1,7 +1,7 @@
 class ReversalProductsController < ApplicationController
 
   def index 
-    
+
   end 
 
   def import 
@@ -19,6 +19,7 @@ class ReversalProductsController < ApplicationController
   private 
   def reversal_product_params
     params.require(:reversal_product).permit(
+      :controll_num,
       :product,
       :store_name,
       :user_id,
