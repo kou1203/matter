@@ -58,7 +58,8 @@
       @dmer_pic.sum(:valuation) +
       @airpay_pic.sum(:valuation) +
       @other_valuation.sum(:valuation) +
-      @itss.sum(:valuation)
+      @itss.sum(:valuation) -
+      @reversal_products.sum(:price)
     ).to_s(:delimited) rescue 0
   %></h2>
   <table>
@@ -184,6 +185,15 @@
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @other_valuation.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
+  <% if @reversal_products.present? %>
+  <tr>
+    <td class="valuation-td">戻入</td>
+    <td class="valuation-td"><%= @reversal_products.length rescue 0 %></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"></td>
+    <td class="valuation-td"><%= @reversal_products.sum(:price).to_s(:delimited) rescue 0 %></td>
+  </tr>
+  <% end %>
   </table>
 <% if @dmer_done.present? %>
 <h2>dメル第一成果（審査完了）</h2>
@@ -211,7 +221,7 @@
       <td class="valuation-td "><%= dmer.result_point %></td>
       <td class="valuation-td "><%= dmer.status_update_settlement %></td>
       <td class="valuation-td "><%= dmer.settlement_second %></td>
-      <td class="valuation-td "><%= dmer.valuation_new %></td>
+      <td class="valuation-td "><%= dmer.valuation_new.to_s(:delimited) %></td>
       <td class="valuation-td "><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
@@ -246,7 +256,7 @@
       <td class="valuation-td "><%= dmer.result_point %></td>
       <td class="valuation-td "><%= dmer.status_update_settlement %></td>
       <td class="valuation-td "><%= dmer.settlement_second %></td>
-      <td class="valuation-td "><%= dmer.valuation_settlement %></td>
+      <td class="valuation-td "><%= dmer.valuation_settlement.to_s(:delimited) %></td>
       <td class="valuation-td "><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
@@ -282,7 +292,7 @@
       <td class="valuation-td "><%= dmer.result_point %></td>
       <td class="valuation-td "><%= dmer.status_update_settlement %></td>
       <td class="valuation-td "><%= dmer.settlement_second %></td>
-      <td class="valuation-td "><%= dmer.valuation_second_settlement %></td>
+      <td class="valuation-td "><%= dmer.valuation_second_settlement.to_s(:delimited) %></td>
       <td class="valuation-td "><%= link_to "詳細", dmer_path(dmer.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
@@ -316,7 +326,7 @@
       <td class="valuation-td "><%= dmer.result_point %></td>
       <td class="valuation-td "><%= dmer.picture_check_date %></td>
       <td class="valuation-td "><%= dmer.settlement_second %></td>
-      <td class="valuation-td "><%= dmer.valuation_new %></td>
+      <td class="valuation-td "><%= dmer.valuation_new.to_s(:delimited) %></td>
       <td class="valuation-td "><%= link_to "詳細", dmer_senbai_path(dmer.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
@@ -351,7 +361,7 @@
       <td class="valuation-td "><%= dmer.result_point %></td>
       <td class="valuation-td "><%= dmer.picture_check_date %></td>
       <td class="valuation-td "><%= dmer.settlement_second %></td>
-      <td class="valuation-td "><%= dmer.valuation_settlement %></td>
+      <td class="valuation-td "><%= dmer.valuation_settlement.to_s(:delimited) %></td>
       <td class="valuation-td "><%= link_to "詳細", dmer_senbai_path(dmer.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
@@ -387,7 +397,7 @@
       <td class="valuation-td "><%= dmer.result_point %></td>
       <td class="valuation-td "><%= dmer.picture_check_date %></td>
       <td class="valuation-td "><%= dmer.settlement_second %></td>
-      <td class="valuation-td "><%= dmer.valuation_second_settlement %></td>
+      <td class="valuation-td "><%= dmer.valuation_second_settlement.to_s(:delimited) %></td>
       <td class="valuation-td "><%= link_to "詳細", dmer_senbai_path(dmer.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
@@ -422,7 +432,7 @@
       <td class="valuation-td "><%= aupay.result_point %></td>
       <td class="valuation-td "><%= aupay.status_settlement %></td>
       <td class="valuation-td "><%= aupay.status_update_settlement %></td>
-      <td class="valuation-td "><%= aupay.valuation_settlement %></td>
+      <td class="valuation-td "><%= aupay.valuation_settlement.to_s(:delimited) %></td>
       <td class="valuation-td "><%= link_to "詳細", aupay_path(aupay.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
@@ -453,7 +463,7 @@
       <td class="valuation-td "><%= paypay.date %></td>
       <td class="valuation-td "><%= paypay.status %></td>
       <td class="valuation-td "><%= paypay.result_point %></td>
-      <td class="valuation-td "><%= paypay.valuation %></td>
+      <td class="valuation-td "><%= paypay.valuation.to_s(:delimited) %></td>
       <td class="valuation-td "><%= link_to "詳細", paypay_path(paypay.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
@@ -486,7 +496,7 @@
       <td class="valuation-td "><%= rakuten_pay.status %></td>
       <td class="valuation-td "><%= rakuten_pay.deficiency %></td>
       <td class="valuation-td "><%= rakuten_pay.share %></td>
-      <td class="valuation-td "><%= rakuten_pay.valuation %></td>
+      <td class="valuation-td "><%= rakuten_pay.valuation.to_s(:delimited) %></td>
       <td class="valuation-td "><%= link_to "詳細", rakuten_pay_path(rakuten_pay.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
@@ -527,11 +537,11 @@
         <% end %>
       <% else %>
         <% if @airpay_done.present? && @airpay_done.length >= 20 %>
-        <td class="valuation-td "><%= airpay.valuation + 3000 %></td>
+        <td class="valuation-td "><%= (airpay.valuation + 3000).to_s(:delimited) %></td>
         <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
-        <td class="valuation-td "><%= airpay.valuation + 2000 %></td>
+        <td class="valuation-td "><%= (airpay.valuation + 2000).to_s(:delimited) %></td>
         <% else %>
-        <td class="valuation-td "><%= airpay.valuation %></td>
+        <td class="valuation-td "><%= airpay.valuation.to_s(:delimited) %></td>
         <% end %>
       <% end %>
       <td class="valuation-td "><%= link_to "詳細", airpay_path(airpay.id),class: "link" %></td>
@@ -601,7 +611,7 @@
       <td class="valuation-td "><%= num %></td>
       <td class="valuation-td "><%= pic.date %></td>
       <td class="valuation-td "><%= pic.product_len %></td>
-      <td class="valuation-td "><%= pic.valuation %></td>
+      <td class="valuation-td "><%= pic.valuation.to_s(:delimited) %></td>
       <td class="valuation-td "><%= link_to "編集", edit_other_product_path(pic.id) %></td>
       </tr>
       <% end %>
@@ -625,7 +635,7 @@
       <td class="valuation-td "><%= num %></td>
       <td class="valuation-td "><%= pic.date %></td>
       <td class="valuation-td "><%= pic.product_len %></td>
-      <td class="valuation-td "><%= pic.valuation %></td>
+      <td class="valuation-td "><%= pic.valuation.to_s(:delimited) %></td>
       <td class="valuation-td "><%= link_to "編集", edit_other_product_path(pic.id) %></td>
       </tr>
       <% end %>
@@ -648,7 +658,7 @@
       <td class="valuation-td "><%= i + 1 %></td>
       <td class="valuation-td "><%= pic.store_name rescue "" %></td>
       <td class="valuation-td "><%= pic.form_send %></td>
-      <td class="valuation-td "><%= pic.valuation %></td>
+      <td class="valuation-td "><%= pic.valuation.to_s(:delimited) %></td>
       </tr>
       <% end %>
     </tbody>
@@ -672,7 +682,7 @@
       <td class="valuation-td "><%= d.store_prop.name %></td>
       <td class="valuation-td "><%= d.date %></td>
       <td class="valuation-td "><%= d.first_cs_contract %></td>
-      <td class="valuation-td "><%= d.valuation %></td>
+      <td class="valuation-td "><%= d.valuation.to_s(:delimited) %></td>
       </tr>
       <% num += 1 %>
       <% end %>
@@ -700,7 +710,7 @@
       <td class="valuation-td "><%= itss.date %></td>
       <td class="valuation-td "><%= itss.status_ntt1 %></td>
       <td class="valuation-td "><%= itss.construction_schedule %></td>
-      <td class="valuation-td "><%= itss.valuation %></td>
+      <td class="valuation-td "><%= itss.valuation.to_s(:delimited) %></td>
       </tr>
       <% num += 1 %>
       <% end %>
@@ -726,12 +736,41 @@
           <td class="valuation-td "><%= product.product_name %></td>
           <td class="valuation-td "><%= product.date %></td>
           <td class="valuation-td "><%= product.product_len %></td>
-          <td class="valuation-td "><%= product.valuation %></td>
+          <td class="valuation-td "><%= product.valuation.to_s(:delimited) %></td>
           <td class="valuation-td "><%= link_to "編集", edit_other_product_path(product.id) %></td>
         </tr>
         <% end %>
       </tbody>
     </table>
+  <% end %>
+  <% if @reversal_products.present? %>
+      <h2 class="red">※戻入案件</h2>
+      <table>
+        <thead>
+          <tr>
+            <th class="valuation-th">No.</th>
+            <th class="valuation-th">商材</th>
+            <th class="valuation-th">店舗名</th>
+            <th class="valuation-th">獲得日</th>
+            <th class="valuation-th">成果になった日</th>
+            <th class="valuation-th">戻入日</th>
+            <th class="valuation-th">評価売</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @reversal_products.each_with_index do |r_product,i| %>
+          <tr>
+            <td class="valuation-td "><%= i + 1 %></td>
+            <td class="valuation-td "><%= r_product.product %></td>
+            <td class="valuation-td "><%= r_product.store_name %></td>
+            <td class="valuation-td "><%= r_product.date %></td>
+            <td class="valuation-td "><%= r_product.result_date %></td>
+            <td class="valuation-td "><%= r_product.reversal_date %></td>
+            <td class="valuation-td "><%= r_product.price.to_s(:delimited) %></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
   <% end %>
   </div><%# users/showスコープ末尾 %>
 </div>

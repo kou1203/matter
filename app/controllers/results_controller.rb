@@ -1155,6 +1155,9 @@ class ResultsController < ApplicationController
           UsenPay.where(user_id: @user.id).where(date: usen_separate_date..).where(date: @month.all_month).where(status: "自社NG").where.not(share: nil)
         ) rescue 0
       @usen_pay_val_len = @usen_pays_8month_since.length + @usen_pays_7month_ago.length rescue 0
+
+      # 戻入案件
+      @reversal_products = ReversalProduct.where(user_id: @user.id).where(reversal_date: @month.all_month)
     end
 
     def set_month_product # 基本的な商材の変数
@@ -1251,6 +1254,7 @@ class ResultsController < ApplicationController
         Result.includes(:user)
         .where(date: @comparison_date.beginning_of_month..@comparison_date)
         .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
+
     end 
 
     def result_params # resultのストロングパラメーター
