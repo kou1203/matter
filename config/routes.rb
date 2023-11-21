@@ -455,6 +455,6 @@ Rails.application.routes.draw do
   end 
 
   resources :reversal_products do 
-    collection {get :import}
+    collection {post :import}
   end 
 end

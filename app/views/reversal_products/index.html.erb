@@ -1,1 +1,69 @@
-hello index!
+<% if current_user.position_sub == "99：退職" %>
+  <p>退職者は利用できません。</p>
+<% else %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>戻入案件一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/index">
+  <div class="main">
+    <% if current_user.position_sub == "管理" %>
+      <%= form_with url: import_reversal_products_path do |f| %>
+        <table class="csv-tb">
+          <tr>
+            <td class="csv-label">CSV</td>
+
+            <td ><%= f.file_field :file , accept: ".csv",class: "csv-input" %></td>
+
+            <td class="result"><%= f.submit  "インポート", class: "result-btn",data: { confirm: 'インポートしますか？', disable_with: "インポート中" } %></td>
+          </tr>
+        </table>
+      <% end %>
+    <% end %>
+    <hr>
+    <div class="warning"><%= alert %></div>
+    <h2 class="">
+      <%= link_to "<<",reversal_products_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
+      <%= @month.strftime("%Y年%m月") %>
+      <%= link_to ">>",reversal_products_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
+    </h2><br>
+    <% if @reversal_products.present? %><%# 戻入案件があるか確認 %>
+    <table>
+      <thead>
+        <tr>
+          <th>管理番号</th>
+          <th>商材名</th>
+          <th>店舗名</th>
+          <th>獲得者</th>
+          <th>獲得日</th>
+          <th>成果になった日</th>
+          <th>戻入日</th>
+          <th>評価売</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @reversal_products.each do |r_product| %>
+        <tr>
+          <td><%= r_product.controll_num %></td>
+          <td><%= r_product.product %></td>
+          <td><%= r_product.store_name %></td>
+          <td><%= r_product.user.name %></td>
+          <td><%= r_product.date %></td>
+          <td><%= r_product.result_date %></td>
+          <td><%= r_product.reversal_date %></td>
+          <td><%= r_product.price %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% else %>
+      <h2>まだ今月は戻入されている案件はありません。</h2>
+    <% end %><%# 戻入案件があるか確認 %>
+  </div>
+</div>
+<% end %>

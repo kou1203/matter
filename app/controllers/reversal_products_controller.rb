@@ -1,6 +1,8 @@
 class ReversalProductsController < ApplicationController
 
   def index 
+    @month = params[:month] ? Date.parse(params[:month]) : Time.zone.today
+    @reversal_products = ReversalProduct.where(reversal_date: @month.all_month)
 
   end 
 

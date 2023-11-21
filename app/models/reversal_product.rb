@@ -3,7 +3,7 @@ class ReversalProduct < ApplicationRecord
 
   with_options presence: true do 
     validates :controll_num
-    validates :prduct
+    validates :product
     validates :store_name
     validates :user_id
     validates :date
@@ -20,7 +20,8 @@ class ReversalProduct < ApplicationRecord
       errors << "#{index}行目獲得者#{row["獲得者"]}が不正です" if user.blank? && errors.length < 2
         u_id = user.id if user.present? && errors.length < 2
         product = new(
-          prduct: row["商材名"],
+          controll_num: row["管理番号"],
+          product: row["商材名"],
           store_name: row["店舗名"],
           user_id: u_id,
           date: row["獲得日"],
@@ -40,10 +41,11 @@ class ReversalProduct < ApplicationRecord
     CSV.foreach(file.path, headers: true) do |row|
       user = User.find_by(name: row["獲得者"])
       u_id = user.id if user.present?
-      product = find_by(store_name: row["店舗コード"])
+      product = find_by(controll_num: row["管理番号"])
       if product.present?
         product.assign_attributes(
-          prduct: row["商材名"],
+          controll_num: row["管理番号"],
+          product: row["商材名"],
           store_name: row["店舗名"],
           user_id: u_id,
           date: row["獲得日"],
@@ -53,14 +55,14 @@ class ReversalProduct < ApplicationRecord
         )
         if product.has_changes_to_save? 
           product.save!
-          product.assign_attributes(status_update: Date.today)
           update_cnt += 1
         else  
           nochange_cnt += 1
         end 
       else  
         product = new(
-          prduct: row["商材名"],
+          controll_num: row["管理番号"],
+          product: row["商材名"],
           store_name: row["店舗名"],
           user_id: u_id,
           date: row["獲得日"],
