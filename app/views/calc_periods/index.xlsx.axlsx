@@ -329,72 +329,60 @@ wb = xlsx_package.workbook
           
           if (dmer_user_progress.nil?) || (dmer_user_progress.fin_len == 0) || (dmer_user_progress.shift_schedule == 0)
             dmer_ave_len = 0
-            dmer_fin_len = 0
-            dmer_profit_current = 0
-            dmer_profit_fin = 0
           else
             dmer_ave_len = (dmer_user_progress.fin_len.to_f / dmer_user_progress.shift_schedule).round(1) rescue 0
-            dmer_fin_len = dmer_user_progress.fin_len
-            dmer_profit_current = dmer_user_progress.profit_current 
-            dmer_profit_fin = dmer_user_progress.profit_fin1 + dmer_user_progress.profit_fin2 + dmer_user_progress.profit_fin3
           end 
+            dmer_fin_len = dmer_user_progress.fin_len rescue 0
+            dmer_profit_current = dmer_user_progress.profit_current  rescue 0
+            dmer_profit_fin = dmer_user_progress.profit_fin1 + dmer_user_progress.profit_fin2 + dmer_user_progress.profit_fin3 rescue 0
 
           if (aupay_user_progress.nil?) || (aupay_user_progress.fin_len == 0) || (aupay_user_progress.shift_schedule == 0)
             aupay_ave_len = 0
-            aupay_fin_len = 0
-            aupay_profit_current = 0
-            aupay_profit_fin = 0
           else
             aupay_ave_len = (aupay_user_progress.fin_len.to_f / aupay_user_progress.shift_schedule).round(1) rescue 0
-            aupay_fin_len = aupay_user_progress.fin_len
-            aupay_profit_current = aupay_user_progress.profit_current
-            aupay_profit_fin = aupay_user_progress.profit_fin
           end 
+            aupay_fin_len = aupay_user_progress.fin_len rescue 0
+            aupay_profit_current = aupay_user_progress.profit_current rescue 0
+            aupay_profit_fin = aupay_user_progress.profit_fin rescue 0
 
           if (paypay_user_progress.nil?) || (paypay_user_progress.fin_len == 0) || (paypay_user_progress.shift_schedule == 0)
             paypay_ave_len = 0
-            paypay_fin_len = 0
-            paypay_profit_current = 0
-            paypay_profit_fin = 0
           else
             paypay_ave_len = (paypay_user_progress.fin_len.to_f / paypay_user_progress.shift_schedule).round(1) rescue 0
-            paypay_fin_len = paypay_user_progress.fin_len
-            paypay_profit_current = paypay_user_progress.profit_current
-            paypay_profit_fin = paypay_user_progress.profit_fin
           end 
+            paypay_fin_len = paypay_user_progress.fin_len rescue 0
+            paypay_profit_current = paypay_user_progress.profit_current rescue 0
+            paypay_profit_fin = paypay_user_progress.profit_fin rescue 0
 
           if (rakuten_pay_user_progress.nil?) || (rakuten_pay_user_progress.fin_len == 0) || (rakuten_pay_user_progress.shift_schedule == 0)
             rakuten_pay_ave_len = 0
-            rakuten_pay_fin_len = 0
-            rakuten_pay_profit_current = 0
-            rakuten_pay_profit_fin = 0
           else
             rakuten_pay_ave_len = (rakuten_pay_user_progress.fin_len.to_f / rakuten_pay_user_progress.shift_schedule).round(1) rescue 0
-            rakuten_pay_fin_len = rakuten_pay_user_progress.fin_len
-            rakuten_pay_profit_current = rakuten_pay_user_progress.profit_current
-            rakuten_pay_profit_fin = rakuten_pay_user_progress.profit_fin
           end 
+            rakuten_pay_fin_len = rakuten_pay_user_progress.fin_len rescue 0
+            rakuten_pay_profit_current = rakuten_pay_user_progress.profit_current rescue 0
+            rakuten_pay_profit_fin = rakuten_pay_user_progress.profit_fin rescue 0
 
           if (airpay_user_progress.nil?) || (airpay_user_progress.fin_len == 0) || (airpay_user_progress.shift_schedule == 0)
             airpay_ave_len = 0
-            airpay_fin_len = 0
-            airpay_profit_current = 0
-            airpay_profit_fin = 0
           else
             airpay_ave_len = (airpay_user_progress.fin_len.to_f / airpay_user_progress.shift_schedule).round(1) rescue 0
-            airpay_fin_len = airpay_user_progress.fin_len
-            airpay_profit_current = airpay_user_progress.profit_current
-            airpay_profit_fin = airpay_user_progress.profit_fin
           end 
-
+            airpay_fin_len = airpay_user_progress.fin_len rescue 0
+            airpay_profit_current = airpay_user_progress.profit_current rescue 0
+            airpay_profit_fin = airpay_user_progress.profit_fin rescue 0
           airpay_ac_profit = airpaysticker_user_progress.profit_current rescue 0
           airpay_ac_result_len = (airpay_ac_profit / 10000).to_i rescue 0
 
-          usen_get_len = usen_pay_user_progress.get_len rescue 0
-          usen_fin_len = usen_pay_user_progress.fin_len rescue 0
-          usen_ave_len = (usen_pay_user_progress.fin_len.to_f / usen_pay_user_progress.shift_digestion).round(1) rescue 0
-          usen_profit_current = usen_pay_user_progress.profit_current rescue 0
-          usen_profit_fin = usen_pay_user_progress.profit_fin rescue 0
+          if (usen_pay_user_progress.nil?) || (usen_pay_user_progress.fin_len == 0) || (usen_pay_user_progress.shift_digestion == 0)
+            usen_ave_len =  0
+          else
+            usen_ave_len = (usen_pay_user_progress.fin_len.to_f / usen_pay_user_progress.shift_digestion).round(1) rescue 0
+          end 
+            usen_fin_len = usen_pay_user_progress.fin_len rescue 0
+            usen_get_len = usen_pay_user_progress.get_len rescue 0
+            usen_profit_current = usen_pay_user_progress.profit_current rescue 0
+            usen_profit_fin = usen_pay_user_progress.profit_fin rescue 0
 
           sheet.add_row [
             date_progress.base, date_progress.user.name, date_progress.position, 

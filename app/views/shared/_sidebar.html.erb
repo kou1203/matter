@@ -45,7 +45,7 @@
             <% end %>
             <li id="lists2"><span data-turbolinks="false"><%= link_to "スプレッド出力", spread_links_path,class: "side-link" %></span></li>
             <li id="lists2"><span data-turbolinks="false"><%= link_to "成果一覧（評価売上）", valuation_results_path,class: "side-link" %></span></li>
-            <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
+            <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") || (current_user.name == "稲熊彩加") %>
             <li id="lists2"><%= link_to "入金精査", payment_cashes_path,class: "side-link"%></li>
             <li id="lists2"><%= link_to "依頼中案件", comments_path,class: "side-link"%></li>
             <% end %>
