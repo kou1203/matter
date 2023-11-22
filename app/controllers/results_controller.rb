@@ -1029,17 +1029,18 @@ class ResultsController < ApplicationController
       @dmer_senbai1_this_month_per = @dmer_senbai1_calc_data.this_month_per
       @dmer_senbai1_prev_month_per = @dmer_senbai1_calc_data.prev_month_per
       @dmer_senbai1_price = @dmer_senbai1_calc_data.price
+
       @dmer_senbai2_calc_data = @calc_periods.find_by(name: "dメル専売成果2")
-      @dmer_senbai2_start_data = start_date(@dmer_senbai2_calc_data)
-      @dmer_senbai2_end_data = end_date(@dmer_senbai2_calc_data)
-      @dmer_senbai2_closing_data = closing_date(@dmer_senbai2_calc_data)
+      @dmer_senbai2_start_date = start_date(@dmer_senbai2_calc_data)
+      @dmer_senbai2_end_date = end_date(@dmer_senbai2_calc_data)
+      @dmer_senbai2_closing_date = closing_date(@dmer_senbai2_calc_data)
       @dmer_senbai2_this_month_per = @dmer_senbai2_calc_data.this_month_per
       @dmer_senbai2_prev_month_per = @dmer_senbai2_calc_data.prev_month_per
       @dmer_senbai2_price = @dmer_senbai2_calc_data.price
       @dmer_senbai3_calc_data = @calc_periods.find_by(name: "dメル専売成果3")
-      @dmer_senbai3_start_data = start_date(@dmer_senbai3_calc_data)
-      @dmer_senbai3_end_data = end_date(@dmer_senbai3_calc_data)
-      @dmer_senbai3_closing_data = closing_date(@dmer_senbai3_calc_data)
+      @dmer_senbai3_start_date = start_date(@dmer_senbai3_calc_data)
+      @dmer_senbai3_end_date = end_date(@dmer_senbai3_calc_data)
+      @dmer_senbai3_closing_date = closing_date(@dmer_senbai3_calc_data)
       @dmer_senbai3_this_month_per = @dmer_senbai3_calc_data.this_month_per
       @dmer_senbai3_prev_month_per = @dmer_senbai3_calc_data.prev_month_per
       @dmer_senbai3_price = @dmer_senbai3_calc_data.price
@@ -1063,27 +1064,23 @@ class ResultsController < ApplicationController
       # dメル成果2
       @dmer_senbai_result2 = 
         @dmer_senbai_done_slmter.where(result_point: @dmer_senbai2_start_date..@dmer_senbai2_end_date)
-        .where(picture_check_date: ..@dmer_senbai2_end_date).where.not(picture_check_date: nil)
+        .where(picture_check_date: ..@dmer_senbai2_end_date)
         .or(
         @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai2_end_date)
         .where(picture_check_date: @dmer_senbai2_start_date..@dmer_senbai2_end_date)
-        .where.not(picture_check_date: nil)
         )
         @dmer_senbai_result3 = 
           @dmer_senbai_done_slmter.where(result_point: @dmer_senbai3_start_date..@dmer_senbai3_end_date).where(picture_check_date: ..@dmer_senbai3_end_date).where.not(picture_check_date: nil)
-          .where(settlement_second: ..@dmer_senbai3_end_date).where.not(settlement_second: nil)
+          .where(settlement_second: ..@dmer_senbai3_end_date)
             .or(
               @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai3_end_date)
               .where(picture_check_date: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
               .where(settlement_second: ..@dmer_senbai3_end_date)
-              .where.not(settlement_second: nil)
             )
             .or(
               @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai3_end_date)
               .where(picture_check_date: ..@dmer_senbai3_end_date)
-              .where.not(picture_check_date: nil)
               .where(settlement_second: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-              .where.not(settlement_second: nil)
             )
             @dmers_senbai_slmt_done = @dmer_senbai_done.where(settlement: @month.all_month).where(status_settlement: "完了")
             @dmers_senbai_slmt_def = @dmer_senbai_done.where(status_settlement: "決済不備")

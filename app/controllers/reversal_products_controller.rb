@@ -16,6 +16,12 @@ class ReversalProductsController < ApplicationController
     redirect_to reversal_products_path, alert: "#{@reversal_product.store_name}の情報を編集しました。"
   end 
 
+  def destroy 
+    @reversal_product = ReversalProduct.find(params[:id])
+    @reversal_product.destroy 
+    redirect_to reversal_products_path,alert: "#{@reversal_product.store_name}を削除しました。"
+  end 
+
   def import 
     if params[:file].present?
       if ReversalProduct.csv_check(params[:file]).present?

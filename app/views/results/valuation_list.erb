@@ -8,7 +8,6 @@
 <div style="display:flex;">
   <div data-scope-path="users/show"><%# users/showスコープ頭 %>
     <%= render "shared/mypage_links" %>
-    
     <h2>
       <%= @user.name %>：成果一覧
       <%= link_to "<<",valuation_list_results_path(u_id: @user.id,month:@month.prev_month),"data-turbolinks": false, class:"link" %>
@@ -70,6 +69,7 @@
     <th class="valuation-th">第三成果</th>
     <th class="valuation-th">売上</th>
   </tr>
+  <% if (@dmer_done.present?) || (@dmer_slmt_done.present?) || (@dmer_slmt2nd_done.present?) %>
   <tr>
     <td class="valuation-td">dメル</td>
     <td class="valuation-td"><%= @dmer_done.length rescue 0 %></td>
@@ -83,6 +83,7 @@
       ).to_s(:delimited) rescue 0 
     %></td>
   </tr>
+  <% end %>
   <tr>
     <td class="valuation-td">dメル専売</td>
     <td class="valuation-td"><%= @dmer_senbai_result1.length rescue 0 %></td>
@@ -110,6 +111,7 @@
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @paypay_done.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
+  <% if @rakuten_pay_val.present? %>
   <tr>
     <td class="valuation-td">楽天ペイ</td>
     <td class="valuation-td"><%= @rakuten_pay_val.length rescue 0 %></td>
@@ -117,6 +119,7 @@
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @rakuten_pay_val.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
+  <% end %>
   <tr>
     <td class="valuation-td">AirPay</td>
     <td class="valuation-td"><%= @airpay_done.length rescue 0 %></td>
@@ -164,6 +167,7 @@
     <td class="valuation-td"><%= @airpay_pic.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
   <% end %>
+  <% if @demaekan.present? %>
   <tr>
     <td class="valuation-td">出前館</td>
     <td class="valuation-td"><%= @demaekan.length rescue 0 %></td>
@@ -171,6 +175,8 @@
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @demaekan.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
+  <% end %>
+  <% if @itss.present? %>
   <tr>
     <td class="valuation-td">ITSS</td>
     <td class="valuation-td"><%= @itss.length rescue 0 %></td>
@@ -178,6 +184,8 @@
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @itss.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
+  <% end %>
+  <% if @other_valuation.present? %>
   <tr>
     <td class="valuation-td">その他商材</td>
     <td class="valuation-td"><%= @other_valuation.sum(:product_len) rescue 0 %></td>
@@ -185,6 +193,7 @@
     <td class="valuation-td"></td>
     <td class="valuation-td"><%= @other_valuation.sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
+  <% end %>
   <% if @reversal_products.present? %>
   <tr>
     <td class="valuation-td">戻入</td>

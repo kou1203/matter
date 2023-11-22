@@ -45,6 +45,7 @@
           <th>戻入日</th>
           <th>評価売</th>
           <th></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -59,6 +60,7 @@
           <td><%= r_product.reversal_date %></td>
           <td><%= r_product.price %></td>
           <td><%= link_to "編集", edit_reversal_product_path(r_product.id),class: "link" %></td>
+          <td><%= link_to "削除", reversal_product_path(r_product.id),method: :delete,data: {confirm: "#{r_product.store_name}を削除してもよろしいですか？"},class: "link" %></td>
         </tr>
         <% end %>
       </tbody>
