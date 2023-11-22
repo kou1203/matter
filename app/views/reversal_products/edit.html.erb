@@ -1,0 +1,54 @@
+<div data-scope-path="shared/header">
+  <h1><%= @reversal_product.store_name %>情報入力（PayPay）</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;"><%# フレックス %>
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form"><%# CSSスコープ %>
+    <div class="form-main"><%# フォーム外枠 %>
+      <div class="form-title">
+        <h2>獲得情報</h2>
+      </div>
+      <%= form_with model: @reversal_product,  class: "form-frame", local: true do |f| %>
+        <%= render "shared/error_messages", model: f.object %>
+        <div class="form">
+            <p><%= f.label :controll_num, "管理番号", class: "form-text" %></p>
+            <p><%= f.text_field :controll_num , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :product, "商材", class: "form-text" %></p>
+            <p><%= f.collection_select(:product, ReversalProduct.select(:product).distinct, :product, :product,{include_blank: true}, {class: "date-input"})%></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :store_name, "店舗名", class: "form-text" %></p>
+            <p><%= f.text_field :store_name , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :date, "獲得日", class: "form-text" %></p>
+            <p><%= f.date_field :date,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :user_id, "獲得者", class: "form-text" %></p>
+            <p><%= f.collection_select(:user_id, @users, :id, :name,{disabled: true}, {class: "date-input"})%></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :result_date, "成果になった日", class: "form-text" %></p>
+            <p><%= f.date_field :result_date,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :reversal_date, "戻入日", class: "form-text" %></p>
+            <p><%= f.date_field :reversal_date,class: "date-input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :price, "評価売", class: "form-text" %></p>
+            <p><%= f.number_field :price,class: "date-input" %></p>
+        </div>
+    </div><%# フォーム外枠 %>
+        <div class="form-submit">
+            <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        </div>
+    <% end %>
+  </div><%# CSSスコープ %>
+</div><%# フレックス %>

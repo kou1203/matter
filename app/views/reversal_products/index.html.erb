@@ -44,6 +44,7 @@
           <th>成果になった日</th>
           <th>戻入日</th>
           <th>評価売</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -57,6 +58,7 @@
           <td><%= r_product.result_date %></td>
           <td><%= r_product.reversal_date %></td>
           <td><%= r_product.price %></td>
+          <td><%= link_to "編集", edit_reversal_product_path(r_product.id),class: "link" %></td>
         </tr>
         <% end %>
       </tbody>
