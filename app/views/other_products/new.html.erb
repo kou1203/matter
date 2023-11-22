@@ -10,12 +10,13 @@
   <div data-scope-path="shared/form">
   <div class="form-main">
     <div class="form-title">
-      <h1><%= current_user.name %>獲得商材</h1>
+      <h1><%= @user.name %>獲得商材</h1>
     </div>
   <%= form_with(model: @other_product, date: {remote: false}) do |f| %>
   <%= render "shared/error_messages", model: f.object %>
   <h1>商材情報</h1>
-    <%= f.hidden_field :user_id, value: current_user.id %>
+    
+    <%= f.hidden_field :user_id, value: @user.id %>
   <div class="form">
       <p><%= f.label :request, "日付", class: "form-text" %></p>
       <p><%= f.date_field :date , value: Date.today, class: "date-input" %></p>

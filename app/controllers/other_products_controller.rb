@@ -12,6 +12,11 @@ class OtherProductsController < ApplicationController
   end 
 
   def new
+    if params[:user_id].present?
+      @user = User.find(params[:user_id])
+    else  
+      @user = current_user
+    end
     @other_product = OtherProduct.new
 
   end
@@ -32,7 +37,7 @@ class OtherProductsController < ApplicationController
       @other_product[:profit] = @other_product.product_len * 10000
     end
     if @other_product.save 
-      redirect_to results_path, alert: "入力された獲得情報が保存されました。"
+      redirect_to valuation_list_results_path(u_id: @other_product.user_id), alert: "入力された獲得情報が保存されました。"
     else  
       render :new 
     end
