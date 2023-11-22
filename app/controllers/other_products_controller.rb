@@ -37,7 +37,7 @@ class OtherProductsController < ApplicationController
       @other_product[:profit] = @other_product.product_len * 10000
     end
     if @other_product.save 
-      redirect_to valuation_list_results_path(u_id: @other_product.user_id), alert: "入力された獲得情報が保存されました。"
+      redirect_to valuation_list_results_path(u_id: @other_product.user_id), alert: "#{@other_product.user.name}の#{@other_product.product_name}を獲得した情報を保存しました。"
     else  
       render :new 
     end
@@ -53,19 +53,19 @@ class OtherProductsController < ApplicationController
     if @other_product.product_name == "auPay写真"
       @other_product.update(other_product_params)
       @other_product.update(set_other_product_params)
-      redirect_to session[:previous_url], alert: "入力された獲得情報が編集されました。"
+      redirect_to session[:previous_url], alert: "#{@other_product.user.name}の#{@other_product.product_name}を獲得した情報を保存しました。"
     elsif @other_product.product_name == "dメルステッカー"
       @other_product.update(other_product_params)
       @other_product.update(set_dmersticker_product_params)
-      redirect_to session[:previous_url], alert: "入力された獲得情報が編集されました。"
+      redirect_to session[:previous_url], alert: "#{@other_product.user.name}の#{@other_product.product_name}を獲得した情報を保存しました。"
     elsif @other_product.product_name == "AirPayステッカー（自社）"
       @other_product.update(other_product_params)
       @other_product.update(set_airpaysticker_mine_product_params)
-      redirect_to session[:previous_url], alert: "入力された獲得情報が編集されました。"
+      redirect_to session[:previous_url], alert: "#{@other_product.user.name}の#{@other_product.product_name}を獲得した情報を保存しました。"
     elsif @other_product.product_name == "AirPayステッカー（他社）"
       @other_product.update(other_product_params)
       @other_product.update(set_airpaysticker_other_product_params)
-      redirect_to session[:previous_url], alert: "入力された獲得情報が編集されました。"
+      redirect_to session[:previous_url], alert: "#{@other_product.user.name}の#{@other_product.product_name}を獲得した情報を保存しました。"
     else  
       render :edit
     end

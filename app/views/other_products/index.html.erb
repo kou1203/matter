@@ -77,8 +77,8 @@
         </div>
       </article><%# /検索フォーム %>
       <hr>
+    <div class="caution-text"><%= alert %></div><br>
   <% if @other_products.empty? %>
-    <div class="warning"><%= alert %></div>
   <% else %>
       <h1>獲得日：<%= @other_products.minimum(:date) %>（<%= days[@other_products.minimum(:date).wday] %>）〜<%= @other_products.maximum(:date) %>（<%= days[@other_products.maximum(:date).wday] %>）</h1>
     <table >
