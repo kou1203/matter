@@ -20,6 +20,10 @@ class Paypay < ApplicationRecord
   def self.csv_check(file)
     errors = []
     CSV.foreach(file.path, headers: true).with_index(1) do |row, index|
+      if (row["商材"].nil?) || (row["商材"] != "PayPay")
+        errors << "商材がPayPayではない可能性があります。CSVの名前を確認してください。"
+        break
+      end
       user = User.find_by(name: row["獲得者"])
       store_prop = StoreProp.find_by(phone_number_1: row["電話番号1"],name: row["店舗名"])
       errors << "#{index}行目獲得者が不正です" if user.blank? && errors.length < 5
