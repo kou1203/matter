@@ -196,6 +196,7 @@ class AirpayDateProgressesController < ApplicationController
           result_fin_len = result_len
         end 
         calc_valuation
+        airpay_calc_period = @calc_periods.find_by(name: "AirPay成果1")
         @airpay_bonus1_len = airpay_calc_period.bonus1_len
         @airpay_bonus2_len = airpay_calc_period.bonus2_len
         @airpay_bonus1_price = airpay_calc_period.bonus1_price

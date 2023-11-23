@@ -203,6 +203,7 @@ class RakutenPayDateProgressesController < ApplicationController
       end
     # profit_fin = rakuten_pay_company_prev_len + (rakuten_pay_company_done_prev.length.to_f * rakuten_pay_company_calc.prev_month_per).round()
       calc_valuation
+      @rakuten_pay_calc_period = @calc_periods.find_by(name: "楽天ペイ成果1")
       @rakuten_pay1_start_date = start_date(@rakuten_pay_calc_period)
       @rakuten_pay1_end_date = end_date(@rakuten_pay_calc_period)
       @rakuten_pay1_closing_date = closing_date(@rakuten_pay_calc_period)

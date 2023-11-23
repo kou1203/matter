@@ -145,6 +145,7 @@ class PaypayDateProgressesController < ApplicationController
         profit_fin = profit_current
       
       calc_valuation
+      @paypay_calc_period = @calc_periods.find_by(name: "PayPay成果1")
       @paypay1_start_date = start_date(@paypay_calc_period)
       @paypay1_end_date = end_date(@paypay_calc_period)
       valuation_current = paypay_done.sum(:valuation)

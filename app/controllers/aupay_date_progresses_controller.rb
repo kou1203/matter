@@ -190,6 +190,7 @@ class AupayDateProgressesController < ApplicationController
         result_fin_len = aupay_result.length
       end 
       calc_valuation
+      @aupay_calc_period = @calc_periods.find_by(name: "auPay成果1")
       @aupay1_start_date = start_date(@aupay_calc_period)
       @aupay1_end_date = end_date(@aupay_calc_period)
       @aupay1_closing_date = closing_date(@aupay_calc_period)

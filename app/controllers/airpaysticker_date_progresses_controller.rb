@@ -141,6 +141,7 @@ class AirpaystickerDateProgressesController < ApplicationController
             @airpay_sticker_profit.where(pop_ok: "〇")
           ).length
           calc_valuation
+          @airpay_sticker_calc_period = @calc_periods.find_by(name: "AirPayステッカー成果1（自社）")
           valuation_current = AirpaySticker.where(user_id: user_id).where(form_send: @start_date..@end_date).where(sticker_ok: "〇").where(pop_ok: "〇").sum(:valuation)
           get_len = AirpaySticker.where(user_id: user_id).where(form_send: @start_date..@end_date).where(sticker_ok: "〇").where(pop_ok: "〇").length
         end
