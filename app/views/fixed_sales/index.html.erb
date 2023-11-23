@@ -1,1 +1,45 @@
-hello index!
+<% if current_user.position_sub == "99：退職" %>
+  <p>退職者は利用できません。</p>
+<% else %>
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>固定費一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shares/index">
+  <div class="main">
+    <div class="warning"><%= alert %></div>
+    <h2 class="">
+      <%= link_to "<<",fixed_sales_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
+      <%= @month.strftime("%Y年%m月") %>
+      <%= link_to ">>",fixed_sales_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
+    </h2><br>
+    <% if @reversal_products.present? %><%# 戻入案件があるか確認 %>
+    <table>
+      <thead>
+        <tr>
+          <th>拠点</th>
+          <th>名称</th>
+          <th>金額</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @fixed_sales.each do |fixed_sale| %>
+        <tr>
+          <td><%= fixed_sale.base %></td>
+          <td><%= fixed_sale.name %></td>
+          <td><%= fixed_sale.price %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+    <% else %>
+      <h2>まだ今月はまだ固定費の登録はされておりません。</h2>
+    <% end %><%# 戻入案件があるか確認 %>
+  </div>
+</div>
+<% end %>
