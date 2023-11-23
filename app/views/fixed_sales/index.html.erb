@@ -19,6 +19,7 @@
     </h2><br>
     <div class="caution-text"><%= alert %></div>
     <% if @fixed_sales.present? %><%# 戻入案件があるか確認 %>
+    <h2>◆固定費一覧（<%= link_to "選択して削除",delete_page_fixed_sales_path(month: @month),class: "link" %>）</h2>
     <table>
       <thead>
         <tr>

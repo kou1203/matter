@@ -458,5 +458,7 @@ Rails.application.routes.draw do
     collection {post :import}
   end 
 
-  resources :fixed_sales
+  resources :fixed_sales do 
+    collection {get :delete_page}
+  end 
 end

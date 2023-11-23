@@ -19,17 +19,27 @@ class FixedSalesController < ApplicationController
     end
     
   end 
-  
-      def edit
-        @fixed_sale = FixedSale.find(params[:id])
-      end 
-  
-      def update 
-        @fixed_sale = FixedSale.find(params[:id])
-        @fixed_sale.update(fixed_sale_params)
-        redirect_to fixed_sales_path, alert: "#{@fixed_sale.base}：#{@fixed_sale.name}の固定費を編集しました。" 
-  
-      end 
+
+  def edit
+    @fixed_sale = FixedSale.find(params[:id])
+  end 
+
+  def update 
+    @fixed_sale = FixedSale.find(params[:id])
+    @fixed_sale.update(fixed_sale_params)
+    redirect_to fixed_sales_path, alert: "#{@fixed_sale.base}：#{@fixed_sale.name}の固定費を編集しました。" 
+
+  end 
+
+  def delete_page
+    @fixed_sales = FixedSale.where(date: @month.all_month)
+  end
+
+  def destroy
+    @fixed_sale = FixedSale.find(params[:id])
+    @fixed_sale.destroy
+    redirect_to delete_page_fixed_sales_path, alert: "#{@fixed_sale.base}：#{@fixed_sale.name}を削除しました。"
+  end
 
 private
   def set_month 
