@@ -34,7 +34,13 @@
         <tr>
           <td><%= f_base.base %></td>
           <% @fixed_sales.group(:name).order(:name).each do |f_name| %>
-          <td><%= @fixed_sales.where(base: f_base.base).find_by(name: f_name.name).price.to_s(:delimited) rescue 0 %></td>
+            <% f_product = @fixed_sales.where(base: f_base.base).find_by(name: f_name.name) %>
+            <% f_price = f_product.price.to_s(:delimited) rescue 0 %>
+          <% if f_price == 0 %>
+            <td>0</td>
+          <% else %>
+            <td><%= link_to f_price, edit_fixed_sale_path(f_product.id,),"data-turbolinks": false,class: "link" %></td>
+          <% end %>
           <% end %>
           <td><%= @fixed_sales.where(base: f_base.base).sum(:price).to_s(:delimited) %></td>
         </tr>

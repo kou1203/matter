@@ -1,7 +1,7 @@
 class FixedSalesController < ApplicationController
   before_action :set_month
 
-  def index 
+  def index
     @fixed_sales = FixedSale.where(date: @month.all_month)
   end 
 
@@ -17,21 +17,21 @@ class FixedSalesController < ApplicationController
     else  
       render :new
     end
-
-    def edit 
-      @fixed_sale = FixedSale.find(params[:id])
-    end 
-
-    def update 
-      @fixed_sale = FixedSale.find(params[:id])
-      @fixed_sale.update(fixed_sale_params)
-      redirect_to fixed_sales_path, alert: "#{@fixed_sale.base}：#{@fixed_sale.name}の固定費を編集しました。" 
-
-    end 
-
+    
   end 
+  
+      def edit
+        @fixed_sale = FixedSale.find(params[:id])
+      end 
+  
+      def update 
+        @fixed_sale = FixedSale.find(params[:id])
+        @fixed_sale.update(fixed_sale_params)
+        redirect_to fixed_sales_path, alert: "#{@fixed_sale.base}：#{@fixed_sale.name}の固定費を編集しました。" 
+  
+      end 
 
-  private
+private
   def set_month 
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
   end 

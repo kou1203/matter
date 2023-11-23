@@ -1,5 +1,5 @@
 <div data-scope-path="shared/header">
-  <h1>固定費編集（<%= @fixed_sale.name %>）</h1>
+  <h1>固定費編集</h1>
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;"><%# フレックス %>
@@ -12,11 +12,9 @@
         <h2>登録情報</h2>
       </div>
       <%= form_with model: @fixed_sale,  class: "form-frame", local: true do |f| %>
-        <%= render "shared/error_messages", model: f.object %>
-        <%= f.hidden_field :date , value: @month.beginning_of_month %>  
         <div class="form">
             <p><%= f.label :base, "拠点", class: "form-text" %></p>
-            <p><%= f.collection_select(:base, User.group(:base).select(:base).distinct, :base, :base,{include_blank: true}, {class: "date-input"})%></p>
+            <p><%= f.collection_select(:base, User.group(:base).select(:base).distinct, :base, :base,{}, {class: "date-input"})%></p>
         </div>
         <div class="form">
             <p><%= f.label :name, "名称", class: "form-text" %></p>
