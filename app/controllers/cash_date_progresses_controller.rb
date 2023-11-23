@@ -1,4 +1,5 @@
 class CashDateProgressesController < ApplicationController
+  include CommonCalc
   def index 
     # 基本設定
       @month = params[:month] ? Time.parse(params[:month]) : Date.today
@@ -132,8 +133,7 @@ class CashDateProgressesController < ApplicationController
     else 
       @month = Date.today
     end 
-    @calc_periods = CalcPeriod.where(sales_category: "実売")
-    calc_period_and_per
+    calc_profit
     cnt = 0
 
     @shifts = Shift.where(start_time: @start_date..@end_date)
