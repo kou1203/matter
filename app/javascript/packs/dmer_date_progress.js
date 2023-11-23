@@ -20,8 +20,7 @@ document.addEventListener('turbolinks:load', () => {
   const current_data_kanto = window.current_data_kanto
   const current_data_kyushu = window.current_data_kyushu
   const current_data_partner = window.current_data_partner
-  const current_data_femto = window.current_data_femto
-  const current_data_summit = window.current_data_summit
+  const current_data_other = window.current_data_other
   const current_data_retire = window.current_data_retire
 
   const comparison = window.comparison
@@ -30,8 +29,7 @@ document.addEventListener('turbolinks:load', () => {
   const comparison_data_kanto = window.comparison_data_kanto
   const comparison_data_kyushu = window.comparison_data_kyushu
   const comparison_data_partner = window.comparison_data_partner
-  const comparison_data_femto = window.comparison_data_femto
-  const comparison_data_summit = window.comparison_data_summit
+  const comparison_data_other = window.comparison_data_other
   const comparison_data_retire = window.comparison_data_retire
   const users = window.users
   if (element != null) {
@@ -63,11 +61,9 @@ document.addEventListener('turbolinks:load', () => {
             return this.currentItems = current_data_kyushu, this.comparisonItems = comparison_data_kyushu
           } else if (this.val == '2次店') {
             return this.currentItems = current_data_partner, this.comparisonItems = comparison_data_partner
-          } else if (this.val == 'フェムト') {
-            return this.currentItems = current_data_femto, this.comparisonItems = comparison_data_femto
-          } else if (this.val == 'サミット') {
-            return this.currentItems = current_data_summit, this.comparisonItems = comparison_data_summit
           } else if (this.val == 'その他') {
+            return this.currentItems = current_data_other, this.comparisonItems = comparison_data_other
+          } else if (this.val == '退職') {
             return this.currentItems = current_data_retire, this.comparisonItems = comparison_data_retire
           } else {
           }

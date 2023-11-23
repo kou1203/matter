@@ -33,12 +33,11 @@ class RakutenPayDateProgressesController < ApplicationController
     @current_data_kanto = @current_progress.where(base: "関東SS")
     @current_data_kyushu = @current_progress.where(base: "九州SS")
     @current_data_partner = @current_progress.where(base: "2次店")
-    @current_data_femto = @current_progress.where(base: "フェムト")
-    @current_data_summit = @current_progress.where(base: "サミット")
+    @current_data_other = @current_progress.where(base: "その他")
     @current_data_retire = @current_progress.where(base: "退職")
     @current_arry = [
       @current_data_chubu,@current_data_kansai, @current_data_kanto, @current_data_kyushu,
-      @current_data_partner,@current_data_femto, @current_data_summit, @current_data_retire
+      @current_data_partner,@current_data_other, @current_data_retire
     ]
     if  @current_progress.present?
       # 折線グラフ
@@ -94,12 +93,11 @@ class RakutenPayDateProgressesController < ApplicationController
     @comparison_data_kanto = @comparison.where(base: "関東SS")
     @comparison_data_kyushu = @comparison.where(base: "九州SS")
     @comparison_data_partner = @comparison.where(base: "2次店")
-    @comparison_data_femto = @comparison.where(base: "フェムト")
-    @comparison_data_summit = @comparison.where(base: "サミット")
+    @comparison_data_other = @comparison.where(base: "その他")
     @comparison_data_retire = @comparison.where(base: "退職")
     @comparison_arry = [
       @comparison_data_chubu,@comparison_data_kansai, @comparison_data_kanto, @comparison_data_kyushu,
-      @comparison_data_partner,@comparison_data_femto, @comparison_data_summit, @comparison_data_retire
+      @comparison_data_partner,@comparison_data_other, @comparison_data_retire
     ]
   end 
 
