@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_21_021311) do
+ActiveRecord::Schema.define(version: 2023_11_23_031854) do
 
   create_table "activity_bases", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date", null: false
@@ -531,6 +531,13 @@ ActiveRecord::Schema.define(version: 2023_11_21_021311) do
     t.integer "result_fin_len"
     t.date "create_date", null: false
     t.index ["user_id"], name: "index_dmersticker_date_progresses_on_user_id"
+  end
+
+  create_table "fixed_sales", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "base", null: false
+    t.date "date", null: false
+    t.integer "price", null: false
   end
 
   create_table "itsses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|

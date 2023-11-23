@@ -457,4 +457,6 @@ Rails.application.routes.draw do
   resources :reversal_products do 
     collection {post :import}
   end 
+
+  resources :fixed_sales
 end

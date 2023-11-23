@@ -1,0 +1,2 @@
+module FixedSalesHelper
+end
