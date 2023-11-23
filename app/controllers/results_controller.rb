@@ -981,6 +981,36 @@ class ResultsController < ApplicationController
       end 
       calc_valuation
       # dメル
+      @dmer1_calc_periods = @calc_periods.find_by(name: "dメル成果1")
+      @dmer2_calc_periods = @calc_periods.find_by(name: "dメル成果2")
+      @dmer3_calc_periods = @calc_periods.find_by(name: "dメル成果3")
+      @aupay1_calc_periods = @calc_periods.find_by(name: "auPay成果1")
+      @paypay1_calc_periods = @calc_periods.find_by(name: "PayPay成果1")
+      @rakuten_pay1_calc_periods = @calc_periods.find_by(name: "楽天ペイ成果1")
+      @airpay1_calc_periods = @calc_periods.find_by(name: "AirPay成果1")
+      @demaekan1_calc_periods = @calc_periods.find_by(name: "出前館成果1")
+      @itss_calc_periods = @calc_periods.find_by(name: "ITSS")
+      @usen_pay_calc_periods = @calc_periods.find_by(name: "UsenPay")
+      @usen_pay1_start_date = start_date(@usen_pay_calc_periods)
+      @usen_pay1_end_date = end_date(@usen_pay_calc_periods)
+      @itss1_start_date = start_date(@itss_calc_periods)
+      @itss1_end_date = end_date(@itss_calc_periods)
+      @demaekan1_start_date = start_date(@demaekan1_calc_periods)
+      @demaekan1_end_date = end_date(@demaekan1_calc_periods)
+      @airpay1_start_date = start_date(@airpay1_calc_periods)
+      @airpay1_end_date = end_date(@airpay1_calc_periods)
+      @dmer1_start_date = start_date(@dmer1_calc_periods)
+      @dmer1_end_date = end_date(@dmer1_calc_periods)
+      @dmer2_start_date = start_date(@dmer2_calc_periods)
+      @dmer2_end_date = end_date(@dmer2_calc_periods)
+      @dmer3_start_date = start_date(@dmer3_calc_periods)
+      @dmer3_end_date = end_date(@dmer3_calc_periods)
+      @aupay1_start_date = start_date(@aupay1_calc_periods)
+      @aupay1_end_date = end_date(@aupay1_calc_periods)
+      @paypay1_start_date = start_date(@paypay1_calc_periods)
+      @paypay1_end_date = end_date(@paypay1_calc_periods)
+      @rakuten_pay1_start_date = start_date(@rakuten_pay1_calc_periods)
+      @rakuten_pay1_end_date = end_date(@rakuten_pay1_calc_periods)
       @dmer_done = 
         Dmer.where(user_id: @user.id).where(result_point: @dmer1_start_date..@dmer1_end_date)
         .where.not(industry_status: "NG")
@@ -1149,7 +1179,7 @@ class ResultsController < ApplicationController
         UsenPay.where(user_id: @user.id).where(date: ...usen_separate_date).where(result_point: @month.all_month)
         .where.not(status: "自社不備").where.not(status: "自社NG") rescue 0
       @usen_pays_8month_since = 
-        UsenPay.where(user_id: @user.id).where(date: usen_separate_date..).where(date: @month.all_month)
+        UsenPay.where(user_id: @user.id).where(date: usen_separate_date..).where(date: @usen_pay1_start_date..@usen_pay1_end_date)
         .where.not(status: "自社不備").where.not(status: "自社NG").or(
           UsenPay.where(user_id: @user.id).where(date: usen_separate_date..).where(date: @month.all_month).where(status: "自社NG").where.not(share: nil)
         ) rescue 0
