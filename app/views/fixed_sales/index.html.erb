@@ -12,29 +12,40 @@
 </div>
 <div data-scope-path="shares/index">
   <div class="main">
-    <div class="warning"><%= alert %></div>
     <h2 class="">
       <%= link_to "<<",fixed_sales_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
-      <%= @month.strftime("%Y年%m月") %>
+      <%= @month.strftime("%Y年%m月") %><button class="new-btn"><%= link_to "新規登録", new_fixed_sale_path(month: @month),"data-turbolinks": false, class:"reg-link" %></button>
       <%= link_to ">>",fixed_sales_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
     </h2><br>
-    <% if @reversal_products.present? %><%# 戻入案件があるか確認 %>
+    <div class="caution-text"><%= alert %></div>
+    <% if @fixed_sales.present? %><%# 戻入案件があるか確認 %>
     <table>
       <thead>
         <tr>
           <th>拠点</th>
-          <th>名称</th>
-          <th>金額</th>
+          <% @fixed_sales.group(:name).order(:name).each do |f_name| %>
+          <th><%= f_name.name %></th>
+          <% end %>
+          <th>合計</th>
         </tr>
       </thead>
       <tbody>
-        <% @fixed_sales.each do |fixed_sale| %>
+        <% @fixed_sales.group(:base).each do |f_base| %>
         <tr>
-          <td><%= fixed_sale.base %></td>
-          <td><%= fixed_sale.name %></td>
-          <td><%= fixed_sale.price %></td>
+          <td><%= f_base.base %></td>
+          <% @fixed_sales.group(:name).order(:name).each do |f_name| %>
+          <td><%= @fixed_sales.where(base: f_base.base).find_by(name: f_name.name).price.to_s(:delimited) rescue 0 %></td>
+          <% end %>
+          <td><%= @fixed_sales.where(base: f_base.base).sum(:price).to_s(:delimited) %></td>
         </tr>
         <% end %>
+        <tr>
+          <td>合計</td>
+          <% @fixed_sales.group(:name).order(:name).each do |f_name| %>
+          <td><%= @fixed_sales.where(name: f_name.name).sum(:price).to_s(:delimited) %></td>
+          <% end %>
+          <td><%= @fixed_sales.sum(:price).to_s(:delimited) %></td>
+        </tr>
       </tbody>
     </table>
     <% else %>

@@ -117,8 +117,6 @@ class AirpaystickerDateProgressesController < ApplicationController
     cnt = 0
     @airpaystickers_group = OtherProduct.where("product_name LIKE ?", "%AirPayステッカー%").where(date: @month.beginning_of_month..@month.end_of_month)
     @airpaystickers_group.group(:user_id).each do |r|
-      @calc_periods = CalcPeriod.where(sales_category: "実売")
-      calc_period_and_per
       user_id = r.user_id
       @airpaysticker_progress_data = AirpaystickerDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       # 獲得内訳

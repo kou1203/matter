@@ -1,0 +1,35 @@
+<div data-scope-path="shared/header">
+  <h1>固定費編集（<%= @fixed_sale.name %>）</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;"><%# フレックス %>
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form"><%# CSSスコープ %>
+    <div class="form-main"><%# フォーム外枠 %>
+      <div class="form-title">
+        <h2>登録情報</h2>
+      </div>
+      <%= form_with model: @fixed_sale,  class: "form-frame", local: true do |f| %>
+        <%= render "shared/error_messages", model: f.object %>
+        <%= f.hidden_field :date , value: @month.beginning_of_month %>  
+        <div class="form">
+            <p><%= f.label :base, "拠点", class: "form-text" %></p>
+            <p><%= f.collection_select(:base, User.group(:base).select(:base).distinct, :base, :base,{include_blank: true}, {class: "date-input"})%></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :name, "名称", class: "form-text" %></p>
+            <p><%= f.text_field :name , class: "input" %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :price, "固定費", class: "form-text" %></p>
+            <p><%= f.number_field :price,class: "date-input" %></p>
+        </div>
+    </div><%# フォーム外枠 %>
+        <div class="form-submit">
+            <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        </div>
+    <% end %>
+  </div><%# CSSスコープ %>
+</div><%# フレックス %>
