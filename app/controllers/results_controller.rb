@@ -966,7 +966,7 @@ class ResultsController < ApplicationController
       @month = params[:month] ? Time.parse(params[:month]) : Date.today
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       # calc_period_and_perは"@calc_periods"と"@month"の配置を先にするのが必須
-      calc_period_and_per
+      # calc_period_and_per
     end 
     def set_out_come # 成果になった商材などの変数
       if params[:u_id].present?
@@ -1130,6 +1130,8 @@ class ResultsController < ApplicationController
             0
           end
         end 
+        @airpay_progress_data = @calc_periods.find_by(name: "AirPay成果1")
+        @airpay_price = @airpay_progress_data.price
       @airpay_done_val = @airpay_done.sum(:valuation) + @airpay_bonus
       # その他獲得商材
       @demaekan = Demaekan.where(user_id: @user.id).where(first_cs_contract: @demaekan1_start_date..@demaekan1_end_date)

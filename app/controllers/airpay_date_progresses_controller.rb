@@ -208,10 +208,7 @@ class AirpayDateProgressesController < ApplicationController
         @airpay1_this_month_per = airpay_calc_period.this_month_per
         @airpay1_prev_month_per = airpay_calc_period.prev_month_per
         @airpay_price = airpay_calc_period.price
-      valuation_price =
-        if @month >= Date.new(2023,7,1)
-          8000
-        else 
+      valuation_price = 
           if result_fin_len >= @airpay_bonus2_len
             @airpay_bonus2_price
           elsif result_fin_len >= @airpay_bonus1_len
@@ -219,7 +216,6 @@ class AirpayDateProgressesController < ApplicationController
           else  
             @airpay_price
           end 
-        end 
         period_fin_len = 
           (
             (@result_airpay_fin - airpays_done_result26_end_of_month_len).to_f *
