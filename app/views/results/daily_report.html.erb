@@ -20,6 +20,7 @@
     集計期間：<%= @shift_digestion.minimum(:date) %>〜<%= @shift_digestion.maximum(:date) %>
     <%= link_to ">>",daily_report_results_path(month:@month.since(1.days),base_category: @base_category), class:"link" %>
   </h2>
+  
   <div class="separate"><%# 左右に分ける %>
     <div class="left-form"><%# 左側 %>
     <h3 class="sub-title">◆本日稼働結果</h3>

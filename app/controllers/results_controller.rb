@@ -700,6 +700,7 @@ class ResultsController < ApplicationController
   end 
 
   def daily_report
+    calc_valuation
     @base_category = params[:base_category]
     @results = Result.includes(:result_cash,:user).where(user: {base: @base_category}).where(user: {base_sub: "キャッシュレス"}).where(date: @start_date..@month)
     @shift_digestion = 
