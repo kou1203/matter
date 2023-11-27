@@ -20,6 +20,7 @@
     </h2>
     <hr>
       <h2>◆進捗資料の作成（<%= link_to "固定費一覧",fixed_sales_path, class:"link" %>）</h2>
+    <% if @activity_bases.present? %><%# 活動拠点が登録されていないと実売資料が作れないようにする。 %>
       <table>
         <tr>
           <th>進捗データ作成</th>
@@ -82,6 +83,10 @@
           <td><%= link_to "Excelで出力(実売資料)",calc_periods_path(format: :xlsx,month: @month), data: {confirm: "Excelを出力しますか？"}, class: "link",id:'download-csv' %></td>
         </tr>
       </table>
+    <% else %>
+      <h2 class="caution-text"><%= @month.month %>月の活動拠点が登録されておりません。登録してから実売資料を作成してください。</h2><br>
+      <p class="caution-text"><%= link_to "※活動拠点を登録するページへ移動",activity_bases_path, class: "red" %></p>
+    <% end %>
     <% calc_periods_ary.each do |calc_periods| %>
     <% if tb_cnt == 0 %>
       <h2>◆評価売</h2>

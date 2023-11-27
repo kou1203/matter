@@ -7,6 +7,7 @@ class CalcPeriodsController < ApplicationController
     @calc_periods = CalcPeriod.all
     @calc_periods_val = CalcPeriod.where(sales_category: "評価売")
     @calc_periods_prof = CalcPeriod.where(sales_category: "実売")
+    @activity_bases = ActivityBase.where(date: @month.beginning_of_month)
     if DmerDateProgress.where(date: @month).exists?
       @dmer_date_progresses = DmerDateProgress.includes(:user).where(date: @month)
     else
