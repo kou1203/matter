@@ -16,7 +16,7 @@
     <%# 各商材の%を選択 %>
     <h2>
       <%= link_to "<<",ranking_results_path(month:@month.prev_month), class:"link" %>
-      <%= @month.month %>月 (<%= @start_date.strftime("%m月%d日") %>〜<%= @end_date.strftime("%m月%d日") %>)
+      <%= @month.month %>月
       <%= link_to ">>",ranking_results_path(month:@month.next_month), class:"link" %>
     </h2>
   <%# ランキング %>
@@ -206,8 +206,6 @@
     </div>
     <p class="caution-text">
       ※獲得数は不備・NGも入ってます。
-      （<%= @start_date.strftime("%m月%d日") %>〜<%= @end_date.strftime("%m月%d日") %>）
-      の範囲で算出しております。
     </p>
   </div>
 </div>

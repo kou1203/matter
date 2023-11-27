@@ -304,6 +304,20 @@ wb = xlsx_package.workbook
           ]
         end
       end
+    elsif product == "固定費"
+      fixed_array = ["拠点"]
+      @fixed_sales.group(:name).each do |fixed_sale|
+        fixed_array << fixed_sale.name
+      end 
+      sheet.add_row fixed_array
+      @progress_bases.each do |base|
+          fixed_sheet_array = [base]
+          @fixed_sales.group(:name).each do |fixed_sale|
+            fixed_price = @fixed_sales.where(name: fixed_sale.name).where(base: base).sum(:price)
+            fixed_sheet_array << fixed_price
+          end 
+          sheet.add_row fixed_sheet_array
+      end
     elsif product == "会議用まとめ"
       sheet.add_row [
         "拠点", "ユーザー", "役職", 
