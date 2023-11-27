@@ -14,7 +14,7 @@
   <div class="main">
     <h2 class="">
       <%= link_to "<<",delete_page_fixed_sales_path(month:@month.prev_month),"data-turbolinks": false, class:"link" %>
-      <%= @month.strftime("%Y年%m月") %>
+      <%= @month.strftime("%Y年%m月") %>（<%= link_to "戻る", fixed_sales_path, class: "link" %>）
       <%= link_to ">>",delete_page_fixed_sales_path(month:@month.next_month),"data-turbolinks": false, class:"link" %>
     </h2><br>
     <div class="caution-text"><%= alert %></div>
@@ -25,6 +25,7 @@
         <tr>
           <th>拠点</th>
           <th>名称</th>
+          <th>固定費</th>
           <th></th>
         </tr>
       </thead>
@@ -33,6 +34,7 @@
         <tr>
           <td><%= fixed_sale.base %></td>
           <td><%= fixed_sale.name %></td>
+          <td><%= fixed_sale.price.to_s(:delimited) %></td>
           <td><%= link_to "削除", fixed_sale_path(fixed_sale.id),method: :delete,data: {confirm: "#{fixed_sale.base}：#{fixed_sale.name}を削除してもよろしいですか？"},class: "red" %></td>
           <% end %>
         </tr>
