@@ -11,5 +11,5 @@ FactoryBot.define do
     status_update { Date.today }
     remarks { "後確OK" }
     result_point { Date.today }
-  end 
+  end
 end
