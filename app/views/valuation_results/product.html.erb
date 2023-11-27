@@ -50,12 +50,20 @@
           <tr>
             <td><%= i + 1 %></td>
             <td><%= product.customer_num %></td>
+            <% if @product_name.include?("専売") %>
+            <td><%= product.store_name %></td>
+            <% else %>
             <td><%= product.store_prop.name %></td>
+            <% end %>
             <td><%= product.date %></td>
             <td><%= link_to product.user.name,valuation_result_path(product.user_id,product_name: @product_name,month: @month), class:"link" %></td>
             <td><%= product.result_point %></td>
             <td><%= product.settlementer.name rescue "" %></td>
+            <% if @product_name.include?("専売") %>
+            <td><%= product.picture_check_date %></td>
+            <% else %>
             <td><%= product.status_update_settlement %></td>
+            <% end %>
             <td><%= product.settlement_second %></td>
             <td><%= product.valuation_new.to_s(:delimited) %></td>
             <td><%= product.valuation_settlement.to_s(:delimited) %></td>

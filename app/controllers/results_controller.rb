@@ -1100,6 +1100,7 @@ class ResultsController < ApplicationController
         @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai2_end_date)
         .where(picture_check_date: @dmer_senbai2_start_date..@dmer_senbai2_end_date)
         )
+        # dメル成果3
         @dmer_senbai_result3 = 
           @dmer_senbai_done_slmter.where(result_point: @dmer_senbai3_start_date..@dmer_senbai3_end_date).where(picture_check_date: ..@dmer_senbai3_end_date).where.not(picture_check_date: nil)
           .where(settlement_second: ..@dmer_senbai3_end_date)

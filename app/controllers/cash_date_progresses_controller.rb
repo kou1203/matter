@@ -2,21 +2,21 @@ class CashDateProgressesController < ApplicationController
   include CommonCalc
   def index 
     # 基本設定
-      @month = params[:month] ? Time.parse(params[:month]) : Date.today
-      @create_date = params[:create_d]
-      @date_group = CashDateProgress.pluck(:date).uniq
-      @users = User.all
-      @create_group = CashDateProgress.pluck(:create_date).uniq
+    @month = params[:month] ? Time.parse(params[:month]) : Date.today
+    @create_date = params[:create_d]
+    @date_group = CashDateProgress.pluck(:date).uniq
+    @users = User.all
+    @create_group = CashDateProgress.pluck(:create_date).uniq
     # 日付検索
-      if params[:date].present?
-        @month = params[:date].to_date
-      elsif params[:search_date].present?
-        @month = params[:search_date].to_date  
-      elsif CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
-        @month = CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
-      else
-        @month = params[:month].to_date
-      end 
+    if params[:date].present?
+      @month = params[:date].to_date
+    elsif params[:search_date].present?
+      @month = params[:search_date].to_date  
+    elsif CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
+      @month = CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
+    else
+      @month = params[:month].to_date
+    end 
     # 比較対象検索
       if params[:comparison_date].present?
         @comparison_date = params[:comparison_date].to_date

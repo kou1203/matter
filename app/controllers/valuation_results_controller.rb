@@ -33,6 +33,44 @@ class ValuationResultsController < ApplicationController
         ).or(
           @dmers.where(status_settlement: "完了").where(result_point: ..@month.end_of_month).where(status_update_settlement: ..@month.end_of_month).where(settlement_second: @month.all_month)
         )
+
+        # dメル専売
+        @dmer_senbai_done = 
+        DmerSenbai.where(industry_status: "OK")
+        .where(app_check: "OK")
+        .where.not(dup_check: "重複")
+        .where(partner_status: "Active")
+        .where(status: "審査OK")
+      @dmer_senbai_done_slmter = 
+        DmerSenbai.where(industry_status: "OK")
+        .where(app_check: "OK")
+        .where.not(dup_check: "重複")
+        .where(partner_status: "Active")
+        .where(status: "審査OK").where(status_settlement: "完了").where(picture_check: "合格")
+      # dメル成果1
+      @dmer_senbai_result1 = @dmer_senbai_done.where(result_point: @month.all_month)
+      # dメル成果2
+      @dmer_senbai_result2 = 
+        @dmer_senbai_done_slmter.where(result_point: @month.all_month)
+        .where(picture_check_date: ..@month.end_of_month)
+        .or(
+        @dmer_senbai_done_slmter.where(result_point: ..@month.end_of_month)
+        .where(picture_check_date: @month.all_month)
+        )
+        # dメル成果3
+        @dmer_senbai_result3 = 
+          @dmer_senbai_done_slmter.where(result_point: @month.all_month).where(picture_check_date: ..@month.end_of_month).where.not(picture_check_date: nil)
+          .where(settlement_second: ..@month.end_of_month)
+            .or(
+              @dmer_senbai_done_slmter.where(result_point: ..@month.end_of_month)
+              .where(picture_check_date: @month.all_month)
+              .where(settlement_second: ..@month.end_of_month)
+            )
+            .or(
+              @dmer_senbai_done_slmter.where(result_point: ..@month.end_of_month)
+              .where(picture_check_date: ..@month.end_of_month)
+              .where(settlement_second: @month.all_month)
+            )
       @aupay_result = 
         Aupay.where(status: "審査通過").where(status_settlement: "完了").where(status_update_settlement: @month.all_month)
       @paypay_result = 
@@ -70,6 +108,9 @@ class ValuationResultsController < ApplicationController
       @products["dメル（審査完了）"] = [@dmer_result1.length,@dmer_result1.sum(:valuation_new)]
       @products["dメル（決済+写真）"] = [@dmer_result2.length,@dmer_result2.sum(:valuation_settlement)]
       @products["dメル2回目決済"] = [@dmer_result3.length,@dmer_result3.sum(:valuation_second_settlement)]
+      @products["dメル専売（審査完了）"] = [@dmer_senbai_result1.length,@dmer_senbai_result1.sum(:valuation_new)]
+      @products["dメル専売（決済+写真）"] = [@dmer_senbai_result2.length,@dmer_senbai_result2.sum(:valuation_settlement)]
+      @products["dメル専売2回目決済"] = [@dmer_senbai_result3.length,@dmer_senbai_result3.sum(:valuation_second_settlement)]
       @products["auPay（写真）"] = [@aupay_result.length,@aupay_result.sum(:valuation_settlement)]
       @products["PayPay（審査完了）"] = [@paypay_result.length,@paypay_result.sum(:valuation)]
       @products["楽天ペイ（獲得）"] = [@rakuten_pay_result.length,@rakuten_pay_result.sum(:valuation)]
@@ -83,6 +124,9 @@ class ValuationResultsController < ApplicationController
       @product_data["dメル（審査完了）"] = [@dmer_result1.includes(:store_prop,:user)]
       @product_data["dメル（決済+写真）"] = [@dmer_result2.includes(:store_prop,:user)]
       @product_data["dメル2回目決済"] = [@dmer_result3.includes(:store_prop,:user)]
+      @product_data["dメル専売（審査完了）"] = [@dmer_senbai_result1.includes(:user)]
+      @product_data["dメル専売（決済+写真）"] = [@dmer_senbai_result2.includes(:user)]
+      @product_data["dメル専売2回目決済"] = [@dmer_senbai_result3.includes(:user)]
       @product_data["auPay（写真）"] = [@aupay_result.includes(:store_prop,:user)]
       @product_data["PayPay（審査完了）"] = [@paypay_result.includes(:store_prop,:user)]
       @product_data["楽天ペイ（獲得）"] = [@rakuten_pay_result.includes(:store_prop,:user)]

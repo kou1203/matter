@@ -15,6 +15,7 @@ class CalcPeriodsController < ApplicationController
     end 
     @dmer_date_progresses_last_update =  @dmer_date_progresses.maximum(:create_date)
     @dmer_date_progresses = @dmer_date_progresses.where(create_date: @dmer_date_progresses_last_update)
+    @dmer_senbai_users = DmerSenbaiUser.where(date: @month.all_month)
     if DmerSenbaiDateProgress.where(date: @month).exists?
       @dmer_senbai_date_progresses = DmerSenbaiDateProgress.includes(:user).where(date: @month)
     else

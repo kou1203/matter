@@ -34,9 +34,14 @@
           <td><%= @dmer_date_progresses_last_update %></td>
           <td></td>
         </tr>
-        <tr>
+        <tr> 
+          <% if @dmer_senbai_users.present? %>
           <td><%= link_to "dメル専売", progress_create_dmer_senbai_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
           <td><%= link_to "詳細", dmer_senbai_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+          <% else %>
+          <td><%= link_to "dメル専売の人員登録", dmer_senbai_users_path(month: @month),data: {}, class: "red" %></td>
+          <td><%= link_to "詳細", dmer_senbai_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
+          <% end %>
           <td><%= @dmer_senbai_date_progresses_last_update %></td>
           <td></td>
         </tr>
@@ -85,7 +90,7 @@
       </table>
     <% else %>
       <h2 class="caution-text"><%= @month.month %>月の活動拠点が登録されておりません。登録してから実売資料を作成してください。</h2><br>
-      <p class="caution-text"><%= link_to "※活動拠点を登録するページへ移動",activity_bases_path, class: "red" %></p>
+      <p class="caution-text"><%= link_to "※活動拠点を登録するページへ移動",activity_bases_path(month: @month), class: "red" %></p>
     <% end %>
     <% calc_periods_ary.each do |calc_periods| %>
     <% if tb_cnt == 0 %>
