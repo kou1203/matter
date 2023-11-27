@@ -1,5 +1,5 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
-<% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %><%# 閲覧制限 %>
+<% if current_user.position_sub == "管理" %>
 <div data-scope-path="shared/header">
   <h1>ITSS明細成果一覧</h1>
   <%= render "shared/header" %>
