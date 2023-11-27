@@ -24,19 +24,23 @@ class CashDateProgressesController < ApplicationController
           CashDateProgress.where(date: @comparison_date)
         @comparison =
           @comparison.where(create_date: @comparison.maximum(:create_date))
+        @comparison_fixed_sales = FixedSale.where(date: @comparison_date.all_month)
       else  
         if @current_progress.present?
           @comparison = 
             CashDateProgress.where(date: @current_progress.first.date.prev_month)
           @comparison = 
             @comparison.where(create_date: @comparison.maximum(:create_date))
+          @comparison_fixed_sales = FixedSale.where(date: @current_progress.prev_month.all_month)
         else  
           @comparison = CashDateProgress.none
+          @comparison_fixed_sales = FixedSale.none
         end 
       end 
     # 作成日を変更
+      @current_fixed_sales = FixedSale.where(date: @month.all_month)
       @current_progress = 
-      CashDateProgress.where(date: @month)
+        CashDateProgress.where(date: @month)
       if params[:create_d].present?
         @current_progress = 
           @current_progress.where(create_date: params[:create_d].to_date)
@@ -102,12 +106,11 @@ class CashDateProgressesController < ApplicationController
       @current_data_kanto = @current_progress.where(base: "関東SS")
       @current_data_kyushu = @current_progress.where(base: "九州SS")
       @current_data_partner = @current_progress.where(base: "2次店")
-      @current_data_femto = @current_progress.where(base: "フェムト")
-      @current_data_summit = @current_progress.where(base: "サミット")
+      @current_data_other = @current_progress.where(base: "その他")
       @current_data_retire = @current_progress.where(base: "退職")
       @current_arry = [
         @current_data_chubu,@current_data_kansai, @current_data_kanto, @current_data_kyushu,
-        @current_data_partner,@current_data_femto, @current_data_summit, @current_data_retire
+        @current_data_partner,@current_data_other , @current_data_retire
       ]
     # 拠点別現状売上
       @comparison_data_chubu = @comparison.where(base: "中部SS")
@@ -115,12 +118,11 @@ class CashDateProgressesController < ApplicationController
       @comparison_data_kanto = @comparison.where(base: "関東SS")
       @comparison_data_kyushu = @comparison.where(base: "九州SS")
       @comparison_data_partner = @comparison.where(base: "2次店")
-      @comparison_data_femto = @comparison.where(base: "フェムト")
-      @comparison_data_summit = @comparison.where(base: "サミット")
+      @comparison_data_other = @comparison.where(base: "その他")
       @comparison_data_retire = @comparison.where(base: "退職")
       @comparison_arry = [
         @comparison_data_chubu,@comparison_data_kansai, @comparison_data_kanto, @comparison_data_kyushu,
-        @comparison_data_partner,@comparison_data_femto, @comparison_data_summit, @comparison_data_retire
+        @comparison_data_partner,@comparison_data_other, @comparison_data_retire
       ]
   end 
 
@@ -266,11 +268,11 @@ class CashDateProgressesController < ApplicationController
         elsif shift.user.base_sub == "キャッシュレス"
           user_base = shift.user.base
         else  
-          user_base = shift.user.base_sub
+          user_base = "その他"
         end 
     # 中身
       cash_progress_params = {
-        user_id: shift.user_id                                          ,
+        user_id: shift.user_id                                    ,
         base: user_base                                           ,
         date: @month                                              ,
         shift_schedule: shift_schedule                            ,
@@ -290,12 +292,12 @@ class CashDateProgressesController < ApplicationController
         paypay_profit_fin: paypay_profit_fin                      ,
         rakuten_pay_profit_fin: rakuten_pay_profit_fin            ,
         airpay_profit_fin: airpay_profit_fin                      ,
-        demaekan_profit_fin: demaekan_profit_current                  ,
-        austicker_profit_fin: austicker_profit_current                ,
-        dmersticker_profit_fin: dmersticker_profit_current            ,
-        profit_fin: profit_fin                                        ,
-        other_profit_current: other_profit_current                    ,
-        other_profit_fin: other_profit_fin                            ,
+        demaekan_profit_fin: demaekan_profit_current              ,
+        austicker_profit_fin: austicker_profit_current            ,
+        dmersticker_profit_fin: dmersticker_profit_current        ,
+        profit_fin: profit_fin                                    ,
+        other_profit_current: other_profit_current                ,
+        other_profit_fin: other_profit_fin                        ,
         # 評価売
         dmer_valuation_current: dmer_valuation_current                  ,
         aupay_valuation_current: aupay_valuation_current                ,

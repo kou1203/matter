@@ -114,6 +114,7 @@ class CalcPeriodsController < ApplicationController
     @users = User.where.not(position: "退職")
 
     @products = ["合計","dメル", "dメル専売","auPay", "PayPay", "楽天ペイ","AirPay","AirPayステッカー","UsenPay","会議用まとめ"]
+    @fixed_sales = FixedSale.where(date: @month.all_month)
     @activity_bases = ActivityBase.includes(:user).where(date: @month.beginning_of_month)
     respond_to do |format|
       format.html

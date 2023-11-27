@@ -34,16 +34,14 @@
       window.current_data_kanto=<%= @current_data_kanto.to_json.html_safe %>;
       window.current_data_kyushu=<%= @current_data_kyushu.to_json.html_safe %>;
       window.current_data_partner=<%= @current_data_partner.to_json.html_safe %>;
-      window.current_data_femto=<%= @current_data_femto.to_json.html_safe %>;
-      window.current_data_summit=<%= @current_data_summit.to_json.html_safe %>;
+      window.current_data_other=<%= @current_data_other.to_json.html_safe %>;
       window.current_data_retire=<%= @current_data_retire.to_json.html_safe %>;
       window.comparison_data_chubu=<%= @comparison_data_chubu.to_json.html_safe %>;
       window.comparison_data_kansai=<%= @comparison_data_kansai.to_json.html_safe %>;
       window.comparison_data_kanto=<%= @comparison_data_kanto.to_json.html_safe %>;
       window.comparison_data_kyushu=<%= @comparison_data_kyushu.to_json.html_safe %>;
       window.comparison_data_partner=<%= @comparison_data_partner.to_json.html_safe %>;
-      window.comparison_data_femto=<%= @comparison_data_femto.to_json.html_safe %>;
-      window.comparison_data_summit=<%= @comparison_data_summit.to_json.html_safe %>;
+      window.comparison_data_other=<%= @comparison_data_other.to_json.html_safe %>;
       window.comparison_data_retire=<%= @comparison_data_retire.to_json.html_safe %>;
       window.users=<%= @users.to_json.html_safe %>;
     </script>
@@ -100,7 +98,7 @@
               <th class="progress-th1" colspan="2">楽天ペイ</th>
               <th class="progress-th1" colspan="2">AirPay</th>
               <th class="progress-th1" colspan="2">その他</th>
-              <th class="progress-th1" colspan="3">合計実売</th>
+              <th class="progress-th1" colspan="4">合計実売</th>
             </tr>
             <tr>
               <th class="progress-th2">比較対象</th>
@@ -114,6 +112,7 @@
               <% end %>
               <th class="progress-th2">Ave</th>
               <th class="progress-th2">現状</th>
+              <th class="progress-th2">固定費</th>
               <th class="progress-th2">終着</th>
             </tr>
             <tr v-if="isDifActive">
@@ -150,7 +149,8 @@
               %></td>
               <td class="progress-td"><%= (@current_progress.sum(:profit_fin).to_f / @current_progress.sum(:shift_schedule)).round().to_s(:delimited) %></td>
               <td class="progress-td"><%= @current_progress.sum(:profit_current).to_s(:delimited) %></td>
-              <td class="progress-td"><%= @current_progress.sum(:profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @current_fixed_sales.sum(:price).to_s(:delimited) %></td>
+              <td class="progress-td"><%= (@current_progress.sum(:profit_fin) + @current_fixed_sales.sum(:price)).to_s(:delimited) %></td>
             </tr>
             <% if @comparison.present? %>
             <tr v-if="isDifActive">
@@ -187,7 +187,8 @@
               %></td>
               <td class="progress-td"><%= (@comparison.sum(:profit_fin).to_f / @comparison.sum(:shift_schedule)).round().to_s(:delimited) %></td>
               <td class="progress-td"><%= @comparison.sum(:profit_current).to_s(:delimited) %></td>
-              <td class="progress-td"><%= @comparison.sum(:profit_fin).to_s(:delimited) %></td>
+              <td class="progress-td"><%= @comparison_fixed_sales.sum(:price).to_s(:delimited) %></td>
+              <td class="progress-td"><%= (@comparison.sum(:profit_fin) + @comparison_fixed_sales.sum(:price)).to_s(:delimited) %></td>
             </tr>
             <tr>
               <td class="difference-td" colspan="3">差異</td>
@@ -244,8 +245,11 @@
               </td>
               <td class="difference-td <%= "red" if 0 > @current_progress.sum(:profit_current) - @comparison.sum(:profit_current) %>">
                 <%= (@current_progress.sum(:profit_current) - @comparison.sum(:profit_current)).to_s(:delimited) %></td>
-              <td class="difference-td <%= "red" if 0 > @current_progress.sum(:profit_fin) - @comparison.sum(:profit_fin) %>">
-                <%= (@current_progress.sum(:profit_fin) - @comparison.sum(:profit_fin)).to_s(:delimited) %>
+              <td class="difference-td <%= "red" if 0 > @current_fixed_sales.sum(:price) - @comparison_fixed_sales.sum(:price) %>">
+                <%= (@current_fixed_sales.sum(:price) - @comparison_fixed_sales.sum(:price)).to_s(:delimited) %>
+              </td>
+              <td class="difference-td <%= "red" if 0 > (@current_progress.sum(:profit_fin) + @current_fixed_sales.sum(:price)) - (@comparison.sum(:profit_fin) + @comparison_fixed_sales.sum(:price)) %>">
+                <%= ((@current_progress.sum(:profit_fin) + @current_fixed_sales.sum(:price)) - (@comparison.sum(:profit_fin) + @comparison_fixed_sales.sum(:price))).to_s(:delimited) %>
               </td>
             </tr>
             <% end %>
@@ -414,9 +418,8 @@
                 <option value="関東SS">関東SS</option>
                 <option value="九州SS">九州SS</option>
                 <option value="2次店">２次店</option>
-                <option value="フェムト">フェムト</option>
-                <option value="サミット">サミット</option>
                 <option value="その他">その他</option>
+                <option value="退職">退職</option>
           </select>
           売上内訳
         </h2>

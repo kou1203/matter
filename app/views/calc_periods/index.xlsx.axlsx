@@ -3,10 +3,11 @@ wb = xlsx_package.workbook
 @products.each do |product|
   wb.add_worksheet(name: product) do |sheet|
     if product == "合計"
-      sheet.add_row [ "拠点", "Ave", "現状実売", "終着実売", "dメル一次成果現状実売", "dメル一次成果終着実売"]
+      sheet.add_row [ "拠点", "Ave", "現状実売","固定費", "終着実売", "dメル一次成果現状実売", "dメル一次成果終着実売"]
       @progress_bases.each do |base|
         dmer_date_progress = @dmer_date_progresses.where(base: base)
         cash_date_progress = @cash_date_progresses.where(base: base)
+        fixed_sales_base = @fixed_sales.where(base: base).sum(:price)
         if (cash_date_progress.sum(:profit_fin) == 0) || (cash_date_progress.sum(:shift_schedule) == 0)
           average = 0
         else  
@@ -15,15 +16,15 @@ wb = xlsx_package.workbook
               cash_date_progress.sum(:profit_fin).to_f / cash_date_progress.sum(:shift_schedule)
             ).round()
         end 
-        
+         
         sheet.add_row [
-          base, average, cash_date_progress.sum(:profit_current), cash_date_progress.sum(:profit_fin), 
+          base, average, cash_date_progress.sum(:profit_current), fixed_sales_base ,cash_date_progress.sum(:profit_fin) + fixed_sales_base, 
           dmer_date_progress.sum(:profit_current1),dmer_date_progress.sum(:profit_fin1)
         ]
       end 
         sum_average = (@cash_date_progresses.where("base LIKE ?", "%SS%").sum(:profit_fin) / @cash_date_progresses.where("base LIKE ?", "%SS%").sum(:shift_schedule)).round()
         sheet.add_row [
-          "全拠点", sum_average, @cash_date_progresses.sum(:profit_current), @cash_date_progresses.sum(:profit_fin),
+          "全拠点", sum_average, @cash_date_progresses.sum(:profit_current),@fixed_sales.sum(:price),@cash_date_progresses.sum(:profit_fin) + @fixed_sales.sum(:price),
           @dmer_date_progresses.sum(:profit_current1), @dmer_date_progresses.sum(:profit_fin1)
         ]
 
