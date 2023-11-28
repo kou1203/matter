@@ -10,7 +10,7 @@
   <div data-scope-path="shares/index">
       <h2>
         <%= link_to "<<",dmer_senbai_users_path(month: @month.prev_month), class:"link" %>
-        <%= @month.strftime("%Y年%m月") %>dメル専売人員一覧
+        <%= @month.strftime("%Y年%m月") %>dメル専売人員一覧<button class="new-btn"><%= link_to "商流追加", new_select_column_path(category: "d専売商流"),"data-turbolinks": false, class:"reg-link" %></button>
         <%= link_to ">>",dmer_senbai_users_path(month: @month.next_month), class:"link" %>
       </h2><br>
       <hr>

@@ -10,7 +10,7 @@ class SelectColumnsController < ApplicationController
     @select_column = SelectColumn.new(select_column_params)
     @select_column.save 
     if @select_column.save 
-      redirect_to session[:previous_url]
+      redirect_to session[:previous_url],alert: "#{@select_column.category}に#{@select_column.name}を追加しました。"
     else 
       render :new 
     end 
