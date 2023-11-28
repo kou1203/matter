@@ -461,4 +461,6 @@ Rails.application.routes.draw do
   resources :fixed_sales do 
     collection {get :delete_page}
   end 
+
+  resources :select_columns
 end
