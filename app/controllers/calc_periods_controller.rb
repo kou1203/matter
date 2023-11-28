@@ -134,6 +134,7 @@ class CalcPeriodsController < ApplicationController
   end 
 
   def new 
+    @select_columns = SelectColumn.where(category: "成果設定")
     @calc_period = CalcPeriod.new 
   end 
 

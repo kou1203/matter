@@ -15,16 +15,8 @@
       </div>
       <%= form_with(model: @calc_period, date: {remote: false}) do |f| %>
         <div class="form">
-            <p><%= f.label :name, "商材名", class: "form-text" %></p>
-            <p><%= f.select :name, {
-                "各商材獲得": "各商材獲得","dメル成果1": "dメル成果1", "dメル成果2": "dメル成果2",
-                "dメル成果3": "dメル成果3","auPay成果1": "auPay成果1","PayPay成果1": "PayPay成果1", 
-                "楽天ペイ成果1": "楽天ペイ成果1","楽天ペイ成果1（法人）": "楽天ペイ成果1（法人）","AirPay成果1": "AirPay成果1", "出前館成果1": "出前館成果1",
-                "AirPayステッカー成果1（自社）": "AirPayステッカー成果1（自社）","AirPayステッカー成果1（他社）": "AirPayステッカー成果1（他社）",
-                "UsenPay": "UsenPay","UsenPay獲得": "UsenPay獲得",
-                "dメル専売成果1": "dメル専売成果1","dメル専売成果2": "dメル専売成果2", "dメル専売成果3": "dメル専売成果3",
-                "dメル専売（ドコモ）成果": "dメル専売（ドコモ）成果", "dメル専売（メディア）成果": "dメル専売（メディア）成果",
-                },{include_blank: true}, {class: "slct-input not-entered", id: "name"} %></p>
+            <p><%= f.label :name, "商材名", class: "form-text" %>（<%= link_to "成果商材追加", new_select_column_path(category: "成果設定"),"data-turbolinks": false, class:"link" %>）</p>
+            <p><%= f.collection_select(:name, @select_columns.select(:name).distinct, :name, :name,{include_blank: true}, {class: "date-input"})%></p>
         </div>
         <div class="form">
             <p><%= f.label :sales_category, "売上区分", class: "form-text" %></p>

@@ -9,7 +9,7 @@
   <div data-scope-path="shared/form"><%# CSSスコープ %>
     <div class="form-main"><%# フォーム外枠 %>
       <div class="form-title">
-        <h2><%= @category %>登録情報</h2>
+        <h2><%= @category %>：登録情報</h2>
       </div>
       <%= form_with model: @select_column,  class: "form-frame", local: true do |f| %>
         <%= render "shared/error_messages", model: f.object %>
