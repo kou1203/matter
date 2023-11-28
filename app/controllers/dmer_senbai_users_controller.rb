@@ -6,6 +6,7 @@ class DmerSenbaiUsersController < ApplicationController
   end 
 
   def new 
+    @select_columns = SelectColumn.where(category: "d専売商流")
     @user = User.find(params[:user_id])
     @dmer_senbai_user = DmerSenbaiUser.new()
   end 
@@ -20,6 +21,7 @@ class DmerSenbaiUsersController < ApplicationController
   end 
 
   def edit 
+    @select_columns = SelectColumn.where(category: "d専売商流")
     @dmer_senbai_user = DmerSenbaiUser.find(params[:id])
   end 
   
