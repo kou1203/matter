@@ -1,0 +1,2 @@
+class SelectColumn < ApplicationRecord
+end

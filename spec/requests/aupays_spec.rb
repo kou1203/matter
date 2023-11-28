@@ -20,5 +20,23 @@ describe AupaysController, type: :request do
       end 
     end 
 
-  end 
+  end
+
+  # describe 'import' do 
+  #   context 'importできるケース' do 
+  #     before do 
+  #       @store_prop = FactoryBot.create(:store_prop)
+  #       @user = FactoryBot.create(:user)
+  #     end 
+  #     let(:csv_file) {'test.csv'}
+  #     subject do
+  #       post import_aupays_path, params: {
+  #         csv_file: fixture_file_upload(csv_file, 'text/csv')
+  #       }  
+  #     end
+  #     it 'import_csv' do
+  #       expect{subject}.to change(Aupay,:count).by(1)
+  #     end
+  #   end 
+  # end  
 end 

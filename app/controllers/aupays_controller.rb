@@ -44,7 +44,7 @@ class AupaysController < ApplicationController
       redirect_to aupays_path, alert: "インポートに失敗しました。ファイルを選択してください"
     end
   end 
-
+  
   def show 
     @users = User.all
   end 

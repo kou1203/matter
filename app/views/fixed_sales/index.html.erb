@@ -55,8 +55,9 @@
         </tr>
       </tbody>
     </table>
+    <h2><%= link_to "戻る",calc_periods_path,class: "" %></h2>
     <% else %>
-      <h2>まだ今月はまだ固定費の登録はされておりません。</h2>
+      <h2>まだ今月はまだ固定費の登録はされておりません（<%= link_to "戻る",calc_periods_path,class: "link" %>）</h2>
     <% end %><%# 戻入案件があるか確認 %>
   </div>
 </div>

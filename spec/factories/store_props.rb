@@ -1,7 +1,7 @@
 FactoryBot.define do 
   factory :store_prop do 
     race { "個人" }
-    name { "hoge" }
+    name { "テスト" }
     gender_main { "男性" }
     person_main_name { "foo" }
     person_main_kana { "フー" }

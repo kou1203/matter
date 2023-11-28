@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_11_23_031854) do
+ActiveRecord::Schema.define(version: 2023_11_28_081444) do
 
   create_table "activity_bases", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date", null: false
@@ -1605,6 +1605,11 @@ ActiveRecord::Schema.define(version: 2023_11_23_031854) do
     t.date "reversal_date", null: false
     t.integer "price", null: false
     t.index ["user_id"], name: "index_reversal_products_on_user_id"
+  end
+
+  create_table "select_columns", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "category", null: false
+    t.string "name", null: false
   end
 
   create_table "shifts", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
