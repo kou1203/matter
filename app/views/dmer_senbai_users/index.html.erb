@@ -10,14 +10,14 @@
   <div data-scope-path="shares/index">
       <h2>
         <%= link_to "<<",dmer_senbai_users_path(month: @month.prev_month), class:"link" %>
-        <%= @month.strftime("%Y年%m月") %>dメル専売人員一覧<button class="new-btn"><%= link_to "商流追加", new_select_column_path(category: "d専売商流"),"data-turbolinks": false, class:"reg-link" %></button>
+        <%= @month.strftime("%Y年%m月") %>dメル専売人員一覧
         <%= link_to ">>",dmer_senbai_users_path(month: @month.next_month), class:"link" %>
       </h2><br>
       <hr>
-      <div class="caution-text"><%= alert %></div>
-      <div style="display:flex;">
+    <div class="caution-text"><%= alert %></div>
+    <div style="display:flex;"><%# 専売人員 %>
       <% @bases.each do |base| %>
-          <div>
+        <div>
           <h2><%= base %>人員</h2>
           <table>
             <thead>
@@ -48,8 +48,29 @@
               <% end %>
             </tbody>
           </table>
-          </div>
-      <% end %>
         </div>
+      <% end %>
+    </div><%# 専売人員 %>
+    <div><%# 現在の商材一覧 %>
+      <h2>現在活動中の商流（<%= link_to "商流追加", new_select_column_path(category: "d専売商流"),"data-turbolinks": false, class:"link" %>）</h2>
+      <table>
+        <thead>
+        <tr>
+          <th class="green-th">商流</th>
+          <th class="green-th"></th>
+          <th class="green-th"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @dmer_clients.each do |dmer_client| %>
+        <tr>
+          <td><%= dmer_client.name %></td>
+          <td><%= link_to "編集",edit_select_column_path(dmer_client.id), "data-turbolinks": false, class:"link" %></td>
+          <td><%= link_to "削除",select_column_path(dmer_client.id),method: :delete, data: {confirm: "#{dmer_client.category}：#{dmer_client.name}を削除してもよろしいですか？"}, class:"link" %></td>
+        </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div><%# /現在の商材一覧 %>
   </div>
 </div>
