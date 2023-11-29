@@ -1,5 +1,9 @@
 class SelectColumnsController < ApplicationController
 
+  def index 
+    
+  end 
+
   def new 
     @category = params[:category]
     @select_column = SelectColumn.new 

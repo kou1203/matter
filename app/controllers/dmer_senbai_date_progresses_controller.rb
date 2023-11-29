@@ -5,8 +5,6 @@ class DmerSenbaiDateProgressesController < ApplicationController
   def index 
     calc_profit
     dmer_senbai_calc_profit
-    calc_valuation
-    dmer_senbai_calc_valuation2
     @create_date = params[:create_d]
     @date_group = DmerSenbaiDateProgress.pluck(:date).uniq
     @create_group = DmerSenbaiDateProgress.pluck(:create_date).uniq
@@ -162,25 +160,21 @@ class DmerSenbaiDateProgressesController < ApplicationController
       # 実売-----------------------------------------------  
         dmer_senbai_calc_profit # 実売を計算する期間, 単価, 成果率を取得
       # 終着（当月が成果になる率、２次成果の%と単価で出すようにする）, 一緒に現状売上の期間も指定する。
-      if senbai_user.present? && senbai_user.client == "ドコモ" # dメル成果1の情報参照
-        profit_fin = @dmer_senbai_docomo_price * (result_dmer_sum.to_f / shift_digestion * shift_schedule * @dmer_senbai_docomo_this_month_per).round() rescue 0
-      elsif senbai_user.present? && senbai_user.client == "メディア" # dメル成果2の情報参照
-        profit_fin = @dmer_senbai_media_price * (result_dmer_sum.to_f / shift_digestion * shift_schedule * @dmer_senbai_media_this_month_per).round() rescue 0
-      else 
-        profit_fin = 0
-      end
+        d_calc_data = @calc_periods.where("name LIKE ?","%dメル専売%").where("name LIKE ?","%#{senbai_user.client}%").first
+        profit_fin = d_calc_data.price * (result_dmer_sum.to_f / shift_digestion * shift_schedule * d_calc_data.this_month_per).round() rescue 0
       # 現状売上 （当月で成果になった売上）
         dmer_senbais_slmter_ok = 
           dmer_senbais_slmter.where(industry_status: "OK")
           .where(app_check: "OK").where.not(dup_check: "重複")
           .where(partner_status: "Active").where(status: "審査OK")
           .where(status_settlement: "完了").where(picture_check: "合格")
-      if dmer_senbais_slmter.present?
-        profit_current = 
-        dmer_senbais_slmter_ok.where(client: "ドコモ").where(picture_check_date: @dmer_senbai_docomo_start_date..@dmer_senbai_docomo_end_date).sum(:profit) +
-        dmer_senbais_slmter_ok.where(client: "メディア").where(picture_check_date: @dmer_senbai_media_start_date..@dmer_senbai_media_end_date).sum(:profit)
-      else  
         profit_current = 0
+      if dmer_senbais_slmter.present?
+        DmerSenbai.group(:client).each do |d_client| 
+          d_calc_data = @calc_periods.where("name LIKE ?","%dメル専売%").where("name LIKE ?","%#{d_client.client}%").first
+          # 現状売上
+          profit_current += dmer_senbais_slmter_ok.where(client: d_client.client).where(picture_check_date: start_date(d_calc_data)..end_date(d_calc_data)).sum(:profit)
+        end 
       end
 
       if profit_current >= profit_fin 

@@ -49,5 +49,12 @@ module DmerSenbaiCalc
     @dmer_senbai_media_this_month_per = @dmer_senbai_media_calc_data.this_month_per
     @dmer_senbai_media_prev_month_per = @dmer_senbai_media_calc_data.prev_month_per
     @dmer_senbai_media_price = @dmer_senbai_media_calc_data.price
+    @dmer_senbai_max_calc_data = @calc_periods.find_by(name: "dメル専売（マックス）成果")
+    @dmer_senbai_max_start_date = start_date(@dmer_senbai_max_calc_data)
+    @dmer_senbai_max_end_date = end_date(@dmer_senbai_max_calc_data)
+    @dmer_senbai_max_closing_date = closing_date(@dmer_senbai_max_calc_data)
+    @dmer_senbai_max_this_month_per = @dmer_senbai_max_calc_data.this_month_per
+    @dmer_senbai_max_prev_month_per = @dmer_senbai_max_calc_data.prev_month_per
+    @dmer_senbai_max_price = @dmer_senbai_max_calc_data.price
   end 
 end 
