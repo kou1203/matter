@@ -5,7 +5,7 @@ RSpec.describe 'PayPayのViewテスト',type: :system do
       @paypay = FactoryBot.create(:paypay)
       sign_in @paypay.user
     end 
-    describe '表示テスト' do 
+    describe '登録画面の表示テスト' do 
       before do 
         visit new_paypay_path(store_id: @paypay.store_prop_id)
       end 
