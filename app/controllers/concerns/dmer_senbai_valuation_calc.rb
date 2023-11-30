@@ -26,6 +26,10 @@ module DmerSenbaiValuationCalc
       .where.not(dup_check: "重複")
       .where(partner_status: "Active")
       .where(status: "審査OK")
+    # 決済内訳
+    @dmers_senbai_slmt_done = @dmer_senbai_done.where(status_settlement: "完了")
+    @dmers_senbai_slmt_def = @dmer_senbai_done.where(status_settlement: "決済不備")
+    @dmers_senbai_slmt_pic_def = @dmer_senbai_done.where(status_settlement: "写真不備")
     # 不備・NG
     @dmer_senbais_def = 
       @dmer_senbais.where(status: "審査NG")

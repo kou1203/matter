@@ -197,7 +197,6 @@ class ResultsController < ApplicationController
       @rakuten_pay_date_progress = RakutenPayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @airpay_date_progress = AirpayDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @usen_pay_date_progress = OtherProductDateProgress.where(product_name: "UsenPay").where(user_id: @user.id).where(date: @month.all_month).last
-      @demaekan_date_progress = DemaekanDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @austicker_date_progress = AustickerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @dmersticker_date_progress = DmerstickerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @airpaysticker_date_progress = AirpaystickerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
@@ -800,8 +799,6 @@ class ResultsController < ApplicationController
     @austicker_date_progress = @austicker_date_progress.where(date: @austicker_date_progress.maximum(:date)).where(create_date: @austicker_date_progress.maximum(:create_date))
     @dmersticker_date_progress = DmerstickerDateProgress.includes(:user).where(date: @month.all_month).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @dmersticker_date_progress = @dmersticker_date_progress.where(date: @dmersticker_date_progress.maximum(:date)).where(create_date: @dmersticker_date_progress.maximum(:create_date))
-    @demaekan_date_progress = DmerstickerDateProgress.includes(:user).where(date: @month.all_month).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
-    @demaekan_date_progress = @demaekan_date_progress.where(date: @demaekan_date_progress.maximum(:date)).where(create_date: @demaekan_date_progress.maximum(:create_date))
     @itss_date_progress = OtherProductDateProgress.includes(:user).where(product_name: "ITSS").where(date: @month.all_month).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @itss_date_progress = @itss_date_progress.where(date: @itss_date_progress.maximum(:date)).where(create_date: @itss_date_progress.maximum(:create_date))
     

@@ -896,7 +896,7 @@
           <thead>
             <tr>
               <th class="total-th">商材</th>
-              <th class="total-th">決済</th>
+              <th class="total-th">決済完了</th>
               <th class="total-th">決済不備</th>
               <th class="total-th">写真不備</th>
             </tr>
@@ -1003,7 +1003,6 @@
           <th class="total-th">楽天ペイ</th>
           <th class="total-th">AirPay</th>
           <th class="total-th">UsenPay</th>
-          <th class="total-th">出前館</th>
           <th class="total-th">その他<br>商材</th>
           <th class="total-th">全商材</th>
         </tr>
@@ -1020,7 +1019,6 @@
           <td class="total-td"><%= @rakuten_pay_val_len rescue 0 %></td>
           <td class="total-td"><%= @airpay_date_progress.result_len rescue 0 %></td>
           <td class="total-td"><%= @usen_pay_val_len rescue 0 %></td>
-          <td class="total-td"><%= @demaekan_date_progress.result_len rescue 0 %></td>
           <td class="total-td"><%=  %>-</td>
           <td class="total-td"><%=  %>-</td>
         </tr>
@@ -1038,7 +1036,6 @@
           <td class="total-td"><%= @rakuten_pay_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @airpay_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @usen_pay_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
-          <td class="total-td"><%= @demaekan_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= 
             (
               @austicker_date_progress.valuation_current +
@@ -1062,7 +1059,6 @@
           <td class="total-td"><%= @rakuten_pay_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @airpay_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= @usen_pay_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
-          <td class="total-td"><%= @demaekan_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
           <td class="total-td"><%= 
             (
               @austicker_date_progress.valuation_fin +
@@ -1074,6 +1070,7 @@
           <td class="total-td"><%= @cash_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
         </tr>
       </table>
+      
     </div><%# /成果件数 %>
   </div><%# /生産性と成果件数の括り %>
 <% else %>
