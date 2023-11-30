@@ -1,5 +1,6 @@
 class ResultsController < ApplicationController
   include CommonCalc
+  include DmerSenbaiValuationCalc
   before_action :authenticate_user!
   before_action :set_data
   before_action :back_retirement
@@ -1053,71 +1054,8 @@ class ResultsController < ApplicationController
       @dmers_slmt_pic_def = @dmers_slmt.where(status_settlement: "写真不備")
       @dmers_slmt2nd_done = @dmers_slmt.where(settlement_second: @month.all_month).where(status_settlement: "完了")
       # dメル専売
-      @dmer_senbai1_calc_data = @calc_periods.find_by(name: "dメル専売成果1")
-      @dmer_senbai1_start_date = start_date(@dmer_senbai1_calc_data)
-      @dmer_senbai1_end_date = end_date(@dmer_senbai1_calc_data)
-      @dmer_senbai1_closing_date = closing_date(@dmer_senbai1_calc_data)
-      @dmer_senbai1_this_month_per = @dmer_senbai1_calc_data.this_month_per
-      @dmer_senbai1_prev_month_per = @dmer_senbai1_calc_data.prev_month_per
-      @dmer_senbai1_price = @dmer_senbai1_calc_data.price
-
-      @dmer_senbai2_calc_data = @calc_periods.find_by(name: "dメル専売成果2")
-      @dmer_senbai2_start_date = start_date(@dmer_senbai2_calc_data)
-      @dmer_senbai2_end_date = end_date(@dmer_senbai2_calc_data)
-      @dmer_senbai2_closing_date = closing_date(@dmer_senbai2_calc_data)
-      @dmer_senbai2_this_month_per = @dmer_senbai2_calc_data.this_month_per
-      @dmer_senbai2_prev_month_per = @dmer_senbai2_calc_data.prev_month_per
-      @dmer_senbai2_price = @dmer_senbai2_calc_data.price
-      @dmer_senbai3_calc_data = @calc_periods.find_by(name: "dメル専売成果3")
-      @dmer_senbai3_start_date = start_date(@dmer_senbai3_calc_data)
-      @dmer_senbai3_end_date = end_date(@dmer_senbai3_calc_data)
-      @dmer_senbai3_closing_date = closing_date(@dmer_senbai3_calc_data)
-      @dmer_senbai3_this_month_per = @dmer_senbai3_calc_data.this_month_per
-      @dmer_senbai3_prev_month_per = @dmer_senbai3_calc_data.prev_month_per
-      @dmer_senbai3_price = @dmer_senbai3_calc_data.price
-      # dメル専売の審査通過
-      @dmer_senbai_done = 
-        DmerSenbai.where(user_id: @user.id)
-        .where(industry_status: "OK")
-        .where(app_check: "OK")
-        .where.not(dup_check: "重複")
-        .where(partner_status: "Active")
-        .where(status: "審査OK")
-      @dmer_senbai_done_slmter = 
-        DmerSenbai.where(settlementer_id: @user.id)
-        .where(industry_status: "OK")
-        .where(app_check: "OK")
-        .where.not(dup_check: "重複")
-        .where(partner_status: "Active")
-        .where(status: "審査OK").where(status_settlement: "完了").where(picture_check: "合格")
-      # dメル成果1
-      @dmer_senbai_result1 = @dmer_senbai_done.where(result_point: @dmer_senbai1_start_date..@dmer_senbai1_end_date)
-      # dメル成果2
-      @dmer_senbai_result2 = 
-        @dmer_senbai_done_slmter.where(result_point: @dmer_senbai2_start_date..@dmer_senbai2_end_date)
-        .where(picture_check_date: ..@dmer_senbai2_end_date)
-        .or(
-        @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai2_end_date)
-        .where(picture_check_date: @dmer_senbai2_start_date..@dmer_senbai2_end_date)
-        )
-        # dメル成果3
-        @dmer_senbai_result3 = 
-          @dmer_senbai_done_slmter.where(result_point: @dmer_senbai3_start_date..@dmer_senbai3_end_date).where(picture_check_date: ..@dmer_senbai3_end_date).where.not(picture_check_date: nil)
-          .where(settlement_second: ..@dmer_senbai3_end_date)
-            .or(
-              @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai3_end_date)
-              .where(picture_check_date: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-              .where(settlement_second: ..@dmer_senbai3_end_date)
-            )
-            .or(
-              @dmer_senbai_done_slmter.where(result_point: ..@dmer_senbai3_end_date)
-              .where(picture_check_date: ..@dmer_senbai3_end_date)
-              .where(settlement_second: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-            )
-            @dmers_senbai_slmt_done = @dmer_senbai_done.where(settlement: @month.all_month).where(status_settlement: "完了")
-            @dmers_senbai_slmt_def = @dmer_senbai_done.where(status_settlement: "決済不備")
-            @dmers_senbai_slmt_pic_def = @dmer_senbai_done.where(status_settlement: "写真不備")
-            @dmers_senbai_slmt2nd_done = @dmer_senbai_done.where(settlement_second: @month.all_month).where(status_settlement: "完了")
+      # DmerSenbaiValuationCalcの関数
+      dmer_senbai_data(@user.id)
       # auPay
       @aupays_slmt = 
         Aupay.where(settlementer_id: @user.id).where(status: "審査通過")
