@@ -12,8 +12,8 @@ class DmerSenbaiDateProgressesController < ApplicationController
     if params[:date].present?
       @month = params[:date].to_date
     elsif params[:search_date].present?
-      @month = params[:search_date].to_date  
-    elsif DmerSenbaiDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present? 
+      @month = params[:search_date].to_date
+    elsif DmerSenbaiDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date).present?
       @month = DmerSenbaiDateProgress.where(date: @month.beginning_of_month..@month.end_of_month).maximum(:date)
     else
       @month = params[:month].to_date

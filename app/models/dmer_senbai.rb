@@ -1,6 +1,7 @@
 class DmerSenbai < ApplicationRecord
   belongs_to :user
   belongs_to :settlementer, class_name: "User" , optional: true
+  belongs_to :settlementer2nd, class_name: "User" , optional: true
   with_options presence: true do 
     validates :client
     validates :industry
@@ -37,6 +38,13 @@ class DmerSenbai < ApplicationRecord
         else
           row["決済対応者"]
         end
+        settlementer2nd = User.find_by(name: row["2回目決済対応者"])
+        settlementer2nd_params = 
+        if settlementer2nd.present?
+          settlementer2nd.id 
+        else
+          row["2回目決済対応者"]
+        end
         product = new(
           client: row["商流"],
           customer_num: row["申込番号"],
@@ -71,6 +79,7 @@ class DmerSenbai < ApplicationRecord
           city: row["市区"],
           user_id: u_id,
           settlementer_id: settlementer_params,
+          settlementer2nd_id: settlementer2nd_params,
           valuation_new: row["評価売_審査通過"],
           valuation_settlement: row["評価売_AC合格"],
           valuation_second_settlement: row["評価売_2回目決済"],
@@ -95,6 +104,13 @@ class DmerSenbai < ApplicationRecord
         settlementer.id 
       else
         row["決済対応者"]
+      end
+      settlementer2nd = User.find_by(name: row["2回目決済対応者"])
+      settlementer2nd_params = 
+      if settlementer2nd.present?
+        settlementer2nd.id 
+      else
+        row["2回目決済対応者"]
       end
       product = find_by(store_code: row["店舗コード"])
       if product.present?
@@ -132,6 +148,7 @@ class DmerSenbai < ApplicationRecord
           city: row["市区"],
           user_id: u_id,
           settlementer_id: settlementer_params,
+          settlementer2nd_id: settlementer2nd_params,
           valuation_new: row["評価売_審査通過"],
           valuation_settlement: row["評価売_AC合格"],
           valuation_second_settlement: row["評価売_2回目決済"],
@@ -180,6 +197,7 @@ class DmerSenbai < ApplicationRecord
           city: row["市区"],
           user_id: u_id,
           settlementer_id: settlementer_params,
+          settlementer2nd_id: settlementer2nd_params,
           valuation_new: row["評価売_審査通過"],
           valuation_settlement: row["評価売_AC合格"],
           valuation_second_settlement: row["評価売_2回目決済"],

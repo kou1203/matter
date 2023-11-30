@@ -10,6 +10,7 @@ class CreateDmerSenbais < ActiveRecord::Migration[6.1]
       t.date :date                              ,null: false 
       t.references :user                        ,foreign_key: true 
       t.references :settlementer
+      t.references :settlementer2nd
       t.string :industry_status     
       t.string :app_check          
       t.date :app_check_date      
@@ -42,5 +43,6 @@ class CreateDmerSenbais < ActiveRecord::Migration[6.1]
       t.date :status_update
     end
     add_foreign_key :dmer_senbais,:users, column: :settlementer_id
+    add_foreign_key :dmer_senbais,:users, column: :settlementer2nd_id
   end
 end

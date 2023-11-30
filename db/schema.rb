@@ -428,6 +428,7 @@ ActiveRecord::Schema.define(version: 2023_11_28_081444) do
     t.date "date", null: false
     t.bigint "user_id"
     t.bigint "settlementer_id"
+    t.bigint "settlementer2nd_id"
     t.string "industry_status"
     t.string "app_check"
     t.date "app_check_date"
@@ -458,6 +459,7 @@ ActiveRecord::Schema.define(version: 2023_11_28_081444) do
     t.integer "valuation_second_settlement", null: false
     t.integer "profit", null: false
     t.date "status_update"
+    t.index ["settlementer2nd_id"], name: "index_dmer_senbais_on_settlementer2nd_id"
     t.index ["settlementer_id"], name: "index_dmer_senbais_on_settlementer_id"
     t.index ["user_id"], name: "index_dmer_senbais_on_user_id"
   end
@@ -1956,6 +1958,7 @@ ActiveRecord::Schema.define(version: 2023_11_28_081444) do
   add_foreign_key "dmer_senbai_date_progresses", "users"
   add_foreign_key "dmer_senbai_users", "users"
   add_foreign_key "dmer_senbais", "users"
+  add_foreign_key "dmer_senbais", "users", column: "settlementer2nd_id"
   add_foreign_key "dmer_senbais", "users", column: "settlementer_id"
   add_foreign_key "dmers", "store_props"
   add_foreign_key "dmers", "users"
