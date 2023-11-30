@@ -1,6 +1,7 @@
 class DmerSenbaiDateProgressesController < ApplicationController
   include CommonCalc
   include DmerSenbaiCalc
+  include DmerSenbaiValuationCalc
 
   def index 
     calc_profit
@@ -112,25 +113,23 @@ class DmerSenbaiDateProgressesController < ApplicationController
     else 
       @month = Date.today
     end 
-    # 計算する内容を実売に選択
-
+      # 専売人員の情報
+      senbai_users = DmerSenbaiUser.where(date: @month.all_month)
     # シフト
-    calc_profit # 計算する期間と成果になる率の関数をモジュールから取得
-    results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
-    results_slmt = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス決済")
-    shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
-    shifts_slmt = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス決済")
-    # 専売人員の情報
-    senbai_users = DmerSenbaiUser.where(date: @start_date..@end_date)
     cnt = 0
     # ループする人員（過去4ヶ月以内に獲得があるユーザー）
     # product_user_group = DmerSenbai.group(:user_id)
     #人事の日々の現状売上と終着を作成
     senbai_users.each do |product|
       user_id = product.user_id
+      dmer_senbai_data(user_id)
+      results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
+      results_slmt = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス決済")
+      shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
+      shifts_slmt = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス決済")
+
       @dmer_senbai_progress_data = DmerSenbaiDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
-      calc_profit # 計算する期間と成果になる率の関数をモジュールから取得
-      # 終着から参照するdメルの件数
+      
       result_dmer_sum = Result.includes(:result_cash).where(date: @start_date..@end_date).where(user_id: user_id).sum(:dmer)
       senbai_user = senbai_users.find_by(user_id: user_id)
       dmer_senbai_progress_data = DmerSenbaiDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
@@ -139,39 +138,106 @@ class DmerSenbaiDateProgressesController < ApplicationController
       shift_digestion = results.where(user_id: user_id).length
       shift_schedule_slmt = shifts_slmt.where(user_id: user_id).length
       shift_digestion_slmt = results_slmt.where(user_id: user_id).length
-      # 獲得内訳-------------------------------------------
-      dmer_senbais_user = DmerSenbai.where(user_id: user_id)
-      dmer_senbais_slmter = DmerSenbai.where(settlementer_id: user_id)
-      dmer_senbais_user_period = dmer_senbais_user.where(date: @start_date..@end_date)
-      # 申込取消or不備対応中or審査NGor社内確認中
-      dmer_senbais_user_def = 
-      dmer_senbais_user_period.where(status: "審査NG")
-        .or(dmer_senbais_user_period.where(status: "申込取消"))
-        .or(dmer_senbais_user_period.where(status: "不備対応中"))
-        .or(dmer_senbais_user_period.where(status: "社内確認中"))
-        .or(dmer_senbais_user_period.where(industry_status: "NG"))
-        .or(dmer_senbais_user_period.where(app_check: "NG"))
-        .or(dmer_senbais_user_period.where(dup_check: "重複"))
-        .or(dmer_senbais_user_period.where.not(partner_status: "Active"))
-      # 獲得数から消化シフトを割って、予定シフトをかける
+      # 獲得終着_獲得数から消化シフトを割って、予定シフトをかける
       dmer_senbais_fin_len = 
-        ((result_dmer_sum - dmer_senbais_user_def.length).to_f / shift_digestion * shift_schedule).round() rescue 0
-      # 獲得内訳-------------------------------------------
+        ((result_dmer_sum - @dmer_senbais_def.length).to_f / shift_digestion * shift_schedule).round() rescue 0
+      # 評価売-----------------------------------------------
+        #成果1-----------------------------------------------
+        # 成果1（審査完了）の現状売
+        valuation_current1 = @dmer_senbai_result1.sum(:valuation_new)
+        # 成果1終着
+        dmer_done_period = @dmer_senbai_result1.where(date: @start_date..@end_date)
+        if shift_digestion == 0 || shift_schedule == 0
+          valuation_fin1_period_len = 0
+          valuation_fin1_period = 0
+          valuation_fin1 = 0
+        else  
+          valuation_fin1_period_len = ((result_dmer_sum - @dmer_senbais_def.length - dmer_done_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai1_calc_data.this_month_per).round()
+          valuation_fin1 = 
+            (@dmer_senbai1_calc_data.price * valuation_fin1_period_len) + 
+            (@dmer_senbai1_calc_data.price * (dmer_done_period.length.to_f * @dmer_senbai1_calc_data.this_month_per).round()) + 
+            dmer_done.where(date: ...@start_date).where(result_point: start_date(@dmer_senbai1_calc_data)..end_date(@dmer_senbai1_calc_data)).sum(:valuation_new) rescue 0
+        end
+        # 日付が締め日を超えた時終着と現状売上を切り替える
+        if (Date.today > closing_date(@dmer_senbai1_calc_data)) || valuation_current1 >= valuation_fin1
+          valuation_fin1 = valuation_current1
+        end 
+        #成果1-----------------------------------------------
+        #成果2-----------------------------------------------
+          valuation_current2 = @dmer_senbai_result2.sum(:valuation_settlement)
+        # 成果2終着
+        # 成果2終着2（期内）
+        if shift_digestion == 0 || shift_schedule == 0
+          valuation_fin2_period_len = 0
+          valuation_fin2_period = 0
+        else  
+          dmer_slmt_done_period = @dmer_senbai_result2.where(date: @start_date..@end_date)
+          valuation_fin2_period_len = 
+            ((result_dmer_sum - @dmer_senbais_def.length - dmer_slmt_done_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai2_calc_data.this_month_per).round()
+          valuation_fin2_period = 
+            (@dmer_senbai2_calc_data.price * valuation_fin2_period_len) + 
+            @dmer_senbai2_calc_data.price * (dmer_slmt_done_period.length.to_f * @dmer_senbai2_calc_data.this_month_per).round() rescue 0
+        end
+        # 過去月の決済対象
+        dmer_slmt_tgt_prev = 
+        @dmer_senbai_done.where(settlement_deadline: @start_date..)
+        .where(date: ...@start_date).where(settlement: nil)
+        .where(picture_check_date: nil).where.not(status_settlement: "期限切れ")
+        .or(
+          @dmer_senbai_done.where(settlement_deadline: @start_date.. )
+          .where(date: ...@start_date)
+          .where(settlement: start_date(@dmer_senbai1_calc_data)..end_date(@dmer_senbai1_calc_data))
+          .where(picture_check_date: nil).where.not(status_settlement: "期限切れ")
+        )
+        valuation_fin2_prev = 
+          (@dmer_senbai2_calc_data.price * (dmer_slmt_tgt_prev.length.to_f * @dmer_senbai2_calc_data.prev_month_per).round()) +
+          valuation_current2_data.where(date: ...@start_date).sum(:valuation_settlement) rescue 0
+        # 日付が締め日を超えた時終着と現状売上を切り替える
+        if (Date.today > closing_date(@dmer_senbai2_calc_data)) || (valuation_current2 >= (valuation_fin2_period + valuation_fin2_prev))
+          valuation_fin2 = valuation_current2
+        else  
+          valuation_fin2 = valuation_fin2_period + valuation_fin2_prev
+        end 
+        #成果2-----------------------------------------------
+        #成果3-----------------------------------------------
+        valuation_current3 = @dmer_senbai_done_slmter2nd.sum(:valuation_second_settlement)
+        # 成果3終着（期間内）
+        if shift_digestion == 0 || shift_schedule == 0
+          valuation_fin3_period_len = 0
+          valuation_fin3_period = 0
+        else  
+          valuation_current3_period = @dmer_senbai_done_slmter2nd.where(date: @start_date..@end_date)
+          valuation_fin3_period_len = ((result_dmer_sum - @dmer_senbais_def.length - valuation_current3_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai3_calc_data.this_month_per).round()
+          valuation_fin3_period = (@dmer_senbai3_calc_data.price * valuation_fin3_period_len) + (@dmer_senbai3_calc_data.price * (valuation_current3_period.length.to_f * @dmer_senbai3_calc_data.this_month_per).round()) rescue 0
+        end 
+        valuation_fin3_prev = 
+        (@dmer_senbai3_calc_data.price * (dmer_slmt_tgt_prev.length.to_f * @dmer_senbai3_calc_data.prev_month_per).round()) + 
+        @dmer_senbai_done_slmter2nd.where(date: ...@start_date).sum(:valuation_second_settlement) rescue 0
+        if (Date.today > closing_date(@dmer_senbai3_calc_data)) || (valuation_current3 >= (valuation_fin3_period + valuation_fin3_prev))
+          valuation_fin3 = valuation_current3
+        else  
+          valuation_fin3 = valuation_fin3_period + valuation_fin3_prev
+        end 
+
+        valuation_current = valuation_current1 + valuation_current2 + valuation_current3
+        valuation_fin = valuation_fin1 + valuation_fin2 + valuation_fin3
+          
+      # 評価売-----------------------------------------------
       # 実売-----------------------------------------------  
-        dmer_senbai_calc_profit # 実売を計算する期間, 単価, 成果率を取得
+      @calc_periods_profit = CalcPeriod.where(sales_category: "実売")
       # 終着（当月が成果になる率、２次成果の%と単価で出すようにする）, 一緒に現状売上の期間も指定する。
-        d_calc_data = @calc_periods.where("name LIKE ?","%dメル専売%").where("name LIKE ?","%#{senbai_user.client}%").first
+        d_calc_data = @calc_periods_profit.where("name LIKE ?","%dメル専売%").where("name LIKE ?","%#{senbai_user.client}%").first
         profit_fin = d_calc_data.price * (result_dmer_sum.to_f / shift_digestion * shift_schedule * d_calc_data.this_month_per).round() rescue 0
       # 現状売上 （当月で成果になった売上）
         dmer_senbais_slmter_ok = 
-          dmer_senbais_slmter.where(industry_status: "OK")
+        @dmer_senbais_slmter.where(industry_status: "OK")
           .where(app_check: "OK").where.not(dup_check: "重複")
           .where(partner_status: "Active").where(status: "審査OK")
           .where(status_settlement: "完了").where(picture_check: "合格")
         profit_current = 0
-      if dmer_senbais_slmter.present?
+      if @dmer_senbais_slmter.present?
         DmerSenbai.group(:client).each do |d_client| 
-          d_calc_data = @calc_periods.where("name LIKE ?","%dメル専売%").where("name LIKE ?","%#{d_client.client}%").first
+          d_calc_data = @calc_periods_profit.where("name LIKE ?","%dメル専売%").where("name LIKE ?","%#{d_client.client}%").first
           # 現状売上
           profit_current += dmer_senbais_slmter_ok.where(client: d_client.client).where(picture_check_date: start_date(d_calc_data)..end_date(d_calc_data)).sum(:profit)
         end 
@@ -182,131 +248,6 @@ class DmerSenbaiDateProgressesController < ApplicationController
       end 
 
       # 実売-----------------------------------------------
-      
-      # 評価売-----------------------------------------------
-        calc_valuation # 計算する期間と成果になる率の関数をモジュールから取得
-        # dメルで審査が通っている案件
-        dmer_done = 
-          dmer_senbais_user
-          .where(industry_status: "OK")
-          .where(app_check: "OK")
-          .where.not(dup_check: "重複")
-          .where(partner_status: "Active")
-          .where(status: "審査OK")
-        #成果1-----------------------------------------------
-        dmer_senbai_calc_valuation1 # 1次成果の期間、単価、成果になる率を取得
-        # 成果1（審査完了）の現状売
-        valuation_current1 = dmer_done.where(result_point: @dmer_senbai1_start_date..@dmer_senbai1_end_date).sum(:valuation_new)
-        # 成果1終着
-        dmer_done_period = 
-          dmer_done.where(date: @start_date..@end_date)
-          .where(result_point: @dmer_senbai1_start_date..@dmer_senbai1_end_date)
-        if shift_digestion == 0 || shift_schedule == 0
-          valuation_fin1_period_len = 0
-          valuation_fin1_period = 0
-          valuation_fin1 = 0
-        else  
-          valuation_fin1_period_len = ((result_dmer_sum - dmer_senbais_user_def.length - dmer_done_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai1_this_month_per).round()
-          valuation_fin1 = 
-            (@dmer_senbai1_price * valuation_fin1_period_len) + 
-            (@dmer_senbai1_price * (dmer_done_period.length.to_f * @dmer_senbai1_this_month_per).round()) + 
-            dmer_done.where(date: ...@start_date).where(result_point: @dmer_senbai1_start_date..@dmer_senbai1_end_date).sum(:valuation_new) rescue 0
-        end
-        # 日付が締め日を超えた時終着と現状売上を切り替える
-        if (Date.today > @dmer_senbai1_closing_date) || valuation_current1 >= valuation_fin1
-          valuation_fin1 = valuation_current1
-        end 
-        #成果1-----------------------------------------------
-        #成果2-----------------------------------------------
-        dmer_senbai_calc_valuation2 # 1次成果の期間、単価、成果になる率を取得
-        # 成果2（アクセプタンス合格）の現状売
-        # dメルで審査とアクセプタンス審査が通っている案件
-        dmer_slmt_done = 
-          dmer_senbais_slmter.where(industry_status: "OK").where(app_check: "OK")
-          .where.not(dup_check: "重複").where(partner_status: "Active")
-          .where(status: "審査OK").where(status_settlement: "完了").where(picture_check: "合格")
-        valuation_current2_data =
-          dmer_slmt_done.where(result_point: @dmer_senbai2_start_date..@dmer_senbai2_end_date)
-            .where(picture_check_date: ..@dmer_senbai2_end_date).where.not(picture_check_date: nil)
-            .or(
-              dmer_slmt_done.where(picture_check_date: @dmer_senbai2_start_date..@dmer_senbai2_end_date)
-              .where(result_point: ..@dmer_senbai2_end_date).where.not(picture_check_date: nil)
-            )
-          valuation_current2 = valuation_current2_data.sum(:valuation_settlement)
-        # 成果2終着
-        # 成果2終着2（期内）
-        if shift_digestion == 0 || shift_schedule == 0
-          valuation_fin2_period_len = 0
-          valuation_fin2_period = 0
-        else  
-          dmer_slmt_done_period = valuation_current2_data.where(date: @start_date..@end_date)
-          valuation_fin2_period_len = 
-            ((result_dmer_sum - dmer_senbais_user_def.length - dmer_slmt_done_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai2_this_month_per).round()
-          valuation_fin2_period = 
-            (@dmer_senbai2_price * valuation_fin2_period_len) + 
-            @dmer_senbai2_price * (dmer_slmt_done_period.length.to_f * @dmer_senbai2_this_month_per).round() rescue 0
-        end
-        # 過去月の決済対象
-        dmer_slmt_tgt_prev = 
-        dmer_done.where(settlement_deadline: @start_date..)
-        .where(date: ...@start_date).where(settlement: nil)
-        .where(picture_check_date: nil).where.not(status_settlement: "期限切れ")
-        .or(
-          dmer_done.where(settlement_deadline: @start_date.. )
-          .where(date: ...@start_date)
-          .where(settlement: @dmer1_start_date..@dmer1_end_date)
-          .where(picture_check_date: nil).where.not(status_settlement: "期限切れ")
-        )
-        valuation_fin2_prev = 
-          (@dmer_senbai2_price * (dmer_slmt_tgt_prev.length.to_f * @dmer_senbai2_prev_month_per).round()) +
-          valuation_current2_data.where(date: ...@start_date).sum(:valuation_settlement) rescue 0
-        # 日付が締め日を超えた時終着と現状売上を切り替える
-        if (Date.today > @dmer_senbai2_closing_data) || (valuation_current2 >= (valuation_fin2_period + valuation_fin2_prev))
-          valuation_fin2 = valuation_current2
-        else  
-          valuation_fin2 = valuation_fin2_period + valuation_fin2_prev
-        end 
-        #成果2-----------------------------------------------
-        #成果3-----------------------------------------------
-          dmer_senbai_calc_valuation3 # 3次成果の期間、単価、成果になる率を取得
-          # 成果2（2回目決済）の現状売
-          valuation_current3_data =
-            dmer_slmt_done.where(result_point: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-              .where(picture_check_date: ..@dmer_senbai3_end_date).where.not(picture_check_date: nil)
-              .where(settlement_second: ..@dmer_senbai3_end_date).where.not(settlement_second: nil)
-              .or(
-                dmer_slmt_done.where(picture_check_date: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-                .where(result_point: ..@dmer_senbai3_end_date)
-                .where(settlement_second: ..@dmer_senbai3_end_date).where.not(settlement_second: nil)
-              )
-              .or(
-                dmer_slmt_done.where(settlement_second: @dmer_senbai3_start_date..@dmer_senbai3_end_date)
-                .where(result_point: ..@dmer_senbai3_end_date).where.not(settlement_second: nil)
-                .where(picture_check_date: ..@dmer_senbai3_end_date).where.not(picture_check_date: nil)
-              )
-        valuation_current3 = valuation_current3_data.sum(:valuation_second_settlement)
-        # 成果3終着（期間内）
-        if shift_digestion == 0 || shift_schedule == 0
-          valuation_fin3_period_len = 0
-          valuation_fin3_period = 0
-        else  
-          valuation_current3_period = valuation_current3_data.where(date: @start_date..@end_date)
-          valuation_fin3_period_len = ((result_dmer_sum - dmer_senbais_user_def.length - valuation_current3_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai3_this_month_per).round()
-          valuation_fin3_period = (@dmer_senbai3_price * valuation_fin3_period_len) + (@dmer_senbai3_price * (valuation_current3_period.length.to_f * @dmer_senbai3_this_month_per).round()) rescue 0
-        end 
-        valuation_fin3_prev = 
-        (@dmer_senbai3_price * (dmer_slmt_tgt_prev.length.to_f * @dmer_senbai3_prev_month_per).round()) + 
-        valuation_current3_data.where(date: ...@start_date).sum(:valuation_second_settlement) rescue 0
-        if (Date.today > @dmer_senbai3_closing_data) || (valuation_current3 >= (valuation_fin3_period + valuation_fin3_prev))
-          valuation_fin3 = valuation_current3
-        else  
-          valuation_fin3 = valuation_fin3_period + valuation_fin3_prev
-        end 
-
-        valuation_current = valuation_current1 + valuation_current2 + valuation_current3
-        valuation_fin = valuation_fin1 + valuation_fin2 + valuation_fin3
-          
-      # 評価売-----------------------------------------------
       # 退職者の場合はpositionを退職に変更、キャッシュ商材であったら拠点名、違う商材の場合は別途変更させる。
       if product.user.position == "退職"
         user_base = product.user.position
@@ -325,7 +266,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
         shift_digestion: shift_digestion                   ,
         shift_digestion_slmt: shift_digestion_slmt         ,
         get_len: result_dmer_sum                           ,
-        def_len: dmer_senbais_user_def.length              ,
+        def_len: @dmer_senbais_def.length              ,
         fin_len: dmer_senbais_fin_len                      ,
         valuation_current:  valuation_current             ,
         valuation_current1: valuation_current1             ,

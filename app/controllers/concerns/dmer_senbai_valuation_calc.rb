@@ -15,7 +15,7 @@ module DmerSenbaiValuationCalc
     @dmer_senbai2_calc_data = @calc_periods.find_by(name: "dメル専売成果2")
     @dmer_senbai3_calc_data = @calc_periods.find_by(name: "dメル専売成果3")
     # 獲得者, 決済者, 2回目決済者
-    @dmer_senbais = DmerSenbai.where(user_id: u_id)
+    @dmer_senbais = DmerSenbai.where(user_id: u_id) 
     @dmer_senbais_slmter = DmerSenbai.where(settlementer_id: u_id)
     @dmer_senbais_slmter2nd = DmerSenbai.where(settlementer2nd_id: u_id)
     # 審査通過
@@ -26,6 +26,17 @@ module DmerSenbaiValuationCalc
       .where.not(dup_check: "重複")
       .where(partner_status: "Active")
       .where(status: "審査OK")
+    # 不備・NG
+    @dmer_senbais_def = 
+      @dmer_senbais.where(status: "審査NG")
+      .or(@dmer_senbais.where(status: "申込取消"))
+      .or(@dmer_senbais.where(status: "不備対応中"))
+      .or(@dmer_senbais.where(status: "社内確認中"))
+      .or(@dmer_senbais.where(industry_status: "NG"))
+      .or(@dmer_senbais.where(app_check: "NG"))
+      .or(@dmer_senbais.where(dup_check: "重複"))
+      .or(@dmer_senbais.where.not(partner_status: "Active"))
+
     # アクセプタンス合格
     def dmer_senbai_slmt_done(dmer_senbai_data)
       dmer_senbai_data
