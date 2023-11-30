@@ -124,17 +124,16 @@
       <th colspan="2"></th>
     </tr>
     <tr>
+      <th >2回目決済者</th>
+      <td ><%= @dmer_senbai.settlementer2nd.name rescue "" %></td>
+      <th >アクセプタンスチェック日</th>
+      <td ><%= @dmer_senbai.settlement_second %></td>
+    </tr>
+    <tr>
       <th >d払い店舗直近決済日</th>
       <td ><%= @dmer_senbai.dpay_slmt_latest %></td>
       <th >メルペイ店舗直近決済日</th>
       <td ><%= @dmer_senbai.merpay_slmt_latest %></td>
-    </tr>
-  </table>
-  <table>
-    <tr>
-      <% if current_user.position == "権限①" %>
-      <td ><%= link_to "dメル専売情報編集", edit_dmer_senbai_path, "data-turbolinks": false, class: "link" %></td>
-      <% end %>
     </tr>
   </table>
   <% if current_user.position == "権限①" %>

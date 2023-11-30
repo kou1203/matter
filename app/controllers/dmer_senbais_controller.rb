@@ -43,4 +43,5 @@ class DmerSenbaisController < ApplicationController
   end 
 
   private
+
 end
