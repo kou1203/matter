@@ -128,7 +128,7 @@ class CashDateProgressesController < ApplicationController
 
   def progress_create
     @month = params[:month].to_date
-    if Date.today > @month
+    if Date.today >= @month
       @month = @month.end_of_month
     elsif Date.today < @month
       @month = @month.beginning_of_month
@@ -167,8 +167,8 @@ class CashDateProgressesController < ApplicationController
       dmer_senbai_date_progresses = dmer_senbai_date_progresses.where(create_date: dmer_senbai_date_progresses.maximum(:create_date))
       dmer_valuation_current += dmer_senbai_date_progresses.sum(:valuation_current) rescue 0
       dmer_valuation_fin += dmer_senbai_date_progresses.sum(:valuation_fin) rescue 0
-      # dmer_profit_current += dmer_senbai_date_progresses.sum(:profit_current) rescue 0
-      # dmer_profit_fin += dmer_senbai_date_progresses.sum(:profit_fin) rescue 0
+      dmer_profit_current += dmer_senbai_date_progresses.sum(:profit_current) rescue 0
+      dmer_profit_fin += dmer_senbai_date_progresses.sum(:profit_fin) rescue 0
       
       aupay_date_progresses = AupayDateProgress.where(user_id: shift.user_id).where(date: @month)
       aupay_date_progresses = aupay_date_progresses.where(create_date: aupay_date_progresses.maximum(:create_date))
