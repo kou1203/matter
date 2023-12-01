@@ -3,6 +3,7 @@ class DmerSenbaiUsersController < ApplicationController
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @users = User.includes(:dmer_senbai_users).where(base_sub: "キャッシュレス").where.not(position: "退職")
     @bases = ["中部SS", "関西SS","関東SS","九州SS","２次店"]
+    @dmer_senbai_users = DmerSenbaiUser.includes(:user).where(date: @month.all_month)
     @dmer_clients = SelectColumn.where(category: "d専売商流")
   end 
 

@@ -32,20 +32,17 @@
             <li id="lists1"><%= link_to "UsenPay", usen_pays_path, class: "side-link","data-turbolinks": false %></li>
             <li id="lists1"><%= link_to "その他商材一覧", other_products_path, class: "side-link","data-turbolinks": false %></li>
             <li id="lists1"><%= link_to "過去獲得店舗一覧", product_checkers_path, class: "side-link","data-turbolinks": false %></li>
-          </ul>          
+          </ul>
         <label class="header-label" id="lists2">利益表</label>
           <ul class="dropdown" id="pull-down2">
             <li id="lists2"><%= link_to "利益表", results_path,class: "side-link","data-turbolinks": false %></li>
             <li id="lists2"><%= link_to "帯同資料", ojts_path,class: "side-link","data-turbolinks": false %></li>
             <% if (current_user.position == "権限①") %>
-            <%# <li id="lists2"><span data-turbolinks="false">link_to "会議資料", profits_path,class: "side-link"</span></li> %>
             <li id="lists2"><span data-turbolinks="false"><%= link_to "利益計算期間", calc_periods_path,class: "side-link" %></span></li>
             <% end %>
-            <li id="lists2"><span data-turbolinks="false"><%= link_to "スプレッド出力", spread_links_path,class: "side-link" %></span></li>
             <li id="lists2"><span data-turbolinks="false"><%= link_to "成果一覧（評価売上）", valuation_results_path,class: "side-link" %></span></li>
             <% if current_user.position_sub == "管理" %>
             <li id="lists2"><%= link_to "入金精査", payment_cashes_path,class: "side-link"%></li>
-            <li id="lists2"><%= link_to "依頼中案件", comments_path,class: "side-link"%></li>
             <% end %>
             <li id="lists2"><%= link_to "戻入案件一覧", reversal_products_path,class: "side-link"%></li>
           </ul>
@@ -65,3 +62,7 @@
   </nav>
 </header>
 <% end %>
+
+<%# 非表示のリンク %>
+<%# link_to "スプレッド出力", spread_links_path,class: "side-link" %>
+<%# link_to "依頼中案件", comments_path,class: "side-link"%>

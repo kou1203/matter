@@ -18,7 +18,7 @@
     <div style="display:flex;"><%# 専売人員 %>
       <% @bases.each do |base| %>
         <div>
-          <h2><%= base %>人員</h2>
+          <h2><%= base %>人員（<%= @dmer_senbai_users.where(user: {base: base}).length %>人）</h2>
           <table>
             <thead>
               <tr>
