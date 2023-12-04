@@ -83,7 +83,7 @@ wb = xlsx_package.workbook
               ave_len = 0
               ave_profit = 0
             else
-              ave_len = (date_progress.fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
+              ave_len = (fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
               ave_profit = (profit_fin.to_f / shift_schedule).round() rescue 0
             end 
           else
