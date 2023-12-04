@@ -59,6 +59,12 @@ class AupaysController < ApplicationController
     redirect_to aupay_path(@aupay.id) 
   end 
 
+  def destroy 
+    @aupay = Aupay.find(params[:id])
+    @aupay.destroy 
+    redirect_to aupays_path, alert: "#{@aupay.store_prop.name}を削除しました。"
+  end 
+
   private 
   def set_aupay
     @aupay = Aupay.find(params[:id])
