@@ -128,7 +128,7 @@ class CashDateProgressesController < ApplicationController
 
   def progress_create
     @month = params[:month].to_date
-    if Date.today >= @month
+    if Date.today > @month
       @month = @month.end_of_month
     elsif Date.today < @month
       @month = @month.beginning_of_month
