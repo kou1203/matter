@@ -74,7 +74,7 @@ wb = xlsx_package.workbook
           if @dmer_senbai_date_progresses.find_by(user_id: activity_user.user_id).present?
             date_progress = @dmer_senbai_date_progresses.find_by(user_id: activity_user.user_id)
             val_len = date_progress.get_len
-            fin_len = date_progress.fin_len rescue 0
+            fin_len = (date_progress.get_len.to_f / date_progress.shift_digestion * date_progress.shift_schedule).round() rescue 0
             shift_schedule = date_progress.shift_schedule.to_i + date_progress.shift_schedule_slmt.to_i
             shift_digestion = date_progress.shift_digestion.to_i + date_progress.shift_digestion_slmt.to_i
             profit_current = date_progress.profit_current
