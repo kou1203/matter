@@ -39,5 +39,11 @@ class UsenPaysController < ApplicationController
     end
   end 
 
+  def destroy
+    @usen_pay = UsenPay.find(params[:id])
+    @usen_pay.destroy
+    redirect_to usen_pays_path, alert: "#{@usen_pay.store_name}を削除しました。"
+  end 
+
   private 
 end

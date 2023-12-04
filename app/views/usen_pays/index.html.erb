@@ -172,6 +172,7 @@
         <th class="out-th">書類ステータス</th>
         <th class="remarks-th">不備詳細</th>
         <th class="out-th">成果になった日</th>
+        <th class="out-th"></th>
       </tr>
       </thead>
       <tbody>
@@ -188,6 +189,7 @@
         <td class="out-td"><%= usen_pay.doc_status %></td>
         <td class="remarks-td"><%= usen_pay.def_remarks %></td>
         <td class="remarks-td"><%= usen_pay.result_point %></td>
+        <td class="remarks-td"><%= link_to "削除", usen_pay_path(usen_pay.id),method: :delete, data: {confirm: "#{usen_pay.store_name}を削除してもいいですか？"},class: "red" %></td>
       </tr>
       <% end %>
       </tbody>
