@@ -254,8 +254,9 @@
         <th class="out-th">入金判定</th>
         <th class="out-th">不備カテゴリー①</th>
         <th class="out-th">不備カテゴリー②</th>
-        <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
+        <% if current_user.position == "権限①" %>
         <th class="out-th">明細書</th>
+        <th class="out-th"></th>
         <% end %>
       </tr>
       </thead>
@@ -278,11 +279,13 @@
         <td class="out-td"><%= rakuten_pay.payment_flag %></td>
         <td class="remarks-td"><%= rakuten_pay.def_status %></td>
         <td class="remarks-td"><%= rakuten_pay.def_status2 %></td>
-        <% if (current_user.name == "管理用") || (current_user.name == "佐藤健二") || (current_user.name == "三宅翔馬") %>
+        <% if current_user.position == "権限①" %>
         <% if PaymentRakutenPay.exists?(rakuten_pay_id: rakuten_pay.id) %>
         <td class="remarks-td">有</td>
+        <td class="remarks-td"></td>
         <% else %>
         <td class="remarks-td red">無</td>
+        <td class="out-td"><%= link_to "削除", rakuten_pay_path(rakuten_pay.id),method: :delete, data: {confirm: "#{rakuten_pay.store_prop.name}を削除してもよろしいですか？"}, class: "red" %></td>
         <% end %>
         <% end %>
       </tr>

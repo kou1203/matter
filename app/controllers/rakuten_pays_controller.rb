@@ -43,6 +43,12 @@ class RakutenPaysController < ApplicationController
     @rakuten_pay = RakutenPay.find(params[:id])
   end 
 
+  def destroy 
+    @rakuten_pay = RakutenPay.find(params[:id])
+    @rakuten_pay.destroy 
+    redirect_to rakuten_pays_path, alert: "#{@rakuten_pay.store_prop.name}を削除しました。"
+  end 
+
   def import 
     if params[:file].present?
       if RakutenPay.csv_check(params[:file]).present?
