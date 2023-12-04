@@ -342,6 +342,7 @@ Rails.application.routes.draw do
 
   resources :airpay_stickers do 
     collection {post :import}
+    collection {get :date_destroy}
   end 
 
   resources :payment_cashes 
@@ -448,6 +449,7 @@ Rails.application.routes.draw do
 
   resources :dmer_senbai_date_progresses, only:[:index] do
     collection {get :progress_create}
+    collection {get :date_destroy}
   end 
 
   resources :activity_bases, only: [:index,:edit,:update,:destroy] do 

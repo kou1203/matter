@@ -139,8 +139,9 @@ class DmerSenbaiDateProgressesController < ApplicationController
       shift_schedule_slmt = shifts_slmt.where(user_id: user_id).length
       shift_digestion_slmt = results_slmt.where(user_id: user_id).length
       # 獲得終着_獲得数から消化シフトを割って、予定シフトをかける
+      dmer_def_len = @dmer_senbais_def.where(date: @start_date..@end_date).length
       dmer_senbais_fin_len = 
-        ((result_dmer_sum - @dmer_senbais_def.length).to_f / shift_digestion * shift_schedule).round() rescue 0
+        ((result_dmer_sum - dmer_def_len).to_f / shift_digestion * shift_schedule).round() rescue 0
       # 評価売-----------------------------------------------
         #成果1-----------------------------------------------
         # 成果1（審査完了）の現状売
@@ -152,7 +153,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
           valuation_fin1_period = 0
           valuation_fin1 = 0
         else  
-          valuation_fin1_period_len = ((result_dmer_sum - @dmer_senbais_def.length - dmer_done_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai1_calc_data.this_month_per).round()
+          valuation_fin1_period_len = ((result_dmer_sum - dmer_def_len - dmer_done_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai1_calc_data.this_month_per).round()
           valuation_fin1 = 
             (@dmer_senbai1_calc_data.price * valuation_fin1_period_len) + 
             (@dmer_senbai1_calc_data.price * (dmer_done_period.length.to_f * @dmer_senbai1_calc_data.this_month_per).round()) + 
@@ -173,7 +174,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
         else  
           dmer_slmt_done_period = @dmer_senbai_result2.where(date: @start_date..@end_date)
           valuation_fin2_period_len = 
-            ((result_dmer_sum - @dmer_senbais_def.length - dmer_slmt_done_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai2_calc_data.this_month_per).round()
+            ((result_dmer_sum - dmer_def_len - dmer_slmt_done_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai2_calc_data.this_month_per).round()
           valuation_fin2_period = 
             (@dmer_senbai2_calc_data.price * valuation_fin2_period_len) + 
             @dmer_senbai2_calc_data.price * (dmer_slmt_done_period.length.to_f * @dmer_senbai2_calc_data.this_month_per).round() rescue 0
@@ -207,7 +208,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
           valuation_fin3_period = 0
         else  
           valuation_current3_period = @dmer_senbai_done_slmter2nd.where(date: @start_date..@end_date)
-          valuation_fin3_period_len = ((result_dmer_sum - @dmer_senbais_def.length - valuation_current3_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai3_calc_data.this_month_per).round()
+          valuation_fin3_period_len = ((result_dmer_sum - dmer_def_len - valuation_current3_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai3_calc_data.this_month_per).round()
           valuation_fin3_period = (@dmer_senbai3_calc_data.price * valuation_fin3_period_len) + (@dmer_senbai3_calc_data.price * (valuation_current3_period.length.to_f * @dmer_senbai3_calc_data.this_month_per).round()) rescue 0
         end 
         valuation_fin3_prev = 
@@ -266,7 +267,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
         shift_digestion: shift_digestion                   ,
         shift_digestion_slmt: shift_digestion_slmt         ,
         get_len: result_dmer_sum                           ,
-        def_len: @dmer_senbais_def.length              ,
+        def_len: dmer_def_len              ,
         fin_len: dmer_senbais_fin_len                      ,
         valuation_current:  valuation_current             ,
         valuation_current1: valuation_current1             ,
