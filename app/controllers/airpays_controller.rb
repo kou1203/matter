@@ -44,6 +44,12 @@ class AirpaysController < ApplicationController
     @airpay = Airpay.find(params[:id])
   end 
 
+  def destroy 
+    @airpay = Airpay.find(params[:id])
+    @airpay.destroy 
+    redirect_to airpays_path, alert: "#{@airpay.store_prop.name}を削除しました。"
+  end 
+
   def import
     if params[:file].present?
       # if Airpay.csv_check(params[:file]).present?
