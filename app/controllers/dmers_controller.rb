@@ -72,6 +72,12 @@ class DmersController < ApplicationController
     redirect_to dmer_path(@dmer.id)
   end 
 
+  def destroy
+    @dmer =  Dmer.find(params[:id])
+    @dmer.destroy 
+    redirect_to dmers_path,alert: "#{@dmer.store_prop.name}を削除しました。"
+  end 
+
   def import 
     if params[:file].present?
       if Dmer.csv_check(params[:file]).present?

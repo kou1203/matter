@@ -391,6 +391,7 @@
           <th class="out-th">不備解消日</th>
           <th class="out-th"></th>
           <th class="out-th">コメント</th>
+          <th class="out-th"></th>
         </tr>
       </thead>
       <tbody>
@@ -440,6 +441,11 @@
           <td class="index-td">有</td>
           <% else %>
           <td class="index-td"><%= link_to "　入力　",  new_comment_path(product: "dメル",content: "決済",store_id: dmer.store_prop_id) ,class: "link" %></td>
+          <% end %>
+          <% if current_user.position == "権限①" %>
+          <td class="index-td"><%= link_to "　削除　",  dmer_path(dmer.id),method: :delete,data: {confirm: "#{dmer.store_prop.name}を削除しますか？"} ,class: "red" %></td>
+          <% else %>
+          <td class="index-td"></td>
           <% end %>
         </tr>
       <% end %>
