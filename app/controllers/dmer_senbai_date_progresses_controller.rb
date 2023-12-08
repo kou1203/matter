@@ -143,7 +143,11 @@ class DmerSenbaiDateProgressesController < ApplicationController
 
       @dmer_senbai_progress_data = DmerSenbaiDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       
-      result_dmer_sum = Result.includes(:result_cash).where(date: @start_date..@end_date).where(user_id: user_id).sum(:dmer)
+      result_dmer_sum = 
+        Result.includes(:result_cash)
+        .where(date: @start_date..@end_date)
+        .where(date: ...Date.today)
+        .where(user_id: user_id).sum(:dmer)
       
       dmer_senbai_progress_data = DmerSenbaiDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       #シフト
