@@ -118,11 +118,12 @@ class AupayDateProgressesController < ApplicationController
     @aupays_group = Aupay.group(:user_id).where(date: @month.ago(6.month).beginning_of_month..@month.end_of_month)
     @aupays_group.group(:user_id).each do |r|
       calc_profit
-      @aupay1_start_date = start_date(@aupay_calc_period)
-      @aupay1_end_date = end_date(@aupay_calc_period)
-      @aupay1_closing_date = closing_date(@aupay_calc_period)
-      @aupay1_prev_month_per = @aupay_calc_period.prev_month_per
-      @aupay1_price = @aupay_calc_period.price
+      aupay_profit_calc_period = CalcPeriod.where(sales_category: "実売").find_by(name: "auPay成果1")
+      @aupay1_start_date = start_date(aupay_profit_calc_period)
+      @aupay1_end_date = end_date(aupay_profit_calc_period)
+      @aupay1_closing_date = closing_date(aupay_profit_calc_period)
+      @aupay1_prev_month_per = aupay_profit_calc_period.prev_month_per
+      @aupay1_price = aupay_profit_calc_period.price
       user_id = r.user_id
       @aupay_progress_data = AupayDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       shift_schedule = @shifts.where(user_id: user_id).length
