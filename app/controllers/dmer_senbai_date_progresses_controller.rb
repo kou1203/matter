@@ -249,7 +249,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
       # ①.これから成果になる件数を出す。
       profit_fin_period_len = 
         (
-          (@dmer_senbais_period - profit_current_data_period.length).to_f / 
+          (result_dmer_sum - profit_current_data_period.length).to_f / 
           shift_digestion * shift_schedule * d_calc_data.this_month_per
         ).round() rescue 0
       # ②成果になる売上
