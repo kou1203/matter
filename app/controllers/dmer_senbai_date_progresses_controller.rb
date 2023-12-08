@@ -239,7 +239,11 @@ class DmerSenbaiDateProgressesController < ApplicationController
       # 当月成果になったデータ
       profit_current_data = 
         dmer_senbais_slmter_ok
-        .where(picture_check_date: start_date(d_calc_data)..end_date(d_calc_data))
+        .where(picture_check_date: start_date(d_calc_data)..end_date(d_calc_data)).or(
+          dmer_senbais_slmter_ok
+        .where(picture_check_date: ...start_date(d_calc_data))
+        .where(result_point: start_date(d_calc_data)..end_date(d_calc_data))
+        )
       # ★現状売上
       profit_current = profit_current_data.sum(:profit) rescue 0
       
