@@ -279,9 +279,9 @@ class DmerSenbaiDateProgressesController < ApplicationController
         (slmt_target_prev.length - profit_current_data_prev.length).to_f * d_calc_data.prev_month_per
       ).round() rescue 0
       # ⑤成果になる売上
-      profit_fin_prev_len = d_calc_data.price * profit_fin_prev_len_len rescue 0
+      profit_fin_prev = d_calc_data.price * profit_fin_prev_len rescue 0
       # ◆終着(合計：② + ⑤ + 現状売上）
-      profit_fin = profit_fin_period + profit_fin_prev_len + profit_current
+      profit_fin = profit_fin_period + profit_fin_prev + profit_current
       # 現状売上と終着売上を同じにする。
       if Date.today >= closing_date(d_calc_data)
         profit_fin = profit_current
