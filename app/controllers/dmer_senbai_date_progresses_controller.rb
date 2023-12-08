@@ -113,8 +113,8 @@ class DmerSenbaiDateProgressesController < ApplicationController
     else 
       @month = Date.today
     end 
-      # 専売人員の情報
-      senbai_users = DmerSenbaiUser.where(date: @month.all_month)
+    # 専売人員の情報
+    senbai_users = DmerSenbaiUser.group(:user_id).where(date: @month.ago(4.month).beginning_of_month..@month.end_of_month)
     # シフト
     cnt = 0
     # ループする人員（過去4ヶ月以内に獲得があるユーザー）
@@ -225,26 +225,57 @@ class DmerSenbaiDateProgressesController < ApplicationController
           
       # 評価売-----------------------------------------------
       # 実売-----------------------------------------------  
+      # 計算期間からd専売の情報を取得（終着単価と集計期間を取得するため）
       @calc_periods_profit = CalcPeriod.where(sales_category: "実売")
-      # 終着（当月が成果になる率、２次成果の%と単価で出すようにする）, 一緒に現状売上の期間も指定する。
-        d_calc_data = @calc_periods_profit.where("name LIKE ?","%dメル専売%").where("name LIKE ?","%#{senbai_user.client}%").first
-        profit_fin = d_calc_data.price * (result_dmer_sum.to_f / shift_digestion * shift_schedule * d_calc_data.this_month_per).round() rescue 0
-      # 現状売上 （当月で成果になった売上）
-        dmer_senbais_slmter_ok = 
+      d_calc_data = @calc_periods_profit.where("name LIKE ?","%dメル専売%").where("name LIKE ?","%#{senbai_user.client}%").first
+      # 現状売上
+      # 成果になったデータ
+      dmer_senbais_slmter_ok = 
         @dmer_senbais_slmter.where(industry_status: "OK")
           .where(app_check: "OK").where.not(dup_check: "重複")
           .where(partner_status: "Active").where(status: "審査OK")
           .where(status_settlement: "完了").where(picture_check: "合格")
-        profit_current = 0
-      if @dmer_senbais_slmter.present?
-        DmerSenbai.group(:client).each do |d_client| 
-          d_calc_data = @calc_periods_profit.where("name LIKE ?","%dメル専売%").where("name LIKE ?","%#{d_client.client}%").first
-          # 現状売上
-          profit_current += dmer_senbais_slmter_ok.where(client: d_client.client).where(picture_check_date: start_date(d_calc_data)..end_date(d_calc_data)).sum(:profit)
-        end 
-      end
-
-      if profit_current >= profit_fin 
+      # 現状売上
+      # 当月成果になったデータ
+      profit_current_data = 
+        dmer_senbais_slmter_ok
+        .where(picture_check_date: start_date(d_calc_data)..end_date(d_calc_data))
+      # ★現状売上
+      profit_current = profit_current_data.sum(:profit) rescue 0
+      
+      # ◆当月終着
+      # 当月獲得した案件が当月成果になったデータ
+      profit_current_data_period = profit_current_data.where(date: @start_date..@end_date)
+      # ①.これから成果になる件数を出す。
+      profit_fin_period_len = 
+        (
+          (@dmer_senbais_period - profit_current_data_period.length).to_f / 
+          shift_digestion * shift_schedule * d_calc_data.this_month_per
+        ).round() rescue 0
+      # ②成果になる売上
+      profit_fin_period = d_calc_data.price * profit_fin_period_len rescue 0
+      # ◆前月以前の終着
+      # ③前月以前の決済母体を出す
+      slmt_target_prev = 
+        @dmer_senbai_done.where(date: ...@start_date)
+        .where.not(status_settlement: "期限切れ")
+        .where(picture_check_date: nil).or(
+          @dmer_senbai_done.where(date: ...@start_date)
+          .where.not(status_settlement: "期限切れ")
+          .where(picture_check_date: start_date(d_calc_data)..end_date(d_calc_data))
+        )
+      # 前月以前獲得した案件が当月成果になったデータ
+      profit_current_data_prev = profit_current_data.where(date: ...@start_date)
+      # ④前月以前の案件でこれから成果になる件数を出す
+      profit_fin_prev_len = (
+        (slmt_target_prev - profit_current_data_prev.length).to_f * d_calc_data.prev_month_per
+      ).round() rescue 0
+      # ⑤成果になる売上
+      profit_fin_prev_len = d_calc_data.price * profit_fin_prev_len_len rescue 0
+      # ◆終着(合計：② + ⑤ + 現状売上）
+      profit_fin = profit_fin_period + profit_fin_prev_len + profit_current
+      # 現状売上と終着売上を同じにする。
+      if Date.today >= closing_date(d_calc_data)
         profit_fin = profit_current
       end 
 
