@@ -112,7 +112,10 @@ class RakutenPayDateProgressesController < ApplicationController
       @month = Date.today
     end 
     calc_profit
-    @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
+    @results = 
+      Result.where(date: @start_date..@end_date)
+      .where(date: ...Date.today)
+      .where(shift: "キャッシュレス新規")
     @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     cnt = 0
     @rakuten_pays_group = RakutenPay.where(date: @month.ago(6.month).beginning_of_month..@month.end_of_month)

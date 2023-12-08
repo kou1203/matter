@@ -122,7 +122,11 @@ class AirpaystickerDateProgressesController < ApplicationController
       # 獲得内訳
       @airpaystickers_user = OtherProduct.where("product_name LIKE ?", "%AirPayステッカー%").where(user_id: user_id)
       @airpaystickers_user_period = @airpaystickers_user.where(date: @airpaysticker1_start_date..@airpaysticker1_end_date)
-      shift_digestion = @airpaystickers_user_period.length
+      shift_digestion =         
+        Result.where(user_id: user_id)
+        .where(date: ...Date.today)
+        .where(date: @start_date..@end_date)
+        .where(shift: "キャッシュレス新規").length
     # 現状売上
       valuation_current = 0
       profit_current = 0

@@ -112,7 +112,10 @@ class AupayDateProgressesController < ApplicationController
     end 
     calc_profit
     @aupay_calc_period = @calc_periods.find_by(name: "auPay成果1")
-    @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
+    @results = 
+      Result.where(date: @start_date..@end_date)
+      .where(date: ...Date.today)
+      .where(shift: "キャッシュレス新規")
     @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     cnt = 0
     @aupays_group = Aupay.group(:user_id).where(date: @month.ago(6.month).beginning_of_month..@month.end_of_month)
@@ -201,7 +204,7 @@ class AupayDateProgressesController < ApplicationController
       valuation_fin = 
       (@aupay1_price * aupay_result_fin_prev_month_len) + 
       (
-        (aupay_result.where("? > date", @start_date).length.to_f * (@aupay1_prev_month_per - @aupay_prev_dec_per)
+        (aupay_result.where("? > date", @start_date).length.to_f * @aupay1_prev_month_per
       ).round() * @aupay1_price) rescue 0
       if (valuation_current > valuation_fin) || (Date.today > @closing_date)
         valuation_fin = valuation_current

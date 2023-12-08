@@ -115,6 +115,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
     end 
     # 専売人員の情報
     senbai_users = DmerSenbaiUser.group(:user_id).where(date: @month.ago(4.month).beginning_of_month..@month.end_of_month)
+    senbai_users_this_month = DmerSenbaiUser.group(:user_id).where(date: @month.all_month)
     # シフト
     cnt = 0
     # ループする人員（過去4ヶ月以内に獲得があるユーザー）
@@ -122,16 +123,28 @@ class DmerSenbaiDateProgressesController < ApplicationController
     #人事の日々の現状売上と終着を作成
     senbai_users.each do |product|
       user_id = product.user_id
+      senbai_user = senbai_users.find_by(user_id: user_id)
       dmer_senbai_data(user_id)
-      results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
-      results_slmt = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス決済")
+      if senbai_users_this_month.find_by(user_id: user_id).present?
+        d_client = senbai_users_this_month.find_by(user_id: user_id).client
+      else  
+        d_client = senbai_user.client
+      end
+      results = 
+        Result.where(date: @start_date..@end_date)
+        .where(date: ...Date.today)
+        .where(shift: "キャッシュレス新規")
+      results_slmt = 
+        Result.where(date: @start_date..@end_date)
+        .where(date: ...Date.today)
+        .where(shift: "キャッシュレス決済")
       shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
       shifts_slmt = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス決済")
 
       @dmer_senbai_progress_data = DmerSenbaiDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       
       result_dmer_sum = Result.includes(:result_cash).where(date: @start_date..@end_date).where(user_id: user_id).sum(:dmer)
-      senbai_user = senbai_users.find_by(user_id: user_id)
+      
       dmer_senbai_progress_data = DmerSenbaiDateProgress.find_by(user_id: user_id,date: @month,create_date: Date.today)
       #シフト
       shift_schedule = shifts.where(user_id: user_id).length
@@ -227,7 +240,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
       # 実売-----------------------------------------------  
       # 計算期間からd専売の情報を取得（終着単価と集計期間を取得するため）
       @calc_periods_profit = CalcPeriod.where(sales_category: "実売")
-      d_calc_data = @calc_periods_profit.where("name LIKE ?","%dメル専売%").where("name LIKE ?","%#{senbai_user.client}%").first
+      d_calc_data = @calc_periods_profit.where("name LIKE ?","%dメル専売%").where("name LIKE ?","%#{d_client}%").first
       # 現状売上
       # 成果になったデータ
       dmer_senbais_slmter_ok = 
@@ -276,7 +289,6 @@ class DmerSenbaiDateProgressesController < ApplicationController
           .where.not(status_settlement: "期限切れ")
           .where(picture_check_date: ...start_date(d_calc_data))
           .where(result_point: start_date(d_calc_data)..end_date(d_calc_data))
-
         )
       # 前月以前獲得した案件が当月成果になったデータ
       profit_current_data_prev = profit_current_data.where(date: ...@start_date)

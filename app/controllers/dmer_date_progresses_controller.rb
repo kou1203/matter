@@ -135,8 +135,14 @@ class DmerDateProgressesController < ApplicationController
   end 
   # 実売
   calc_profit
-  @results = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
-  @results_slmt = Result.where(date: @start_date..@end_date).where(shift: "キャッシュレス決済")
+  @results = 
+    Result.where(date: @start_date..@end_date)
+    .where(date: ...Date.today)
+    .where(shift: "キャッシュレス新規")
+  @results_slmt = 
+    Result.where(date: @start_date..@end_date)
+    .where(date: ...Date.today)
+    .where(shift: "キャッシュレス決済")
   @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
   @shifts_slmt = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス決済")
   cnt = 0

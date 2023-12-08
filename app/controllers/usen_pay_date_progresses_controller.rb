@@ -129,7 +129,11 @@ class UsenPayDateProgressesController < ApplicationController
       @usen_pay_progress_data = OtherProductDateProgress.where(product_name: "UsenPay").find_by(user_id: user_id,date: @month,create_date: Date.today)
       # 獲得内訳
       shifts = Shift.where(user_id: user_id).where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規").length
-      results = Result.where(user_id: user_id).where(date: @start_date..@end_date).where(shift: "キャッシュレス新規").length
+      results = 
+        Result.where(user_id: user_id)
+        .where(date: ...Date.today)
+        .where(date: @start_date..@end_date)
+        .where(shift: "キャッシュレス新規").length
       usen_pay_user = UsenPay.where(user_id: user_id)
       usen_pay_user_period = usen_pay_user.where(date: @start_date..@end_date)
       get_len = usen_pay_user_period.length

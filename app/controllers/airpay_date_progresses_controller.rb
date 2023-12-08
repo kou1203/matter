@@ -118,7 +118,10 @@ class AirpayDateProgressesController < ApplicationController
     @airpay_bonus1_price = airpay_calc_period.bonus1_price
     @airpay_bonus2_price = airpay_calc_period.bonus2_price
     @airpay_price = airpay_calc_period.price
-    @results = Result.includes(:result_cash).where(date: @start_date..@end_date).where(shift: "キャッシュレス新規")
+    @results = 
+      Result.includes(:result_cash).where(date: @start_date..@end_date)
+      .where(date: ...Date.today)
+      .where(shift: "キャッシュレス新規")
     @shifts = Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規")
     # 全体終着獲得数
     @airpays_all_len_fin = 
