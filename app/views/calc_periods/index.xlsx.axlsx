@@ -87,8 +87,20 @@ wb = xlsx_package.workbook
               ave_profit = (profit_fin.to_f / shift_schedule).round() rescue 0
             end 
           else
-            shift_schedule = 0
-            shift_digestion = 0
+            results = 
+              Result.where(date: @start_date..@end_date)
+              .where(date: ...Date.today)
+              .where(shift: "キャッシュレス新規").where(user_id: activity_user.user_id).length
+            results_slmt = 
+              Result.where(date: @start_date..@end_date)
+              .where(date: ...Date.today)
+              .where(shift: "キャッシュレス決済").where(user_id: activity_user.user_id).length
+            shifts = 
+              Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス新規").where(user_id: activity_user.user_id).length
+            shifts_slmt = 
+              Shift.where(start_time: @start_date..@end_date).where(shift: "キャッシュレス決済").where(user_id: activity_user.user_id).length
+            shift_schedule = shifts + shifts_slmt
+            shift_digestion = results + results_slmt
             val_len = 0
             ave_len = 0
             fin_len = 0

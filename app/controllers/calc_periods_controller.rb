@@ -1,6 +1,7 @@
 class CalcPeriodsController < ApplicationController
   require 'csv'
   include Base
+  include CalcDate
   before_action :set_month
   def index 
     bases
