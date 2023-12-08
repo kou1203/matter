@@ -276,7 +276,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
       profit_current_data_prev = profit_current_data.where(date: ...@start_date)
       # ④前月以前の案件でこれから成果になる件数を出す
       profit_fin_prev_len = (
-        (slmt_target_prev - profit_current_data_prev.length).to_f * d_calc_data.prev_month_per
+        (slmt_target_prev.length - profit_current_data_prev.length).to_f * d_calc_data.prev_month_per
       ).round() rescue 0
       # ⑤成果になる売上
       profit_fin_prev_len = d_calc_data.price * profit_fin_prev_len_len rescue 0
