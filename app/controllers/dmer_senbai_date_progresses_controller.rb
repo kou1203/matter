@@ -271,6 +271,12 @@ class DmerSenbaiDateProgressesController < ApplicationController
           @dmer_senbai_done.where(date: ...@start_date)
           .where.not(status_settlement: "期限切れ")
           .where(picture_check_date: start_date(d_calc_data)..end_date(d_calc_data))
+        ).or(
+          @dmer_senbai_done.where(date: ...@start_date)
+          .where.not(status_settlement: "期限切れ")
+          .where(picture_check_date: ...start_date(d_calc_data))
+          .where(result_point: start_date(d_calc_data)..end_date(d_calc_data))
+
         )
       # 前月以前獲得した案件が当月成果になったデータ
       profit_current_data_prev = profit_current_data.where(date: ...@start_date)
