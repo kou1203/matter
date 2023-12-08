@@ -249,11 +249,15 @@ class DmerSenbaiDateProgressesController < ApplicationController
       # ①.これから成果になる件数を出す。
       profit_fin_period_len = 
         (
-          (result_dmer_sum - profit_current_data_period.length).to_f / 
+          result_dmer_sum.to_f / 
           shift_digestion * shift_schedule * d_calc_data.this_month_per
-        ).round() rescue 0
+        ).round() - profit_current_data_period.length rescue 0
       # ②成果になる売上
-      profit_fin_period = d_calc_data.price * profit_fin_period_len rescue 0
+      if profit_fin_period_len >= 1
+        profit_fin_period = d_calc_data.price * profit_fin_period_len rescue 0
+      else  
+        profit_fin_period = 0
+      end 
       # ◆前月以前の終着
       # ③前月以前の決済母体を出す
       slmt_target_prev = 
