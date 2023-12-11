@@ -709,15 +709,11 @@
       <td class="progress-td">{{ item.create_date }}</td>
       <td class="progress-td">{{ item.shift_schedule }}</td>
       <td class="progress-td">{{ item.shift_digestion }}</td>
-      <td class="progress-td">{{ (item.result1_len * profit_price1).toLocaleString() }}</td>
-      <td class="progress-td">{{ (item.result2_len * profit_price2).toLocaleString() }}</td>
-      <td class="progress-td">{{ (item.result3_len * profit_price3).toLocaleString() }}</td>
+      <td class="progress-td">{{ item.profit_current1.toLocaleString() }}</td>
+      <td class="progress-td">{{ item.profit_current2.toLocaleString() }}</td>
+      <td class="progress-td">{{ item.profit_current3.toLocaleString() }}</td>
       <td class="progress-td">{{ 
-        (
-          (item.result1_len * profit_price1) + 
-          (item.result2_len * profit_price2) + 
-          (item.result3_len * profit_price3)
-        ).toLocaleString()
+        (item.profit_current1 + item.profit_current2 + item.profit_current3).toLocaleString()
         }}</td>
       <td class="progress-td">{{ item.profit_fin1.toLocaleString() }}</td>
       <td class="progress-td">{{ item.profit_fin2.toLocaleString() }}</td>
