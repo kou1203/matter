@@ -122,6 +122,7 @@ class UsenPayDateProgressesController < ApplicationController
       usen_pay_totalling_end_date = end_date(usen_pay_totalling_period)
       usen_start_date = start_date(usen_pay_period)
       usen_end_date = end_date(usen_pay_period)
+      usen_pay_closing_date = closing_date(usen_pay_period)
       usen_pay_price = usen_pay_period.price
       usen_pay_this_month_per = usen_pay_period.this_month_per
 
@@ -152,6 +153,9 @@ class UsenPayDateProgressesController < ApplicationController
       profit_current = usen_pay_user_result.sum(:profit)
     # 終着
         profit_fin = profit_current + ((usen_fin_target_len.to_f * usen_pay_this_month_per).round() * usen_pay_price)
+        if Date.today >= usen_pay_closing_date
+          profit_fin = profit_current
+        end 
     # 評価売
       # 7月より前の案件
       calc_valuation
@@ -160,6 +164,7 @@ class UsenPayDateProgressesController < ApplicationController
       usen_pay_totalling_end_date = end_date(usen_pay_totalling_period)
       usen_start_date = start_date(usen_pay_period)
       usen_end_date = end_date(usen_pay_period)
+      usen_pay_closing_date = closing_date(usen_pay_period)
       usen_pay_price = usen_pay_period.price
       usen_pay_this_month_per = usen_pay_period.this_month_per
       usen_separate_date = Date.new(2023,8,1)
@@ -171,6 +176,9 @@ class UsenPayDateProgressesController < ApplicationController
       ).sum(:valuation) rescue 0
       valuation_current = valuation_current_7month_ago + valuation_current_8month_since rescue 0
       valuation_fin = usen_pay_price * (fin_len.to_f * usen_pay_this_month_per).round() rescue 0
+      if Date.today >= usen_pay_closing_date
+        valuation_fin = valuation_current
+      end 
       if i_user.user.position == "退職"
         user_base = i_user.user.position
       elsif i_user.user.base_sub == "キャッシュレス"
