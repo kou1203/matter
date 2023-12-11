@@ -421,9 +421,6 @@ class DmerDateProgressesController < ApplicationController
         (@dmer1_price * (result_tgt_prev1.length.to_f * @dmer1_prev_month_per).round()) +
         dmer_result1_prev.sum(:profit_new)
       profit_fin1 = profit_fin1_period + profit_fin1_prev
-        if (Date.today > @dmer1_closing_date) || (profit_current1_price > profit_fin1)
-          profit_fin1 = profit_current1_price
-        end 
       # 実売終着2（期内）
       if shift_digestion == 0 || shift_schedule == 0
         profit_fin2_period_len = 0
@@ -437,9 +434,6 @@ class DmerDateProgressesController < ApplicationController
         (@dmer2_price * (result_tgt_prev2.length.to_f * @dmer2_prev_month_per).round()) +
         dmer_slmt_done_prev.sum(:profit_settlement)
         profit_fin2 = profit_fin2_period + profit_fin2_prev
-        if (Date.today > @dmer2_closing_date) || (profit_current2_price > profit_fin2)
-          profit_fin2 = profit_current2_price
-        end 
       # 実売終着3（期内）
       if shift_digestion == 0 || shift_schedule == 0
         profit_fin3_period_len = 0
@@ -466,9 +460,6 @@ class DmerDateProgressesController < ApplicationController
       profit_fin3_prev = 
         (@dmer3_price * profit_fin3_len) + dmer_slmt2nd_done_prev.sum(:profit_second_settlement)
         profit_fin3 = profit_fin3_period + profit_fin3_prev
-        if (Date.today > @dmer3_closing_date) || (profit_current3_price > profit_fin3)
-          profit_fin3 = profit_current3_price
-        end 
        result1_fin_len = profit_fin1 / @dmer1_price
        result2_fin_len = profit_fin2 / @dmer2_price
        result3_fin_len = profit_fin3 / @dmer3_price
@@ -632,6 +623,17 @@ class DmerDateProgressesController < ApplicationController
       profit_fin2_prev = 0
       profit_fin3_prev = 0
     end
+
+    if (Date.today > @dmer1_closing_date) || (profit_current1_price > profit_fin1)
+      profit_fin1 = profit_current1_price
+    end 
+    if (Date.today > @dmer2_closing_date) || (profit_current2_price > profit_fin2)
+      profit_fin2 = profit_current2_price
+    end 
+    if (Date.today > @dmer3_closing_date) || (profit_current3_price > profit_fin3)
+      profit_fin3 = profit_current3_price
+    end 
+
     if r.user.position == "退職"
       user_base = r.user.position
     elsif r.user.base_sub == "キャッシュレス"
