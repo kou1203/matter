@@ -300,7 +300,7 @@ wb = xlsx_package.workbook
             date_progress = @usen_pay_date_progresses.find_by(user_id: activity_user.user_id)
             get_len = date_progress.get_len
             fin_len = date_progress.fin_len
-            ave_len = (fin_len.to_f / date_progress.shift_schedule).round(1) rescue 0
+            ave_len = (get_len.to_f / date_progress.shift_digestion).round(1) rescue 0
             profit_current = date_progress.profit_current
             profit_fin = date_progress.profit_fin
           else 
@@ -412,10 +412,10 @@ wb = xlsx_package.workbook
           airpay_ac_profit = airpaysticker_user_progress.profit_current rescue 0
           airpay_ac_result_len = (airpay_ac_profit / 10000).to_i rescue 0
 
-          if (usen_pay_user_progress.nil?) || (usen_pay_user_progress.fin_len == 0) || (usen_pay_user_progress.shift_schedule == 0)
+          if (usen_pay_user_progress.nil?) || (usen_pay_user_progress.get_len == 0) || (usen_pay_user_progress.shift_digestion == 0)
             usen_ave_len =  0
           else
-            usen_ave_len = (usen_pay_user_progress.fin_len.to_f / usen_pay_user_progress.shift_schedule).round(1) rescue 0
+            usen_ave_len = (usen_pay_user_progress.get_len.to_f / usen_pay_user_progress.shift_digestion).round(1) rescue 0
           end 
             usen_fin_len = usen_pay_user_progress.fin_len rescue 0
             usen_get_len = usen_pay_user_progress.get_len rescue 0
