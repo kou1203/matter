@@ -2,6 +2,7 @@ class CalcPeriodsController < ApplicationController
   require 'csv'
   include Base
   include CalcDate
+  include CommonCalc
   before_action :set_month
   def index 
     bases
@@ -115,7 +116,7 @@ class CalcPeriodsController < ApplicationController
     @cash_date_progresses = @cash_date_progresses.where(create_date: @cash_date_progresses_last_update)
     
     @users = User.where.not(position: "退職")
-
+    calc_profit
     @products = ["合計","dメル", "dメル専売","auPay", "PayPay", "楽天ペイ","AirPay","AirPayステッカー","UsenPay","固定費","会議用まとめ"]
     @fixed_sales = FixedSale.where(date: @month.all_month)
     @activity_bases = ActivityBase.includes(:user).where(date: @month.beginning_of_month)
