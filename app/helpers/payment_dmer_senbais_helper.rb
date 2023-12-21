@@ -1,0 +1,2 @@
+module PaymentDmerSenbaisHelper
+end

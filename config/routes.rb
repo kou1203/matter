@@ -357,6 +357,15 @@ Rails.application.routes.draw do
     }
   end 
 
+  resources :payment_dmer_senbais do 
+    collection { 
+      post :import
+      get :not_payment
+      get :conf_index
+      get :result
+    }
+  end 
+
   resources :payment_rakuten_pays do 
     collection { 
       post :import
