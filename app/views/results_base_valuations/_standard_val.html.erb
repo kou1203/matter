@@ -44,16 +44,7 @@
   <% visit = ((result_user.sum(:first_visit).to_f + result_user.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
   <% interview = ((result_user.sum(:first_interview).to_f + result_user.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>
   <% full_talk = ((result_user.sum(:first_full_talk).to_f + result_user.sum(:latter_full_talk).to_f) / shift_digestion).round(1) rescue 0 %>
-  <% 
-    get = 
-      (
-        (
-          @dmer_date_progress.find_by(user_id: user.id).get_len + 
-          @rakuten_pay_date_progress.find_by(user_id: user.id).get_len + 
-          @airpay_date_progress.find_by(user_id: user.id).get_len
-        ).to_f / 3 / shift_digestion
-      ).round(1) rescue 0 
-  %>
+  <% get = ((result_user.sum(:first_get).to_f + result_user.sum(:latter_get).to_f) / shift_digestion).round(1) rescue 0 %>
   <tr class="progress-tr">
     <td class="progress-td"><%= user.name %></td>
     <td class="progress-td"><%= user.position_sub %></td>
@@ -91,16 +82,7 @@
     <% visit = ((@results.sum(:first_visit).to_f + @results.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
     <% interview = ((@results.sum(:first_interview).to_f + @results.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>
     <% full_talk = ((@results.sum(:first_full_talk).to_f + @results.sum(:latter_full_talk).to_f) / shift_digestion).round(1) rescue 0 %>
-    <% 
-      get = 
-        (
-          (
-            @dmer_date_progress.sum(:get_len) + 
-            @rakuten_pay_date_progress.sum(:get_len) + 
-            @airpay_date_progress.sum(:get_len)
-          ).to_f / 3 / shift_digestion
-        ).round(1) rescue 0 
-    %>
+    <% get = ((@results.sum(:first_get).to_f + @results.sum(:latter_get).to_f) / shift_digestion).round(1) rescue 0 %>
   <%# /合計基準値の変数 %>
   <tr class=""><%# 合計 %>
     <td class="difference-td" colspan="2">合計</td>
