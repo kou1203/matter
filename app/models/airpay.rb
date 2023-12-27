@@ -49,8 +49,8 @@ class Airpay < ApplicationRecord
           shipping: row["端末受取日"],
           delivery_status: row["端末受取状態"],
           activate: row["アクティベート日"],
-          profit: 3000,
-          valuation: 3000,
+          profit: row["実売"],
+          valuation: row["評価売"],
           store_name: row["店舗名"]
         )
         errors << "#{index}行目,店舗名「#{row["店舗名"]}」保存できませんでした" if airpay.invalid? && errors.length < 5
@@ -90,8 +90,8 @@ class Airpay < ApplicationRecord
         shipping: row["端末受取日"],
         delivery_status: row["端末受取状態"],
         activate: row["アクティベート日"],
-        profit: 3000,
-        valuation: 3000,
+        profit: row["実売"],
+        valuation: row["評価売"],
         store_name: row["店舗名"]
       )
       if airpay.has_changes_to_save? 
@@ -122,8 +122,8 @@ class Airpay < ApplicationRecord
         shipping: row["端末受取日"],
         delivery_status: row["端末受取状態"],
         activate: row["アクティベート日"],
-        profit: 3000,
-        valuation: 3000,
+        profit: row["実売"],
+        valuation: row["評価売"],
         store_name: row["店舗名"]
         )
       airpay.save!
