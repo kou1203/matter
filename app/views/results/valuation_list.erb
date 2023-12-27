@@ -539,23 +539,7 @@
       <td class="valuation-td "><%= airpay.date %></td>
       <td class="valuation-td "><%= airpay.status %></td>
       <td class="valuation-td "><%= airpay.result_point %></td>
-      <% if @start_date.next_month.beginning_of_month >= @before_airpay_bonus_date %>
-        <% if @airpay_done.present? && @airpay_done.length >= 20 || (@month > Date.new(2023,6,30)) %>
-        <td class="valuation-td "><%= airpay.valuation + 5000 %></td>
-        <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
-        <td class="valuation-td "><%= airpay.valuation + 3000 %></td>
-        <% else %>
         <td class="valuation-td "><%= airpay.valuation %></td>
-        <% end %>
-      <% else %>
-        <% if @airpay_done.present? && @airpay_done.length >= 20 %>
-        <td class="valuation-td "><%= (airpay.valuation + 3000).to_s(:delimited) %></td>
-        <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
-        <td class="valuation-td "><%= (airpay.valuation + 2000).to_s(:delimited) %></td>
-        <% else %>
-        <td class="valuation-td "><%= airpay.valuation.to_s(:delimited) %></td>
-        <% end %>
-      <% end %>
       <td class="valuation-td "><%= link_to "詳細", airpay_path(airpay.id),class: "link" %></td>
       </tr>
       <% num += 1 %>
