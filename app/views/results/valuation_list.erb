@@ -20,24 +20,6 @@
     <p class="alert"><%= notice %></p><%# 登録した時のアラート %>
 <% num = 1 %>
 <div class="nav-text" style="color: red;"><%= alert %></div>
-<% @before_airpay_bonus_date = Date.new(2022,10,1) %>
-<% if @start_date.next_month.beginning_of_month >= @before_airpay_bonus_date %>
-  <% if @airpay_done.present? && @airpay_done.length >= 20 || (@month > Date.new(2023,6,30)) %>
-    <% airpay_bonus = @airpay_done.length * 5000 %>
-  <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
-    <% airpay_bonus = @airpay_done.length * 3000 %>
-  <% else %>
-    <% airpay_bonus = 0 %>
-  <% end %>
-<% else %>
-  <% if @airpay_done.present? && @airpay_done.length >= 20 %>
-  <% airpay_bonus = @airpay_done.length * 3000 %>
-  <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
-  <% airpay_bonus = @airpay_done.length * 2000 %>
-  <% else %>
-  <% airpay_bonus = 0 %>
-  <% end %>
-<% end %>
 <h2 class="red">成果売上：
   <%=   
     (
@@ -51,7 +33,6 @@
       @paypay_done.sum(:valuation) +
       @rakuten_pay_val.sum(:valuation) +
       @airpay_done.sum(:valuation) +
-      airpay_bonus +
       @usen_pays_7month_ago.sum(:valuation) +
       @usen_pays_8month_since.sum(:valuation) +
       @demaekan.sum(:valuation) +
@@ -128,13 +109,7 @@
     <td class="valuation-td"><%= @airpay_done.length rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
-    <% if @airpay_done.present? && @airpay_done.length >= 20 || (@month > Date.new(2023,6,30)) %>
-    <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + airpay_bonus).to_s(:delimited) rescue 0 %></td>
-    <% elsif @airpay_done.present? && @airpay_done.length >= 10 %>
-    <td class="valuation-td"><%= (@airpay_done.sum(:valuation) + airpay_bonus).to_s(:delimited) rescue 0 %></td>
-    <% else %>
     <td class="valuation-td"><%= @airpay_done.sum(:valuation).to_s(:delimited) rescue 0 %></td>
-    <% end %>
   </tr>
   <tr>
     <td class="valuation-td">UsenPay</td>
