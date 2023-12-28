@@ -274,24 +274,26 @@ wb = xlsx_package.workbook
           ]
         end 
       end
-    elsif product == "AirPayステッカー"
-      sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "現状実売"]
-      @progress_bases.each do |base|
-        @activity_bases.where(base: base).order(:position,:user_id).each do |activity_user|
-          if @airpaysticker_date_progresses.find_by(user_id: activity_user.user_id).present?
-            date_progress = @airpaysticker_date_progresses.find_by(user_id: activity_user.user_id)
-            result_len = date_progress.result_len rescue 0
-            profit_current = date_progress.profit_current rescue 0
-          else  
-            result_len = 0
-            profit_current = 0
-          end
-          sheet.add_row [
-            activity_user.base, activity_user.user.name, activity_user.position, 
-            result_len,profit_current
-          ]
-        end 
-      end
+    elsif product == "その他商材"
+      @other_products.group(:product_name).each do |product|
+        sheet.add_row [ "商材","拠点", "ユーザー", "役職", "獲得", "現状実売"]
+        @progress_bases.each do |base|
+          @activity_bases.where(base: base).order(:position,:user_id).each do |activity_user|
+            if @other_product_date_progresses.find_by(product_name: product.product_name,user_id: activity_user.user_id).present?
+              date_progress = @other_product_date_progresses.find_by(product_name: product.product_name,user_id: activity_user.user_id)
+              result_len = date_progress.result_len rescue 0
+              profit_current = date_progress.profit_current rescue 0
+            else  
+              result_len = 0
+              profit_current = 0
+            end
+            sheet.add_row [
+              product.product_name,activity_user.base, activity_user.user.name, activity_user.position, 
+              result_len,profit_current
+            ]
+          end 
+        end
+      end 
     elsif product == "UsenPay"
       sheet.add_row [ "拠点", "ユーザー", "役職", "獲得", "獲得Ave","終着獲得", "現状実売", "終着実売"]
       @progress_bases.each do |base|

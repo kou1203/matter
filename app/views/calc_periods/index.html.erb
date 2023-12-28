@@ -69,12 +69,14 @@
           <td><%= @airpay_date_progresses_last_update %></td>
           <td></td>
         </tr>
+        <% @other_products.group(:product_name).each do |product| %>
         <tr>
-          <td><%= link_to "AirPayステッカー", progress_create_airpaysticker_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
-          <td><%= link_to "詳細", airpaysticker_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>
-          <td><%= @airpaysticker_date_progresses_last_update %></td>
+          <td><%= link_to "#{product.product_name}", progress_create_other_product_date_progresses_path(month: @month, product_name: product.product_name),data: {confirm: "#{@month.month}月#{product.product_name}：売上結果を保存してもよろしいですか？"}, class: "link" %></td>
+          <td><%= link_to "詳細", other_product_date_progresses_path(month: @month, product_name: product.product_name),"data-turbolinks": false, class: "link" %></td>
+          <td><%= OtherProductDateProgress.where(product_name: product.product_name).where(date: @month.all_month).maximum(:create_date)  %></td>
           <td></td>
         </tr>
+        <% end %>
         <tr>
           <td><%= link_to "UsenPay", progress_create_usen_pay_date_progresses_path(month: @month),data: {confirm: "#{@month.month}月の売上結果を保存してもよろしいですか？"}, class: "link" %></td>
           <td><%= link_to "詳細", usen_pay_date_progresses_path(month: @month),"data-turbolinks": false, class: "link" %></td>

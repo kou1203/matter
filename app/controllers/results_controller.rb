@@ -1106,7 +1106,7 @@ class ResultsController < ApplicationController
       @aupay_pic = @other_products.where(product_name: "auPay写真")
       @dmer_pic = @other_products.where(product_name: "dメルステッカー")
       # 一時的な商材
-      @other_valuation = @other_products.where("product_name LIKE ?", "%AirPayステッカー%")
+      @other_valuation = @other_products.where(date: @start_date..@end_date)
       @airpay_pic = AirpaySticker.where(user_id: @user.id).where(form_send: @month.beginning_of_month..@month.end_of_month).where(sticker_ok: "〇").where(pop_ok: "〇")
       # ITSS
       @itss = Itss.includes(:user).where(user_id: @user.id).where(construction_schedule: @itss1_start_date..@itss1_end_date).where(status_ntt1: "工事完了")

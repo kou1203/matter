@@ -339,11 +339,16 @@ Rails.application.routes.draw do
     collection {get :progress_create}
     collection {get :date_destroy}
   end 
-
+  
+  resources :other_product_date_progresses, only: [:index] do 
+    collection {get :progress_create}
+    collection {get :date_destroy}
+  end 
   resources :airpay_stickers do 
     collection {post :import}
     collection {get :date_destroy}
   end 
+
 
   resources :payment_cashes 
   resources :payment_dmers do 

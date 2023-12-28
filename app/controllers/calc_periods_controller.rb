@@ -13,7 +13,7 @@ class CalcPeriodsController < ApplicationController
     if DmerDateProgress.where(date: @month).exists?
       @dmer_date_progresses = DmerDateProgress.includes(:user).where(date: @month)
     else
-      @dmer_date_progresses = DmerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @dmer_date_progresses = DmerDateProgress.includes(:user).where(date: @month.all_month)
     end 
     @dmer_date_progresses_last_update =  @dmer_date_progresses.maximum(:create_date)
     @dmer_date_progresses = @dmer_date_progresses.where(create_date: @dmer_date_progresses_last_update)
@@ -21,7 +21,7 @@ class CalcPeriodsController < ApplicationController
     if DmerSenbaiDateProgress.where(date: @month).exists?
       @dmer_senbai_date_progresses = DmerSenbaiDateProgress.includes(:user).where(date: @month)
     else
-      @dmer_senbai_date_progresses = DmerSenbaiDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @dmer_senbai_date_progresses = DmerSenbaiDateProgress.includes(:user).where(date: @month.all_month)
     end 
     @dmer_senbai_date_progresses_last_update =  @dmer_senbai_date_progresses.maximum(:create_date)
     @dmer_senbai_date_progresses = @dmer_senbai_date_progresses.where(create_date: @dmer_senbai_date_progresses_last_update)
@@ -29,7 +29,7 @@ class CalcPeriodsController < ApplicationController
     if AupayDateProgress.where(date: @month).exists?
       @aupay_date_progresses = AupayDateProgress.includes(:user).where(date: @month)
     else  
-      @aupay_date_progresses = AupayDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @aupay_date_progresses = AupayDateProgress.includes(:user).where(date: @month.all_month)
     end 
     @aupay_date_progresses_last_update = @aupay_date_progresses.maximum(:create_date)
     @aupay_date_progresses = @aupay_date_progresses.where(create_date: @aupay_date_progresses_last_update)
@@ -37,7 +37,7 @@ class CalcPeriodsController < ApplicationController
     if PaypayDateProgress.where(date: @month).exists?
       @paypay_date_progresses = PaypayDateProgress.includes(:user).where(date: @month)
     else  
-      @paypay_date_progresses = PaypayDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @paypay_date_progresses = PaypayDateProgress.includes(:user).where(date: @month.all_month)
     end 
     @paypay_date_progresses_last_update = @paypay_date_progresses.maximum(:create_date)
     @paypay_date_progresses = @paypay_date_progresses.where(create_date: @paypay_date_progresses_last_update)
@@ -45,7 +45,7 @@ class CalcPeriodsController < ApplicationController
     if RakutenPayDateProgress.where(date: @month).exists?
       @rakuten_pay_date_progresses = RakutenPayDateProgress.includes(:user).where(date: @month)
     else  
-      @rakuten_pay_date_progresses = RakutenPayDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @rakuten_pay_date_progresses = RakutenPayDateProgress.includes(:user).where(date: @month.all_month)
     end 
     @rakuten_pay_date_progresses_last_update = @rakuten_pay_date_progresses.maximum(:create_date)
     @rakuten_pay_date_progresses = @rakuten_pay_date_progresses.where(create_date: @rakuten_pay_date_progresses_last_update)
@@ -53,7 +53,7 @@ class CalcPeriodsController < ApplicationController
     if AirpayDateProgress.where(date: @month).exists?
       @airpay_date_progresses = AirpayDateProgress.includes(:user).where(date: @month)
     else  
-      @airpay_date_progresses = AirpayDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @airpay_date_progresses = AirpayDateProgress.includes(:user).where(date: @month.all_month)
     end 
     @airpay_date_progresses_last_update = @airpay_date_progresses.maximum(:create_date)
     @airpay_date_progresses = @airpay_date_progresses.where(create_date: @airpay_date_progresses_last_update)
@@ -62,7 +62,7 @@ class CalcPeriodsController < ApplicationController
     if DemaekanDateProgress.where(date: @month).exists?
       @demaekan_date_progresses = DemaekanDateProgress.includes(:user).where(date: @month)
     else  
-      @demaekan_date_progresses = DemaekanDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @demaekan_date_progresses = DemaekanDateProgress.includes(:user).where(date: @month.all_month)
     end 
     @demaekan_date_progresses_last_update = @demaekan_date_progresses.maximum(:create_date)
     @demaekan_date_progresses = @demaekan_date_progresses.where(create_date: @demaekan_date_progresses_last_update)
@@ -70,7 +70,7 @@ class CalcPeriodsController < ApplicationController
     if AustickerDateProgress.where(date: @month).exists?
       @austicker_date_progresses = AustickerDateProgress.includes(:user).where(date: @month)
     else  
-      @austicker_date_progresses = AustickerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @austicker_date_progresses = AustickerDateProgress.includes(:user).where(date: @month.all_month)
     end 
     @austicker_date_progresses_last_update = @austicker_date_progresses.maximum(:create_date)
     @austicker_date_progresses = @austicker_date_progresses.where(create_date: @austicker_date_progresses_last_update)
@@ -78,7 +78,7 @@ class CalcPeriodsController < ApplicationController
     if DmerstickerDateProgress.where(date: @month).exists?
       @dmersticker_date_progresses = DmerstickerDateProgress.includes(:user).where(date: @month)
     else  
-      @dmersticker_date_progresses = DmerstickerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @dmersticker_date_progresses = DmerstickerDateProgress.includes(:user).where(date: @month.all_month)
     end 
     @dmersticker_date_progresses_last_update = @dmersticker_date_progresses.maximum(:create_date)
     @dmersticker_date_progresses = @dmersticker_date_progresses.where(create_date: @dmersticker_date_progresses_last_update)
@@ -86,23 +86,14 @@ class CalcPeriodsController < ApplicationController
     if AirpaystickerDateProgress.where(date: @month).exists?
       @airpaysticker_date_progresses = AirpaystickerDateProgress.includes(:user).where(date: @month)
     else  
-      @airpaysticker_date_progresses = AirpaystickerDateProgress.includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @airpaysticker_date_progresses = AirpaystickerDateProgress.includes(:user).where(date: @month.all_month)
     end 
     @airpaysticker_date_progresses_last_update = @airpaysticker_date_progresses.maximum(:create_date)
     @airpaysticker_date_progresses = @airpaysticker_date_progresses.where(create_date: @airpaysticker_date_progresses_last_update)
-
-    if OtherProductDateProgress.where(product_name: "ITSS").where(date: @month).exists?
-      @itss_date_progresses = OtherProductDateProgress.where(product_name: "ITSS").includes(:user).where(date: @month)
-    else  
-      @itss_date_progresses = OtherProductDateProgress.where(product_name: "ITSS").includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
-    end 
-    @itss_date_progresses_last_update = @itss_date_progresses.maximum(:create_date)
-    @itss_date_progresses = @itss_date_progresses.where(create_date: @itss_date_progresses_last_update)
-
     if OtherProductDateProgress.where(product_name: "UsenPay").where(date: @month).exists?
       @usen_pay_date_progresses = OtherProductDateProgress.where(product_name: "UsenPay").includes(:user).where(date: @month)
     else  
-      @usen_pay_date_progresses = OtherProductDateProgress.where(product_name: "UsenPay").includes(:user).where(date: @month.beginning_of_month..@month.end_of_month)
+      @usen_pay_date_progresses = OtherProductDateProgress.where(product_name: "UsenPay").includes(:user).where(date: @month.all_month)
     end 
     @usen_pay_date_progresses_last_update = @usen_pay_date_progresses.maximum(:create_date)
     @usen_pay_date_progresses = @usen_pay_date_progresses.where(create_date: @usen_pay_date_progresses_last_update)
@@ -110,14 +101,18 @@ class CalcPeriodsController < ApplicationController
     if CashDateProgress.where(date: @month).exists?
       @cash_date_progresses = CashDateProgress.where(date: @month)
     else  
-      @cash_date_progresses = CashDateProgress.where(date: @month.beginning_of_month..@month.end_of_month)
+      @cash_date_progresses = CashDateProgress.where(date: @month.all_month)
     end 
     @cash_date_progresses_last_update = @cash_date_progresses.maximum(:create_date)
     @cash_date_progresses = @cash_date_progresses.where(create_date: @cash_date_progresses_last_update)
-    
+
+    @other_products = OtherProduct.where(date: @month.all_month)
+    @other_product_date_progresses = OtherProductDateProgress.where.not(product_name: "UsenPay").includes(:user).where(date: @month.all_month)
+    @other_product_date_progresses_last_update = @other_product_date_progresses.maximum(:create_date)
+    @other_product_date_progresses = @other_product_date_progresses.where(create_date: @other_product_date_progresses_last_update)
     @users = User.where.not(position: "退職")
     calc_profit
-    @products = ["合計","dメル", "dメル専売","auPay", "PayPay", "楽天ペイ","AirPay","AirPayステッカー","UsenPay","固定費","会議用まとめ"]
+    @products = ["合計","dメル", "dメル専売","auPay", "PayPay", "楽天ペイ","AirPay","その他商材","UsenPay","固定費","会議用まとめ"]
     @fixed_sales = FixedSale.where(date: @month.all_month)
     @activity_bases = ActivityBase.includes(:user).where(date: @month.beginning_of_month)
     respond_to do |format|
@@ -232,30 +227,23 @@ class CalcPeriodsController < ApplicationController
     @rakuten_pay_date_progress = @rakuten_pay_date_progress.where(create_date: @rakuten_pay_date_progress.maximum(:create_date)).where(date: @rakuten_pay_date_progress.maximum(:date))
     @airpay_date_progress = AirpayDateProgress.where(date: @month.in_time_zone.all_month)
     @airpay_date_progress = @airpay_date_progress.where(create_date: @airpay_date_progress.maximum(:create_date)).where(date: @airpay_date_progress.maximum(:date))
-    @demaekan_date_progress = DemaekanDateProgress.where(date: @month.in_time_zone.all_month)
-    @demaekan_date_progress = @demaekan_date_progress.where(create_date: @demaekan_date_progress.maximum(:create_date)).where(date: @demaekan_date_progress.maximum(:date))
-    @austicker_date_progress = AustickerDateProgress.where(date: @month.in_time_zone.all_month)
-    @austicker_date_progress = @austicker_date_progress.where(create_date: @austicker_date_progress.maximum(:create_date)).where(date: @austicker_date_progress.maximum(:date))
-    @dmersticker_date_progress = DmerstickerDateProgress.where(date: @month.in_time_zone.all_month)
-    @dmersticker_date_progress = @dmersticker_date_progress.where(create_date: @dmersticker_date_progress.maximum(:create_date)).where(date: @dmersticker_date_progress.maximum(:date))
-    @airpaysticker_date_progress = AirpaystickerDateProgress.where(date: @month.in_time_zone.all_month)
-    @airpaysticker_date_progress = @airpaysticker_date_progress.where(create_date: @airpaysticker_date_progress.maximum(:create_date)).where(date: @airpaysticker_date_progress.maximum(:date))
-    @itss_date_progress = OtherProductDateProgress.where(product_name: "ITSS").where(date: @month.in_time_zone.all_month)
-    @itss_date_progress = @itss_date_progress.where(create_date: @itss_date_progress.maximum(:create_date)).where(date: @itss_date_progress.maximum(:date))
+    @other_product_date_progress = OtherProductDateProgress.where.not(product_name: "UsenPay").where(date: @month.in_time_zone.all_month)
+    @other_product_date_progress = @other_product_date_progress.where(create_date: @other_product_date_progress.maximum(:create_date)).where(date: @other_product_date_progress.maximum(:date))
     @usen_date_progress  = OtherProductDateProgress.where(product_name: "UsenPay").where(date: @month.in_time_zone.all_month)
     @usen_date_progress = @usen_date_progress.where(create_date: @usen_date_progress.maximum(:create_date)).where(date: @usen_date_progress.maximum(:date))
     head :no_content
     filename = "評価売資料#{@month}"
     columns_ja = [
-      "拠点", "ユーザー","役職", "予定シフト", "消化シフト", "現状評価売上","終着評価売",
-      "dメル審査通過（終着）","dメルアクセプタンス審査通過（終着）","dメル２回目決済（終着）","auPay（終着）", "PayPay（終着）",
-      "楽天ペイ（終着）","AirPay（終着）","出前館（終着）","auステッカー（終着）","dメルステッカー（終着）", "ITSS（終着）", "UsenPay（終着）","AirPayステッカー（終着）","戻入"
+      "拠点", "ユーザー","役職", "予定シフト", "消化シフト","帯同シフト", "現状評価売上","終着評価売",
+      "dメル審査通過（終着）","dメルアクセプタンス審査通過（終着）","dメル２回目決済（終着）",
+      "auPay（終着）", "PayPay（終着）",
+      "楽天ペイ（終着）","AirPay（終着）","その他(終着)", "UsenPay（終着）","戻入"
     ]
     columns = [
-      "base", "user_name","post","shift_schedule", "shift_digestion", "valuation_current", "valuation_fin", 
-      "dmer1_valuation_fin", "dmer2_valuation_fin", "dmer3_valuation_fin", "aupay_valuation_fin","paypay_valuation_fin",
-      "rakuten_pay_valuation_fin","airpay_valuation_fin","demaekan_valuation_fin","austicker_valuation_fin","dmersticker_valuation_fin",
-      "itss_valuation_fin","usen_valuation_fin","airpaysticker_valuation_fin","reversal_price"
+      "base", "user_name","post","shift_schedule", "shift_digestion", "ojt_shift", "valuation_current", "valuation_fin", 
+      "dmer1_valuation_fin", "dmer2_valuation_fin", "dmer3_valuation_fin", 
+      "aupay_valuation_fin","paypay_valuation_fin",
+      "rakuten_pay_valuation_fin","airpay_valuation_fin","other_valuation_fin","usen_valuation_fin","reversal_price"
     ]
     bom = "\uFEFF"
     csv = CSV.generate(bom) do |csv|
@@ -270,6 +258,7 @@ class CalcPeriodsController < ApplicationController
           result_attributes["shift_schedule"] = 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule).to_i + 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule_slmt).to_i
+            result_attributes["ojt_sjift"] = Result.where(user_id: cash_progress.user_id).where(date: @month.all_month).where(shift: "帯同").length
           result_attributes["shift_digestion"] = 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion).to_i + 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion_slmt).to_i
@@ -280,12 +269,8 @@ class CalcPeriodsController < ApplicationController
             @paypay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
             @rakuten_pay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
             @airpay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
-            @demaekan_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
-            @austicker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
-            @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) +
-            @airpaysticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) +
-            @usen_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) +
-            @itss_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current)
+            @other_product_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
+            @usen_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current)
           result_attributes["valuation_fin"] = 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin1) + 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin2) + 
@@ -295,12 +280,8 @@ class CalcPeriodsController < ApplicationController
             @paypay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
             @rakuten_pay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
             @airpay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
-            @demaekan_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
-            @austicker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
-            @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) +
-            @airpaysticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) +
-            @usen_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) +
-            @itss_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) - 
+            @other_product_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
+            @usen_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) -
             @reversal_products.where(user_id: cash_progress.user_id).sum(:price)
           result_attributes["dmer1_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin1) + @dmer_senbai_date_progress.sum(:valuation_fin1)
           result_attributes["dmer2_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin2) + @dmer_senbai_date_progress.sum(:valuation_fin2)
@@ -309,12 +290,8 @@ class CalcPeriodsController < ApplicationController
           result_attributes["paypay_valuation_fin"] = @paypay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           result_attributes["rakuten_pay_valuation_fin"] = @rakuten_pay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           result_attributes["airpay_valuation_fin"] = @airpay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
-          result_attributes["demaekan_valuation_fin"] = @demaekan_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
-          result_attributes["austicker_valuation_fin"] = @austicker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
-          result_attributes["dmersticker_valuation_fin"] = @dmersticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
-          result_attributes["airpaysticker_valuation_fin"] = @airpaysticker_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
+          result_attributes["other_valuation_fin"] = @other_product_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           result_attributes["usen_valuation_fin"] = @usen_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
-          result_attributes["itss_valuation_fin"] = @itss_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           result_attributes["reversal_price"] = @reversal_products.where(user_id: cash_progress.user_id).sum(:price)
           csv << result_attributes.values_at(*columns)
         end 

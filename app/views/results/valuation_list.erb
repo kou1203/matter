@@ -164,21 +164,23 @@
   </tr>
   <% end %>
   <% if @other_valuation.present? %>
+  <% @other_valuation.group(:product_name).each do |data| %>
   <tr>
-    <td class="valuation-td">その他商材</td>
-    <td class="valuation-td"><%= @other_valuation.sum(:product_len) rescue 0 %></td>
+    <td class="valuation-td"><%= data.product_name %></td>
+    <td class="valuation-td"><%= @other_valuation.where(product_name: data.product_name).sum(:product_len) rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
-    <td class="valuation-td"><%= @other_valuation.sum(:valuation).to_s(:delimited) rescue 0 %></td>
+    <td class="valuation-td"><%= @other_valuation.where(product_name: data.product_name).sum(:valuation).to_s(:delimited) rescue 0 %></td>
   </tr>
+  <% end %>
   <% end %>
   <% if @reversal_products.present? %>
   <tr>
-    <td class="valuation-td">戻入</td>
-    <td class="valuation-td"><%= @reversal_products.length rescue 0 %></td>
+    <td class="valuation-td red">戻入</td>
+    <td class="valuation-td red"><%= @reversal_products.length rescue 0 %></td>
     <td class="valuation-td"></td>
     <td class="valuation-td"></td>
-    <td class="valuation-td"><%= @reversal_products.sum(:price).to_s(:delimited) rescue 0 %></td>
+    <td class="valuation-td red">-<%= @reversal_products.sum(:price).to_s(:delimited) rescue 0 %></td>
   </tr>
   <% end %>
   </table>
@@ -690,7 +692,6 @@
   <% end %>
   <% if @other_valuation.present? %>
   <h2>その他獲得商材</h2>
-    <% num = 1 %>
     <table>
       <thead>
         <th class="valuation-th">No</th>
@@ -703,7 +704,7 @@
       <tbody>
         <% @other_valuation.each_with_index do |product, i| %>
         <tr>
-          <td class="valuation-td "><%= num %></td>
+          <td class="valuation-td "><%= i + 1 %></td>
           <td class="valuation-td "><%= product.product_name %></td>
           <td class="valuation-td "><%= product.date %></td>
           <td class="valuation-td "><%= product.product_len %></td>
@@ -731,13 +732,13 @@
         <tbody>
           <% @reversal_products.each_with_index do |r_product,i| %>
           <tr>
-            <td class="valuation-td "><%= i + 1 %></td>
-            <td class="valuation-td "><%= r_product.product %></td>
-            <td class="valuation-td "><%= r_product.store_name %></td>
-            <td class="valuation-td "><%= r_product.date %></td>
-            <td class="valuation-td "><%= r_product.result_date %></td>
-            <td class="valuation-td "><%= r_product.reversal_date %></td>
-            <td class="valuation-td "><%= r_product.price.to_s(:delimited) %></td>
+            <td class="valuation-td red"><%= i + 1 %></td>
+            <td class="valuation-td red"><%= r_product.product %></td>
+            <td class="valuation-td red"><%= r_product.store_name %></td>
+            <td class="valuation-td red"><%= r_product.date %></td>
+            <td class="valuation-td red"><%= r_product.result_date %></td>
+            <td class="valuation-td red"><%= r_product.reversal_date %></td>
+            <td class="valuation-td red">-<%= r_product.price.to_s(:delimited) %></td>
           </tr>
           <% end %>
         </tbody>

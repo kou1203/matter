@@ -10,7 +10,7 @@
   <div data-scope-path="shared/form">
   <div class="form-main">
     <div class="form-title">
-      <h1><%= @user.name %>獲得商材</h1>
+      <h1><%= @user.name %>獲得商材（<%= link_to "商材追加", new_select_column_path(category: "その他商材名"),"data-turbolinks": false, class:"link" %>）</h1>
     </div>
   <%= form_with(model: @other_product, date: {remote: false}) do |f| %>
   <%= render "shared/error_messages", model: f.object %>
@@ -23,15 +23,20 @@
   </div>
   <div class="form">
       <p><%= f.label :product_name, "商材名", class: "form-text" %></p>
-      <p><%= f.select :product_name, 
-        {"AirPayステッカー（自社）": "AirPayステッカー（自社）"},{include_blank: true}, {class: "slct-input", id: "selectbox"} %></p>
+      <p><%= f.collection_select(:product_name, @select_columns.select(:name).distinct, :name, :name,{include_blank: true}, {class: "date-input"})%></p>
   </div>
   <div class="form">
       <p><%= f.label :product_len, "獲得数", class: "form-text" %></p>
       <p><%= f.number_field :product_len ,class: "input", min: 0 %></p>
   </div>
-  <%= f.hidden_field :valuation, value: 0 %>
-  <%= f.hidden_field :profit, value: 0 %>
+  <div class="form">
+      <p><%= f.label :valuation, "評価売", class: "form-text" %></p>
+      <p><%= f.number_field :valuation ,class: "input", min: 0 %></p>
+  </div>
+  <div class="form">
+      <p><%= f.label :profit, "実売", class: "form-text" %></p>
+      <p><%= f.number_field :profit ,class: "input", min: 0 %></p>
+  </div>
   <div class="form-submit">
     <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
   </div>
