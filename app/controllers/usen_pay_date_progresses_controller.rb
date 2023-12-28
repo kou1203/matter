@@ -168,8 +168,8 @@ class UsenPayDateProgressesController < ApplicationController
       usen_pay_price = usen_pay_period.price
       usen_pay_this_month_per = usen_pay_period.this_month_per
       usen_separate_date = Date.new(2023,8,1)
-      valuation_current_7month_ago = usen_pay_user_result.where(date: ...usen_separate_date).sum(:valuation) rescue 0
       valuation_current_7month_ago = 0
+      valuation_current_7month_ago = usen_pay_user_result.where(date: ...usen_separate_date).sum(:valuation) rescue 0
       # 8月以降の案件
       valuation_current_8month_since = usen_pay_user_period.where.not(status: "自社不備").where.not(status: "自社NG").where(date: usen_separate_date..).sum(:valuation) rescue 0
       valuation_current = valuation_current_7month_ago + valuation_current_8month_since rescue 0
