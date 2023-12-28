@@ -251,6 +251,7 @@ class CalcPeriodsController < ApplicationController
       @progress_bases.each do |base|
         CashDateProgress.where(date: @month.in_time_zone.all_month).where(create_date: @cash_date_progress.maximum(:create_date)).includes(:user).where(base: base).order("users.position_sub ASC").order("users.id ASC").group(:user_id).each do |cash_progress|
           @reversal_products = ReversalProduct.where(user_id: cash_progress.user_id).where(reversal_date: @month.all_month)
+          @ojt_shift = Result.where(user_id: cash_progress.user_id).where(date: @month.in_time_zone.all_month).where(shift: "帯同").length
           result_attributes = {}
           result_attributes["base"] = base
           result_attributes["user_name"] = cash_progress.user.name
@@ -258,7 +259,7 @@ class CalcPeriodsController < ApplicationController
           result_attributes["shift_schedule"] = 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule).to_i + 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule_slmt).to_i
-            result_attributes["ojt_sjift"] = Result.where(user_id: cash_progress.user_id).where(date: @month.all_month).where(shift: "帯同").length
+            result_attributes["ojt_shift"] = @ojt_shift
           result_attributes["shift_digestion"] = 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion).to_i + 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion_slmt).to_i
