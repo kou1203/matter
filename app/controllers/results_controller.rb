@@ -764,6 +764,7 @@ class ResultsController < ApplicationController
 
   # 利益計算用終着
   def gross_profit
+    calc_valuation
     @cash_date_progress = 
       CashDateProgress.includes(:user).where(date: @month.all_month)
       .where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
