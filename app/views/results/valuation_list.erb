@@ -699,7 +699,9 @@
         <th class="valuation-th">入力日</th>
         <th class="valuation-th">獲得数</th>
         <th class="valuation-th">評価売上</th>
+        <% if current_user.position_sub == "管理" %>
         <th class="valuation-th"></th>
+        <% end %>
       </thead>
       <tbody>
         <% @other_valuation.each_with_index do |product, i| %>
@@ -709,7 +711,9 @@
           <td class="valuation-td "><%= product.date %></td>
           <td class="valuation-td "><%= product.product_len %></td>
           <td class="valuation-td "><%= product.valuation.to_s(:delimited) %></td>
+          <% if current_user.position_sub == "管理" %>
           <td class="valuation-td "><%= link_to "編集", edit_other_product_path(product.id) %></td>
+          <% end %>
         </tr>
         <% end %>
       </tbody>
