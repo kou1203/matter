@@ -1,6 +1,6 @@
 <% days = ["日", "月", "火", "水", "木", "金", "土"] %>
 <div data-scope-path="shared/header">
-  <h1>週間基準値・生産性確認（個人）</h1>
+  <h1><%= @user %>訪問種別基準値</h1>
   <%= render "shared/header" %>
 </div>
 <div style="display:flex;">
@@ -14,30 +14,21 @@
     <hr>
     <div data-scope-path="results/index">
       <div class="nav-text" style="color: red;"><%= alert %></div>
-      <div><%# 検索 %>
-        <%= form_with url: person_productivity_results_path, local: true, method: :get do |f| %>
-            <p class="nav-text red">※こちらから確認したい範囲と拠点を選択してください。</p>
-            <table class="s-tb">
-              <tr class="">
-                <th class="s-th">ユーザー</th>
-                <th class="s-th" colspan="2">日付</th>
-                <th class="s-th" colspan="2"></th>
-              </tr>
-              <tr class="">
-                <td class="s-td"><%= f.text_field :search_user ,placeholder: "一部一致でも検索OK", class: "s-input" %></td>
-                <td class="s-td"><%= f.date_field :s_date, value: params[:s_date],class:"s-input" %>~</td>
-                <td class="s-td"><%= f.date_field :e_date, value: params[:e_date],class:"s-input" %></td>
-                <td class="s-submit"><%= f.submit "絞込", data: {disable_with: "絞込中"},class: "s-btn" %></td>
-                <td class="s-reset"><%= link_to "リセット",person_productivity_results_path,class:"reset-link","data-turbolinks": false %></td>
-              </tr>
-            </table>
-            <% if @u_id.nil? %>
-              <p class="nav-text red">※ユーザー名を入れてください！</p>
-            <% end %>
-        <% end %>
-      </div><%# 検索 %>
-      <% if (@s_date.present?) && (@e_date.present?) && (@e_date >= @s_date) && @u_id.present? %>
-        <h2>検索ユーザー：<%= u_name = User.where("name LIKE ?","%#{@search_user}%").first.name %>（<%= @s_date %>〜<%= @e_date %>）</h2>
+    <%# 検索機能 %>
+    <div class="search-form">
+      <%# <p class="search-title">検索</p> %>
+      <%= form_with url: result_product_cases_path, local: true, method: :get do |f| %>
+      <p class="search">
+        <%= f.hidden_field :month, value: @month %>
+        <%= f.hidden_field :base, value: @base %>
+        <%= f.collection_select(:shift_case, @results.where.not(product: nil).group(:product), :product, :product,{include_blank: true}, {class: "slct-input"}) %>
+
+        <%= f.submit "絞込",class: "search-btn" %>
+        <button class="s-reset-btn"><%= link_to "リセット",result_product_cases_path(month: @month, base: @base), class:"s-reset-link", "data-turbolinks": false %></button>
+      </p>
+      <% end %>
+    </div>
+    <%# /検索機能 %>
         <p class="nav-text">◆基準値</p>
         <table>
           <thead>
@@ -425,8 +416,6 @@
         </table>
         </div>
       </div>
-
-      <% end %>
     </div>
   </div>
 </div>

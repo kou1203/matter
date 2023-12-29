@@ -21,8 +21,8 @@
   </tr>
   <% @users.each do |user| %>
   <% result_user = @results_base.where(user_id: user.id) %>
-  <% shift_digestion = @results_base.where(user_id: user.id).where(shift: "キャッシュレス新規").length rescue 0 %>
-  <% shift_digestion_slmt = @results_base.where(user_id: user.id).where(shift: "キャッシュレス決済").length rescue 0 %>
+  <% shift_digestion = @results_base.where(user_id: user.id).length rescue 0 %>
+  <% shift_digestion_slmt = @results_base_slmt.length rescue 0 %>
   <tr class="progress-tr">
     <td class="progress-td"><%= user.name %></td>
     <td class="progress-td"><%= user.position_sub %></td>
@@ -41,8 +41,8 @@
   </tr>
   <% end %>
   <tr>
-  <% shift_digestion = @results_base.where(shift: "キャッシュレス新規").length rescue 0 %>
-  <% shift_digestion_slmt = @results_base.where(shift: "キャッシュレス決済").length rescue 0 %>
+  <% shift_digestion = @results_base.length rescue 0 %>
+  <% shift_digestion_slmt = @results_base_slmt.length rescue 0 %>
     <td class="difference-td" colspan="2">合計</td>
     <td class="progress-td"><%= shift_digestion %></td>
     <td class="progress-td"><%= shift_digestion_slmt %></td>

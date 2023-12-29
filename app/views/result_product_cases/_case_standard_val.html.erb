@@ -34,15 +34,15 @@
   </tr>
   <% @users.each do |user| %>
   <% result_user = @results_base.where(user_id: user.id) %>
-  <% shift_digestion = @results_base.where(user_id: user.id).where(shift: "キャッシュレス新規").length rescue 0 %>
-  <% shift_digestion_slmt = @results_base.where(user_id: user.id).where(shift: "キャッシュレス決済").length rescue 0 %>
+  <% shift_digestion = @results_base.where(user_id: user.id).length rescue 0 %>
+  <% shift_digestion_slmt = @results_base_slmt.length rescue 0 %>
   <% total_visit = ((result_user.sum(:first_total_visit).to_f + result_user.sum(:latter_total_visit).to_f) / shift_digestion).round(1) rescue 0 %>
   <% visit = ((result_user.sum(:first_visit).to_f + result_user.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
   <% interview = ((result_user.sum(:first_interview).to_f + result_user.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>
   <% full_talk = ((result_user.sum(:first_full_talk).to_f + result_user.sum(:latter_full_talk).to_f) / shift_digestion).round(1) rescue 0 %>
   <% get = ((result_user.sum(:first_get).to_f + result_user.sum(:latter_get).to_f) / shift_digestion).round(1) rescue 0 %>
   <tr class="progress-tr">
-    <td class="progress-td"><%= user.name %></td>
+    <td class="progress-td"><%= link_to "#{user.name}", result_product_case_path(user_id: user.id), class: "link" %></td>
     <td class="progress-td"><%= user.position_sub %></td>
     <td class="progress-td"><%= shift_digestion %></td>
     <td class="progress-td"><%= shift_digestion_slmt %></td>
@@ -68,8 +68,8 @@
   </tr><%# 個別 %>
   <% end %>
   <%# 合計基準値の変数 %>
-    <% shift_digestion = @results_base.where(shift: "キャッシュレス新規").length rescue 0 %>
-    <% shift_digestion_slmt = @results_base.where(shift: "キャッシュレス決済").length rescue 0 %>
+    <% shift_digestion = @results_base.length rescue 0 %>
+    <% shift_digestion_slmt = @results_base_slmt.length rescue 0 %>
     <% total_visit = ((@results_base.sum(:first_total_visit).to_f + @results_base.sum(:latter_total_visit).to_f) / shift_digestion).round(1) rescue 0 %>
     <% visit = ((@results_base.sum(:first_visit).to_f + @results_base.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
     <% interview = ((@results_base.sum(:first_interview).to_f + @results_base.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>

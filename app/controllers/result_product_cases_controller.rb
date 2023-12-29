@@ -16,7 +16,11 @@ class ResultProductCasesController < ApplicationController
   end 
 
   def show 
-    @user = User.params[:id]
+    @user = User.find(params[:user_id])
+    @results_person = 
+      @results.where(user_id: @user.id).where(shift: "キャッシュレス新規")
+    @results_person_slmt = 
+      @results.where(user_id: @user.id).where(shift: "キャッシュレス決済")
   end 
 
   private
@@ -29,15 +33,14 @@ class ResultProductCasesController < ApplicationController
     if @shift_case.present?
       @results = @results.where(product: @shift_case)
     end 
-    @shifts = Shift.where(start_time: @start_date..@end_date)
-    @shifts = @shifts.where(shift: "キャッシュレス新規").or(
-      @shifts.where(shift: "キャッシュレス決済")
-    )
   end 
 
   def set_base_params
     @base = params[:base]
-    @results_base = @results.where(user: {base: @base})
-    @users = User.where.not(position: "退職").where(base_sub: "キャッシュレス").where(base: @base)
+    @results_base = 
+      @results.where(user: {base: @base}).where(shift: "キャッシュレス新規")
+      @results_base_slmt = @results.where(user: {base: @base}).where(shift: "キャッシュレス決済")
+    @users = 
+      User.where.not(position: "退職").where(base_sub: "キャッシュレス").where(base: @base)
   end 
 end
