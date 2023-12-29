@@ -13,6 +13,11 @@
     </div>
     <hr>
     <div data-scope-path="results/index">
+      <h2>
+        <%= link_to "<<",result_product_case_path(month: @month.ago(1.month),user_id: @user.id), class:"link","data-turbolinks": false %>
+        <%= @month.month %>月進捗
+        <%= link_to ">>",result_product_case_path(month: @month.since(1.month),user_id: @user.id), class:"link","data-turbolinks": false %>
+      </h2>
       <div class="nav-text" style="color: red;"><%= alert %></div>
     <%# 検索機能 %>
     <div class="search-form">
