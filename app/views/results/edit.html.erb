@@ -35,6 +35,12 @@
                 },{include_blank: true}, {class: "slct-input",id: "shift-slct"} %></p>
         </div>
         <div class="form">
+            <p><%= f.label :product, "基準値種別", class: "form-text" %></p>
+            <p><%= f.select :product, {
+                "d専売": "d専売", "マルチ": "マルチ"
+                },{include_blank: true}, {class: "slct-input",id: "shift-slct"} %></p>
+        </div>
+        <div class="form">
             <p><%= f.label :ojt_id, "帯同者", class: "form-text" %></p>
             <p><%= f.collection_select(:ojt_id, User.includes(:shifts).where(shifts: {shift: "帯同"}), :id, :name,{include_blank: true}, {class: "slct-input"})%></p>
         </div>

@@ -15,10 +15,10 @@
                 <th class="date-th"><span class="date-span">曜日</span></th>
                 <th class="date-th"><span class="date-span">予定シフト</span></th>
                 <th class="date-th"><span class="date-span">消化シフト</span></th>
+                <th class="date-th"><span class="date-span">基準値種別</span></th>
                 <th class="date-th"><span class="date-span">帯同</span></th>
                 <th class="date-th"><span class="date-span">エリア</span></th>
                 <th class="date-th"><span class="date-span">売上（終着で入力）</span></th>
-                <th class="date-th"><span class="date-span">売上（商材情報から）</span></th>
                 <th class="date-th"><span class="date-span">合計訪問</span></th>
                 <th class="date-th"><span class="date-span">合計対応</span></th>
                 <th class="date-th"><span class="date-span">合計対面</span></th>
@@ -145,23 +145,10 @@
               <% result = Result.includes(:result_cash).find_by(user_id: @user.id,date: d)  %>
               <% if result.present? %><%# 消化シフトが入力されている場合 %>
               <td class="date-td race-border"><span class="date-span"><%= link_to result.shift.slice(-2,2), edit_result_path(result.id),class: "link" %></span></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.product rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.ojt.name rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.area rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.profit.round().to_s(:delimited) rescue 0 %></td><%# 営業予想 %>
-                <% 
-                  date_valuation =  
-                    @dmers.where(date: d).sum(:valuation_new) + 
-                    @dmers_slmt.where(picture: d).sum(:valuation_settlement) +
-                    @dmers_slmt.where(settlement_second: d).sum(:valuation_second_settlement) +
-                    @aupays_slmt.where(picture: d).sum(:valuation_settlement) +
-                    @rakuten_pays.where(date: d).sum(:valuation) + 
-                    @paypays.where(date: d).sum(:valuation) +
-                    (@airpays.where(date: d).length * @airpay_price) +
-                    @demaekan.where(date: d).sum(:valuation) +
-                    @other_products.where(date: d).sum(:valuation) +
-                    @itss.where(date: d).sum(:valuation)
-                %>
-              <td class="date-td race-border"><span class="date-span"><%= date_valuation %></td><%# 実際の売上 %>
             <%# 合計 %>
               <td class="date-td"><span class="date-span"><%= result.first_total_visit.to_i + result.latter_total_visit.to_i %></span></td>
               <td class="date-td"><span class="date-span"><%= result.first_visit.to_i + result.latter_visit.to_i %></td>
