@@ -24,7 +24,7 @@
   <% shift_digestion = @results_base.where(user_id: user.id).length rescue 0 %>
   <% shift_digestion_slmt = @results_base_slmt.length rescue 0 %>
   <tr class="progress-tr">
-    <td class="progress-td"><%= user.name %></td>
+    <td class="progress-td"><%= link_to "#{user.name}", result_product_case_path(user_id: user.id), class: "link" %></td>
     <td class="progress-td"><%= user.position_sub %></td>
     <td class="progress-td"><%= shift_digestion %></td>
     <td class="progress-td"><%= shift_digestion_slmt %></td>

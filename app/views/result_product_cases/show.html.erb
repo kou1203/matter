@@ -35,11 +35,14 @@
           <thead>
             <tr>
               <th colspan="2">基本情報</th>
+              <th colspan="2">消化シフト</th>
               <th colspan="9">基準値</th>
             </tr>
             <tr>
               <th>ユーザー名</th>
-              <th>消化シフト数</th>
+              <th>役職</th>
+              <th>新規</th>
+              <th>決済</th>
               <th>訪問数</th>
               <th>応答数</th>
               <th>応答率</th>
@@ -54,7 +57,9 @@
           <tbody>
             <tr>
               <td><%= @user.name %></td>
+              <td><%= @user.position_sub %></td>
               <td><%= @results_person.length %></td>
+              <td><%= @results_person_slmt.length %></td>
               <td><%= total_visit_ave = ((@results_person.sum(:first_total_visit) + @results_person.sum(:latter_total_visit)).to_f / @results_person.length).round(1) rescue 0 %></td>
               <td><%= visit_ave = ((@results_person.sum(:first_visit) + @results_person.sum(:latter_visit)).to_f / @results_person.length).round(1) rescue 0 %></td>
               <td><%= (visit_ave / total_visit_ave * 100).round() rescue 0 %>%</td>

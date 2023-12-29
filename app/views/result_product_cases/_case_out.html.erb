@@ -26,7 +26,7 @@
       <% @users.each do |user| %>
         <% result_user = @results_base.where(user_id: user.id) %><%# 個別ユーザーの終着情報 %>
       <tr><%# /個別 %>
-        <td class="progress-td" rowspan="2"><br><%= user.name %></td>
+        <td class="progress-td" rowspan="2"><br><%= link_to "#{user.name}", result_product_case_path(user_id: user.id), class: "link" %></td>
         <td class="progress-td">平均</td>
         <% 7.times do |i| %>
           <% out_cnt = i %>
@@ -106,7 +106,7 @@
       <tr><%# /個別 %>
       </tr>
       <tr>
-        <td class="progress-td" rowspan="2" ><br><%= user.name %></td><%# 奇数 %>
+        <td class="progress-td" rowspan="2"><br><%= link_to "#{user.name}", result_product_case_path(user_id: user.id), class: "link" %></td><%# 奇数 %>
         <td class="progress-td">平均</td>
         <% 6.times do |i| %>
           <% out_cnt = i + 8 %>
