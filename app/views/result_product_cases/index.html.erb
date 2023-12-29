@@ -1,0 +1,45 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<%# calc_periods_ary = [@calc_periods_val, @calc_periods_prof] %>
+<% tb_cnt = 0 %>
+<div data-scope-path="shared/header">
+  <h1 class="sub-title"><%= @base %>訪問種別基準値</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;"><%# サイドバーとメインバーを分ける %>
+  <div data-scope-path="shared/side_bar"><%# サイドバー %>
+    <%= render "shared/sidebar" %>
+  </div><%# サイドバー %>
+  <div data-scope-path="shares/date-progress"><%# メインバー %>
+      <div data-scope-path="shares/index">
+      <%= render "shared/result_links" %>
+    </div>
+    <hr>
+    <p class="caution-txt"><%= alert %></p>
+    <div class="date-head"><%# 日付切替 %>
+      <h2>
+        <%= link_to "<<",result_product_cases_path(month: @month.ago(1.month),base: @base), class:"link","data-turbolinks": false %>
+        <%= @month.month %>月進捗
+        <%= link_to ">>",result_product_cases_path(month: @month.since(1.month),base: @base), class:"link","data-turbolinks": false %>
+      </h2>
+    </div><%# 日付切替 %>
+    <%# 検索機能 %>
+    <div class="search-form">
+      <%# <p class="search-title">検索</p> %>
+      <%= form_with url: result_product_cases_path, local: true, method: :get do |f| %>
+      <p class="search">
+        <%= f.hidden_field :month, value: @month %>
+        <%= f.hidden_field :base, value: @base %>
+        <%= f.collection_select(:shift_case, @results, :product, :product,{include_blank: true}, {class: "slct-input"}) %>
+
+        <%= f.submit "絞込",class: "search-btn" %>
+        <button class="s-reset-btn"><%= link_to "リセット",result_product_cases_path(month: @month, base: @base), class:"s-reset-link", "data-turbolinks": false %></button>
+      </p>
+      <% end %>
+    </div>
+    <%# /検索機能 %>
+    <hr>
+    <%= render_async case_standard_val_path(month: @month, base: @base,shift_case: @shift_case) %><%# 基準値 %>
+    <%= render_async case_out_path(month: @month, base: @base,shift_case: @shift_case) %><%# 切り返し %>
+    <%= render_async case_productivity_path(month: @month, base: @base) %><%# 生産性 %>
+  </div>
+</div>

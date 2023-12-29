@@ -1,0 +1,60 @@
+<h2>◆<%= "#{@shift_case}：" %><%= @base %>生産性</h2>
+<table class="progress-tb">
+  <tr>
+    <th class="product-th1" colspan="2">基本情報</th>
+    <th class="product-th1" colspan="2">消化シフト</th>
+    <th class="product-th1" colspan="2">dメル専売</th>
+    <th class="product-th1" colspan="2">auPay</th>
+    <th class="product-th1" colspan="2">PayPay</th>
+    <th class="product-th1" colspan="2">AirPay</th>
+    <th class="product-th1" colspan="2">UsenPay</th>
+  </tr>
+  <tr>
+    <th class="progress-th2">氏名</th>
+    <th class="progress-th2">役職</th>
+    <th class="progress-th2">新規</th>
+    <th class="progress-th2">決済</th>
+    <% 5.times do %>
+    <th class="progress-th2">獲得Ave</th>
+    <th class="progress-th2">獲得</th>
+    <% end %>
+  </tr>
+  <% @users.each do |user| %>
+  <% result_user = @results_base.where(user_id: user.id) %>
+  <% shift_digestion = @results_base.where(user_id: user.id).where(shift: "キャッシュレス新規").length rescue 0 %>
+  <% shift_digestion_slmt = @results_base.where(user_id: user.id).where(shift: "キャッシュレス決済").length rescue 0 %>
+  <tr class="progress-tr">
+    <td class="progress-td"><%= user.name %></td>
+    <td class="progress-td"><%= user.position_sub %></td>
+    <td class="progress-td"><%= shift_digestion %></td>
+    <td class="progress-td"><%= shift_digestion_slmt %></td>
+    <td class="progress-td"><%= (result_user.sum(:dmer).to_f / shift_digestion).round(1) rescue 0 %></td>
+    <td class="progress-td"><%= result_user.sum(:dmer) rescue 0 %></td>
+    <td class="progress-td"><%= (result_user.sum(:aupay).to_f / shift_digestion).round(1) rescue 0 %></td>
+    <td class="progress-td"><%= result_user.sum(:aupay) rescue 0 %></td>
+    <td class="progress-td"><%= (result_user.sum(:paypay).to_f / shift_digestion).round(1) rescue 0 %></td>
+    <td class="progress-td"><%= result_user.sum(:paypay) rescue 0 %></td>
+    <td class="progress-td"><%= (result_user.sum(:aipay).to_f / shift_digestion).round(1) rescue 0 %></td>
+    <td class="progress-td"><%= result_user.sum(:aipay) rescue 0 %></td>
+    <td class="progress-td"><%= (result_user.sum(:other_product1).to_f / shift_digestion).round(1) rescue 0 %></td>
+    <td class="progress-td"><%= result_user.sum(:other_product1) rescue 0 %></td>
+  </tr>
+  <% end %>
+  <tr>
+  <% shift_digestion = @results_base.where(shift: "キャッシュレス新規").length rescue 0 %>
+  <% shift_digestion_slmt = @results_base.where(shift: "キャッシュレス決済").length rescue 0 %>
+    <td class="difference-td" colspan="2">合計</td>
+    <td class="progress-td"><%= shift_digestion %></td>
+    <td class="progress-td"><%= shift_digestion_slmt %></td>
+    <td class="progress-td"><%= (@results_base.sum(:dmer).to_f / shift_digestion).round(1) rescue 0 %></td>
+    <td class="progress-td"><%= @results_base.sum(:dmer) rescue 0 %></td>
+    <td class="progress-td"><%= (@results_base.sum(:aupay).to_f / shift_digestion).round(1) rescue 0 %></td>
+    <td class="progress-td"><%= @results_base.sum(:aupay) rescue 0 %></td>
+    <td class="progress-td"><%= (@results_base.sum(:paypay).to_f / shift_digestion).round(1) rescue 0 %></td>
+    <td class="progress-td"><%= @results_base.sum(:paypay) rescue 0 %></td>
+    <td class="progress-td"><%= (@results_base.sum(:aipay).to_f / shift_digestion).round(1) rescue 0 %></td>
+    <td class="progress-td"><%= @results_base.sum(:aipay) rescue 0 %></td>
+    <td class="progress-td"><%= (@results_base.sum(:other_product1).to_f / shift_digestion).round(1) rescue 0 %></td>
+    <td class="progress-td"><%= @results_base.sum(:other_product1) rescue 0 %></td>
+  </tr>
+</table>

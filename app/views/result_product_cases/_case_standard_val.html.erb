@@ -1,0 +1,104 @@
+<h2>◆<%= "#{@shift_case}：" %><%= @base %>基準値</h2>
+<table class="progress-tb">
+  <tr>
+    <th class="progress-th1" colspan="2">基本情報</th>
+    <th class="progress-th1" colspan="2">消化シフト</th>
+    <th class="progress-th1" colspan="9">基準値</th>
+    <th class="progress-th1" colspan="5">全導入AirPay入り</th><%# １９ %>
+    <th class="progress-th1" colspan="5">UsenPay基準値</th><%# １８ %>
+  </tr>
+  <tr><%# 個別 %>
+    <th class="progress-th2">氏名</th>
+    <th class="progress-th2">役職</th>
+    <th class="progress-th2">新規</th>
+    <th class="progress-th2">決済</th>
+    <th class="progress-th2">訪問</th>
+    <th class="progress-th2">対応</th>
+    <th class="progress-th2">対応率</th>
+    <th class="progress-th2">対面</th>
+    <th class="progress-th2">対面率</th>
+    <th class="progress-th2">フル</th>
+    <th class="progress-th2">フル率</th>
+    <th class="progress-th2">成約</th>
+    <th class="progress-th2">成約率</th>
+    <th class="progress-th2">訪問</th>
+    <th class="progress-th2">対面</th>
+    <th class="progress-th2">対面率</th>
+    <th class="progress-th2">成約</th>
+    <th class="progress-th2">成約率</th>
+    <th class="progress-th2">対面</th>
+    <th class="progress-th2">フル</th>
+    <th class="progress-th2">フル率</th>
+    <th class="progress-th2">成約</th>
+    <th class="progress-th2">成約率</th>
+  </tr>
+  <% @users.each do |user| %>
+  <% result_user = @results_base.where(user_id: user.id) %>
+  <% shift_digestion = @results_base.where(user_id: user.id).where(shift: "キャッシュレス新規").length rescue 0 %>
+  <% shift_digestion_slmt = @results_base.where(user_id: user.id).where(shift: "キャッシュレス決済").length rescue 0 %>
+  <% total_visit = ((result_user.sum(:first_total_visit).to_f + result_user.sum(:latter_total_visit).to_f) / shift_digestion).round(1) rescue 0 %>
+  <% visit = ((result_user.sum(:first_visit).to_f + result_user.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
+  <% interview = ((result_user.sum(:first_interview).to_f + result_user.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>
+  <% full_talk = ((result_user.sum(:first_full_talk).to_f + result_user.sum(:latter_full_talk).to_f) / shift_digestion).round(1) rescue 0 %>
+  <% get = ((result_user.sum(:first_get).to_f + result_user.sum(:latter_get).to_f) / shift_digestion).round(1) rescue 0 %>
+  <tr class="progress-tr">
+    <td class="progress-td"><%= user.name %></td>
+    <td class="progress-td"><%= user.position_sub %></td>
+    <td class="progress-td"><%= shift_digestion %></td>
+    <td class="progress-td"><%= shift_digestion_slmt %></td>
+    <td class="progress-td"><%= total_visit %></td>
+    <td class="progress-td"><%= visit %></td>
+    <td class="progress-td"><%= number_to_percentage(visit.to_f / total_visit * 100,precision: 0) rescue 0 %></td>
+    <td class="progress-td"><%= interview %></td>
+    <td class="progress-td"><%= number_to_percentage(interview.to_f / visit * 100,precision: 0) rescue 0 %></td>
+    <td class="progress-td"><%= full_talk %></td>
+    <td class="progress-td"><%= number_to_percentage(full_talk.to_f / interview * 100,precision: 0) rescue 0 %></td>
+    <td class="progress-td"><%= get %></td>
+    <td class="progress-td"><%= number_to_percentage(get.to_f / full_talk * 100,precision: 0) rescue 0 %></td>
+    <td class="progress-td"><%= result_user.sum(:out_interview_19) rescue 0 %></td>
+    <td class="progress-td"><%= result_user.sum(:out_full_talk_19) rescue 0 %></td>
+    <td class="progress-td"><%= number_to_percentage(result_user.sum(:out_full_talk_19).to_f / result_user.sum(:out_interview_19) * 100,precision: 0) rescue 0 %></td>
+    <td class="progress-td"><%= result_user.sum(:out_get_19) rescue 0 %></td>
+    <td class="progress-td"><%= number_to_percentage(result_user.sum(:out_get_19).to_f / result_user.sum(:out_full_talk_19) * 100,precision: 0) rescue 0 %></td>
+    <td class="progress-td"><%= result_user.sum(:out_interview_18) rescue 0 %></td>
+    <td class="progress-td"><%= result_user.sum(:out_full_talk_18) rescue 0 %></td>
+    <td class="progress-td"><%= number_to_percentage(result_user.sum(:out_full_talk_18).to_f / result_user.sum(:out_interview_18) * 100,precision: 0) rescue 0 %></td>
+    <td class="progress-td"><%= result_user.sum(:out_get_18) rescue 0 %></td>
+    <td class="progress-td"><%= number_to_percentage(result_user.sum(:out_get_18).to_f / result_user.sum(:out_full_talk_18) * 100,precision: 0) rescue 0 %></td>
+  </tr><%# 個別 %>
+  <% end %>
+  <%# 合計基準値の変数 %>
+    <% shift_digestion = @results_base.where(shift: "キャッシュレス新規").length rescue 0 %>
+    <% shift_digestion_slmt = @results_base.where(shift: "キャッシュレス決済").length rescue 0 %>
+    <% total_visit = ((@results_base.sum(:first_total_visit).to_f + @results_base.sum(:latter_total_visit).to_f) / shift_digestion).round(1) rescue 0 %>
+    <% visit = ((@results_base.sum(:first_visit).to_f + @results_base.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
+    <% interview = ((@results_base.sum(:first_interview).to_f + @results_base.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>
+    <% full_talk = ((@results_base.sum(:first_full_talk).to_f + @results_base.sum(:latter_full_talk).to_f) / shift_digestion).round(1) rescue 0 %>
+    <% get = ((@results_base.sum(:first_get).to_f + @results_base.sum(:latter_get).to_f) / shift_digestion).round(1) rescue 0 %>
+  <%# /合計基準値の変数 %>
+  <tr class=""><%# 合計 %>
+    <td class="difference-td" colspan="2">合計</td>
+    <td class="difference-td"><%= shift_digestion rescue 0 %></td>
+    <td class="difference-td"><%= shift_digestion_slmt rescue 0 %></td>
+    <td class="difference-td"><%= total_visit %></td>
+    <td class="difference-td"><%= visit %></td>
+    <td class="difference-td"><%= number_to_percentage(visit.to_f / total_visit * 100,precision: 0) %></td>
+    <td class="difference-td"><%= interview %></td>
+    <td class="difference-td"><%= number_to_percentage(interview.to_f / visit * 100,precision: 0) %></td>
+    <td class="difference-td"><%= full_talk %></td>
+    <td class="difference-td"><%= number_to_percentage(full_talk.to_f / interview * 100,precision: 0) %></td>
+    <td class="difference-td"><%= get %></td>
+    <td class="difference-td"><%= number_to_percentage(get.to_f / full_talk * 100,precision: 0) %></td>
+    <td class="difference-td"><%= @results_base.sum(:out_interview_19) rescue 0 %></td>
+    <td class="difference-td"><%= @results_base.sum(:out_full_talk_19) rescue 0 %></td>
+    <td class="difference-td"><%= number_to_percentage(@results_base.sum(:out_full_talk_19).to_f / @results_base.sum(:out_interview_19) * 100,precision: 0) rescue 0 %></td>
+    <td class="difference-td"><%= @results_base.sum(:out_get_19) rescue 0 %></td>
+    <td class="difference-td"><%= number_to_percentage(@results_base.sum(:out_get_19).to_f / @results_base.sum(:out_full_talk_19) * 100,precision: 0) rescue 0 %></td>
+    <td class="difference-td"><%= @results_base.sum(:out_interview_18) rescue 0 %></td>
+    <td class="difference-td"><%= @results_base.sum(:out_full_talk_18) rescue 0 %></td>
+    <td class="difference-td"><%= number_to_percentage(@results_base.sum(:out_full_talk_18).to_f / @results_base.sum(:out_interview_18) * 100,precision: 0) rescue 0 %></td>
+    <td class="difference-td"><%= @results_base.sum(:out_get_18) rescue 0 %></td>
+    <td class="difference-td"><%= number_to_percentage(@results_base.sum(:out_get_18).to_f / @results_base.sum(:out_full_talk_18) * 100,precision: 0) rescue 0 %></td>
+  </tr><%# 合計 %>
+
+</table>

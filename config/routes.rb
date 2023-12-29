@@ -477,6 +477,11 @@ Rails.application.routes.draw do
   resources :fixed_sales do 
     collection {get :delete_page}
   end 
-
   resources :select_columns
+
+  resources :result_product_cases, only: [:index]
+  resources :result_product_cases, only: :show, param: :user_id
+  get "case_standard_val", to: "result_product_cases#case_standard_val", as: "case_standard_val"
+  get "case_out", to: "result_product_cases#case_out", as: "case_out"
+  get "case_productivity", to: "result_product_cases#case_productivity", as: "case_productivity"
 end
