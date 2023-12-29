@@ -412,27 +412,27 @@
           <tbody>
             <tr>
               <th colspan="">dメル</th>
-              <td><%= product.length rescue 0 %></td>
+              <td><%= @results_person.sum(:dmer) rescue 0 %></td>
               <td><%= (@results_person.sum(:dmer).to_f /  @results_person.length).round(1) rescue 0 %></td>
             </tr>
             <tr>
               <th colspan="">auPay</th>
-              <td><%= product.length rescue 0 %></td>
+              <td><%= @results_person.sum(:aupay) rescue 0 %></td>
               <td><%= (@results_person.sum(:aupay).to_f /  @results_person.length).round(1) rescue 0 %></td>
             </tr>
             <tr>
               <th colspan="">PayPay</th>
-              <td><%= product.length rescue 0 %></td>
+              <td><%= @results_person.sum(:paypay) rescue 0 %></td>
               <td><%= (@results_person.sum(:paypay).to_f /  @results_person.length).round(1) rescue 0 %></td>
             </tr>
             <tr>
               <th colspan="">AirPay</th>
-              <td><%= product.length rescue 0 %></td>
+              <td><%= @results_person.sum(:airpay) rescue 0 %></td>
               <td><%= (@results_person.sum(:airpay).to_f /  @results_person.length).round(1) rescue 0 %></td>
             </tr>
             <tr>
               <th colspan="">UsenPay</th>
-              <td><%= product.length rescue 0 %></td>
+              <td><%= @results_person.sum(:other_product1) rescue 0 %></td>
               <td><%= (@results_person.sum(:other_product1).to_f /  @results_person.length).round(1) rescue 0 %></td>
             </tr>
           </tbody>
