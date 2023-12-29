@@ -29,7 +29,7 @@
       <p class="search">
         <%= f.hidden_field :month, value: @month %>
         <%= f.hidden_field :base, value: @base %>
-        <%= f.collection_select(:shift_case, @results, :product, :product,{include_blank: true}, {class: "slct-input"}) %>
+        <%= f.collection_select(:shift_case, @results.group(:product), :product, :product,{include_blank: true}, {class: "slct-input"}) %>
 
         <%= f.submit "絞込",class: "search-btn" %>
         <button class="s-reset-btn"><%= link_to "リセット",result_product_cases_path(month: @month, base: @base), class:"s-reset-link", "data-turbolinks": false %></button>
