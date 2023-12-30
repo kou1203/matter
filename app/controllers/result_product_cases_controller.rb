@@ -32,7 +32,7 @@ class ResultProductCasesController < ApplicationController
     @results = Result.includes(:user, :result_cash).where(date: @start_date..@end_date)
     if @shift_case.present?
       if @shift_case == "d専売全て"
-        @results = @results.where("product LIKE ?","d専売")
+        @results = @results.where("product LIKE ?","%d専売%")
       else 
         @results = @results.where(product: @shift_case)
       end 
