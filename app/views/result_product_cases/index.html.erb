@@ -29,7 +29,10 @@
       <p class="search">
         <%= f.hidden_field :month, value: @month %>
         <%= f.hidden_field :base, value: @base %>
-        <%= f.collection_select(:shift_case, @results.where.not(product: nil).group(:product), :product, :product,{include_blank: true}, {class: "slct-input"}) %>
+        <%= f.select :shift_case, {
+                "d専売全て": "d専売全て","d専売のみ": "d専売","d専売+マルチ": "d専売+マルチ", "マルチのみ": "マルチ"
+                },{include_blank: true}, {class: "slct-input",id: "shift-slct"} 
+        %>
 
         <%= f.submit "絞込",class: "search-btn" %>
         <button class="s-reset-btn"><%= link_to "リセット",result_product_cases_path(month: @month, base: @base), class:"s-reset-link", "data-turbolinks": false %></button>

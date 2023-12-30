@@ -33,10 +33,12 @@
       <p><%= f.label :valuation, "評価売", class: "form-text" %></p>
       <p><%= f.number_field :valuation ,class: "input", min: 0 %></p>
   </div>
+  <% if current_user.position_sub == "管理" %>
   <div class="form">
       <p><%= f.label :profit, "実売", class: "form-text" %></p>
       <p><%= f.number_field :profit ,class: "input", min: 0 %></p>
   </div>
+  <% end %>
   <div class="form-submit">
     <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
   </div>

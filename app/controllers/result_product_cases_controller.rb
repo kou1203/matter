@@ -31,7 +31,11 @@ class ResultProductCasesController < ApplicationController
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @results = Result.includes(:user, :result_cash).where(date: @start_date..@end_date)
     if @shift_case.present?
-      @results = @results.where(product: @shift_case)
+      if @shift_case == "d専売全て"
+        @results = @results.where("product LIKE ?","d専売")
+      else 
+        @results = @results.where(product: @shift_case)
+      end 
     end 
   end 
 
