@@ -218,19 +218,19 @@ class DmerSenbaiDateProgressesController < ApplicationController
         end 
         #成果2-----------------------------------------------
         #成果3-----------------------------------------------
-        valuation_current3 = @dmer_senbai_done_slmter2nd.sum(:valuation_second_settlement)
+        valuation_current3 = @dmer_senbai_result3.sum(:valuation_second_settlement)
         # 成果3終着（期間内）
         if shift_digestion == 0 || shift_schedule == 0
           valuation_fin3_period_len = 0
           valuation_fin3_period = 0
         else  
-          valuation_current3_period = @dmer_senbai_done_slmter2nd.where(date: @start_date..@end_date)
+          valuation_current3_period = @dmer_senbai_result3.where(date: @start_date..@end_date)
           valuation_fin3_period_len = ((result_dmer_sum - dmer_def_len - valuation_current3_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai3_calc_data.this_month_per).round()
           valuation_fin3_period = (@dmer_senbai3_calc_data.price * valuation_fin3_period_len) + (@dmer_senbai3_calc_data.price * (valuation_current3_period.length.to_f * @dmer_senbai3_calc_data.this_month_per).round()) rescue 0
         end 
         valuation_fin3_prev = 
         (@dmer_senbai3_calc_data.price * (dmer_slmt_tgt_prev.length.to_f * @dmer_senbai3_calc_data.prev_month_per).round()) + 
-        @dmer_senbai_done_slmter2nd.where(date: ...@start_date).sum(:valuation_second_settlement) rescue 0
+        @dmer_senbai_result3.where(date: ...@start_date).sum(:valuation_second_settlement) rescue 0
         if (Date.today > closing_date(@dmer_senbai3_calc_data)) || (valuation_current3 >= (valuation_fin3_period + valuation_fin3_prev))
           valuation_fin3 = valuation_current3
         else  
