@@ -284,9 +284,9 @@ class CalcPeriodsController < ApplicationController
             @other_product_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) + 
             @usen_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin) -
             @reversal_products.where(user_id: cash_progress.user_id).sum(:price)
-          result_attributes["dmer1_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin1) + @dmer_senbai_date_progress.sum(:valuation_fin1)
-          result_attributes["dmer2_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin2) + @dmer_senbai_date_progress.sum(:valuation_fin2)
-          result_attributes["dmer3_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin3) + @dmer_senbai_date_progress.sum(:valuation_fin3)
+          result_attributes["dmer1_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin1) + @dmer_senbai_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin1)
+          result_attributes["dmer2_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin2) + @dmer_senbai_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin2)
+          result_attributes["dmer3_valuation_fin"] = @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin3) + @dmer_senbai_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin3)
           result_attributes["aupay_valuation_fin"] = @aupay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           result_attributes["paypay_valuation_fin"] = @paypay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
           result_attributes["rakuten_pay_valuation_fin"] = @rakuten_pay_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_fin)
