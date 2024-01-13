@@ -173,7 +173,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
           valuation_fin1_period_len = ((result_dmer_sum - dmer_def_len - dmer_done_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai1_calc_data.this_month_per).round()
           valuation_fin1 = 
             (@dmer_senbai1_calc_data.price * valuation_fin1_period_len) + 
-            (@dmer_senbai1_calc_data.price * (dmer_done_period.length.to_f * @dmer_senbai1_calc_data.this_month_per).round()) + 
+            dmer_done_period.sum(:valuation_new) + 
             dmer_done.where(date: ...@start_date).where(result_point: start_date(@dmer_senbai1_calc_data)..end_date(@dmer_senbai1_calc_data)).sum(:valuation_new) rescue 0
         end
         # 日付が締め日を超えた時終着と現状売上を切り替える
@@ -194,7 +194,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
             ((result_dmer_sum - dmer_def_len - dmer_slmt_done_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai2_calc_data.this_month_per).round()
           valuation_fin2_period = 
             (@dmer_senbai2_calc_data.price * valuation_fin2_period_len) + 
-            @dmer_senbai2_calc_data.price * (dmer_slmt_done_period.length.to_f * @dmer_senbai2_calc_data.this_month_per).round() rescue 0
+            dmer_slmt_done_period.sum(:valuation_settlement) rescue 0
         end
         # 過去月の決済対象
         dmer_slmt_tgt_prev = 
@@ -226,7 +226,9 @@ class DmerSenbaiDateProgressesController < ApplicationController
         else  
           valuation_current3_period = @dmer_senbai_result3.where(date: @start_date..@end_date)
           valuation_fin3_period_len = ((result_dmer_sum - dmer_def_len - valuation_current3_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai3_calc_data.this_month_per).round()
-          valuation_fin3_period = (@dmer_senbai3_calc_data.price * valuation_fin3_period_len) + (@dmer_senbai3_calc_data.price * (valuation_current3_period.length.to_f * @dmer_senbai3_calc_data.this_month_per).round()) rescue 0
+          valuation_fin3_period = 
+            (@dmer_senbai3_calc_data.price * valuation_fin3_period_len) + 
+            valuation_current3_period.sum(:valuation_second_settlement) rescue 0
         end 
         valuation_fin3_prev = 
         (@dmer_senbai3_calc_data.price * (dmer_slmt_tgt_prev.length.to_f * @dmer_senbai3_calc_data.prev_month_per).round()) + 
