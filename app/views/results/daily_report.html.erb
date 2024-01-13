@@ -33,7 +33,7 @@
 <% usen_pay_price = @calc_periods.find_by(name: "UsenPay").price %>
 <%# /単価設定 %>
 <%# 拠点の決済などの売上変数 %>
-  <% dmer_slmt_team = @shift_digestion.sum(:dmer) * dmer1_price rescue 0 %><%# dメル決済 %>
+  <% dmer_slmt_team = @shift_digestion.sum(:dmer) * dmer2_price rescue 0 %><%# dメル決済 %>
   <% 
     team_profit_new = 
       (@shift_digestion.sum(:dmer) * dmer1_price) + 
@@ -52,7 +52,9 @@
 チーム獲得本数：<%= "dメル#{@shift_digestion.sum(:dmer)}　UsenPay#{@shift_digestion.sum(:other_product1)}　AirPay#{@shift_digestion.sum(:airpay)}" %>
 <%# /拠点の表示内容 %>
 <% @users.each do |user| %>
-  <% dmer_slmt = @shift_digestion.where(user_id: user.id).sum(:dmer) * dmer1_price rescue 0 %><%# dメル決済 %>
+  <% dmer_slmt = 
+    @shift_digestion.where(user_id: user.id).sum(:dmer) * dmer2_price rescue 0 
+  %><%# dメル決済 %>
 <%# 現状売上 %>
 <% if @shift_digestion.where(user_id: user.id).present? %>
   <% person_profit_new = (@shift_digestion.where(user_id: user.id).sum(:dmer) * dmer1_price) + (@shift_digestion.where(user_id: user.id).sum(:other_product1) * usen_pay_price) + (@shift_digestion.where(user_id: user.id).sum(:airpay) * airpay_price) rescue 0 %>
