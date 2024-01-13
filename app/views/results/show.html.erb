@@ -916,7 +916,7 @@
             </tr>
             <tr>
               <td class="total-td" colspan="">dメル専売</td>
-              <td class="total-td" colspan=""><%= @dmers_senbai_slmt_done.length rescue 0 %></td>
+              <td class="total-td" colspan=""><%= @dmers_senbai_slmt_done.where(date: @start_date..@end_date).length rescue 0 %></td>
               <td class="total-td" colspan=""><%= @dmers_senbai_slmt_def.length rescue 0 %></td>
               <td class="total-td" colspan=""><%= @dmers_senbai_slmt_pic_def.length rescue 0 %></td>
             </tr>
