@@ -165,20 +165,20 @@ class DmerSenbaiDateProgressesController < ApplicationController
         valuation_current1 = @dmer_senbai_result1.sum(:valuation_new)
         # 成果1終着
         dmer_done_period = @dmer_senbai_result1.where(date: @start_date..@end_date)
-        if shift_digestion == 0 || shift_schedule == 0
+        if (shift_digestion == 0) || (shift_schedule == 0)
           valuation_fin1_period_len = 0
           valuation_fin1_period = 0
           valuation_fin1 = 0
         else  
           valuation_fin1_period_len = ((result_dmer_sum - dmer_def_len - dmer_done_period.length).to_f / shift_digestion * shift_schedule * @dmer_senbai1_calc_data.this_month_per).round()
           valuation_fin1 = 
-            (@dmer_senbai1_calc_data.price * valuation_fin1_period_len) + 
-            dmer_done_period.sum(:valuation_new) + 
-            dmer_done.where(date: ...@start_date).where(result_point: start_date(@dmer_senbai1_calc_data)..end_date(@dmer_senbai1_calc_data)).sum(:valuation_new) rescue 0
+            (@dmer_senbai1_calc_data.price * valuation_fin1_period_len) + valuation_current1  rescue 0
         end
         # 日付が締め日を超えた時終着と現状売上を切り替える
-        if (Date.today > closing_date(@dmer_senbai1_calc_data)) || valuation_current1 >= valuation_fin1
+        if (Date.today > closing_date(@dmer_senbai1_calc_data)) || (valuation_current1 >= valuation_fin1)
           valuation_fin1 = valuation_current1
+        else  
+          valuation_fin1 = valuation_fin1
         end 
         #成果1-----------------------------------------------
         #成果2-----------------------------------------------
@@ -204,7 +204,7 @@ class DmerSenbaiDateProgressesController < ApplicationController
         .or(
           @dmer_senbai_done.where(settlement_deadline: @start_date.. )
           .where(date: ...@start_date)
-          .where(settlement: start_date(@dmer_senbai1_calc_data)..end_date(@dmer_senbai1_calc_data))
+          .where(settlement: start_date(@dmer_senbai2_calc_data)..end_date(@dmer_senbai2_calc_data))
           .where(picture_check_date: nil).where.not(status_settlement: "期限切れ")
         )
         valuation_fin2_prev = 
