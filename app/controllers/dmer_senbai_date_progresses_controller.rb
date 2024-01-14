@@ -177,8 +177,6 @@ class DmerSenbaiDateProgressesController < ApplicationController
         # 日付が締め日を超えた時終着と現状売上を切り替える
         if (Date.today > closing_date(@dmer_senbai1_calc_data)) || (valuation_current1 >= valuation_fin1)
           valuation_fin1 = valuation_current1
-        else  
-          valuation_fin1 = valuation_fin1
         end 
         #成果1-----------------------------------------------
         #成果2-----------------------------------------------
@@ -255,26 +253,18 @@ class DmerSenbaiDateProgressesController < ApplicationController
           .where(partner_status: "Active").where(status: "審査OK")
           .where(status_settlement: "完了").where(picture_check: "合格")
       # 現状売上
-      # 当月成果になったデータ
-      profit_current_data = 
-        dmer_senbais_slmter_ok
-        .where(picture_check_date: start_date(d_calc_data)..end_date(d_calc_data)).or(
-          dmer_senbais_slmter_ok
-        .where(picture_check_date: ...start_date(d_calc_data))
-        .where(result_point: start_date(d_calc_data)..end_date(d_calc_data))
-        )
       # ★現状売上
-      profit_current = profit_current_data.sum(:profit) rescue 0
+      profit_current = @dmer_senbai_result2.sum(:profit) rescue 0
       
       # ◆当月終着
       # 当月獲得した案件が当月成果になったデータ
-      profit_current_data_period = profit_current_data.where(date: @start_date..@end_date)
+      @dmer_senbai_result2_period = @dmer_senbai_result2.where(date: @start_date..@end_date)
       # ①.これから成果になる件数を出す。
       profit_fin_period_len = 
         (
           result_dmer_sum.to_f / 
           shift_digestion * shift_schedule * d_calc_data.this_month_per
-        ).round() - profit_current_data_period.length rescue 0
+        ).round() - @dmer_senbai_result2_period.length rescue 0
       # ②成果になる売上
       if profit_fin_period_len >= 1
         profit_fin_period = d_calc_data.price * profit_fin_period_len rescue 0
@@ -297,10 +287,10 @@ class DmerSenbaiDateProgressesController < ApplicationController
           .where(result_point: start_date(d_calc_data)..end_date(d_calc_data))
         )
       # 前月以前獲得した案件が当月成果になったデータ
-      profit_current_data_prev = profit_current_data.where(date: ...@start_date)
+      @dmer_senbai_result2_prev = @dmer_senbai_result2.where(date: ...@start_date)
       # ④前月以前の案件でこれから成果になる件数を出す
       profit_fin_prev_len = (
-        (slmt_target_prev.length - profit_current_data_prev.length).to_f * d_calc_data.prev_month_per
+        (slmt_target_prev.length - @dmer_senbai_result2_prev.length).to_f * d_calc_data.prev_month_per
       ).round() rescue 0
       # ⑤成果になる売上
       profit_fin_prev = d_calc_data.price * profit_fin_prev_len rescue 0

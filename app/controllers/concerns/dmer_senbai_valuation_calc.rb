@@ -5,10 +5,6 @@ module DmerSenbaiValuationCalc
   # 実売 calc_valuationの下に配置
   # 各種獲得内訳（個人）
   def dmer_senbai_data(u_id)
-    # 初期設定
-    if @month.nil?
-      @month = params[:month] ? Time.parse(params[:month]) : Date.today
-    end
     @calc_periods = CalcPeriod.where(sales_category: "評価売")
     @basic_calc_data = @calc_periods.find_by(name: "各商材獲得")
     @start_date = start_date(@basic_calc_data)
