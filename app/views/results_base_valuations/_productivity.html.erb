@@ -9,7 +9,7 @@
     <th class="product-th1" colspan="3">楽天ペイ</th>
     <th class="product-th1" colspan="3">AirPay</th>
     <th class="product-th1" colspan="">PayPay</th>
-    <th class="product-th1" colspan="">UsenPay</th>
+    <th class="product-th1" colspan="3">UsenPay</th>
   </tr>
   <tr>
     <th class="progress-th2">氏名</th>
@@ -27,9 +27,11 @@
     <th class="progress-th2">獲得</th>
     <th class="progress-th2">獲得終着</th>
     <% end %>
-    <% 2.times do %>
     <th class="progress-th2">獲得</th>
-    <% end %>
+    <th class="progress-th2">獲得Ave</th>
+    <th class="progress-th2">獲得</th>
+    <th class="progress-th2">獲得終着</th>
+
   </tr>
   <% @users.each do |user| %>
   <tr class="progress-tr">
@@ -55,7 +57,9 @@
     <td class="progress-td"><%= @airpay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
     <td class="progress-td"><%= @airpay_date_progress.find_by(user_id: user.id).fin_len rescue 0 %></td>
     <td class="progress-td"><%= @paypay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
+    <td class="progress-td"><%= (@usen_pay_date_progress.find_by(user_id: user.id).fin_len.to_f / @usen_pay_date_progress.find_by(user_id: user.id).shift_schedule).round(1) rescue 0 %></td>
     <td class="progress-td"><%= @usen_pay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
+    <td class="progress-td"><%= @usen_pay_date_progress.find_by(user_id: user.id).fin_len rescue 0 %></td>
   </tr>
   <% end %>
   <tr>
@@ -83,6 +87,8 @@
     <td class="difference-td"><%= @airpay_date_progress.sum(:fin_len) rescue 0 %></td>
 
     <td class="difference-td"><%= @paypay_date_progress.sum(:get_len) rescue 0 %></td>
+    <td class="difference-td"><%= (@usen_pay_date_progress.sum(:fin_len).to_f / @cash_date_progress.sum(:shift_schedule)).round(1) rescue 0 %></td>
     <td class="difference-td"><%= @usen_pay_date_progress.sum(:get_len) rescue 0 %></td>
+    <td class="difference-td"><%= @usen_pay_date_progress.sum(:fin_len) rescue 0 %></td>
   </tr>
 </table>

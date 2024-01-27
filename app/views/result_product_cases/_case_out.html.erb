@@ -1,20 +1,16 @@
-<h2>◆<%= "#{@shift_case}：" %>切り返し①</h2><%# 1~7項目 %>
+<h2>◆<%= "#{@shift_case}：" %>切り返し</h2><%# 1~7項目 %>
 <table class="progress-tb">
     <thead>
       <tr>
         <th class="progress-th1" colspan="2">基本情報</th>
-        <th class="progress-th1" colspan="3">どういうこと？</th>
-        <th class="progress-th1" colspan="3">君は誰？協会？</th>
-        <th class="progress-th1" colspan="3">もらうだけでいいの？</th>
-        <th class="progress-th1" colspan="3">PayPayのみ</th>
-        <th class="progress-th1" colspan="3">AirPayのみ</th>
-        <th class="progress-th1" colspan="3">カードのみ</th>
-        <th class="progress-th1" colspan="3">先延ばし</th>
+        <% @out_ary.each do | out_name | %>
+        <th class="progress-th1" colspan="3"><%= out_name %></th>
+        <% end %>
       </tr>
       <tr>
         <th class="progress-th2">人員</th>
         <th class="progress-th2">項目</th>
-        <% 7.times do %>
+        <% 8.times do %>
         <th class="progress-th2">対面</th>
         <th class="progress-th2">フル</th>
         <th class="progress-th2">成約</th>
@@ -22,156 +18,50 @@
       </tr>
     </thead>
     <tbody>
-      <% index_odd_or_even = 0 %>
       <% @users.each do |user| %>
         <% result_user = @results_base.where(user_id: user.id) %><%# 個別ユーザーの終着情報 %>
-      <tr><%# /個別 %>
-        <td class="progress-td" rowspan="2"><br><%= link_to "#{user.name}", result_product_case_path(user_id: user.id), class: "link" %></td>
-        <td class="progress-td">平均</td>
-        <% 7.times do |i| %>
-          <% out_cnt = i %>
-          <% if out_cnt >= 10 %>
-            <% out_cnt_str = out_cnt %>
-          <% else %>
-            <% out_cnt_str = "0#{out_cnt}" %>
+        <tr><%# /個別 %>
+          <td class="progress-td" rowspan="2"><br><%= link_to "#{user.name}", result_product_case_path(user_id: user.id), class: "link" %></td>
+          <td class="progress-td">平均</td>
+          <% @out_num.each do | out_cnt_str | %>
+          <td class="progress-td"><%= (result_user.sum("out_interview_#{out_cnt_str}").to_f / result_user.length).round(1) rescue 0 %></td>
+          <td class="progress-td"><%= (result_user.sum("out_full_talk_#{out_cnt_str}").to_f / result_user.length).round(1) rescue 0 %></td>
+          <td class="progress-td"><%= (result_user.sum("out_get_#{out_cnt_str}").to_f / result_user.length).round(1) rescue 0 %></td>
           <% end %>
-        <td class="progress-td"><%= (result_user.sum("out_interview_#{out_cnt_str}").to_f / result_user.length).round(1) rescue 0 %></td>
-        <td class="progress-td"><%= (result_user.sum("out_full_talk_#{out_cnt_str}").to_f / result_user.length).round(1) rescue 0 %></td>
-        <td class="progress-td"><%= (result_user.sum("out_get_#{out_cnt_str}").to_f / result_user.length).round(1) rescue 0 %></td>
-        <% end %>
-      </tr>
-      <tr class="percent-tr">
-        <td class="difference-td">成約率</td>
-        <% 7.times do |i| %>
-        <td class="difference-td">-</td>
-        <td class="difference-td">
-          <%= (result_user.sum("out_full_talk_0#{i + 1}").to_f / result_user.sum("out_interview_0#{i + 1}").round(2) * 100).round() rescue 0 %>%
-        </td>
-        <td class="difference-td">
-          <%= (result_user.sum("out_get_0#{i + 1}").to_f / result_user.sum("out_full_talk_0#{i + 1}") * 100).round() rescue 0 %>%
-        </td>
-        <% end %>
-      </tr><%# /個別 %>
+        </tr>
+        <tr class="percent-tr">
+          <td class="difference-td">成約率</td>
+          <% @out_num.each do | out_cnt_str | %>
+          <td class="difference-td">-</td>
+          <td class="difference-td">
+            <%= (result_user.sum("out_full_talk_#{out_cnt_str}").to_f / result_user.sum("out_interview_#{out_cnt_str}").round(2) * 100).round() rescue 0 %>%
+          </td>
+          <td class="difference-td">
+            <%= (result_user.sum("out_get_#{out_cnt_str}").to_f / result_user.sum("out_full_talk_#{out_cnt_str}") * 100).round() rescue 0 %>%
+          </td>
+          <% end %>
+        </tr><%# /個別 %>
       <% end %>
-      <tr class="">
-        <td rowspan="2" class="progress-td"><br>合計稼働人員（<%= @users.group(:id).length %>人）</td>
-        <td class="progress-td">平均</td>
-        <% 7.times do |i| %>
-        <td class="progress-td"><%= (@results_base.sum("out_interview_0#{i + 1}").to_f / @results_base.length).round(1) rescue 0 %></td>
-        <td class="progress-td"><%= (@results_base.sum("out_full_talk_0#{i + 1}").to_f / @results_base.length).round(1) rescue 0 %></td>
-        <td class="progress-td"><%= (@results_base.sum("out_get_0#{i + 1}").to_f / @results_base.length).round(1) rescue 0 %></td>
-        <% end %>
-      </tr>
-      <tr class="difference-tr">
-        <td class="difference-td">成約率</td>
-        <% 7.times do |i| %>
-        <td class="difference-td">-</td>
-        <td class="difference-td">
-          <%= (@results_base.sum("out_full_talk_0#{i + 1}").to_f / @results_base.sum("out_interview_0#{i + 1}").round(2) * 100).round() rescue 0 %>%
-        </td>
-        <td class="difference-td">
-          <%= (@results_base.sum("out_get_0#{i + 1}").to_f / @results_base.sum("out_full_talk_0#{i + 1}").round(2) * 100).round() rescue 0 %>%
-        </td>
-        <% end %>
-      </tr><%# /合計 %>
+        <tr class="">
+          <td rowspan="2" class="progress-td"><br>合計稼働人員（<%= @users.group(:id).length %>人）</td>
+          <td class="progress-td">平均</td>
+          <% @out_num.each do | out_cnt_str | %>
+          <td class="progress-td"><%= (@results_base.sum("out_interview_#{out_cnt_str}").to_f / @results_base.length).round(1) rescue 0 %></td>
+          <td class="progress-td"><%= (@results_base.sum("out_full_talk_#{out_cnt_str}").to_f / @results_base.length).round(1) rescue 0 %></td>
+          <td class="progress-td"><%= (@results_base.sum("out_get_#{out_cnt_str}").to_f / @results_base.length).round(1) rescue 0 %></td>
+          <% end %>
+        </tr>
+        <tr class="difference-tr">
+          <td class="difference-td">成約率</td>
+          <% @out_num.each do | out_cnt_str | %>
+          <td class="difference-td">-</td>
+          <td class="difference-td">
+            <%= (@results_base.sum("out_full_talk_#{out_cnt_str}").to_f / @results_base.sum("out_interview_#{out_cnt_str}").round(2) * 100).round() rescue 0 %>%
+          </td>
+          <td class="difference-td">
+            <%= (@results_base.sum("out_get_#{out_cnt_str}").to_f / @results_base.sum("out_full_talk_#{out_cnt_str}").round(2) * 100).round() rescue 0 %>%
+          </td>
+          <% end %>
+        </tr><%# /合計 %>
     </tbody>
-</table><%# /1~7項目 %>
-<h2>◆<%= "#{@shift_case}：" %>切り返し②</h2><%# 8~13項目 %>
-<table class="progress-tb">
-  <tr>
-    <thead>
-      <tr>
-        <th class="progress-th1" colspan="2">基本情報</th>
-        <th class="progress-th1" colspan="3">現金のみ</th>
-        <th class="progress-th1" colspan="3">忙しい</th>
-        <th class="progress-th1" colspan="3">面倒くさい</th>
-        <th class="progress-th1" colspan="3">情報不足</th>
-        <th class="progress-th1" colspan="3">ペロ</th>
-        <th class="progress-th1" colspan="3">その他</th>
-      </tr>
-      <tr>
-        <th class="progress-th2">人員</th>
-        <th class="progress-th2">項目</th>
-        <% 6.times do %>
-        <th class="progress-th2">対面</th>
-        <th class="progress-th2">フル</th>
-        <th class="progress-th2">成約</th>
-        <% end %>
-      </tr>
-    </thead>
-    <tbody>
-      <% index_odd_or_even = 0 %>
-      <% @users.each do |user| %>
-        <% result_user = @results_base.where(user_id: user.id) %><%# 個別ユーザーの終着情報 %>
-      <tr><%# /個別 %>
-      </tr>
-      <tr>
-        <td class="progress-td" rowspan="2"><br><%= link_to "#{user.name}", result_product_case_path(user_id: user.id), class: "link" %></td><%# 奇数 %>
-        <td class="progress-td">平均</td>
-        <% 6.times do |i| %>
-          <% out_cnt = i + 8 %>
-          <% if out_cnt >= 10 %>
-            <% out_cnt_str = out_cnt %>
-          <% else %>
-            <% out_cnt_str = "0#{out_cnt}" %>
-          <% end %>
-        <td class="progress-td"><%= (result_user.sum("out_interview_#{out_cnt_str}").to_f / result_user.length).round(1) rescue 0 %></td>
-        <td class="progress-td"><%= (result_user.sum("out_full_talk_#{out_cnt_str}").to_f / result_user.length).round(1) rescue 0 %></td>
-        <td class="progress-td"><%= (result_user.sum("out_get_#{out_cnt_str}").to_f / result_user.length).round(1) rescue 0 %></td>
-        <% end %>
-      </tr>
-      <tr class="">
-        <td class="difference-td">成約率</td>
-        <% 6.times do |i| %>
-          <% out_cnt = i + 8 %>
-          <% if out_cnt >= 10 %>
-            <% out_cnt_str = out_cnt %>
-          <% else %>
-            <% out_cnt_str = "0#{out_cnt}" %>
-          <% end %>
-        <td class="difference-td">-</td>
-        <td class="difference-td">
-          <%= (result_user.sum("out_full_talk_#{out_cnt_str}").to_f / result_user.sum("out_interview_#{out_cnt_str}").round(2) * 100).round() rescue 0 %>%
-        </td>
-        <td class="difference-td">
-          <%= (result_user.sum("out_get_#{out_cnt_str}").to_f / result_user.sum("out_full_talk_#{out_cnt_str}").round(2) * 100).round() rescue 0 %>%
-        </td>
-        <% end %>
-      </tr><%# /個別 %>
-      <% end %>
-      <tr class="">
-        <td rowspan="2" class="progress-td"><br>合計稼働人員（<%= @users.group(:id).length %>人）</td>
-        <td>平均</td>
-        <% 6.times do |i| %>
-          <% out_cnt = i + 8 %>
-          <% if out_cnt >= 10 %>
-            <% out_cnt_str = out_cnt %>
-          <% else %>
-            <% out_cnt_str = "0#{out_cnt}" %>
-          <% end %>
-        <td class="progress-td"><%= (@results_base.sum("out_interview_#{out_cnt_str}").to_f / @results_base.length).round(1) rescue 0 %></td>
-        <td class="progress-td"><%= (@results_base.sum("out_full_talk_#{out_cnt_str}").to_f / @results_base.length).round(1) rescue 0 %></td>
-        <td class="progress-td"><%= (@results_base.sum("out_get_#{out_cnt_str}").to_f / @results_base.length).round(1) rescue 0 %></td>
-        <% end %>
-      </tr>
-      <tr class="">
-        <td class="difference-td">成約率</td>
-        <% 6.times do |i| %>
-          <% out_cnt = i + 8 %>
-          <% if out_cnt >= 10 %>
-            <% out_cnt_str = out_cnt %>
-          <% else %>
-            <% out_cnt_str = "0#{out_cnt}" %>
-          <% end %>
-        <td class="difference-td">-</td>
-        <td class="difference-td">
-          <%= (@results_base.sum("out_full_talk_#{out_cnt_str}").to_f / @results_base.sum("out_interview_#{out_cnt_str}").round(2) * 100).round() rescue 0 %>%
-        </td>
-        <td class="difference-td">
-          <%= (@results_base.sum("out_get_#{out_cnt_str}").to_f / @results_base.sum("out_full_talk_#{out_cnt_str}").round(2) * 100).round() rescue 0 %>%
-        </td>
-        <% end %>
-      </tr><%# /合計 %>
-    </tbody>
-  </tr>
-</table><%# /8~13項目 %>
+</table>

@@ -37,7 +37,7 @@
         <div class="form">
             <p><%= f.label :product, "基準値種別", class: "form-text" %></p>
             <p><%= f.select :product, {
-                "d専売": "d専売","d専売+マルチ": "d専売+マルチ", "マルチ": "マルチ"
+                "d専売+マルチ": "d専売+マルチ", "マルチ": "マルチ"
                 },{include_blank: true}, {class: "slct-input",id: "shift-slct"} %></p>
         </div>
         <div class="form">
@@ -101,18 +101,7 @@
         <div class="basic-form" id="cash-form1"><%# キャッシュその他基準値 %>
             <h1>店舗別基準値</h1>
         <div class="form">
-            <p class="form-head">喫茶・カフェ</p>
-            <p>
-                <%= f.label :cafe_visit, "訪問", class: "form-text" %>-
-                <%= f.label :cafe_get, "獲得", class: "form-text" %>
-            </p>
-            <p>
-                <%= f.number_field :cafe_visit,class: "num-input", min: 0 %>
-                <%= f.number_field :cafe_get , class: "num-input", min: 0 %>
-            </p>
-        </div>
-        <div class="form">
-            <p class="form-head">その他・飲食</p>
+            <p class="form-head">飲食</p>
             <p>
                 <%= f.label :other_food_visit, "訪問", class: "form-text" %>-
                 <%= f.label :other_food_get, "獲得", class: "form-text" %>

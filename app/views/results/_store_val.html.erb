@@ -12,26 +12,15 @@
     <tbody>
       <tr></tr>
       <tr>
-      <th rowspan="2" class="total-th">喫茶・カフェ</th>
+        <th rowspan="2" class="total-th">飲食</th>
         <th class="total-th">訪問</th>
-        <td class="total-td"><%= (@cafe_visit_sum.to_f / @shift_digestion_new).round(2) %></td>
+        <td class="total-td"><%= ((@cafe_visit_sum+ @other_food_visit_sum).to_f / @shift_digestion_new).round(2) %></td>
         <td class="total-td">-</td>
       </tr>
       <tr>
         <th class="total-th">成約</th>
-        <td class="total-td"><%= (@cafe_get_sum.to_f / @shift_digestion_new).round(2) %></td>
-        <td class="total-td"><%= number_to_percentage(@cafe_get_sum.to_f / @cafe_visit_sum.to_f * 100, precision: 1) %></td>
-      </tr>
-      <tr>
-        <th rowspan="2" class="total-th">その他飲食</th>
-        <th class="total-th">訪問</th>
-        <td class="total-td"><%= (@other_food_visit_sum.to_f / @shift_digestion_new).round(2) %></td>
-        <td class="total-td">-</td>
-      </tr>
-      <tr>
-        <th class="total-th">成約</th>
-        <td class="total-td"><%= (@other_food_get_sum.to_f / @shift_digestion_new).round(2) %></td>
-        <td class="total-td"><%= number_to_percentage(@other_food_get_sum.to_f / @other_food_visit_sum.to_f * 100, precision: 1) %></td>
+        <td class="total-td"><%= ((@cafe_get_sum + @other_food_get_sum).to_f / @shift_digestion_new).round(2) %></td>
+        <td class="total-td"><%= number_to_percentage((@cafe_get_sum + @other_food_get_sum).to_f / (@cafe_visit_sum + @other_food_visit_sum).to_f * 100, precision: 1) %></td>
       </tr>
       <tr>
         <th rowspan="2" class="total-th">車屋</th>

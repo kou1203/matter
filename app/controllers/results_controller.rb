@@ -361,12 +361,14 @@ class ResultsController < ApplicationController
   end
 
   def out_val # 切り返し
-    @out_ary = ["どういうこと？","君は誰？協会？","もらうだけでいいの？","PayPayのみ","AirPayのみ","カードのみ","先延ばし","現金のみ","忙しい","面倒くさい","情報不足","ペロ","その他"]
+    @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
+    @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
     render partial: "out_val", locals: {out_ary:@out_ary} # @out_aryを遅延ロード
   end 
 
   def out_val_all # 全体切り返し
-    @out_ary = ["どういうこと？","君は誰？協会？","もらうだけでいいの？","PayPayのみ","AirPayのみ","カードのみ","先延ばし","現金のみ","忙しい","面倒くさい","情報不足","ペロ","その他"]
+    @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
+    @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
     @result_cash_base = ResultCash.includes(:result,result: :user).where(result: {date: @month.all_month}).where(result: {shift: "キャッシュレス新規"})
     @all_len = @result_cash_base.group(:user_id).length
     render partial: "out_val_all", locals: {out_ary:@out_ary} # @out_aryを遅延ロード

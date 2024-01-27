@@ -12,49 +12,26 @@
     </thead>
     <tbody>
     <% cnt = 1 %>
-    <% @out_ary.each do |out_name| %>
-      <% if 10 > cnt %>
+    <% @out_ary.zip(@out_num) do |out_name, out_num| %>
       <tr>
       <th rowspan="3" class="total-th"><%= out_name %></th>
         <th class="total-th">対面</th>
-        <td class="total-td"><%= @results.sum("out_interview_0#{cnt}") rescue 0 %></td>
-        <td class="total-td"><%= (@results.sum("out_interview_0#{cnt}").to_f / @shift_digestion_new).round(2) rescue 0 %></td>
+        <td class="total-td"><%= @results.sum("out_interview_#{out_num}") rescue 0 %></td>
+        <td class="total-td"><%= (@results.sum("out_interview_#{out_num}").to_f / @shift_digestion_new).round(2) rescue 0 %></td>
         <td class="total-td">-</td>
       </tr>
       <tr>
         <th class="total-th">フル</th>
-        <td class="total-td"><%= @results.sum("out_full_talk_0#{cnt}") rescue 0 %></td>
-        <td class="total-td"><%= (@results.sum("out_full_talk_0#{cnt}").to_f / @shift_digestion_new).round(2) rescue 0 %></td>
-        <td class="total-td"><%= number_to_percentage(@results.sum("out_full_talk_0#{cnt}").to_f / @results.sum("out_interview_0#{cnt}").to_f * 100,precision: 1) rescue 0 %></td>
+        <td class="total-td"><%= @results.sum("out_full_talk_#{out_num}") rescue 0 %></td>
+        <td class="total-td"><%= (@results.sum("out_full_talk_#{out_num}").to_f / @shift_digestion_new).round(2) rescue 0 %></td>
+        <td class="total-td"><%= number_to_percentage(@results.sum("out_full_talk_#{out_num}").to_f / @results.sum("out_interview_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
       </tr>
       <tr>
         <th class="total-th">成約</th>
-        <td class="total-td"><%= @results.sum("out_get_0#{cnt}") rescue 0 %></td>
-        <td class="total-td"><%= (@results.sum("out_get_0#{cnt}").to_f/ @shift_digestion_new).round(2) rescue 0 %></td>
-        <td class="total-td"><%= number_to_percentage(@results.sum("out_get_0#{cnt}").to_f / @results.sum("out_full_talk_0#{cnt}").to_f * 100,precision: 1) rescue 0 %></td>
+        <td class="total-td"><%= @results.sum("out_get_#{out_num}") rescue 0 %></td>
+        <td class="total-td"><%= (@results.sum("out_get_#{out_num}").to_f/ @shift_digestion_new).round(2) rescue 0 %></td>
+        <td class="total-td"><%= number_to_percentage(@results.sum("out_get_#{out_num}").to_f / @results.sum("out_full_talk_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
       </tr>
-      <% else %>
-      <tr>
-      <th rowspan="3" class="total-th"><%= out_name %></th>
-        <th class="total-th">対面</th>
-        <td class="total-td"><%= @results.sum("out_interview_#{cnt}") rescue 0 %></td>
-        <td class="total-td"><%= (@results.sum("out_interview_#{cnt}").to_f / @shift_digestion_new).round(2) rescue 0 %></td>
-        <td class="total-td">-</td>
-      </tr>
-      <tr>
-        <th class="total-th">フル</th>
-        <td class="total-td"><%= @results.sum("out_full_talk_#{cnt}") rescue 0 %></td>
-        <td class="total-td"><%= (@results.sum("out_full_talk_#{cnt}").to_f / @shift_digestion_new).round(2) rescue 0 %></td>
-        <td class="total-td"><%= number_to_percentage(@results.sum("out_full_talk_#{cnt}").to_f / @results.sum("out_interview_#{cnt}").to_f * 100,precision: 1) rescue 0 %></td>
-      </tr>
-      <tr>
-        <th class="total-th">成約</th>
-        <td class="total-td"><%= @results.sum("out_get_#{cnt}") rescue 0 %></td>
-        <td class="total-td"><%= (@results.sum("out_get_#{cnt}").to_f/ @shift_digestion_new).round(2) rescue 0 %></td>
-        <td class="total-td"><%= number_to_percentage(@results.sum("out_get_#{cnt}").to_f / @results.sum("out_full_talk_#{cnt}").to_f * 100,precision: 1) rescue 0 %></td>
-      </tr>
-      <% end %>
-      <% cnt += 1 %>
     <% end %>
     <tbody>
   </table>

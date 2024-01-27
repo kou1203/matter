@@ -16,77 +16,129 @@
     </h2><br>
     <%= render "shared/mypage_links" %>
     <p class="alert"><%= notice %></p><%# 登録した時のアラート %>
-<div class="result-flex"><%# 大枠 %>
-  <div class="left-frame"><%# 左側区切り（日々の終着） %>
-    <%= render_async date_fin_path(@user.id,month: @month) %>
-  </div><%# /左側区切り（日々の終着） %>
-  <div class="right-frame"><%# 右側の区切り %>
-    <div><%#シフト/売上の区切り%>
-      <h2 class="shift-h2"><%= @start_date.strftime('%Y-%m-%d') %>（<%= days[@start_date.wday] %>）〜<%= @end_date.strftime('%Y-%m-%d') %>（<%= days[@end_date.wday] %>）売上更新：<%= @cash_date_progress.create_date rescue "未更新" %></h2>
-      <table>
-        <tr>
-          <th class="date-th">シフト（内訳）</th>
-          <th class="date-th">予定</th>
-          <th class="date-th">消化</th>
-          <th class="date-th">残シフト</th>
-          <th class="date-th">現状売上</th>
-          <th class="date-th">Ave</th>
-          <th class="date-th">終着</th>
-          <th class="date-th">戻入</th>
-          <th class="date-th">終着（戻入込）</th>
-          <th class="date-th">帯同加味</th>
-        </tr>
-        <tr>
-          <td class="date-td">キャッシュレス新規</td><%# 欠勤 %>
-          <td class="date-td"><%= @shift_schedule_new rescue 0 %></td>
-          <td class="date-td"><%= @shift_digestion_new rescue 0 %></td>
-          <td class="date-td"><%= @shift_schedule_new - @shift_digestion_new rescue 0 %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"></td>
-        </tr>
-        <tr>
-          <td class="date-td">キャッシュレス決済</td>
-          <td class="date-td"><%= @shift_schedule_slmt rescue 0 %></td>
-          <td class="date-td"><%= @shift_digestion_slmt rescue 0 %></td>
-          <td class="date-td"><%= @shift_schedule_slmt - @shift_digestion_slmt rescue 0 %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"></td>
-        </tr>
-        <tr>
-          <% valuation_ave = (@cash_date_progress.valuation_fin.to_f / @cash_date_progress.shift_schedule).round() rescue 0 %>
-          <td class="date-td">帯同</td>
-          <td class="date-td"><%= @shift_schedule_ojt rescue 0 %></td>
-          <td class="date-td"><%= @shift_digestion_ojt rescue 0 %></td>
-          <td class="date-td"><%= @shift_schedule_ojt - @shift_digestion_ojt rescue 0 %></td>
-          <td class="date-td"><%= (valuation_ave * @shift_digestion_ojt).to_s(:delimited) rescue 0 %></td>
-          <td class="date-td"><%= valuation_ave %></td>
-          <td class="date-td"><%= (valuation_ave * @shift_schedule_ojt).to_s(:delimited) rescue 0 %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"><%=  %></td>
-          <td class="date-td"></td>
-        </tr>
-        <tr>
-          <td class="date-td">合計</td>
-          <td class="date-td"><%= shift_sum = @shift_schedule_new + @shift_schedule_slmt + @shift_schedule_ojt rescue 0 %></td>
-              <td class="date-td"><%= digestion_sum = @shift_digestion_new + @shift_digestion_slmt + @shift_digestion_ojt %></td>
-          <td class="date-td"><%= shift_sum - digestion_sum %></td>
-          <td class="date-td"><%= @cash_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
-          <td class="date-td"><%= valuation_ave.to_s(:delimited) rescue 0 %></td>
-          <td class="date-td"><%= @cash_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
-          <td class="date-td red"><%= @reversal_products.sum(:price).to_s(:delimited) rescue 0 %></td>
-          <td class="date-td"><%= (@cash_date_progress.valuation_fin - @reversal_products.sum(:price)).to_s(:delimited) rescue 0 %></td>
-          <td class="date-td"><%= (@cash_date_progress.valuation_fin - @reversal_products.sum(:price) + (valuation_ave * @shift_schedule_ojt)).to_s(:delimited) rescue 0 %></td>
-        </tr>
-      </table> 
-    </div><%#/シフト/売上の区切り%>
+    <div class="result-flex">
+      <div><%#シフト/売上の区切り%>
+        <h2 class="shift-h2"><%= @start_date.strftime('%Y-%m-%d') %>（<%= days[@start_date.wday] %>）〜<%= @end_date.strftime('%Y-%m-%d') %>（<%= days[@end_date.wday] %>）売上更新：<%= @cash_date_progress.create_date rescue "未更新" %></h2>
+        <table>
+          <tr>
+            <th class="date-th">シフト（内訳）</th>
+            <th class="date-th">予定</th>
+            <th class="date-th">消化</th>
+            <th class="date-th">残シフト</th>
+            <th class="date-th">現状売上</th>
+            <th class="date-th">Ave</th>
+            <th class="date-th">終着</th>
+            <th class="date-th">戻入</th>
+            <th class="date-th">終着（戻入込）</th>
+            <th class="date-th">帯同加味</th>
+          </tr>
+          <tr>
+            <td class="date-td">キャッシュレス新規</td><%# 欠勤 %>
+            <td class="date-td"><%= @shift_schedule_new rescue 0 %></td>
+            <td class="date-td"><%= @shift_digestion_new rescue 0 %></td>
+            <td class="date-td"><%= @shift_schedule_new - @shift_digestion_new rescue 0 %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"></td>
+          </tr>
+          <tr>
+            <td class="date-td">キャッシュレス決済</td>
+            <td class="date-td"><%= @shift_schedule_slmt rescue 0 %></td>
+            <td class="date-td"><%= @shift_digestion_slmt rescue 0 %></td>
+            <td class="date-td"><%= @shift_schedule_slmt - @shift_digestion_slmt rescue 0 %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"></td>
+          </tr>
+          <tr>
+            <% valuation_ave = (@cash_date_progress.valuation_fin.to_f / @cash_date_progress.shift_schedule).round() rescue 0 %>
+            <td class="date-td">帯同</td>
+            <td class="date-td"><%= @shift_schedule_ojt rescue 0 %></td>
+            <td class="date-td"><%= @shift_digestion_ojt rescue 0 %></td>
+            <td class="date-td"><%= @shift_schedule_ojt - @shift_digestion_ojt rescue 0 %></td>
+            <td class="date-td"><%= (valuation_ave * @shift_digestion_ojt).to_s(:delimited) rescue 0 %></td>
+            <td class="date-td"><%= valuation_ave %></td>
+            <td class="date-td"><%= (valuation_ave * @shift_schedule_ojt).to_s(:delimited) rescue 0 %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"><%=  %></td>
+            <td class="date-td"></td>
+          </tr>
+          <tr>
+            <td class="date-td">合計</td>
+            <td class="date-td"><%= shift_sum = @shift_schedule_new + @shift_schedule_slmt + @shift_schedule_ojt rescue 0 %></td>
+                <td class="date-td"><%= digestion_sum = @shift_digestion_new + @shift_digestion_slmt + @shift_digestion_ojt %></td>
+            <td class="date-td"><%= shift_sum - digestion_sum %></td>
+            <td class="date-td"><%= @cash_date_progress.valuation_current.to_s(:delimited) rescue 0 %></td>
+            <td class="date-td"><%= valuation_ave.to_s(:delimited) rescue 0 %></td>
+            <td class="date-td"><%= @cash_date_progress.valuation_fin.to_s(:delimited) rescue 0 %></td>
+            <td class="date-td red"><%= @reversal_products.sum(:price).to_s(:delimited) rescue 0 %></td>
+            <td class="date-td"><%= (@cash_date_progress.valuation_fin - @reversal_products.sum(:price)).to_s(:delimited) rescue 0 %></td>
+            <td class="date-td"><%= (@cash_date_progress.valuation_fin - @reversal_products.sum(:price) + (valuation_ave * @shift_schedule_ojt)).to_s(:delimited) rescue 0 %></td>
+          </tr>
+        </table> 
+      </div><%#/シフト/売上の区切り%>
+      <div>
+        <h2>dメル, Air, U-Pay終着(終着獲得数参照)</h2>
+        <table>
+          <tr>
+            <th class="date-th">商材</th>
+            <th class="date-th">獲得数</th>
+            <th class="date-th">獲得Ave</th>
+            <th class="date-th">獲得終着</th>
+            <th class="date-th">終着獲得数</th>
+            <th class="date-th">終着売上</th>
+          </tr>
+          <%# 各種商材単価 %>
+          <% 
+            dmer_price = 
+              @calc_periods.find_by(name: "dメル専売成果1") .price +
+              @calc_periods.find_by(name: "dメル専売成果2") .price +
+              @calc_periods.find_by(name: "dメル専売成果3") .price
+          %>
+          <% airpay_price = @calc_periods.find_by(name: "AirPay成果1").price %>
+          <% usen_pay_price = @calc_periods.find_by(name: "UsenPay").price %>
+          <tr>
+            <td class="date-td">dメル</td>
+            <td class="date-td"><%= @results.sum(:dmer)  %></td>
+            <td class="date-td"><%= (@results.sum(:dmer).to_f / @shift_digestion_new).round(1)   %></td>
+            <td class="date-td"><%= (@results.sum(:dmer).to_f / @shift_digestion_new * @shift_schedule_new).round() rescue 0 %></td>
+            <td class="date-td"><%= (@results.sum(:dmer).to_f / @shift_digestion_new * @shift_schedule_new).round() rescue 0 %></td>
+            <td class="date-td"><%= dmer_fin = (@results.sum(:dmer).to_f / @shift_digestion_new * @shift_schedule_new * 0.8).round() * dmer_price rescue 0 %></td>
+          </tr>
+          <tr>
+            <td class="date-td">AirPay</td>
+            <td class="date-td"><%= @results.sum(:airpay)  %></td>
+            <td class="date-td"><%= (@results.sum(:airpay).to_f / @shift_digestion_new).round(1) rescue 0 %></td>
+            <td class="date-td"><%= (@results.sum(:airpay).to_f / @shift_digestion_new * @shift_schedule_new).round() rescue 0 %></td>
+            <td class="date-td"><%= (@results.sum(:airpay).to_f / @shift_digestion_new * @shift_schedule_new).round() rescue 0 %></td>
+            <td class="date-td"><%= air_fin = (@results.sum(:airpay).to_f / @shift_digestion_new * @shift_schedule_new * 0.9).round() * airpay_price rescue 0 %></td>
+          </tr>
+          <tr>
+            <td class="date-td">UsenPay</td>
+            <td class="date-td"><%= @results.sum(:other_product1)  %></td>
+            <td class="date-td"><%= (@results.sum(:other_product1).to_f / @shift_digestion_new).round(1) rescue 0 %></td>
+            <td class="date-td"><%= (@results.sum(:other_product1).to_f / @shift_digestion_new * @shift_schedule_new).round() rescue 0 %></td>
+            <td class="date-td"><%= (@results.sum(:other_product1).to_f / @shift_digestion_new * @shift_schedule_new).round() rescue 0 %></td>
+            <td class="date-td"><%= upay_fin = (@results.sum(:other_product1).to_f / @shift_digestion_new * @shift_schedule_new * 0.9).round() * usen_pay_price rescue 0 %></td>
+          </tr>
+          <tr>
+            <td class="date-td">合計</td>
+            <td class="date-td"></td>
+            <td class="date-td"></td>
+            <td class="date-td"></td>
+            <td class="date-td"></td>
+            <td class="date-td"><%= dmer_fin + air_fin + upay_fin rescue 0 %></td>
+          </tr>
+        </table> 
+        <p class="caution-text">終着売上 dメル:80%, Air:90%, Upay:70%</p>
+      </div>
+    </div>
     <%# Vueの変 %>
     <script> 
       window.result_chubu=<%= @result_chubu.to_json.html_safe %>;
@@ -143,19 +195,13 @@
             </thead>
             <tbody>
               <tr></tr>
-              <tr>
-                <th rowspan="5" class="total-th">合計</th>
+                <th rowspan="4" class="total-th">合計</th>
                 <th class="total-th">訪問</th>
-                <td class="total-td"><%= (@sum_total_visit.to_f / @shift_digestion_new).to_f.round(2) rescue "-" %></td>
+                <td class="total-td"><%= (@sum_visit.to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">応答</th>
-                <td class="total-td"><%= (@sum_visit.to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
-                <td class="total-td"><%= number_to_percentage(@sum_visit.to_f / @sum_total_visit.to_f * 100, precision: 1) rescue "-" %></td>
-              </tr>
-              <tr>
-                <th class="total-th">面会</th>
+                <th class="total-th">対面</th>
                 <td class="total-td"><%= (@sum_interview.to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_interview.to_f / @sum_visit.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
@@ -170,18 +216,13 @@
                 <td class="total-td"><%= number_to_percentage(@sum_get.to_f / @sum_full_talk.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th rowspan="5" class="total-th">前半</th>
+                <th rowspan="4" class="total-th">前半</th>
                 <th class="total-th">訪問</th>
-                <td class="total-td"><%= (@sum_total_visit_f.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
+                <td class="total-td"><%= (@sum_visit_f.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">応答</th>
-                <td class="total-td"><%= (@sum_visit_f.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
-                <td class="total-td"><%= number_to_percentage(@sum_visit_f.to_f / @sum_total_visit_f.to_f * 100, precision: 1) rescue "-" %></td>
-              </tr>
-              <tr>
-                <th class="total-th">面会</th>
+                <th class="total-th">対面</th>
                 <td class="total-td"><%= (@sum_interview_f.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_interview_f.to_f / @sum_visit_f.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
@@ -196,18 +237,13 @@
                 <td class="total-td"><%= number_to_percentage(@sum_get_f.to_f / @sum_full_talk_f.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th rowspan="5" class="total-th">後半</th>
+                <th rowspan="4" class="total-th">後半</th>
                 <th class="total-th">訪問</th>
-                <td class="total-td"><%= (@sum_total_visit_l.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
+                <td class="total-td"><%= (@sum_visit_l.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">応答</th>
-                <td class="total-td"><%= (@sum_visit_l.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
-                <td class="total-td"><%= number_to_percentage(@sum_visit_l.to_f / @sum_total_visit_l.to_f * 100, precision: 1) rescue "-" %></td>
-              </tr>
-              <tr>
-                <th class="total-th">面会</th>
+                <th class="total-th">対面</th>
                 <td class="total-td"><%= (@sum_interview_l.to_f / @shift_digestion_new).round(2)  rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_interview_l.to_f / @sum_visit_l.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
@@ -234,15 +270,10 @@
                 <th class="total-th">比率</th>
               </tr>
               <tr>
-                <th class="total-th" rowspan="5">合計</th>
+                <th class="total-th" rowspan="4">合計</th>
                 <th class="total-th">訪問</th>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) / shiftItem.length * 100) / 100 }}</td>
-                <td class="total-td">-</td>
-              </tr>
-              <tr>
-                <th class="total-th">応答</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.length * 100) / 100 }}</td>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) * 100)}} %</td>
+                <td class="total-td">-</td>
               </tr>
               <tr>
                 <th class="total-th">対面</th>
@@ -260,15 +291,10 @@
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get + element.latter_get, 0) / shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) * 100)}} %</td>
               </tr>
               <tr>
-                <th class="total-th" rowspan="5">前半</th>
+                <th class="total-th" rowspan="4">前半</th>
                 <th class="total-th">訪問</th>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_total_visit , 0) / shiftItem.length * 100) / 100 }}</td>
-                <td class="total-td">-</td>
-              </tr>
-              <tr>
-                <th class="total-th">応答</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit, 0) / shiftItem.length * 100) / 100 }}</td>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit, 0) / shiftItem.reduce((sum, element) => sum + element.first_total_visit , 0) * 100)}} %</td>
+                <td class="total-td">-</td>
               </tr>
               <tr>
                 <th class="total-th">対面</th>
@@ -286,15 +312,10 @@
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get , 0) / shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) * 100)}} %</td>
               </tr>
               <tr>
-                <th class="total-th" rowspan="5">後半</th>
+                <th class="total-th" rowspan="4">後半</th>
                 <th class="total-th">訪問</th>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_total_visit, 0) / shiftItem.length * 100) / 100 }}</td>
-                <td class="total-td">-</td>
-              </tr>
-              <tr>
-                <th class="total-th">応答</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) / shiftItem.length * 100) / 100 }}</td>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) / shiftItem.reduce((sum, element) => sum + element.latter_total_visit, 0) * 100)}} %</td>
+                <td class="total-td">-</td>
               </tr>
               <tr>
                 <th class="total-th">対面</th>
@@ -327,18 +348,13 @@
             <tbody>
               <tr></tr>
               <tr>
-                <th rowspan="5" class="total-th">合計</th>
+                <th rowspan="4" class="total-th">合計</th>
                 <th class="total-th">訪問</th>
-                <td class="total-td"><%= (@result_base_sum_total_visit.to_f / @result_base.length).to_f().round(2) rescue "-" %></td>
+                <td class="total-td"><%= (@result_base_sum_visit.to_f / @result_base.length).to_f().round(2) rescue "-" %></td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">応答</th>
-                <td class="total-td"><%= (@result_base_sum_visit.to_f / @result_base.length).to_f().round(2) rescue "-" %></td>
-                <td class="total-td"><%= number_to_percentage(@result_base_sum_visit.to_f / @result_base_sum_total_visit.to_f * 100, precision: 1) rescue "-" %></td>
-              </tr>
-              <tr>
-                <th class="total-th">面会</th>
+                <th class="total-th">対面</th>
                 <td class="total-td"><%= (@result_base_sum_interview.to_f / @result_base.length).to_f().round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base_sum_interview.to_f / @result_base_sum_visit.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
@@ -353,18 +369,13 @@
                 <td class="total-td"><%= number_to_percentage(@result_base_sum_get.to_f / @result_base_sum_full_talk.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th rowspan="5" class="total-th">前半</th>
+                <th rowspan="4" class="total-th">前半</th>
                 <th class="total-th">訪問</th>
-                <td class="total-td"><%= (@result_base.sum(:first_total_visit).to_f / @result_base.length).round(2) rescue "-" %></td>
-                <td class="total-td">-</td>
-              </tr>
-              <tr>
-                <th class="total-th">応答</th>
                 <td class="total-td"><%= (@result_base.sum(:first_visit).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base.sum(:first_visit).to_f / @result_base.sum(:first_total_visit).to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">面会</th>
+                <th class="total-th">対面</th>
                 <td class="total-td"><%= (@result_base.sum(:first_interview).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base.sum(:first_interview).to_f / @result_base.sum(:first_visit).to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
@@ -379,18 +390,13 @@
                 <td class="total-td"><%= number_to_percentage(@result_base.sum(:first_get).to_f / @result_base.sum(:first_full_talk).to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th rowspan="5" class="total-th">後半</th>
+                <th rowspan="4" class="total-th">後半</th>
                 <th class="total-th">訪問</th>
-                <td class="total-td"><%= (@result_base.sum(:latter_total_visit).to_f / @result_base.length).round(2) rescue "-" %></td>
+                <td class="total-td"><%= (@result_base.sum(:latter_visit).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">応答</th>
-                <td class="total-td"><%= (@result_base.sum(:latter_visit).to_f / @result_base.length).round(2) rescue "-" %></td>
-                <td class="total-td"><%= number_to_percentage(@result_base.sum(:latter_visit).to_f / @result_base.sum(:latter_total_visit).to_f * 100, precision: 1) rescue "-" %></td>
-              </tr>
-              <tr>
-                <th class="total-th">面会</th>
+                <th class="total-th">対面</th>
                 <td class="total-td"><%= (@result_base.sum(:latter_interview).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base.sum(:latter_interview).to_f / @result_base.sum(:latter_visit).to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
@@ -422,26 +428,34 @@
                 <th class="total-th">比率</th>
               </tr>
               <tr>
-                <th class="total-th" rowspan="2">喫茶・カフェ</th>
+                <th class="total-th" rowspan="2">飲食</th>
                 <th class="total-th">訪問</th>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.cafe_visit, 0) / shiftItem.length * 100) / 100 }}</td>
+                <td class="total-td">{{ 
+                  Math.round(
+                    (shiftItem.reduce((sum, element) => sum + element.cafe_visit, 0) + 
+                    shiftItem.reduce((sum, element) => sum + element.other_food_visit, 0)) / 
+                    shiftItem.length * 100
+                  ) / 100 
+                }}</td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
                 <th class="total-th">成約</th>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.cafe_get, 0) / shiftItem.length * 100) / 100 }}</td>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.cafe_get, 0) / shiftItem.reduce((sum, element) => sum + element.cafe_visit, 0) * 100)}} %</td>
-              </tr>
-              <tr>
-                <th class="total-th" rowspan="2">その他飲食</th>
-                <th class="total-th">訪問</th>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_food_visit, 0) / shiftItem.length * 100) / 100 }}</td>
-                <td class="total-td">-</td>
-              </tr>
-              <tr>
-                <th class="total-th">成約</th>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_food_get, 0) / shiftItem.length * 100) / 100 }}</td>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.other_food_get, 0) / shiftItem.reduce((sum, element) => sum + element.other_food_visit, 0) * 100)}} %</td>
+                <td class="total-td">{{ 
+                  Math.round(
+                    (shiftItem.reduce((sum, element) => sum + element.cafe_get, 0) +
+                    shiftItem.reduce((sum, element) => sum + element.other_food_get, 0)) / 
+                    shiftItem.length * 100
+                  ) / 100 
+                }}</td>
+                <td class="total-td">{{ 
+                  Math.round(
+                    (shiftItem.reduce((sum, element) => sum + element.cafe_get, 0) + 
+                    shiftItem.reduce((sum, element) => sum + element.other_food_get, 0)) / 
+                    (shiftItem.reduce((sum, element) => sum + element.cafe_visit, 0) *
+                    shiftItem.reduce((sum, element) => sum + element.other_food_visit, 0)) * 100
+                  )
+                }} %</td>
               </tr>
               <tr>
                 <th class="total-th" rowspan="2">車屋</th>
@@ -542,51 +556,7 @@
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_01, 0) / out.reduce((sum, element) => sum + element.out_interview_01, 0) * 100)}} %</td>
                 </tr>
                 <tr>
-                  <th class="total-th" rowspan="3">君は誰？協会？</th>
-                  <th class="total-th">対面</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_02, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_02, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_02, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_02, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_02, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_02, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_02, 0) / out.reduce((sum, element) => sum + element.out_interview_02, 0) * 100)}} %</td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_02, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_02, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_02, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_02, 0) / out.reduce((sum, element) => sum + element.out_full_talk_02, 0) * 100)}} %</td>
-                </tr>
-                <tr>
-                  <th class="total-th" rowspan="3">もらうだけでいいの？</th>
-                  <th class="total-th">対面</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_03, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_03, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_03, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_03, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_03, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_03, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_03, 0) / out.reduce((sum, element) => sum + element.out_interview_03, 0) * 100)}} %</td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_03, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_03, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_03, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_03, 0) / out.reduce((sum, element) => sum + element.out_full_talk_03, 0) * 100)}} %</td>
-                </tr>
-                <tr>
-                  <th class="total-th" rowspan="3">PayPayのみ</th>
+                  <th class="total-th" rowspan="3">既存のみ</th>
                   <th class="total-th">対面</th>
                   <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_04, 0) }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_04, 0) /  user_len * 10) / 10 }}</td>
@@ -606,50 +576,6 @@
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_04, 0) /  user_len * 10) / 10 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_04, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_04, 0) / out.reduce((sum, element) => sum + element.out_full_talk_04, 0) * 100)}} %</td>
-                </tr>
-                <tr>
-                  <th class="total-th" rowspan="3">AirPayのみ</th>
-                  <th class="total-th">対面</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_05, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_05, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_05, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_05, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_05, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_05, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_05, 0) / out.reduce((sum, element) => sum + element.out_interview_05, 0) * 100)}} %</td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_05, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_05, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_05, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_05, 0) / out.reduce((sum, element) => sum + element.out_full_talk_05, 0) * 100)}} %</td>
-                </tr>
-                <tr>
-                  <th class="total-th" rowspan="3">カードのみ</th>
-                  <th class="total-th">対面</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_06, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_06, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_06, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_06, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_06, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_06, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_06, 0) / out.reduce((sum, element) => sum + element.out_interview_06, 0) * 100)}} %</td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_06, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_06, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_06, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_06, 0) / out.reduce((sum, element) => sum + element.out_full_talk_06, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">先延ばし</th>
@@ -718,26 +644,26 @@
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_09, 0) / out.reduce((sum, element) => sum + element.out_full_talk_09, 0) * 100)}} %</td>
                 </tr>
                 <tr>
-                  <th class="total-th" rowspan="3">面倒くさい</th>
+                  <th class="total-th" rowspan="3">不審</th>
                   <th class="total-th">対面</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_10, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_10, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_10, 0) / out.length * 100) / 100 }}</td>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_14, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_14, 0) /  user_len * 10) / 10 }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_14, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">-</td>
                 </tr>
                 <tr>
                   <th class="total-th">フル</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_10, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_10, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_10, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_10, 0) / out.reduce((sum, element) => sum + element.out_interview_10, 0) * 100)}} %</td>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_14, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_14, 0) /  user_len * 10) / 10 }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_14, 0) / out.length * 100) / 100 }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_14, 0) / out.reduce((sum, element) => sum + element.out_interview_14, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th">成約</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_10, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_10, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_10, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_10, 0) / out.reduce((sum, element) => sum + element.out_full_talk_10, 0) * 100)}} %</td>
+                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_14, 0) }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_14, 0) /  user_len * 10) / 10 }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_14, 0) / out.length * 100) / 100 }}</td>
+                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_14, 0) / out.reduce((sum, element) => sum + element.out_full_talk_14, 0) * 100)}} %</td>
                 </tr>
                 <tr>
                   <th class="total-th" rowspan="3">情報不足</th>
@@ -783,28 +709,6 @@
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_12, 0) / out.length * 100) / 100 }}</td>
                   <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_12, 0) / out.reduce((sum, element) => sum + element.out_full_talk_12, 0) * 100)}} %</td>
                 </tr>
-                <tr>
-                  <th class="total-th" rowspan="3">その他</th>
-                  <th class="total-th">対面</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_interview_13, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_13, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_interview_13, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">-</td>
-                </tr>
-                <tr>
-                  <th class="total-th">フル</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_full_talk_13, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_13, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_13, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_full_talk_13, 0) / out.reduce((sum, element) => sum + element.out_interview_13, 0) * 100)}} %</td>
-                </tr>
-                <tr>
-                  <th class="total-th">成約</th>
-                  <td class="total-td">{{ out.reduce((sum, element) => sum + element.out_get_13, 0) }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_13, 0) /  user_len * 10) / 10 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_13, 0) / out.length * 100) / 100 }}</td>
-                  <td class="total-td">{{ Math.round(out.reduce((sum, element) => sum + element.out_get_13, 0) / out.reduce((sum, element) => sum + element.out_full_talk_13, 0) * 100)}} %</td>
-                </tr>
               </table>
       </div>
       <%= render_async out_val_all_path(@user.id,month: @month) %><%# 切り返し（全体） %>
@@ -826,8 +730,7 @@
       <%= render_async time_val_all_path(@user.id,month: @month) %><%# 時間別基準値（全体） %>
     </div>
     </div><%# vueの適用範囲 %>
-  </div><%# /右側の区切り %>
-</div><%#/大枠%>
+
 <div class="result-flex"><%# foot-frame %>
 <% if @results.where(shift: "キャッシュレス新規").present? %>
   <div><%# 週間基準値と獲得内訳の括り %>
@@ -1076,5 +979,8 @@
 <% else %>
 <% end %>
 </div>
+  <div class=""><%# 左側区切り（日々の終着） %>
+    <%= render_async date_fin_path(@user.id,month: @month) %>
+  </div><%# /左側区切り（日々の終着） %>
   </div><%# users/showスコープ末尾 %>
 </div>

@@ -9,6 +9,8 @@ class ResultProductCasesController < ApplicationController
     render partial: "case_standard_val", locals: {} # を遅延ロード
   end 
   def case_out 
+    @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
+    @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
     render partial: "case_out", locals: {} # を遅延ロード
   end 
   def case_productivity 
@@ -31,11 +33,7 @@ class ResultProductCasesController < ApplicationController
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @results = Result.includes(:user, :result_cash).where(date: @start_date..@end_date)
     if @shift_case.present?
-      if @shift_case == "d専売全て"
-        @results = @results.where("product LIKE ?","%d専売%")
-      else 
-        @results = @results.where(product: @shift_case)
-      end 
+      @results = @results.where(product: @shift_case)
     end 
   end 
 
