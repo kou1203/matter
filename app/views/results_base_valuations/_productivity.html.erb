@@ -57,7 +57,7 @@
     <td class="progress-td"><%= @airpay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
     <td class="progress-td"><%= @airpay_date_progress.find_by(user_id: user.id).fin_len rescue 0 %></td>
     <td class="progress-td"><%= @paypay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
-    <td class="progress-td"><%= (@usen_pay_date_progress.find_by(user_id: user.id).fin_len.to_f / @usen_pay_date_progress.find_by(user_id: user.id).shift_schedule).round(1) rescue 0 %></td>
+    <td class="progress-td"><%= (@usen_pay_date_progress.find_by(user_id: user.id).fin_len.to_f / @cash_date_progress.find_by(user_id: user.id).shift_schedule).round(1) rescue 0 %></td>
     <td class="progress-td"><%= @usen_pay_date_progress.find_by(user_id: user.id).get_len rescue 0 %></td>
     <td class="progress-td"><%= @usen_pay_date_progress.find_by(user_id: user.id).fin_len rescue 0 %></td>
   </tr>
