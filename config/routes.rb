@@ -125,6 +125,8 @@ Rails.application.routes.draw do
     get 'result_casas/new'
     get 'result_summits/new'
     post 'result_summits/create'
+    get 'type_reference_values/new'
+    post 'type_reference_values/create'
     collection { 
       post :import 
       get :export
@@ -149,9 +151,11 @@ Rails.application.routes.draw do
       get :valuation_list
     }
   end  
+  resources :type_reference_values, only: [:edit, :update]
 
   resources :results, only: :show, param: :result_id
   get "date_fin/:id", to: "results#date_fin", as: "date_fin"
+  get "type_refecence_val/:id", to: "results#type_refecence_val", as: "type_refecence_val"
   get "weekly_fin/:id", to: "results#weekly_fin", as: "weekly_fin"
   get "out_val/:id", to: "results#out_val", as: "out_val"
   get "out_val_all/:id", to: "results#out_val_all", as: "out_val_all"

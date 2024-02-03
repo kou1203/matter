@@ -11,29 +11,40 @@
           <thead class="date-thead">
             <tr>
             <%# 大枠基準値（見出し） %>
-                <th class="date-th"><span class="date-span">日付</span></th>
-                <th class="date-th"><span class="date-span">曜日</span></th>
-                <th class="date-th"><span class="date-span">予定シフト</span></th>
-                <th class="date-th"><span class="date-span">消化シフト</span></th>
-                <th class="date-th"><span class="date-span">基準値種別</span></th>
-                <th class="date-th"><span class="date-span">帯同</span></th>
-                <th class="date-th"><span class="date-span">エリア</span></th>
-                <th class="date-th"><span class="date-span">売上（終着で入力）</span></th>
-                <th class="date-th"><span class="date-span">合計訪問</span></th>
-                <th class="date-th"><span class="date-span">合計対応</span></th>
-                <th class="date-th"><span class="date-span">合計対面</span></th>
-                <th class="date-th"><span class="date-span">合計フル</span></th>
-                <th class="date-th"><span class="date-span">合計成約</span></th>
-                <th class="date-th"><span class="date-span">前半訪問</span></th>
-                <th class="date-th"><span class="date-span">前半対応</span></th>
-                <th class="date-th"><span class="date-span">前半対面</span></th>
-                <th class="date-th"><span class="date-span">前半フル</span></th>
-                <th class="date-th"><span class="date-span">前半成約</span></th>
-                <th class="date-th"><span class="date-span">後半訪問</span></th>
-                <th class="date-th"><span class="date-span">後半対応</span></th>
-                <th class="date-th"><span class="date-span">後半対面</span></th>
-                <th class="date-th"><span class="date-span">後半フル</span></th>
-                <th class="date-th"><span class="date-span">後半成約</span></th>
+              <th class="date-th"><span class="date-span">日付</span></th>
+              <th class="date-th"><span class="date-span">曜日</span></th>
+              <th class="date-th"><span class="date-span">予定シフト</span></th>
+              <th class="date-th"><span class="date-span">消化シフト</span></th>
+              <th class="date-th"><span class="date-span">基準値種別</span></th>
+              <th class="date-th"><span class="date-span">帯同</span></th>
+              <th class="date-th"><span class="date-span">エリア</span></th>
+              <th class="date-th"><span class="date-span">売上（終着で入力）</span></th>
+              <th class="date-th"><span class="date-span">合計訪問: a</span></th>
+              <th class="date-th"><span class="date-span">合計応答: b</span></th>
+              <th class="date-th"><span class="date-span">合計対面: c</span></th>
+              <th class="date-th"><span class="date-span">合計フル: d</span></th>
+              <th class="date-th"><span class="date-span">合計成約: e</span></th>
+              <th class="date-th"><span class="date-span">前半訪問: a</span></th>
+              <th class="date-th"><span class="date-span">前半応答: b</span></th>
+              <th class="date-th"><span class="date-span">前半対面: c</span></th>
+              <th class="date-th"><span class="date-span">前半フル: d</span></th>
+              <th class="date-th"><span class="date-span">前半成約: e</span></th>
+              <th class="date-th"><span class="date-span">後半訪問: a</span></th>
+              <th class="date-th"><span class="date-span">後半応答: b</span></th>
+              <th class="date-th"><span class="date-span">後半対面: c</span></th>
+              <th class="date-th"><span class="date-span">後半フル: d</span></th>
+              <th class="date-th"><span class="date-span">後半成約: e</span></th>
+            <%# 訪問種別基準値 %>
+              <th class="date-th"><span class="date-span">d専売+マルチ訪問: a</span></th>
+              <th class="date-th"><span class="date-span">d専売+マルチ応答: b</span></th>
+              <th class="date-th"><span class="date-span">d専売+マルチ合計対面: c</span></th>
+              <th class="date-th"><span class="date-span">d専売+マルチフル: d</span></th>
+              <th class="date-th"><span class="date-span">d専売+マルチ成約: e</span></th>
+              <th class="date-th"><span class="date-span">マルチ訪問: a</span></th>
+              <th class="date-th"><span class="date-span">マルチ応答: b</span></th>
+              <th class="date-th"><span class="date-span">マルチ合計対面: c</span></th>
+              <th class="date-th"><span class="date-span">マルチフル: d</span></th>
+              <th class="date-th"><span class="date-span">マルチ成約: e</span></th>
             <%# 店舗別基準値（見出し） %>
               <th class="date-th head-th"><span class="date-span">店舗別基準値</span></th>
               <th class="date-th"><span class="date-span">飲食訪問</span></th>
@@ -102,6 +113,7 @@
               <th class="date-th"><span class="date-span">19時成約</span></th>
               <th class="date-th"><span class="date-span">獲得商材</span></th>
               <th class="date-th" colspan=""><span class="date-span">切り返し入力/編集</span></th>
+              <th class="date-th" colspan=""><span class="date-span">訪問別基準値入力/編集</span></th>
               <th class="date-th"><span class="date-span">削除</span></th>
             </tr>
           </thead>
@@ -120,10 +132,10 @@
               <% if shift.present? %>
               <td class="date-td"><span class="date-span"><%= link_to shift.shift.slice(-2,2), edit_shift_path(shift.id), class: "link" %></span></td>
               <% else %>
-              <td class="date-td"><span class="date-span"><%= link_to "未申請", new_shift_path(user_id: @user.id, date: d),class: "link"  %></span></td>
+              <td class="date-td"><span class="date-span"><%= link_to "未申請", new_shift_path(user_id: @user.id, date: d), "data-turbolinks": false , class: "link"  %></span></td>
               <% end %>
               <%# その日の消化シフト %>
-              <% result = Result.includes(:result_cash).find_by(user_id: @user.id,date: d)  %>
+              <% result = Result.includes(:result_cash, :type_reference_value).find_by(user_id: @user.id,date: d)  %>
               <% if result.present? %><%# 消化シフトが入力されている場合 %>
               <td class="date-td race-border"><span class="date-span"><%= link_to result.shift.slice(-2,2), edit_result_path(result.id),class: "link" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.product rescue "" %></span></td>
@@ -131,13 +143,13 @@
               <td class="date-td race-border"><span class="date-span"><%= result.area rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.profit.round().to_s(:delimited) rescue 0 %></td><%# 営業予想 %>
             <%# 合計 %>
-              <td class="date-td"><span class="date-span"><%= result.first_total_visit.to_i + result.latter_total_visit.to_i %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.first_total_visit.to_i + result.latter_total_visit.to_i %></td>
               <td class="date-td"><span class="date-span"><%= result.first_visit.to_i + result.latter_visit.to_i %></td>
               <td class="date-td"><span class="date-span"><%= result.first_interview.to_i + result.latter_interview.to_i %></span></td>
               <td class="date-td"><span class="date-span"><%= result.first_full_talk.to_i + result.latter_full_talk.to_i %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.first_get.to_i + result.latter_get.to_i %></td>
             <%#前半%>
-              <td class="date-td"><span class="date-span"><%= result.first_total_visit.to_i %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.first_total_visit.to_i  %></td>
               <td class="date-td"><span class="date-span"><%= result.first_visit.to_i  %></td>
               <td class="date-td"><span class="date-span"><%= result.first_interview.to_i  %></span></td>
               <td class="date-td"><span class="date-span"><%= result.first_full_talk.to_i  %></span></td>
@@ -148,6 +160,17 @@
               <td class="date-td"><span class="date-span"><%= result.latter_interview.to_i %></span></td>
               <td class="date-td"><span class="date-span"><%= result.latter_full_talk.to_i %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.latter_get.to_i %></span></td>
+            <%# 訪問種別基準値 %>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_a.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_b.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_c.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_d.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_e.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type2_a.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type2_b.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type2_c.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type2_d.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type2_e.to_i rescue 0 %></span></td>
             <%# 店舗別基準値(値) %>
               <th class="th-blank"></th>
               <%#飲食%>
@@ -314,10 +337,19 @@
             <% else %>
             <td class="total-td race-border"></td>
             <% end %>
+            <% if result.shift == "キャッシュレス新規" %>
+              <% if result.type_reference_value.present? %>
+              <td class="date-td race-border" ><span class="date-span"><%= link_to "訪問種別基準値編集", edit_type_reference_value_path(result.type_reference_value.id), "data-turbolinks": false,class: "link" rescue "error" %></span></td>
+              <% else %>
+              <td class="date-td race-border" ><span class="date-span"><%= link_to "訪問種別基準値入力", result_type_reference_values_new_path(result.id), "data-turbolinks": false,class: "link" rescue "error" %></span></td>
+              <% end %>
+            <% else %>
+            <td class="total-td race-border"></td>
+            <% end %>
             <td class="date-td race-border"><span class="date-span"><%= link_to "削除", result_path(result.id),method: :delete,data: {confirm: "#{result.date.strftime("%Y年%m月%d日")}の終着を削除してもよろしいですか？"},class: "link" %></span></td>
             <% else %><%# 消化シフトが未入力の場合 %>
-                <td class="date-td"><span class="date-span"><%= link_to "未申請", new_result_path(user_id: @user.id, date: d),class: "link"  %></span></td>
-                <% 19.times do %><%# 消化シフトより下 %>
+                <td class="date-td"><span class="date-span"><%= link_to "未申請", new_result_path(user_id: @user.id, date: d), "data-turbolinks": false ,class: "link"  %></span></td>
+                <% 29.times do %><%# 消化シフトより下 %>
                 <td class="date-td"><span class="date-span"></span></td>
                 <% end %>
                 <th class="th-blank"></th>
@@ -332,7 +364,7 @@
                 <% 20.times do %><%# 時間別基準値 %>
                 <td class="date-td"><span class="date-span"></span></td>
                 <% end %>
-                <% 3.times do %>
+                <% 4.times do %>
                 <td class="date-td"><span class="date-span"></span></td>
                 <% end %>
               <% end %>

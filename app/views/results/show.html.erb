@@ -82,8 +82,9 @@
             <td class="date-td"><%= (@cash_date_progress.valuation_fin - @reversal_products.sum(:price) + (valuation_ave * @shift_schedule_ojt)).to_s(:delimited) rescue 0 %></td>
           </tr>
         </table> 
-      </div><%#/シフト/売上の区切り%>
-      <div>
+      </div><%# /シフト/売上の区切り%>
+
+      <div><%# 獲得ベースの終着 %>
         <h2>dメル, Air, U-Pay終着(終着獲得数参照)</h2>
         <table>
           <tr>
@@ -137,7 +138,7 @@
           </tr>
         </table> 
         <p class="caution-text">終着売上 dメル:80%, Air:90%, Upay:70%</p>
-      </div>
+      </div><%# /獲得ベースの終着 %>
     </div>
     <%# Vueの変 %>
     <script> 
@@ -167,8 +168,8 @@
       window.kyushu_len=<%= @kyushu_len.to_json.html_safe %>;
       window.partner_len=<%= @partner_len.to_json.html_safe %>;
     </script>
-    <%# /Vueの変 %>
     <%= javascript_pack_tag 'result_cash' %>
+    <%# /Vueの変 %>
     
     <div  id="result-cash"><%# vueの適用範囲 %>
         <h3 class="base-slct-title">
@@ -195,65 +196,81 @@
             </thead>
             <tbody>
               <tr></tr>
-                <th rowspan="4" class="total-th">合計</th>
-                <th class="total-th">訪問</th>
-                <td class="total-td"><%= (@sum_visit.to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+              <tr>
+                <th rowspan="5" class="total-th">合計</th>
+                <th class="total-th">訪問: a</th>
+                <td class="total-td"><%= (@sum_total_visit.to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">対面</th>
+                <th class="total-th">応答: b</th>
+                <td class="total-td"><%= (@sum_visit.to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit.to_f / @sum_total_visit.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">対面: c</th>
                 <td class="total-td"><%= (@sum_interview.to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_interview.to_f / @sum_visit.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">フル</th>
+                <th class="total-th">フル: d</th>
                 <td class="total-td"><%= (@sum_full_talk.to_f / @shift_digestion_new).to_f.round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_full_talk.to_f / @sum_interview.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">成約</th>
+                <th class="total-th">成約: e</th>
                 <td class="total-td"><%= (@sum_get.to_f / @shift_digestion_new).to_f.round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_get.to_f / @sum_full_talk.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th rowspan="4" class="total-th">前半</th>
-                <th class="total-th">訪問</th>
-                <td class="total-td"><%= (@sum_visit_f.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
+                <th rowspan="5" class="total-th">前半</th>
+                <th class="total-th">訪問: a</th>
+                <td class="total-td"><%= (@sum_total_visit_f.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">対面</th>
+                <th class="total-th">応答: b</th>
+                <td class="total-td"><%= (@sum_visit_f.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_f.to_f / @sum_total_visit_f.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">対面: c</th>
                 <td class="total-td"><%= (@sum_interview_f.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_interview_f.to_f / @sum_visit_f.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">フル</th>
+                <th class="total-th">フル: d</th>
                 <td class="total-td"><%= (@sum_full_talk_f.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_full_talk_f.to_f / @sum_interview_f.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">成約</th>
+                <th class="total-th">成約: e</th>
                 <td class="total-td"><%= (@sum_get_f.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_get_f.to_f / @sum_full_talk_f.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th rowspan="4" class="total-th">後半</th>
-                <th class="total-th">訪問</th>
-                <td class="total-td"><%= (@sum_visit_l.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
+                <th rowspan="5" class="total-th">後半</th>
+                <th class="total-th">訪問: a</th>
+                <td class="total-td"><%= (@sum_total_visit_l.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">対面</th>
+                <th class="total-th">応答: b</th>
+                <td class="total-td"><%= (@sum_visit_l.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_visit_l.to_f / @sum_total_visit_l.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">対面: c</th>
                 <td class="total-td"><%= (@sum_interview_l.to_f / @shift_digestion_new).round(2)  rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_interview_l.to_f / @sum_visit_l.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">フル</th>
+                <th class="total-th">フル: d</th>
                 <td class="total-td"><%= (@sum_full_talk_l.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_full_talk_l.to_f / @sum_interview_l.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">成約</th>
+                <th class="total-th">成約: e</th>
                 <td class="total-td"><%= (@sum_get_l.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@sum_get_l.to_f / @sum_full_talk_l.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
@@ -270,65 +287,80 @@
                 <th class="total-th">比率</th>
               </tr>
               <tr>
-                <th class="total-th" rowspan="4">合計</th>
-                <th class="total-th">訪問</th>
+                <th class="total-th" rowspan="5">合計</th>
+                <th class="total-th">訪問: a</th>
+                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) / shiftItem.length * 100) / 100 }}</td>
+                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答: b</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">対面</th>
+                <th class="total-th">対面: c</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) / shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
-                <th class="total-th">フル</th>
+                <th class="total-th">フル: d</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) / shiftItem.reduce((sum, element) => sum + element.first_interview + element.latter_interview, 0) * 100)}} %</td>
               </tr>
               <tr>
-                <th class="total-th">成約</th>
+                <th class="total-th">成約: e</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get + element.latter_get, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get + element.latter_get, 0) / shiftItem.reduce((sum, element) => sum + element.first_full_talk + element.latter_full_talk, 0) * 100)}} %</td>
               </tr>
               <tr>
-                <th class="total-th" rowspan="4">前半</th>
-                <th class="total-th">訪問</th>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit, 0) / shiftItem.length * 100) / 100 }}</td>
+                <th class="total-th" rowspan="5">前半</th>
+                <th class="total-th">訪問: a</th>
+                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_total_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">対面</th>
+                <th class="total-th">応答: b</th>
+                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit, 0) / shiftItem.length * 100) / 100 }}</td>
+                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit , 0) / shiftItem.reduce((sum, element) => sum + element.first_total_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="total-th">対面: c</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview , 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_interview , 0) / shiftItem.reduce((sum, element) => sum + element.first_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
-                <th class="total-th">フル</th>
+                <th class="total-th">フル: d</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) / shiftItem.reduce((sum, element) => sum + element.first_interview , 0) * 100)}} %</td>
               </tr>
               <tr>
-                <th class="total-th">成約</th>
+                <th class="total-th">成約: e</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get , 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_get , 0) / shiftItem.reduce((sum, element) => sum + element.first_full_talk , 0) * 100)}} %</td>
               </tr>
               <tr>
-                <th class="total-th" rowspan="4">後半</th>
-                <th class="total-th">訪問</th>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) / shiftItem.length * 100) / 100 }}</td>
+                <th class="total-th" rowspan="5">後半</th>
+                <th class="total-th">訪問: a</th>
+                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_total_visit, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">対面</th>
+                <th class="total-th">応答: b</th>
+                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) / shiftItem.length * 100) / 100 }}</td>
+                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum +  element.latter_visit, 0) / shiftItem.reduce((sum, element) => sum + element.latter_total_visit, 0) * 100)}} %</td>
+              </tr>
+              <tr>
+                <th class="total-th">対面: c</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) / shiftItem.reduce((sum, element) => sum + element.latter_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
-                <th class="total-th">フル</th>
+                <th class="total-th">フル: d</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) / shiftItem.reduce((sum, element) => sum +  element.latter_interview, 0) * 100)}} %</td>
               </tr>
               <tr>
-                <th class="total-th">成約</th>
+                <th class="total-th">成約: e</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_get, 0) / shiftItem.length * 100) / 100 }}</td>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.latter_get, 0) / shiftItem.reduce((sum, element) => sum + element.latter_full_talk, 0) * 100)}} %</td>
               </tr>
@@ -348,65 +380,80 @@
             <tbody>
               <tr></tr>
               <tr>
-                <th rowspan="4" class="total-th">合計</th>
-                <th class="total-th">訪問</th>
-                <td class="total-td"><%= (@result_base_sum_visit.to_f / @result_base.length).to_f().round(2) rescue "-" %></td>
+                <th rowspan="5" class="total-th">合計</th>
+                <th class="total-th">訪問: a</th>
+                <td class="total-td"><%= (@result_base_sum_total_visit.to_f / @result_base.length).to_f().round(2) rescue "-" %></td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">対面</th>
+                <th class="total-th">応答: b</th>
+                <td class="total-td"><%= (@result_base_sum_total_visit.to_f / @result_base.length).to_f().round(2) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@result_base_sum_interview.to_f / @result_base_sum_interview.to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">対面: c</th>
                 <td class="total-td"><%= (@result_base_sum_interview.to_f / @result_base.length).to_f().round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base_sum_interview.to_f / @result_base_sum_visit.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">フル</th>
+                <th class="total-th">フル: d</th>
                 <td class="total-td"><%= (@result_base_sum_full_talk.to_f / @result_base.length).to_f.round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base_sum_full_talk.to_f / @result_base_sum_interview.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">成約</th>
+                <th class="total-th">成約: e</th>
                 <td class="total-td"><%= (@result_base_sum_get.to_f / @result_base.length).to_f.round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base_sum_get.to_f / @result_base_sum_full_talk.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th rowspan="4" class="total-th">前半</th>
-                <th class="total-th">訪問</th>
+                <th rowspan="5" class="total-th">前半</th>
+                <th class="total-th">訪問: a</th>
+                <td class="total-td"><%= (@result_base.sum(:first_total_visit).to_f / @result_base.length).round(2) rescue "-" %></td>
+                <td class="total-td">-</td>
+              </tr>
+              <tr>
+                <th class="total-th">応答: b</th>
                 <td class="total-td"><%= (@result_base.sum(:first_visit).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base.sum(:first_visit).to_f / @result_base.sum(:first_total_visit).to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">対面</th>
+                <th class="total-th">対面: c</th>
                 <td class="total-td"><%= (@result_base.sum(:first_interview).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base.sum(:first_interview).to_f / @result_base.sum(:first_visit).to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">フル</th>
+                <th class="total-th">フル: d</th>
                 <td class="total-td"><%= (@result_base.sum(:first_full_talk).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base.sum(:first_full_talk).to_f / @result_base.sum(:first_interview).to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">成約</th>
+                <th class="total-th">成約: e</th>
                 <td class="total-td"><%= (@result_base.sum(:first_get).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base.sum(:first_get).to_f / @result_base.sum(:first_full_talk).to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th rowspan="4" class="total-th">後半</th>
-                <th class="total-th">訪問</th>
-                <td class="total-td"><%= (@result_base.sum(:latter_visit).to_f / @result_base.length).round(2) rescue "-" %></td>
+                <th rowspan="5" class="total-th">後半</th>
+                <th class="total-th">訪問: a</th>
+                <td class="total-td"><%= (@result_base.sum(:latter_total_visit).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td">-</td>
               </tr>
               <tr>
-                <th class="total-th">対面</th>
+                <th class="total-th">応答: b</th>
+                <td class="total-td"><%= (@result_base.sum(:latter_visit).to_f / @result_base.length).round(2) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@result_base.sum(:latter_visit).to_f / @result_base.sum(:latter_total_visit).to_f * 100, precision: 1) rescue "-" %></td>
+              </tr>
+              <tr>
+                <th class="total-th">対面: c</th>
                 <td class="total-td"><%= (@result_base.sum(:latter_interview).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base.sum(:latter_interview).to_f / @result_base.sum(:latter_visit).to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">フル</th>
+                <th class="total-th">フル: d</th>
                 <td class="total-td"><%= (@result_base.sum(:latter_full_talk).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base.sum(:latter_full_talk).to_f / @result_base.sum(:latter_interview).to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
-                <th class="total-th">成約</th>
+                <th class="total-th">成約: e</th>
                 <td class="total-td"><%= (@result_base.sum(:latter_get).to_f / @result_base.length).round(2) rescue "-" %></td>
                 <td class="total-td"><%= number_to_percentage(@result_base.sum(:latter_get).to_f / @result_base.sum(:latter_full_talk).to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
@@ -414,8 +461,9 @@
           </table>
         </div><%# /全体基準値 %>
       </div><%#基準値区切り%>
-      <div class="result-flex"><%# 店舗別基準値 %>
-        <%= render_async store_val_path(@user.id,month: @month) %><%# 店舗別基準値（個人） %>
+      <h2>商材別基準値</h2>
+      <div class="result-flex" ><%= render_async type_refecence_val_path(@user.id, month: @month) %></div><%# 商材別基準値 %>
+      <div class="result-flex"><%= render_async store_val_path(@user.id,month: @month) %><%# 店舗別基準値（個人） %>
         <div><%# 拠点別店舗基準値 %>
             <h2>
               拠点別店舗基準値（{{ val }}）

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_12_21_054753) do
+ActiveRecord::Schema.define(version: 2024_01_28_053236) do
 
   create_table "activity_bases", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date", null: false
@@ -1914,6 +1914,21 @@ ActiveRecord::Schema.define(version: 2023_12_21_054753) do
     t.index ["user_id"], name: "index_trouble_sses_on_user_id"
   end
 
+  create_table "type_reference_values", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "result_id"
+    t.integer "type1_a"
+    t.integer "type1_b"
+    t.integer "type1_c"
+    t.integer "type1_d"
+    t.integer "type1_e"
+    t.integer "type2_a"
+    t.integer "type2_b"
+    t.integer "type2_c"
+    t.integer "type2_d"
+    t.integer "type2_e"
+    t.index ["result_id"], name: "index_type_reference_values_on_result_id"
+  end
+
   create_table "usen_pays", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "controll_num", null: false
     t.string "store_name", null: false
@@ -2030,5 +2045,6 @@ ActiveRecord::Schema.define(version: 2023_12_21_054753) do
   add_foreign_key "trouble_ns", "users"
   add_foreign_key "trouble_sses", "store_props"
   add_foreign_key "trouble_sses", "users"
+  add_foreign_key "type_reference_values", "results"
   add_foreign_key "usen_pays", "users"
 end

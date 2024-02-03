@@ -1,0 +1,82 @@
+<div><%# 商材別基準値 %>
+  <table class="total-tb">
+    <thead>
+      <tr>
+        <th class="total-th">項目</th>
+        <th class="total-th">内訳</th>
+        <th class="total-th">平均</th>
+        <th class="total-th">比率</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr></tr>
+      <tr>
+        <th rowspan="5" class="total-th">d専売+マルチ</th>
+        <th class="total-th">訪問: a</th>
+        <td class="total-td"><%= (@results.sum(:type1_a).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td">-</td>
+      </tr>
+      <tr>
+        <th class="total-th">応答: b</th>
+        <td class="total-td"><%= (@results.sum(:type1_b).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td"><%= number_to_percentage(@results.sum(:type1_b).to_f / @results.sum(:type1_a).to_f * 100, precision: 1) rescue "-" %></td>
+      </tr>
+      <tr>
+        <th class="total-th">対面: c</th>
+        <td class="total-td"><%= (@results.sum(:type1_c).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td"><%= number_to_percentage(@results.sum(:type1_c).to_f / @results.sum(:type1_b).to_f * 100, precision: 1) rescue "-" %></td>
+      </tr>
+      <tr>
+        <th class="total-th">フル: d</th>
+        <td class="total-td"><%= (@results.sum(:type1_d).to_f / @shift_digestion_new).to_f.round(2) rescue "-" %></td>
+        <td class="total-td"><%= number_to_percentage(@results.sum(:type1_d).to_f / @results.sum(:type1_c).to_f * 100, precision: 1) rescue "-" %></td>
+      </tr>
+      <tr>
+        <th class="total-th">成約: e</th>
+        <td class="total-td"><%= (@results.sum(:type1_e).to_f / @shift_digestion_new).to_f.round(2) rescue "-" %></td>
+        <td class="total-td"><%= number_to_percentage(@results.sum(:type1_e).to_f / @results.sum(:type1_d).to_f * 100, precision: 1) rescue "-" %></td>
+      </tr>
+    </tbody>
+  </table>
+</div><%# /個人基準値 %>
+<div><%# 商材別基準値 %>
+  <table class="total-tb">
+    <thead>
+      <tr>
+        <th class="total-th">項目</th>
+        <th class="total-th">内訳</th>
+        <th class="total-th">平均</th>
+        <th class="total-th">比率</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr></tr>
+      <tr>
+        <th rowspan="5" class="total-th">マルチ</th>
+        <th class="total-th">訪問: a</th>
+        <td class="total-td"><%= (@results.sum(:type2_a).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td">-</td>
+      </tr>
+      <tr>
+        <th class="total-th">応答: b</th>
+        <td class="total-td"><%= (@results.sum(:type2_b).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td"><%= number_to_percentage(@results.sum(:type2_b).to_f / @results.sum(:type2_a).to_f * 100, precision: 1) rescue "-" %></td>
+      </tr>
+      <tr>
+        <th class="total-th">対面: c</th>
+        <td class="total-td"><%= (@results.sum(:type2_c).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td"><%= number_to_percentage(@results.sum(:type2_c).to_f / @results.sum(:type2_b).to_f * 100, precision: 1) rescue "-" %></td>
+      </tr>
+      <tr>
+        <th class="total-th">フル: d</th>
+        <td class="total-td"><%= (@results.sum(:type2_d).to_f / @shift_digestion_new).to_f.round(2) rescue "-" %></td>
+        <td class="total-td"><%= number_to_percentage(@results.sum(:type2_d).to_f / @results.sum(:type2_c).to_f * 100, precision: 1) rescue "-" %></td>
+      </tr>
+      <tr>
+        <th class="total-th">成約: e</th>
+        <td class="total-td"><%= (@results.sum(:type2_e).to_f / @shift_digestion_new).to_f.round(2) rescue "-" %></td>
+        <td class="total-td"><%= number_to_percentage(@results.sum(:type2_e).to_f / @results.sum(:type2_d).to_f * 100, precision: 1) rescue "-" %></td>
+      </tr>
+    </tbody>
+  </table>
+</div><%# /個人基準値 %>

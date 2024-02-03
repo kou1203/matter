@@ -5,9 +5,9 @@ class ResultsController < ApplicationController
   before_action :set_data
   before_action :back_retirement
   # showアクションのbeforeaction
-  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation_list,:date_fin,:weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all,:time_val_base]
-  before_action :set_month_product, only: [:show, :date_fin,:weekly_fin,:out_val]
-  before_action :set_result_and_shift, only: [:show, :date_fin,:weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all]
+  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation_list,:date_fin, :type_refecence_val, :weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all,:time_val_base]
+  before_action :set_month_product, only: [:show, :date_fin, :type_refecence_val, :weekly_fin,:out_val]
+  before_action :set_result_and_shift, only: [:show, :date_fin, :type_refecence_val, :weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all]
   # monthly_progressアクションのbeforeaction
   before_action :set_monthly_progress, only: [:monthly_get,:monthly_get_base,:sales_and_def]
 
@@ -172,11 +172,9 @@ class ResultsController < ApplicationController
     @result = Result.new(result_params)
     if @result.save 
       if @result.shift == "キャッシュレス新規"
-        redirect_to  result_result_cashes_new_path(@result.id)
+        redirect_to  result_type_reference_values_new_path(@result.id)
       elsif @result.shift == "キャッシュレス決済"
         redirect_to  result_result_cashes_new_path(@result.id)
-      elsif @result.shift == "電気" || @result.shift == "設置電気"
-        redirect_to  result_result_summits_new_path(@result.id)
       else  
         redirect_to session[:previous_url]
       end  
@@ -306,6 +304,11 @@ class ResultsController < ApplicationController
     @date_period = @month.beginning_of_month.to_date..@month.end_of_month.to_date
     render partial: "date_fin", locals: {date_period:@date_period} # @date_periodを遅延ロード
   end 
+  
+  def type_refecence_val # 商材別基準値
+    
+    render partial: "type_refecence_val", locals: {} # @date_periodを遅延ロード
+  end
 
   def store_val # 店舗別基準値
     # 店舗別合計変数 
@@ -1138,7 +1141,7 @@ class ResultsController < ApplicationController
     end 
 
     def set_result_and_shift # シフトと終着の変数
-      @results = Result.includes(:user, :result_cash).where(user_id: @user.id).where(date: @month.all_month)
+      @results = Result.includes(:user, :result_cash, :type_reference_value).where(user_id: @user.id).where(date: @month.all_month)
       @shifts = Shift.where(user_id: @user.id).where(start_time: @month.all_month)
       @result_base = Result.includes(:user, :result_cash).where(date: @month.all_month).where(shift: "キャッシュレス新規")
       @shift_digestion_new = @results.where(shift: "キャッシュレス新規").length
@@ -1298,7 +1301,7 @@ class ResultsController < ApplicationController
         :first_full_talk2,
         :latter_full_talk2,
         :revisit_full_talk,
-        :revisit_get,
+        :revisit_get
       )
     end 
 

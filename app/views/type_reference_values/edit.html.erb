@@ -1,0 +1,57 @@
+<div data-scope-path="shared/header">
+  <h1>訪問種別基準値</h1>
+  <%= render "shared/header" %>
+</div>
+
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form"><%# CSSスコープ %>
+    <div class="form-main"><%# フォーム外枠 %>
+        <div class="form-title">
+          <h1><%= @type_reference_value.result.user.name %>訪問種別終着</h1>
+        </div>
+        <%= form_with model: @type_reference_value, local: true, class: "form-frame", local: true do |f| %>
+        <h1>訪問種別基準値</h1>
+        <div class="form">
+            <p class="form-head">dメル+マルチ</p>
+            <p>
+                <%= f.label :type1_a, "訪問-", class: "form-text" %>
+                <%= f.label :type1_b, "応答-", class: "form-text" %>
+                <%= f.label :type1_c, "対面-", class: "form-text" %>
+                <%= f.label :type1_d, "フル-", class: "form-text",id: "cash-label4" %>
+                <%= f.label :type1_e, "成約", class: "form-text" %>
+                </p>
+            <p>
+                <%= f.number_field :type1_a, class: "num-input" %>
+                <%= f.number_field :type1_b, class: "num-input" %>
+                <%= f.number_field :type1_c, class: "num-input" %>
+                <%= f.number_field :type1_d, class: "num-input" %>
+                <%= f.number_field :type1_e, class: "num-input" %>
+            </p>
+        </div>
+        <div class="form">
+            <p class="form-head">マルチ</p>
+            <p>
+                <%= f.label :type2_a, "訪問-", class: "form-text" %>
+                <%= f.label :type2_b, "応答-", class: "form-text" %>
+                <%= f.label :type2_c, "対面-", class: "form-text" %>
+                <%= f.label :type2_d, "フル-", class: "form-text",id: "cash-label4" %>
+                <%= f.label :type2_e, "成約", class: "form-text" %>
+                </p>
+            <p>
+                <%= f.number_field :type2_a, class: "num-input" %>
+                <%= f.number_field :type2_b, class: "num-input" %>
+                <%= f.number_field :type2_c, class: "num-input" %>
+                <%= f.number_field :type2_d, class: "num-input" %>
+                <%= f.number_field :type2_e, class: "num-input" %>
+            </p>
+        </div>
+    </div><%# フォーム外枠 %>
+        <div class="form-submit">
+            <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        </div>
+        <% end %>
+  </div><%# CSSスコープ %>
+</div>

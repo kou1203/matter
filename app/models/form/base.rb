@@ -3,5 +3,5 @@ class Form::Base
   include ActiveModel::Callbacks
   include ActiveModel::Validations
   include ActiveModel::Validations::Callbacks
-
+  
 end

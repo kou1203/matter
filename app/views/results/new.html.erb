@@ -9,17 +9,13 @@
   </div>
   <div data-scope-path="shared/form"><%# CSSスコープ %>
     <div class="form-main"><%# フォーム外枠 %>
-        <div class="form-title">
-        <h1><%= @result.user.name %>終着入力</h1>
-        </div>
+        <div class="form-title"><h1><%= @result.user.name %>終着入力</h1></div>
         <button id="memo-button">メモ</button>
-        <div class="memo-form" id="memo-page">
-        <textarea></textarea>
-        </div>
+        <div class="memo-form" id="memo-page"><textarea></textarea></div>
         <%= form_with(model: @result, date: {remote: false}) do |f| %>
+        <%= f.hidden_field :user_id, value: @result.user.id %>
         <%# render "shared/error_messages", model: f.object %>
         <h1>基本情報</h1>
-            <%= f.hidden_field :user_id, value: @result.user.id %>
         <div class="form">
             <p><%= f.label :date, "日付", class: "form-text" %></p>
             <p><%= f.date_field :date , value: @result.date, class: "date-input" %></p>
@@ -37,9 +33,7 @@
         </div>
         <div class="form">
             <p><%= f.label :product, "基準値種別", class: "form-text" %></p>
-            <p><%= f.select :product, {
-                "d専売+マルチ": "d専売+マルチ", "マルチ": "マルチ"
-                },{include_blank: true}, {class: "slct-input",id: "shift-slct"} %></p>
+            <p><%= f.select :product, {"d専売+マルチ": "d専売+マルチ", "マルチ": "マルチ"},{include_blank: true}, {class: "slct-input",id: "shift-slct"} %></p>
         </div>
         <div class="form">
             <p><%= f.label :ojt_id, "帯同者", class: "form-text" %></p>
@@ -49,12 +43,6 @@
             <p><%= f.label :ojt_start, "帯同開始〜", class: "form-text" %><%= f.label :ojt_start, "帯同終了", class: "form-text" %></p>
             <p><%= f.time_field :ojt_start , class: "time-input" %>〜<%= f.time_field :ojt_end , class: "time-input" %></p>
         </div>
-        <% if current_user == "管理用" %>
-        <div class="form">
-            <p><%= f.label :remarks, "備考", class: "form-text" %></p>
-            <p><%= f.text_field :remarks,class: "input", min: 0 %></p>
-        </div>
-        <% end %>
         <div class="form">
             <p><%= f.label :profit, "売上", class: "form-text" %></p>
             <p><%= f.number_field :profit,class: "input", min: 0 %></p>
@@ -279,24 +267,10 @@
             </p>
         </div>
         </div><%# キャッシュその他基準値 %>
-        <div class="basic-form" id="summit-form1"><%# 電気再訪基準値 %>
-            <h1>見込み</h1>
-            <div class="form">
-                <p class="form-head">再訪</p>
-                <p>
-                    <%= f.label :revisit_full_talk, "フル②", class: "form-text" %>-
-                    <%= f.label :revisit_get, "成約", class: "form-text" %>
-                </p>
-                <p>
-                    <%= f.number_field :revisit_full_talk,class: "num-input", min: 0 %>
-                    <%= f.number_field :revisit_get , class: "num-input", min: 0 %>
-                </p>
-            </div>
-        </div><%# id:form %>
     </div><%# フォーム外枠 %>
-        <div class="form-submit">
-            <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
-        </div>
+    <div class="form-submit">
+        <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+    </div>
         <% end %>
   </div><%# CSSスコープ %>
 </div>
