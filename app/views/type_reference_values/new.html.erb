@@ -13,8 +13,8 @@
     <h1>訪問種別基準値</h1>
     <%= form_with model: @type_reference_value, url: result_type_reference_values_create_path(@result.id), local: true, class: "form-frame", local: true do |f| %>
       <%= f.hidden_field :result_id, value: @result.id %>
+      <% if @result.product == "d専売+マルチ" %>
       <div class="form">
-        <% if @result.product == "d専売+マルチ" %>
         <p class="form-head">d専売基準値</p>
         <p>
             <%= f.label :type1_a, "訪問-", class: "form-text" %>
@@ -30,8 +30,8 @@
             <%= f.number_field :type1_d, class: "num-input" %>
             <%= f.number_field :type1_e, class: "num-input" %>
         </p>
-        <% end %>
       </div>
+      <% end %>
       <div class="form">
         <p class="form-head">マルチ基準値</p>
         <p>
