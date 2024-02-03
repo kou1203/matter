@@ -14,39 +14,41 @@
         </div>
         <%= form_with model: @type_reference_value, local: true, class: "form-frame", local: true do |f| %>
         <h1>訪問種別基準値</h1>
+        <% if @type_reference_value.result.product == "d専売+マルチ" %>
         <div class="form">
-            <p class="form-head">dメル+マルチ</p>
-            <p>
-                <%= f.label :type1_a, "訪問-", class: "form-text" %>
-                <%= f.label :type1_b, "応答-", class: "form-text" %>
-                <%= f.label :type1_c, "対面-", class: "form-text" %>
-                <%= f.label :type1_d, "フル-", class: "form-text",id: "cash-label4" %>
-                <%= f.label :type1_e, "成約", class: "form-text" %>
-                </p>
-            <p>
-                <%= f.number_field :type1_a, class: "num-input" %>
-                <%= f.number_field :type1_b, class: "num-input" %>
-                <%= f.number_field :type1_c, class: "num-input" %>
-                <%= f.number_field :type1_d, class: "num-input" %>
-                <%= f.number_field :type1_e, class: "num-input" %>
-            </p>
+          <p class="form-head">d専売基準値</p>
+          <p>
+              <%= f.label :type1_a, "訪問-", class: "form-text" %>
+              <%= f.label :type1_b, "応答-", class: "form-text" %>
+              <%= f.label :type1_c, "対面-", class: "form-text" %>
+              <%= f.label :type1_d, "フル-", class: "form-text",id: "cash-label4" %>
+              <%= f.label :type1_e, "成約", class: "form-text" %>
+              </p>
+          <p>
+              <%= f.number_field :type1_a, class: "num-input" %>
+              <%= f.number_field :type1_b, class: "num-input" %>
+              <%= f.number_field :type1_c, class: "num-input" %>
+              <%= f.number_field :type1_d, class: "num-input" %>
+              <%= f.number_field :type1_e, class: "num-input" %>
+          </p>
         </div>
+        <% end %>
         <div class="form">
-            <p class="form-head">マルチ</p>
-            <p>
-                <%= f.label :type2_a, "訪問-", class: "form-text" %>
-                <%= f.label :type2_b, "応答-", class: "form-text" %>
-                <%= f.label :type2_c, "対面-", class: "form-text" %>
-                <%= f.label :type2_d, "フル-", class: "form-text",id: "cash-label4" %>
-                <%= f.label :type2_e, "成約", class: "form-text" %>
-                </p>
-            <p>
-                <%= f.number_field :type2_a, class: "num-input" %>
-                <%= f.number_field :type2_b, class: "num-input" %>
-                <%= f.number_field :type2_c, class: "num-input" %>
-                <%= f.number_field :type2_d, class: "num-input" %>
-                <%= f.number_field :type2_e, class: "num-input" %>
-            </p>
+          <p class="form-head">マルチ基準値</p>
+          <p>
+              <%= f.label :type2_a, "訪問-", class: "form-text" %>
+              <%= f.label :type2_b, "応答-", class: "form-text" %>
+              <%= f.label :type2_c, "対面-", class: "form-text" %>
+              <%= f.label :type2_d, "フル-", class: "form-text",id: "cash-label4" %>
+              <%= f.label :type2_e, "成約", class: "form-text" %>
+              </p>
+          <p>
+              <%= f.number_field :type2_a, class: "num-input" %>
+              <%= f.number_field :type2_b, class: "num-input" %>
+              <%= f.number_field :type2_c, class: "num-input" %>
+              <%= f.number_field :type2_d, class: "num-input" %>
+              <%= f.number_field :type2_e, class: "num-input" %>
+          </p>
         </div>
     </div><%# フォーム外枠 %>
         <div class="form-submit">

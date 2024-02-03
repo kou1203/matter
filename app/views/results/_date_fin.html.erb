@@ -161,11 +161,11 @@
               <td class="date-td"><span class="date-span"><%= result.latter_full_talk.to_i %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.latter_get.to_i %></span></td>
             <%# 訪問種別基準値 %>
-              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_a.to_i rescue 0 %></span></td>
-              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_b.to_i rescue 0 %></span></td>
-              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_c.to_i rescue 0 %></span></td>
-              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_d.to_i rescue 0 %></span></td>
-              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_e.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_a.to_i + result.type_reference_value.type2_a.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_b.to_i + result.type_reference_value.type2_b.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_c.to_i + result.type_reference_value.type2_c.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_d.to_i + result.type_reference_value.type2_d.to_i rescue 0 %></span></td>
+              <td class="date-td"><span class="date-span"><%= result.type_reference_value.type1_e.to_i + result.type_reference_value.type2_e.to_i rescue 0 %></span></td>
               <td class="date-td"><span class="date-span"><%= result.type_reference_value.type2_a.to_i rescue 0 %></span></td>
               <td class="date-td"><span class="date-span"><%= result.type_reference_value.type2_b.to_i rescue 0 %></span></td>
               <td class="date-td"><span class="date-span"><%= result.type_reference_value.type2_c.to_i rescue 0 %></span></td>
