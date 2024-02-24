@@ -112,6 +112,7 @@
               <th class="date-th"><span class="date-span">19時訪問</span></th>
               <th class="date-th"><span class="date-span">19時成約</span></th>
               <th class="date-th"><span class="date-span">獲得商材</span></th>
+              <th class="date-th"><span class="date-span">備考</span></th>
               <th class="date-th" colspan=""><span class="date-span">切り返し入力/編集</span></th>
               <th class="date-th" colspan=""><span class="date-span">訪問別基準値入力/編集</span></th>
               <th class="date-th"><span class="date-span">削除</span></th>
@@ -327,6 +328,7 @@
                 au決済<%= aupay_slmt %><br>
               <% end %>
             </span></td>
+            <td class="date-td race-border" ><span class="date-span"><%= result.remarks %></span></td>
             <%# 編集や削除 %>
             <% if result.shift == "キャッシュレス新規" || result.shift == "キャッシュレス決済" %>
               <% if result.result_cash.present? %>

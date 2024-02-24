@@ -48,15 +48,13 @@
             <p><%= f.label :ojt_start, "帯同開始〜", class: "form-text" %><%= f.label :ojt_start, "帯同終了", class: "form-text" %></p>
             <p><%= f.time_field :ojt_start , class: "time-input" %>〜<%= f.time_field :ojt_end , class: "time-input" %></p>
         </div>
-        <% if current_user == "管理用" %>
-        <div class="form">
-            <p><%= f.label :remarks, "備考", class: "form-text" %></p>
-            <p><%= f.text_field :remarks,class: "input", min: 0 %></p>
-        </div>
-        <% end %>
         <div class="form">
             <p><%= f.label :profit, "売上", class: "form-text" %></p>
             <p><%= f.number_field :profit,class: "input", min: 0 %></p>
+        </div>
+        <div class="form">
+            <p><%= f.label :remarks, "備考", class: "form-text" %></p>
+            <p><%= f.text_field :remarks , class: "input" %></p>
         </div>
         <div class="basic-form" id="basic-form">
         <h1>基準値</h1>
