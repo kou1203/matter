@@ -234,7 +234,8 @@
       <% 
         if dmer.industry_status == "×" || dmer.industry_status == "NG" ||
             dmer.status == "審査NG" || dmer.status == "申込取消" ||
-            dmer.status == "申込取消（不備）" || dmer.status == "社内確認中"
+            dmer.status == "申込取消（不備）" || dmer.status == "社内確認中" || 
+            dmer.partner_status != "Active"
       %>
       <tr style="color:red;">
       <% elsif dmer.status == "不備対応中" %>
