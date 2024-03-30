@@ -923,7 +923,7 @@ class ResultsController < ApplicationController
         @u_id = User.where("name LIKE ?","%#{@search_user}%").first.id
       else  
         @u_id = nil
-      end 
+      end
       # @u_id = User.where("name LIKE ?","%#{@search_user}%").first.id
       @s_date = params[:s_date]
       @e_date = params[:e_date]
