@@ -16,7 +16,7 @@
       <div class="nav-text" style="color: red;"><%= alert %></div><%# 更新などあった時のアラート %>
       <div><%# 検索 %>
         <%= form_with url: person_productivity_results_path, local: true, method: :get do |f| %>
-            <p class="nav-text red">※こちらから確認したい範囲と拠点を選択してください。</p>
+            <p class="nav-text red">※こちらから確認したい範囲とユーザー名を選択してください。</p>
             <table class="s-tb">
               <tr class="">
                 <th class="s-th">ユーザー名</th>
@@ -35,396 +35,419 @@
             </table>
         <% end %>
       </div><%# 検索 %>
-      <% if @u_id.present? %><%# ユーザー名の検索があれば基準値と切り返し、生産性を出力する。 %>
-        <p class="nav-text">◆基準値</p>
-        <table>
-          <thead>
-            <tr>
-              <th colspan="2">基本情報</th>
-              <th colspan="9">基準値</th>
-            </tr>
-            <tr>
-              <th>ユーザー名</th>
-              <th>消化シフト数</th>
-              <th>訪問数</th>
-              <th>応答数</th>
-              <th>応答率</th>
-              <th>対面数</th>
-              <th>対面率</th>
-              <th>フル数</th>
-              <th>フル率</th>
-              <th>成約数</th>
-              <th>成約率</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><%= User.find(@u_id).name %></td>
-              <td><%= @results.length %></td>
-              <td><%= total_visit_ave = ((@results.sum(:first_total_visit) + @results.sum(:latter_total_visit)).to_f / @results.length).round(1) rescue 0 %></td>
-              <td><%= visit_ave = ((@results.sum(:first_visit) + @results.sum(:latter_visit)).to_f / @results.length).round(1) rescue 0 %></td>
-              <td><%= (visit_ave / total_visit_ave * 100).round() rescue 0 %>%</td>
-              <td><%= interview_ave = ((@results.sum(:first_interview) + @results.sum(:latter_interview)).to_f / @results.length).round(1) rescue 0 %></td>
-              <td><%= (interview_ave / visit_ave * 100).round() rescue 0 %>%</td>
-              <td><%= full_talk_ave =  ((@results.sum(:first_full_talk) + @results.sum(:latter_full_talk)).to_f / @results.length).round(1) rescue 0 %></td>
-              <td><%= (full_talk_ave / interview_ave * 100).round() rescue 0 %>%</td>
-              <td><%= get_ave = ((@results.sum(:first_get) + @results.sum(:latter_get)).to_f / @results.length).round(1) rescue 0 %></td>
-              <td><%= (get_ave / full_talk_ave * 100).round() rescue 0 %>%</td>
-            </tr>
-          </tbody>
-        </table>
-        <%# 切り返しと生産性 %>
-        <div style="display: flex;">
-          <div>
-            <p class="nav-text">◆切り返し</p>
+      <% if @search_user.present? %><%# ユーザー名の検索があれば基準値と切り返し、生産性を出力する。 %>
+        <% if @u_id.blank? %>
+          <p class="nav-text">検索ユーザー名：<%= @search_user %>は該当がありませんでした、お名前が正しいか再度ご確認ください。</p>
+        <% elsif @results.present? %><%# 終着があるか判別 %>
+          <div><%# 基準値 %>
+            <h2>
+              終着：
+              <%= @results.find_by(date: @results.minimum(:date)).date.strftime("%Y年%m月%d日") %>〜
+              <%= @results.find_by(date: @results.maximum(:date)).date.strftime("%Y年%m月%d日") %>の情報を参照
+            </h2>
+            <p class="nav-text">◆基準値</p>
             <table>
               <thead>
                 <tr>
-                  <th colspan="">項目</th>
-                  <th colspan="">内容</th>
-                  <th colspan="">合計</th>
-                  <th colspan="">1日</th>
-                  <th colspan="">平均</th>
-                  <th colspan="">成約率</th>
+                  <th colspan="2">基本情報</th>
+                  <th colspan="9">基準値</th>
+                </tr>
+                <tr>
+                  <th>ユーザー名</th>
+                  <th>消化シフト数</th>
+                  <th>訪問数</th>
+                  <th>応答数</th>
+                  <th>応答率</th>
+                  <th>対面数</th>
+                  <th>対面率</th>
+                  <th>フル数</th>
+                  <th>フル率</th>
+                  <th>成約数</th>
+                  <th>成約率</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <th rowspan="3">どういうこと？</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_01) %></td>
-                  <td><%= (@results.sum(:out_interview_01).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= out1_interview_ave = (@results.sum(:out_interview_01).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_01) %></td>
-                  <td><%= (@results.sum(:out_full_talk_01).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_01).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_01).to_f / @results.sum(:out_interview_01) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_01) %></td>
-                  <td><%= (@results.sum(:out_get_01).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= out1_get_ave = (@results.sum(:out_get_01).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_01).to_f / @results.sum(:out_full_talk_01) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">君は誰？協会？</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_02) %></td>
-                  <td><%= (@results.sum(:out_interview_02).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_02).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_02) %></td>
-                  <td><%= (@results.sum(:out_full_talk_02).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_02).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_02).to_f / @results.sum(:out_interview_02) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_02) %></td>
-                  <td><%= (@results.sum(:out_get_02).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_02).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_02).to_f / @results.sum(:out_full_talk_02) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">もらうだけでいいの？</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_03) %></td>
-                  <td><%= (@results.sum(:out_interview_03).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_03).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_03) %></td>
-                  <td><%= (@results.sum(:out_full_talk_03).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_03).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_03).to_f / @results.sum(:out_interview_03) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_03) %></td>
-                  <td><%= (@results.sum(:out_get_03).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_03).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_03).to_f / @results.sum(:out_full_talk_03) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">PayPayのみ</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_04) %></td>
-                  <td><%= (@results.sum(:out_interview_04).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_04).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_04) %></td>
-                  <td><%= (@results.sum(:out_full_talk_04).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_04).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_04).to_f / @results.sum(:out_interview_04) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_04) %></td>
-                  <td><%= (@results.sum(:out_get_04).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_04).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_04).to_f / @results.sum(:out_full_talk_04) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">AirPayのみ</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_05) %></td>
-                  <td><%= (@results.sum(:out_interview_05).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_05).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_05) %></td>
-                  <td><%= (@results.sum(:out_full_talk_05).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_05).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_05).to_f / @results.sum(:out_interview_05) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_05) %></td>
-                  <td><%= (@results.sum(:out_get_05).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_05).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_05).to_f / @results.sum(:out_full_talk_05) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">カードのみ</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_06) %></td>
-                  <td><%= (@results.sum(:out_interview_06).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_06).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_06) %></td>
-                  <td><%= (@results.sum(:out_full_talk_06).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_06).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_06).to_f / @results.sum(:out_interview_06) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_06) %></td>
-                  <td><%= (@results.sum(:out_get_06).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_06).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_06).to_f / @results.sum(:out_full_talk_06) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">先延ばし</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_07) %></td>
-                  <td><%= (@results.sum(:out_interview_07).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_07).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_07) %></td>
-                  <td><%= (@results.sum(:out_full_talk_07).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_07).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_07).to_f / @results.sum(:out_interview_07) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_07) %></td>
-                  <td><%= (@results.sum(:out_get_07).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_07).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_07).to_f / @results.sum(:out_full_talk_07) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">現金のみ</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_08) %></td>
-                  <td><%= (@results.sum(:out_interview_08).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_08).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_08) %></td>
-                  <td><%= (@results.sum(:out_full_talk_08).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_08).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_08).to_f / @results.sum(:out_interview_08) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_08) %></td>
-                  <td><%= (@results.sum(:out_get_08).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_08).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_08).to_f / @results.sum(:out_full_talk_08) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">忙しい</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_09) %></td>
-                  <td><%= (@results.sum(:out_interview_09).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_09).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_09) %></td>
-                  <td><%= (@results.sum(:out_full_talk_09).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_09).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_09).to_f / @results.sum(:out_interview_09) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_09) %></td>
-                  <td><%= (@results.sum(:out_get_09).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_09).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_09).to_f / @results.sum(:out_full_talk_09) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">面倒くさい</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_10) %></td>
-                  <td><%= (@results.sum(:out_interview_10).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_10).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_10) %></td>
-                  <td><%= (@results.sum(:out_full_talk_10).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_10).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_10).to_f / @results.sum(:out_interview_10) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_10) %></td>
-                  <td><%= (@results.sum(:out_get_10).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_10).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_10).to_f / @results.sum(:out_full_talk_10) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">情報不足</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_11) %></td>
-                  <td><%= (@results.sum(:out_interview_11).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_11).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_11) %></td>
-                  <td><%= (@results.sum(:out_full_talk_11).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_11).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_11).to_f / @results.sum(:out_interview_11) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_11) %></td>
-                  <td><%= (@results.sum(:out_get_11).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_11).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_11).to_f / @results.sum(:out_full_talk_11) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">ペロ</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_12) %></td>
-                  <td><%= (@results.sum(:out_interview_12).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_12).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_12) %></td>
-                  <td><%= (@results.sum(:out_full_talk_12).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_12).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_12).to_f / @results.sum(:out_interview_12) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_12) %></td>
-                  <td><%= (@results.sum(:out_get_12).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_12).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_12).to_f / @results.sum(:out_full_talk_12) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">その他</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_13) %></td>
-                  <td><%= (@results.sum(:out_interview_13).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_13).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_13) %></td>
-                  <td><%= (@results.sum(:out_full_talk_13).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_13).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_13).to_f / @results.sum(:out_interview_13) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_13) %></td>
-                  <td><%= (@results.sum(:out_get_13).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_13).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_13).to_f / @results.sum(:out_full_talk_13) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="3">AirPay導入</th>
-                  <th rowspan="">対面</th>
-                  <td><%= @results.sum(:out_interview_19) %></td>
-                  <td><%= (@results.sum(:out_interview_19).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_interview_19).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td>-</td>
-                </tr>
-                <tr>
-                  <th rowspan="">フル</th>
-                  <td><%= @results.sum(:out_full_talk_19) %></td>
-                  <td><%= (@results.sum(:out_full_talk_19).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_19).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_full_talk_19).to_f / @results.sum(:out_interview_19) * 100).round() rescue 0 %>%</td>
-                </tr>
-                <tr>
-                  <th rowspan="">成約</th>
-                  <td><%= @results.sum(:out_get_19) %></td>
-                  <td><%= (@results.sum(:out_get_19).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_19).to_f / @results.length).round(1) rescue 0 %></td>
-                  <td><%= (@results.sum(:out_get_19).to_f / @results.sum(:out_full_talk_19) * 100).round() rescue 0 %>%</td>
+                  <td><%= User.find(@u_id).name %></td>
+                  <td><%= @results.length %></td>
+                  <td><%= total_visit_ave = ((@results.sum(:first_total_visit) + @results.sum(:latter_total_visit)).to_f / @results.length).round(1) rescue 0 %></td>
+                  <td><%= visit_ave = ((@results.sum(:first_visit) + @results.sum(:latter_visit)).to_f / @results.length).round(1) rescue 0 %></td>
+                  <td><%= (visit_ave / total_visit_ave * 100).round() rescue 0 %>%</td>
+                  <td><%= interview_ave = ((@results.sum(:first_interview) + @results.sum(:latter_interview)).to_f / @results.length).round(1) rescue 0 %></td>
+                  <td><%= (interview_ave / visit_ave * 100).round() rescue 0 %>%</td>
+                  <td><%= full_talk_ave =  ((@results.sum(:first_full_talk) + @results.sum(:latter_full_talk)).to_f / @results.length).round(1) rescue 0 %></td>
+                  <td><%= (full_talk_ave / interview_ave * 100).round() rescue 0 %>%</td>
+                  <td><%= get_ave = ((@results.sum(:first_get) + @results.sum(:latter_get)).to_f / @results.length).round(1) rescue 0 %></td>
+                  <td><%= (get_ave / full_talk_ave * 100).round() rescue 0 %>%</td>
                 </tr>
               </tbody>
             </table>
+          </div><%# 基準値 %>
+          <%# 切り返しと生産性 %>
+          <div style="display: flex;">
+            <div>
+              <p class="nav-text">◆切り返し</p>
+              <table>
+                <thead>
+                  <tr>
+                    <th colspan="">項目</th>
+                    <th colspan="">内容</th>
+                    <th colspan="">合計</th>
+                    <th colspan="">1日</th>
+                    <th colspan="">平均</th>
+                    <th colspan="">成約率</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th rowspan="3">どういうこと？</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_01) %></td>
+                    <td><%= (@results.sum(:out_interview_01).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= out1_interview_ave = (@results.sum(:out_interview_01).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_01) %></td>
+                    <td><%= (@results.sum(:out_full_talk_01).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_01).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_01).to_f / @results.sum(:out_interview_01) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_01) %></td>
+                    <td><%= (@results.sum(:out_get_01).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= out1_get_ave = (@results.sum(:out_get_01).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_01).to_f / @results.sum(:out_full_talk_01) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">君は誰？協会？</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_02) %></td>
+                    <td><%= (@results.sum(:out_interview_02).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_02).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_02) %></td>
+                    <td><%= (@results.sum(:out_full_talk_02).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_02).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_02).to_f / @results.sum(:out_interview_02) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_02) %></td>
+                    <td><%= (@results.sum(:out_get_02).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_02).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_02).to_f / @results.sum(:out_full_talk_02) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">もらうだけでいいの？</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_03) %></td>
+                    <td><%= (@results.sum(:out_interview_03).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_03).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_03) %></td>
+                    <td><%= (@results.sum(:out_full_talk_03).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_03).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_03).to_f / @results.sum(:out_interview_03) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_03) %></td>
+                    <td><%= (@results.sum(:out_get_03).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_03).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_03).to_f / @results.sum(:out_full_talk_03) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">PayPayのみ</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_04) %></td>
+                    <td><%= (@results.sum(:out_interview_04).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_04).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_04) %></td>
+                    <td><%= (@results.sum(:out_full_talk_04).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_04).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_04).to_f / @results.sum(:out_interview_04) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_04) %></td>
+                    <td><%= (@results.sum(:out_get_04).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_04).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_04).to_f / @results.sum(:out_full_talk_04) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">AirPayのみ</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_05) %></td>
+                    <td><%= (@results.sum(:out_interview_05).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_05).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_05) %></td>
+                    <td><%= (@results.sum(:out_full_talk_05).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_05).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_05).to_f / @results.sum(:out_interview_05) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_05) %></td>
+                    <td><%= (@results.sum(:out_get_05).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_05).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_05).to_f / @results.sum(:out_full_talk_05) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">カードのみ</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_06) %></td>
+                    <td><%= (@results.sum(:out_interview_06).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_06).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_06) %></td>
+                    <td><%= (@results.sum(:out_full_talk_06).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_06).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_06).to_f / @results.sum(:out_interview_06) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_06) %></td>
+                    <td><%= (@results.sum(:out_get_06).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_06).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_06).to_f / @results.sum(:out_full_talk_06) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">先延ばし</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_07) %></td>
+                    <td><%= (@results.sum(:out_interview_07).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_07).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_07) %></td>
+                    <td><%= (@results.sum(:out_full_talk_07).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_07).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_07).to_f / @results.sum(:out_interview_07) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_07) %></td>
+                    <td><%= (@results.sum(:out_get_07).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_07).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_07).to_f / @results.sum(:out_full_talk_07) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">現金のみ</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_08) %></td>
+                    <td><%= (@results.sum(:out_interview_08).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_08).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_08) %></td>
+                    <td><%= (@results.sum(:out_full_talk_08).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_08).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_08).to_f / @results.sum(:out_interview_08) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_08) %></td>
+                    <td><%= (@results.sum(:out_get_08).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_08).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_08).to_f / @results.sum(:out_full_talk_08) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">忙しい</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_09) %></td>
+                    <td><%= (@results.sum(:out_interview_09).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_09).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_09) %></td>
+                    <td><%= (@results.sum(:out_full_talk_09).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_09).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_09).to_f / @results.sum(:out_interview_09) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_09) %></td>
+                    <td><%= (@results.sum(:out_get_09).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_09).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_09).to_f / @results.sum(:out_full_talk_09) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">面倒くさい</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_10) %></td>
+                    <td><%= (@results.sum(:out_interview_10).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_10).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_10) %></td>
+                    <td><%= (@results.sum(:out_full_talk_10).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_10).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_10).to_f / @results.sum(:out_interview_10) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_10) %></td>
+                    <td><%= (@results.sum(:out_get_10).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_10).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_10).to_f / @results.sum(:out_full_talk_10) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">情報不足</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_11) %></td>
+                    <td><%= (@results.sum(:out_interview_11).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_11).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_11) %></td>
+                    <td><%= (@results.sum(:out_full_talk_11).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_11).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_11).to_f / @results.sum(:out_interview_11) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_11) %></td>
+                    <td><%= (@results.sum(:out_get_11).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_11).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_11).to_f / @results.sum(:out_full_talk_11) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">ペロ</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_12) %></td>
+                    <td><%= (@results.sum(:out_interview_12).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_12).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_12) %></td>
+                    <td><%= (@results.sum(:out_full_talk_12).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_12).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_12).to_f / @results.sum(:out_interview_12) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_12) %></td>
+                    <td><%= (@results.sum(:out_get_12).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_12).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_12).to_f / @results.sum(:out_full_talk_12) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">その他</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_13) %></td>
+                    <td><%= (@results.sum(:out_interview_13).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_13).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_13) %></td>
+                    <td><%= (@results.sum(:out_full_talk_13).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_13).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_13).to_f / @results.sum(:out_interview_13) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_13) %></td>
+                    <td><%= (@results.sum(:out_get_13).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_13).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_13).to_f / @results.sum(:out_full_talk_13) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="3">AirPay導入</th>
+                    <th rowspan="">対面</th>
+                    <td><%= @results.sum(:out_interview_19) %></td>
+                    <td><%= (@results.sum(:out_interview_19).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_interview_19).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル</th>
+                    <td><%= @results.sum(:out_full_talk_19) %></td>
+                    <td><%= (@results.sum(:out_full_talk_19).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_19).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_full_talk_19).to_f / @results.sum(:out_interview_19) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約</th>
+                    <td><%= @results.sum(:out_get_19) %></td>
+                    <td><%= (@results.sum(:out_get_19).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_19).to_f / @results.length).round(1) rescue 0 %></td>
+                    <td><%= (@results.sum(:out_get_19).to_f / @results.sum(:out_full_talk_19) * 100).round() rescue 0 %>%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+            <p class="nav-text">◆生産性</p>
+            <table>
+              <thead>
+                <tr>
+                  <th>商材</th>
+                  <th>獲得数</th>
+                  <th>生産性</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% product_names = ["dメル", "auPay", "楽天ペイ", "AirPay","UsenPay"] %>
+                <% @products.zip(product_names) do |product, name| %>
+                <tr>
+                  <th colspan=""><%= name %></th>
+                  <td><%= product.length rescue 0 %></td>
+                  <td><%= (product.length.to_f /  @results.length).round(1) rescue 0 %></td>
+                </tr>
+                <% end %>
+              </tbody>
+            </table>
+            </div>
           </div>
-          <div>
-          <p class="nav-text">◆生産性</p>
-          <table>
-            <thead>
-              <tr>
-                <th>商材</th>
-                <th>獲得数</th>
-                <th>生産性</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% product_names = ["dメル", "auPay", "楽天ペイ", "AirPay","UsenPay"] %>
-              <% @products.zip(product_names) do |product, name| %>
-              <tr>
-                <th colspan=""><%= name %></th>
-                <td><%= product.length rescue 0 %></td>
-                <td><%= (product.length.to_f /  @results.length).round(1) rescue 0 %></td>
-              </tr>
-              <% end %>
-            </tbody>
-          </table>
-          </div>
-        </div>
+        <% elsif @search_user.present? %><%# ユーザー名は該当あったが終着の確認ができなかった場合 %>
+          <p class="nav-text">検索ユーザー名：<%= User.find(@u_id).name %>さんの検索された日付の範囲では終着が確認できませんでした。</p>
+          <% if @s_date.present? || @e_date.present? %><%# 日付を表示 %>
+            <p class="nav-text" style="color: red;">開始日、もしくは終了日の入力が確認できませんでした。</p>
+            <p class="nav-text">開始日：<%= @s_date %></p>
+            <p class="nav-text">終了日：<%= @e_date %></p>
+          <% else %>
+            <p class="nav-text" style="color: red;">※日付の選択がされておりません。</p>
+          <% end %>
+
+        <% else %>
+          <p class="nav-text"><%= User.find(@u_id).name %>さんの検索された日付の範囲では終着が確認できませんでした。</p>
+        <% end %><%# 終着があるか判別 %>
       <% else %>
-        <p class="nav-text">ユーザー名を入力して絞り込んでください。</p>
+        <p class="nav-text"></p>
       <% end %>
     </div><%# result_indexのcss %>
   </div><%# /メインバー %>

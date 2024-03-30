@@ -919,7 +919,7 @@ class ResultsController < ApplicationController
   def person_productivity
     # 検索内容
     @search_user = params[:search_user]
-      if params[:search_user].present? || params[:search_user] != ""
+      if params[:search_user].present? && User.where("name LIKE ?","%#{@search_user}%").present?
         @u_id = User.where("name LIKE ?","%#{@search_user}%").first.id
       else  
         @u_id = nil
