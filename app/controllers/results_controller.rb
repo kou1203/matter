@@ -165,8 +165,8 @@ class ResultsController < ApplicationController
     @users = User.where.not(position: "退職")
     @result = Result.new(user_id: params[:user_id],date: params[:date])
     session[:previous_url] = request.referer
-  end 
-  
+  end
+
   def create 
     @users = User.where.not(position: "退職")
     @result = Result.new(result_params)
@@ -182,8 +182,8 @@ class ResultsController < ApplicationController
       render :new 
     end
   end
-  
-  # マイページ  
+
+  # マイページ
   def show 
     @bases = User.where(base_sub: "キャッシュレス")
     # 各種商材などの件数や売上
@@ -333,34 +333,45 @@ class ResultsController < ApplicationController
     render partial: "store_val_all", locals: {} # 遅延ロード
   end 
     
-  def weekly_fin # 週間基準値
-    if @results.where(shift: "キャッシュレス新規").present?
-      # 週毎の期間
-      days = ["日", "月", "火", "水", "木", "金", "土"]
-        if days[@month.beginning_of_month.to_date.wday] == "日" 
-          week1 = (@month.beginning_of_month.to_date.since(1.days)) 
-        elsif days[@month.beginning_of_month.to_date.wday] == "土" 
-          week1 = (@month.beginning_of_month.to_date.ago(5.days))
-        elsif days[@month.beginning_of_month.to_date.wday] == "金" 
-          week1 = (@month.beginning_of_month.to_date.ago(4.days))
-        elsif days[@month.beginning_of_month.to_date.wday] == "木" 
-          week1 = (@month.beginning_of_month.to_date.ago(3.days)) 
-        elsif days[@month.beginning_of_month.to_date.wday] == "水" 
-          week1 = (@month.beginning_of_month.to_date.ago(2.days)) 
-        elsif days[@month.beginning_of_month.to_date.wday] == "火" 
-          week1 = (@month.beginning_of_month.to_date.ago(1.days)) 
+  def weekly_fin # 週間基準値 前月基準値
+    # 前月の終着
+    @results_prev = Result.includes(:user, :result_cash, :type_reference_value).where(user_id: @user.id).where(date: @month.prev_month.all_month)
+    @prev_month = @month.prev_month
+    def mothly_result(result, month)
+      # 週間基準値
+      if result.where(shift: "キャッシュレス新規").present?
+        # 週毎の期間
+        days = ["日", "月", "火", "水", "木", "金", "土"]
+        if days[month.beginning_of_month.to_date.wday] == "日"
+          week1 = (month.beginning_of_month.to_date.since(1.days))
+        elsif days[month.beginning_of_month.to_date.wday] == "土"
+          week1 = (month.beginning_of_month.to_date.ago(5.days))
+        elsif days[month.beginning_of_month.to_date.wday] == "金"
+          week1 = (month.beginning_of_month.to_date.ago(4.days))
+        elsif days[month.beginning_of_month.to_date.wday] == "木"
+          week1 = (month.beginning_of_month.to_date.ago(3.days))
+        elsif days[month.beginning_of_month.to_date.wday] == "水"
+          week1 = (month.beginning_of_month.to_date.ago(2.days))
+        elsif days[month.beginning_of_month.to_date.wday] == "火"
+          week1 = (month.beginning_of_month.to_date.ago(1.days))
         else 
-        week1 = @month.beginning_of_month.to_date
+        week1 = month.beginning_of_month.to_date
         end
-        @results_week = Result.includes(:result_cash).where(user_id: @user.id)
-        @results_week1 = @results_week.where(date: week1..(week1.since(6.days)))
-        @results_week2 = @results_week.where(date: (week1.since(7.days))..(week1.since(13.days)))
-        @results_week3 = @results_week.where(date: (week1.since(14.days))..(week1.since(20.days)))
-        @results_week4 = @results_week.where(date: (week1.since(21.days))..(week1.since(27.days)))
-        @results_week5 = @results_week.where(date: (week1.since(28.days))..(week1.since(34.days)))
+        results_week = Result.includes(:result_cash).where(user_id: @user.id)
+        results_week1 = results_week.where(date: week1..(week1.since(6.days)))
+        results_week2 = results_week.where(date: (week1.since(7.days))..(week1.since(13.days)))
+        results_week3 = results_week.where(date: (week1.since(14.days))..(week1.since(20.days)))
+        results_week4 = results_week.where(date: (week1.since(21.days))..(week1.since(27.days)))
+        results_week5 = results_week.where(date: (week1.since(28.days))..(week1.since(34.days)))
+      end
+      
+      return [results_week1, results_week2, results_week3, results_week4, results_week5]
     end
-    @weeks = [@results_week1, @results_week2,@results_week3, @results_week4, @results_week5]
-    render partial: "weekly_fin", locals: {weeks:@weeks} # @weeksを遅延ロード
+    @weeks = mothly_result(@results, @month)
+    @weeks_prev = mothly_result(@results_prev, @prev_month)
+    @weeks_list = [ @weeks_prev, @weeks]
+    @weeks_hash = [{date: "前月", list: @weeks_prev, results: @results_prev}, {date: "当月", list: @weeks, results: @results}]
+    render partial: "weekly_fin", locals: {} # @weeksを遅延ロード
   end
 
   def out_val # 切り返し
@@ -435,7 +446,6 @@ class ResultsController < ApplicationController
     @time_get_ave = [@get10_ave,@get11_ave,@get12_ave,@get13_ave,@get14_ave,@get15_ave,@get16_ave,@get17_ave,@get18_ave,@get19_ave]
     render partial: "time_val", locals: {} # 遅延ロード
   end 
-
 
   def time_val_base # 拠点別時間基準値
     @results_base = Result.includes(:user).where(date: @month.all_month).where(user: {base: @time_base}).where(shift: "キャッシュレス新規")
@@ -641,7 +651,6 @@ class ResultsController < ApplicationController
   end 
 
   # /マイページ
-
   def comment_new 
       @comment = Comment.new(comment_params)
       if @comment.save 
@@ -690,8 +699,7 @@ class ResultsController < ApplicationController
     redirect_to request.referer
   end 
 
-  # 獲得確認
-  def date_progress
+  def date_progress # 獲得確認
     # 日々進捗
     @results = 
       Result.includes(:result_cash).where(date: @month.ago(2.days)..@month)
@@ -741,8 +749,7 @@ class ResultsController < ApplicationController
 
   end 
 
-  # ランキング
-  def ranking
+  def ranking # ランキング
     @users = User.where(base_sub: "キャッシュレス").where.not(position: "退職").order("users.position_sub ASC").order("users.id ASC")
     @cash_date_progress = CashDateProgress.includes(:user).where(date: @month.all_month).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @cash_date_progress = @cash_date_progress.where(date: @cash_date_progress.maximum(:date)).where(create_date: @cash_date_progress.maximum(:create_date)).order("valuation_fin DESC")
@@ -767,8 +774,7 @@ class ResultsController < ApplicationController
 
   end
 
-  # 利益計算用終着
-  def gross_profit
+  def gross_profit # 利益計算用終着
     calc_valuation
     @cash_date_progress = 
       CashDateProgress.includes(:user).where(date: @month.all_month)
@@ -778,9 +784,8 @@ class ResultsController < ApplicationController
       @cash_date_progress.where(date: @cash_date_progress.maximum(:date))
       .where(create_date: @cash_date_progress.maximum(:create_date))
       .order("position_sub")
-  end 
+  end
 
-  
   def base_profit
     @base = params[:base]
     @results = Result.includes(:user,:result_cash).where(user: {base: @base}).where(date: @month.all_month)
@@ -811,14 +816,13 @@ class ResultsController < ApplicationController
     @usen_pay_date_progress = OtherProductDateProgress.includes(:user).where(product_name: "UsenPay").where(date: @month.all_month).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @usen_pay_date_progress = @usen_pay_date_progress.where(date: @usen_pay_date_progress.maximum(:date)).where(create_date: @usen_pay_date_progress.maximum(:create_date))
     
-  end 
+  end
 
   def dup_index # 終着の重複を確認（シフトのshow）
     @user_id = params[:user_id]
     @date = params[:date]
     @results = Result.where(user_id: @user_id).where(date: @date)
   end
-
 
   def comment_new 
     @comment = Comment.new(comment_params)
@@ -829,14 +833,14 @@ class ResultsController < ApplicationController
       flash[:notice] = "登録できませんでした。"
       redirect_to session[:previous_url]
     end 
-  end 
+  end
 
   def comment_update
     @comment = Comment.find(comment_params[:id])
     @comment.update(comment_params)
     flash[:notice] = "対応結果を更新しました。"
     redirect_to request.referer
-  end  
+  end
 
   def base_productivity
     # 検索内容
@@ -874,7 +878,7 @@ class ResultsController < ApplicationController
         @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
         @products << @usen_pays
       end
-  end 
+  end
 
   def team_productivity
     # 検索内容
@@ -914,7 +918,7 @@ class ResultsController < ApplicationController
         @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date).where(user: {team: @search_team})
         @products << @usen_pays
       end
-  end 
+  end
 
   def person_productivity
     # 検索内容
@@ -958,13 +962,12 @@ class ResultsController < ApplicationController
         @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
         @products << @usen_pays
       end
-  end 
+  end
 
   def out_come
     @bases = ["中部SS","関西SS","関東SS","九州SS","フェムト", "サミット", "2次店","退職"]
     @users = User.where.not(position: "退職")
-  end 
-
+  end
 
   private
     def set_data # @monthと評価売の変数
@@ -972,7 +975,8 @@ class ResultsController < ApplicationController
       @calc_periods = CalcPeriod.where(sales_category: "評価売")
       # calc_period_and_perは"@calc_periods"と"@month"の配置を先にするのが必須
       # calc_period_and_per
-    end 
+    end
+
     def set_out_come # 成果になった商材などの変数
       if params[:u_id].present?
         @user = User.find(params[:u_id])
@@ -985,7 +989,7 @@ class ResultsController < ApplicationController
         @time_base = @user.base
       end 
       calc_valuation
-      # dメル
+      # 評価基本情報
       @dmer1_calc_periods = @calc_periods.find_by(name: "dメル成果1")
       @dmer2_calc_periods = @calc_periods.find_by(name: "dメル成果2")
       @dmer3_calc_periods = @calc_periods.find_by(name: "dメル成果3")
@@ -996,6 +1000,7 @@ class ResultsController < ApplicationController
       @demaekan1_calc_periods = @calc_periods.find_by(name: "出前館成果1")
       @itss_calc_periods = @calc_periods.find_by(name: "ITSS")
       @usen_pay_calc_periods = @calc_periods.find_by(name: "UsenPay")
+      # 評価期間
       @usen_pay1_start_date = start_date(@usen_pay_calc_periods)
       @usen_pay1_end_date = end_date(@usen_pay_calc_periods)
       @itss1_start_date = start_date(@itss_calc_periods)
@@ -1016,6 +1021,11 @@ class ResultsController < ApplicationController
       @paypay1_end_date = end_date(@paypay1_calc_periods)
       @rakuten_pay1_start_date = start_date(@rakuten_pay1_calc_periods)
       @rakuten_pay1_end_date = end_date(@rakuten_pay1_calc_periods)
+      # 単価
+      @dmer1_price = @dmer1_calc_periods.price
+      @dmer2_price = @dmer2_calc_periods.price
+      @dmer3_price = @dmer3_calc_periods.price
+      @airpay_price = @airpay1_calc_periods.price
       @dmer_done = 
         Dmer.where(user_id: @user.id).where(result_point: @dmer1_start_date..@dmer1_end_date)
         .where.not(industry_status: "NG")
@@ -1125,7 +1135,6 @@ class ResultsController < ApplicationController
         UsenPay.where(user_id: @user.id).where(date: usen_separate_date..).where(date: @usen_pay1_start_date..@usen_pay1_end_date)
         .where.not(status: "自社不備").where.not(status: "自社NG") rescue 0
       @usen_pay_val_len = @usen_pays_8month_since.length + @usen_pays_7month_ago.length rescue 0
-
       # 戻入案件
       @reversal_products = ReversalProduct.where(user_id: @user.id).where(reversal_date: @month.all_month)
     end
@@ -1138,7 +1147,7 @@ class ResultsController < ApplicationController
       @rakuten_pay_uq = RakutenPay.where(date: @rakuten_pay1_start_date..@rakuten_pay1_end_date).where(user_id: @user.id)
       @rakuten_pay_val_len = @rakuten_pay_val.length
       @airpays = Airpay.where(date: @month.all_month).where(user_id: @user.id)
-    end 
+    end
 
     def set_result_and_shift # シフトと終着の変数
       @results = Result.includes(:user, :result_cash, :type_reference_value).where(user_id: @user.id).where(date: @month.all_month)
@@ -1225,7 +1234,7 @@ class ResultsController < ApplicationController
         .where(date: @comparison_date.beginning_of_month..@comparison_date)
         .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
 
-    end 
+    end
 
     def result_params # resultのストロングパラメーター
       params.require(:result).permit(
@@ -1303,7 +1312,7 @@ class ResultsController < ApplicationController
         :revisit_full_talk,
         :revisit_get
       )
-    end 
+    end
 
     def comment_params # commentのストロングパラメーター
       params.permit(
@@ -1318,9 +1327,8 @@ class ResultsController < ApplicationController
         :response_show      ,
         :done     
       )
-    end 
+    end
 
-          
     def back_retirement # 退職者が閲覧できないようにする
       redirect_to error_pages_path if current_user.position_sub == "99：退職"
     end

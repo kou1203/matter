@@ -1,8 +1,10 @@
+<% if @results.where(shift: "キャッシュレス新規").present? %>
+  <% @weeks_hash.each do |weeks| %><%# 前月と当月のデータを取り出す %>
     <div><%# 週間基準値 %>
-        <h2>週間基準値（新規のみ）</h2>
-        <p class="caution-text">※こちらの情報に増減は含まれておりません</p>
-        <p class="caution-text">※こちらの生産性は不備・NGも件に含まれております。</p>
-        <% if @results.where(shift: "キャッシュレス新規").present? %>
+      <h2>週間基準値（<%= weeks[:date] %>）</h2>
+      <p class="caution-text">※こちらの情報に増減は含まれておりません</p>
+      <p class="caution-text">※こちらの生産性は不備・NGも件に含まれております。</p>
+      <% if weeks[:results].where(shift: "キャッシュレス新規").present? %>
         <table>
           <thead>
             <tr><%# 項目 %>
@@ -87,7 +89,7 @@
               <% week_sum_interview = 0 %>
               <% week_sum_full_talk = 0 %>
               <% week_sum_get = 0 %>
-            <% @weeks.each do |week| %>
+            <% weeks[:list].each do |week| %>
               <% if week.where(shift: "キャッシュレス新規").empty? %>
               <% else %>
               <% week_valuations = 0 %>
@@ -339,7 +341,11 @@
               </tr><%# /合計基準値ボディー %>
             </tbody>
         </table>
-        <% else %>
+      <% else %>
         <p class="caution-text">※新規シフトの終着が入力されておりません。</p>
-        <% end %>
+      <% end %>
     </div><%# /週間基準値 %>
+  <% end %><%# /前月と当月のデータを取り出す %>
+<% else %>
+  <p class="caution-text">※新規シフトの終着が入力されておりません。</p>
+<% end %>
