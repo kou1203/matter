@@ -257,12 +257,12 @@ class CalcPeriodsController < ApplicationController
           result_attributes["user_name"] = cash_progress.user.name
           result_attributes["post"] = cash_progress.user.position_sub
           result_attributes["shift_schedule"] = 
-            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule).to_i + 
-            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule_slmt).to_i
+          @dmer_senbai_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule).to_i + 
+          @dmer_senbai_date_progress.where(user_id: cash_progress.user_id).sum(:shift_schedule_slmt).to_i
             result_attributes["ojt_shift"] = @ojt_shift
           result_attributes["shift_digestion"] = 
-            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion).to_i + 
-            @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion_slmt).to_i
+          @dmer_senbai_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion).to_i + 
+          @dmer_senbai_date_progress.where(user_id: cash_progress.user_id).sum(:shift_digestion_slmt).to_i
           result_attributes["valuation_current"] = 
             @dmer_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
             @dmer_senbai_date_progress.where(user_id: cash_progress.user_id).sum(:valuation_current) + 
