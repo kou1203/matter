@@ -252,7 +252,7 @@
         <td class="valuation-td"><%= dmer.store_name %>（本店）</td>
       <% else %>
         <% dmer_db_cnt = 0 %>
-        <% DmerSenbai.where(customer_num: dmer.customer_num).order(id: "DESC").each do |d| %><%# 複数店何番目か確認 %>
+        <% DmerSenbai.where(customer_num: dmer.customer_num).order(:id).each do |d| %><%# 複数店何番目か確認 %>
           <% dmer_db_cnt += 1 %>
           <% if d.id == dmer.id %>
             <td class="valuation-td"><%= dmer.store_name %>（複数店：<%= dmer_db_cnt %>）</td>
