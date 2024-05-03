@@ -245,7 +245,21 @@
       <% end %>
       <td class="valuation-td"><%= link_to "詳細", dmer_senbai_path(dmer.id), class: "link" %></td>
       <td class="valuation-td"><%= dmer.client %></td>
-      <td class="valuation-td"><%= dmer.store_name %></td>
+      <%# 複数店判別 %>
+      <% if DmerSenbai.where(customer_num: dmer.customer_num).length == 1 %><%# 本店のみ %>
+        <td class="valuation-td"><%= dmer.store_name %></td>
+      <% elsif DmerSenbai.where(customer_num: dmer.customer_num).minimum(:id) == dmer.id %><%# 複数店本店 %>
+        <td class="valuation-td"><%= dmer.store_name %>（本店）</td>
+      <% else %>
+        <% dmer_db_cnt = 0 %>
+        <% DmerSenbai.where(customer_num: dmer.customer_num).order(id: "DESC").each do |d| %><%# 複数店何番目か確認 %>
+          <% dmer_db_cnt += 1 %>
+          <% if d.id == dmer.id %>
+            <td class="valuation-td"><%= dmer.store_name %>（複数店：<%= dmer_db_cnt %>）</td>
+          <% end %>
+        <% end %>
+      <% end %>
+      <%# /複数店判別 %>
       <td class="valuation-td"><%= dmer.date %></td>
       <td class="valuation-td"><%= dmer.industry_status %></td>
       <td class="valuation-td"><%= dmer.app_check %></td>
