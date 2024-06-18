@@ -1176,8 +1176,11 @@ class ResultsController < ApplicationController
       else  
         @comparison_date = @month_daily.prev_month
       end 
+
       @dmer_monthly = 
           Dmer.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @dmer_senbai_monthly = 
+          DmerSenbai.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
       @aupay_monthly = 
           Aupay.where(date: @month_daily.beginning_of_month..@month_daily).includes(:user).where(user: {base_sub: "キャッシュレス"})
       @paypay_monthly = 
@@ -1205,7 +1208,9 @@ class ResultsController < ApplicationController
         .where(date: @month_daily.beginning_of_month..@month_daily)
         .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
       @dmer_comparison = 
-          Dmer.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      Dmer.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
+      @dmer_senbai_comparison = 
+      DmerSenbai.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
       @aupay_comparison = 
           Aupay.where(date: @comparison_date.beginning_of_month..@comparison_date).includes(:user).where(user: {base_sub: "キャッシュレス"})
       @paypay_comparison = 

@@ -29,12 +29,28 @@
           </thead>
           <tbody>
           <% bases.each do |base| %>
-            <%# 拠点別平均獲得数の変数 %>
-              <% 
-                dmer_base_monthly_ave = 
-                  (@dmer_monthly.where(user: {base: base}).length.to_f / 
-                  @shift_monthly_digestion.where(user: {base: base}).length) 
-              %>
+              <%# 拠点別平均獲得数の変数 %>
+              <% if @dmer_monthly.where(user: {base: base}).present? && @dmer_senbai_monthly.where(user: {base: base}).present? %>
+                <% 
+                  dmer_base_monthly_ave = 
+                    ((@dmer_monthly.where(user: {base: base}).length + @dmer_senbai_monthly.where(user: {base: base}).length).to_f / 
+                    @shift_monthly_digestion.where(user: {base: base}).length) 
+                %>
+              <% elsif @dmer_monthly.where(user: {base: base}).present? %>
+                <% 
+                  dmer_base_monthly_ave = 
+                    (@dmer_monthly.where(user: {base: base}).length.to_f / 
+                    @shift_monthly_digestion.where(user: {base: base}).length) 
+                %>
+              <% elsif @dmer_senbai_monthly.where(user: {base: base}).present? %>
+                <% 
+                  dmer_base_monthly_ave = 
+                    (@dmer_senbai_monthly.where(user: {base: base}).length.to_f / 
+                    @shift_monthly_digestion.where(user: {base: base}).length) 
+                %>
+              <% else %>
+                <% dmer_base_monthly_ave = 0 %>
+              <% end %>
               <% 
                 aupay_base_monthly_ave = 
                   (@aupay_monthly.where(user: {base: base}).length.to_f / 
@@ -60,11 +76,27 @@
                   (@usen_pay_monthly.where(user: {base: base}).length.to_f / 
                   @shift_monthly_digestion.where(user: {base: base}).length)
               %>
-              <% 
-                dmer_base_comparison_ave = 
-                  (@dmer_comparison.where(user: {base: base}).length.to_f / 
-                  @shift_comparison_digestion.where(user: {base: base}).length)
-              %>
+              <% if @dmer_comparison.where(user: {base: base}).present? && @dmer_senbai_comparison.where(user: {base: base}).present? %>
+                <% 
+                  dmer_base_comparison_ave = 
+                    ((@dmer_comparison.where(user: {base: base}).length + @dmer_senbai_comparison.where(user: {base: base}).length).to_f / 
+                    @shift_comparison_digestion.where(user: {base: base}).length)
+                %>
+              <% elsif @dmer_comparison.where(user: {base: base}).present? %>
+                <% 
+                  dmer_base_comparison_ave = 
+                    (@dmer_comparison.where(user: {base: base}).length.to_f / 
+                    @shift_comparison_digestion.where(user: {base: base}).length)
+                %>
+              <% elsif @dmer_senbai_comparison.where(user: {base: base}).present? %>
+                <% 
+                  dmer_base_comparison_ave = 
+                    (@dmer_senbai_comparison.where(user: {base: base}).length.to_f / 
+                    @shift_comparison_digestion.where(user: {base: base}).length)
+                %>
+              <% else %>
+                <% dmer_base_comparison_ave = 0 %>
+              <% end %>
               <% 
                 aupay_base_comparison_ave = 
                   (@aupay_comparison.where(user: {base: base}).length.to_f / 
@@ -104,7 +136,15 @@
               %></td>
               <%# 現状獲得 %>
               <td class="">
-                <%= @dmer_monthly.where(user: {base: base}).length %>
+              <% if @dmer_monthly.present? && @dmer_senbai_monthly.present? %>
+                <%= dmer_monthly_len = @dmer_monthly.where(user: {base: base}).length + @dmer_senbai_monthly.where(user: {base: base}).length %>
+              <% elsif @dmer_monthly.present? %>
+                <%= dmer_monthly_len = @dmer_monthly.where(user: {base: base}).length %>
+              <% elsif @dmer_senbai_monthly.present? %>
+                <%= dmer_monthly_len = @dmer_senbai_monthly.where(user: {base: base}).length %>
+              <% else %>
+                <%= dmer_monthly_len = 0 %>
+              <% end %>
               </td>
               <td class="">
                 <%= @aupay_monthly.where(user: {base: base}).length %>
@@ -138,7 +178,15 @@
               %></td>
               <%# 現状獲得 %>
               <td class="">
-                <%= @dmer_comparison.where(user: {base: base}).length %>
+              <% if @dmer_comparison.present? && @dmer_senbai_comparison.present? %>
+                <%= dmer_comparison_len = @dmer_comparison.where(user: {base: base}).length + @dmer_senbai_comparison.where(user: {base: base}).length %>
+              <% elsif @dmer_comparison.present? %>
+                <%= dmer_comparison_len = @dmer_comparison.where(user: {base: base}).length %>
+              <% elsif @dmer_senbai_comparison.present? %>
+                <%= dmer_comparison_len = @dmer_senbai_comparison.where(user: {base: base}).length %>
+              <% else %>
+                <%= dmer_comparison_len = 0 %>
+              <% end %>
               </td>
               <td class="">
                 <%= @aupay_comparison.where(user: {base: base}).length %>
@@ -178,8 +226,8 @@
                 %>
               </td>
               <%# 現状獲得 %>
-              <td class="<%= "red" if 0 > @dmer_monthly.where(user: {base: base}).length - @dmer_comparison.where(user: {base: base}).length %>">
-                <%= @dmer_monthly.where(user: {base: base}).length - @dmer_comparison.where(user: {base: base}).length %>
+              <td class="<%= "red" if 0 > dmer_monthly_len - dmer_comparison_len %>">
+                <%= dmer_monthly_len - dmer_comparison_len %>
               </td>
               <td class="<%= "red" if 0 > @aupay_monthly.where(user: {base: base}).length - @aupay_comparison.where(user: {base: base}).length %>">
                 <%= @aupay_monthly.where(user: {base: base}).length - @aupay_comparison.where(user: {base: base}).length %>

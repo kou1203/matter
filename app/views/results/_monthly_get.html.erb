@@ -1,10 +1,24 @@
-        <%# 全体平均獲得数の変数 %>
-          <% dmer_monthly_ave = (@dmer_monthly.length.to_f / @shift_monthly_digestion.length) %>
-          <% aupay_monthly_ave = (@aupay_monthly.length.to_f / @shift_monthly_digestion.length) %>
-          <% rakuten_pay_monthly_ave = (@rakuten_pay_monthly.length.to_f / @shift_monthly_digestion.length) %>
-          <% airpay_monthly_ave = (@airpay_monthly.length.to_f / @shift_monthly_digestion.length) %>
-          <% usen_pay_monthly_ave = (@usen_pay_monthly.length.to_f / @shift_monthly_digestion.length) %>
-          <% dmer_comparison_ave = (@dmer_comparison.length.to_f / @shift_comparison_digestion.length) %>
+          <%# 全体平均獲得数の変数 %>
+          <% if @dmer_monthly.present? && @dmer_senbai_monthly.present? %>
+            <% dmer_monthly_ave = ((@dmer_monthly.length + @dmer_senbai_monthly.length).to_f / @shift_monthly_digestion.length) %>
+          <% elsif @dmer_monthly.present? %>
+            <% dmer_monthly_ave = (@dmer_monthly.length.to_f / @shift_monthly_digestion.length) %>
+          <% elsif @dmer_senbai_monthly.length.present? %>
+            <% dmer_monthly_ave = (@dmer_senbai_monthly.length.to_f / @shift_monthly_digestion.length) %>
+          <% else %>
+            <% dmer_monthly_ave = 0 %>
+          <% end %>
+            <% aupay_monthly_ave = (@aupay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+            <% rakuten_pay_monthly_ave = (@rakuten_pay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+            <% airpay_monthly_ave = (@airpay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+            <% usen_pay_monthly_ave = (@usen_pay_monthly.length.to_f / @shift_monthly_digestion.length) %>
+          <% if @dmer_comparison.present? && @dmer_senbai_comparison.present? %>
+            <% dmer_comparison_ave = ((@dmer_comparison.length + @dmer_senbai_comparison.length).to_f / @shift_comparison_digestion.length) %>
+          <% elsif @dmer_comparison.present? %>
+            <% dmer_comparison_ave = (@dmer_comparison.length.to_f / @shift_comparison_digestion.length) %>
+          <% elsif @dmer_senbai_comparison.present? %>
+            <% dmer_comparison_ave = (@dmer_senbai_comparison.length.to_f / @shift_comparison_digestion.length) %>
+          <% end %>
           <% aupay_comparison_ave = (@aupay_comparison.length.to_f / @shift_comparison_digestion.length) %>
           <% rakuten_pay_comparison_ave = (@rakuten_pay_comparison.length.to_f / @shift_comparison_digestion.length) %>
           <% airpay_comparison_ave = (@airpay_comparison.length.to_f / @shift_comparison_digestion.length) %>
@@ -47,7 +61,15 @@
               <td class=""><%= @shift_monthly_digestion.length %></td>
               <td class=""><%= @shift_monthly_plan.length - @shift_monthly_digestion.length %></td>
               <td class="">
-                <%= @dmer_monthly.length %>
+              <% if @dmer_monthly.present? && @dmer_senbai_monthly.present? %>
+                <%= dmer_monthly_len = @dmer_monthly.length + @dmer_senbai_monthly.length %>
+              <% elsif @dmer_monthly.present? %>
+                <%= dmer_monthly_len =  @dmer_monthly.length %>
+              <% elsif @dmer_senbai_monthly.present? %>
+                <%= dmer_monthly_len =  @dmer_senbai_monthly.length %>
+              <% else %>
+                <%= dmer_monthly_len = 0 %>
+              <% end %>
               </td>
               <td class="">
                 <%= @aupay_monthly.length %>
@@ -75,7 +97,15 @@
               <td class=""><%= @shift_comparison_digestion.length %></td>
               <td class=""><%= @shift_comparison_plan.length - @shift_comparison_digestion.length %></td>
               <td class="">
-                <%= @dmer_comparison.length %>
+              <% if @dmer_comparison.present? && @dmer_senbai_comparison.present? %>
+                <%= dmer_comparison_len = @dmer_comparison.length + @dmer_senbai_comparison.length %>
+              <% elsif @dmer_comparison.present? %>
+                <%= dmer_comparison_len = @dmer_comparison.length %>
+              <% elsif @dmer_senbai_comparison.length %>
+                <%= dmer_comparison_len = @dmer_senbai_comparison.length %>
+              <% else %>
+                <%= dmer_comparison_len = 0 %>
+              <% end %>
               </td>
               <td class="">
                 <%= @aupay_comparison.length %>
@@ -103,8 +133,8 @@
               <td class="<%= "red" if 0 > (@shift_monthly_plan.length - @shift_monthly_digestion.length) - (@shift_comparison_plan.length - @shift_comparison_digestion.length) %>"><%= 
                 (@shift_monthly_plan.length - @shift_monthly_digestion.length) - (@shift_comparison_plan.length - @shift_comparison_digestion.length)
               %></td>
-              <td class="<%= "red" if 0 > @dmer_monthly.length - @dmer_comparison.length %>">
-                <%= @dmer_monthly.length - @dmer_comparison.length %>
+              <td class="<%= "red" if 0 > dmer_monthly_len - dmer_comparison_len %>">
+                <%= dmer_monthly_len - dmer_comparison_len %>
               </td>
               <td class="<%= "red" if 0 > @aupay_monthly.length - @aupay_comparison.length %>">
                 <%= @aupay_monthly.length - @aupay_comparison.length %>
