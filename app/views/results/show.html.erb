@@ -106,7 +106,7 @@
           <% usen_pay_price = @calc_periods.find_by(name: "UsenPay").price %>
           <tr>
             <td class="date-td">dメル</td>
-            <td class="date-td"><%= @results.sum(:dmer)  %></td>
+            <td class="date-td"><%= @results.sum(:dmer) %></td>
             <td class="date-td"><%= (@results.sum(:dmer).to_f / @shift_digestion_new).round(1)   %></td>
             <td class="date-td"><%= (@results.sum(:dmer).to_f / @shift_digestion_new * @shift_schedule_new).round() rescue 0 %></td>
             <td class="date-td"><%= (@results.sum(:dmer).to_f / @shift_digestion_new * @shift_schedule_new).round() rescue 0 %></td>

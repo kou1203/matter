@@ -69,6 +69,7 @@
     </div>
     <h2>商材別獲得数</h2>
     <div style="display: flex;">
+      <% if @dmer_date_progress.present? %>
       <div><%# dメル %>
         <p class="sub-title">dメル</p>
         <table>
@@ -91,7 +92,9 @@
           </tbody>
         </table>
       </div><%# /dメル %>
+      <% end %>
       <div><%# dメル %>
+        <% if @dmer_senbai_date_progress.present? %>
         <p class="sub-title">dメル専売</p>
         <table>
           <thead>
@@ -113,7 +116,9 @@
           </tbody>
         </table>
       </div><%# /dメル %>
+      <% end %>
       <div><%# auPay %>
+      <% if @aupay_date_progress.present? %>
         <p class="sub-title">auPay</p>
         <table>
           <thead>
@@ -135,7 +140,9 @@
           </tbody>
         </table>
       </div><%# /auPay %>
-      <div><%# auPay %>
+      <% end %>
+      <% if @usen_pay_date_progress.present? %>
+      <div><%# UsenPay %>
         <p class="sub-title">UsenPay</p>
         <table>
           <thead>
@@ -156,9 +163,11 @@
           <% end %>
           </tbody>
         </table>
-      </div><%# /auPay %>
+      </div><%# /UsenPay %>
+      <% end %>
     </div>
     <div style="display: flex;">
+      <% if @rakuten_pay_date_progress.present? %>
       <div><%# 楽天ペイ %>
         <p class="sub-title">楽天ペイ</p>
         <table>
@@ -181,6 +190,8 @@
           </tbody>
         </table>
       </div><%# /楽天ペイ %>
+      <% end %>
+      <% if @airpay_date_progress.present? %>
       <div><%# AirPay %>
         <p class="sub-title">AirPay</p>
         <table>
@@ -203,6 +214,7 @@
           </tbody>
         </table>
       </div><%# /AirPay %>
+      <% end %>
     </div>
     <p class="caution-text">
       ※獲得数は不備・NGも入ってます。
