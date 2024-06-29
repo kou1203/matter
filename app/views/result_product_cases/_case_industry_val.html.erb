@@ -35,7 +35,7 @@
             <% add_get_val = 0 %>
           <% end %>
           <td class="progress-td"><%= ((result_user.sum("#{val}_visit") + add_visit_val).to_f / result_user.length).round(1) rescue 0 %></td>
-          <td class="progress-td"><%= ((result_user.sum("#{val}_get") + add_visit_get).to_f / result_user.length).round(1) rescue 0 %></td>
+          <td class="progress-td"><%= ((result_user.sum("#{val}_get") + add_get_val).to_f / result_user.length).round(1) rescue 0 %></td>
           <% end %>
         </tr>
         <tr class="percent-tr">
@@ -50,7 +50,7 @@
           <% end %>
           <td class="difference-td">-</td>
           <td class="difference-td">
-            <%= (result_user.sum("#{val}_get").to_f / ((result_user.sum("#{val}_visit") + add_visit_val).to_f).round(2) * 100).round() rescue 0 %>%
+            <%= ((result_user.sum("#{val}_get") + add_get_val).to_f / ((result_user.sum("#{val}_visit") + add_visit_val).to_f).round(2) * 100).round() rescue 0 %>%
           </td>
           <% end %>
         </tr><%# /個別 %>
