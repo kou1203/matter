@@ -12,10 +12,16 @@ class ResultProductCasesController < ApplicationController
     @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
     @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
     render partial: "case_out", locals: {} # を遅延ロード
-  end 
+  end
+
   def case_productivity 
     render partial: "case_productivity", locals: {} # を遅延ロード
   end 
+  
+  
+    def case_industry_val 
+      render partial: "case_industry_val", locals: {} # を遅延ロード
+    end
 
   def show 
     @user = User.find(params[:user_id])

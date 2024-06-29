@@ -1,0 +1,90 @@
+<h2>◆<%= "#{@shift_case}：" %>業種別基準値</h2><%# 1~7項目 %>
+<table class="progress-tb">
+    <thead>
+      <tr>
+        <% industry_hash = {
+          "飲食" => "cafe", "車屋" => "car", "その他小売" => "other_retail",
+          "理容・美容" => "hair_salon", "整体・鍼灸" => "manipulative", "その他サービス" => "other_service"
+        } %>
+        <th class="progress-th1" colspan="2">基本情報</th>
+        <% industry_hash.keys.each do | key | %>
+        <th class="progress-th1" colspan="2"><%= key %></th>
+        <% end %>
+      </tr>
+      <tr>
+        <th class="progress-th2">人員</th>
+        <th class="progress-th2">項目</th>
+        <% industry_hash.length.times do %>
+        <th class="progress-th2">訪問</th>
+        <th class="progress-th2">成約</th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |user| %>
+        <% result_user = @results_base.where(user_id: user.id) %><%# 個別ユーザーの終着情報 %>
+        <tr><%# /個別 %>
+          <td class="progress-td" rowspan="2"><br><%= link_to "#{user.name}", result_product_case_path(user_id: user.id), class: "link" %></td>
+          <td class="progress-td">平均</td>
+          <% industry_hash.values.each do | val | %>
+          <% if val == "cafe" %>
+            <% add_visit_val = result_user.sum("other_food_visit") %>
+            <% add_get_val = result_user.sum("other_food_get") %>
+          <% else %>
+            <% add_visit_val = 0 %>
+            <% add_get_val = 0 %>
+          <% end %>
+          <td class="progress-td"><%= ((result_user.sum("#{val}_visit") + add_visit_val).to_f / result_user.length).round(1) rescue 0 %></td>
+          <td class="progress-td"><%= ((result_user.sum("#{val}_get") + add_visit_get).to_f / result_user.length).round(1) rescue 0 %></td>
+          <% end %>
+        </tr>
+        <tr class="percent-tr">
+          <td class="difference-td">成約率</td>
+          <% industry_hash.values.each do | val | %>
+          <% if val == "cafe" %>
+            <% add_visit_val = result_user.sum("other_food_visit") %>
+            <% add_get_val = result_user.sum("other_food_get") %>
+          <% else %>
+            <% add_visit_val = 0 %>
+            <% add_get_val = 0 %>
+          <% end %>
+          <td class="difference-td">-</td>
+          <td class="difference-td">
+            <%= (result_user.sum("#{val}_get").to_f / ((result_user.sum("#{val}_visit") + add_visit_val).to_f).round(2) * 100).round() rescue 0 %>%
+          </td>
+          <% end %>
+        </tr><%# /個別 %>
+      <% end %>
+        <tr class="">
+          <td rowspan="2" class="progress-td"><br>合計稼働人員（<%= @users.group(:id).length %>人）</td>
+          <td class="progress-td">平均</td>
+          <% industry_hash.values.each do | val | %>
+          <% if val == "cafe" %>
+            <% add_visit_val = @results_base.sum("other_food_visit") %>
+            <% add_get_val = @results_base.sum("other_food_get") %>
+          <% else %>
+            <% add_visit_val = 0 %>
+            <% add_get_val = 0 %>
+          <% end %>
+          <td class="progress-td"><%= ((@results_base.sum("#{val}_visit") + add_visit_val).to_f / @results_base.length).round(1) rescue 0 %></td>
+          <td class="progress-td"><%= ((@results_base.sum("#{val}_get") + add_get_val).to_f / @results_base.length).round(1) rescue 0 %></td>
+          <% end %>
+        </tr>
+        <tr class="difference-tr">
+          <td class="difference-td">成約率</td>
+          <% industry_hash.values.each do | val | %>
+          <% if val == "cafe" %>
+            <% add_visit_val = @results_base.sum("other_food_visit") %>
+            <% add_get_val = @results_base.sum("other_food_get") %>
+          <% else %>
+            <% add_visit_val = 0 %>
+            <% add_get_val = 0 %>
+          <% end %>
+          <td class="difference-td">-</td>
+          <td class="difference-td">
+            <%= (((@results_base.sum("#{val}_get") + add_get_val).to_f / (@results_base.sum("#{val}_visit") + add_get_val)).round(2) * 100).round() rescue 0 %>%
+          </td>
+          <% end %>
+        </tr><%# /合計 %>
+    </tbody>
+</table>

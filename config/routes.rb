@@ -488,4 +488,5 @@ Rails.application.routes.draw do
   get "case_standard_val", to: "result_product_cases#case_standard_val", as: "case_standard_val"
   get "case_out", to: "result_product_cases#case_out", as: "case_out"
   get "case_productivity", to: "result_product_cases#case_productivity", as: "case_productivity"
+  get "case_industry_val", to: "result_product_cases#case_industry_val", as: "case_industry_val"
 end
