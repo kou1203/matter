@@ -1101,7 +1101,7 @@ class ResultsController < ApplicationController
       else
         @month_search = @month.prev_month
       end
-      @results_search = Result.includes(:user).where(user_id: @user.id).where(date: @month_search.all_month)
+      @results_search = Result.includes(:user, :result_cash, :type_reference_value).where(user_id: @user.id).where(date: @month_search.all_month)
       @shift_digestion_new_s = @results_search.where(shift: "キャッシュレス新規").length
       if @shift_digestion_new_s.present?
         #  合計変数 

@@ -182,6 +182,7 @@
           <%# <p class="search-title">検索</p> %>
           <%= form_with url: result_path(@user.id), local: true, method: :get do |f| %>
           <h3 class="search">
+            <%= f.hidden_field :month, value: @month %>
             過去の基準値を検索：
             <%= f.date_select(
               :search_year_and_month, discard_day:true, prompt: "--", use_month_numbers:true,
