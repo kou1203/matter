@@ -14,27 +14,27 @@
       <tr>
         <th rowspan="5" class="total-th">d専売</th>
         <th class="total-th">訪問: a</th>
-        <td class="total-td"><%= (@results.where(product: "d専売").sum(:type2_a).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td"><%= (@results.where(product: "d専売").sum(:type2_a).to_f / @results.where(product: "d専売").length).to_f().round(2) rescue "-" %></td>
         <td class="total-td">-</td>
       </tr>
       <tr>
         <th class="total-th">応答: b</th>
-        <td class="total-td"><%= (@results.where(product: "d専売").sum(:type2_b).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td"><%= (@results.where(product: "d専売").sum(:type2_b).to_f / @results.where(product: "d専売").length).to_f().round(2) rescue "-" %></td>
         <td class="total-td"><%= number_to_percentage(@results.where(product: "d専売").sum(:type2_b).to_f / @results.where(product: "d専売").sum(:type2_a).to_f * 100, precision: 1) rescue "-" %></td>
       </tr>
       <tr>
         <th class="total-th">対面: c</th>
-        <td class="total-td"><%= (@results.where(product: "d専売").sum(:type2_c).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td"><%= (@results.where(product: "d専売").sum(:type2_c).to_f / @results.where(product: "d専売").length).to_f().round(2) rescue "-" %></td>
         <td class="total-td"><%= number_to_percentage(@results.where(product: "d専売").sum(:type2_c).to_f / @results.where(product: "d専売").sum(:type2_b).to_f * 100, precision: 1) rescue "-" %></td>
       </tr>
       <tr>
         <th class="total-th">フル: d</th>
-        <td class="total-td"><%= (@results.where(product: "d専売").sum(:type2_d).to_f / @shift_digestion_new).to_f.round(2) rescue "-" %></td>
+        <td class="total-td"><%= (@results.where(product: "d専売").sum(:type2_d).to_f / @results.where(product: "d専売").length).to_f.round(2) rescue "-" %></td>
         <td class="total-td"><%= number_to_percentage(@results.where(product: "d専売").sum(:type2_d).to_f / @results.where(product: "d専売").sum(:type2_c).to_f * 100, precision: 1) rescue "-" %></td>
       </tr>
       <tr>
         <th class="total-th">成約: e</th>
-        <td class="total-td"><%= (@results.where(product: "d専売").sum(:type2_e).to_f / @shift_digestion_new).to_f.round(2) rescue "-" %></td>
+        <td class="total-td"><%= (@results.where(product: "d専売").sum(:type2_e).to_f / @results.where(product: "d専売").length).to_f.round(2) rescue "-" %></td>
         <td class="total-td"><%= number_to_percentage(@results.where(product: "d専売").sum(:type2_e).to_f / @results.where(product: "d専売").sum(:type2_d).to_f * 100, precision: 1) rescue "-" %></td>
       </tr>
     </tbody>
@@ -56,27 +56,27 @@
       <tr>
         <th rowspan="5" class="total-th">マルチ</th>
         <th class="total-th">訪問: a</th>
-        <td class="total-td"><%= (@results.where(product: "マルチ").sum(:type2_a).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td"><%= (@results.where(product: "マルチ").sum(:type2_a).to_f / @results.where(product: "マルチ").length).to_f().round(2) rescue "-" %></td>
         <td class="total-td">-</td>
       </tr>
       <tr>
         <th class="total-th">応答: b</th>
-        <td class="total-td"><%= (@results.where(product: "マルチ").sum(:type2_b).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td"><%= (@results.where(product: "マルチ").sum(:type2_b).to_f / @results.where(product: "マルチ").length).to_f().round(2) rescue "-" %></td>
         <td class="total-td"><%= number_to_percentage(@results.where(product: "マルチ").sum(:type2_b).to_f / @results.where(product: "マルチ").sum(:type2_a).to_f * 100, precision: 1) rescue "-" %></td>
       </tr>
       <tr>
         <th class="total-th">対面: c</th>
-        <td class="total-td"><%= (@results.where(product: "マルチ").sum(:type2_c).to_f / @shift_digestion_new).to_f().round(2) rescue "-" %></td>
+        <td class="total-td"><%= (@results.where(product: "マルチ").sum(:type2_c).to_f / @results.where(product: "マルチ").length).to_f().round(2) rescue "-" %></td>
         <td class="total-td"><%= number_to_percentage(@results.where(product: "マルチ").sum(:type2_c).to_f / @results.where(product: "マルチ").sum(:type2_b).to_f * 100, precision: 1) rescue "-" %></td>
       </tr>
       <tr>
         <th class="total-th">フル: d</th>
-        <td class="total-td"><%= (@results.where(product: "マルチ").sum(:type2_d).to_f / @shift_digestion_new).to_f.round(2) rescue "-" %></td>
+        <td class="total-td"><%= (@results.where(product: "マルチ").sum(:type2_d).to_f / @results.where(product: "マルチ").length).to_f.round(2) rescue "-" %></td>
         <td class="total-td"><%= number_to_percentage(@results.where(product: "マルチ").sum(:type2_d).to_f / @results.where(product: "マルチ").sum(:type2_c).to_f * 100, precision: 1) rescue "-" %></td>
       </tr>
       <tr>
         <th class="total-th">成約: e</th>
-        <td class="total-td"><%= (@results.where(product: "マルチ").sum(:type2_e).to_f / @shift_digestion_new).to_f.round(2) rescue "-" %></td>
+        <td class="total-td"><%= (@results.where(product: "マルチ").sum(:type2_e).to_f / @results.where(product: "マルチ").length).to_f.round(2) rescue "-" %></td>
         <td class="total-td"><%= number_to_percentage(@results.where(product: "マルチ").sum(:type2_e).to_f / @results.where(product: "マルチ").sum(:type2_d).to_f * 100, precision: 1) rescue "-" %></td>
       </tr>
     </tbody>
