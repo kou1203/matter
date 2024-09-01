@@ -37,7 +37,7 @@
         <div class="form">
             <p><%= f.label :product, "基準値種別", class: "form-text" %></p>
             <p><%= f.select :product, {
-                "d専売+マルチ": "d専売+マルチ", "マルチ": "マルチ"
+                "d専売": "d専売", "マルチ": "マルチ"
                 },{include_blank: true}, {class: "slct-input",id: "shift-slct"} %></p>
         </div>
         <div class="form">
@@ -61,39 +61,37 @@
         <div class="form">
             <p class="form-head">前半</p>
             <p>
-                <%= f.label :first_total_visit, "訪問-", class: "form-text",id: "cash-label1" %>
-                <%= f.label :first_visit, "応答-", class: "form-text" %>
-                <%= f.label :first_interview, "対面-", class: "form-text" %>
-                <%= f.label :first_full_talk, "フル-", class: "form-text",id: "cash-label2" %>
-                <%= f.label :first_full_talk, "フル①-", class: "form-text",id: "summit-label1" %>
-                <%= f.label :first_full_talk, "フル②-", class: "form-text",id: "summit-label2" %>
-                <%= f.label :first_get, "成約", class: "form-text" %>
+                <%= f.label :first_total_visit, "訪問(a)-", class: "form-text" %>
+                <%= f.label :first_visit, "応答(b)-", class: "form-text" %>
+                <%= f.label :first_interview, "対面(c)-", class: "form-text" %>
+                <%= f.label :first_full_talk, "フル①(d1)-", class: "form-text" %>
+                <%= f.label :first_full_talk2, "フル②(d2)-", class: "form-text" %>
+                <%= f.label :first_get, "成約(e)", class: "form-text" %>
                 </p>
             <p>
-                <%= f.number_field :first_total_visit, class: "num-input",id: "cash-val1" %>
+                <%= f.number_field :first_total_visit, class: "num-input" %>
                 <%= f.number_field :first_visit, class: "num-input" %>
                 <%= f.number_field :first_interview, class: "num-input" %>
                 <%= f.number_field :first_full_talk, class: "num-input" %>
-                <%= f.number_field :first_full_talk2, class: "num-input", id: "summit-val1" %>
+                <%= f.number_field :first_full_talk2, class: "num-input" %>
                 <%= f.number_field :first_get, class: "num-input" %>
         </div>
         <div class="form">
             <p class="form-head">後半</p>
             <p>
-                <%= f.label :latter_total_visit, "訪問-", class: "form-text",id: "cash-label3" %>
-                <%= f.label :latter_visit, "応答-", class: "form-text" %>
-                <%= f.label :latter_interview, "対面-", class: "form-text" %>
-                <%= f.label :latter_full_talk, "フル-", class: "form-text",id: "cash-label4" %>
-                <%= f.label :latter_full_talk, "フル①-", class: "form-text",id: "summit-label3" %>
-                <%= f.label :latter_full_talk2, "フル②-", class: "form-text",id: "summit-label4" %>
-                <%= f.label :latter_get, "成約", class: "form-text" %>
+                <%= f.label :latter_total_visit, "訪問(a)-", class: "form-text" %>
+                <%= f.label :latter_visit, "応答(b)-", class: "form-text" %>
+                <%= f.label :latter_interview, "対面(c)-", class: "form-text" %>
+                <%= f.label :latter_full_talk, "フル①(d1)-", class: "form-text" %>
+                <%= f.label :latter_full_talk2, "フル②(d2)-", class: "form-text" %>
+                <%= f.label :latter_get, "成約(e    )", class: "form-text" %>
                 </p>
             <p>
-                <%= f.number_field :latter_total_visit, class: "num-input",id: "cash-val2" %>
+                <%= f.number_field :latter_total_visit, class: "num-input" %>
                 <%= f.number_field :latter_visit, class: "num-input" %>
                 <%= f.number_field :latter_interview, class: "num-input" %>
                 <%= f.number_field :latter_full_talk, class: "num-input" %>
-                <%= f.number_field :latter_full_talk2, class: "num-input", id: "summit-val2" %>
+                <%= f.number_field :latter_full_talk2, class: "num-input" %>
                 <%= f.number_field :latter_get, class: "num-input" %>
         </div>
         <div class="basic-form" id="cash-form1"><%# キャッシュその他基準値 %>
@@ -162,117 +160,6 @@
             <p>
                 <%= f.number_field :other_service_visit,class: "num-input", min: 0 %>
                 <%= f.number_field :other_service_get , class: "num-input", min: 0 %>
-            </p>
-        </div>
-        <h1>時間帯別基準値</h1>
-        <div class="form">
-            <p class="form-head">10時</p>
-            <p>
-                <%= f.label :visit10, "訪問", class: "form-text" %>-
-                <%= f.label :get10, "獲得", class: "form-text" %>
-            </p>
-            <p>
-                <%= f.number_field :visit10,class: "num-input", min: 0 %>
-                <%= f.number_field :get10 , class: "num-input", min: 0 %>
-            </p>
-        </div>
-        <div class="form">
-            <p class="form-head">11時</p>
-            <p>
-                <%= f.label :visit11, "訪問", class: "form-text" %>-
-                <%= f.label :get11, "獲得", class: "form-text" %>
-            </p>
-            <p>
-                <%= f.number_field :visit11,class: "num-input", min: 0 %>
-                <%= f.number_field :get11 , class: "num-input", min: 0 %>
-            </p>
-        </div>
-        <div class="form">
-            <p class="form-head">12時</p>
-            <p>
-                <%= f.label :visit12, "訪問", class: "form-text" %>-
-                <%= f.label :get12, "獲得", class: "form-text" %>
-            </p>
-            <p>
-                <%= f.number_field :visit12,class: "num-input", min: 0 %>
-                <%= f.number_field :get12 , class: "num-input", min: 0 %>
-            </p>
-        </div>
-        <div class="form">
-            <p class="form-head">13時</p>
-            <p>
-                <%= f.label :visit13, "訪問", class: "form-text" %>-
-                <%= f.label :get13, "獲得", class: "form-text" %>
-            </p>
-            <p>
-                <%= f.number_field :visit13,class: "num-input", min: 0 %>
-                <%= f.number_field :get13 , class: "num-input", min: 0 %>
-            </p>
-        </div>
-        <div class="form">
-            <p class="form-head">14時</p>
-            <p>
-                <%= f.label :visit14, "訪問", class: "form-text" %>-
-                <%= f.label :get14, "獲得", class: "form-text" %>
-            </p>
-            <p>
-                <%= f.number_field :visit14,class: "num-input", min: 0 %>
-                <%= f.number_field :get14 , class: "num-input", min: 0 %>
-            </p>
-        </div>
-        <div class="form">
-            <p class="form-head">15時</p>
-            <p>
-                <%= f.label :visit15, "訪問", class: "form-text" %>-
-                <%= f.label :get15, "獲得", class: "form-text" %>
-            </p>
-            <p>
-                <%= f.number_field :visit15,class: "num-input", min: 0 %>
-                <%= f.number_field :get15 , class: "num-input", min: 0 %>
-            </p>
-        </div>
-        <div class="form">
-            <p class="form-head">16時</p>
-            <p>
-                <%= f.label :visit16, "訪問", class: "form-text" %>-
-                <%= f.label :get16, "獲得", class: "form-text" %>
-            </p>
-            <p>
-                <%= f.number_field :visit16,class: "num-input", min: 0 %>
-                <%= f.number_field :get16 , class: "num-input", min: 0 %>
-            </p>
-        </div>
-        <div class="form">
-            <p class="form-head">17時</p>
-            <p>
-                <%= f.label :visit17, "訪問", class: "form-text" %>-
-                <%= f.label :get17, "獲得", class: "form-text" %>
-            </p>
-            <p>
-                <%= f.number_field :visit17,class: "num-input", min: 0 %>
-                <%= f.number_field :get17 , class: "num-input", min: 0 %>
-            </p>
-        </div>
-        <div class="form">
-            <p class="form-head">18時</p>
-            <p>
-                <%= f.label :visit18, "訪問", class: "form-text" %>-
-                <%= f.label :get18, "獲得", class: "form-text" %>
-            </p>
-            <p>
-                <%= f.number_field :visit18,class: "num-input", min: 0 %>
-                <%= f.number_field :get18 , class: "num-input", min: 0 %>
-            </p>
-        </div>
-        <div class="form">
-            <p class="form-head">19時以降</p>
-            <p>
-                <%= f.label :visit19, "訪問", class: "form-text" %>-
-                <%= f.label :get19, "獲得", class: "form-text" %>
-            </p>
-            <p>
-                <%= f.number_field :visit19,class: "num-input", min: 0 %>
-                <%= f.number_field :get19 , class: "num-input", min: 0 %>
             </p>
         </div>
         </div><%# キャッシュその他基準値 %>

@@ -141,9 +141,7 @@
               <% end %>
               <tr><%# 週間基準値ボディー %>
                   <td class="total-td"><%= week_cnt %>週目</td>
-                  <td class="total-td">（
-                    <%= week.minimum(:date).strftime('%m/%d') rescue "不明" %>-
-                    <%= week.maximum(:date).strftime('%m/%d') rescue "不明" %>） </td>
+                  <td class="total-td">（<%= week.minimum(:date).strftime('%m/%d') rescue "不明" %>-<%= week.maximum(:date).strftime('%m/%d') rescue "不明" %>）</td>
                   <td class="total-td"><%= week_shift %></td>
                   <td class="total-td"><%= week_valuations.to_s(:delimited) %></td>
                   <% if week_valuations / week_shift >= goal_ave %>

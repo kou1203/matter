@@ -5,9 +5,9 @@ class ResultsController < ApplicationController
   before_action :set_data
   before_action :back_retirement
   # showアクションのbeforeaction
-  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation_list,:date_fin, :type_refecence_val, :weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all,:time_val_base]
-  before_action :set_month_product, only: [:show, :date_fin, :type_refecence_val, :weekly_fin,:out_val]
-  before_action :set_result_and_shift, only: [:show, :date_fin, :type_refecence_val, :weekly_fin,:out_val,:time_val,:time_val_all,:store_val,:store_val_all]
+  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation_list,:date_fin, :type_refecence_val, :weekly_fin,:out_val, :out_val_type, :time_val,:time_val_all,:store_val,:store_val_all,:time_val_base]
+  before_action :set_month_product, only: [:show, :date_fin, :type_refecence_val, :weekly_fin,:out_val, :out_val_type]
+  before_action :set_result_and_shift, only: [:show, :date_fin, :type_refecence_val, :weekly_fin,:out_val, :out_val_type,:time_val,:time_val_all,:store_val,:store_val_all]
   # monthly_progressアクションのbeforeaction
   before_action :set_monthly_progress, only: [:monthly_get,:monthly_get_base,:sales_and_def]
 
@@ -200,7 +200,6 @@ class ResultsController < ApplicationController
       @airpaysticker_date_progress = AirpaystickerDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
       @dmers_val_len = @dmer_date_progress.get_len - @dmer_date_progress.def_len rescue 0
       @aupays_val_len = @aupay_date_progress.get_len - @aupay_date_progress.def_len rescue 0
-      
     # シフト
       @shift_schedule_new = @shifts.where(shift: "キャッシュレス新規").length
       @shift_schedule_slmt = @shifts.where(shift: "キャッシュレス決済").length
@@ -214,34 +213,37 @@ class ResultsController < ApplicationController
       @sum_visit = @results.where(shift: "キャッシュレス新規").sum(:first_visit) + @results.where(shift: "キャッシュレス新規").sum(:latter_visit) 
       @sum_interview = @results.where(shift: "キャッシュレス新規").sum(:first_interview) + @results.where(shift: "キャッシュレス新規").sum(:latter_interview) 
       @sum_full_talk = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk) + @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+      @sum_full_talk2 = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk2) + @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk2) 
       @sum_get = @results.where(shift: "キャッシュレス新規").sum(:first_get) + @results.where(shift: "キャッシュレス新規").sum(:latter_get)
     #  前半変数 
       @sum_total_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_total_visit) 
       @sum_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_visit) 
       @sum_interview_f = @results.where(shift: "キャッシュレス新規").sum(:first_interview) 
       @sum_full_talk_f = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk) 
+      @sum_full_talk2_f = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk2) 
       @sum_get_f = @results.where(shift: "キャッシュレス新規").sum(:first_get) 
     # 後半変数 
       @sum_total_visit_l = @results.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
       @sum_visit_l = @results.where(shift: "キャッシュレス新規").sum(:latter_visit) 
       @sum_interview_l = @results.where(shift: "キャッシュレス新規").sum(:latter_interview) 
       @sum_full_talk_l = @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+      @sum_full_talk2_l = @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk2)
       @sum_get_l = @results.where(shift: "キャッシュレス新規").sum(:latter_get) 
     # 店舗別合計変数 
-      @cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit) 
-      @cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get) 
-      @other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit) 
-      @other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get) 
-      @car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit) 
-      @car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get) 
-      @other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit) 
-      @other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get) 
-      @hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit) 
-      @hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get) 
-      @manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit) 
-      @manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get) 
-      @other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit) 
-      @other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get) 
+      @cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit)
+      @cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get)
+      @other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit)
+      @other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get)
+      @car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit)
+      @car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get)
+      @other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit)
+      @other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get)
+      @hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit)
+      @hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get)
+      @manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit)
+      @manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get)
+      @other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit)
+      @other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get)
 
     # 拠点別基準値
       @result_base = Result.includes(:user, :result_cash).where(date: @month.all_month).where(shift: "キャッシュレス新規")
@@ -370,7 +372,7 @@ class ResultsController < ApplicationController
     @weeks = mothly_result(@results, @month)
     @weeks_prev = mothly_result(@results_prev, @prev_month)
     @weeks_list = [ @weeks_prev, @weeks]
-    @weeks_hash = [{date: "前月", list: @weeks_prev, results: @results_prev}, {date: "当月", list: @weeks, results: @results}]
+    @weeks_hash = [{date: "当月", list: @weeks, results: @results}, {date: "前月", list: @weeks_prev, results: @results_prev}]
     render partial: "weekly_fin", locals: {} # @weeksを遅延ロード
   end
 
@@ -386,81 +388,18 @@ class ResultsController < ApplicationController
     @result_cash_base = ResultCash.includes(:result,result: :user).where(result: {date: @month.all_month}).where(result: {shift: "キャッシュレス新規"})
     @all_len = @result_cash_base.group(:user_id).length
     render partial: "out_val_all", locals: {out_ary:@out_ary} # @out_aryを遅延ロード
-  end 
+  end
 
-  def time_val # 時間基準値
-    # 時間別基準値合計
-    @visit10_sum = @results.sum(:visit10)
-    @visit10_ave = (@visit10_sum.to_f / @shift_digestion_new).round(1)
-    @get10_sum = @results.sum(:get10)
-    @get10_ave = (@get10_sum.to_f / @shift_digestion_new).round(1)
-
-    @visit11_sum = @results.sum(:visit11)
-    @visit11_ave = (@visit11_sum.to_f / @shift_digestion_new).round(1)
-    @get11_sum = @results.sum(:get11)
-    @get11_ave = (@get11_sum.to_f / @shift_digestion_new).round(1)
-
-    @visit12_sum = @results.sum(:visit12)
-    @visit12_ave = (@visit12_sum.to_f / @shift_digestion_new).round(1)
-    @get12_sum = @results.sum(:get12)
-    @get12_ave = (@get12_sum.to_f / @shift_digestion_new).round(1)
-
-    @visit13_sum = @results.sum(:visit13)
-    @visit13_ave = (@visit13_sum.to_f / @shift_digestion_new).round(1)
-    @get13_sum = @results.sum(:get13)
-    @get13_ave = (@get13_sum.to_f / @shift_digestion_new).round(1)
-
-    @visit14_sum = @results.sum(:visit14)
-    @visit14_ave = (@visit14_sum.to_f / @shift_digestion_new).round(1)
-    @get14_sum = @results.sum(:get14)
-    @get14_ave = (@get14_sum.to_f / @shift_digestion_new).round(1)
-
-    @visit15_sum = @results.sum(:visit15)
-    @visit15_ave = (@visit15_sum.to_f / @shift_digestion_new).round(1)
-    @get15_sum = @results.sum(:get15)
-    @get15_ave = (@get15_sum.to_f / @shift_digestion_new).round(1)
-
-    @visit16_sum = @results.sum(:visit16)
-    @visit16_ave = (@visit16_sum.to_f / @shift_digestion_new).round(1)
-    @get16_sum = @results.sum(:get16)
-    @get16_ave = (@get16_sum.to_f / @shift_digestion_new).round(1)
-
-    @visit17_sum = @results.sum(:visit17)
-    @visit17_ave = (@visit17_sum.to_f / @shift_digestion_new).round(1)
-    @get17_sum = @results.sum(:get17)
-    @get17_ave = (@get17_sum.to_f / @shift_digestion_new).round(1)
-
-    @visit18_sum = @results.sum(:visit18)
-    @visit18_ave = (@visit18_sum.to_f / @shift_digestion_new).round(1)
-    @get18_sum = @results.sum(:get18)
-    @get18_ave = (@get18_sum.to_f / @shift_digestion_new).round(1)
-
-    @visit19_sum = @results.sum(:visit19)
-    @visit19_ave = (@visit19_sum.to_f / @shift_digestion_new).round(1)
-    @get19_sum = @results.sum(:get19)
-    @get19_ave = (@get19_sum.to_f / @shift_digestion_new).round(1)
-
-    @time_visit_sum = [@visit10_sum,@visit11_sum,@visit12_sum,@visit13_sum,@visit14_sum,@visit15_sum,@visit16_sum,@visit17_sum,@visit18_sum,@visit19_sum]
-    @time_visit_ave = [@visit10_ave,@visit11_ave,@visit12_ave,@visit13_ave,@visit14_ave,@visit15_ave,@visit16_ave,@visit17_ave,@visit18_ave,@visit19_ave]
-    @time_get_sum = [@get10_sum,@get11_sum,@get12_sum,@get13_sum,@get14_sum,@get15_sum,@get16_sum,@get17_sum,@get18_sum,@get19_sum]
-    @time_get_ave = [@get10_ave,@get11_ave,@get12_ave,@get13_ave,@get14_ave,@get15_ave,@get16_ave,@get17_ave,@get18_ave,@get19_ave]
-    render partial: "time_val", locals: {} # 遅延ロード
-  end 
-
-  def time_val_base # 拠点別時間基準値
-    @results_base = Result.includes(:user).where(date: @month.all_month).where(user: {base: @time_base}).where(shift: "キャッシュレス新規")
-    render partial: "time_val_base", locals: {} # 遅延ロード
-  end 
-
-  def time_val_all # 全体時間基準値
-    @hour_visit_base = []
-    @hour_get_base = []
-    10.times do |i|
-      @hour_visit_base << @result_base.sum("visit#{i + 10}") rescue 0
-      @hour_get_base << @result_base.sum("get#{i + 10}") rescue 0
-    end 
-    render partial: "time_val_all", locals: {} # 遅延ロード
-  end 
+  def out_val_type # 切返種別
+    @out_type_qr = @results.where(result_cash: {other_product10: 0})
+    @out_type_yet = @results.where(result_cash: {other_product10: 1})
+    @out_type_multi = @results.where(result_cash: {other_product10: 2})
+    @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
+    @type_ary = ["QRのみ", "未導入", "マルチ決済"]
+    @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
+    @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
+    render partial: "out_val_type", locals: {out_ary:@out_ary} # @out_aryを遅延ロード
+  end
 
   def product_status
     @dmers = Dmer.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
@@ -1154,6 +1093,39 @@ class ResultsController < ApplicationController
       @shifts = Shift.where(user_id: @user.id).where(start_time: @month.all_month)
       @result_base = Result.includes(:user, :result_cash).where(date: @month.all_month).where(shift: "キャッシュレス新規")
       @shift_digestion_new = @results.where(shift: "キャッシュレス新規").length
+      # 基準値検索機能 
+      if params["search_year_and_month(1i)"].present? && params["search_year_and_month(2i)"].present?
+        search_y = params["search_year_and_month(1i)"].to_i()
+        search_m = params["search_year_and_month(2i)"].to_i()
+        @month_search = Date.new(search_y, search_m, 1)
+      else
+        @month_search = @month.prev_month
+      end
+      @results_search = Result.includes(:user).where(user_id: @user.id).where(date: @month_search.all_month)
+      @shift_digestion_new_s = @results_search.where(shift: "キャッシュレス新規").length
+      if @shift_digestion_new_s.present?
+        #  合計変数 
+        @sum_total_visit_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_total_visit) + @results_search.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
+        @sum_visit_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_visit) + @results_search.where(shift: "キャッシュレス新規").sum(:latter_visit) 
+        @sum_interview_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_interview) + @results_search.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+        @sum_full_talk_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_full_talk) + @results_search.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+        @sum_full_talk2_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_full_talk2) + @results_search.where(shift: "キャッシュレス新規").sum(:latter_full_talk2) 
+        @sum_get_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_get) + @results_search.where(shift: "キャッシュレス新規").sum(:latter_get)
+        # 前半変数 
+        @sum_total_visit_f_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_total_visit) 
+        @sum_visit_f_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_visit) 
+        @sum_interview_f_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_interview) 
+        @sum_full_talk_f_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_full_talk) 
+        @sum_full_talk2_f_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_full_talk2) 
+        @sum_get_f_s = @results_search.where(shift: "キャッシュレス新規").sum(:first_get) 
+        # 後半変数 
+        @sum_total_visit_l_s = @results_search.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
+        @sum_visit_l_s = @results_search.where(shift: "キャッシュレス新規").sum(:latter_visit) 
+        @sum_interview_l_s = @results_search.where(shift: "キャッシュレス新規").sum(:latter_interview) 
+        @sum_full_talk_l_s = @results_search.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
+        @sum_full_talk2_l_s = @results_search.where(shift: "キャッシュレス新規").sum(:latter_full_talk2)
+        @sum_get_l_s = @results_search.where(shift: "キャッシュレス新規").sum(:latter_get) 
+      end
     end
 
     def set_monthly_progress # monthly_progressの変数

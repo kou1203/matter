@@ -17,6 +17,10 @@
     </div>
 <%= form_with model: @result_cash, local: true, class: "form-frame", local: true do |f| %>
   <%= render "shared/error_messages", model: f.object %>
+  <h1>切り返し種別</h1>
+  <div class="form">
+    <%= f.select :other_product10, {"指定なし": nil, "QRのみ": 0, "未導入": 1, "マルチ決済": 2}, {}, { class: "num-input"} %>
+  </div>
   <h1>獲得商材</h1>
     <div class="form">
       <p>
