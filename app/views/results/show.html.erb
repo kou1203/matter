@@ -183,15 +183,11 @@
           <%= form_with url: result_path(@user.id), local: true, method: :get do |f| %>
           <h3 class="search">
             過去の基準値を検索：
-            <%# f.select :search_year, {},{prompt: @search_month.year}, {class:"search-input"} %>
-            <%# sprintf(f.date_select(:expiration_date,with_css_classes:'XXXXX', order:[:month,:year,:day], use_month_numbers:true, discard_day:true, start_year:Time.now.year-2000, end_year:Time.now.year-2000+10, date_separator:'%s'),'月') + '年' %>
             <%= f.date_select(
               :search_year_and_month, discard_day:true, prompt: "--", use_month_numbers:true,
               start_year: @month_search.year - 5, end_year: @month_search.year + 5,
               date_separator: "年 "
             ) %> 月
-            <%# f.date_field :search_month,class:"search-input" %>
-
             <%= f.submit "絞込",class: "search-btn" %>
             <button class="reset-btn"><%= link_to "リセット",result_path(@user.id, month: @month), class:"reset-link" %></button>
           </h3>
@@ -317,7 +313,7 @@
               <tr>
                 <th class="total-th">成約: e</th>
                 <td class="total-td"><%= (@sum_get_l.to_f / @shift_digestion_new).round(2) rescue "-" %></td>
-                <td class="total-td"><%= number_to_percentage(@sum_get_l.to_f / @sum_full_talk_l2.to_f * 100, precision: 1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_l.to_f / @sum_full_talk2_l.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
             </tbody>
           </table>
