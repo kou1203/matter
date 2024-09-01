@@ -444,12 +444,12 @@
                 <th class="total-th" rowspan="6">合計</th>
                 <th class="total-th">訪問: a</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) / shiftItem.length * 100) / 100 }}</td>
-                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) * 100)}} %</td>
+                <td class="total-td">-</td>
               </tr>
               <tr>
                 <th class="total-th">応答: b</th>
                 <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.length * 100) / 100 }}</td>
-                <td class="total-td">-</td>
+                <td class="total-td">{{ Math.round(shiftItem.reduce((sum, element) => sum + element.first_visit + element.latter_visit, 0) / shiftItem.reduce((sum, element) => sum + element.first_total_visit + element.latter_total_visit, 0) * 100)}} %</td>
               </tr>
               <tr>
                 <th class="total-th">対面: c</th>
