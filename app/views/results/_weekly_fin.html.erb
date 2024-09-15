@@ -130,6 +130,7 @@
                 <% week_visit = week.sum(:first_visit) + week.sum(:latter_visit) %>
                 <% week_interview = week.sum(:first_interview) + week.sum(:latter_interview) %>
                 <% week_full_talk = week.sum(:first_full_talk) + week.sum(:latter_full_talk) %>
+                <% week_full_talk2 = week.sum(:first_full_talk2) + week.sum(:latter_full_talk2) %>
                 <% week_get = week.sum(:first_get) + week.sum(:latter_get) %>
               <%# 合計 %>
                 <% week_sum_shift += week_shift %>
@@ -139,6 +140,7 @@
                 <% week_sum_visit += week_visit %>
                 <% week_sum_interview += week_interview %>
                 <% week_sum_full_talk += week_full_talk %>
+                <% week_sum_full_talk2 += week_full_talk2 %>
                 <% week_sum_get += week_get %>
               <%# 平均 %>
               <% if week_shift == 0 %>
@@ -245,12 +247,12 @@
                   <td class="total-td"><%= number_to_percentage(week_full_talk_ave / week_interview_ave * 100, precision: 0) rescue 0 %></td>
                   <% end %>
                   <%# 基準値（d2認証キー回収) %>
-                  <% if week_full_talk_ave >= goal_full_talk %>
-                  <td class="total-td" style="color:blue;"><%= week_full_talk_ave.round(1) rescue 0 %></td>
-                  <% elsif dg_interview > week_full_talk_ave %>
-                  <td class="total-td" style="color:red;"><%= week_full_talk_ave.round(1) rescue 0 %></td>
+                  <% if week_full_talk2_ave >= goal_full_talk %>
+                  <td class="total-td" style="color:blue;"><%= week_full_talk2_ave.round(1) rescue 0 %></td>
+                  <% elsif dg_interview > week_full_talk2_ave %>
+                  <td class="total-td" style="color:red;"><%= week_full_talk2_ave.round(1) rescue 0 %></td>
                   <% else %>
-                  <td class="total-td"><%= week_full_talk_ave.round(1) rescue 0 %></td>
+                  <td class="total-td"><%= week_full_talk2_ave.round(1) rescue 0 %></td>
                   <% end %>
                   <%# 認証キー回収率 %>
                   <% full_talk2_per = week_full_talk2_ave / week_full_talk_ave * 100 rescue 0 %>
@@ -287,7 +289,7 @@
               <% week_sum_visit_ave = week_sum_visit.to_f / week_sum_shift rescue 0 %>
               <% week_sum_interview_ave = week_sum_interview.to_f / week_sum_shift rescue 0 %>
               <% week_sum_full_talk_ave = week_sum_full_talk.to_f / week_sum_shift rescue 0 %>
-              <% week_sum_full_talk2_ave = week_sum_full2_talk.to_f / week_sum_shift rescue 0 %>
+              <% week_sum_full_talk2_ave = week_sum_full_talk2.to_f / week_sum_shift rescue 0 %>
               <% week_sum_get_ave = week_sum_get.to_f / week_sum_shift %>
               <tr><%# 合計基準値ボディー %>
                 <td class="total-td" colspan="2">合計</td>
@@ -374,7 +376,7 @@
                 <% else %>
                 <td class="total-td"><%= number_to_percentage((week_sum_full_talk_ave / week_sum_interview_ave).to_f * 100, precision: 0) rescue "NaN" %></td>
                 <% end %> 
-                <%# 基準値(d1情報聞いた) %>
+                <%# 基準値(d2認証キー回収) %>
                 <% if week_sum_full_talk2_ave >= goal_full_talk2 %>
                 <td class="total-td" style="color: blue;"><%= week_sum_full_talk2_ave.round(1) rescue "NaN" %></td>
                 <% elsif dg_full_talk > week_sum_full_talk2_ave %>
@@ -382,7 +384,7 @@
                 <% else %>
                 <td class="total-td"><%= week_sum_full_talk2_ave.round(1) rescue 0 %></td>
                 <% end %>
-                <%# 基準値(d1情報聞いた率) %>
+                <%# 基準値(d1認証キー回収率) %>
                 <% week_hikaku = week_sum_full_talk2_ave / week_sum_full_talk_ave.to_f * 100 rescue 0 %>
                 <% if week_hikaku.present? && (week_hikaku >= goal_full_talk_rate) %>        
                 <td class="total-td" style="color:blue;"><%= number_to_percentage((week_sum_full_talk2_ave / week_sum_full_talk_ave).to_f * 100, precision: 0) rescue "NaN" %></td>
