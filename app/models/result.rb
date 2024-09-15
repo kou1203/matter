@@ -3,7 +3,7 @@ class Result < ApplicationRecord
   belongs_to :user
   belongs_to :ojt ,class_name: "User", optional: true
   has_one :result_casa
-  has_one :result_cash, dependent: :destroy
+  has_many :result_cash, dependent: :destroy
   has_one :type_reference_value, dependent: :destroy
   has_one :result_summit, dependent: :destroy
   with_options presence: true do 

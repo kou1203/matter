@@ -16,21 +16,21 @@
       <tr>
       <th rowspan="3" class="total-th"><%= out_name %></th>
         <th class="total-th">対面</th>
-        <td class="total-td"><%= @results.sum("out_interview_#{out_num}") rescue 0 %></td>
-        <td class="total-td"><%= (@results.sum("out_interview_#{out_num}").to_f / @shift_digestion_new).round(2) rescue 0 %></td>
+        <td class="total-td"><%= @result_out.sum("out_interview_#{out_num}") rescue 0 %></td>
+        <td class="total-td"><%= (@result_out.sum("out_interview_#{out_num}").to_f / @shift_digestion_new).round(2) rescue 0 %></td>
         <td class="total-td">-</td>
       </tr>
       <tr>
         <th class="total-th">フル</th>
-        <td class="total-td"><%= @results.sum("out_full_talk_#{out_num}") rescue 0 %></td>
-        <td class="total-td"><%= (@results.sum("out_full_talk_#{out_num}").to_f / @shift_digestion_new).round(2) rescue 0 %></td>
-        <td class="total-td"><%= number_to_percentage(@results.sum("out_full_talk_#{out_num}").to_f / @results.sum("out_interview_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
+        <td class="total-td"><%= @result_out.sum("out_full_talk_#{out_num}") rescue 0 %></td>
+        <td class="total-td"><%= (@result_out.sum("out_full_talk_#{out_num}").to_f / @shift_digestion_new).round(2) rescue 0 %></td>
+        <td class="total-td"><%= number_to_percentage(@result_out.sum("out_full_talk_#{out_num}").to_f / @result_out.sum("out_interview_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
       </tr>
       <tr>
         <th class="total-th">成約</th>
-        <td class="total-td"><%= @results.sum("out_get_#{out_num}") rescue 0 %></td>
-        <td class="total-td"><%= (@results.sum("out_get_#{out_num}").to_f/ @shift_digestion_new).round(2) rescue 0 %></td>
-        <td class="total-td"><%= number_to_percentage(@results.sum("out_get_#{out_num}").to_f / @results.sum("out_full_talk_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
+        <td class="total-td"><%= @result_out.sum("out_get_#{out_num}") rescue 0 %></td>
+        <td class="total-td"><%= (@result_out.sum("out_get_#{out_num}").to_f/ @shift_digestion_new).round(2) rescue 0 %></td>
+        <td class="total-td"><%= number_to_percentage(@result_out.sum("out_get_#{out_num}").to_f / @result_out.sum("out_full_talk_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
       </tr>
     <% end %>
     <tbody>

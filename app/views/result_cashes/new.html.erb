@@ -11,13 +11,16 @@
       <div class="form-title"><h1><%= current_user.name %>終着入力</h1></div>
         <button id="memo-button">メモ</button>
       <div class="memo-form" id="memo-page"><textarea></textarea></div>
-      <%= form_with model: @result_cash,url: result_result_cashes_create_path(@result.id), local: true, class: "form-frame", local: true do |f| %>
+      <%# form_with model: @result_cash,url: result_result_cashes_create_path(@result.id), local: true, class: "form-frame", local: true do |f| %>
+      <% out_type_cnt = 0 %>
+      <% out_type_ary = ["QRのみ", "未導入", "マルチ決済"] %>
+      <%= form_with model: @form, url: result_cashes_path, method: :post, local: true do |form| %>
+      <%= form.fields_for :result_cashes do |f| %>
       <%= render "shared/error_messages", model: f.object %>
       <%= f.hidden_field :result_id, value: @result.id %>
-      <h1>切り返し種別</h1>
-      <div class="form">
-        <%= f.select :other_product10, {"指定なし": nil, "QRのみ": 0, "未導入": 1, "マルチ決済": 2}, { selected: nil }, { class: "num-input"} %>
-      </div>
+      <h1>切り返し種別<%= out_type_ary[out_type_cnt] %></h1>
+        <%= f.hidden_field :other_product10, value: out_type_cnt %>
+        <% out_type_cnt += 1 %><br>
       <h1>獲得商材</h1>
       <div class="form">
         <p>
@@ -154,8 +157,9 @@
           <%= f.number_field :out_get_18, class: "num-input" %>
         </p>
       </div>
+      <% end %>
       <div class="form-submit">
-        <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        <%= form.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
       </div>
       <% end %>
     </div>

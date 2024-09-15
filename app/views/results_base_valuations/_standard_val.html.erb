@@ -15,15 +15,15 @@
     <th class="progress-th2">予定</th>
     <th class="progress-th2">消化</th>
     <% end %>
-    <th class="progress-th2">訪問</th>
-    <th class="progress-th2">対応</th>
-    <th class="progress-th2">対応率</th>
-    <th class="progress-th2">対面</th>
+    <th class="progress-th2">aオーナー不在</th>
+    <th class="progress-th2">b対面</th>
     <th class="progress-th2">対面率</th>
-    <th class="progress-th2">フル①</th>
-    <th class="progress-th2">フル①率</th>
-    <th class="progress-th2">フル②</th>
-    <th class="progress-th2">フル②率</th>
+    <th class="progress-th2">cフル</th>
+    <th class="progress-th2">フル率</th>
+    <th class="progress-th2">d1情報聞いた</th>
+    <th class="progress-th2">情報聞いた率</th>
+    <th class="progress-th2">d2認証キー回収</th>
+    <th class="progress-th2">認証キー回収率</th>
     <th class="progress-th2">成約</th>
     <th class="progress-th2">成約率</th>
     <th class="progress-th2">対面</th>
@@ -59,9 +59,9 @@
     <td class="progress-td"><%= full_talk %></td>
     <td class="progress-td"><%= number_to_percentage(full_talk.to_f / interview * 100,precision: 0) rescue 0 %></td>
     <td class="progress-td"><%= full_talk2 %></td>
-    <td class="progress-td"><%= number_to_percentage(full_talk2.to_f / interview * 100,precision: 0) rescue 0 %></td>
+    <td class="progress-td"><%= number_to_percentage(full_talk2.to_f / full_talk * 100,precision: 0) rescue 0 %></td>
     <td class="progress-td"><%= get %></td>
-    <td class="progress-td"><%= number_to_percentage(get.to_f / full_talk * 100,precision: 0) rescue 0 %></td>
+    <td class="progress-td"><%= number_to_percentage(get.to_f / interview * 100,precision: 0) rescue 0 %></td>
     <td class="progress-td"><%= result_user.sum(:out_interview_18) rescue 0 %></td>
     <td class="progress-td"><%= result_user.sum(:out_full_talk_18) rescue 0 %></td>
     <td class="progress-td"><%= number_to_percentage(result_user.sum(:out_full_talk_18).to_f / result_user.sum(:out_interview_18) * 100,precision: 0) rescue 0 %></td>

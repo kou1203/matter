@@ -391,9 +391,9 @@ class ResultsController < ApplicationController
   end
 
   def out_val_type # 切返種別
-    @out_type_qr = @results.where(result_cash: {other_product10: 0})
-    @out_type_yet = @results.where(result_cash: {other_product10: 1})
-    @out_type_multi = @results.where(result_cash: {other_product10: 2})
+    @out_type_qr = @result_out.where(result_cash: {other_product10: 0})
+    @out_type_yet = @result_out.where(result_cash: {other_product10: 1})
+    @out_type_multi = @result_out.where(result_cash: {other_product10: 2})
     @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
     @type_ary = ["QRのみ", "未導入", "マルチ決済"]
     @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
@@ -654,7 +654,7 @@ class ResultsController < ApplicationController
   def daily_report
     calc_valuation
     @base_category = params[:base_category]
-    @results = Result.includes(:result_cash,:user).where(user: {base: @base_category}).where(user: {base_sub: "キャッシュレス"}).where(date: @start_date..@month)
+    @results = Result.includes(:user).where(user: {base: @base_category}).where(user: {base_sub: "キャッシュレス"}).where(date: @start_date..@month)
     @shift_digestion = 
       @results.where(shift: "キャッシュレス新規")
       .or(
@@ -788,7 +788,7 @@ class ResultsController < ApplicationController
       @e_date = params[:e_date]
     # 検索内容
     # 基準値
-      @results = Result.includes(:user,:result_cash).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
+      @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
     # 基準値
     # 商材
       @products = []
@@ -1089,7 +1089,9 @@ class ResultsController < ApplicationController
     end
 
     def set_result_and_shift # シフトと終着の変数
-      @results = Result.includes(:user, :result_cash, :type_reference_value).where(user_id: @user.id).where(date: @month.all_month)
+      @results = Result.includes(:user).where(user_id: @user.id).where(date: @month.all_month)
+      @result_type = Result.includes(:user, :type_reference_value).where(user_id: @user.id).where(date: @month.all_month)
+      @result_out = Result.includes(:user, :result_cash).where(user_id: @user.id).where(date: @month.all_month)
       @shifts = Shift.where(user_id: @user.id).where(start_time: @month.all_month)
       @result_base = Result.includes(:user, :result_cash).where(date: @month.all_month).where(shift: "キャッシュレス新規")
       @shift_digestion_new = @results.where(shift: "キャッシュレス新規").length
@@ -1210,7 +1212,6 @@ class ResultsController < ApplicationController
         Result.includes(:user)
         .where(date: @comparison_date.beginning_of_month..@comparison_date)
         .select(:id,:date,:user_id).where(user: {base_sub: "キャッシュレス"}).where(shift: "キャッシュレス決済")
-
     end
 
     def result_params # resultのストロングパラメーター

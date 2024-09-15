@@ -22,7 +22,7 @@
               <th class="date-th"><span class="date-span">売上（終着で入力）</span></th>
               <th class="date-th"><span class="date-span">獲得商材</span></th>
               <th class="date-th"><span class="date-span">備考</span></th>
-              <th class="date-th" colspan=""><span class="date-span">切り返し入力/編集</span></th>
+              <th class="date-th" colspan="3"><span class="date-span">切り返し入力/編集</span></th>
               <th class="date-th" colspan=""><span class="date-span">訪問別基準値入力/編集</span></th>
               <th class="date-th"><span class="date-span">削除</span></th>
             </tr>
@@ -33,62 +33,40 @@
             <%#日付%>
               <th class="date-th"><span class="date-span"><%= d.month %>月<%= d.day %>日</span></th>
               <% if days[d.wday] == "日" %>
-              <th class="date-th" style="color:red;"><span class="date-span"><%= days[d.wday] %></span></th>
+                <th class="date-th" style="color:red;"><span class="date-span"><%= days[d.wday] %></span></th>
               <% else %>
-              <th class="date-th"><span class="date-span"><%= days[d.wday] %></span></th>
+                <th class="date-th"><span class="date-span"><%= days[d.wday] %></span></th>
               <% end %>
               <%# その日の予定シフト %>
               <% shift = Shift.find_by(user_id: @user.id,start_time: d) %>
               <% if shift.present? %>
-              <td class="date-td"><span class="date-span"><%= link_to shift.shift.slice(-2,2), edit_shift_path(shift.id), class: "link" %></span></td>
+                <td class="date-td"><span class="date-span"><%= link_to shift.shift.slice(-2,2), edit_shift_path(shift.id), class: "link" %></span></td>
               <% else %>
-              <td class="date-td"><span class="date-span"><%= link_to "未申請", new_shift_path(user_id: @user.id, date: d), "data-turbolinks": false , class: "link"  %></span></td>
+                <td class="date-td"><span class="date-span"><%= link_to "未申請", new_shift_path(user_id: @user.id, date: d), "data-turbolinks": false , class: "link"  %></span></td>
               <% end %>
               <%# その日の消化シフト %>
-              <% result = Result.includes(:result_cash, :type_reference_value).find_by(user_id: @user.id,date: d)  %>
+              <% result = Result.includes(:type_reference_value).find_by(user_id: @user.id,date: d)  %>
+              <% out = Result.includes(:result_cash).where(date: d) %>
               <% if result.present? %><%# 消化シフトが入力されている場合 %>
-              <td class="date-td race-border"><span class="date-span"><%= link_to result.shift.slice(-2,2), edit_result_path(result.id),class: "link" %></span></td>
-              <td class="date-td race-border"><span class="date-span"><%= result.product rescue "" %></span></td>
-                <% if result.result_cash.present? %>
-                  <% if result.result_cash.other_product10 == 0 %>
-                  <td class="date-td race-border"><span class="date-span">QRのみ</span></td>
-                  <% elsif result.result_cash.other_product10 == 1 %>
-                    <td class="date-td race-border"><span class="date-span">未導入</span></td>
-                  <% elsif result.result_cash.other_product10 == 2 %>
-                    <td class="date-td race-border"><span class="date-span">マルチ決済</span></td>
-                  <% else %>
-                    <td class="date-td race-border"><span class="date-span">指定なし</span></td>
-                  <% end %>
-                <% else %>
-                  <td class="date-td race-border"><span class="date-span"></span></td>
-                <% end %>
+                <td class="date-td race-border"><span class="date-span"><%= link_to result.shift.slice(-2,2), edit_result_path(result.id),class: "link" %></span></td>
+                <td class="date-td race-border"><span class="date-span"><%= result.product rescue "" %></span></td>
+                <td class="date-td race-border"><span class="date-span"></span></td>
+              <% end %>
               <td class="date-td race-border"><span class="date-span"><%= result.ojt.name rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.area rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.profit.round().to_s(:delimited) rescue 0 %></td><%# 営業予想 %>
             <%# 獲得商材 %>
             <td class="date-td race-border"><span class="date-span">
-              <% if result.result_cash.present? %>
-                <% if result.result_cash.dmer.present? %>
-                  dメル<%= result.result_cash.dmer %><br>
-                <% end %>
-                <% if result.result_cash.aupay.present? %>
-                  auPay<%= result.result_cash.aupay %><br>
-                <% end %>
-                <% if result.result_cash.paypay.present? %>
-                  PayPay<%= result.result_cash.paypay %><br>
-                <% end %>
-                <% if result.result_cash.rakuten_pay.present? %>
-                  楽天ペイ<%= result.result_cash.rakuten_pay %><br>
-                <% end %>
-                <% if result.result_cash.airpay.present? %>
-                  AirPay<%= result.result_cash.airpay %><br>
-                <% end %>
-                <% if result.result_cash.other_product1.present? %>
-                  UsenPay<%= result.result_cash.other_product1 %><br>
-                <% end %>
+              <% if out.present? %>
+                dメル<%= out.sum(:dmer) %><br>
+                auPay<%= out.sum(:aupay) %><br>
+                PayPay<%= out.sum(:paypay) %><br>
+                楽天ペイ<%= out.sum(:rakuten_pay) %><br>
+                AirPay<%= out.sum(:airpay) %><br>
+                UsenPay<%= out.sum(:other_product1) %><br>
               <% end %>
-              <% dmer_slmt = Dmer.where(user_id: result.user_id).where(settlement: result.date).length %>
-              <% aupay_slmt = Aupay.where(user_id: result.user_id).where(settlement: result.date).length %>
+              <% dmer_slmt = Dmer.where(user_id: @user.id).where(settlement: d).length %>
+              <% aupay_slmt = Aupay.where(user_id: @user.id).where(settlement: d).length %>
               <% if dmer_slmt != 0 %>
                 dメル決済<%= dmer_slmt %><br>
               <% end %>
@@ -96,33 +74,39 @@
                 au決済<%= aupay_slmt %><br>
               <% end %>
             </span></td>
-            <td class="date-td race-border" ><span class="date-span"><%= result.remarks %></span></td>
-            <%# 編集や削除 %>
-            <% if result.shift == "キャッシュレス新規" || result.shift == "キャッシュレス決済" %>
-              <% if result.result_cash.present? %>
-              <td class="date-td race-border" ><span class="date-span"><%= link_to "切り返し編集", edit_result_cash_path(result.result_cash.id),class: "link" rescue "error" %></span></td>
-              <% else %>
-              <td class="date-td race-border" ><span class="date-span"><%= link_to "切り返し入力", result_result_cashes_new_path(result.id),class: "link" rescue "error" %></span></td>
-              <% end %>
-            <% else %>
-            <td class="total-td race-border"></td>
-            <% end %>
-            <% if result.shift == "キャッシュレス新規" %>
-              <% if result.type_reference_value.present? %>
-              <td class="date-td race-border" ><span class="date-span"><%= link_to "訪問種別基準値編集", edit_type_reference_value_path(result.type_reference_value.id), "data-turbolinks": false,class: "link" rescue "error" %></span></td>
-              <% else %>
-              <td class="date-td race-border" ><span class="date-span"><%= link_to "訪問種別基準値入力", result_type_reference_values_new_path(result.id), "data-turbolinks": false,class: "link" rescue "error" %></span></td>
-              <% end %>
-            <% else %>
-            <td class="total-td race-border"></td>
-            <% end %>
-            <td class="date-td race-border"><span class="date-span"><%= link_to "削除", result_path(result.id),method: :delete,data: {confirm: "#{result.date.strftime("%Y年%m月%d日")}の終着を削除してもよろしいですか？"},class: "link" %></span></td>
-            <% else %><%# 消化シフトが未入力の場合 %>
-                <td class="date-td"><span class="date-span"><%= link_to "未申請", new_result_path(user_id: @user.id, date: d), "data-turbolinks": false ,class: "link"  %></span></td>
-                <% 4.times do %>
-                <td class="date-td"><span class="date-span"></span></td>
+            <% if result.present? %>
+              <td class="date-td race-border" ><span class="date-span"><%= result.remarks %></span></td>
+              <%# 編集や削除 %>
+              <% if result.shift == "キャッシュレス新規" || result.shift == "キャッシュレス決済" %>
+                <% if ResultCash.where(result_id: result.id).present? %>
+                  <% out_type_ary = ["QRのみ", "未導入", "マルチ決済"] %>
+                  <% ResultCash.where(result_id: result.id).each do |out_type| %>
+                    <td class="date-td race-border" ><span class="date-span"><%= link_to "#{out_type_ary[out_type.other_product10]}切り返し編集", edit_result_cash_path(out_type.id),class: "link" rescue "error" %></span></td>
+                  <% end %>
+                <% else %>
+                  <td class="date-td race-border" ><span class="date-span"><%= link_to "切り返し入力", result_result_cashes_new_path(result.id),class: "link" rescue "error" %></span></td>
+                  <td class="date-td race-border" ><span class="date-span"></span></td>
+                  <td class="date-td race-border" ><span class="date-span"></span></td>
                 <% end %>
+              <% else %>
+                <td class="total-td race-border"></td>
               <% end %>
+              <% if result.shift == "キャッシュレス新規" %>
+                <% if result.type_reference_value.present? %>
+                  <td class="date-td race-border" ><span class="date-span"><%= link_to "訪問種別基準値編集", edit_type_reference_value_path(result.type_reference_value.id), "data-turbolinks": false,class: "link" rescue "error" %></span></td>
+                <% else %>
+                  <td class="date-td race-border" ><span class="date-span"><%= link_to "訪問種別基準値入力", result_type_reference_values_new_path(result.id), "data-turbolinks": false,class: "link" rescue "error" %></span></td>
+                <% end %>
+              <% else %>
+                <td class="total-td race-border"></td>
+              <% end %>
+              <td class="date-td race-border"><span class="date-span"><%= link_to "削除", result_path(result.id),method: :delete,data: {confirm: "#{result.date.strftime("%Y年%m月%d日")}の終着を削除してもよろしいですか？"},class: "link" %></span></td>
+            <% else %><%# 消化シフトが未入力の場合 %>
+              <td class="date-td"><span class="date-span"><%= link_to "未申請", new_result_path(user_id: @user.id, date: d), "data-turbolinks": false ,class: "link"  %></span></td>
+              <% 4.times do %>
+                <td class="date-td"><span class="date-span"></span></td>
+              <% end %>
+            <% end %>
             </tr>
           <% end %>
           </tbody>
