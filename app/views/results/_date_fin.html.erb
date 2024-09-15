@@ -46,7 +46,7 @@
               <% end %>
               <%# その日の消化シフト %>
               <% result = Result.includes(:type_reference_value).find_by(user_id: @user.id,date: d)  %>
-              <% out = Result.includes(:result_cash).where(date: d) %>
+              <% out = Result.includes(:result_cash).where(date: d).where(user_id: @user.id) %>
               <% if result.present? %><%# 消化シフトが入力されている場合 %>
                 <td class="date-td race-border"><span class="date-span"><%= link_to result.shift.slice(-2,2), edit_result_path(result.id),class: "link" %></span></td>
                 <td class="date-td race-border"><span class="date-span"><%= result.product rescue "" %></span></td>
