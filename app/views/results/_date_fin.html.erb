@@ -81,7 +81,11 @@
                 <% if ResultCash.where(result_id: result.id).present? %>
                   <% out_type_ary = ["QRのみ", "未導入", "マルチ決済"] %>
                   <% ResultCash.where(result_id: result.id).each do |out_type| %>
-                    <td class="date-td race-border" ><span class="date-span"><%= link_to "#{out_type_ary[out_type.other_product10]}切り返し編集", edit_result_cash_path(out_type.id),class: "link" rescue "error" %></span></td>
+                    <% if [0,1,2].include?(out_type.other_product10) %>
+                      <td class="date-td race-border" ><span class="date-span"><%= link_to "#{out_type_ary[out_type.other_product10]}切り返し編集", edit_result_cash_path(out_type.id),class: "link" rescue "error" %></span></td>
+                    <% else %>
+                      <td class="date-td race-border" ><span class="date-span"><%= link_to "指定なし切り返し編集", edit_result_cash_path(out_type.id),class: "link" rescue "error" %></span></td>
+                    <% end %>
                   <% end %>
                 <% else %>
                   <td class="date-td race-border" ><span class="date-span"><%= link_to "切り返し入力", result_result_cashes_new_path(result.id),class: "link" rescue "error" %></span></td>
