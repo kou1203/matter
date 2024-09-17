@@ -680,7 +680,7 @@ class ResultsController < ApplicationController
 
       ).order(position_sub: :asc)
     @result = 
-      Result.includes(:user, :result_cash).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス新規")
+      Result.includes(:user).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス新規")
       .or(
         Result.includes(:user, :result_cash).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス決済")
 
