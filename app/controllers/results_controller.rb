@@ -654,6 +654,7 @@ class ResultsController < ApplicationController
   def daily_report
     calc_valuation
     @daily_get = Result.includes(:result_cash, :user).where(user: {base: @base_category}).where(user: {base_sub: "キャッシュレス"}).where(date: @start_date..@month)
+    @today_get = Result.includes(:result_cash, :user).where(user: {base: @base_category}).where(user: {base_sub: "キャッシュレス"}).where(date: @month)
     @base_category = params[:base_category]
     @results = Result.includes(:user).where(user: {base: @base_category}).where(user: {base_sub: "キャッシュレス"}).where(date: @start_date..@month)
     @shift_digestion = 
@@ -682,7 +683,7 @@ class ResultsController < ApplicationController
     @result = 
       Result.includes(:user).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス新規")
       .or(
-        Result.includes(:user, :result_cash).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス決済")
+        Result.includes(:user).where(date: @month).where(user: {base: @base_category}).where(shift: "キャッシュレス決済")
 
       )
     @users = User.where(base: @base_category).where(base_sub: "キャッシュレス").where.not(position: "退職").order(position_sub: :asc)

@@ -33,7 +33,7 @@
 <% usen_pay_price = @calc_periods.find_by(name: "UsenPay").price %>
 <%# /単価設定 %>
 <%# 拠点の決済などの売上変数 %>
-  <% dmer_slmt_team = @shift_digestion.sum(:dmer) * dmer2_price rescue 0 %><%# dメル決済 %>
+  <% dmer_slmt_team = @daily_get.sum(:dmer) * dmer2_price rescue 0 %><%# dメル決済 %>
   <% 
     team_profit_new = 
       (@daily_get.sum(:dmer) * dmer1_price) + 
@@ -65,10 +65,10 @@
 <% end %>
 <%# /現状売上 %>
 <%# 当日売上 %>
-<% today_profit_new = (@result.where(user_id: user.id).sum(:dmer) * dmer1_price) + (@result.where(user_id: user.id).sum(:other_product1) * usen_pay_price) + (@result.where(user_id: user.id).sum(:airpay) * airpay_price)  %>
-<% today_profit_dmer = (@result.where(user_id: user.id).sum(:dmer) * dmer1_price) rescue 0 %>
+<% today_profit_new = (@today_get.where(user_id: user.id).sum(:dmer) * dmer1_price) + (@today_get.where(user_id: user.id).sum(:other_product1) * usen_pay_price) + (@today_get.where(user_id: user.id).sum(:airpay) * airpay_price)  %>
+<% today_profit_dmer = (@today_get.where(user_id: user.id).sum(:dmer) * dmer1_price) rescue 0 %>
 
-<% today_profit_airpay = (@result.where(user_id: user.id).sum(:airpay) * airpay_price) rescue 0 %>
+<% today_profit_airpay = (@today_get.where(user_id: user.id).sum(:airpay) * airpay_price) rescue 0 %>
 <%# /当日売上 %>
 <%# 平均 %>
 <% dmer_ave = 0 %>
