@@ -16,10 +16,15 @@
               <th class="date-th"><span class="date-span">予定シフト</span></th>
               <th class="date-th"><span class="date-span">消化シフト</span></th>
               <th class="date-th"><span class="date-span">基準値種別</span></th>
-              <th class="date-th"><span class="date-span">切返種別</span></th>
               <th class="date-th"><span class="date-span">帯同</span></th>
               <th class="date-th"><span class="date-span">エリア</span></th>
               <th class="date-th"><span class="date-span">売上（終着で入力）</span></th>
+              <th class="date-th"><span class="date-span">オーナー不在:a</span></th>
+              <th class="date-th"><span class="date-span">対面:b</span></th>
+              <th class="date-th"><span class="date-span">フル:c</span></th>
+              <th class="date-th"><span class="date-span">情報聞いた:d1</span></th>
+              <th class="date-th"><span class="date-span">認証キー回収:d1</span></th>
+              <th class="date-th"><span class="date-span">成約:e</span></th>
               <th class="date-th"><span class="date-span">獲得商材</span></th>
               <th class="date-th"><span class="date-span">備考</span></th>
               <th class="date-th" colspan="3"><span class="date-span">切り返し入力/編集</span></th>
@@ -49,12 +54,21 @@
               <% out = Result.includes(:result_cash).where(date: d).where(user_id: @user.id) %>
               <% if result.present? %><%# 消化シフトが入力されている場合 %>
                 <td class="date-td race-border"><span class="date-span"><%= link_to result.shift.slice(-2,2), edit_result_path(result.id),class: "link" %></span></td>
-                <td class="date-td race-border"><span class="date-span"><%= result.product rescue "" %></span></td>
-                <td class="date-td race-border"><span class="date-span"></span></td>
+              <% else %>
+                <td class="date-td"><span class="date-span"><%= link_to "未申請", new_result_path(user_id: @user.id, date: d), "data-turbolinks": false ,class: "link"  %></span></td>
               <% end %>
+                <td class="date-td race-border"><span class="date-span"><%= result.product rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.ojt.name rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.area rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.profit.round().to_s(:delimited) rescue 0 %></td><%# 営業予想 %>
+              <%# 基準値 %>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_total_visit + result.latter_total_visit rescue 0 %></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_visit + result.latter_visit rescue 0 %></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_interview + result.latter_interview rescue 0 %></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_full_talk + result.latter_full_talk rescue 0 %></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_full_talk2 + result.latter_full_talk2 rescue 0 %></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_get + result.latter_get rescue 0 %></td>
+              <%# /基準値 %>
             <%# 獲得商材 %>
             <td class="date-td race-border"><span class="date-span">
               <% if out.present? %>
@@ -106,7 +120,7 @@
               <% end %>
               <td class="date-td race-border"><span class="date-span"><%= link_to "削除", result_path(result.id),method: :delete,data: {confirm: "#{result.date.strftime("%Y年%m月%d日")}の終着を削除してもよろしいですか？"},class: "link" %></span></td>
             <% else %><%# 消化シフトが未入力の場合 %>
-              <td class="date-td"><span class="date-span"><%= link_to "未申請", new_result_path(user_id: @user.id, date: d), "data-turbolinks": false ,class: "link"  %></span></td>
+              
               <% 4.times do %>
                 <td class="date-td"><span class="date-span"></span></td>
               <% end %>
