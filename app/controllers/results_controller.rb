@@ -791,6 +791,7 @@ class ResultsController < ApplicationController
     # 検索内容
     # 基準値
       @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
+      @result_cash_base = ResultCash.includes(:result,result: :user).where(result: {date: @s_date..@e_date}).where(result: {shift: "キャッシュレス新規"})
     # 基準値
     # 商材
       @products = []
