@@ -204,7 +204,7 @@
                   <td class="total-td"><%= week_visit_ave.round(1) rescue "NaN" %></td>
                   <% end %>
                   <%# 対面率 %>
-                  <% visit_per = week_visit_ave / week_total_visit_ave * 100 %>
+                  <% visit_per = week_visit_ave / week_total_visit_ave * 100 rescue 0 %>
                   <% if visit_per.present? && (visit_per >= goal_visit) %>
                   <td class="total-td" style="color: blue;"><%= number_to_percentage(visit_per, precision: 0) rescue "NaN" %></td>
                   <% elsif dg_visit_rate > (visit_per) %>
@@ -221,7 +221,7 @@
                   <td class="total-td"><%= week_interview_ave.round(1) rescue "NaN" %></td>
                   <% end %>
                   <%# フル率 %>
-                  <% interview_per = week_interview_ave / week_visit_ave * 100 %>
+                  <% interview_per = week_interview_ave / week_visit_ave * 100 rescue 0 %>
                   <% if interview_per.present? && (interview_per >= goal_interview_rate) %>
                   <td class="total-td" style="color: blue;"><%= number_to_percentage(interview_per, precision: 0) rescue "NaN" %></td>
                   <% elsif dg_interview_rate > (interview_per) %>
