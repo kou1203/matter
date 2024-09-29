@@ -359,7 +359,7 @@ class ResultsController < ApplicationController
         else 
         week1 = month.beginning_of_month.to_date
         end
-        results_week = Result.includes(:result_cash).where(user_id: @user.id)
+        results_week = Result.where(user_id: @user.id)
         results_week1 = results_week.where(date: week1..(week1.since(6.days)))
         results_week2 = results_week.where(date: (week1.since(7.days))..(week1.since(13.days)))
         results_week3 = results_week.where(date: (week1.since(14.days))..(week1.since(20.days)))

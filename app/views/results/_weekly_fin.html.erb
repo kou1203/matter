@@ -114,12 +114,12 @@
               <% week_valuations = 0 %>
               <% week_ave = 0 %>
               <%# dメル新規獲得数と売上 %>
-                <% dmer_len_week = week.sum(:dmer) %>
+                <% dmer_len_week = week.includes(:result_cash).sum(:dmer) %>
                 <% dmer_valuations_week = dmer_len_week * @dmer1_price rescue 0 %>
                 <% week_valuations += dmer_valuations_week %>
                 <% dmer_sum_len_week += dmer_len_week %>
               <%# AirPay %>
-                <% airpay_len_week = week.sum(:airpay) %>
+                <% airpay_len_week = week.includes(:result_cash).sum(:airpay) %>
                 <% airpay_sum_len_week += airpay_len_week %>
                 <% airpay_valuations_week = airpay_len_week * @airpay_price rescue 0 %>
                 <% week_valuations += airpay_valuations_week %>
