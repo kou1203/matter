@@ -62,12 +62,12 @@
               <td class="date-td race-border"><span class="date-span"><%= result.area rescue "" %></span></td>
               <td class="date-td race-border"><span class="date-span"><%= result.profit.round().to_s(:delimited) rescue 0 %></td><%# 営業予想 %>
               <%# 基準値 %>
-              <td class="date-td race-border"><span class="date-span"><%= result.first_total_visit + result.latter_total_visit rescue 0 %></td>
-              <td class="date-td race-border"><span class="date-span"><%= result.first_visit + result.latter_visit rescue 0 %></td>
-              <td class="date-td race-border"><span class="date-span"><%= result.first_interview + result.latter_interview rescue 0 %></td>
-              <td class="date-td race-border"><span class="date-span"><%= result.first_full_talk + result.latter_full_talk rescue 0 %></td>
-              <td class="date-td race-border"><span class="date-span"><%= result.first_full_talk2 + result.latter_full_talk2 rescue 0 %></td>
-              <td class="date-td race-border"><span class="date-span"><%= result.first_get + result.latter_get rescue 0 %></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_total_visit.to_i() + result.latter_total_visit.to_i() rescue 0 %></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_visit.to_i() + result.latter_visit.to_i() rescue 0 %></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_interview.to_i() + result.latter_interview.to_i() rescue 0 %></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_full_talk.to_i() + result.latter_full_talk.to_i() rescue 0 %></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_full_talk2.to_i() + result.latter_full_talk2.to_i() rescue 0 %></td>
+              <td class="date-td race-border"><span class="date-span"><%= result.first_get.to_i() + result.latter_get.to_i() rescue 0 %></td>
               <%# /基準値 %>
             <%# 獲得商材 %>
             <td class="date-td race-border"><span class="date-span">
