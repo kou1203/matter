@@ -298,6 +298,7 @@ class ResultsController < ApplicationController
         @result_base_sum_visit = @result_base.sum(:first_visit) + @result_base.sum(:latter_visit)
         @result_base_sum_interview = @result_base.sum(:first_interview) + @result_base.sum(:latter_interview)
         @result_base_sum_full_talk = @result_base.sum(:first_full_talk) + @result_base.sum(:latter_full_talk)
+        @result_base_sum_full_talk = @result_base.sum(:first_full_talk2) + @result_base.sum(:latter_full_talk2)
         @result_base_sum_get = @result_base.sum(:first_get) + @result_base.sum(:latter_get)
     end 
   end 
