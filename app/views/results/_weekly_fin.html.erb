@@ -188,7 +188,7 @@
                   <td class="total-td" ><%= (airpay_len_week.to_f / week_shift).round(1) rescue "NaN" %></td>
                   <% end %>
                   <%# 基準値（aオーナー不在） %>
-                  <% if week_total_visit_ave >= goal_visit %>
+                  <% if week_total_visit_ave >= goal_total_visit %>
                   <td class="total-td" colspan="2" style="color:blue;"><%= week_total_visit_ave.round(1).to_s(:delimited) rescue "NaN" %></td>
                   <% elsif dg_visit > week_total_visit_ave %>
                   <td class="total-td" colspan="2" style="color:red;"><%= week_total_visit_ave.round(1).to_s(:delimited) rescue "NaN" %></td>
@@ -205,7 +205,7 @@
                   <% end %>
                   <%# 対面率 %>
                   <% visit_per = week_visit_ave / week_total_visit_ave * 100 rescue 0 %>
-                  <% if visit_per.present? && (visit_per >= goal_visit) %>
+                  <% if visit_per.present? && (visit_per >= goal_visit_rate) %>
                   <td class="total-td" style="color: blue;"><%= number_to_percentage(visit_per, precision: 0) rescue "NaN" %></td>
                   <% elsif dg_visit_rate > (visit_per) %>
                   <td class="total-td" style="color: red;"><%= number_to_percentage(visit_per, precision: 0) rescue 0 %></td>
@@ -247,7 +247,7 @@
                   <td class="total-td"><%= number_to_percentage(full_talk_per, precision: 0) rescue 0 %></td>
                   <% end %>
                   <%# 基準値（d2認証キー回収) %>
-                  <% if week_full_talk2_ave >= goal_full_talk %>
+                  <% if week_full_talk2_ave >= goal_full_talk2 %>
                   <td class="total-td" style="color:blue;"><%= week_full_talk2_ave.round(1) rescue 0 %></td>
                   <% elsif dg_interview > week_full_talk2_ave %>
                   <td class="total-td" style="color:red;"><%= week_full_talk2_ave.round(1) rescue 0 %></td>
@@ -322,7 +322,7 @@
                 <%# 基準値（オーナー不在） %>
                 <% if week_sum_total_visit_ave >= goal_total_visit %>
                 <td class="total-td"  colspan="2" style="color: blue;"><%= week_sum_total_visit_ave.round(1) rescue "NaN" %></td>
-                <% elsif dg_visit > week_sum_total_visit_ave %>
+                <% elsif dg_total_visit > week_sum_total_visit_ave %>
                 <td class="total-td"  colspan="2" style="color: red;"><%= week_sum_total_visit_ave.round(1) rescue "NaN" %></td>
                 <% else %>
                 <td class="total-td" colspan="2"><%= week_sum_total_visit_ave.round(1) rescue "NaN" %></td>
@@ -335,10 +335,10 @@
                 <% else %>
                 <td class="total-td"><%= week_sum_visit_ave.round(1) rescue "NaN" %></td>
                 <% end %>
-
-                <% if week_sum_visit_ave / week_sum_total_visit_ave * 100 >= goal_interview_rate %>
+                <%# 対面率 %>
+                <% if week_sum_visit_ave / week_sum_total_visit_ave * 100 >= goal_visit_rate %>
                 <td class="total-td" style="color:blue;"><%= number_to_percentage(week_sum_visit_ave / week_sum_total_visit_ave * 100, precision: 0) rescue "NaN" %></td>
-                <% elsif dg_interview_rate > week_sum_visit_ave / week_sum_total_visit_ave * 100 %>
+                <% elsif dg_visit_rate > week_sum_visit_ave / week_sum_total_visit_ave * 100 %>
                 <td class="total-td" style="color:red;"><%= number_to_percentage(week_sum_visit_ave / week_sum_total_visit_ave * 100, precision: 0) rescue "NaN" %></td>
                 <% else %>
                 <td class="total-td"><%= number_to_percentage(week_sum_visit_ave / week_sum_total_visit_ave * 100, precision: 0) rescue "NaN" %></td>
@@ -379,7 +379,7 @@
                 <%# 基準値(d2認証キー回収) %>
                 <% if week_sum_full_talk2_ave >= goal_full_talk2 %>
                 <td class="total-td" style="color: blue;"><%= week_sum_full_talk2_ave.round(1) rescue "NaN" %></td>
-                <% elsif dg_full_talk > week_sum_full_talk2_ave %>
+                <% elsif dg_full_talk2 > week_sum_full_talk2_ave %>
                 <td class="total-td" style="color: red;"><%= week_sum_full_talk2_ave.round(1) rescue "NaN" %></td>
                 <% else %>
                 <td class="total-td"><%= week_sum_full_talk2_ave.round(1) rescue 0 %></td>
@@ -388,7 +388,7 @@
                 <% week_hikaku = week_sum_full_talk2_ave / week_sum_full_talk_ave.to_f * 100 rescue 0 %>
                 <% if week_hikaku.present? && (week_hikaku >= goal_full_talk_rate) %>        
                 <td class="total-td" style="color:blue;"><%= number_to_percentage((week_sum_full_talk2_ave / week_sum_full_talk_ave).to_f * 100, precision: 0) rescue "NaN" %></td>
-                <% elsif dg_full_talk_rate > week_sum_full_talk2_ave / week_sum_full_talk_ave.to_f * 100 %>
+                <% elsif dg_full_talk2_rate > week_sum_full_talk2_ave / week_sum_full_talk_ave.to_f * 100 %>
                 <td class="total-td" style="color:red;"><%= number_to_percentage((week_sum_full_talk2_ave / week_sum_full_talk_ave).to_f * 100, precision: 0) rescue "NaN" %></td>
                 <% else %>
                 <td class="total-td"><%= number_to_percentage((week_sum_full_talk2_ave / week_sum_full_talk_ave).to_f * 100, precision: 0) rescue "NaN" %></td>
