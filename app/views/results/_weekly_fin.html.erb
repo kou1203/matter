@@ -190,7 +190,7 @@
                   <%# 基準値（aオーナー不在） %>
                   <% if week_total_visit_ave >= goal_total_visit %>
                   <td class="total-td" colspan="2" style="color:blue;"><%= week_total_visit_ave.round(1).to_s(:delimited) rescue "NaN" %></td>
-                  <% elsif dg_visit > week_total_visit_ave %>
+                  <% elsif dg_total_visit > week_total_visit_ave %>
                   <td class="total-td" colspan="2" style="color:red;"><%= week_total_visit_ave.round(1).to_s(:delimited) rescue "NaN" %></td>
                   <% else %>
                   <td class="total-td" colspan="2"><%= week_total_visit_ave.round(1).to_s(:delimited) rescue "NaN" %></td>
@@ -232,7 +232,7 @@
                   <%# 基準値（d1情報聞いた） %>
                   <% if week_full_talk_ave >= goal_full_talk %>
                   <td class="total-td" style="color:blue;"><%= week_full_talk_ave.round(1) rescue 0 %></td>
-                  <% elsif dg_interview > week_full_talk_ave %>
+                  <% elsif dg_full_talk > week_full_talk_ave %>
                   <td class="total-td" style="color:red;"><%= week_full_talk_ave.round(1) rescue 0 %></td>
                   <% else %>
                   <td class="total-td"><%= week_full_talk_ave.round(1) rescue 0 %></td>
@@ -249,7 +249,7 @@
                   <%# 基準値（d2認証キー回収) %>
                   <% if week_full_talk2_ave >= goal_full_talk2 %>
                   <td class="total-td" style="color:blue;"><%= week_full_talk2_ave.round(1) rescue 0 %></td>
-                  <% elsif dg_interview > week_full_talk2_ave %>
+                  <% elsif dg_full_talk2 > week_full_talk2_ave %>
                   <td class="total-td" style="color:red;"><%= week_full_talk2_ave.round(1) rescue 0 %></td>
                   <% else %>
                   <td class="total-td"><%= week_full_talk2_ave.round(1) rescue 0 %></td>
