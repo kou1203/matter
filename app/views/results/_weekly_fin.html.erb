@@ -275,7 +275,7 @@
                   <td class="total-td"><%= week_get_ave.round(1) rescue "NaN" %></td>
                   <% end %>
                   <%# 成約率 %>
-                  <% get_d2_per = week_get_ave / week_full_talk2 * 100 rescue 0 %>
+                  <% get_d2_per = week_get_ave / week_full_talk2_ave * 100 rescue 0 %>
                   <% if get_d2_per >= goal_get_rate %>
                   <td class="total-td" style="color:blue;"><%= number_to_percentage(get_d2_per, precision: 0) rescue "NaN" %></td>
                   <% elsif dg_get_rate > get_d2_per %>
