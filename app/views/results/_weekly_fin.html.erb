@@ -40,6 +40,7 @@
               <% goal_full_talk2 = 3.5 %>
               <% goal_full_talk2_rate = 70 %>
               <% goal_get = 2.8 %>
+              <% goal_get_d2_rate = 80 %>
               <% goal_get_rate = 40 %>
             <%# 死守変数 %>
               <% dg_valuations = 800000 %>
@@ -57,6 +58,7 @@
               <% dg_full_talk2 = 2.1 %>
               <% dg_full_talk2_rate = 60 %>
               <% dg_get = 1.8 %>
+              <% dg_get_d2_rate = 70 %>
               <% dg_get_rate = 30 %>
             <tr><%# 目標 %>
               <td colspan="2" class="total-td" style="color:blue;">目標</td>
@@ -75,7 +77,7 @@
               <td class="total-td" style="color:blue;"><%= goal_full_talk2 %></td>
               <td class="total-td" style="color:blue;"><%= goal_full_talk2_rate  %>%</td>
               <td class="total-td" style="color:blue;"><%= goal_get %></td>
-              <td class="total-td" style="color:blue;"><%= goal_get_rate %>%</td>
+              <td class="total-td" style="color:blue;"><%= goal_get_d2_rate %>%</td>
               <td class="total-td" style="color:blue;"><%= goal_get_rate %>%</td>
             </tr><%# /目標 %>
             <tr><%# 死守 %>
@@ -95,7 +97,7 @@
               <td class="total-td" style="color:red;"><%= dg_full_talk2 %></td>
               <td class="total-td" style="color:red;"><%= dg_full_talk2_rate  %>%</td>
               <td class="total-td" style="color:red;"><%= dg_get %></td>
-              <td class="total-td" style="color:red;"><%= dg_get_rate %>%</td>
+              <td class="total-td" style="color:red;"><%= dg_get_d2_rate %>%</td>
               <td class="total-td" style="color:red;"><%= dg_get_rate %>%</td>
             </tr><%# /死守 %>
             <%# 商材（週間の評価売上変数） %>
@@ -276,9 +278,9 @@
                   <% end %>
                   <%# 成約率 %>
                   <% get_d2_per = week_get_ave / week_full_talk2_ave * 100 rescue 0 %>
-                  <% if get_d2_per >= goal_get_rate %>
+                  <% if get_d2_per >= goal_get_d2_rate %>
                   <td class="total-td" style="color:blue;"><%= number_to_percentage(get_d2_per, precision: 0) rescue "NaN" %></td>
-                  <% elsif dg_get_rate > get_d2_per %>
+                  <% elsif dg_get_d2_rate > get_d2_per %>
                   <td class="total-td" style="color:red;"><%= number_to_percentage(get_d2_per, precision: 0) rescue "NaN" %></td>
                   <% else %>
                   <td class="total-td"><%= number_to_percentage(get_d2_per, precision: 0) rescue "NaN" %></td>
@@ -414,9 +416,9 @@
                 <td class="total-td"><%= week_sum_get_ave.round(1) rescue "NaN" %></td>
                 <% end %>
                 <%# 基準値(e成約率) %>
-                <% if week_sum_get_ave / week_sum_full_talk2_ave * 100 >= goal_get_rate %>
+                <% if week_sum_get_ave / week_sum_full_talk2_ave * 100 >= goal_get_d2_rate %>
                 <td class="total-td" style="color: blue;"><%= number_to_percentage(week_sum_get_ave / week_sum_full_talk2_ave * 100, precision: 0) rescue "NaN" %></td>
-                <% elsif dg_get_rate > week_sum_get_ave / week_sum_full_talk2_ave * 100 %>
+                <% elsif dg_get_d2_rate > week_sum_get_ave / week_sum_full_talk2_ave * 100 %>
                 <td class="total-td" style="color: red;"><%= number_to_percentage(week_sum_get_ave / week_sum_full_talk2_ave * 100, precision: 0) rescue "NaN" %></td>
                 <% else %>
                 <td class="total-td"><%= number_to_percentage(week_sum_get_ave / week_sum_full_talk2_ave * 100, precision: 0) rescue "NaN" %></td>
