@@ -818,7 +818,7 @@ class ResultsController < ApplicationController
         @results = @results.where(user: {base: @search_base})
         @result_out = @result_out.where(user: {base: @search_base})
         @products = []
-        @dmers = Dmer.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
+        @dmers = DmerSenbai.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
         @products << @dmers
         @aupays = Aupay.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
         @products << @aupays
@@ -912,7 +912,7 @@ class ResultsController < ApplicationController
         @results = @results.where(user_id: @u_id)
         @result_out = @result_out.where(user_id: @u_id)
         @products = []
-        @dmers = Dmer.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
+        @dmers = DmerSenbai.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
         @products << @dmers
         @aupays = Aupay.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
         @products << @aupays
