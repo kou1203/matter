@@ -803,7 +803,7 @@ class ResultsController < ApplicationController
       @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
     # 商材
       @products = []
-      @dmers = Dmer.includes(:user).where(date: @s_date..@e_date)
+      @dmers = DmerSenbai.includes(:user).where(date: @s_date..@e_date)
       @products << @dmers
       @aupays = Aupay.includes(:user).where(date: @s_date..@e_date)
       @products << @aupays
@@ -897,7 +897,7 @@ class ResultsController < ApplicationController
       @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
     # 商材
       @products = []
-      @dmers = Dmer.includes(:user).where(date: @s_date..@e_date)
+      @dmers = DmerSenbai.includes(:user).where(date: @s_date..@e_date)
       @products << @dmers
       @aupays = Aupay.includes(:user).where(date: @s_date..@e_date)
       @products << @aupays
