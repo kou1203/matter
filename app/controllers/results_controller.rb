@@ -792,8 +792,15 @@ class ResultsController < ApplicationController
     # 検索内容
     # 基準値
       @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
-      @result_cash_base = ResultCash.includes(:result,result: :user).where(result: {date: @s_date..@e_date}).where(result: {shift: "キャッシュレス新規"})
-    # 基準値
+    # 切り返し
+      @result_out = Result.includes(:user, :result_cash).where(date: @s_date..@e_date).where(shift: "キャッシュレス新規")
+      @type_ary = ["QRのみ", "未導入", "マルチ決済"]
+      @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
+      @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
+      @out_type_qr = @result_out.where(result_cash: {other_product10: 0})
+      @out_type_yet = @result_out.where(result_cash: {other_product10: 1})
+      @out_type_multi = @result_out.where(result_cash: {other_product10: 2})
+      @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
     # 商材
       @products = []
       @dmers = Dmer.includes(:user).where(date: @s_date..@e_date)
@@ -809,6 +816,7 @@ class ResultsController < ApplicationController
     # 商材
       if params[:search_base].present? 
         @results = @results.where(user: {base: @search_base})
+        @result_out = @result_out.where(user: {base: @search_base})
         @products = []
         @dmers = Dmer.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
         @products << @dmers
@@ -864,11 +872,12 @@ class ResultsController < ApplicationController
   end
 
   def person_productivity
+    # 基準値
     # 検索内容
     @search_user = params[:search_user]
       if params[:search_user].present? && User.where("name LIKE ?","%#{@search_user}%").present?
         @u_id = User.where("name LIKE ?","%#{@search_user}%").first.id
-      else  
+      else
         @u_id = nil
       end
       # @u_id = User.where("name LIKE ?","%#{@search_user}%").first.id
@@ -876,8 +885,16 @@ class ResultsController < ApplicationController
       @e_date = params[:e_date]
     # 検索内容
     # 基準値
-      @results = Result.includes(:user,:result_cash).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
-    # 基準値
+      @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
+    # 切り返し
+      @result_out = Result.includes(:user, :result_cash).where(date: @s_date..@e_date)
+      @type_ary = ["QRのみ", "未導入", "マルチ決済"]
+      @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
+      @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
+      @out_type_qr = @result_out.where(result_cash: {other_product10: 0})
+      @out_type_yet = @result_out.where(result_cash: {other_product10: 1})
+      @out_type_multi = @result_out.where(result_cash: {other_product10: 2})
+      @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
     # 商材
       @products = []
       @dmers = Dmer.includes(:user).where(date: @s_date..@e_date)
@@ -893,6 +910,7 @@ class ResultsController < ApplicationController
     # 商材
       if @u_id.present? 
         @results = @results.where(user_id: @u_id)
+        @result_out = @result_out.where(user_id: @u_id)
         @products = []
         @dmers = Dmer.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
         @products << @dmers
