@@ -65,10 +65,19 @@ module DmerSenbaiValuationCalc
       @dmer_senbai_done_slmter
       .where(result_point: start_date(@dmer_senbai2_calc_data)..end_date(@dmer_senbai2_calc_data))
       .where(picture_check_date: ..end_date(@dmer_senbai2_calc_data))
+      .where(settlement: ..end_date(@dmer_senbai2_calc_data))
       .or(
         @dmer_senbai_done_slmter
         .where(result_point: ..end_date(@dmer_senbai2_calc_data))
         .where(picture_check_date: start_date(@dmer_senbai2_calc_data)..end_date(@dmer_senbai2_calc_data))
+        .where(settlement: ..end_date(@dmer_senbai2_calc_data))
+
+      )
+      .or(
+        @dmer_senbai_done_slmter
+        .where(result_point: ..end_date(@dmer_senbai2_calc_data))
+        .where(picture_check_date: ..end_date(@dmer_senbai2_calc_data))
+        .where(settlement: start_date(@dmer_senbai2_calc_data)..end_date(@dmer_senbai2_calc_data))
 
       )
     # 2回目決済（2回目決済者）
