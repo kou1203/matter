@@ -170,16 +170,14 @@ class ResultsController < ApplicationController
   def create 
     @users = User.where.not(position: "退職")
     @result = Result.new(result_params)
-    if @result.save 
-      if @result.shift == "キャッシュレス新規"
-        redirect_to  result_type_reference_values_new_path(@result.id)
-      elsif @result.shift == "キャッシュレス決済"
+    if @result.save
+      if @result.shift == "キャッシュレス新規" || @result.shift == "キャッシュレス決済"
         redirect_to  result_result_cashes_new_path(@result.id)
-      else  
+      else
         redirect_to session[:previous_url]
-      end  
-    else  
-      render :new 
+      end
+    else
+      render :new
     end
   end
 
@@ -306,11 +304,6 @@ class ResultsController < ApplicationController
   def date_fin # 日々の終着
     @date_period = @month.beginning_of_month.to_date..@month.end_of_month.to_date
     render partial: "date_fin", locals: {date_period:@date_period} # @date_periodを遅延ロード
-  end 
-  
-  def type_refecence_val # 商材別基準値
-    
-    render partial: "type_refecence_val", locals: {} # @date_periodを遅延ロード
   end
 
   def store_val # 店舗別基準値
@@ -1244,7 +1237,6 @@ class ResultsController < ApplicationController
         :shift,
         :ojt_id, 
         :profit,
-        :product,
         :ojt_start,
         :ojt_end,
         :remarks,
