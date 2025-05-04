@@ -56,30 +56,19 @@
         </td>
         <% dmer = 0 %>
         <% aupay = 0 %>
-        <% rakuten_pay = 0 %>
-        <% airpay = 0 %>
         <% dmer_price = 8000 %>
         <% aupay_price = 6000 %>
-        <% rakuten_pay_price = 4000 %>
-        <% airpay_price = 6000 %>
         <% ojts.each do |ojt_data| %>
         <% if ojt_data.result_cash.present? %>
-          <% dmer += ojt_data.result_cash.dmer.to_f %>
-          <% aupay += ojt_data.result_cash.aupay.to_f %>
-          <% rakuten_pay += ojt_data.result_cash.rakuten_pay.to_f %>
-          <% airpay += ojt_data.result_cash.airpay.to_f %>
+          <% dmer += ojt_data.result_cash.sum(:dmer).to_f %>
+          <% aupay += ojt_data.result_cash.sum(:aupay).to_f %>
         <% end %>
         <% end %>
         <td><%= (dmer / ojts.length).round(1) rescue 0 %></td>
         <td><%= (aupay / ojts.length).round(1) rescue 0 %></td>
         <td><%= (rakuten_pay / ojts.length).round(1) rescue 0 %></td>
         <td><%= (airpay / ojts.length).round(1) rescue 0 %></td>
-        <td><%= 
-          (((dmer * dmer_price) +
-          (aupay * aupay_price) +
-          (rakuten_pay * rakuten_pay_price) +
-          (airpay * airpay_price)) / ojts.length).round().to_s(:delimited) rescue 0
-        %></td>
+        <td><%= (((dmer * dmer_price) + (aupay * aupay_price))) %></td>
       </tr>
       <% end %>
     </table>
@@ -139,8 +128,6 @@
           <th>基準値（訪問-対面-フル-成約）</th>
           <th>dメル</th>
           <th>auPay</th>
-          <th>楽天ペイ</th>
-          <th>AirPay</th>
           <th>帯同結果</th>
         </tr>
         </thead>
@@ -174,8 +161,6 @@
             </td>
             <td><%= ojt.result_cash.dmer.to_i rescue 0 %></td>
             <td><%= ojt.result_cash.aupay.to_i rescue 0 %></td>
-            <td><%= ojt.result_cash.rakuten_pay.to_i rescue 0 %></td>
-            <td><%= ojt.result_cash.airpay.to_i rescue 0 %></td>
             <td rowspan="3"><%= link_to "詳細", ojt_path(ojt.id), class: "link" %></td>
           </tr>
           <tr class="before-row">
@@ -188,8 +173,6 @@
             <% before_get = ((ojt_before.sum {|hash| hash[:first_get].to_f} + ojt_before.sum {|hash| hash[:latter_get].to_f}).to_f / ojt_before.length).round(1) %>
             <% before_dmer = (ojt_before.sum {|hash| hash.result_cash[:dmer].to_f} / ojt_before.length).round(1) rescue 0 %>
             <% before_aupay = (ojt_before.sum {|hash| hash.result_cash[:aupay].to_f} / ojt_before.length).round(1) rescue 0 %>
-            <% before_rakuten_pay = (ojt_before.sum {|hash| hash.result_cash[:rakuten_pay].to_f} / ojt_before.length).round(1) rescue 0 %>
-            <% before_airpay = (ojt_before.sum {|hash| hash.result_cash[:airpay].to_f} / ojt_before.length).round(1) rescue 0 %>
             <td>帯同前</td>
             <% if ojt_before.length >= 2 %>
             <td><%= ojt_before.first.date.strftime("%m/%d")  %>〜<%= ojt_before.last.date.strftime("%m/%d") %></td>
@@ -206,8 +189,6 @@
             <% end %>
             <td><%= before_dmer %></td>
             <td><%= before_aupay %></td>
-            <td><%= before_rakuten_pay %></td>
-            <td><%= before_airpay %></td>
           </tr>
           <tr class="after-row">
             <% ojt_after = Result.where(user_id: ojt.user_id).where("? < date",ojt.date).first(3) %>
@@ -216,10 +197,8 @@
             <% after_interview = ((ojt_after.sum {|hash| hash[:first_interview].to_f} + ojt_after.sum {|hash| hash[:latter_interview].to_f}).to_f / ojt_after.length).round(1) %>
             <% after_full_talk = ((ojt_after.sum {|hash| hash[:first_full_talk].to_f} + ojt_after.sum {|hash| hash[:latter_full_talk].to_f}).to_f / ojt_after.length).round(1) %>
             <% after_get = ((ojt_after.sum {|hash| hash[:first_get].to_f} + ojt_after.sum {|hash| hash[:latter_get].to_f}).to_f / ojt_after.length).round(1) %>
-            <% after_dmer = (ojt_after.sum {|hash| hash.result_cash[:dmer].to_f} / ojt_after.length).round(1) rescue 0 %>
-            <% after_aupay = (ojt_after.sum {|hash| hash.result_cash[:aupay].to_f} / ojt_after.length).round(1) rescue 0 %>
-            <% after_rakuten_pay = (ojt_after.sum {|hash| hash.result_cash[:rakuten_pay].to_f} / ojt_after.length).round(1) rescue 0 %>
-            <% after_airpay = (ojt_after.sum {|hash| hash.result_cash[:airpay].to_f} / ojt_after.length).round(1) rescue 0 %>
+            <% after_dmer = (ojt_after.sum {|hash| hash.result_cash.sum(:dmer).to_f} / ojt_after.length).round(1) rescue 0 %>
+            <% after_aupay = (ojt_after.sum {|hash| hash.result_cash.sum(:aupay).to_f} / ojt_after.length).round(1) rescue 0 %>
             <td>帯同後</td>
             <% if ojt_after.length >= 2 %>
             <td><%= ojt_after.first.date.strftime("%m/%d")  %>〜<%= ojt_after.last.date.strftime("%m/%d") %></td>
@@ -236,8 +215,6 @@
             <% end %>
             <td><%= after_dmer %></td>
             <td><%= after_aupay %></td>
-            <td><%= after_rakuten_pay %></td>
-            <td><%= after_airpay %></td>
           </tr>
           <% end %>
         <% end %>

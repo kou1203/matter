@@ -24,19 +24,13 @@
             <th class="date-th"><span class="date-span">成約</span></th>
             <th class="date-th"><span class="date-span">dメル</span></th>
             <th class="date-th"><span class="date-span">auPay</span></th>
-            <th class="date-th"><span class="date-span">楽天ペイ</span></th>
-            <th class="date-th"><span class="date-span">AirPay</span></th>
         </tr>
       </thead>
       <tbody>
       <% before_dmer = 0 %>
       <% before_aupay = 0 %>
-      <% before_rakuten_pay = 0 %>
-      <% before_airpay = 0 %>
       <% after_dmer = 0 %>
       <% after_aupay = 0 %>
-      <% after_rakuten_pay = 0 %>
-      <% after_airpay = 0 %>
       <% @ojt_before.each do |ojt| %>
         <tr class="show-row">
           <th class="date-th"><span class="date-span"><%= ojt.date.month %>月<%= ojt.date.day %>日</span></th>
@@ -50,20 +44,12 @@
           <td class="date-td"><span class="date-span"><%= ojt.first_get.to_i + ojt.latter_get.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.result_cash.dmer.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.result_cash.aupay.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.rakuten_pay.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.airpay.to_i rescue 0 %></span></td>
           <% if ojt.result_cash.present? %>
-            <% if ojt.result_cash.dmer.present? %>
-            <% before_dmer += ojt.result_cash.dmer  %>
+            <% if ojt.result_cash.sum(:dmer) != 0 %>
+            <% before_dmer += ojt.result_cash.sum(:dmer) %>
             <% end %>
-            <% if ojt.result_cash.aupay.present? %>
-            <% before_aupay += ojt.result_cash.aupay  %>
-            <% end %>
-            <% if ojt.result_cash.rakuten_pay.present? %>
-            <% before_rakuten_pay += ojt.result_cash.rakuten_pay %>
-            <% end %>
-            <% if ojt.result_cash.airpay.present? %>
-            <% before_airpay += ojt.result_cash.airpay %>
+            <% if ojt.result_cash.sum(:aupay) != 0 %>
+            <% before_aupay += ojt.sum(:aupay)  %>
             <% end %>
           <% end %>
         </tr>
@@ -80,8 +66,6 @@
           <td class="date-td"><span class="date-span"><%= @ojt_date.first_get.to_i + @ojt_date.latter_get.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.dmer.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.aupay.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.rakuten_pay.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.airpay.to_i rescue 0 %></span></td>
         </tr>
       <% @ojt_after.each do |ojt| %>
         <tr class="show-row">
@@ -96,20 +80,12 @@
           <td class="date-td"><span class="date-span"><%= ojt.first_get.to_i + ojt.latter_get.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.result_cash.dmer.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.result_cash.aupay.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.rakuten_pay.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.airpay.to_i rescue 0 %></span></td>
           <% if ojt.result_cash.present? %>
             <% if ojt.result_cash.dmer.present? %>
             <% after_dmer += ojt.result_cash.dmer  %>
             <% end %>
             <% if ojt.result_cash.aupay.present? %>
             <% after_aupay += ojt.result_cash.aupay  %>
-            <% end %>
-            <% if ojt.result_cash.rakuten_pay.present? %>
-            <% after_rakuten_pay += ojt.result_cash.rakuten_pay %>
-            <% end %>
-            <% if ojt.result_cash.airpay.present? %>
-            <% after_airpay += ojt.result_cash.airpay %>
             <% end %>
           <% end %>
         </tr>
@@ -133,8 +109,6 @@
           <th>成約率</th>
           <th>dメル</th>
           <th>auPay</th>
-          <th>楽天ペイ</th>
-          <th>AirPay</th>
         </tr>
       </thead>
       <tbody>
@@ -153,8 +127,6 @@
           <td ><%= number_to_percentage(get_now.to_f / full_talk_now.to_f * 100,precision: 0) %></td>
           <td ><%= (@results.sum(:dmer).to_f / @results.length).round(1) %></td>
           <td ><%= (@results.sum(:aupay).to_f / @results.length).round(1) %></td>
-          <td ><%= (@results.sum(:rakuten_pay).to_f / @results.length).round(1) %></td>
-          <td ><%= (@results.sum(:airpay).to_f / @results.length).round(1) %></td>
         </tr>
         <tr class="show-row">
           <th>帯同日</th>
@@ -171,8 +143,6 @@
           <td ><%= number_to_percentage(get.to_f / full_talk.to_f * 100,precision: 0) %></td>
           <td ><%= @ojt_date.result_cash.dmer.to_f rescue 0 %></td>
           <td ><%= @ojt_date.result_cash.aupay.to_f rescue 0 %></td>
-          <td ><%= @ojt_date.result_cash.rakuten_pay.to_f rescue 0 %></td>
-          <td ><%= @ojt_date.result_cash.airpay.to_f rescue 0 %></td>
         </tr>
         <% if @ojt_before.present? %>
         <tr class="show-row">
@@ -186,8 +156,6 @@
           <%# 商材別の平均変数 %>
           <% before_dmer_ave = before_dmer.to_f / @ojt_before.length %>
           <% before_aupay_ave = before_aupay.to_f / @ojt_before.length %>
-          <% before_rakuten_pay_ave = before_rakuten_pay.to_f / @ojt_before.length %>
-          <% before_airpay_ave = before_airpay.to_f / @ojt_before.length %>
 
           <td><%= before_total_visit = ((@ojt_before.sum {|hash| hash[:first_total_visit].to_f} + @ojt_before.sum {|hash| hash[:latter_total_visit].to_f}).to_f / @ojt_before.length).round(1) %></td>
           <td><%= before_visit = ((@ojt_before.sum {|hash| hash[:first_visit].to_f} + @ojt_before.sum {|hash| hash[:latter_visit].to_f}).to_f / @ojt_before.length).round(1) %></td>
@@ -200,8 +168,6 @@
           <td ><%= number_to_percentage(before_get.to_f / before_full_talk.to_f * 100,precision: 0) %></td>
           <td><%= before_dmer_ave.round(1) %></td>
           <td><%= before_aupay_ave.round(1) %></td>
-          <td><%= before_rakuten_pay_ave.round(1) %></td>
-          <td><%= before_airpay_ave.round(1) %></td>
         </tr>
         <% end %>
         <% if @ojt_after.present? %>
@@ -263,16 +229,6 @@
           <% else %>
           <td style="color: red;"><%= after_aupay_ave.round(1) %></td>
           <% end %>
-          <% if after_rakuten_pay_ave.to_f >= before_rakuten_pay_ave.to_f %>
-          <td style="color: blue;"><%= after_rakuten_pay_ave.round(1) %></td>
-          <% else %>
-          <td style="color: red;"><%= after_rakuten_pay_ave.round(1) %></td>
-          <% end %>
-          <% if after_airpay_ave.to_f >= before_airpay_ave.to_f %>
-          <td style="color: blue;"><%= after_airpay_ave.round(1) %></td>
-          <% else %>
-          <td style="color: red;"><%= after_airpay_ave.round(1) %></td>
-          <% end %>
         </tr>
         <tr class="show-row">
           <th>差異</th>
@@ -316,16 +272,6 @@
           <td style="color: blue;"><%= (after_aupay_ave.to_f - before_aupay_ave.to_f).round(1) %></td>
           <% else %>
           <td style="color: red;"><%= (after_aupay_ave.to_f - before_aupay_ave.to_f).round(1) %></td>
-          <% end %>
-          <% if after_rakuten_pay_ave.to_f >= before_rakuten_pay_ave.to_f %>
-          <td style="color: blue;"><%= (after_rakuten_pay_ave.to_f - before_rakuten_pay_ave.to_f).round(1) %></td>
-          <% else %>
-          <td style="color: red;"><%= (after_rakuten_pay_ave.to_f - before_rakuten_pay_ave.to_f).round(1) %></td>
-          <% end %>
-          <% if after_airpay_ave.to_f >= before_airpay_ave.to_f %>
-          <td style="color: blue;"><%= (after_airpay_ave.to_f - before_airpay_ave.to_f).round(1) %></td>
-          <% else %>
-          <td style="color: else;"><%= (after_airpay_ave.to_f - before_airpay_ave.to_f).round(1) %></td>
           <% end %>
         </tr>
         <% end %>
