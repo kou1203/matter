@@ -42,8 +42,8 @@
           <td class="date-td"><span class="date-span"><%= ojt.first_interview.to_i + ojt.latter_interview.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.first_full_talk.to_i + ojt.latter_full_talk.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.first_get.to_i + ojt.latter_get.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.dmer.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.aupay.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.sum(:dmer).to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.sum(:aupay).to_i rescue 0 %></span></td>
           <% if ojt.result_cash.present? %>
             <% if ojt.result_cash.sum(:dmer) != 0 %>
             <% before_dmer += ojt.result_cash.sum(:dmer) %>
@@ -64,8 +64,8 @@
           <td class="date-td"><span class="date-span"><%= @ojt_date.first_interview.to_i + @ojt_date.latter_interview.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.first_full_talk.to_i + @ojt_date.latter_full_talk.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= @ojt_date.first_get.to_i + @ojt_date.latter_get.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.dmer.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.aupay.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.sum(:dmer).to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= @ojt_date.result_cash.sum(:aupay).to_i rescue 0 %></span></td>
         </tr>
       <% @ojt_after.each do |ojt| %>
         <tr class="show-row">
@@ -78,14 +78,14 @@
           <td class="date-td"><span class="date-span"><%= ojt.first_interview.to_i + ojt.latter_interview.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.first_full_talk.to_i + ojt.latter_full_talk.to_i rescue 0 %></span></td>
           <td class="date-td"><span class="date-span"><%= ojt.first_get.to_i + ojt.latter_get.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.dmer.to_i rescue 0 %></span></td>
-          <td class="date-td"><span class="date-span"><%= ojt.result_cash.aupay.to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.sum(:dmer).to_i rescue 0 %></span></td>
+          <td class="date-td"><span class="date-span"><%= ojt.result_cash.sum(:aupay).to_i rescue 0 %></span></td>
           <% if ojt.result_cash.present? %>
-            <% if ojt.result_cash.dmer.present? %>
-            <% after_dmer += ojt.result_cash.dmer  %>
+            <% if ojt.result_cash.sum(:dmer) != 0 %>
+            <% after_dmer += ojt.result_cash.sum(:dmer)  %>
             <% end %>
-            <% if ojt.result_cash.aupay.present? %>
-            <% after_aupay += ojt.result_cash.aupay  %>
+            <% if ojt.result_cash.sum(:aupay) != 0 %>
+            <% after_aupay += ojt.result_cash.sum(:aupay) %>
             <% end %>
           <% end %>
         </tr>
@@ -141,8 +141,8 @@
           <td ><%= number_to_percentage(full_talk.to_f / interview.to_f * 100,precision: 0) %></td>
           <td ><%= get = @ojt_date.first_get + @ojt_date.latter_get rescue 0 %></td>
           <td ><%= number_to_percentage(get.to_f / full_talk.to_f * 100,precision: 0) %></td>
-          <td ><%= @ojt_date.result_cash.dmer.to_f rescue 0 %></td>
-          <td ><%= @ojt_date.result_cash.aupay.to_f rescue 0 %></td>
+          <td ><%= @ojt_date.result_cash.sum(:dmer).to_f rescue 0 %></td>
+          <td ><%= @ojt_date.result_cash.sum(:aupay).to_f rescue 0 %></td>
         </tr>
         <% if @ojt_before.present? %>
         <tr class="show-row">
@@ -217,8 +217,6 @@
           <%# 商材別の平均変数 %>
           <% after_dmer_ave = after_dmer.to_f / @ojt_after.length %>
           <% after_aupay_ave = after_aupay.to_f / @ojt_after.length %>
-          <% after_rakuten_pay_ave = after_rakuten_pay.to_f / @ojt_after.length %>
-          <% after_airpay_ave = after_airpay.to_f / @ojt_after.length %>
           <% if after_dmer_ave.to_f >= before_dmer_ave.to_f %>
           <td style="color: blue;"><%= after_dmer_ave.round(1) %></td>
           <% else %>
