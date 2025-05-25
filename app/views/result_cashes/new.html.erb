@@ -9,12 +9,12 @@
   <div data-scope-path="shared/form">
     <div class="form-main">
       <div class="form-title"><h1><%= current_user.name %>終着入力</h1></div>
-        <button id="memo-button">メモ</button>
+      <button id="memo-button">メモ</button>
       <div class="memo-form" id="memo-page"><textarea></textarea></div>
       <%# form_with model: @result_cash,url: result_result_cashes_create_path(@result.id), local: true, class: "form-frame", local: true do |f| %>
       <% out_type_cnt = 0 %>
       <% out_type_ary = ["QRのみ", "未導入", "マルチ決済"] %>
-      <%= form_with model: @form, url: result_cashes_path, method: :post, local: true do |form| %>
+      <%= form_with model: @form, url: result_result_cashes_create_path(@result.id), method: :post, local: true do |form| %>
       <%= form.fields_for :result_cashes do |f| %>
       <%= render "shared/error_messages", model: f.object %>
       <%= f.hidden_field :result_id, value: @result.id %>

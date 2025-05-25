@@ -122,6 +122,8 @@ Rails.application.routes.draw do
   resources :results,expect: [:show]  do 
     get 'result_cashes/new'
     post 'result_cashes/create'
+    get 'result_types/new'
+    post 'result_types/create'
     get 'result_casas/new'
     get 'result_summits/new'
     post 'result_summits/create'
@@ -153,6 +155,15 @@ Rails.application.routes.draw do
   end
   resources :type_reference_values, only: [:edit, :update]
 
+  resources :result_types do 
+    resources :deal_attributes do
+      collection do
+        get :edit_all
+        patch :update_all
+      end
+    end
+end
+
   resources :results, only: :show, param: :result_id
   get "date_fin/:id", to: "results#date_fin", as: "date_fin"
   get "weekly_fin/:id", to: "results#weekly_fin", as: "weekly_fin"
@@ -161,6 +172,7 @@ Rails.application.routes.draw do
   get "out_val_type/:id", to: "results#out_val_type", as: "out_val_type"
   get "store_val/:id", to: "results#store_val", as: "store_val"
   get "store_val_all/:id", to: "results#store_val_all", as: "store_val_all"
+  get "visit_type_val/:id", to: "results#visit_type_val", as: "visit_type_val"
 
   get "monthly_get", to: "results#monthly_get", as: "monthly_get"
   get "monthly_get_base", to: "results#monthly_get_base", as: "monthly_get_base"
@@ -181,8 +193,6 @@ Rails.application.routes.draw do
     collection { get :summary_export }
   end 
   resources :ojts, only: :show, param: :result_id
-
-
 
   resources :result_cashes do 
     collection { post :import}

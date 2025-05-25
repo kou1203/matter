@@ -110,10 +110,13 @@
                 <td class="total-td race-border"></td>
               <% end %>
               <% if result.shift == "キャッシュレス新規" %>
-                <% if result.type_reference_value.present? %>
-                  <td class="date-td race-border" ><span class="date-span"><%= link_to "訪問種別基準値編集", edit_type_reference_value_path(result.type_reference_value.id), "data-turbolinks": false,class: "link" rescue "error" %></span></td>
+                <% if result.result_type.present? %>
+                  <% result.result_type.each do |result_type| %>
+                    <% visit_type = result_type.visit_type %>
+                  <td class="date-td race-border" ><span class="date-span"><%= link_to "訪問種別基準値(#{visit_type})編集", edit_all_result_type_deal_attributes_path(result_type.id), class: "link" rescue "error" %></span></td>
+                  <% end %>
                 <% else %>
-                  <td class="date-td race-border" ><span class="date-span"><%= link_to "訪問種別基準値入力", result_type_reference_values_new_path(result.id), "data-turbolinks": false,class: "link" rescue "error" %></span></td>
+                  <td class="date-td race-border" ><span class="date-span"><%= link_to "訪問種別基準値入力", result_result_type_new_path(result.id), class: "link" rescue "error" %></span></td>
                 <% end %>
               <% else %>
                 <td class="total-td race-border"></td>

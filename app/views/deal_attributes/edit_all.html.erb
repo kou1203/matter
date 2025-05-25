@@ -1,0 +1,37 @@
+<div data-scope-path="shared/header">
+  <h1>訪問別基準値(<%= @result_type.visit_type %>)修正</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form">
+    <div class="form-main">
+      <div class="form-title"><h1><%= @result.user.name %> 訪問基準値(<%= @result_type.visit_type %>)修正</h1></div>
+      <%= form_with url: update_all_result_type_deal_attributes_path(@result_type), method: :patch do %>
+        <div class="form">
+        <% @deal_attributes.each do |deal_attribute| %>
+            <%# 基準値のkey %>
+            <% deal_dict = {
+              "a" => "a オーナー不在",
+              "b" => "b 対面",
+              "c" => "c フル",
+              "d1" => "d1 情報聞いた",
+              "d2" =>"d2 認証キー回収", 
+              "e" => "e 成約"
+            }%>
+            <%= hidden_field_tag "deal_attributes[#{deal_attribute.id}][key]", deal_attribute.key %>
+          <p><%= label :key, deal_dict[deal_attribute.key] %></p>
+          <p><%= number_field_tag  "deal_attributes[#{deal_attribute.id}][val]", deal_attribute.val,class: "input" %></p>
+          <br>
+        <% end %>
+        </div>
+        <div class="form-submit">
+            <%= submit_tag "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+

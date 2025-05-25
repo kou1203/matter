@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2024_01_28_053236) do
+ActiveRecord::Schema.define(version: 2025_05_17_073128) do
 
   create_table "activity_bases", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date", null: false
@@ -290,6 +290,13 @@ ActiveRecord::Schema.define(version: 2024_01_28_053236) do
     t.integer "travel_stock", null: false
     t.integer "other", null: false
     t.date "update_date"
+  end
+
+  create_table "deal_attributes", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "result_type_id"
+    t.string "key", null: false
+    t.integer "val"
+    t.index ["result_type_id"], name: "index_deal_attributes_on_result_type_id"
   end
 
   create_table "demaekan_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1536,6 +1543,12 @@ ActiveRecord::Schema.define(version: 2024_01_28_053236) do
     t.index ["result_id"], name: "index_result_summits_on_result_id"
   end
 
+  create_table "result_types", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "result_id"
+    t.string "visit_type", null: false
+    t.index ["result_id"], name: "index_result_types_on_result_id"
+  end
+
   create_table "results", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.bigint "user_id"
     t.date "date", null: false
@@ -1978,6 +1991,7 @@ ActiveRecord::Schema.define(version: 2024_01_28_053236) do
   add_foreign_key "austicker_date_progresses", "users"
   add_foreign_key "cash_date_progresses", "users"
   add_foreign_key "comments", "store_props"
+  add_foreign_key "deal_attributes", "result_types"
   add_foreign_key "demaekan_date_progresses", "users"
   add_foreign_key "demaekans", "store_props"
   add_foreign_key "demaekans", "users"
@@ -2025,6 +2039,7 @@ ActiveRecord::Schema.define(version: 2024_01_28_053236) do
   add_foreign_key "result_cashes", "results"
   add_foreign_key "result_sales", "users"
   add_foreign_key "result_summits", "results"
+  add_foreign_key "result_types", "results"
   add_foreign_key "results", "users"
   add_foreign_key "return_histories", "stocks"
   add_foreign_key "return_histories", "users"

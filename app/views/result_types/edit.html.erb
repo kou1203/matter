@@ -1,0 +1,52 @@
+<div data-scope-path="shared/header">
+  <h1>訪問別基準値(<%= @result_type.visit_type %>)修正</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form">
+    <div class="form-main">
+      <div class="form-title"><h1><%= @result.user.name %></h1></div>
+      <%= form_with url: update_result_types_path(@result.id), method: :patch do |f| %>
+        <div class="form">
+        <% @result_types.each_with_index do |result_type, index| %>
+          <fieldset>
+            <%# 基準値のkey %>
+            <% deal_list = [
+              {key: "a", text: "a オーナー不在"},
+              {key: "b", text: "b 対面"},
+              {key: "c", text: "c フル"},
+              {key: "d1", text: "d1 情報聞いた"},
+              {key: "d2", text: "d2 認証キー回収"},
+              {key: "e", text: "e 成約"}
+            ] %>
+            <%= fields_for "result_types[]", result_type do |pf| %>
+                <%# 親のレコード %>
+                <%= pf.hidden_field :result_id, value: @result.id %>
+                <%= pf.hidden_field :visit_type, value: @visit_types[index] %>
+                <%# /親のレコード %>
+                <% cnt = 0%>
+                <%= pf.fields_for :deal_attributes do |cf| %>
+                  <%# 子のレコード %>
+                  <%= cf.hidden_field :result_id, value: @result.id %>
+                  <%= cf.hidden_field :key, value: deal_list[cnt][:key] %>
+                  <p><%= cf.label :key, deal_list[cnt][:text] %></p>
+                  <p><%= cf.number_field :val, class: "input", value: 0,min: 0 %></p>
+                  <%# /子のレコード %>
+                  <br>
+                    <% cnt += 1 %>
+                <% end %>
+            <% end %>
+          </fieldset>
+        <% end %>
+        </div>
+        <div class="form-submit">
+            <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+

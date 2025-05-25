@@ -1,0 +1,48 @@
+<% @type_ary.each do |visit_type| %>
+  <div><%# 切返種別 %>
+    <h2>基準値(<%= visit_type %>)</h2>
+    <table class="total-tb">
+      <thead>
+      <tr>
+        <th class="total-th">内訳</th>
+        <th class="total-th">合計</th>
+        <th class="total-th">平均</th>
+        <th class="total-th">成約率</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% per_flag = 0 %>
+      <% sum_val_prev = 0 %>
+      <% deal_list = ["a", "b", "c", "d1", "d2", "e"] %>
+      <% deal_hash = {
+        "a" => "オーナー不在:a",
+        "b" => "対面:b",
+        "c" => "フル:c",
+        "d1" => "情報聞いた:d1",
+        "d2" => "認証キー回収:d2",
+        "e" => "成約:e"
+      } %>
+        <% deal_list.each do |deal| %>
+          <% target_deal = @result_types.where(result_type: {visit_type: visit_type}).where(deal_attributes: {key: deal}) %>
+          <% sum_val = target_deal.sum("val") rescue 0 %>
+          <% ave_val = (sum_val.to_f / @shift_digestion_new).round(2)  rescue 0 %>
+        <tr>
+          <th class="total-th"><%= deal_hash[deal] %></th>
+          <td class="total-td"><%= sum_val rescue 0 %></td>
+          <td class="total-td"><%= ave_val rescue 0 %></td>
+          <% if deal == "a" %>
+          <td class="total-td">-</td>
+          <% else %>
+          <td class="total-td"><%= number_to_percentage(sum_val.to_f / sum_val_prev.to_f * 100,precision: 1) rescue 0 %></td>
+          <% end %>
+          <% if deal == "e" %>
+            <% sum_val_prev = 0 %>
+          <% else %>
+            <% sum_val_prev = sum_val %>
+          <% end %>
+        </tr>
+        <% end %>
+      <tbody>
+    </table>
+  </div>
+<% end %>

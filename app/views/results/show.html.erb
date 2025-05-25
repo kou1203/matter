@@ -945,8 +945,13 @@
     <div class="result-flex"><%# 切り返し区切り 種別 %>
       <%= render_async out_val_type_path(@user.id,month: @month) %><%# 切り返し（種別） %>
     </div>
-
-
+    <div class="result-flex"><%# 訪問別基準値 %>
+      <%= 
+        render_async visit_type_val_path(@user.id,month: @month),
+        placeholder: "読み込み中...",
+        fallback: "<p>読み込みに失敗しました。時間をおいて再度お試しください。</p>"
+      %><%# 訪問別基準値 %>
+    </div>
   <div class="frame"><%# 左側区切り（日々の終着） %>
     <%= render_async date_fin_path(@user.id,month: @month) %>
   </div><%# /左側区切り（日々の終着） %>

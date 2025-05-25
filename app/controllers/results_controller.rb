@@ -5,9 +5,11 @@ class ResultsController < ApplicationController
   before_action :set_data
   before_action :back_retirement
   # showアクションのbeforeaction
-  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation_list,:date_fin, :type_refecence_val, :weekly_fin,:out_val, :out_val_type, :time_val,:time_val_all,:store_val,:store_val_all,:time_val_base]
-  before_action :set_month_product, only: [:show, :date_fin, :type_refecence_val, :weekly_fin,:out_val, :out_val_type]
-  before_action :set_result_and_shift, only: [:show, :date_fin, :type_refecence_val, :weekly_fin,:out_val, :out_val_type,:time_val,:time_val_all,:store_val,:store_val_all]
+  before_action :set_out_come ,only: [:show,:out_come,:deficiency,:slmt_list,:product_status,:inc_or_dec,:valuation_list,:date_fin, :type_refecence_val, :weekly_fin,:out_val, :out_val_type, :time_val,:time_val_all,:store_val,:store_val_all,:time_val_base, :visit_type_val]
+  before_action :set_month_product, only: [:show, :date_fin, :type_refecence_val, :weekly_fin,:out_val, :out_val_type,
+  :visit_type_val]
+  before_action :set_result_and_shift, only: [:show, :date_fin, :type_refecence_val, :weekly_fin,:out_val, :out_val_type,
+  :visit_type_val, :time_val,:time_val_all,:store_val,:store_val_all, :visit_type_val]
   # monthly_progressアクションのbeforeaction
   before_action :set_monthly_progress, only: [:monthly_get,:monthly_get_base,:sales_and_def]
 
@@ -172,7 +174,8 @@ class ResultsController < ApplicationController
     @result = Result.new(result_params)
     if @result.save
       if @result.shift == "キャッシュレス新規" || @result.shift == "キャッシュレス決済"
-        redirect_to  result_result_cashes_new_path(@result.id)
+        # redirect_to  result_result_cashes_new_path(@result.id)
+        redirect_to  result_result_types_new_path(@result.id)
       else
         redirect_to session[:previous_url]
       end
@@ -397,6 +400,14 @@ class ResultsController < ApplicationController
     @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
     render partial: "out_val_type", locals: {out_ary:@out_ary} # @out_aryを遅延ロード
   end
+
+  def visit_type_val # 個別利益表の訪問種別基準値
+    @result_types = Result.includes(:result_type,result_type: :deal_attributes).where(user_id: @user.id).where(date: @month.all_month)
+
+    @deal_list = ["a", "b", "c", "d1", "d2", "e"]
+    @type_ary = ["QRのみ", "未導入", "マルチ決済"]
+    render partial: "visit_type_val", locals: {deal_list: @deal_list}
+  end 
 
   def product_status
     @dmers = Dmer.includes(:store_prop).where(date: @month.all_month).where(user_id: @user.id)
