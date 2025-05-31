@@ -801,6 +801,8 @@ class ResultsController < ApplicationController
       @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
     # 切り返し
       @result_out = Result.includes(:user, :result_cash).where(date: @s_date..@e_date).where(shift: "キャッシュレス新規")
+    # 訪問別基準値
+      @result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @s_date..@e_date)
       @type_ary = ["QRのみ", "未導入", "マルチ決済"]
       @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
       @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
@@ -824,6 +826,7 @@ class ResultsController < ApplicationController
       if params[:search_base].present? 
         @results = @results.where(user: {base: @search_base})
         @result_out = @result_out.where(user: {base: @search_base})
+        @result_types =@result_types.where(user: {base: @search_base})
         @products = []
         @dmers = DmerSenbai.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
         @products << @dmers
@@ -895,6 +898,8 @@ class ResultsController < ApplicationController
       @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
     # 切り返し
       @result_out = Result.includes(:user, :result_cash).where(date: @s_date..@e_date)
+      # 訪問別基準値
+      @result_types = Result.includes(:result_type,result_type: :deal_attributes).where(date: @s_date..@e_date)
       @type_ary = ["QRのみ", "未導入", "マルチ決済"]
       @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
       @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
@@ -918,6 +923,7 @@ class ResultsController < ApplicationController
       if @u_id.present? 
         @results = @results.where(user_id: @u_id)
         @result_out = @result_out.where(user_id: @u_id)
+        @result_types = @result_types.where(user_id: @u_id)
         @products = []
         @dmers = DmerSenbai.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
         @products << @dmers

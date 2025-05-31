@@ -37,9 +37,9 @@
       </div><%# 検索 %>
       <% if (@s_date.present?) && (@e_date.present?) && (@e_date >= @s_date)  %>
         <% if @search_base.present? %>
-        <h2>検索拠点：<%= @search_base %>（<%= @s_date %>〜<%= @e_date %>）</h2>
+          <h2>検索拠点：<%= @search_base %>（<%= @s_date %>〜<%= @e_date %>）</h2>
         <% else %>
-        <h2>検索拠点：全拠点（<%= @s_date %>〜<%= @e_date %>）</h2>
+          <h2>検索拠点：全拠点（<%= @s_date %>〜<%= @e_date %>）</h2>
         <% end %>
         <p class="nav-text">◆基準値</p>
         <table>
@@ -88,76 +88,135 @@
             </tr>
           </tbody>
         </table>
-
-      <div style="display: flex;">
-          <%# 切り返しと生産性 %>
-          <div style="display: flex;">
-            <% @type_ary.zip(@type_result_ary) do |type, type_results| %>
-              <div>
-                <p class="nav-text">◆切り返し</p>
-                <table>
-                  <thead>
-                    <tr>
-                      <th colspan="">項目</th>
-                      <th colspan="">内容</th>
-                      <th colspan="">合計</th>
-                      <th colspan="">平均</th>
-                      <th colspan="">成約率</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                  <% @out_ary.zip(@out_num) do |out_name, out_num| %>
-                    <tr>
-                      <th rowspan="3"><%= out_name %></th>
-                      <th rowspan="">対面</th>
-                      <td><%= type_results.sum("out_interview_#{out_num}") rescue 0 %></td>
-                      <td><%= (type_results.sum("out_interview_#{out_num}").to_f / @results.length).round(2) rescue 0 %></td>
-                      <td>-</td>
-                    </tr>
-                    <tr>
-                      <th rowspan="">フル</th>
-                      <td><%= type_results.sum("out_full_talk_#{out_num}") rescue 0 %></td>
-                      <td><%= (type_results.sum("out_full_talk_#{out_num}").to_f / @results.length).round(2) rescue 0 %></td>
-                      <td><%= number_to_percentage(type_results.sum("out_full_talk_#{out_num}").to_f / type_results.sum("out_interview_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
-                    </tr>
-                    <tr>
-                      <th rowspan="">成約</th>
-                      <td><%= type_results.sum("out_get_#{out_num}") rescue 0 %></td>
-                      <td><%= (type_results.sum("out_get_#{out_num}").to_f/ @shift_digestion_new).round(2) rescue 0 %></td>
-                      <td><%= number_to_percentage(type_results.sum("out_get_#{out_num}").to_f / type_results.sum("out_full_talk_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
-                    </tr>
-                  <% end %>
-                  </tbody>
-                </table>
-              </div>
-            <% end %>
+        <%# 切り返しと生産性 %>
+        <div style="display: flex;">
+              <% @type_ary.zip(@type_result_ary) do |type, type_results| %>
+                <div>
+                  <p class="nav-text">◆切り返し</p>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th colspan="">項目</th>
+                        <th colspan="">内容</th>
+                        <th colspan="">合計</th>
+                        <th colspan="">平均</th>
+                        <th colspan="">成約率</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                    <% @out_ary.zip(@out_num) do |out_name, out_num| %>
+                      <tr>
+                        <th rowspan="3"><%= out_name %></th>
+                        <th rowspan="">対面</th>
+                        <td><%= type_results.sum("out_interview_#{out_num}") rescue 0 %></td>
+                        <td><%= (type_results.sum("out_interview_#{out_num}").to_f / @results.length).round(2) rescue 0 %></td>
+                        <td>-</td>
+                      </tr>
+                      <tr>
+                        <th rowspan="">フル</th>
+                        <td><%= type_results.sum("out_full_talk_#{out_num}") rescue 0 %></td>
+                        <td><%= (type_results.sum("out_full_talk_#{out_num}").to_f / @results.length).round(2) rescue 0 %></td>
+                        <td><%= number_to_percentage(type_results.sum("out_full_talk_#{out_num}").to_f / type_results.sum("out_interview_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
+                      </tr>
+                      <tr>
+                        <th rowspan="">成約</th>
+                        <td><%= type_results.sum("out_get_#{out_num}") rescue 0 %></td>
+                        <td><%= (type_results.sum("out_get_#{out_num}").to_f/ @shift_digestion_new).round(2) rescue 0 %></td>
+                        <td><%= number_to_percentage(type_results.sum("out_get_#{out_num}").to_f / type_results.sum("out_full_talk_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              <% end %>
           <div>
-        <div>
-          <p class="nav-text">◆生産性</p>
-        <table>
-          <thead>
-            <tr>
-              <th>商材</th>
-              <th>獲得数</th>
-              <th>一人当</th>
-              <th>生産性</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% product_names = ["dメル", "auPay", "楽天ペイ", "AirPay","UsenPay"] %>
-            <% @products.zip(product_names) do |product, name| %>
-            <tr>
-              <th colspan=""><%= name %></th>
-              <td><%= product.length rescue 0 %></td>
-              <td><%= (product.length.to_f /  @results.group(:user_id).length).round() rescue 0 %></td>
-              <td><%= (product.length.to_f /  @results.length).round(1) rescue 0 %></td>
-            </tr>
-            <% end %>
-          </tbody>
-        </table>
+            <p class="nav-text">◆生産性</p>
+          <table>
+            <thead>
+              <tr>
+                <th>商材</th>
+                <th>獲得数</th>
+                <th>一人当</th>
+                <th>生産性</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% product_names = ["dメル", "auPay", "楽天ペイ", "AirPay","UsenPay"] %>
+              <% @products.zip(product_names) do |product, name| %>
+              <tr>
+                <th colspan=""><%= name %></th>
+                <td><%= product.length rescue 0 %></td>
+                <td><%= (product.length.to_f /  @results.group(:user_id).length).round() rescue 0 %></td>
+                <td><%= (product.length.to_f /  @results.length).round(1) rescue 0 %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+          </div>
         </div>
-      </div>
-
+        <%# 訪問別基準値 %>
+        <div style="display: flex;">
+          <% @type_ary.each do |visit_type| %>
+            <div>
+              <p class="nav-text">◆訪問基準値(<%= visit_type %>)</p>
+              <% target_deal = @result_types.where(result_type: {visit_type: visit_type}) %>
+              <% sum_a = target_deal.where(deal_attributes: {key: "a"}).sum("val") rescue 0 %>
+              <% sum_b = target_deal.where(deal_attributes: {key: "b"}).sum("val") rescue 0 %>
+              <% sum_c = target_deal.where(deal_attributes: {key: "c"}).sum("val") rescue 0 %>
+              <% sum_d1 = target_deal.where(deal_attributes: {key: "d1"}).sum("val") rescue 0 %>
+              <% sum_d2 = target_deal.where(deal_attributes: {key: "d2"}).sum("val") rescue 0 %>
+              <% sum_e = target_deal.where(deal_attributes: {key: "e"}).sum("val") rescue 0 %>
+              <table>
+                <thead>
+                  <tr>
+                    <th colspan="">項目</th>
+                    <th colspan="">合計</th>
+                    <th colspan="">平均</th>
+                    <th colspan="">成約率</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th rowspan="">オーナー不在:a</th>
+                    <td><%= sum_a rescue 0 %></td>
+                    <td><%= (sum_a.to_f / @results.length).round(2) rescue 0 %></td>
+                    <td>-</td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">対面:b</th>
+                    <td><%= sum_b rescue 0 %></td>
+                    <td><%= (sum_b.to_f / @results.length).round(2) rescue 0 %></td>
+                    <td><%= number_to_percentage(sum_b.to_f / sum_a.to_f * 100,precision: 1) rescue 0 %></td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">フル:c</th>
+                    <td><%= sum_c rescue 0 %></td>
+                    <td><%= (sum_c.to_f / @results.length).round(2) rescue 0 %></td>
+                    <td><%= number_to_percentage(sum_c.to_f / sum_b.to_f * 100,precision: 1) rescue 0 %></td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">情報聞いた:d1</th>
+                    <td><%= sum_d1 rescue 0 %></td>
+                    <td><%= (sum_d1.to_f / @results.length).round(2) rescue 0 %></td>
+                    <td><%= number_to_percentage(sum_d1.to_f / sum_c.to_f * 100,precision: 1) rescue 0 %></td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">認証キー回収:d2</th>
+                    <td><%= sum_d2 rescue 0 %></td>
+                    <td><%= (sum_d2.to_f / @results.length).round(2) rescue 0 %></td>
+                    <td><%= number_to_percentage(sum_d2.to_f / sum_c.to_f * 100,precision: 1) rescue 0 %></td>
+                  </tr>
+                  <tr>
+                    <th rowspan="">成約:e</th>
+                    <td><%= sum_e rescue 0 %></td>
+                    <td><%= (sum_e.to_f / @results.length).round(2) rescue 0 %></td>
+                    <td><%= number_to_percentage(sum_e.to_f / sum_d2.to_f * 100,precision: 1) rescue 0 %></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          <% end %>
+        <div>
       <% end %>
     </div>
   </div>

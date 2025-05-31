@@ -97,7 +97,7 @@
           <div style="display: flex;">
             <% @type_ary.zip(@type_result_ary) do |type, type_results| %>
               <div>
-                <p class="nav-text">◆切り返し</p>
+                <p class="nav-text">◆切り返し(<%= type %>)</p>
                 <table>
                   <thead>
                     <tr>
@@ -173,6 +173,69 @@
       <% else %>
         <p class="nav-text"></p>
       <% end %>
+      <%# 訪問種別基準値 %>
+      <div style="display: flex;">
+        <% @type_ary.each do |visit_type| %>
+          <div>
+            <p class="nav-text">◆訪問基準値(<%= visit_type %>)</p>
+          <% target_deal = @result_types.where(result_type: {visit_type: visit_type}) %>
+          <% sum_a = target_deal.where(deal_attributes: {key: "a"}).sum("val") rescue 0 %>
+          <% sum_b = target_deal.where(deal_attributes: {key: "b"}).sum("val") rescue 0 %>
+          <% sum_c = target_deal.where(deal_attributes: {key: "c"}).sum("val") rescue 0 %>
+          <% sum_d1 = target_deal.where(deal_attributes: {key: "d1"}).sum("val") rescue 0 %>
+          <% sum_d2 = target_deal.where(deal_attributes: {key: "d2"}).sum("val") rescue 0 %>
+          <% sum_e = target_deal.where(deal_attributes: {key: "e"}).sum("val") rescue 0 %>
+            <table>
+              <thead>
+                <tr>
+                  <th colspan="">項目</th>
+                  <th colspan="">合計</th>
+                  <th colspan="">平均</th>
+                  <th colspan="">成約率</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th rowspan="">オーナー不在:a</th>
+                  <td><%= sum_a rescue 0 %></td>
+                  <td><%= (sum_a.to_f / @results.length).round(2) rescue 0 %></td>
+                  <td>-</td>
+                </tr>
+                <tr>
+                  <th rowspan="">対面:b</th>
+                  <td><%= sum_b rescue 0 %></td>
+                  <td><%= (sum_b.to_f / @results.length).round(2) rescue 0 %></td>
+                  <td><%= number_to_percentage(sum_b.to_f / sum_a.to_f * 100,precision: 1) rescue 0 %></td>
+                </tr>
+                <tr>
+                  <th rowspan="">フル:c</th>
+                  <td><%= sum_c rescue 0 %></td>
+                  <td><%= (sum_c.to_f / @results.length).round(2) rescue 0 %></td>
+                  <td><%= number_to_percentage(sum_c.to_f / sum_b.to_f * 100,precision: 1) rescue 0 %></td>
+                </tr>
+                <tr>
+                  <th rowspan="">情報聞いた:d1</th>
+                  <td><%= sum_d1 rescue 0 %></td>
+                  <td><%= (sum_d1.to_f / @results.length).round(2) rescue 0 %></td>
+                  <td><%= number_to_percentage(sum_d1.to_f / sum_c.to_f * 100,precision: 1) rescue 0 %></td>
+                </tr>
+                <tr>
+                  <th rowspan="">認証キー回収:d2</th>
+                  <td><%= sum_d2 rescue 0 %></td>
+                  <td><%= (sum_d2.to_f / @results.length).round(2) rescue 0 %></td>
+                  <td><%= number_to_percentage(sum_d2.to_f / sum_c.to_f * 100,precision: 1) rescue 0 %></td>
+                </tr>
+                <tr>
+                  <th rowspan="">成約:e</th>
+                  <td><%= sum_e rescue 0 %></td>
+                  <td><%= (sum_e.to_f / @results.length).round(2) rescue 0 %></td>
+                  <td><%= number_to_percentage(sum_e.to_f / sum_d2.to_f * 100,precision: 1) rescue 0 %></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+      <div>
     </div><%# result_indexのcss %>
   </div><%# /メインバー %>
 </div><%# /サイドバーとメインを左右に分ける %>
