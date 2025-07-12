@@ -3,17 +3,18 @@
   <h1>週間基準値・生産性確認</h1>
   <%= render "shared/header" %>
 </div>
-<div style="display:flex;">
+<div style="display:flex;"><%# 右側ヘッダーより下の全体 %>
+  <%# サイドメニュー %>
   <div data-scope-path="shared/side_bar">
     <%= render "shared/sidebar" %>
   </div>
-  <div class="main">
-    <div data-scope-path="shares/index">
+  <div class="main"><%# 右側のメイン情報 %>
+    <div data-scope-path="shares/index"><%# 利益表関連のメニュー %>
       <%= render "shared/result_links" %>
-    </div>
+    </div><%# /利益表関連のメニュー %>
     <hr>
-    <div data-scope-path="results/index">
-      <div class="nav-text" style="color: red;"><%= alert %></div>
+    <div data-scope-path="results/index"><%# 生産性基準値 %>
+      <div class="nav-text" style="color: red;"><%= alert %></div><%# エラー時のアラート %>
       <div><%# 検索 %>
         <%= form_with url: base_productivity_results_path, local: true, method: :get do |f| %>
             <p class="nav-text red">※こちらから確認したい範囲と拠点を選択してください。</p>
@@ -34,13 +35,14 @@
               </tr>
             </table>
         <% end %>
-      </div><%# 検索 %>
-      <% if (@s_date.present?) && (@e_date.present?) && (@e_date >= @s_date)  %>
-        <% if @search_base.present? %>
+      </div><%# /検索 %>
+      <% if (@s_date.present?) && (@e_date.present?) && (@e_date >= @s_date)  %><%# 検索値が正常に入力されていることを確認 %>
+        <% if @search_base.present? %><%# 拠点情報が入力されていることの確認 %>
           <h2>検索拠点：<%= @search_base %>（<%= @s_date %>〜<%= @e_date %>）</h2>
-        <% else %>
+        <% else %><%# ない場合全拠点として対応 %>
           <h2>検索拠点：全拠点（<%= @s_date %>〜<%= @e_date %>）</h2>
-        <% end %>
+        <% end %><%# /拠点情報が入力されていることの確認 %>
+        <%# 基準値 %>
         <p class="nav-text">◆基準値</p>
         <table>
           <thead>
@@ -88,50 +90,49 @@
             </tr>
           </tbody>
         </table>
-        <%# 切り返しと生産性 %>
-        <div style="display: flex;">
-              <% @type_ary.zip(@type_result_ary) do |type, type_results| %>
-                <div>
-                  <p class="nav-text">◆切り返し</p>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th colspan="">項目</th>
-                        <th colspan="">内容</th>
-                        <th colspan="">合計</th>
-                        <th colspan="">平均</th>
-                        <th colspan="">成約率</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    <% @out_ary.zip(@out_num) do |out_name, out_num| %>
-                      <tr>
-                        <th rowspan="3"><%= out_name %></th>
-                        <th rowspan="">対面</th>
-                        <td><%= type_results.sum("out_interview_#{out_num}") rescue 0 %></td>
-                        <td><%= (type_results.sum("out_interview_#{out_num}").to_f / @results.length).round(2) rescue 0 %></td>
-                        <td>-</td>
-                      </tr>
-                      <tr>
-                        <th rowspan="">フル</th>
-                        <td><%= type_results.sum("out_full_talk_#{out_num}") rescue 0 %></td>
-                        <td><%= (type_results.sum("out_full_talk_#{out_num}").to_f / @results.length).round(2) rescue 0 %></td>
-                        <td><%= number_to_percentage(type_results.sum("out_full_talk_#{out_num}").to_f / type_results.sum("out_interview_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
-                      </tr>
-                      <tr>
-                        <th rowspan="">成約</th>
-                        <td><%= type_results.sum("out_get_#{out_num}") rescue 0 %></td>
-                        <td><%= (type_results.sum("out_get_#{out_num}").to_f/ @shift_digestion_new).round(2) rescue 0 %></td>
-                        <td><%= number_to_percentage(type_results.sum("out_get_#{out_num}").to_f / type_results.sum("out_full_talk_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
-                      </tr>
-                    <% end %>
-                    </tbody>
-                  </table>
-                </div>
-              <% end %>
-        </div>
-        <%# 訪問別基準値 %>
-        <div style="display: flex;">
+        <%# /基準値 %>
+        <div style="display: flex;"><%# 切り返し %>
+          <% @type_ary.zip(@type_result_ary) do |type, type_results| %>
+            <div>
+              <p class="nav-text">◆切り返し</p>
+              <table>
+                <thead>
+                  <tr>
+                    <th colspan="">項目</th>
+                    <th colspan="">内容</th>
+                    <th colspan="">合計</th>
+                    <th colspan="">平均</th>
+                    <th colspan="">成約率</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @out_ary.zip(@out_num) do |out_name, out_num| %>
+                    <tr>
+                      <th rowspan="3"><%= out_name %></th>
+                      <th rowspan="">対面</th>
+                      <td><%= type_results.sum("out_interview_#{out_num}") rescue 0 %></td>
+                      <td><%= (type_results.sum("out_interview_#{out_num}").to_f / @results.length).round(2) rescue 0 %></td>
+                      <td>-</td>
+                    </tr>
+                    <tr>
+                      <th rowspan="">フル</th>
+                      <td><%= type_results.sum("out_full_talk_#{out_num}") rescue 0 %></td>
+                      <td><%= (type_results.sum("out_full_talk_#{out_num}").to_f / @results.length).round(2) rescue 0 %></td>
+                      <td><%= number_to_percentage(type_results.sum("out_full_talk_#{out_num}").to_f / type_results.sum("out_interview_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
+                    </tr>
+                    <tr>
+                      <th rowspan="">成約</th>
+                      <td><%= type_results.sum("out_get_#{out_num}") rescue 0 %></td>
+                      <td><%= (type_results.sum("out_get_#{out_num}").to_f/ @shift_digestion_new).round(2) rescue 0 %></td>
+                      <td><%= number_to_percentage(type_results.sum("out_get_#{out_num}").to_f / type_results.sum("out_full_talk_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% end %>
+        </div><%# /切り返し %>
+        <div style="display: flex;"><%# 訪問別基準値 %>
           <% @type_ary.each do |visit_type| %>
             <div>
               <p class="nav-text">◆訪問基準値(<%= visit_type %>)</p>
@@ -192,8 +193,41 @@
               </table>
             </div>
           <% end %>
-        <div>
-      <% end %>
-    </div>
-  </div>
-</div>
+        </div>
+        <div style="display: flex;"><%# 商材別基準値 %>
+          <div>
+            <p class="nav-text">◆商材別基準値</p>
+            <table>
+              <thead>
+                <tr>
+                  <th colspan="">項目</th>
+                  <th colspan="">内容</th>
+                  <th colspan="">合計</th>
+                  <th colspan="">平均</th>
+                  <th colspan="">成約率</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @store_type_hash.each do |industry_name, visit_get_list| %>
+                <tr>
+                  <th rowspan="2"><%= industry_name %></th>
+                  <th rowspan="">訪問</th>
+                  <td><%= visit_get_list[0] rescue 0 %></td>
+                  <td><%= (visit_get_list[0].to_f / @results.length).round(2) rescue 0 %></td>
+                  <td>-</td>
+                </tr>
+                <tr>
+                  <th rowspan="">成約</th>
+                  <td><%= visit_get_list[1] rescue 0 %></td>
+                  <td><%= (visit_get_list[1].to_f / @results.length).round(2) rescue 0 %></td>
+                  <td><%= number_to_percentage(visit_get_list[1].to_f / visit_get_list[0].to_f * 100,precision: 1) rescue 0 %></td>
+                </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div><%# /商材別基準値 %>
+      <% end %><%# /検索値が正常に入力されていることを確認 %>
+    </div><%# /生産性基準値 %>
+  </div><%# /右側のメイン情報 %>
+</div><%# /右側ヘッダーより下の全体 %>

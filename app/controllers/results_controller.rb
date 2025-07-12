@@ -120,11 +120,11 @@ class ResultsController < ApplicationController
 
   def monthly_get
     render partial: "monthly_get", locals: {}
-  end 
+  end
 
   def monthly_get_base
     render partial: "monthly_get_base", locals: {}
-  end 
+  end
 
   def sales_and_def
     @bases = ["中部SS", "関東SS", "関西SS","九州SS", "2次店"]
@@ -791,27 +791,70 @@ class ResultsController < ApplicationController
     redirect_to request.referer
   end
 
+  # 拠点別生産性・基準値
   def base_productivity
-    # 検索内容
-      @search_base = params[:search_base]
-      @s_date = params[:s_date]
-      @e_date = params[:e_date]
-    # 検索内容
-    # 基準値
-      @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
-    # 切り返し
-      @result_out = Result.includes(:user, :result_cash).where(date: @s_date..@e_date).where(shift: "キャッシュレス新規")
-    # 訪問別基準値
-      @result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @s_date..@e_date)
-      @type_ary = ["QRのみ", "未導入", "マルチ決済"]
-      @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
-      @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
-      @out_type_qr = @result_out.where(result_cash: {other_product10: 0})
-      @out_type_yet = @result_out.where(result_cash: {other_product10: 1})
-      @out_type_multi = @result_out.where(result_cash: {other_product10: 2})
-      @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
-  end
+    # 検索値
+    @search_base = params[:search_base]
+    @s_date = params[:s_date]
+    @e_date = params[:e_date]
+    # 初期値
+    @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
+    @result_out = Result.includes(:user, :result_cash).where(date: @s_date..@e_date).where(shift: "キャッシュレス新規")
+    @result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @s_date..@e_date)
+    # 検索値の入力がある際初期値に反映
+    if params[:search_base].present? 
+      @results = @results.where(user: {base: @search_base})
+      @result_out = @result_out.where(user: {base: @search_base})
+      @result_types = @result_types.where(user: {base: @search_base})
+    end
+    # 訪問種別基準値
+    @type_ary = ["QRのみ", "未導入", "マルチ決済"]
+    @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
+    @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
+    @out_type_qr = @result_out.where(result_cash: {other_product10: 0})
+    @out_type_yet = @result_out.where(result_cash: {other_product10: 1})
+    @out_type_multi = @result_out.where(result_cash: {other_product10: 2})
+    @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
 
+    # 店舗別合計変数
+    cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit)
+    cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get)
+    other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit)
+    other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get)
+    food_visit_sum = cafe_visit_sum + other_food_visit_sum
+    food_get_sum = cafe_get_sum + other_food_get_sum
+    car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit)
+    car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get)
+    other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit)
+    other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get)
+    hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit)
+    hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get)
+    manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit)
+    manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get)
+    other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit)
+    other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get)
+    # 業種別訪問・成約情報
+    @store_type_hash = {
+      "飲食" => [food_visit_sum, food_get_sum],
+      "車屋" => [car_visit_sum, car_get_sum],
+      "その他小売" => [other_retail_visit_sum, other_retail_get_sum],
+      "理容・美容" => [hair_salon_visit_sum, hair_salon_get_sum],
+      "整体・鍼灸" => [manipulative_visit_sum, manipulative_get_sum],
+      "その他サービス" => [other_service_visit_sum, other_service_get_sum]
+    }
+    # 全店舗の合計訪問数と成約数を取得
+    store_visit_sum = 0
+    store_get_sum = 0
+    @store_type_hash.each do |key, val_list|
+      # val_list[0]は訪問val_list[1]は成約数
+      store_visit_sum += val_list[0]
+      store_get_sum += val_list[1]
+    end
+    # 業種別訪問・成約情報に全店舗を追加
+    @store_type_hash["全店舗"] = [store_visit_sum, store_get_sum]
+
+  end
+  
   def team_productivity
     # 検索内容
       @search_team = params[:search_team]
@@ -861,7 +904,6 @@ class ResultsController < ApplicationController
       else
         @u_id = nil
       end
-      # @u_id = User.where("name LIKE ?","%#{@search_user}%").first.id
       @s_date = params[:s_date]
       @e_date = params[:e_date]
     # 検索内容
@@ -871,13 +913,6 @@ class ResultsController < ApplicationController
       @result_out = Result.includes(:user, :result_cash).where(date: @s_date..@e_date)
       # 訪問別基準値
       @result_types = Result.includes(:result_type,result_type: :deal_attributes).where(date: @s_date..@e_date)
-      @type_ary = ["QRのみ", "未導入", "マルチ決済"]
-      @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
-      @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
-      @out_type_qr = @result_out.where(result_cash: {other_product10: 0})
-      @out_type_yet = @result_out.where(result_cash: {other_product10: 1})
-      @out_type_multi = @result_out.where(result_cash: {other_product10: 2})
-      @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
     # 商材
       @products = []
       @dmers = DmerSenbai.includes(:user).where(date: @s_date..@e_date)
@@ -907,6 +942,13 @@ class ResultsController < ApplicationController
         @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date).where(user_id: @u_id)
         @products << @usen_pays
       end
+      @type_ary = ["QRのみ", "未導入", "マルチ決済"]
+      @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
+      @out_num = ["01", "04", "07", "08", "09", "14", "11", "12"]
+      @out_type_qr = @result_out.where(result_cash: {other_product10: 0})
+      @out_type_yet = @result_out.where(result_cash: {other_product10: 1})
+      @out_type_multi = @result_out.where(result_cash: {other_product10: 2})
+      @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
   end
 
   def out_come
