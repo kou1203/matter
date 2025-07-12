@@ -129,30 +129,6 @@
                   </table>
                 </div>
               <% end %>
-          <div>
-            <p class="nav-text">◆生産性</p>
-          <table>
-            <thead>
-              <tr>
-                <th>商材</th>
-                <th>獲得数</th>
-                <th>一人当</th>
-                <th>生産性</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% product_names = ["dメル", "auPay", "楽天ペイ", "AirPay","UsenPay"] %>
-              <% @products.zip(product_names) do |product, name| %>
-              <tr>
-                <th colspan=""><%= name %></th>
-                <td><%= product.length rescue 0 %></td>
-                <td><%= (product.length.to_f /  @results.group(:user_id).length).round() rescue 0 %></td>
-                <td><%= (product.length.to_f /  @results.length).round(1) rescue 0 %></td>
-              </tr>
-              <% end %>
-            </tbody>
-          </table>
-          </div>
         </div>
         <%# 訪問別基準値 %>
         <div style="display: flex;">

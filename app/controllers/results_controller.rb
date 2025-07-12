@@ -810,35 +810,6 @@ class ResultsController < ApplicationController
       @out_type_yet = @result_out.where(result_cash: {other_product10: 1})
       @out_type_multi = @result_out.where(result_cash: {other_product10: 2})
       @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
-    # 商材
-      @products = []
-      @dmers = DmerSenbai.includes(:user).where(date: @s_date..@e_date)
-      @products << @dmers
-      @aupays = Aupay.includes(:user).where(date: @s_date..@e_date)
-      @products << @aupays
-      @rakuten_pays = RakutenPay.includes(:user).where(date: @s_date..@e_date)
-      @products << @rakuten_pays
-      @airpays = Airpay.includes(:user).where(date: @s_date..@e_date)
-      @products << @airpays
-      @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date)
-      @products << @usen_pays
-    # 商材
-      if params[:search_base].present? 
-        @results = @results.where(user: {base: @search_base})
-        @result_out = @result_out.where(user: {base: @search_base})
-        @result_types =@result_types.where(user: {base: @search_base})
-        @products = []
-        @dmers = DmerSenbai.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
-        @products << @dmers
-        @aupays = Aupay.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
-        @products << @aupays
-        @rakuten_pays = RakutenPay.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
-        @products << @rakuten_pays
-        @airpays = Airpay.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
-        @products << @airpays
-        @usen_pays = UsenPay.includes(:user).where(date: @s_date..@e_date).where(user: {base: @search_base})
-        @products << @usen_pays
-      end
   end
 
   def team_productivity
