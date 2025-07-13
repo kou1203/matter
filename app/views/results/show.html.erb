@@ -392,7 +392,7 @@
               <tr>
                 <th class="total-th">成約:e</th>
                 <td class="total-td"><%= (@sum_get_f_s.to_f / @shift_digestion_new_s).round(2) rescue "-" %></td>
-                <td class="total-td"><%= number_to_percentage(@sum_get_f_s.to_f / @sum_full_talk2_f_s.to_f * 100, precision: 1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_f_s.to_f / @sum_interview_f_s.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
               <tr>
                 <th rowspan="6" class="total-th">後半</th>
@@ -423,7 +423,7 @@
               <tr>
                 <th class="total-th">成約:e</th>
                 <td class="total-td"><%= (@sum_get_l_s.to_f / @shift_digestion_new_s).round(2) rescue "-" %></td>
-                <td class="total-td"><%= number_to_percentage(@sum_get_l_s.to_f / @sum_full_talk_l2_s.to_f * 100, precision: 1) rescue "-" %></td>
+                <td class="total-td"><%= number_to_percentage(@sum_get_l_s.to_f / @sum_interview_l_s.to_f * 100, precision: 1) rescue "-" %></td>
               </tr>
             </tbody>
           </table>
