@@ -112,6 +112,7 @@ Rails.application.routes.draw do
     collection do
       post :update_month
       delete :delete_month
+      get :cashless
     end
   end 
 

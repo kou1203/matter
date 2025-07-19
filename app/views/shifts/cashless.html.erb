@@ -1,0 +1,61 @@
+<% days = ["日", "月", "火", "水", "木", "金", "土"] %>
+<div data-scope-path="shared/header">
+  <h1>シフト一覧</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;">
+<div data-scope-path="shared/side_bar">
+  <%= render "shared/sidebar" %>
+</div>
+<div data-scope-path="shifts/cashless">
+  <div style="padding:15px;">
+    <h2>
+      <%= link_to "<<",cashless_shifts_path(month: @month.prev_month),"data-turbolinks": false, class:"link" %>
+      <%= @month.year %>年<%= @month.month %>月シフト表（稼働訪問員<%= @shifts.group(:user_id).length %>人）
+      <%= link_to ">>",cashless_shifts_path(month: @month.next_month),"data-turbolinks": false, class:"link" %>
+    </h2>
+  <table>
+    <tr >
+      <th class="title" rowspan="3">拠点</th>
+      <th class="title" rowspan="3">人員</th>
+      <th class="title" rowspan="3">予定</th>
+      <th class="title" rowspan="3">消化</th>
+      <th class="date-title" rowspan="" colspan="<%= @date_rows %>">日付</th>
+    </tr>
+    <tr >
+      <% @month.all_month.each do |date| %>
+        <th class="" rowspan=""><%= date.day %></th>
+      <% end %>
+    </tr>
+    <tr>
+      <% @month.all_month.each do |date| %>
+        <th class="" rowspan=""><%= days[date.wday] %></th>
+      <% end %>
+    </tr>
+    <%# 拠点単位で処理を繰り返す %>
+    <% @bases.each do |base| %>
+      <%# 対象拠点の人員数 %>
+      <tr class="shift-base-tr">
+        <% @users.where(base: base).each do |user_info| %>
+        <tr class="shift-user-tr">
+          <td class="shift-td" rowspan=""><%= base %></td>
+          <td class="shift-td" rowspan=""><%= user_info.name %></td>
+          <td class="shift-td" rowspan=""><%= link_to @shifts.where(user_id: user_info.id).length, shifts_path(user_id: user_info.id), "data-turbolinks": false, class: "shift-edit-link" %></td>
+          <% color_style = @shifts.where(user_id: user_info.id).length == @results.where(user_id: user_info.id).length ? "shift-edit-link" : "shift-edit-link-red" %>
+          <td class="shift-td" rowspan=""><%= link_to @results.where(user_id: user_info.id).length, result_path(user_info.id,month: @month), "data-turbolinks": false, class: color_style %></td>
+          <% @month.all_month.each do |date| %>
+          <% shift = @shifts.where(user_id: user_info.id).find_by(start_time: date) %>
+          <% if shift.present? %>
+            <%  %>
+            <td class="shift-td" rowspan=""><%= link_to @shift_data[shift.shift], edit_shift_path(shift.id), "data-turbolinks": false, class: "shift-edit-link" %></td>
+          <% else %>
+            <td class="shift-td" rowspan=""><%= link_to "未", new_shift_path(user_id: user_info.id, date: date), "data-turbolinks": false , class: "shift-new-link"  %></td>
+          <% end %>
+          <% end %>
+        </tr>
+        <% end %>
+      </tr>
+    <% end %>
+  </table>
+  </div>
+</div>

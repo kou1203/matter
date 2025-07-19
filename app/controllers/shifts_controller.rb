@@ -1,7 +1,7 @@
 class ShiftsController < ApplicationController
 
   def index 
-    @user = current_user
+    @user = params[:user_id] ? User.find(params[:user_id]) : current_user
     @users_cash = User.where(base_sub: "キャッシュレス")
     @current_shifts = Shift.where(user_id: @user.id)
     @shift = Shift.new
@@ -90,6 +90,24 @@ class ShiftsController < ApplicationController
       flash[:notice] = "#{@month.month}月のシフトを削除しました。"
       redirect_to shift_path(params[:u_id],month: @month)
   end 
+
+  def cashless
+    @month = params[:month] ? Date.parse(params[:month]) : Date.today
+    @date_rows = @month.all_month.count
+    @shifts = Shift.includes(:user).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"}).where(start_time: @month.all_month)
+    @bases = ["中部SS", "関東SS", "関西SS", "2次店"]
+    @users = User.where(base_sub: "キャッシュレス").where.not(position: "退職").where.not(name: "株式会社ティディ")
+    @results = Result.where(date: @month.all_month)
+    @shift_data = {
+      "キャッシュレス新規" => "新規",
+      "キャッシュレス決済" => "決済",
+      "帯同" => "帯同",
+      "内勤" => "内勤",
+      "休み" => "休み",
+      "欠勤" => "欠勤"
+    }
+
+  end
 
   private 
 

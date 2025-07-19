@@ -10,7 +10,7 @@
   <p class="shift-alert"><%= notice %></p>
     <div class="cal-form">
     <%= form_for :shift, url: update_month_shifts_path , html: { method: :post } do %>
-      <h2><%= @user.name %>予定シフト</h2>
+      <h2><%= @user.name %>予定シフト (<%= link_to "全体シフトへ移動", cashless_shifts_path, class:"link" %>)</h2>
       <p class="text">チェックボックスにレ点をつけてから下のシフトを選択することで一括入力ができるようになっています。</p>
       <div class="slct-form">
       <input type="button" id="check-all" class="check-btn"  value="全選択">
