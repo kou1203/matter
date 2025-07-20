@@ -822,9 +822,9 @@ class ResultsController < ApplicationController
       @t_result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @t_start_date..@t_end_date).where(shift: "キャッシュレス新規")
     # 拠点絞込
     elsif params[:t_base] != "なし"
-      @t_results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @t_start_date..@t_end_date)
-      @t_result_out = Result.includes(:user, :result_cash).where(date: @t_start_date..@t_end_date).where(shift: "キャッシュレス新規")
-      @t_result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @t_start_date..@t_end_date).where(shift: "キャッシュレス新規")
+      @t_results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @t_start_date..@t_end_date).where(user: {base: params[:t_base]})
+      @t_result_out = Result.includes(:user, :result_cash).where(date: @t_start_date..@t_end_date).where(shift: "キャッシュレス新規").where(user: {base: params[:t_base]})
+      @t_result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @t_start_date..@t_end_date).where(shift: "キャッシュレス新規").where(user: {base: params[:t_base]})
     end
     # ユーザー絞込
     if @t_user_id.present? and @t_results.present?
