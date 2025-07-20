@@ -40,11 +40,11 @@
         <tr class="shift-user-tr">
           <td class="shift-td" rowspan=""><%= base %></td>
           <td class="shift-td" rowspan=""><%= user_info.name %></td>
-          <td class="shift-td" rowspan=""><%= link_to @shifts.where(user_id: user_info.id).length, shifts_path(user_id: user_info.id), "data-turbolinks": false, class: "shift-edit-link" %></td>
+          <td class="shift-td" rowspan=""><%= link_to @shifts.where(user_id: user_info.id).where.not(shift: "休み").where.not(shift: "欠勤").length, shifts_path(user_id: user_info.id), "data-turbolinks": false, class: "shift-edit-link" %></td>
           <%
-            color_style = @shifts.where(user_id: user_info.id).where(start_time: ...Date.today).where.not(shift: "休み").where.not(shift: "欠勤").length == @results.where(user_id: user_info.id).length ? "shift-edit-link" : "shift-edit-link-red"
+            color_style = @shifts.where(user_id: user_info.id).where(start_time: ...Date.today).where.not(shift: "休み").where.not(shift: "欠勤").where.not(shift: "内勤").length == @results.where(user_id: user_info.id).where.not(shift: "休み").where.not(shift: "欠勤").where.not(shift: "内勤").length ? "shift-edit-link" : "shift-edit-link-red"
           %>
-          <td class="shift-td" rowspan=""><%= link_to @results.where(user_id: user_info.id).length, result_path(user_info.id,month: @month), "data-turbolinks": false, class: color_style %></td>
+          <td class="shift-td" rowspan=""><%= link_to @results.where(user_id: user_info.id).where.not(shift: "休み").where.not(shift: "欠勤").length, result_path(user_info.id,month: @month), "data-turbolinks": false, class: color_style %></td>
           <% @month.all_month.each do |date| %>
           <% shift = @shifts.where(user_id: user_info.id).find_by(start_time: date) %>
           <% if shift.present? %>
