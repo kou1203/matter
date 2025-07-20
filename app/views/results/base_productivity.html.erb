@@ -112,15 +112,18 @@
           </tbody>
         </table>
         <%# /基準値 %>
+
         <% out_cnt = 0 %>
         <% @type_results_list.each do |type_results_ary| %>
           <% if out_cnt == 0 %>
             <% baseline_title = "◆切り返し" %>
-            <% out_cnt += 1 %>
+            <% digestive_shift = @results.length %>
             <% type_out_class = "" %>
+            <% out_cnt += 1 %>
           <% else %>
             <% baseline_title = "◆切り返し(比較値)" %>
             <% type_out_class = "baseline-th" %>
+            <% digestive_shift = @t_results.length %>
           <% end %>
           <div style="display: flex;"><%# 切り返し %>
             <% @type_ary.zip(type_results_ary) do |type, type_results| %>
@@ -142,19 +145,19 @@
                         <th class="<%= type_out_class %>" rowspan="3"><%= out_name %></th>
                         <th class="<%= type_out_class %>" rowspan="">対面</th>
                         <td><%= type_results.sum("out_interview_#{out_num}") rescue 0 %></td>
-                        <td><%= (type_results.sum("out_interview_#{out_num}").to_f / @results.length).round(2) rescue 0 %></td>
+                        <td><%= (type_results.sum("out_interview_#{out_num}").to_f / digestive_shift).round(2) rescue 0 %></td>
                         <td>-</td>
                       </tr>
                       <tr>
                         <th class="<%= type_out_class %>" rowspan="">フル</th>
                         <td><%= type_results.sum("out_full_talk_#{out_num}") rescue 0 %></td>
-                        <td><%= (type_results.sum("out_full_talk_#{out_num}").to_f / @results.length).round(2) rescue 0 %></td>
+                        <td><%= (type_results.sum("out_full_talk_#{out_num}").to_f / digestive_shift).round(2) rescue 0 %></td>
                         <td><%= number_to_percentage(type_results.sum("out_full_talk_#{out_num}").to_f / type_results.sum("out_interview_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
                       </tr>
                       <tr>
                         <th class="<%= type_out_class %>" rowspan="">成約</th>
                         <td><%= type_results.sum("out_get_#{out_num}") rescue 0 %></td>
-                        <td><%= (type_results.sum("out_get_#{out_num}").to_f/ @shift_digestion_new).round(2) rescue 0 %></td>
+                        <td><%= (type_results.sum("out_get_#{out_num}").to_f/ digestive_shift).round(2) rescue 0 %></td>
                         <td><%= number_to_percentage(type_results.sum("out_get_#{out_num}").to_f / type_results.sum("out_full_talk_#{out_num}").to_f * 100,precision: 1) rescue 0 %></td>
                       </tr>
                     <% end %>
@@ -169,11 +172,13 @@
         <% @result_types_list.each do |result_types| %>
           <% if visit_type_cnt == 0 %>
             <% baseline_title = "◆訪問基準値" %>
-            <% visit_type_cnt += 1 %>
             <% type_out_class = "" %>
+            <% digestive_shift = @results.length %>
+            <% visit_type_cnt += 1 %>
           <% else %>
             <% baseline_title = "◆訪問基準値(比較値)" %>
             <% type_out_class = "baseline-th" %>
+            <% digestive_shift = @t_results.length %>
           <% end %>
           <div style="display: flex;"><%# 訪問別基準値 %>
             <% @type_ary.each do |visit_type| %>
@@ -199,37 +204,37 @@
                     <tr>
                       <th class="<%= type_out_class %>" rowspan="">オーナー不在:a</th>
                       <td><%= sum_a rescue 0 %></td>
-                      <td><%= (sum_a.to_f / @results.length).round(2) rescue 0 %></td>
+                      <td><%= (sum_a.to_f / digestive_shift).round(2) rescue 0 %></td>
                       <td>-</td>
                     </tr>
                     <tr>
                       <th class="<%= type_out_class %>" rowspan="">対面:b</th>
                       <td><%= sum_b rescue 0 %></td>
-                      <td><%= (sum_b.to_f / @results.length).round(2) rescue 0 %></td>
+                      <td><%= (sum_b.to_f / digestive_shift).round(2) rescue 0 %></td>
                       <td><%= number_to_percentage(sum_b.to_f / sum_a.to_f * 100,precision: 1) rescue 0 %></td>
                     </tr>
                     <tr>
                       <th class="<%= type_out_class %>" rowspan="">フル:c</th>
                       <td><%= sum_c rescue 0 %></td>
-                      <td><%= (sum_c.to_f / @results.length).round(2) rescue 0 %></td>
+                      <td><%= (sum_c.to_f / digestive_shift).round(2) rescue 0 %></td>
                       <td><%= number_to_percentage(sum_c.to_f / sum_b.to_f * 100,precision: 1) rescue 0 %></td>
                     </tr>
                     <tr>
                       <th class="<%= type_out_class %>" rowspan="">情報聞いた:d1</th>
                       <td><%= sum_d1 rescue 0 %></td>
-                      <td><%= (sum_d1.to_f / @results.length).round(2) rescue 0 %></td>
+                      <td><%= (sum_d1.to_f / digestive_shift).round(2) rescue 0 %></td>
                       <td><%= number_to_percentage(sum_d1.to_f / sum_c.to_f * 100,precision: 1) rescue 0 %></td>
                     </tr>
                     <tr>
                       <th class="<%= type_out_class %>" rowspan="">認証キー回収:d2</th>
                       <td><%= sum_d2 rescue 0 %></td>
-                      <td><%= (sum_d2.to_f / @results.length).round(2) rescue 0 %></td>
+                      <td><%= (sum_d2.to_f / digestive_shift).round(2) rescue 0 %></td>
                       <td><%= number_to_percentage(sum_d2.to_f / sum_c.to_f * 100,precision: 1) rescue 0 %></td>
                     </tr>
                     <tr>
                       <th class="<%= type_out_class %>" rowspan="">成約:e</th>
                       <td><%= sum_e rescue 0 %></td>
-                      <td><%= (sum_e.to_f / @results.length).round(2) rescue 0 %></td>
+                      <td><%= (sum_e.to_f / digestive_shift).round(2) rescue 0 %></td>
                       <td><%= number_to_percentage(sum_e.to_f / sum_d2.to_f * 100,precision: 1) rescue 0 %></td>
                     </tr>
                   </tbody>
@@ -244,9 +249,11 @@
           <% if visit_type_cnt == 0 %>
             <% store_title = "◆店舗別基準値" %>
             <% visit_type_cnt += 1 %>
+            <% digestive_shift = @results.length %>
             <% type_out_class = "" %>
           <% else %>
             <% store_title = "◆店舗別基準値(比較値)" %>
+            <% digestive_shift = @t_results.length %>
             <% type_out_class = "baseline-th" %>
           <% end %>
           <div style="display: flex;"><%# 店舗別基準値 %>
@@ -268,13 +275,13 @@
                     <th class="<%= type_out_class %>" rowspan="2"><%= industry_name %></th>
                     <th class="<%= type_out_class %>" rowspan="">訪問</th>
                     <td><%= visit_get_list[0] rescue 0 %></td>
-                    <td><%= (visit_get_list[0].to_f / @results.length).round(2) rescue 0 %></td>
+                    <td><%= (visit_get_list[0].to_f / digestive_shift).round(2) rescue 0 %></td>
                     <td>-</td>
                   </tr>
                   <tr>
                     <th class="<%= type_out_class %>" rowspan="">成約</th>
                     <td><%= visit_get_list[1] rescue 0 %></td>
-                    <td><%= (visit_get_list[1].to_f / @results.length).round(2) rescue 0 %></td>
+                    <td><%= (visit_get_list[1].to_f / digestive_shift).round(2) rescue 0 %></td>
                     <td><%= number_to_percentage(visit_get_list[1].to_f / visit_get_list[0].to_f * 100,precision: 1) rescue 0 %></td>
                   </tr>
                   <% end %>

@@ -827,7 +827,7 @@ class ResultsController < ApplicationController
       @t_result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @t_start_date..@t_end_date).where(shift: "キャッシュレス新規")
     end
     # ユーザー絞込
-    if @t_user_id.present?
+    if @t_user_id.present? and @t_results.present?
       @t_results = @t_results.where(user_id: @t_user_id)
       @t_result_out = @t_result_out.where(user_id: @t_user_id)
       @t_result_types = @t_result_types.where(user_id: @t_user_id)
@@ -861,11 +861,11 @@ class ResultsController < ApplicationController
       @title = "検索拠点: 全拠点"
     end
     if @t_user_id.present?
-      @t_title = "比較ユーザー: #{@t_user.name}"
+      @t_title = @t_results.present? ? "比較ユーザー: #{@t_user.name}" : "比較するユーザーの情報が見つかりませんでした。(ユーザー名: #{@t_user.name})"
     elsif params[:t_base].present? and params[:t_base] != "なし"
-      @t_title = "比較拠点: #{params[:t_base]}"
+      @t_title =  @t_results.present? ? "比較拠点: #{params[:t_base]}" : "比較する拠点の情報が見つかりませんでした。(拠点: #{params[:t_base]})"
     elsif params[:t_base].blank?
-      @t_title = "比較拠点: 全拠点"
+      @t_title = @t_results.present? ? "比較拠点: 全拠点" : "比較する拠点が見つかりませんでした。"
     else
       @t_title = nil
     end
