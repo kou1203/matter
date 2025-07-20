@@ -897,22 +897,22 @@ class ResultsController < ApplicationController
     @store_type_hash_list = []
     results_list.each do |results|
       # 店舗別合計変数
-      cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit)
-      cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get)
-      other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit)
-      other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get)
+      cafe_visit_sum = results.where(shift: "キャッシュレス新規").sum(:cafe_visit)
+      cafe_get_sum = results.where(shift: "キャッシュレス新規").sum(:cafe_get)
+      other_food_visit_sum = results.where(shift: "キャッシュレス新規").sum(:other_food_visit)
+      other_food_get_sum = results.where(shift: "キャッシュレス新規").sum(:other_food_get)
       food_visit_sum = cafe_visit_sum + other_food_visit_sum
       food_get_sum = cafe_get_sum + other_food_get_sum
-      car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit)
-      car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get)
-      other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit)
-      other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get)
-      hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit)
-      hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get)
-      manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit)
-      manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get)
-      other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit)
-      other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get)
+      car_visit_sum = results.where(shift: "キャッシュレス新規").sum(:car_visit)
+      car_get_sum = results.where(shift: "キャッシュレス新規").sum(:car_get)
+      other_retail_visit_sum = results.where(shift: "キャッシュレス新規").sum(:other_retail_visit)
+      other_retail_get_sum = results.where(shift: "キャッシュレス新規").sum(:other_retail_get)
+      hair_salon_visit_sum = results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit)
+      hair_salon_get_sum = results.where(shift: "キャッシュレス新規").sum(:hair_salon_get)
+      manipulative_visit_sum = results.where(shift: "キャッシュレス新規").sum(:manipulative_visit)
+      manipulative_get_sum = results.where(shift: "キャッシュレス新規").sum(:manipulative_get)
+      other_service_visit_sum = results.where(shift: "キャッシュレス新規").sum(:other_service_visit)
+      other_service_get_sum = results.where(shift: "キャッシュレス新規").sum(:other_service_get)
       # 業種別訪問・成約情報
       store_type_hash = {
         "飲食" => [food_visit_sum, food_get_sum],
