@@ -104,7 +104,7 @@
               <td><%= (full_talk_ave / interview_ave * 100).round() rescue 0 %>%</td>
               <%# 認証キー回収:d2 %>
               <td><%= full_talk2_ave =  ((@results.sum(:first_full_talk2) + @results.sum(:latter_full_talk2)).to_f / @results.length).round(1) rescue 0 %></td>
-              <td><%= (full_talk2_ave / interview_ave * 100).round() rescue 0 %>%</td>
+              <td><%= (full_talk2_ave / full_talk_ave * 100).round() rescue 0 %>%</td>
               <%# 成約 %>
               <td><%= get_ave = ((@results.sum(:first_get) + @results.sum(:latter_get)).to_f / @results.length).round(1) rescue 0 %></td>
               <td><%= (get_ave / interview_ave * 100).round() rescue 0 %>%</td>
