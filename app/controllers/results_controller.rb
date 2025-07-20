@@ -794,19 +794,82 @@ class ResultsController < ApplicationController
   # 拠点別生産性・基準値
   def base_productivity
     # 検索値
-    @search_base = params[:search_base]
-    @s_date = params[:s_date]
-    @e_date = params[:e_date]
+    @s_base = params[:s_base]
+    @s_username = params[:s_username]
+    @s_start_date = params[:s_start_date]
+    @s_end_date = params[:s_end_date]
+    # 比較値
+    @t_base = params[:t_base]
+    @t_username = params[:t_username]
+    @t_start_date = params[:t_start_date]
+    @t_end_date = params[:t_end_date]
     # 初期値
-    @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @s_date..@e_date)
-    @result_out = Result.includes(:user, :result_cash).where(date: @s_date..@e_date).where(shift: "キャッシュレス新規")
-    @result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @s_date..@e_date)
-    # 検索値の入力がある際初期値に反映
-    if params[:search_base].present? 
-      @results = @results.where(user: {base: @search_base})
-      @result_out = @result_out.where(user: {base: @search_base})
-      @result_types = @result_types.where(user: {base: @search_base})
+    @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @s_start_date..@s_end_date)
+    @result_out = Result.includes(:user, :result_cash).where(date: @s_start_date..@s_end_date).where(shift: "キャッシュレス新規")
+    @result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @s_start_date..@s_end_date).where(shift: "キャッシュレス新規")
+    
+    # 比較値の入力がある場合
+    if @t_username.present? && User.where("name LIKE ?","%#{@t_username}%").present?
+      @t_user = User.where("name LIKE ?","%#{@t_username}%").first
+      @t_user_id = @t_user.id
+    else
+      @t_user_id = nil
     end
+    # 全拠点
+    if params[:t_base].blank?
+      @t_results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @t_start_date..@t_end_date)
+      @t_result_out = Result.includes(:user, :result_cash).where(date: @t_start_date..@t_end_date).where(shift: "キャッシュレス新規")
+      @t_result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @t_start_date..@t_end_date).where(shift: "キャッシュレス新規")
+    # 拠点絞込
+    elsif params[:t_base] != "なし"
+      @t_results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @t_start_date..@t_end_date)
+      @t_result_out = Result.includes(:user, :result_cash).where(date: @t_start_date..@t_end_date).where(shift: "キャッシュレス新規")
+      @t_result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @t_start_date..@t_end_date).where(shift: "キャッシュレス新規")
+    end
+    # ユーザー絞込
+    if @t_user_id.present?
+      @t_results = @t_results.where(user_id: @t_user_id)
+      @t_result_out = @t_result_out.where(user_id: @t_user_id)
+      @t_result_types = @t_result_types.where(user_id: @t_user_id)
+    end
+
+    # 検索値の入力がある際初期値に反映
+    if @s_username.present? && User.where("name LIKE ?","%#{@s_username}%").present?
+      @user = User.where("name LIKE ?","%#{@s_username}%").first
+      @user_id = @user.id
+    else
+      @user = nil
+      @user_id = nil
+    end
+    # 拠点絞込
+    if params[:s_base].present?
+      @results = @results.where(user: {base: params[:s_base]})
+      @result_out = @result_out.where(user: {base: params[:s_base]})
+      @result_types = @result_types.where(user: {base: params[:s_base]})
+    end
+    # ユーザー絞込
+    if @user_id.present?
+      @results = @results.where(user_id: @user_id)
+      @result_out = @result_out.where(user_id: @user_id)
+      @result_types = @result_types.where(user_id: @user_id)
+    end
+    if @user_id.present?
+      @title = "検索ユーザー: #{@user.name}"
+    elsif params[:s_base].present?
+      @title = "検索拠点: #{params[:s_base]}"
+    else
+      @title = "検索拠点: 全拠点"
+    end
+    if @t_user_id.present?
+      @t_title = "比較ユーザー: #{@t_user.name}"
+    elsif params[:t_base].present? and params[:t_base] != "なし"
+      @t_title = "比較拠点: #{params[:t_base]}"
+    elsif params[:t_base].blank?
+      @t_title = "比較拠点: 全拠点"
+    else
+      @t_title = nil
+    end
+
     # 訪問種別基準値
     @type_ary = ["QRのみ", "未導入", "マルチ決済"]
     @out_ary = ["どういうこと？", "既存のみ", "先延ばし","現金のみ","忙しい","不審","情報不足","ペロ"]
@@ -816,42 +879,61 @@ class ResultsController < ApplicationController
     @out_type_multi = @result_out.where(result_cash: {other_product10: 2})
     @type_result_ary = [@out_type_qr, @out_type_yet, @out_type_multi]
 
-    # 店舗別合計変数
-    cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit)
-    cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get)
-    other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit)
-    other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get)
-    food_visit_sum = cafe_visit_sum + other_food_visit_sum
-    food_get_sum = cafe_get_sum + other_food_get_sum
-    car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit)
-    car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get)
-    other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit)
-    other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get)
-    hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit)
-    hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get)
-    manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit)
-    manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get)
-    other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit)
-    other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get)
-    # 業種別訪問・成約情報
-    @store_type_hash = {
-      "飲食" => [food_visit_sum, food_get_sum],
-      "車屋" => [car_visit_sum, car_get_sum],
-      "その他小売" => [other_retail_visit_sum, other_retail_get_sum],
-      "理容・美容" => [hair_salon_visit_sum, hair_salon_get_sum],
-      "整体・鍼灸" => [manipulative_visit_sum, manipulative_get_sum],
-      "その他サービス" => [other_service_visit_sum, other_service_get_sum]
-    }
-    # 全店舗の合計訪問数と成約数を取得
-    store_visit_sum = 0
-    store_get_sum = 0
-    @store_type_hash.each do |key, val_list|
-      # val_list[0]は訪問val_list[1]は成約数
-      store_visit_sum += val_list[0]
-      store_get_sum += val_list[1]
+    @type_results_list = [@type_result_ary]
+    @result_types_list = [@result_types]
+    results_list = [@results]
+    if params[:t_base] != "なし"
+      @t_out_type_qr = @t_result_out.where(result_cash: {other_product10: 0})
+      @t_out_type_yet = @t_result_out.where(result_cash: {other_product10: 1})
+      @t_out_type_multi = @t_result_out.where(result_cash: {other_product10: 2})
+      @t_type_result_ary = [@t_out_type_qr, @t_out_type_yet, @t_out_type_multi]
+      if (@t_start_date.present?) && (@t_end_date.present?) && (@t_end_date >= @t_start_date)
+        @type_results_list = [@type_result_ary, @t_type_result_ary]
+        @result_types_list = [@result_types, @t_result_types]
+        results_list = [@results, @t_results]
+      end
     end
-    # 業種別訪問・成約情報に全店舗を追加
-    @store_type_hash["全店舗"] = [store_visit_sum, store_get_sum]
+
+    @store_type_hash_list = []
+    results_list.each do |results|
+      # 店舗別合計変数
+      cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit)
+      cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get)
+      other_food_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_visit)
+      other_food_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_food_get)
+      food_visit_sum = cafe_visit_sum + other_food_visit_sum
+      food_get_sum = cafe_get_sum + other_food_get_sum
+      car_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:car_visit)
+      car_get_sum = @results.where(shift: "キャッシュレス新規").sum(:car_get)
+      other_retail_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_visit)
+      other_retail_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_retail_get)
+      hair_salon_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_visit)
+      hair_salon_get_sum = @results.where(shift: "キャッシュレス新規").sum(:hair_salon_get)
+      manipulative_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_visit)
+      manipulative_get_sum = @results.where(shift: "キャッシュレス新規").sum(:manipulative_get)
+      other_service_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_visit)
+      other_service_get_sum = @results.where(shift: "キャッシュレス新規").sum(:other_service_get)
+      # 業種別訪問・成約情報
+      store_type_hash = {
+        "飲食" => [food_visit_sum, food_get_sum],
+        "車屋" => [car_visit_sum, car_get_sum],
+        "その他小売" => [other_retail_visit_sum, other_retail_get_sum],
+        "理容・美容" => [hair_salon_visit_sum, hair_salon_get_sum],
+        "整体・鍼灸" => [manipulative_visit_sum, manipulative_get_sum],
+        "その他サービス" => [other_service_visit_sum, other_service_get_sum]
+      }
+      # 全店舗の合計訪問数と成約数を取得
+      store_visit_sum = 0
+      store_get_sum = 0
+      store_type_hash.each do |key, val_list|
+        # val_list[0]は訪問val_list[1]は成約数
+        store_visit_sum += val_list[0]
+        store_get_sum += val_list[1]
+      end
+      # 業種別訪問・成約情報に全店舗を追加
+      store_type_hash["全店舗"] = [store_visit_sum, store_get_sum]
+      @store_type_hash_list.push(store_type_hash)
+    end
 
   end
   
