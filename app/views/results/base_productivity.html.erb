@@ -91,23 +91,23 @@
             <tr>
               <td><%= @results.group(:user_id).length %></td>
               <td><%= @results.length %></td>
-              <%# 訪問 %>
+              <%# オーナー不在 %>
               <td><%= total_visit_ave = ((@results.sum(:first_total_visit) + @results.sum(:latter_total_visit)).to_f / @results.length).round(1) rescue 0 %></td>
-              <%# 応答 %>
+              <%# 対面 %>
               <td><%= visit_ave = ((@results.sum(:first_visit) + @results.sum(:latter_visit)).to_f / @results.length).round(1) rescue 0 %></td>
               <td><%= (visit_ave / total_visit_ave * 100).round() rescue 0 %>%</td>
-              <%# 対面 %>
+              <%# フル %>
               <td><%= interview_ave = ((@results.sum(:first_interview) + @results.sum(:latter_interview)).to_f / @results.length).round(1) rescue 0 %></td>
               <td><%= (interview_ave / visit_ave * 100).round() rescue 0 %>%</td>
-              <%# フル %>
+              <%# 情報聞いた:d1 %>
               <td><%= full_talk_ave =  ((@results.sum(:first_full_talk) + @results.sum(:latter_full_talk)).to_f / @results.length).round(1) rescue 0 %></td>
               <td><%= (full_talk_ave / interview_ave * 100).round() rescue 0 %>%</td>
-              <%# フル2 %>
+              <%# 認証キー回収:d2 %>
               <td><%= full_talk2_ave =  ((@results.sum(:first_full_talk2) + @results.sum(:latter_full_talk2)).to_f / @results.length).round(1) rescue 0 %></td>
               <td><%= (full_talk2_ave / interview_ave * 100).round() rescue 0 %>%</td>
               <%# 成約 %>
               <td><%= get_ave = ((@results.sum(:first_get) + @results.sum(:latter_get)).to_f / @results.length).round(1) rescue 0 %></td>
-              <td><%= (get_ave / full_talk_ave * 100).round() rescue 0 %>%</td>
+              <td><%= (get_ave / interview_ave * 100).round() rescue 0 %>%</td>
             </tr>
           </tbody>
         </table>
