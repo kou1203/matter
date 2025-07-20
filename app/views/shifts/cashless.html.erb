@@ -41,7 +41,7 @@
           <td class="shift-td" rowspan=""><%= base %></td>
           <td class="shift-td" rowspan=""><%= user_info.name %></td>
           <td class="shift-td" rowspan=""><%= link_to @shifts.where(user_id: user_info.id).length, shifts_path(user_id: user_info.id), "data-turbolinks": false, class: "shift-edit-link" %></td>
-          <% color_style = @shifts.where(user_id: user_info.id).length == @results.where(user_id: user_info.id).length ? "shift-edit-link" : "shift-edit-link-red" %>
+          <% color_style = @shifts.where(user_id: user_info.id).where(start_time: ...Date.today).length == @results.where(user_id: user_info.id).length ? "shift-edit-link" : "shift-edit-link-red" %>
           <td class="shift-td" rowspan=""><%= link_to @results.where(user_id: user_info.id).length, result_path(user_info.id,month: @month), "data-turbolinks": false, class: color_style %></td>
           <% @month.all_month.each do |date| %>
           <% shift = @shifts.where(user_id: user_info.id).find_by(start_time: date) %>
