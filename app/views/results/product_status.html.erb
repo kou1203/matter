@@ -228,6 +228,9 @@
       <th class="valuation-th">決済期限</th>
       <th class="valuation-th">2回目決済完了日</th>
       <th class="valuation-th">d払い直近決済日</th>
+      <th class="valuation-th">営業側対応内容</th>
+      <th class="valuation-th">営業側対応日</th>
+      <th class="valuation-th">営業側対応進捗</th>
     </tr>
   </thead>
   <tbody>
@@ -275,6 +278,15 @@
       <td class="valuation-td"><%= dmer.settlement_deadline %></td>
       <td class="valuation-td"><%= dmer.settlement_second %></td>
       <td class="valuation-td"><%= dmer.dpay_slmt_latest %></td>
+      <% if dmer.dmer_memo.present? %>
+        <td class="valuation-td"><%= link_to dmer.dmer_memo.memo , edit_dmer_senbai_dmer_memo_path(dmer.id, dmer.dmer_memo),"data-turbolinks": false, class: "link" %></td>
+        <td class="valuation-td"><%= dmer.dmer_memo.date %></td>
+        <td class="valuation-td"><%= dmer.dmer_memo.status %></td>
+      <% else %>
+        <td class="valuation-td"><%= link_to "入力", new_dmer_senbai_dmer_memo_path(dmer.id),"data-turbolinks": false, class: "link" %></td>
+        <td class="valuation-td"></td>
+        <td class="valuation-td"></td>
+      <% end %>
     </tr>
     <% end %>
   </tbody>

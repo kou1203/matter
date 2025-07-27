@@ -1,0 +1,31 @@
+<div data-scope-path="shared/header">
+  <h1>営業側店舗対応内容</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;"><%# フレックス %>
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form"><%# CSSスコープ %>
+    <div class="form-main"><%# フォーム外枠 %>
+      <div class="form-title">
+        <h2>店舗名：<%= @dmer_senbai.store_name %>対応内容</h2>
+      </div>
+    <%= form_with model: [@dmer_senbai, @dmer_memo], class: "form-frame", local: true do |f| %>
+        <div class="form">
+            <%= render "shared/error_messages", model: f.object %>
+            <%= f.hidden_field :dmer_senbai_id , value: @dmer_senbai.id %>
+            <p><%= f.label :memo, "対応内容", class: "form-text" %></p>
+            <p><%= f.text_field :memo, step: :any, class: "date-input" %></p>
+            <p><%= f.label :memo, "対応日", class: "form-text" %></p>
+            <p><%= f.date_field :date, date: :any, class: "date-input" %></p>
+            <p><%= f.label :status, "対応状況", class: "form-text" %></p>
+            <p><%= f.select :status, {"未対応": "未対応", "対応中": "対応中", "完了": "完了", "対応不可": "対応不可"}, class: "slct-input" %></p>
+        </div>
+    </div><%# フォーム外枠 %>
+        <div class="form-submit">
+            <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        </div>
+    <% end %>
+  </div><%# CSSスコープ %>
+</div><%# フレックス %>

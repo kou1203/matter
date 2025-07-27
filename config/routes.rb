@@ -471,6 +471,7 @@ end
   resources :dmer_senbai_users, except: :show
   resources :dmer_senbais do 
     collection {post :import}
+    resources :dmer_memos, only: [:new, :create, :edit, :update]
   end 
 
   resources :dmer_senbai_date_progresses, only:[:index] do
@@ -494,6 +495,7 @@ end
   resources :baseline_sales, only: [:new, :create, :edit, :update] do 
     resources :baseline_metrics, only: [:new, :create, :edit, :update]
   end
+
 
   resources :result_product_cases, only: [:index]
   resources :result_product_cases, only: :show, param: :user_id

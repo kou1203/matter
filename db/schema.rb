@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_07_26_062845) do
+ActiveRecord::Schema.define(version: 2025_07_27_061657) do
 
   create_table "activity_bases", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date", null: false
@@ -403,6 +403,14 @@ ActiveRecord::Schema.define(version: 2025_07_26_062845) do
     t.integer "shift_schedule_slmt"
     t.integer "shift_digestion_slmt"
     t.index ["user_id"], name: "index_dmer_date_progresses_on_user_id"
+  end
+
+  create_table "dmer_memos", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.string "memo"
+    t.date "date"
+    t.string "status"
+    t.bigint "dmer_senbai_id"
+    t.index ["dmer_senbai_id"], name: "index_dmer_memos_on_dmer_senbai_id"
   end
 
   create_table "dmer_senbai_date_progresses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -2009,6 +2017,7 @@ ActiveRecord::Schema.define(version: 2025_07_26_062845) do
   add_foreign_key "demaekans", "store_props"
   add_foreign_key "demaekans", "users"
   add_foreign_key "dmer_date_progresses", "users"
+  add_foreign_key "dmer_memos", "dmer_senbais"
   add_foreign_key "dmer_senbai_date_progresses", "users"
   add_foreign_key "dmer_senbai_users", "users"
   add_foreign_key "dmer_senbais", "users"

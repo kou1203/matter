@@ -3,6 +3,7 @@ class DmerSenbai < ApplicationRecord
   belongs_to :settlementer, class_name: "User" , optional: true
   belongs_to :settlementer2nd, class_name: "User" , optional: true
   has_many :payment_dmer_senbais
+  has_one :dmer_memo
   with_options presence: true do 
     validates :client
     validates :industry
