@@ -12,6 +12,7 @@ class ResultsController < ApplicationController
   :visit_type_val, :time_val,:time_val_all,:store_val,:store_val_all, :visit_type_val]
   # monthly_progressアクションのbeforeaction
   before_action :set_monthly_progress, only: [:monthly_get,:monthly_get_base,:sales_and_def]
+  before_action :set_baseline_params, only: [:weekly_fin, :show]
 
   def index
   end 
@@ -337,7 +338,6 @@ class ResultsController < ApplicationController
     
   def weekly_fin # 週間基準値 前月基準値
     @shift_digestion_new = @results.where(shift: "キャッシュレス新規").length
-    @baseline_sales = params[:sales_goal] ? BaselineSale.includes(:baseline_metrics).find_by(sales_goal: params[:sales_goal].to_i) : BaselineSale.includes(:baseline_metrics).find_by(sales_goal: 1200000)
     # 前月の終着
     @results_prev = Result.includes(:user).where(user_id: @user.id).where(date: @month.prev_month.all_month)
     @prev_month = @month.prev_month
@@ -1439,6 +1439,11 @@ class ResultsController < ApplicationController
 
     def back_retirement # 退職者が閲覧できないようにする
       redirect_to error_pages_path if current_user.position_sub == "99：退職"
+    end
+
+    def set_baseline_params
+      @baseline_sales = params[:sales_goal] ? BaselineSale.includes(:baseline_metrics).find_by(sales_goal: params[:sales_goal].to_i) : BaselineSale.includes(:baseline_metrics).find_by(sales_goal: 1200000)
+      @sales_goal = params[:sales_goal]
     end
 
 end

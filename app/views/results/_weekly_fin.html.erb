@@ -1,16 +1,5 @@
 <% begin %>
 <% if @results.where(shift: "キャッシュレス新規").present? %>
-  <%# 検索機能 %>
-  <%= form_with url: result_path(@user.id), local: true, method: :get do |f| %>
-    <h3 class="search">
-      目標売上を設定：
-      <%= f.hidden_field :month, value: @month %>
-      <%= f.select :sales_goal, BaselineSale.group(:sales_goal).pluck(:sales_goal), prompt: "選択してください" %>
-      <%= f.submit "絞込",class: "search-btn" %>
-      <button class="reset-btn"><%= link_to "リセット",result_path(@user.id, month: @month), class:"reset-link" %></button>
-    </h3>
-  <% end %>
-  <%# /検索機能 %>
   <% @weeks_hash.each do |weeks| %><%# 前月と当月のデータを取り出す %>
     <div><%# 週間基準値 %>
       <h2>週間基準値（<%= weeks[:date] %>）</h2>
