@@ -27,7 +27,7 @@
           <tbody>
             <%# 目標変数 %>
               <% goal_valuations = @baseline_sales.sales_goal rescue 0 %>
-              <% goal_ave = (@baseline_sales.sales_goal / @shift_digestion_new).to_i rescue 0 %>
+              <% goal_ave = (@baseline_sales.sales_goal / @shifts_len).to_i rescue 0 %>
               <% goal_dmer = 2.5 %>
               <% goal_airpay = 2.5 %>
               <%# 基準値 %>

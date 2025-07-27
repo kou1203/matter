@@ -337,7 +337,7 @@ class ResultsController < ApplicationController
   end 
     
   def weekly_fin # 週間基準値 前月基準値
-    @shift_digestion_new = @results.where(shift: "キャッシュレス新規").length
+    @shifts_len = Shift.where(user_id: @user.id).where(start_time: @month.all_month).where(shift: "キャッシュレス新規").length
     # 前月の終着
     @results_prev = Result.includes(:user).where(user_id: @user.id).where(date: @month.prev_month.all_month)
     @prev_month = @month.prev_month
