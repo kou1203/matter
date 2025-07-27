@@ -1,8 +1,10 @@
+<% begin %>
 <% if @results.where(shift: "キャッシュレス新規").present? %>
   <%# 検索機能 %>
   <%= form_with url: result_path(@user.id), local: true, method: :get do |f| %>
     <h3 class="search">
       目標売上を設定：
+      <%= f.hidden_field :month, value: @month %>
       <%= f.select :sales_goal, BaselineSale.group(:sales_goal).pluck(:sales_goal), prompt: "選択してください" %>
       <%= f.submit "絞込",class: "search-btn" %>
       <button class="reset-btn"><%= link_to "リセット",result_path(@user.id, month: @month), class:"reset-link" %></button>
@@ -50,7 +52,8 @@
               <% goal_full_talk2 = @baseline_sales.baseline_metrics.find_by(metric_name: "d2").metric_val rescue 0 %>
               <% goal_full_talk2_rate = @baseline_sales.baseline_metrics.find_by(metric_name: "d2").metric_per rescue 0 %>
               <% goal_get = @baseline_sales.baseline_metrics.find_by(metric_name: "e").metric_val rescue 0 %>
-              <% goal_get_rate = @baseline_sales.baseline_metrics.find_by(metric_name: "e_rate_from_full_talk").metric_per rescue 0 %>
+              <% goal_get_rate = @baseline_sales.baseline_metrics.find_by(metric_name: "e").metric_per rescue 0 %>
+              <% goal_get_d2_rate = @baseline_sales.baseline_metrics.find_by(metric_name: "e_rate_from_full_talk").metric_per rescue 0 %>
             <%# 死守変数 %>
               <% dg_valuations = 800000 %>
               <% dg_ave = 40500 %>
@@ -450,4 +453,7 @@
   <% end %><%# /前月と当月のデータを取り出す %>
 <% else %>
   <p class="caution-text">※新規シフトの終着が入力されておりません。</p>
+<% end %>
+<% rescue => e %>
+  <pre><%= e.message %></pre>
 <% end %>

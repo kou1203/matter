@@ -171,7 +171,7 @@
     <%# /Vueの変 %>
     <% if @results.where(shift: "キャッシュレス新規").present? %>
       <div><%# 週間基準値と獲得内訳の括り %>
-        <%= render_async weekly_fin_path(@user.id,month: @month) %><%# 週間基準値 %>
+      <%= render_async weekly_fin_path(@user.id,month: @month) %><%# 週間基準値 %>
       </div><%# /週間基準値と獲得内訳の括り %>
     <% else %>
     <% end %>
