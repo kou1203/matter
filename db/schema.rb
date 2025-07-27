@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_05_17_073128) do
+ActiveRecord::Schema.define(version: 2025_07_26_062845) do
 
   create_table "activity_bases", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.date "date", null: false
@@ -186,6 +186,18 @@ ActiveRecord::Schema.define(version: 2025_05_17_073128) do
     t.integer "result_fin_len"
     t.date "create_date", null: false
     t.index ["user_id"], name: "index_austicker_date_progresses_on_user_id"
+  end
+
+  create_table "baseline_metrics", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.bigint "baseline_sale_id"
+    t.string "metric_name", null: false
+    t.float "metric_val", null: false
+    t.integer "metric_per"
+    t.index ["baseline_sale_id"], name: "index_baseline_metrics_on_baseline_sale_id"
+  end
+
+  create_table "baseline_sales", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
+    t.integer "sales_goal", null: false
   end
 
   create_table "calc_periods", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1989,6 +2001,7 @@ ActiveRecord::Schema.define(version: 2025_05_17_073128) do
   add_foreign_key "aupays", "users"
   add_foreign_key "aupays", "users", column: "settlementer_id"
   add_foreign_key "austicker_date_progresses", "users"
+  add_foreign_key "baseline_metrics", "baseline_sales"
   add_foreign_key "cash_date_progresses", "users"
   add_foreign_key "comments", "store_props"
   add_foreign_key "deal_attributes", "result_types"

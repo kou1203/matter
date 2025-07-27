@@ -1,4 +1,14 @@
 <% if @results.where(shift: "キャッシュレス新規").present? %>
+  <%# 検索機能 %>
+  <%= form_with url: result_path(@user.id), local: true, method: :get do |f| %>
+    <h3 class="search">
+      目標売上を設定：
+      <%= f.select :sales_goal, BaselineSale.group(:sales_goal).pluck(:sales_goal), prompt: "選択してください" %>
+      <%= f.submit "絞込",class: "search-btn" %>
+      <button class="reset-btn"><%= link_to "リセット",result_path(@user.id, month: @month), class:"reset-link" %></button>
+    </h3>
+  <% end %>
+  <%# /検索機能 %>
   <% @weeks_hash.each do |weeks| %><%# 前月と当月のデータを取り出す %>
     <div><%# 週間基準値 %>
       <h2>週間基準値（<%= weeks[:date] %>）</h2>
@@ -25,23 +35,23 @@
           </thead>
           <tbody>
             <%# 目標変数 %>
-              <% goal_valuations = 1200000 %>
-              <% goal_ave = 67500 %>
+              <% goal_valuations = @target_baseline_sale.goal_sales rescue 0 %>
+              <% goal_ave = (@target_baseline_sale.goal_sales / @shift_digestion_new).to_i rescue 0 %>
               <% goal_dmer = 2.5 %>
               <% goal_airpay = 2.5 %>
               <%# 基準値 %>
-              <% goal_total_visit = 20 %>
-              <% goal_visit = 10 %>
-              <% goal_visit_rate = 50 %>
-              <% goal_interview = 7 %>
-              <% goal_interview_rate = 70 %>
-              <% goal_full_talk = 5 %>
-              <% goal_full_talk_rate = 70 %>
-              <% goal_full_talk2 = 3.5 %>
-              <% goal_full_talk2_rate = 70 %>
-              <% goal_get = 2.8 %>
-              <% goal_get_d2_rate = 80 %>
-              <% goal_get_rate = 40 %>
+              <% goal_total_visit = @baseline_sales.find_by(metric_name: "a").metric_val rescue 0 %>
+              <% goal_visit = @baseline_sales.find_by(metric_name: "b").metric_val rescue 0 %>
+              <% goal_visit_rate = @baseline_sales.find_by(metric_name: "b").metric_per rescue 0 %>
+              <% goal_interview = @baseline_sales.find_by(metric_name: "c").metric_val rescue 0 %>
+              <% goal_interview_rate = @baseline_sales.find_by(metric_name: "c").metric_per rescue 0 %>
+              <% goal_full_talk = @baseline_sales.find_by(metric_name: "d1").metric_val rescue 0 %>
+              <% goal_full_talk_rate = @baseline_sales.find_by(metric_name: "d1").metric_per rescue 0 %>
+              <% goal_full_talk2 = @baseline_sales.find_by(metric_name: "d2").metric_val rescue 0 %>
+              <% goal_full_talk2_rate = @baseline_sales.find_by(metric_name: "d2").metric_per rescue 0 %>
+              <% goal_get = @baseline_sales.find_by(metric_name: "e").metric_val rescue 0 %>
+              <% goal_get_d2_rate = @baseline_sales.find_by(metric_name: "e").metric_per rescue 0 %>
+              <% goal_get_rate = @baseline_sales.find_by(metric_name: "e_rate_from_full_talk").metric_per rescue 0 %>
             <%# 死守変数 %>
               <% dg_valuations = 800000 %>
               <% dg_ave = 40500 %>

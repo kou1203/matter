@@ -1,0 +1,26 @@
+<div data-scope-path="shared/header">
+  <h1>目標売上</h1>
+  <%= render "shared/header" %>
+</div>
+<div style="display:flex;"><%# フレックス %>
+  <div data-scope-path="shared/side_bar">
+    <%= render "shared/sidebar" %>
+  </div>
+  <div data-scope-path="shared/form"><%# CSSスコープ %>
+    <div class="form-main"><%# フォーム外枠 %>
+      <div class="form-title">
+        <h2>登録情報</h2>
+      </div>
+    <%= form_with model: @baseline_sale, class: "form-frame", local: true do |f| %>
+        <div class="form">
+            <%= render "shared/error_messages", model: f.object %>
+            <p><%= f.label :sales_goal, "目標売上", class: "form-text" %></p>
+            <p><%= f.number_field :sales_goal, class: "date-input" %></p>
+        </div>
+    </div><%# フォーム外枠 %>
+        <div class="form-submit">
+            <%= f.submit "登録", class: "submit-btn",data: { confirm: "登録してもよろしいですか？" }  %>
+        </div>
+    <% end %>
+  </div><%# CSSスコープ %>
+</div><%# フレックス %>

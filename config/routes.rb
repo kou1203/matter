@@ -491,6 +491,10 @@ end
   end 
   resources :select_columns
 
+  resources :baseline_sales, only: [:new, :create, :edit, :update] do 
+    resources :baseline_metrics, only: [:new, :create, :edit, :update]
+  end
+
   resources :result_product_cases, only: [:index]
   resources :result_product_cases, only: :show, param: :user_id
   get "case_standard_val", to: "result_product_cases#case_standard_val", as: "case_standard_val"

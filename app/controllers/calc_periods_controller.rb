@@ -6,6 +6,7 @@ class CalcPeriodsController < ApplicationController
   before_action :set_month
   def index 
     bases
+    @baseline_sales = BaselineSale.includes(:baseline_metrics).all
     @calc_periods = CalcPeriod.all
     @calc_periods_val = CalcPeriod.where(sales_category: "評価売")
     @calc_periods_prof = CalcPeriod.where(sales_category: "実売")

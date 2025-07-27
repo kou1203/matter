@@ -170,6 +170,55 @@
     </table>
     <% end %>
     <p class="caution-text">※過去月も<%= Date.today.month %>月と同じ基準で利益表の計算を行っております。</p>
+
+    <h2>◆目標売上</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>売上</th>
+          <th>オーナー不在:a</th>
+          <th>対面:b(率)</th>
+          <th>フル:c(率)</th>
+          <th>情報聞いた:d1(率)</th>
+          <th>認証キー回収:d2(率)</th>
+          <th>成約:e(率)</th>
+          <th>成約:e(成約/フル)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @baseline_sales.each do |baseline_sale| %>
+        <tr>
+          <td><%= link_to baseline_sale.sales_goal, edit_baseline_sale_path(baseline_sale.id),"data-turbolinks": false, class: "link" %></td>
+          <% if baseline_sale.baseline_metrics.present? %>
+            <% baseline_a = baseline_sale.baseline_metrics.find_by(metric_name: "a") %>
+            <td><%=
+              link_to baseline_a.metric_val, edit_baseline_sale_baseline_metric_path(baseline_sale, baseline_sale.baseline_metrics.find_by(metric_name: "a")), "data-turbolinks": false, class: "link" rescue link_to "入力", new_baseline_sale_baseline_metric_path(baseline_sale.id, metric_name: "a"),"data-turbolinks": false, class: "link" 
+            %></td>
+            <% metric_name_list = ["b", "c", "d1", "d2", "e", "e_rate_from_full_talk"] %>
+            <% metric_name_list.each do |metric_name| %>
+              <% target_baseline_metric = baseline_sale.baseline_metrics.find_by(metric_name: metric_name) %>
+              <% target_metric_per = baseline_sale.baseline_metrics.find_by(metric_name: metric_name).metric_per rescue "未設定" %>
+              <td><%= link_to "#{target_baseline_metric.metric_val} (#{target_metric_per})%", edit_baseline_sale_baseline_metric_path(baseline_sale, target_baseline_metric),"data-turbolinks": false, class: "link" rescue link_to "入力", new_baseline_sale_baseline_metric_path(baseline_sale.id, metric_name: metric_name),"data-turbolinks": false, class: "link" %></td>
+            <% end %>
+
+          <% else %>
+            <td><%= link_to "入力", new_baseline_sale_baseline_metric_path(baseline_sale.id, metric_name: "a"),"data-turbolinks": false, class: "link" %></td>
+            <td><%= link_to "入力", new_baseline_sale_baseline_metric_path(baseline_sale.id, metric_name: "b"),"data-turbolinks": false, class: "link" %></td>
+            <td><%= link_to "入力", new_baseline_sale_baseline_metric_path(baseline_sale.id, metric_name: "c"),"data-turbolinks": false, class: "link" %></td>
+            <td><%= link_to "入力", new_baseline_sale_baseline_metric_path(baseline_sale.id, metric_name: "d1"),"data-turbolinks": false, class: "link" %></td>
+            <td><%= link_to "入力", new_baseline_sale_baseline_metric_path(baseline_sale.id, metric_name: "d2"),"data-turbolinks": false, class: "link" %></td>
+            <td><%= link_to "入力", new_baseline_sale_baseline_metric_path(baseline_sale.id, metric_name: "e"),"data-turbolinks": false, class: "link" %></td>
+            <td><%= link_to "入力", new_baseline_sale_baseline_metric_path(baseline_sale.id, metric_name: "e_rate_from_full_talk"),"data-turbolinks": false, class: "link" %></td>
+          <% end %>
+        </tr>
+
+        <% end %>
+        <tr>
+          <td><%= link_to "目標売上入力", new_baseline_sale_path,"data-turbolinks": false, class: "link" %></td>
+        </tr>
+      </tbody>
+    </table>
+
     <hr>
     <%= render_async val_users_path %>
   </div>

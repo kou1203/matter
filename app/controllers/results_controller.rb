@@ -336,6 +336,9 @@ class ResultsController < ApplicationController
   end 
     
   def weekly_fin # 週間基準値 前月基準値
+    @shift_digestion_new = @results.where(shift: "キャッシュレス新規").length
+    @baseline_sales = BaselineSale.includes(:baseline_metrics).all
+    @target_baseline_sale = params[:sales_goal] ? @baseline_sales.find_by(sales_goal: params[:sales_goal]) : @baseline_sales.find_by(sales_goal: 120)
     # 前月の終着
     @results_prev = Result.includes(:user).where(user_id: @user.id).where(date: @month.prev_month.all_month)
     @prev_month = @month.prev_month
@@ -807,7 +810,6 @@ class ResultsController < ApplicationController
     @results = Result.includes(:user).where(shift: "キャッシュレス新規").where(date: @s_start_date..@s_end_date)
     @result_out = Result.includes(:user, :result_cash).where(date: @s_start_date..@s_end_date).where(shift: "キャッシュレス新規")
     @result_types = Result.includes(:user, :result_type, result_type: :deal_attributes).where(date: @s_start_date..@s_end_date).where(shift: "キャッシュレス新規")
-    
     # 比較値の入力がある場合
     if @t_username.present? && User.where("name LIKE ?","%#{@t_username}%").present?
       @t_user = User.where("name LIKE ?","%#{@t_username}%").first
