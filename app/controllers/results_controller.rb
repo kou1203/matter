@@ -217,6 +217,12 @@ class ResultsController < ApplicationController
       @sum_full_talk = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk) + @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
       @sum_full_talk2 = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk2) + @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk2) 
       @sum_get = @results.where(shift: "キャッシュレス新規").sum(:first_get) + @results.where(shift: "キャッシュレス新規").sum(:latter_get)
+      @sum_total_visit_ave = (@sum_total_visit.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_visit_ave  = (@sum_visit.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_interview_ave  = (@sum_interview.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_full_talk_ave  = (@sum_full_talk.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_full_talk2_ave  = (@sum_full_talk2.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_get_ave = (@sum_get.to_f / @shift_digestion_new).to_f().round(2) rescue 0
     #  前半変数 
       @sum_total_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_total_visit) 
       @sum_visit_f = @results.where(shift: "キャッシュレス新規").sum(:first_visit) 
@@ -224,13 +230,25 @@ class ResultsController < ApplicationController
       @sum_full_talk_f = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk) 
       @sum_full_talk2_f = @results.where(shift: "キャッシュレス新規").sum(:first_full_talk2) 
       @sum_get_f = @results.where(shift: "キャッシュレス新規").sum(:first_get) 
+      @sum_total_visit_f_ave = (@sum_total_visit_f.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_visit_f_ave  = (@sum_visit_f.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_interview_f_ave  = (@sum_interview_f.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_full_talk_f_ave  = (@sum_full_talk_f.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_full_talk2_f_ave  = (@sum_full_talk2_f.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_get_f_ave = (@sum_get_f.to_f / @shift_digestion_new).to_f().round(2) rescue 0
     # 後半変数 
       @sum_total_visit_l = @results.where(shift: "キャッシュレス新規").sum(:latter_total_visit) 
       @sum_visit_l = @results.where(shift: "キャッシュレス新規").sum(:latter_visit) 
       @sum_interview_l = @results.where(shift: "キャッシュレス新規").sum(:latter_interview) 
       @sum_full_talk_l = @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk) 
       @sum_full_talk2_l = @results.where(shift: "キャッシュレス新規").sum(:latter_full_talk2)
-      @sum_get_l = @results.where(shift: "キャッシュレス新規").sum(:latter_get) 
+      @sum_get_l = @results.where(shift: "キャッシュレス新規").sum(:latter_get)
+      @sum_total_visit_l_ave = (@sum_total_visit_l.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_visit_l_ave  = (@sum_visit_l.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_interview_l_ave  = (@sum_interview_l.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_full_talk_l_ave  = (@sum_full_talk_l.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_full_talk2_l_ave  = (@sum_full_talk2_l.to_f / @shift_digestion_new).to_f().round(2) rescue 0
+      @sum_get_l_ave = (@sum_get_l.to_f / @shift_digestion_new).to_f().round(2) rescue 0
     # 店舗別合計変数 
       @cafe_visit_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_visit)
       @cafe_get_sum = @results.where(shift: "キャッシュレス新規").sum(:cafe_get)

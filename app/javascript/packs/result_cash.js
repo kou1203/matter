@@ -6,6 +6,28 @@ Vue.use(TurbolinksAdapter)
 
 document.addEventListener('turbolinks:load', () => {
   const element = document.getElementById("result-cash");
+  // 合計
+  const sum_total_visit_ave = window.sum_total_visit_ave
+  const sum_visit_ave = window.sum_visit_ave
+  const sum_interview_ave = window.sum_interview_ave
+  const sum_full_talk_ave = window.sum_full_talk_ave
+  const sum_full_talk2_ave = window.sum_full_talk2_ave
+  const sum_get_ave = window.sum_get_ave
+  // 前半
+  const sum_total_visit_f_ave = window.sum_total_visit_f_ave
+  const sum_visit_f_ave = window.sum_visit_f_ave
+  const sum_interview_f_ave = window.sum_interview_f_ave
+  const sum_full_talk_f_ave = window.sum_full_talk_f_ave
+  const sum_full_talk2_f_ave = window.sum_full_talk2_f_ave
+  const sum_get_f_ave = window.sum_get_f_ave
+  // 後半
+  const sum_total_visit_l_ave = window.sum_total_visit_l_ave
+  const sum_visit_l_ave = window.sum_visit_l_ave
+  const sum_interview_l_ave = window.sum_interview_l_ave
+  const sum_full_talk_l_ave = window.sum_full_talk_l_ave
+  const sum_full_talk2_l_ave = window.sum_full_talk2_l_ave
+  const sum_get_l_ave = window.sum_get_l_ave
+
   const result_chubu = window.result_chubu
   const result_kansai = window.result_kansai
   const result_kanto = window.result_kanto
@@ -41,21 +63,39 @@ document.addEventListener('turbolinks:load', () => {
         hourVisit: hour_visit_chubu,
         user_len: chubu_len,
         hourGet: hour_get_chubu,
-        val: "中部SS"
+        val: "中部SS",
+        sum_total_visit_ave: sum_total_visit_ave,
+        sum_visit_ave: sum_visit_ave,
+        sum_interview_ave: sum_interview_ave,
+        sum_full_talk_ave: sum_full_talk_ave,
+        sum_full_talk2_ave: sum_full_talk2_ave,
+        sum_get_ave: sum_get_ave,
+        sum_total_visit_f_ave: sum_total_visit_f_ave,
+        sum_visit_f_ave: sum_visit_f_ave,
+        sum_interview_f_ave: sum_interview_f_ave,
+        sum_full_talk_f_ave: sum_full_talk_f_ave,
+        sum_full_talk2_f_ave: sum_full_talk2_f_ave,
+        sum_get_f_ave: sum_get_f_ave,
+        sum_total_visit_l_ave: sum_total_visit_l_ave,
+        sum_visit_l_ave: sum_visit_l_ave,
+        sum_interview_l_ave: sum_interview_l_ave,
+        sum_full_talk_l_ave: sum_full_talk_l_ave,
+        sum_full_talk2_l_ave: sum_full_talk2_l_ave,
+        sum_get_l_ave: sum_get_l_ave
       },
       methods: {
         shiftSlct: function(e) {
           this.val = e.target.value
           if (this.val == "中部SS") {
-            return this.shiftItem = result_chubu, this.out = result_cash_chubu, this.hourVisit = hour_visit_chubu, this.hourGet = hour_get_chubu, this.user_len = chubu_len;
+            return this.shiftItem = result_chubu, this.out = result_cash_chubu, this.hourVisit = hour_visit_chubu, this.hourGet = hour_get_chubu, this.user_len = chubu_len, this.sum_total_visit_ave = sum_total_visit_ave, this.sum_visit_ave = sum_visit_ave, this.sum_interview_ave = sum_interview_ave, this.sum_full_talk_ave = sum_full_talk_ave, this.sum_full_talk2_ave = sum_full_talk2_ave, this.sum_get_ave = sum_get_ave, this.sum_total_visit_f_ave = sum_total_visit_f_ave, this.sum_visit_f_ave = sum_visit_f_ave, this.sum_interview_f_ave = sum_interview_f_ave, this.sum_full_talk_f_ave = sum_full_talk_f_ave, this.sum_full_talk2_f_ave = sum_full_talk2_f_ave, this.sum_get_f_ave = sum_get_f_ave, this.sum_total_visit_l_ave = sum_total_visit_l_ave, this.sum_visit_l_ave = sum_visit_l_ave, this.sum_interview_l_ave = sum_interview_l_ave, this.sum_full_talk_l_ave = sum_full_talk_l_ave, this.sum_full_talk2_l_ave = sum_full_talk2_l_ave, this.sum_get_l_ave = sum_get_l_ave;
           } else if (this.val == "関西SS") {
-            return this.shiftItem = result_kansai, this.out = result_cash_kansai, this.hourVisit = hour_visit_kansai, this.hourGet = hour_get_kansai, this.user_len = kansai_len;
+            return this.shiftItem = result_kansai, this.out = result_cash_kansai, this.hourVisit = hour_visit_kansai, this.hourGet = hour_get_kansai, this.user_len = kansai_len, this.sum_total_visit_ave = sum_total_visit_ave, this.sum_visit_ave = sum_visit_ave, this.sum_interview_ave = sum_interview_ave, this.sum_full_talk_ave = sum_full_talk_ave, this.sum_full_talk2_ave = sum_full_talk2_ave, this.sum_get_ave = sum_get_ave, this.sum_total_visit_f_ave = sum_total_visit_f_ave, this.sum_visit_f_ave = sum_visit_f_ave, this.sum_interview_f_ave = sum_interview_f_ave, this.sum_full_talk_f_ave = sum_full_talk_f_ave, this.sum_full_talk2_f_ave = sum_full_talk2_f_ave, this.sum_get_f_ave = sum_get_f_ave, this.sum_total_visit_l_ave = sum_total_visit_l_ave, this.sum_visit_l_ave = sum_visit_l_ave, this.sum_interview_l_ave = sum_interview_l_ave, this.sum_full_talk_l_ave = sum_full_talk_l_ave, this.sum_full_talk2_l_ave = sum_full_talk2_l_ave, this.sum_get_l_ave = sum_get_l_ave;
           } else if (this.val == "関東SS") {
-            return this.shiftItem = result_kanto, this.out = result_cash_kanto, this.hourVisit = hour_visit_kanto, this.hourGet = hour_get_kanto, this.user_len = kanto_len;
+            return this.shiftItem = result_kanto, this.out = result_cash_kanto, this.hourVisit = hour_visit_kanto, this.hourGet = hour_get_kanto, this.user_len = kanto_len, this.sum_total_visit_ave = sum_total_visit_ave, this.sum_visit_ave = sum_visit_ave, this.sum_interview_ave = sum_interview_ave, this.sum_full_talk_ave = sum_full_talk_ave, this.sum_full_talk2_ave = sum_full_talk2_ave, this.sum_get_ave = sum_get_ave, this.sum_total_visit_f_ave = sum_total_visit_f_ave, this.sum_visit_f_ave = sum_visit_f_ave, this.sum_interview_f_ave = sum_interview_f_ave, this.sum_full_talk_f_ave = sum_full_talk_f_ave, this.sum_full_talk2_f_ave = sum_full_talk2_f_ave, this.sum_get_f_ave = sum_get_f_ave, this.sum_total_visit_l_ave = sum_total_visit_l_ave, this.sum_visit_l_ave = sum_visit_l_ave, this.sum_interview_l_ave = sum_interview_l_ave, this.sum_full_talk_l_ave = sum_full_talk_l_ave, this.sum_full_talk2_l_ave = sum_full_talk2_l_ave, this.sum_get_l_ave = sum_get_l_ave;
           } else if (this.val == "九州SS") {
-            return this.shiftItem = result_kyushu , this.out = result_cash_kyushu, this.hourVisit = hour_visit_kyushu, this.hourGet = hour_get_kyushu, this.user_len = kyushu_len;
+            return this.shiftItem = result_kyushu , this.out = result_cash_kyushu, this.hourVisit = hour_visit_kyushu, this.hourGet = hour_get_kyushu, this.user_len = kyushu_len, this.sum_total_visit_ave = sum_total_visit_ave, this.sum_visit_ave = sum_visit_ave, this.sum_interview_ave = sum_interview_ave, this.sum_full_talk_ave = sum_full_talk_ave, this.sum_full_talk2_ave = sum_full_talk2_ave, this.sum_get_ave = sum_get_ave, this.sum_total_visit_f_ave = sum_total_visit_f_ave, this.sum_visit_f_ave = sum_visit_f_ave, this.sum_interview_f_ave = sum_interview_f_ave, this.sum_full_talk_f_ave = sum_full_talk_f_ave, this.sum_full_talk2_f_ave = sum_full_talk2_f_ave, this.sum_get_f_ave = sum_get_f_ave, this.sum_total_visit_l_ave = sum_total_visit_l_ave, this.sum_visit_l_ave = sum_visit_l_ave, this.sum_interview_l_ave = sum_interview_l_ave, this.sum_full_talk_l_ave = sum_full_talk_l_ave, this.sum_full_talk2_l_ave = sum_full_talk2_l_ave, this.sum_get_l_ave = sum_get_l_ave;
           } else if (this.val == "2次店") {
-            return this.shiftItem = result_partner, this.out = result_cash_partner, this.hourVisit = hour_visit_partner, this.hourGet = hour_get_partner, this.user_len = partner_len;
+            return this.shiftItem = result_partner, this.out = result_cash_partner, this.hourVisit = hour_visit_partner, this.hourGet = hour_get_partner, this.user_len = partner_len, this.sum_total_visit_ave = sum_total_visit_ave, this.sum_visit_ave = sum_visit_ave, this.sum_interview_ave = sum_interview_ave, this.sum_full_talk_ave = sum_full_talk_ave, this.sum_full_talk2_ave = sum_full_talk2_ave, this.sum_get_ave = sum_get_ave, this.sum_total_visit_f_ave = sum_total_visit_f_ave, this.sum_visit_f_ave = sum_visit_f_ave, this.sum_interview_f_ave = sum_interview_f_ave, this.sum_full_talk_f_ave = sum_full_talk_f_ave, this.sum_full_talk2_f_ave = sum_full_talk2_f_ave, this.sum_get_f_ave = sum_get_f_ave, this.sum_total_visit_l_ave = sum_total_visit_l_ave, this.sum_visit_l_ave = sum_visit_l_ave, this.sum_interview_l_ave = sum_interview_l_ave, this.sum_full_talk_l_ave = sum_full_talk_l_ave, this.sum_full_talk2_l_ave = sum_full_talk2_l_ave, this.sum_get_l_ave = sum_get_l_ave;
           } else {}
         }
       }
