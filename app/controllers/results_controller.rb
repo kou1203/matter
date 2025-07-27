@@ -185,7 +185,7 @@ class ResultsController < ApplicationController
   end
 
   # マイページ
-  def show 
+  def show
     @bases = User.where(base_sub: "キャッシュレス")
     # 各種商材などの件数や売上
       @cash_date_progress = CashDateProgress.where(user_id: @user.id).where(date: @month.all_month).last
@@ -337,8 +337,7 @@ class ResultsController < ApplicationController
     
   def weekly_fin # 週間基準値 前月基準値
     @shift_digestion_new = @results.where(shift: "キャッシュレス新規").length
-    @baseline_sales = BaselineSale.includes(:baseline_metrics).all
-    @target_baseline_sale = params[:sales_goal] ? @baseline_sales.find_by(sales_goal: params[:sales_goal]) : @baseline_sales.find_by(sales_goal: 120)
+    @baseline_sales = params[:sales_goal] ? BaselineSale.includes(:baseline_metrics).find_by(sales_goal: params[:sales_goal].to_i) : BaselineSale.includes(:baseline_metrics).find_by(sales_goal: 1200000)
     # 前月の終着
     @results_prev = Result.includes(:user).where(user_id: @user.id).where(date: @month.prev_month.all_month)
     @prev_month = @month.prev_month

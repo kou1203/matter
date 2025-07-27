@@ -35,23 +35,22 @@
           </thead>
           <tbody>
             <%# 目標変数 %>
-              <% goal_valuations = @target_baseline_sale.goal_sales rescue 0 %>
-              <% goal_ave = (@target_baseline_sale.goal_sales / @shift_digestion_new).to_i rescue 0 %>
+              <% goal_valuations = @baseline_sales.sales_goal rescue 0 %>
+              <% goal_ave = (@baseline_sales.sales_goal / @shift_digestion_new).to_i rescue 0 %>
               <% goal_dmer = 2.5 %>
               <% goal_airpay = 2.5 %>
               <%# 基準値 %>
-              <% goal_total_visit = @baseline_sales.find_by(metric_name: "a").metric_val rescue 0 %>
-              <% goal_visit = @baseline_sales.find_by(metric_name: "b").metric_val rescue 0 %>
-              <% goal_visit_rate = @baseline_sales.find_by(metric_name: "b").metric_per rescue 0 %>
-              <% goal_interview = @baseline_sales.find_by(metric_name: "c").metric_val rescue 0 %>
-              <% goal_interview_rate = @baseline_sales.find_by(metric_name: "c").metric_per rescue 0 %>
-              <% goal_full_talk = @baseline_sales.find_by(metric_name: "d1").metric_val rescue 0 %>
-              <% goal_full_talk_rate = @baseline_sales.find_by(metric_name: "d1").metric_per rescue 0 %>
-              <% goal_full_talk2 = @baseline_sales.find_by(metric_name: "d2").metric_val rescue 0 %>
-              <% goal_full_talk2_rate = @baseline_sales.find_by(metric_name: "d2").metric_per rescue 0 %>
-              <% goal_get = @baseline_sales.find_by(metric_name: "e").metric_val rescue 0 %>
-              <% goal_get_d2_rate = @baseline_sales.find_by(metric_name: "e").metric_per rescue 0 %>
-              <% goal_get_rate = @baseline_sales.find_by(metric_name: "e_rate_from_full_talk").metric_per rescue 0 %>
+              <% goal_total_visit = @baseline_sales.baseline_metrics.find_by(metric_name: "a").metric_val rescue 0 %>
+              <% goal_visit = @baseline_sales.baseline_metrics.find_by(metric_name: "b").metric_val rescue 0 %>
+              <% goal_visit_rate = @baseline_sales.baseline_metrics.find_by(metric_name: "b").metric_per rescue 0 %>
+              <% goal_interview = @baseline_sales.baseline_metrics.find_by(metric_name: "c").metric_val rescue 0 %>
+              <% goal_interview_rate = @baseline_sales.baseline_metrics.find_by(metric_name: "c").metric_per rescue 0 %>
+              <% goal_full_talk = @baseline_sales.baseline_metrics.find_by(metric_name: "d1").metric_val rescue 0 %>
+              <% goal_full_talk_rate = @baseline_sales.baseline_metrics.find_by(metric_name: "d1").metric_per rescue 0 %>
+              <% goal_full_talk2 = @baseline_sales.baseline_metrics.find_by(metric_name: "d2").metric_val rescue 0 %>
+              <% goal_full_talk2_rate = @baseline_sales.baseline_metrics.find_by(metric_name: "d2").metric_per rescue 0 %>
+              <% goal_get = @baseline_sales.baseline_metrics.find_by(metric_name: "e").metric_val rescue 0 %>
+              <% goal_get_rate = @baseline_sales.baseline_metrics.find_by(metric_name: "e_rate_from_full_talk").metric_per rescue 0 %>
             <%# 死守変数 %>
               <% dg_valuations = 800000 %>
               <% dg_ave = 40500 %>
