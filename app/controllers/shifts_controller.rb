@@ -95,7 +95,7 @@ class ShiftsController < ApplicationController
     @month = params[:month] ? Date.parse(params[:month]) : Date.today
     @date_rows = @month.all_month.count
     @shifts = Shift.includes(:user).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"}).where(start_time: @month.all_month)
-    @bases = ["中部SS", "関東SS", "関西SS", "2次店"]
+    @bases = ["中部SS", "関東SS", "関西SS", "九州SS", "2次店"]
     @users = User.where(base_sub: "キャッシュレス").where.not(position: "退職").where.not(name: "株式会社ティディ")
     @results = Result.where(date: @month.all_month)
     @shift_data = {
