@@ -23,7 +23,7 @@ class ResultsBaseValuationsController < ApplicationController
   def set_data
     @month = params[:month] ? Time.parse(params[:month]) : Date.today
     @base = params[:base]
-    @results = Result.includes(:user,:result_cash).where(user: {base: @base}).where(date: @month.all_month)
+    @results = Result.includes(:user).where(user: {base: @base}).where(date: @month.all_month)
     @users = User.where(base: @base).where(base_sub: "キャッシュレス").where.not(position: "退職").order("users.position_sub ASC").order("users.id ASC")
     @cash_date_progress = CashDateProgress.includes(:user).where(date: @month.all_month).where(user: {base: @base}).where(user: {base_sub: "キャッシュレス"}).where.not(user: {position: "退職"})
     @cash_date_progress = @cash_date_progress.where(date: @cash_date_progress.maximum(:date)).where(create_date: @cash_date_progress.maximum(:create_date))
