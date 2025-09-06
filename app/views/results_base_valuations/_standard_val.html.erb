@@ -35,7 +35,7 @@
   <% @users.each do |user| %>
   <% result_user = @results.where(user_id: user.id) %>
   <% shift_schedule = @dmer_senbai_date_progress.find_by(user_id: user.id).shift_schedule rescue 0 %>
-  <% shift_digestion = @dmer_senbai_date_progress.find_by(user_id: user.id).shift_digestion rescue 0 %>
+  <% shift_digestion = result_user.where(shift: "キャッシュレス新規").length rescue 0 %>
   <% total_visit = ((result_user.sum(:first_total_visit).to_f + result_user.sum(:latter_total_visit).to_f) / shift_digestion).round(1) rescue 0 %>
   <% visit = ((result_user.sum(:first_visit).to_f + result_user.sum(:latter_visit).to_f) / shift_digestion).round(1) rescue 0 %>
   <% interview = ((result_user.sum(:first_interview).to_f + result_user.sum(:latter_interview).to_f) / shift_digestion).round(1) rescue 0 %>
